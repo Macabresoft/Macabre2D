@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Macabre2D.UI.Controls.IconToggleButton"
+             x:Name="_iconToggleButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:local="clr-namespace:Macabre2D.UI.Controls">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
+    </UserControl.Resources>
+    <Button Command="{Binding ToggleCommand, Mode=OneWay, ElementName=_iconToggleButton}"
+            Width="24"
+            Height="24">
+        <Grid>
+            <local:Icon VectorPath="{StaticResource ChevronDownIcon}"
+                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center" />
+            <local:Icon VectorPath="{StaticResource ChevronLeftIcon}"
+                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center" />
+        </Grid>
+    </Button>
+</UserControl>

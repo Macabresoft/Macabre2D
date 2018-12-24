@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D5B27B29-00A8-40A7-9911-46C84EBC7F37}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Macabre2D.Framework</RootNamespace>
+    <AssemblyName>Macabre2D.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\lib\net45\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework.Content.Pipeline">
+      <HintPath>..\Dependencies\MonoGame.Framework.Content.Pipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="ActionExtensions.cs" />
+    <Compile Include="Audio\AudioClip.cs" />
+    <Compile Include="Audio\AudioPlayer.cs" />
+    <Compile Include="BaseModule.cs" />
+    <Compile Include="ChildAttribute.cs" />
+    <Compile Include="Content\GameSettingsImporter.cs" />
+    <Compile Include="Content\GameSettingsProcessor.cs" />
+    <Compile Include="Content\GameSettingsReader.cs" />
+    <Compile Include="Content\GameSettingsWriter.cs" />
+    <Compile Include="Content\JsonImporter.cs" />
+    <Compile Include="Content\JsonProcessor.cs" />
+    <Compile Include="Content\JsonReader.cs" />
+    <Compile Include="Content\JsonWriter.cs" />
+    <Compile Include="Content\SceneImporter.cs" />
+    <Compile Include="Content\SceneProcessor.cs" />
+    <Compile Include="Content\SceneReader.cs" />
+    <Compile Include="Content\SceneWriter.cs" />
+    <Compile Include="Diagnostics\BaseDrawer.cs" />
+    <Compile Include="Diagnostics\BoundingAreaDrawer.cs" />
+    <Compile Include="Diagnostics\ColliderDrawer.cs" />
+    <Compile Include="Diagnostics\GridDrawer.cs" />
+    <Compile Include="Diagnostics\PrimitiveDrawer.cs" />
+    <Compile Include="EmptyComponent.cs" />
+    <Compile Include="GameSettings.cs" />
+    <Compile Include="IBaseComponent.cs" />
+    <Compile Include="IGame.cs" />
+    <Compile Include="IIdentifiable.cs" />
+    <Compile Include="IScene.cs" />
+    <Compile Include="LazyExtensions.cs" />
+    <Compile Include="NotifyPropertyChanged.cs" />
+    <Compile Include="Physics\Body.cs" />
+    <Compile Include="BoundingArea.cs" />
+    <Compile Include="Physics\CircleCollider.cs" />
+    <Compile Include="Physics\Collider.cs" />
+    <Compile Include="Physics\CollisionEventArgs.cs" />
+    <Compile Include="Physics\DefaultCollisionResolver.cs" />
+    <Compile Include="Physics\DynamicBody.cs" />
+    <Compile Include="IBoundable.cs" />
+    <Compile Include="Physics\Gravity.cs" />
+    <Compile Include="Physics\ICollisionResolver.cs" />
+    <Compile Include="Physics\ICollisionBasedPhysicsModule.cs" />
+    <Compile Include="Physics\LineCollider.cs" />
+    <Compile Include="Physics\PhysicsMaterial.cs" />
+    <Compile Include="Physics\PhysicsModule.cs" />
+    <Compile Include="Physics\PolygonCollider.cs" />
+    <Compile Include="Physics\Projection.cs" />
+    <Compile Include="Physics\SimplePhysicsModule.cs" />
+    <Compile Include="QuadTree.cs" />
+    <Compile Include="Physics\LineSegment.cs" />
+    <Compile Include="Physics\RaycastHit.cs" />
+    <Compile Include="Physics\RectangleCollider.cs" />
+    <Compile Include="Rendering\Sprite.cs" />
+    <Compile Include="Rendering\SpriteAnimation.cs" />
+    <Compile Include="Rendering\SpriteAnimationStep.cs" />
+    <Compile Include="Rendering\SpriteAnimator.cs" />
+    <Compile Include="Rendering\SpriteRenderer.cs" />
+    <Compile Include="Rendering\Font.cs" />
+    <Compile Include="Rendering\TextRenderer.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="CollectionChangedEventArgs.cs" />
+    <Compile Include="FixedTimeStepModule.cs" />
+    <Compile Include="FuncExtensions.cs" />
+    <Compile Include="ICamera.cs" />
+    <Compile Include="IDrawableComponent.cs" />
+    <Compile Include="IUpdateableComponentAsync.cs" />
+    <Compile Include="IUpdateableComponent.cs" />
+    <Compile Include="Layers.cs" />
+    <Compile Include="MatrixExtensions.cs" />
+    <Compile Include="OffsetType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseComponent.cs" />
+    <Compile Include="MacabreGame.cs" />
+    <Compile Include="EventExtensions.cs" />
+    <Compile Include="Rotation.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="Scene.cs" />
+    <Compile Include="FilterSortCollection.cs" />
+    <Compile Include="FilterCollection.cs" />
+    <Compile Include="Transform.cs" />
+    <Compile Include="ValueChangedEventArgs.cs" />
+    <Compile Include="VectorExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets" Condition="Exists('..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\MonoGame.Framework.DesktopGL.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

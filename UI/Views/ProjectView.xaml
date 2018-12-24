@@ -1,0 +1,119 @@
+﻿<UserControl x:Class="Macabre2D.UI.Views.ProjectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
+             xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Grid.Column="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".4*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".6*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Name:" />
+
+            <TextBox Grid.Row="0"
+                     Grid.Column="1"
+                     VerticalAlignment="Center"
+                     Text="{Binding ProjectName, ValidatesOnDataErrors=True}" />
+
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Startup Scene:" />
+
+            <ComboBox Grid.Row="1"
+                      Grid.Column="1"
+                      VerticalAlignment="Center"
+                      ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
+                      SelectedItem="{Binding SelectedStartUpSceneAsset}" />
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Pixels per Unit:" />
+
+            <valueEditors:IntEditor Grid.Row="2"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Value="{Binding PixelsPerUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="3"
+                       Grid.Column="0"
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Fallback Background:" />
+
+            <valueEditors:ColorEditor Grid.Row="3"
+                                      Grid.Column="1"
+                                      VerticalAlignment="Center"
+                                      Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <Separator Grid.Row="1" />
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal">
+            <Button Content="Add"
+                    Command="{Binding AddAssetCommand}"
+                    ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item." />
+            <!--<Button Content="Remove"
+                    Command="{Binding RemoveAssetCommand}"
+                    ToolTip="Removes the selected asset from the tree, including all children if the item is a folder." />-->
+        </StackPanel>
+
+        <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"
+                               Grid.Row="3"
+                               RootAsset="{Binding ProjectService.CurrentProject.AssetFolder}"
+                               AssetDoubleClickedCommand="{Binding OpenSceneCommand}"
+                               SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+
+        <GridSplitter Grid.Row="4"
+                      Style="{StaticResource HorizontalGridSplitter}" />
+
+        <ScrollViewer Grid.Row="5"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible">
+            <controls:AssetEditorControl Asset="{Binding SelectedAsset}" />
+            <!--<Grid>
+                <controls:ImageAssetControl Asset="{Binding SelectedImageAsset}"
+                                            Visibility="{Binding SelectedImageAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
+
+                <controls:SpriteViewer Sprite="{Binding SelectedSpriteWrapper}"
+                                       Visibility="{Binding SelectedSpriteWrapper, Converter={StaticResource _nullToVisibilityConverter}}" />
+
+                <controls:SpriteAnimationAssetControl Asset="{Binding SelectedSpriteAnimationAsset}"
+                                                      Visibility="{Binding SelectedSpriteAnimationAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
+
+                <controls:FontAssetControl Asset="{Binding SelectedFontAsset}"
+                                           Visibility="{Binding SelectedFontAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
+            </Grid>-->
+        </ScrollViewer>
+    </Grid>
+</UserControl>

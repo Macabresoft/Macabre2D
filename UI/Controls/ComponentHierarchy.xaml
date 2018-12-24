@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Macabre2D.UI.Controls.ComponentHierarchy"
+             x:Name="_componentHierarchy"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Models.FrameworkWrappers;assembly=Macabre2D.UI.Models"
+             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
+    <UserControl.Resources>
+        <converters:ComponentParentToCollectionConverter x:Key="_componentParentToCollectionConverter" />
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=_componentHierarchy}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Content="Add"
+                    Command="{Binding AddComponentCommand}"
+                    ToolTip="Adds a component under the currently selected item." />
+            <Button Content="Remove"
+                    Command="{Binding RemoveComponentCommand}"
+                    ToolTip="Removes the selected component from the tree, including all children." />
+        </StackPanel>
+
+        <TreeView Grid.Row="1"
+                  x:Name="_treeView"
+                  AllowDrop="True"
+                  PreviewMouseLeftButtonDown="TreeView_MouseDown"
+                  PreviewMouseMove="TreeView_MouseMove"
+                  Drop="TreeView_Drop"
+                  DragEnter="TreeView_DragEnter"
+                  ItemsSource="{Binding Root, Converter={StaticResource _componentParentToCollectionConverter}}"
+                  SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource MetroTreeViewItem}">
+                    <Setter Property="IsExpanded"
+                            Value="True" />
+                    <EventSetter Event="MouseDoubleClick" Handler="TreeItem_MouseDoubleClick" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type frameworkWrappers:ComponentWrapper}"
+                                          ItemsSource="{Binding Children}">
+                    <Grid>
+                        <TextBlock x:Name="_treeViewItemText"
+                                   Text="{Binding Path=Name}"
+                                   MouseLeftButtonDown="TreeItem_MouseLeftButtonDown" />
+                        <TextBox x:Name="_editableTextBox"
+                                 Text="{Binding Path=Name}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 HorizontalAlignment="Stretch"
+                                 IsVisibleChanged="TreeItem_IsVisibleChanged"
+                                 KeyDown="TreeItem_KeyDown"
+                                 LostFocus="TreeItem_LostFocus"
+                                 Margin="-1,1"
+                                 Visibility="Hidden" />
+                    </Grid>
+                    <HierarchicalDataTemplate.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsEditing, ElementName=_componentHierarchy}"
+                                           Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="_editableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsEditing, ElementName=_componentHierarchy}"
+                                           Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="_treeViewItemText"
+                                    Property="Visibility"
+                                    Value="Collapsed" />
+                        </MultiDataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Grid>
+</UserControl>
