@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Macabre2D.UI.Controls.AssetEditors.SpriteWrapperEditor"
+             x:Name="_spriteWrapperEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
+             xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
+    <Grid DataContext="{Binding ElementName=_spriteWrapperEditor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="Name"
+                   VerticalAlignment="Center" />
+
+        <valueEditors:StringEditor Grid.Row="0"
+                                   Grid.Column="1"
+                                   Value="{Binding SpriteWrapper.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="Location"
+                   VerticalAlignment="Center" />
+
+        <valueEditors:PointEditor Grid.Row="1"
+                                  Grid.Column="1"
+                                  MaxXValue="{Binding ImageAsset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  MaxYValue="{Binding ImageAsset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  MinXValue="0"
+                                  MinYValue="0"
+                                  Value="{Binding SpriteWrapper.Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Row="2"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="Size"
+                   VerticalAlignment="Center" />
+
+        <valueEditors:PointEditor Grid.Row="2"
+                                  Grid.Column="1"
+                                  MaxXValue="{Binding ImageAsset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  MaxYValue="{Binding ImageAsset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  MinXValue="1"
+                                  MinYValue="1"
+                                  Value="{Binding SpriteWrapper.Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <controls:SpriteViewer Grid.RowSpan="4"
+                               Grid.Column="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"
+                               Margin="{StaticResource StandardMarginAll}"
+                               Sprite="{Binding SpriteWrapper}" />
+    </Grid>
+</UserControl>

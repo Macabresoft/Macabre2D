@@ -173,6 +173,9 @@
     <Compile Include="AssetEditorControl.xaml.cs">
       <DependentUpon>AssetEditorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AssetEditors\SpriteWrapperEditor.xaml.cs">
+      <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
     <Compile Include="SceneEditing\SelectionDrawer.cs" />
     <Compile Include="ValueEditors\AudioClipEditor.xaml.cs">
@@ -273,6 +276,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AssetEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AssetEditors\SpriteWrapperEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

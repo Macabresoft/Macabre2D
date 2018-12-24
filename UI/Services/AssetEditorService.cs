@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Services {
 
-    using Macabre2D.UI.Controls;
     using Macabre2D.UI.Controls.AssetEditors;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
@@ -17,8 +16,9 @@
                 };
             }
             else if (asset is SpriteWrapper spriteWrapper) {
-                editor = new SpriteViewer {
-                    Sprite = spriteWrapper
+                editor = new SpriteWrapperEditor {
+                    ImageAsset = spriteWrapper.ImageAsset,
+                    SpriteWrapper = spriteWrapper
                 };
             }
             else if (asset is SpriteAnimationAsset spriteAnimation) {

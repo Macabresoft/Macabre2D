@@ -2,7 +2,7 @@
              x:Name="_imageAssetControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabre2D.UI.Controls"
+             xmlns:local="clr-namespace:Macabre2D.UI.Controls.AssetEditors"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
     <UserControl.Resources>
@@ -48,65 +48,9 @@
                Source="{Binding Asset, Converter={StaticResource _imageAssetToBitmapImageConverter}}"
                Visibility="{Binding SelectedSprite, Converter={StaticResource _inverseNullToVisibilityConverter}}" />
 
-        <Grid Grid.Row="3"
-              Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       FontWeight="Bold"
-                       Text="Name"
-                       VerticalAlignment="Center" />
-
-            <valueEditors:StringEditor Grid.Row="0"
-                                       Grid.Column="1"
-                                       Value="{Binding SelectedSprite.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       FontWeight="Bold"
-                       Text="Location"
-                       VerticalAlignment="Center" />
-
-            <valueEditors:PointEditor Grid.Row="1"
-                                      Grid.Column="1"
-                                      MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                      MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                      MinXValue="0"
-                                      MinYValue="0"
-                                      Value="{Binding SelectedSprite.Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <TextBlock Grid.Row="2"
-                       Grid.Column="0"
-                       FontWeight="Bold"
-                       Text="Size"
-                       VerticalAlignment="Center" />
-
-            <valueEditors:PointEditor Grid.Row="2"
-                                      Grid.Column="1"
-                                      MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                      MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                      MinXValue="1"
-                                      MinYValue="1"
-                                      Value="{Binding SelectedSprite.Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <local:SpriteViewer Grid.RowSpan="4"
-                                Grid.Column="2"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                Margin="{StaticResource StandardMarginAll}"
-                                Sprite="{Binding SelectedSprite}" />
-        </Grid>
+        <local:SpriteWrapperEditor Grid.Row="3"
+                                   ImageAsset="{Binding Asset}"
+                                   SpriteWrapper="{Binding SelectedSprite}"
+                                   Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}" />
     </Grid>
 </UserControl>
