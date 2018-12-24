@@ -104,6 +104,7 @@
     <Compile Include="InverseBoolConverter.cs" />
     <Compile Include="InverseBoolToVisibilityConverter.cs" />
     <Compile Include="EqualityToVisibilityConverter.cs" />
+    <Compile Include="InverseNullToVisibilityConverter.cs" />
     <Compile Include="NullToBoolConverter.cs" />
     <Compile Include="NullToVisibilityConverter.cs" />
     <Compile Include="ObjectToTypeNameConverter.cs" />

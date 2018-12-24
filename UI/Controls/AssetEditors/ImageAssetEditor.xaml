@@ -4,10 +4,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
-             xmlns:converts="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
+             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
     <UserControl.Resources>
-        <converts:ImageAssetToBitmapImageConverter x:Key="_imageAssetToBitmapImageConverter" />
-        <converts:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
+        <converters:ImageAssetToBitmapImageConverter x:Key="_imageAssetToBitmapImageConverter" />
+        <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
+        <converters:InverseNullToVisibilityConverter x:Key="_inverseNullToVisibilityConverter" />
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=_imageAssetControl}">
         <Grid.RowDefinitions>
@@ -42,79 +43,70 @@
         <GridSplitter Grid.Row="2"
                       Style="{StaticResource HorizontalGridSplitter}" />
 
-        <Grid Grid.Row="3">
+        <Image Grid.Row="3"
+               Stretch="Uniform"
+               Source="{Binding Asset, Converter={StaticResource _imageAssetToBitmapImageConverter}}"
+               Visibility="{Binding SelectedSprite, Converter={StaticResource _inverseNullToVisibilityConverter}}" />
+
+        <Grid Grid.Row="3"
+              Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Image Grid.Column="0"
-                   Stretch="Uniform"
-                   Source="{Binding Asset, Converter={StaticResource _imageAssetToBitmapImageConverter}}" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <GridSplitter Grid.Column="1"
-                          Style="{StaticResource VerticalGridSplitter}" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       FontWeight="Bold"
+                       Text="Name"
+                       VerticalAlignment="Center" />
 
-            <Grid Grid.Column="2"
-                  Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <valueEditors:StringEditor Grid.Row="0"
+                                       Grid.Column="1"
+                                       Value="{Binding SelectedSprite.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       FontWeight="Bold"
+                       Text="Location"
+                       VerticalAlignment="Center" />
 
-                <TextBlock Grid.Row="0"
-                           Grid.Column="0"
-                           FontWeight="Bold"
-                           Text="Name"
-                           VerticalAlignment="Center" />
+            <valueEditors:PointEditor Grid.Row="1"
+                                      Grid.Column="1"
+                                      MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      MinXValue="0"
+                                      MinYValue="0"
+                                      Value="{Binding SelectedSprite.Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <valueEditors:StringEditor Grid.Row="0"
-                                           Grid.Column="1"
-                                           Value="{Binding SelectedSprite.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       FontWeight="Bold"
+                       Text="Size"
+                       VerticalAlignment="Center" />
 
-                <TextBlock Grid.Row="1"
-                           Grid.Column="0"
-                           FontWeight="Bold"
-                           Text="Location"
-                           VerticalAlignment="Center" />
+            <valueEditors:PointEditor Grid.Row="2"
+                                      Grid.Column="1"
+                                      MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      MinXValue="1"
+                                      MinYValue="1"
+                                      Value="{Binding SelectedSprite.Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <valueEditors:PointEditor Grid.Row="1"
-                                          Grid.Column="1"
-                                          MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                          MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                          MinXValue="0"
-                                          MinYValue="0"
-                                          Value="{Binding SelectedSprite.Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock Grid.Row="2"
-                           Grid.Column="0"
-                           FontWeight="Bold"
-                           Text="Size"
-                           VerticalAlignment="Center" />
-
-                <valueEditors:PointEditor Grid.Row="2"
-                                          Grid.Column="1"
-                                          MaxXValue="{Binding Asset.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                          MaxYValue="{Binding Asset.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                          MinXValue="1"
-                                          MinYValue="1"
-                                          Value="{Binding SelectedSprite.Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <local:SpriteViewer Grid.Row="3"
-                                    Grid.ColumnSpan="2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Margin="{StaticResource StandardMarginAll}"
-                                    Sprite="{Binding SelectedSprite}" />
-            </Grid>
+            <local:SpriteViewer Grid.RowSpan="4"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Margin="{StaticResource StandardMarginAll}"
+                                Sprite="{Binding SelectedSprite}" />
         </Grid>
     </Grid>
 </UserControl>
