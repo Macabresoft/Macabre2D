@@ -28,24 +28,24 @@
 
         public IconToggleButton() {
             this.ToggleCommand = new RelayCommand(this.Toggle);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public Path CollapsedIcon {
-            get { return (Path)GetValue(CollapsedIconProperty); }
-            set { SetValue(CollapsedIconProperty, value); }
+            get { return (Path)this.GetValue(CollapsedIconProperty); }
+            set { this.SetValue(CollapsedIconProperty, value); }
         }
 
         public bool IsToggled {
-            get { return (bool)GetValue(IsToggledProperty); }
-            set { SetValue(IsToggledProperty, value); }
+            get { return (bool)this.GetValue(IsToggledProperty); }
+            set { this.SetValue(IsToggledProperty, value); }
         }
 
         public ICommand ToggleCommand { get; }
 
         public Path UncollapsedIcon {
-            get { return (Path)GetValue(UncollapsedIconProperty); }
-            set { SetValue(UncollapsedIconProperty, value); }
+            get { return (Path)this.GetValue(UncollapsedIconProperty); }
+            set { this.SetValue(UncollapsedIconProperty, value); }
         }
 
         private void Toggle() {

@@ -12,12 +12,12 @@
             Width="24"
             Height="24">
         <Grid>
-            <local:Icon VectorPath="{StaticResource ChevronDownIcon}"
+            <local:Icon VectorPath="{Binding UncollapsedIcon, ElementName=_iconToggleButton}"
                         Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}"
                         Padding="0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center" />
-            <local:Icon VectorPath="{StaticResource ChevronLeftIcon}"
+            <local:Icon VectorPath="{Binding CollapsedIcon, ElementName=_iconToggleButton}"
                         Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
                         Padding="0"
                         VerticalAlignment="Center"
