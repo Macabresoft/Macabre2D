@@ -1,9 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls {
 
-    using GalaSoft.MvvmLight.CommandWpf;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Input;
     using System.Windows.Shapes;
 
     public partial class IconToggleButton : UserControl {
@@ -27,7 +25,6 @@
             new PropertyMetadata());
 
         public IconToggleButton() {
-            this.ToggleCommand = new RelayCommand(this.Toggle);
             this.InitializeComponent();
         }
 
@@ -41,15 +38,9 @@
             set { this.SetValue(IsToggledProperty, value); }
         }
 
-        public ICommand ToggleCommand { get; }
-
         public Path UncollapsedIcon {
             get { return (Path)this.GetValue(UncollapsedIconProperty); }
             set { this.SetValue(UncollapsedIconProperty, value); }
-        }
-
-        private void Toggle() {
-            this.IsToggled = !this.IsToggled;
         }
     }
 }
