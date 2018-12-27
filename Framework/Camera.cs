@@ -28,6 +28,9 @@
         public event EventHandler RenderOrderChanged;
 
         /// <inheritdoc/>
+        public event EventHandler ViewHeightChanged;
+
+        /// <inheritdoc/>
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
@@ -71,6 +74,7 @@
                     this._viewHeight = value;
                     this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
                     this._matrix = this._matrix.Reset(this.CreateViewMatrix);
+                    this.ViewHeightChanged.SafeInvoke(this);
                 }
             }
         }

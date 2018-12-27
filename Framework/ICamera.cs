@@ -19,6 +19,11 @@
         event EventHandler RenderOrderChanged;
 
         /// <summary>
+        /// Occurs when [view height changed].
+        /// </summary>
+        event EventHandler ViewHeightChanged;
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="ICamera"/> is enabled.
         /// </summary>
         /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
