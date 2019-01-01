@@ -144,7 +144,7 @@
                 var viewPort = game.GraphicsDevice.Viewport;
                 var ratio = this.ViewHeight / viewPort.Height;
                 var halfHeight = this.ViewHeight * 0.5f;
-                var halfWidth = ratio * viewPort.Width * 0.5f;
+                var halfWidth = this.GetViewWidth(game.GraphicsDevice.Viewport) * 0.5f;
 
                 var points = new List<Vector2> {
                     this.GetWorldTransform(new Vector2(-halfWidth, -halfHeight)).Position,
@@ -182,12 +182,16 @@
 
         private float GetViewWidth() {
             var result = 0f;
-            if (this._scene?.Game is var game && game.GameSettings is var gameSettings) {
-                var ratio = this.ViewHeight / game.GraphicsDevice.Viewport.Height;
-                result = game.GraphicsDevice.Viewport.Width * ratio;
+            if (this._scene?.Game is var game) {
+                result = this.GetViewWidth(game.GraphicsDevice.Viewport);
             }
 
             return result;
+        }
+
+        private float GetViewWidth(Viewport viewport) {
+            var ratio = this.ViewHeight / viewport.Height;
+            return viewport.Width * ratio;
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
