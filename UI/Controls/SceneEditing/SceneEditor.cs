@@ -84,7 +84,8 @@
             if (this.CurrentScene != null) {
                 this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
                 this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
-                this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, RasterizerState.CullClockwise, null, this._cameraWrapper.Camera.ViewMatrix);
+                this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullClockwise, null, this._cameraWrapper.Camera.ViewMatrix);
+                this._cameraWrapper.Draw(gameTime);
                 this._selectionDrawer.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
                 this.CurrentScene.Game.SpriteBatch.End();
             }

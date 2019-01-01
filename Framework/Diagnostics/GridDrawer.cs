@@ -10,6 +10,8 @@
     /// <seealso cref="Macabre2D.Framework.Diagnostics.BaseDrawer"/>
     public sealed class GridDrawer : BaseDrawer {
         private Camera _camera;
+        private int _columnWidth = 1;
+        private int _rowHeight = 1;
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
@@ -40,13 +42,37 @@
         /// Gets or sets the width of the column.
         /// </summary>
         /// <value>The width of the column.</value>
-        public int ColumnWidth { get; set; }
+        public int ColumnWidth {
+            get {
+                return this._columnWidth;
+            }
+
+            set {
+                if (value <= 0) {
+                    value = 1;
+                }
+
+                this._columnWidth = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the height of the row.
         /// </summary>
         /// <value>The height of the row.</value>
-        public int RowHeight { get; set; }
+        public int RowHeight {
+            get {
+                return this._rowHeight;
+            }
+
+            set {
+                if (value <= 0) {
+                    value = 1;
+                }
+
+                this._rowHeight = value;
+            }
+        }
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, float viewHeight) {

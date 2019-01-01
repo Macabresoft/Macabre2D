@@ -564,7 +564,7 @@
             var potentialDrawables = this._drawTree.RetrievePotentialCollisions(camera.BoundingArea);
 
             if (potentialDrawables.Any()) {
-                this.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, RasterizerState.CullClockwise, null, camera.ViewMatrix);
+                this.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullClockwise, null, camera.ViewMatrix);
 
                 foreach (var drawable in potentialDrawables) {
                     // As long as it doesn't equal Layers.None, at least one of the layers defined on

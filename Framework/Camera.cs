@@ -142,9 +142,9 @@
         private BoundingArea CreateBoundingArea() {
             if (this._scene?.Game is IGame game) {
                 var viewPort = game.GraphicsDevice.Viewport;
-                var ratio = viewPort.Width / viewPort.Height;
+                var ratio = this.ViewHeight / viewPort.Height;
                 var halfHeight = this.ViewHeight * 0.5f;
-                var halfWidth = ratio * halfHeight;
+                var halfWidth = ratio * viewPort.Width * 0.5f;
 
                 var points = new List<Vector2> {
                     this.GetWorldTransform(new Vector2(-halfWidth, -halfHeight)).Position,

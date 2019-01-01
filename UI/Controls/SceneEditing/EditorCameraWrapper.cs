@@ -1,24 +1,27 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Diagnostics;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using MonoGame.Framework.WpfInterop.Input;
 
-    public sealed class EditorCameraWrapper : NotifyPropertyChanged {
+    internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly SceneEditor _sceneEditor;
         private readonly ISceneService _sceneService;
         private Camera _camera;
+        private GridDrawer _gridDrawer;
+
         private int _previousScrollWheelValue = 0;
 
-        public EditorCameraWrapper(SceneEditor sceneEditor) {
+        internal EditorCameraWrapper(SceneEditor sceneEditor) {
             this._sceneEditor = sceneEditor;
             this._sceneService = ViewContainer.Resolve<ISceneService>();
         }
 
-        public Camera Camera {
+        internal Camera Camera {
             get {
                 return this._camera;
             }
@@ -26,18 +29,30 @@
             set {
                 if (this.Set(ref this._camera, value) && this._camera != null && this._sceneEditor.CurrentScene != null && this._sceneEditor.IsInitialized) {
                     this._camera.Initialize(this._sceneEditor.CurrentScene);
+                    this._gridDrawer = new GridDrawer() {
+                        Camera = this._camera,
+                        Color = new Color(255, 255, 255, 100),
+                        LineThickness = 1f,
+                        UseDynamicLineThickness = true
+                    };
+
+                    this._gridDrawer.Initialize(this._sceneEditor.CurrentScene);
                 }
             }
         }
 
-        public void RefreshCamera() {
+        internal void Draw(GameTime gameTime) {
+            this._gridDrawer.Draw(gameTime, this._camera.ViewHeight);
+        }
+
+        internal void RefreshCamera() {
             this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera ?? new Camera();
             if (this._sceneEditor.IsInitialized && this._sceneEditor.CurrentScene != null) {
                 this.Camera.Initialize(this._sceneEditor.CurrentScene);
             }
         }
 
-        public void Update(GameTime gameTime, WpfMouse mouse, WpfKeyboard keyboard) {
+        internal void Update(GameTime gameTime, WpfMouse mouse, WpfKeyboard keyboard) {
             var mouseState = mouse.GetState();
             if (this.IsMouseInsideEditor(mouseState)) {
                 if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
