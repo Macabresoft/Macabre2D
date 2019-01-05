@@ -8,17 +8,16 @@
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
     </UserControl.Resources>
-    <ToggleButton Command="{Binding ToggleCommand, Mode=OneWay, ElementName=_iconToggleButton}"
-                  IsChecked="{Binding IsToggled, ElementName=_iconToggleButton}"
+    <ToggleButton IsChecked="{Binding IsToggled, ElementName=_iconToggleButton}"
                   Width="24"
                   Height="24">
         <Grid>
-            <local:Icon VectorPath="{Binding UncollapsedIcon, ElementName=_iconToggleButton}"
+            <local:Icon VectorPath="{Binding IsToggledIcon, ElementName=_iconToggleButton}"
                         Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}"
                         Padding="0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center" />
-            <local:Icon VectorPath="{Binding CollapsedIcon, ElementName=_iconToggleButton}"
+            <local:Icon VectorPath="{Binding IsNotToggledIcon, ElementName=_iconToggleButton}"
                         Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
                         Padding="0"
                         VerticalAlignment="Center"

@@ -45,6 +45,7 @@
         private void LoadMainWindow() {
             this._mainWindow = this._container.Resolve<MainWindow>();
             var settingsManager = this._container.Resolve<SettingsManager>();
+            settingsManager.Initialize();
             var busyService = this._container.Resolve<IBusyService>();
             busyService.PerformTask(settingsManager.LoadLastProjectOpened());
 

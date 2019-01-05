@@ -38,7 +38,12 @@
     <Thickness x:Key="StandardMarginTB"
                Top="{StaticResource StandardMarginSize}"
                Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginTRB"
+               Top="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
     <Thickness x:Key="StandardMarginLTRB"
+               Left="{StaticResource StandardMarginSize}"
                Top="{StaticResource StandardMarginSize}"
                Right="{StaticResource StandardMarginSize}"
                Bottom="{StaticResource StandardMarginSize}" />
@@ -82,7 +87,12 @@
     <Thickness x:Key="DoubleMarginTB"
                Top="{StaticResource DoubleMarginSize}"
                Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginTRB"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
     <Thickness x:Key="DoubleMarginLTRB"
+               Left="{StaticResource DoubleMarginSize}"
                Top="{StaticResource DoubleMarginSize}"
                Right="{StaticResource DoubleMarginSize}"
                Bottom="{StaticResource DoubleMarginSize}" />

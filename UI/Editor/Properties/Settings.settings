@@ -8,5 +8,8 @@
     <Setting Name="LastTab" Type="System.String" Scope="User">
       <Value Profile="(Default)">Project</Value>
     </Setting>
+    <Setting Name="ShowGrid" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

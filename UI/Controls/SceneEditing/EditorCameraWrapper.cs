@@ -45,14 +45,16 @@
         }
 
         internal void Draw(GameTime gameTime) {
-            if (this._editorGame.CurrentScene != null) {
-                var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
-                this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
-                this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
-            }
+            if (this._editorGame.ShowGrid) {
+                if (this._editorGame.CurrentScene != null) {
+                    var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+                    this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
+                    this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
+                }
 
-            this._primaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
-            this._secondaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+                this._primaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+                this._secondaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+            }
         }
 
         internal void Initialize() {

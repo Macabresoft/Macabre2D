@@ -6,31 +6,31 @@
 
     public partial class IconToggleButton : UserControl {
 
-        public static readonly DependencyProperty CollapsedIconProperty = DependencyProperty.Register(
-            nameof(CollapsedIcon),
+        public static readonly DependencyProperty IsNotToggledIconProperty = DependencyProperty.Register(
+            nameof(IsNotToggledIcon),
+            typeof(Path),
+            typeof(IconToggleButton),
+            new PropertyMetadata());
+
+        public static readonly DependencyProperty IsToggledIconProperty = DependencyProperty.Register(
+            nameof(IsToggledIcon),
             typeof(Path),
             typeof(IconToggleButton),
             new PropertyMetadata());
 
         public static readonly DependencyProperty IsToggledProperty = DependencyProperty.Register(
-            nameof(IsToggled),
+                    nameof(IsToggled),
             typeof(bool),
             typeof(IconToggleButton),
             new PropertyMetadata(false));
-
-        public static readonly DependencyProperty UncollapsedIconProperty = DependencyProperty.Register(
-            nameof(UncollapsedIcon),
-            typeof(Path),
-            typeof(IconToggleButton),
-            new PropertyMetadata());
 
         public IconToggleButton() {
             this.InitializeComponent();
         }
 
-        public Path CollapsedIcon {
-            get { return (Path)this.GetValue(CollapsedIconProperty); }
-            set { this.SetValue(CollapsedIconProperty, value); }
+        public Path IsNotToggledIcon {
+            get { return (Path)this.GetValue(IsNotToggledIconProperty); }
+            set { this.SetValue(IsNotToggledIconProperty, value); }
         }
 
         public bool IsToggled {
@@ -38,9 +38,9 @@
             set { this.SetValue(IsToggledProperty, value); }
         }
 
-        public Path UncollapsedIcon {
-            get { return (Path)this.GetValue(UncollapsedIconProperty); }
-            set { this.SetValue(UncollapsedIconProperty, value); }
+        public Path IsToggledIcon {
+            get { return (Path)this.GetValue(IsToggledIconProperty); }
+            set { this.SetValue(IsToggledIconProperty, value); }
         }
     }
 }

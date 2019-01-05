@@ -40,9 +40,9 @@
 
         <local:IconToggleButton Grid.Row="1"
                                 Grid.Column="2"
-                                CollapsedIcon="{StaticResource ChevronLeftIcon}"
+                                IsNotToggledIcon="{StaticResource ChevronLeftIcon}"
                                 IsToggled="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _inverseBoolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                UncollapsedIcon="{StaticResource ChevronDownIcon}" />
+                                IsToggledIcon="{StaticResource ChevronDownIcon}" />
 
         <ContentControl Grid.Row="2"
                         Grid.ColumnSpan="3"

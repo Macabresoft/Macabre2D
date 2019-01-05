@@ -5,6 +5,8 @@
     public interface IMonoGameService {
         DependencyObject EditorGame { get; }
 
+        bool ShowGrid { get; set; }
+
         void ResetCamera();
     }
 }

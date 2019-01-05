@@ -58,6 +58,7 @@
             }
         }
 
+        public bool ShowGrid { get; internal set; }
         public SpriteBatch SpriteBatch { get; private set; }
 
         public void FocusComponent(BaseComponent component) {

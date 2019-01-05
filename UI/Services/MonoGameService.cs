@@ -1,15 +1,17 @@
 ﻿namespace Macabre2D.UI.Services {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Controls.SceneEditing;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using System.Linq;
     using System.Windows;
 
-    public sealed class MonoGameService : IMonoGameService {
+    public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
         private readonly EditorGame _editorGame;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
+        private bool _showGrid = true;
 
         public MonoGameService(EditorGame editorGame, IProjectService projectService, ISceneService sceneService) {
             this._editorGame = editorGame;
@@ -25,6 +27,17 @@
         public DependencyObject EditorGame {
             get {
                 return this._editorGame;
+            }
+        }
+
+        public bool ShowGrid {
+            get {
+                return this._showGrid;
+            }
+
+            set {
+                this.Set(ref this._showGrid, value);
+                this._editorGame.ShowGrid = this._showGrid;
             }
         }
 

@@ -8,16 +8,22 @@
     public sealed class SettingsManager {
         private const string LastProjectSettingName = "LastProject";
 
+        private readonly IMonoGameService _monoGameService;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
 
-        public SettingsManager(IProjectService projectService, ISceneService sceneService) {
+        public SettingsManager(IMonoGameService monoGameService, IProjectService projectService, ISceneService sceneService) {
+            this._monoGameService = monoGameService;
             this._projectService = projectService;
             this._sceneService = sceneService;
         }
 
         public string GetLastOpenTabName() {
             return Settings.Default.LastTab;
+        }
+
+        public void Initialize() {
+            this._monoGameService.ShowGrid = Settings.Default.ShowGrid;
         }
 
         public async Task LoadLastProjectOpened() {
@@ -38,6 +44,7 @@
             }
 
             Settings.Default.LastTab = openedTabName;
+            Settings.Default.ShowGrid = this._monoGameService.ShowGrid;
             Settings.Default.Save();
         }
     }
