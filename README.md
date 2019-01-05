@@ -10,8 +10,8 @@ Everyone who has ever contributed to [MonoGame](https://github.com/MonoGame/Mono
 
 Jan Karger ([@punker76](https://twitter.com/punker76)), Brendan Forster ([@shiftkey](https://twitter.com/shiftkey)), Dennis Daume ([@flagbug](https://twitter.com/flagbug)), and Alex Mitchell ([@Amrykid](https://twitter.com/Amrykid)) for maintaining [MahApps](https://mahapps.com/). MahApps gives Macabre2D the flat, Windows/Metro style that it has.
 
-Marc Stan ([marcstan.net](https://marcstan.net)) for his work on [MonoGame.Framework.WpfInterop](https://github.com/MarcStan/MonoGame.Framework.WpfInterop) which allows the display of a MonoGame scene in a WPF application.
+Marc Stan ([marcstan.net](https://marcstan.net)) for their work on [MonoGame.Framework.WpfInterop](https://github.com/MarcStan/MonoGame.Framework.WpfInterop) which allows the display of a MonoGame scene in a WPF application.
 
-Austin Andrews ([@Templarian](https://twitter.com/Templarian)) for his efforts creating great icons for the Material Design Icons project.
+Austin Andrews ([@Templarian](https://twitter.com/Templarian)) for their efforts creating great icons for the Material Design Icons project.
 
 Google for [material design icons](https://github.com/google/material-design-icons).

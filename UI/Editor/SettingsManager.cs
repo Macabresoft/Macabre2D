@@ -24,6 +24,7 @@
 
         public void Initialize() {
             this._monoGameService.ShowGrid = Settings.Default.ShowGrid;
+            this._monoGameService.ShowSelection = Settings.Default.ShowSelection;
         }
 
         public async Task LoadLastProjectOpened() {
@@ -45,6 +46,7 @@
 
             Settings.Default.LastTab = openedTabName;
             Settings.Default.ShowGrid = this._monoGameService.ShowGrid;
+            Settings.Default.ShowSelection = this._monoGameService.ShowSelection;
             Settings.Default.Save();
         }
     }

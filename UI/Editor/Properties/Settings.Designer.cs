@@ -58,5 +58,17 @@ namespace Macabre2D.UI.Editor.Properties {
                 this["ShowGrid"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowSelection {
+            get {
+                return ((bool)(this["ShowSelection"]));
+            }
+            set {
+                this["ShowSelection"] = value;
+            }
+        }
     }
 }

@@ -59,6 +59,9 @@
         }
 
         public bool ShowGrid { get; internal set; }
+
+        public bool ShowSelection { get; internal set; }
+
         public SpriteBatch SpriteBatch { get; private set; }
 
         public void FocusComponent(BaseComponent component) {
@@ -87,7 +90,11 @@
                 this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
                 this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullClockwise, null, this._cameraWrapper.Camera.ViewMatrix);
                 this._cameraWrapper.Draw(gameTime);
-                this._selectionDrawer.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
+
+                if (this.ShowSelection) {
+                    this._selectionDrawer.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
+                }
+
                 this.CurrentScene.Game.SpriteBatch.End();
             }
             else if (this.GameSettings != null) {

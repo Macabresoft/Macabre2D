@@ -7,6 +7,8 @@
 
         bool ShowGrid { get; set; }
 
+        bool ShowSelection { get; set; }
+
         void ResetCamera();
     }
 }

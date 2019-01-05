@@ -7,5 +7,6 @@
                     HorizontalAlignment="Center"
                     Height="24"
                     Width="24"
-                    Margin="0" />
+                    Margin="0"
+                    SnapsToDevicePixels="True" />
 </UserControl>

@@ -12,6 +12,7 @@
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
         private bool _showGrid = true;
+        private bool _showSelection = true;
 
         public MonoGameService(EditorGame editorGame, IProjectService projectService, ISceneService sceneService) {
             this._editorGame = editorGame;
@@ -38,6 +39,17 @@
             set {
                 this.Set(ref this._showGrid, value);
                 this._editorGame.ShowGrid = this._showGrid;
+            }
+        }
+
+        public bool ShowSelection {
+            get {
+                return this._showSelection;
+            }
+
+            set {
+                this.Set(ref this._showSelection, value);
+                this._editorGame.ShowSelection = this._showSelection;
             }
         }
 

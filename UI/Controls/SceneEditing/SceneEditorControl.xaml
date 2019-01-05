@@ -16,6 +16,12 @@
                                        IsNotToggledIcon="{StaticResource GridOffIcon}"
                                        Margin="{StaticResource StandardMarginRB}"
                                        ToolTip="Toggle the grid within the scene editor." />
+
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsToggledIcon="{StaticResource SelectionOnIcon}"
+                                       IsNotToggledIcon="{StaticResource SelectionOffIcon}"
+                                       Margin="{StaticResource StandardMarginLRB}"
+                                       ToolTip="Toggle highlighting the current selected component's collider and bounding area in the scene editor." />
         </StackPanel>
 
         <ContentControl Grid.Row="1"
