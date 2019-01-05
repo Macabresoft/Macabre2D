@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework.Diagnostics {
 
     using Microsoft.Xna.Framework;
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -10,8 +9,8 @@
     /// <seealso cref="Macabre2D.Framework.Diagnostics.BaseDrawer"/>
     public sealed class GridDrawer : BaseDrawer {
         private Camera _camera;
-        private int _columnWidth = 1;
-        private int _rowHeight = 1;
+        private float _columnWidth = 1f;
+        private float _rowHeight = 1f;
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
@@ -42,14 +41,14 @@
         /// Gets or sets the width of the column.
         /// </summary>
         /// <value>The width of the column.</value>
-        public int ColumnWidth {
+        public float ColumnWidth {
             get {
                 return this._columnWidth;
             }
 
             set {
-                if (value <= 0) {
-                    value = 1;
+                if (value < 0f) {
+                    value = 0f;
                 }
 
                 this._columnWidth = value;
@@ -60,14 +59,14 @@
         /// Gets or sets the height of the row.
         /// </summary>
         /// <value>The height of the row.</value>
-        public int RowHeight {
+        public float RowHeight {
             get {
                 return this._rowHeight;
             }
 
             set {
-                if (value <= 0) {
-                    value = 1;
+                if (value < 0f) {
+                    value = 0f;
                 }
 
                 this._rowHeight = value;
@@ -105,7 +104,19 @@
 
         private static List<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize) {
             var result = new List<float>();
-            var currentPosition = (float)Math.Ceiling(lowerLimit);
+            var currentPosition = 0f;
+
+            if (currentPosition < lowerLimit) {
+                while (currentPosition + stepSize < lowerLimit) {
+                    currentPosition += stepSize;
+                }
+            }
+            else if (currentPosition > lowerLimit) {
+                while (currentPosition - stepSize > lowerLimit) {
+                    currentPosition -= stepSize;
+                }
+            }
+
             while (currentPosition <= upperLimit) {
                 result.Add(currentPosition);
                 currentPosition += stepSize;

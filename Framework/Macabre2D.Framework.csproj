@@ -60,6 +60,7 @@
     <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="BaseModule.cs" />
     <Compile Include="ChildAttribute.cs" />
+    <Compile Include="ColorExtensions.cs" />
     <Compile Include="Content\GameSettingsImporter.cs" />
     <Compile Include="Content\GameSettingsProcessor.cs" />
     <Compile Include="Content\GameSettingsReader.cs" />

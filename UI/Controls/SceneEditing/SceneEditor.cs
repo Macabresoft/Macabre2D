@@ -101,7 +101,7 @@
             this._mouse = new WpfMouse(this);
             this.CurrentScene?.Initialize(this);
             this._cameraWrapper.RefreshCamera();
-            this._cameraWrapper.Camera.Initialize(this.CurrentScene);
+            this._cameraWrapper.Initialize();
             this._selectionDrawer.Reinitialize();
             base.Initialize();
             this._isInitialized = true;

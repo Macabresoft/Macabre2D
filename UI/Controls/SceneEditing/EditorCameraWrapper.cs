@@ -12,9 +12,9 @@
         private readonly SceneEditor _sceneEditor;
         private readonly ISceneService _sceneService;
         private Camera _camera;
-        private GridDrawer _gridDrawer;
-
         private int _previousScrollWheelValue = 0;
+        private GridDrawer _primaryGridDrawer;
+        private GridDrawer _secondaryGridDrawer;
 
         internal EditorCameraWrapper(SceneEditor sceneEditor) {
             this._sceneEditor = sceneEditor;
@@ -27,22 +27,59 @@
             }
 
             set {
-                if (this.Set(ref this._camera, value) && this._camera != null && this._sceneEditor.CurrentScene != null && this._sceneEditor.IsInitialized) {
-                    this._camera.Initialize(this._sceneEditor.CurrentScene);
-                    this._gridDrawer = new GridDrawer() {
-                        Camera = this._camera,
-                        Color = new Color(255, 255, 255, 100),
-                        LineThickness = 1f,
-                        UseDynamicLineThickness = true
-                    };
+                var oldCamera = this._camera;
+                if (this.Set(ref this._camera, value)) {
+                    if (this._camera != null && this._sceneEditor.CurrentScene != null && this._sceneEditor.IsInitialized) {
+                        this.Initialize();
+                    }
 
-                    this._gridDrawer.Initialize(this._sceneEditor.CurrentScene);
+                    if (oldCamera != null) {
+                        oldCamera.ViewHeightChanged -= this.Camera_ViewHeightChanged;
+                    }
+
+                    if (this._camera != null) {
+                        this._camera.ViewHeightChanged += this.Camera_ViewHeightChanged;
+                    }
                 }
             }
         }
 
         internal void Draw(GameTime gameTime) {
-            this._gridDrawer.Draw(gameTime, this._camera.ViewHeight);
+            if (this._sceneEditor.CurrentScene != null) {
+                var contrastingColor = this._sceneEditor.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+                this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
+                this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
+            }
+
+            this._primaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+            this._secondaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+        }
+
+        internal void Initialize() {
+            this._camera.Initialize(this._sceneEditor.CurrentScene);
+            var gridSize = this.GetGridSize();
+            this._primaryGridDrawer = new GridDrawer() {
+                Camera = this._camera,
+                Color = new Color(255, 255, 255, 80),
+                ColumnWidth = gridSize,
+                LineThickness = 0.4f,
+                RowHeight = gridSize,
+                UseDynamicLineThickness = true
+            };
+
+            this._primaryGridDrawer.Initialize(this._sceneEditor.CurrentScene);
+
+            var smallGridSize = gridSize / 2f;
+            this._secondaryGridDrawer = new GridDrawer() {
+                Camera = this._camera,
+                Color = new Color(255, 255, 255, 40),
+                ColumnWidth = smallGridSize,
+                LineThickness = 0.3f,
+                RowHeight = smallGridSize,
+                UseDynamicLineThickness = true
+            };
+
+            this._secondaryGridDrawer.Initialize(this._sceneEditor.CurrentScene);
         }
 
         internal void RefreshCamera() {
@@ -56,7 +93,7 @@
             var mouseState = mouse.GetState();
             if (this.IsMouseInsideEditor(mouseState)) {
                 if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
-                    var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 2f;
+                    var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 5f;
 
                     var isZoomIn = scrollViewChange < 0;
                     if (isZoomIn) {
@@ -90,6 +127,29 @@
                     }
                 }
             }
+        }
+
+        private void Camera_ViewHeightChanged(object sender, System.EventArgs e) {
+            if (this._primaryGridDrawer != null) {
+                var gridSize = this.GetGridSize();
+                this._primaryGridDrawer.ColumnWidth = gridSize;
+                this._primaryGridDrawer.RowHeight = gridSize;
+
+                var smallGridSize = gridSize / 2f;
+                this._secondaryGridDrawer.ColumnWidth = smallGridSize;
+                this._secondaryGridDrawer.RowHeight = smallGridSize;
+            }
+        }
+
+        private int GetGridSize() {
+            var gridSize = 1;
+            var currentMultiple = 4;
+            while (currentMultiple < this.Camera.ViewHeight) {
+                gridSize = currentMultiple / 4;
+                currentMultiple = currentMultiple * 2;
+            }
+
+            return gridSize;
         }
 
         private bool IsMouseInsideEditor(MouseState mouseState) {
