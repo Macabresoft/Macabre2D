@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="Macabre2D.UI.Controls.SceneEditing.SceneEditorControl"
+             x:Name="_sceneEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid DataContext="{Binding ElementName=_sceneEditorControl}">
+        <ContentControl Content="{Binding MonoGameService.EditorGame}" />
+    </Grid>
+</UserControl>

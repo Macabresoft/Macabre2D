@@ -28,13 +28,11 @@
         public MainWindowViewModel(
             IBusyService busyService,
             IDialogService dialogService,
-            IMonoGameService monoGameService,
             IProjectService projectService,
             ISceneService sceneService,
             IUndoService undoService) {
             this.BusyService = busyService;
             this._dialogService = dialogService;
-            this.MonoGameService = monoGameService;
             this.ProjectService = projectService;
             this.SceneService = sceneService;
             this._undoService = undoService;
@@ -54,8 +52,6 @@
         public IBusyService BusyService { get; }
 
         public ICommand CreateProjectCommand { get; }
-
-        public IMonoGameService MonoGameService { get; }
 
         public ICommand OpenProjectCommand { get; }
 
