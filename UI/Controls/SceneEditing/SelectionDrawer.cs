@@ -9,7 +9,7 @@
     using Microsoft.Xna.Framework;
 
     public sealed class SelectionDrawer {
-        private readonly SceneEditor _sceneEditor;
+        private readonly EditorGame _editorGame;
         private readonly ISelectionService _selectionService;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
@@ -24,8 +24,8 @@
             UseDynamicLineThickness = true
         };
 
-        public SelectionDrawer(SceneEditor sceneEditor) {
-            this._sceneEditor = sceneEditor;
+        public SelectionDrawer(EditorGame editorGame) {
+            this._editorGame = editorGame;
             this._selectionService = ViewContainer.Resolve<ISelectionService>();
             this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
         }
@@ -49,8 +49,8 @@
             };
 
             this.ResetDependencies(this._selectionService.SelectedItem);
-            this._boundingAreaDrawer.Initialize(this._sceneEditor.CurrentScene);
-            this._colliderDrawer.Initialize(this._sceneEditor.CurrentScene);
+            this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
+            this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
         }
 
         private void ResetDependencies(object newValue) {

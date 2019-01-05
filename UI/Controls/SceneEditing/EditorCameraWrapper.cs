@@ -9,15 +9,15 @@
     using MonoGame.Framework.WpfInterop.Input;
 
     internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
-        private readonly SceneEditor _sceneEditor;
+        private readonly EditorGame _editorGame;
         private readonly ISceneService _sceneService;
         private Camera _camera;
         private int _previousScrollWheelValue = 0;
         private GridDrawer _primaryGridDrawer;
         private GridDrawer _secondaryGridDrawer;
 
-        internal EditorCameraWrapper(SceneEditor sceneEditor) {
-            this._sceneEditor = sceneEditor;
+        internal EditorCameraWrapper(EditorGame editorGame) {
+            this._editorGame = editorGame;
             this._sceneService = ViewContainer.Resolve<ISceneService>();
         }
 
@@ -29,7 +29,7 @@
             set {
                 var oldCamera = this._camera;
                 if (this.Set(ref this._camera, value)) {
-                    if (this._camera != null && this._sceneEditor.CurrentScene != null && this._sceneEditor.IsInitialized) {
+                    if (this._camera != null && this._editorGame.CurrentScene != null && this._editorGame.IsInitialized) {
                         this.Initialize();
                     }
 
@@ -45,8 +45,8 @@
         }
 
         internal void Draw(GameTime gameTime) {
-            if (this._sceneEditor.CurrentScene != null) {
-                var contrastingColor = this._sceneEditor.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+            if (this._editorGame.CurrentScene != null) {
+                var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                 this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
                 this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
             }
@@ -56,7 +56,7 @@
         }
 
         internal void Initialize() {
-            this._camera.Initialize(this._sceneEditor.CurrentScene);
+            this._camera.Initialize(this._editorGame.CurrentScene);
             var gridSize = this.GetGridSize();
             this._primaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
@@ -67,7 +67,7 @@
                 UseDynamicLineThickness = true
             };
 
-            this._primaryGridDrawer.Initialize(this._sceneEditor.CurrentScene);
+            this._primaryGridDrawer.Initialize(this._editorGame.CurrentScene);
 
             var smallGridSize = gridSize / 2f;
             this._secondaryGridDrawer = new GridDrawer() {
@@ -79,13 +79,13 @@
                 UseDynamicLineThickness = true
             };
 
-            this._secondaryGridDrawer.Initialize(this._sceneEditor.CurrentScene);
+            this._secondaryGridDrawer.Initialize(this._editorGame.CurrentScene);
         }
 
         internal void RefreshCamera() {
             this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera ?? new Camera();
-            if (this._sceneEditor.IsInitialized && this._sceneEditor.CurrentScene != null) {
-                this.Camera.Initialize(this._sceneEditor.CurrentScene);
+            if (this._editorGame.IsInitialized && this._editorGame.CurrentScene != null) {
+                this.Camera.Initialize(this._editorGame.CurrentScene);
             }
         }
 
@@ -106,7 +106,7 @@
                     this._previousScrollWheelValue = mouseState.ScrollWheelValue;
                 }
 
-                if (this._sceneEditor.IsFocused) {
+                if (this._editorGame.IsFocused) {
                     var keyboardState = keyboard.GetState();
                     var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
 
@@ -154,7 +154,7 @@
 
         private bool IsMouseInsideEditor(MouseState mouseState) {
             var mousePosition = new Point(mouseState.X, mouseState.Y);
-            return this._sceneEditor.GraphicsDevice.Viewport.Bounds.Contains(mousePosition);
+            return this._editorGame.GraphicsDevice.Viewport.Bounds.Contains(mousePosition);
         }
     }
 }

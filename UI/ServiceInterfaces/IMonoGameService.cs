@@ -3,7 +3,7 @@
     using System.Windows;
 
     public interface IMonoGameService {
-        DependencyObject SceneEditor { get; }
+        DependencyObject EditorGame { get; }
 
         void ResetCamera();
     }

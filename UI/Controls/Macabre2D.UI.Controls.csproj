@@ -244,7 +244,7 @@
       <DependentUpon>PointEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SceneEditing\SceneEditor.cs" />
+    <Compile Include="SceneEditing\EditorGame.cs" />
     <Compile Include="AssetEditors\SpriteAnimationAssetEditor.xaml.cs">
       <DependentUpon>SpriteAnimationAssetEditor.xaml</DependentUpon>
     </Compile>

@@ -117,7 +117,7 @@
                                       Style="{StaticResource VerticalGridSplitter}" />
 
                         <ContentControl Grid.Column="2"
-                                        Content="{Binding MonoGameService.SceneEditor}" />
+                                        Content="{Binding MonoGameService.EditorGame}" />
                     </Grid>
                 </controls:ContentSwitcher.TrueContent>
                 <controls:ContentSwitcher.FalseContent>

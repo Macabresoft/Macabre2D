@@ -7,7 +7,7 @@
     using MonoGame.Framework.WpfInterop.Input;
     using System.ComponentModel;
 
-    public class SceneEditor : WpfGame, IGame, INotifyPropertyChanged {
+    public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionDrawer _selectionDrawer;
         private IScene _currentScene;
@@ -18,7 +18,7 @@
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
 
-        public SceneEditor() : base() {
+        public EditorGame() : base() {
             this._cameraWrapper = new EditorCameraWrapper(this);
             this._selectionDrawer = new SelectionDrawer(this);
         }

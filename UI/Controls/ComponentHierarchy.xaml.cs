@@ -166,8 +166,8 @@
 
         private void TreeItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             var treeViewItem = FindTreeItem(e.OriginalSource as DependencyObject);
-            if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.SceneEditor is SceneEditor sceneEditor) {
-                sceneEditor.FocusComponent(componentWrapper.Component);
+            if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.EditorGame is EditorGame editorGame) {
+                editorGame.FocusComponent(componentWrapper.Component);
             }
         }
 

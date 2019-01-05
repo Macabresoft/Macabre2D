@@ -7,41 +7,41 @@
     using System.Windows;
 
     public sealed class MonoGameService : IMonoGameService {
+        private readonly EditorGame _editorGame;
         private readonly IProjectService _projectService;
-        private readonly SceneEditor _sceneEditor;
         private readonly ISceneService _sceneService;
 
-        public MonoGameService(SceneEditor sceneEditor, IProjectService projectService, ISceneService sceneService) {
-            this._sceneEditor = sceneEditor;
+        public MonoGameService(EditorGame editorGame, IProjectService projectService, ISceneService sceneService) {
+            this._editorGame = editorGame;
             this._sceneService = sceneService;
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
-            this._sceneEditor.CurrentScene = this._sceneService.CurrentScene?.Scene;
+            this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
             this._projectService = projectService;
             this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
-            this._sceneEditor.GameSettings = this._projectService.CurrentProject?.GameSettings;
+            this._editorGame.GameSettings = this._projectService.CurrentProject?.GameSettings;
             this.SetContentPath();
         }
 
-        public DependencyObject SceneEditor {
+        public DependencyObject EditorGame {
             get {
-                return this._sceneEditor;
+                return this._editorGame;
             }
         }
 
         public void ResetCamera() {
-            this._sceneEditor.ResetCamera();
+            this._editorGame.ResetCamera();
         }
 
         private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this._projectService.CurrentProject)) {
-                this._sceneEditor.GameSettings = this._projectService.CurrentProject?.GameSettings;
+                this._editorGame.GameSettings = this._projectService.CurrentProject?.GameSettings;
                 this.SetContentPath();
             }
         }
 
         private void SceneService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this._sceneService.CurrentScene)) {
-                this._sceneEditor.CurrentScene = this._sceneService.CurrentScene?.Scene;
+                this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
             }
         }
 
@@ -49,7 +49,7 @@
             if (this._projectService.CurrentProject != null) {
                 var configurationName = "Debug"; //TODO : allow release
                 var desktopBuildConfiguration = this._projectService.CurrentProject.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL);
-                this._sceneEditor.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), configurationName));
+                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), configurationName));
             }
         }
     }
