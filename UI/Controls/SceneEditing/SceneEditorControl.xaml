@@ -2,6 +2,7 @@
              x:Name="_sceneEditorControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
+             xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid DataContext="{Binding ElementName=_sceneEditorControl}">
         <Grid.RowDefinitions>
@@ -10,18 +11,23 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0"
-                    Orientation="Horizontal">
+                    Orientation="Horizontal"
+                    Margin="{StaticResource StandardMarginB}">
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        IsToggledIcon="{StaticResource GridOnIcon}"
                                        IsNotToggledIcon="{StaticResource GridOffIcon}"
-                                       Margin="{StaticResource StandardMarginRB}"
+                                       Margin="{StaticResource StandardMarginTRB}"
                                        ToolTip="Toggle the grid within the scene editor." />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        IsToggledIcon="{StaticResource SelectionOnIcon}"
                                        IsNotToggledIcon="{StaticResource SelectionOffIcon}"
-                                       Margin="{StaticResource StandardMarginLRB}"
+                                       Margin="{StaticResource StandardMarginLTRB}"
                                        ToolTip="Toggle highlighting the current selected component's collider and bounding area in the scene editor." />
+
+            <valueEditors:ColorEditor ToolTip="Change the current scene's background color."
+                                      Width="96"
+                                      Value="{Binding SceneService.CurrentScene.BackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <ContentControl Grid.Row="1"

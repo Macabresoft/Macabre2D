@@ -8,9 +8,12 @@
 
         public SceneEditorControl() {
             this.MonoGameService = ViewContainer.Resolve<IMonoGameService>();
+            this.SceneService = ViewContainer.Resolve<ISceneService>();
             this.InitializeComponent();
         }
 
         public IMonoGameService MonoGameService { get; }
+
+        public ISceneService SceneService { get; }
     }
 }

@@ -18,7 +18,9 @@
                    VerticalAlignment="Center" />
 
         <xceed:ColorPicker Grid.Column="1"
+                           Height="24"
                            Margin="{StaticResource StandardMarginAll}"
-                           SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                           SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           VerticalAlignment="Center" />
     </Grid>
 </local:NamedValueEditor>

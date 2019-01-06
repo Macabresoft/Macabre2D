@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models.FrameworkWrappers {
 
     using Macabre2D.Framework;
+    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
@@ -25,6 +26,17 @@
         private SceneWrapper() {
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this.Modules.CollectionChanged += this.Modules_CollectionChanged;
+        }
+
+        public Color BackgroundColor {
+            get {
+                return this.Scene.BackgroundColor;
+            }
+
+            set {
+                this.Scene.BackgroundColor = value;
+                this.RaisePropertyChanged();
+            }
         }
 
         public IReadOnlyCollection<ComponentWrapper> Children {
@@ -69,16 +81,6 @@
             return result;
         }
 
-        public void Load(Scene scene) {
-            foreach (var component in scene.ComponentsForSaving) {
-                this.AddChild(new ComponentWrapper(component));
-            }
-
-            foreach (var module in scene.ModulesForSaving) {
-                this.Modules.Add(new ModuleWrapper(module));
-            }
-        }
-
         public bool RemoveChild(ComponentWrapper child) {
             return this._children.Remove(child);
         }
@@ -102,6 +104,16 @@
 
         private void ComponentPropertyChanged(object sender, PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(nameof(this.Children));
+        }
+
+        private void Load(Scene scene) {
+            foreach (var component in scene.ComponentsForSaving) {
+                this.AddChild(new ComponentWrapper(component));
+            }
+
+            foreach (var module in scene.ModulesForSaving) {
+                this.Modules.Add(new ModuleWrapper(module));
+            }
         }
 
         private void ModulePropertyChanged(object sender, PropertyChangedEventArgs e) {
