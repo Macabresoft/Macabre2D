@@ -101,6 +101,12 @@
         IEnumerable<T> GetModules<T>() where T : BaseModule;
 
         /// <summary>
+        /// Gets the visible drawable components.
+        /// </summary>
+        /// <returns>The visible drawable components.</returns>
+        IEnumerable<IDrawableComponent> GetVisibleDrawableComponents();
+
+        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="game">The game.</param>

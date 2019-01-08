@@ -74,7 +74,7 @@
         /// <param name="hit">The hit.</param>
         /// <returns>A value indicating whether or not anything was hit.</returns>
         public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
-            var hits = RaycastAll(start, direction, distance, layers);
+            var hits = this.RaycastAll(start, direction, distance, layers);
 
             if (hits.Count == 0) {
                 hit = null;

@@ -39,6 +39,7 @@
         private readonly IDialogService _dialogService;
         private readonly IMonoGameService _monoGameService;
         private readonly RelayCommand _removeComponentCommand;
+        private readonly IComponentSelectionService _selectionService;
         private readonly IUndoService _undoService;
         private bool _isEditing;
         private string _oldText;
@@ -48,7 +49,10 @@
             this._busyService = ViewContainer.Resolve<IBusyService>();
             this._dialogService = ViewContainer.Resolve<IDialogService>();
             this._monoGameService = ViewContainer.Resolve<IMonoGameService>();
+            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._undoService = ViewContainer.Resolve<IUndoService>();
+
+            this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
             this._addComponentCommand = new RelayCommand(this.AddComponent, () => this.SelectedItem != null);
             this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem != null && this.SelectedItem is ComponentWrapper);
             this.InitializeComponent();
@@ -137,6 +141,12 @@
                 }
 
                 this._undoService.Do(undoCommand);
+            }
+        }
+
+        private void SelectionService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
+            if (e.NewValue != null && this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
+                treeViewItem.IsSelected = true;
             }
         }
 

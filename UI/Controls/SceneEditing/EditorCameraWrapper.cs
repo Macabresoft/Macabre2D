@@ -6,7 +6,6 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
-    using MonoGame.Framework.WpfInterop.Input;
 
     internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly EditorGame _editorGame;
@@ -91,42 +90,38 @@
             }
         }
 
-        internal void Update(GameTime gameTime, WpfMouse mouse, WpfKeyboard keyboard) {
-            var mouseState = mouse.GetState();
-            if (this.IsMouseInsideEditor(mouseState)) {
-                if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
-                    var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 5f;
+        internal void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
+            if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
+                var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 5f;
 
-                    var isZoomIn = scrollViewChange < 0;
-                    if (isZoomIn) {
-                        this.Camera.ZoomTo(mouseState.Position, scrollViewChange * -1f);
-                    }
-                    else {
-                        this.Camera.ViewHeight += scrollViewChange;
-                    }
-
-                    this._previousScrollWheelValue = mouseState.ScrollWheelValue;
+                var isZoomIn = scrollViewChange < 0;
+                if (isZoomIn) {
+                    this.Camera.ZoomTo(mouseState.Position, scrollViewChange * -1f);
+                }
+                else {
+                    this.Camera.ViewHeight += scrollViewChange;
                 }
 
-                if (this._editorGame.IsFocused) {
-                    var keyboardState = keyboard.GetState();
-                    var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
+                this._previousScrollWheelValue = mouseState.ScrollWheelValue;
+            }
 
-                    if (keyboardState.IsKeyDown(Keys.W)) {
-                        this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
-                    }
+            if (this._editorGame.IsFocused) {
+                var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
 
-                    if (keyboardState.IsKeyDown(Keys.A)) {
-                        this.Camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
-                    }
+                if (keyboardState.IsKeyDown(Keys.W)) {
+                    this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
+                }
 
-                    if (keyboardState.IsKeyDown(Keys.S)) {
-                        this.Camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
-                    }
+                if (keyboardState.IsKeyDown(Keys.A)) {
+                    this.Camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
+                }
 
-                    if (keyboardState.IsKeyDown(Keys.D)) {
-                        this.Camera.LocalPosition += new Vector2(movementMultiplier, 0f);
-                    }
+                if (keyboardState.IsKeyDown(Keys.S)) {
+                    this.Camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
+                }
+
+                if (keyboardState.IsKeyDown(Keys.D)) {
+                    this.Camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
             }
         }
@@ -152,11 +147,6 @@
             }
 
             return gridSize;
-        }
-
-        private bool IsMouseInsideEditor(MouseState mouseState) {
-            var mousePosition = new Point(mouseState.X, mouseState.Y);
-            return this._editorGame.GraphicsDevice.Viewport.Bounds.Contains(mousePosition);
         }
     }
 }

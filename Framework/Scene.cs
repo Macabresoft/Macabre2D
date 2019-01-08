@@ -369,6 +369,11 @@
         }
 
         /// <inheritdoc/>
+        public IEnumerable<IDrawableComponent> GetVisibleDrawableComponents() {
+            return this._drawables;
+        }
+
+        /// <inheritdoc/>
         public void Initialize(IGame game) {
             if (this.Game == null) {
                 this.Game = game;

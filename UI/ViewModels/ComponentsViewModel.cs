@@ -5,25 +5,16 @@
     using Macabre2D.UI.ServiceInterfaces;
 
     public sealed class ComponentsViewModel : NotifyPropertyChanged {
-        private readonly ISelectionService _selectionService;
+        private readonly IComponentSelectionService _selectionService;
         private ComponentWrapper _selectedComponent;
 
-        public ComponentsViewModel(ISceneService sceneService, ISelectionService selectionService) {
+        public ComponentsViewModel(ISceneService sceneService, IComponentSelectionService selectionService) {
             this.SceneService = sceneService;
-            this._selectionService = selectionService;
+            this.SelectionService = selectionService;
         }
 
         public ISceneService SceneService { get; }
 
-        public ComponentWrapper SelectedComponent {
-            get {
-                return this._selectedComponent;
-            }
-            set {
-                if (this.Set(ref this._selectedComponent, value)) {
-                    this._selectionService.SelectedItem = this._selectedComponent;
-                }
-            }
-        }
+        public IComponentSelectionService SelectionService { get; }
     }
 }

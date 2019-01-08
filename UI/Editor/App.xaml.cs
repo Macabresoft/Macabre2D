@@ -83,7 +83,7 @@
             this._container.RegisterType<IMonoGameService, MonoGameService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IProjectService, ProjectService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<ISceneService, SceneService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<ISelectionService, SelectionService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<IComponentSelectionService, ComponentSelectionService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IUndoService, UndoService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IValueEditorService, ValueEditorService>(new ContainerControlledLifetimeManager());
         }

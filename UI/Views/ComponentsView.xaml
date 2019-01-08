@@ -16,16 +16,16 @@
 
         <controls:ComponentHierarchy Grid.Row="0"
                                      Root="{Binding SceneService.CurrentScene}"
-                                     SelectedComponent="{Binding SelectedComponent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                     SelectedComponent="{Binding SelectionService.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <GridSplitter Grid.Row="1"
                       Style="{StaticResource HorizontalGridSplitter}" />
 
         <controls:ContentSwitcher Grid.Row="2"
-                                  SwitchValue="{Binding SelectedComponent, Converter={StaticResource _nullToBoolConverter}}">
+                                  SwitchValue="{Binding SelectionService.SelectedItem, Converter={StaticResource _nullToBoolConverter}}">
             <controls:ContentSwitcher.TrueContent>
                 <controls:ComponentControl DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ComponentsView}}"
-                                           Component="{Binding SelectedComponent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                           Component="{Binding SelectionService.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </controls:ContentSwitcher.TrueContent>
             <controls:ContentSwitcher.FalseContent>
                 <TextBlock Text="Select a Component"

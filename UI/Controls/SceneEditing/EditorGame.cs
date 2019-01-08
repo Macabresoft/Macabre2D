@@ -1,8 +1,11 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
+    using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
     using MonoGame.Framework.WpfInterop;
     using MonoGame.Framework.WpfInterop.Input;
     using System.ComponentModel;
@@ -10,6 +13,7 @@
     public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionDrawer _selectionDrawer;
+        private readonly IComponentSelectionService _selectionService;
         private IScene _currentScene;
         private GameSettings _gameSettings = new GameSettings();
         private IGraphicsDeviceService _graphicsDeviceManager;
@@ -17,8 +21,10 @@
         private bool _isInitialized = false;
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
+        private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
 
         public EditorGame() : base() {
+            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._cameraWrapper = new EditorCameraWrapper(this);
             this._selectionDrawer = new SelectionDrawer(this);
         }
@@ -122,7 +128,29 @@
         }
 
         protected override void Update(GameTime gameTime) {
-            this._cameraWrapper.Update(gameTime, this._mouse, this._keyboard);
+            var mouseState = this._mouse.GetState();
+            if (this.IsMouseInsideEditor(mouseState)) {
+                if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
+                    var mousePosition = this._cameraWrapper.Camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
+                    foreach (var drawable in this.CurrentScene.GetVisibleDrawableComponents()) {
+                        if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent component) {
+                            this._selectionService.SelectComponent(component);
+                        }
+                    }
+                }
+
+                var keyboardState = this._keyboard.GetState();
+                this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
+                this._previousLeftMouseButtonState = mouseState.LeftButton;
+            }
+            else {
+                this._previousLeftMouseButtonState = ButtonState.Released;
+            }
+        }
+
+        private bool IsMouseInsideEditor(MouseState mouseState) {
+            var mousePosition = new Point(mouseState.X, mouseState.Y);
+            return this.GraphicsDevice.Viewport.Bounds.Contains(mousePosition);
         }
     }
 }

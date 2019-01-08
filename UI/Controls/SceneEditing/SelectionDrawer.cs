@@ -10,7 +10,7 @@
 
     public sealed class SelectionDrawer {
         private readonly EditorGame _editorGame;
-        private readonly ISelectionService _selectionService;
+        private readonly IComponentSelectionService _selectionService;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             Color = Color.Red,
@@ -26,7 +26,7 @@
 
         public SelectionDrawer(EditorGame editorGame) {
             this._editorGame = editorGame;
-            this._selectionService = ViewContainer.Resolve<ISelectionService>();
+            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
         }
 
@@ -68,7 +68,7 @@
             }
         }
 
-        private void SelectionService_SelectionChanged(object sender, ValueChangedEventArgs<object> e) {
+        private void SelectionService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
             if (e.NewValue is ComponentWrapper wrapper) {
                 this.ResetDependencies(wrapper.Component);
             }
