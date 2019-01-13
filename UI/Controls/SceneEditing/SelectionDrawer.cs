@@ -13,14 +13,12 @@
         private readonly IComponentSelectionService _selectionService;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
-            Color = Color.Red,
-            LineThickness = 1,
+            LineThickness = 0.6f,
             UseDynamicLineThickness = true
         };
 
         private ColliderDrawer _colliderDrawer = new ColliderDrawer() {
-            Color = Color.Green,
-            LineThickness = 1,
+            LineThickness = 0.6f,
             UseDynamicLineThickness = true
         };
 
@@ -31,20 +29,24 @@
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
+            if (this._editorGame.CurrentScene != null) {
+                var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+                this._boundingAreaDrawer.Color = contrastingColor;
+                this._colliderDrawer.Color = contrastingColor;
+            }
+
             this._boundingAreaDrawer.Draw(gameTime, viewHeight);
             this._colliderDrawer.Draw(gameTime, viewHeight);
         }
 
         public void Reinitialize() {
             this._boundingAreaDrawer = new BoundingAreaDrawer() {
-                Color = Color.Red,
-                LineThickness = 1,
+                LineThickness = 0.6f,
                 UseDynamicLineThickness = true
             };
 
             this._colliderDrawer = new ColliderDrawer() {
-                Color = Color.Green,
-                LineThickness = 1,
+                LineThickness = 0.6f,
                 UseDynamicLineThickness = true
             };
 
