@@ -32,6 +32,17 @@
         }
 
         /// <summary>
+        /// Gets the line end point.
+        /// </summary>
+        /// <param name="startPoint">The start point.</param>
+        /// <param name="direction">The direction.</param>
+        /// <param name="length">The length.</param>
+        /// <returns>The end point of a line.</returns>
+        public static Vector2 GetLineEndPoint(this Vector2 startPoint, Vector2 direction, float length) {
+            return startPoint + direction.GetNormalized() * length;
+        }
+
+        /// <summary>
         /// Gets the normalized version of the vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
