@@ -75,6 +75,7 @@
     <Compile Include="SceneTests.cs" />
     <Compile Include="UI\Services\AssemblyServiceTests.cs" />
     <Compile Include="UI\Services\UndoServiceTests.cs" />
+    <Compile Include="VectorExtensionsTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

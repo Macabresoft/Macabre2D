@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -68,6 +69,28 @@
         /// <returns>The vector perpindicular (counter clockwise) to the provided vector.</returns>
         public static Vector2 GetPerpendicularCounterClockwise(this Vector2 vector) {
             return new Vector2(vector.Y, -vector.X);
+        }
+
+        /// <summary>
+        /// Rotates a vector by the specified number of degrees.
+        /// </summary>
+        /// <param name="vector">The vector.</param>
+        /// <param name="degrees">The angle in degrees.</param>
+        /// <returns>The rotated vector.</returns>
+        public static Vector2 RotateDegrees(this Vector2 vector, float degrees) {
+            return vector.RotateRadians(MathHelper.ToRadians(degrees));
+        }
+
+        /// <summary>
+        /// Rotates a vector by the specified number of radians.
+        /// </summary>
+        /// <param name="vector">The vector.</param>
+        /// <param name="radians">The angle in radians.</param>
+        /// <returns>The rotated vector</returns>
+        public static Vector2 RotateRadians(this Vector2 vector, float radians) {
+            return new Vector2(
+                (float)(vector.X * Math.Cos(radians) - vector.Y * Math.Sin(radians)),
+                (float)(vector.X * Math.Sin(radians) - vector.Y * Math.Cos(radians)));
         }
 
         /// <summary>
