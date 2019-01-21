@@ -5,10 +5,8 @@
     using System.Linq;
 
     /// <summary>
-    /// Draws colliders (any game ob
+    /// Draws a collider.
     /// </summary>
-    /// <seealso cref="BaseComponent"/>
-    /// <seealso cref="IDrawableComponent"/>
     public sealed class ColliderDrawer : BaseDrawer {
 
         /// <summary>
