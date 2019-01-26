@@ -176,11 +176,13 @@
     <Compile Include="AssetEditors\SpriteWrapperEditor.xaml.cs">
       <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SceneEditing\BaseGizmo.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
     <Compile Include="SceneEditing\SceneEditorControl.xaml.cs">
       <DependentUpon>SceneEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SceneEditing\SelectionDrawer.cs" />
+    <Compile Include="SceneEditing\SelectionEditor.cs" />
+    <Compile Include="SceneEditing\TranslateGizmo.cs" />
     <Compile Include="ValueEditors\AudioClipEditor.xaml.cs">
       <DependentUpon>AudioClipEditor.xaml</DependentUpon>
     </Compile>

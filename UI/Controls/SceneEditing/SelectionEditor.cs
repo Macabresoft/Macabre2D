@@ -8,7 +8,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
 
-    public sealed class SelectionDrawer {
+    public sealed class SelectionEditor {
         private readonly EditorGame _editorGame;
         private readonly IComponentSelectionService _selectionService;
 
@@ -22,10 +22,13 @@
             UseDynamicLineThickness = true
         };
 
-        public SelectionDrawer(EditorGame editorGame) {
+        private TranslateGizmo _translateGizmo;
+
+        public SelectionEditor(EditorGame editorGame) {
             this._editorGame = editorGame;
             this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
+            this._translateGizmo = new TranslateGizmo(editorGame);
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
@@ -37,6 +40,7 @@
 
             this._boundingAreaDrawer.Draw(gameTime, viewHeight);
             this._colliderDrawer.Draw(gameTime, viewHeight);
+            this._translateGizmo.Draw(gameTime, viewHeight, this._selectionService.SelectedItem?.Component);
         }
 
         public void Reinitialize() {
@@ -53,6 +57,7 @@
             this.ResetDependencies(this._selectionService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
             this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
+            this._translateGizmo.Initialize();
         }
 
         private void ResetDependencies(object newValue) {

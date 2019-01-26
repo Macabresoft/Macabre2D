@@ -28,8 +28,8 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, float viewHeight) {
-            if (this.StartPoint != this.EndPoint) {
-                var spriteBatch = this._scene.Game.SpriteBatch;
+            if (this.StartPoint != this.EndPoint && this._scene?.Game is IGame game) {
+                var spriteBatch = game.SpriteBatch;
                 var lineThickness = this.GetLineThickness(viewHeight);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);
             }

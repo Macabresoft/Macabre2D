@@ -75,30 +75,28 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, float viewHeight) {
-            if (this.Camera is Camera camera) {
-                var spriteBatch = this._scene.Game.SpriteBatch;
-                var lineThickness = this.GetLineThickness(viewHeight);
-                var boundingArea = this.BoundingArea;
+            var spriteBatch = this._scene.Game.SpriteBatch;
+            var lineThickness = this.GetLineThickness(viewHeight);
+            var boundingArea = this.BoundingArea;
 
-                var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.ColumnWidth);
-                foreach (var column in columns) {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(column, boundingArea.Minimum.Y),
-                        new Vector2(column, boundingArea.Maximum.Y),
-                        this.Color,
-                        lineThickness);
-                }
+            var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.ColumnWidth);
+            foreach (var column in columns) {
+                this.PrimitiveDrawer.DrawLine(
+                    spriteBatch,
+                    new Vector2(column, boundingArea.Minimum.Y),
+                    new Vector2(column, boundingArea.Maximum.Y),
+                    this.Color,
+                    lineThickness);
+            }
 
-                var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.RowHeight);
-                foreach (var row in rows) {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(boundingArea.Minimum.X, row),
-                        new Vector2(boundingArea.Maximum.X, row),
-                        this.Color,
-                        lineThickness);
-                }
+            var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.RowHeight);
+            foreach (var row in rows) {
+                this.PrimitiveDrawer.DrawLine(
+                    spriteBatch,
+                    new Vector2(boundingArea.Minimum.X, row),
+                    new Vector2(boundingArea.Maximum.X, row),
+                    this.Color,
+                    lineThickness);
             }
         }
 

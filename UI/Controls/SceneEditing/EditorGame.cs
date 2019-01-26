@@ -12,7 +12,7 @@
 
     public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
         private readonly EditorCameraWrapper _cameraWrapper;
-        private readonly SelectionDrawer _selectionDrawer;
+        private readonly SelectionEditor _selectionEditor;
         private readonly IComponentSelectionService _selectionService;
         private IScene _currentScene;
         private GameSettings _gameSettings = new GameSettings();
@@ -26,7 +26,7 @@
         public EditorGame() : base() {
             this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._cameraWrapper = new EditorCameraWrapper(this);
-            this._selectionDrawer = new SelectionDrawer(this);
+            this._selectionEditor = new SelectionEditor(this);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -41,7 +41,7 @@
 
                 if (this._isInitialized && this._currentScene != null) {
                     this._currentScene.Initialize(this);
-                    this._selectionDrawer.Reinitialize();
+                    this._selectionEditor.Reinitialize();
                     this._cameraWrapper.RefreshCamera();
                 }
 
@@ -98,7 +98,7 @@
                 this._cameraWrapper.Draw(gameTime);
 
                 if (this.ShowSelection) {
-                    this._selectionDrawer.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
+                    this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
                 }
 
                 this.CurrentScene.Game.SpriteBatch.End();
@@ -116,7 +116,7 @@
             this.CurrentScene?.Initialize(this);
             this._cameraWrapper.RefreshCamera();
             this._cameraWrapper.Initialize();
-            this._selectionDrawer.Reinitialize();
+            this._selectionEditor.Reinitialize();
             base.Initialize();
             this._isInitialized = true;
         }
