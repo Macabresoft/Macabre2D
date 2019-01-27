@@ -5,7 +5,7 @@
     /// <summary>
     /// Draws a line.
     /// </summary>
-    public class LineDrawer : BaseDrawer {
+    public sealed class LineDrawer : BaseDrawer {
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
