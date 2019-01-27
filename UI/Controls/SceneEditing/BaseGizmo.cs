@@ -13,6 +13,10 @@
             this.EditorGame = editorGame;
         }
 
+        public Color XAxisColor { get; set; } = Color.Red;
+
+        public Color YAxisColor { get; set; } = Color.Green;
+
         protected EditorGame EditorGame { get; }
 
         public virtual void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
@@ -24,6 +28,9 @@
                 this._yAxisLineDrawer.StartPoint = worldTransform.Position;
                 this._yAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * length;
 
+                this._xAxisLineDrawer.Color = this.XAxisColor;
+                this._yAxisLineDrawer.Color = this.YAxisColor;
+
                 this._xAxisLineDrawer.Draw(gameTime, viewHeight);
                 this._yAxisLineDrawer.Draw(gameTime, viewHeight);
             }
@@ -31,13 +38,13 @@
 
         public virtual void Initialize() {
             this._xAxisLineDrawer = new LineDrawer() {
-                Color = Color.Red,
+                Color = XAxisColor,
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
             this._yAxisLineDrawer = new LineDrawer() {
-                Color = Color.Green,
+                Color = YAxisColor,
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
