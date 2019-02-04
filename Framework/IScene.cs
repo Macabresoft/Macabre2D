@@ -73,13 +73,6 @@
         T FindComponentOfType<T>() where T : BaseComponent;
 
         /// <summary>
-        /// Finds all components in the scene that have the specified type.
-        /// </summary>
-        /// <returns>The components of type.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        IEnumerable<T> FindComponentsOfType<T>() where T : BaseComponent;
-
-        /// <summary>
         /// Gets all components of the specified type that are tracked by this scene.
         /// </summary>
         /// <typeparam name="T">A component.</typeparam>

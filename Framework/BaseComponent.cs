@@ -605,19 +605,6 @@
         }
 
         /// <summary>
-        /// Adds the child components of type to list.
-        /// </summary>
-        /// <param name="components">Components.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        internal void BuildListWithChildrenOfType<T>(List<T> components) where T : BaseComponent {
-            components.AddRange(this.GetChildrenOfType<T>());
-
-            foreach (var child in this.Children) {
-                child.BuildListWithChildrenOfType<T>(components);
-            }
-        }
-
-        /// <summary>
         /// Initialize this instance.
         /// </summary>
         internal void Initialize(IScene scene) {

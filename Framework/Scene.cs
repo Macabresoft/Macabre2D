@@ -296,6 +296,10 @@
         /// <inheritdoc/>
         public T FindComponentOfType<T>() where T : BaseComponent {
             foreach (var component in this.Children) {
+                if (component is T componentOfType) {
+                    return componentOfType;
+                }
+
                 var result = component.GetComponentInChildren<T>(true);
                 if (result != null) {
                     return result;
@@ -303,17 +307,6 @@
             }
 
             return default(T);
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<T> FindComponentsOfType<T>() where T : BaseComponent {
-            var components = new List<T>();
-
-            foreach (var component in this.Children) {
-                component.BuildListWithChildrenOfType<T>(components);
-            }
-
-            return components;
         }
 
         /// <summary>
