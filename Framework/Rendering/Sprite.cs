@@ -39,12 +39,35 @@
         /// </summary>
         /// <param name="contentPath">Content path.</param>
         /// <param name="contentManager">Content manager.</param>
-        /// <param name="position">Position.</param>
-        /// <param name="size">Size.</param>
-        public Sprite(string contentPath, ContentManager contentManager, Point position, Point size) {
+        /// <param name="location">The location of this specific sprite on the <see cref="Texture2D"/>.</param>
+        /// <param name="size">The size of this specific sprite on the <see cref="Texture2D"/>.</param>
+        public Sprite(string contentPath, ContentManager contentManager, Point location, Point size) {
             this.ContentPath = contentPath;
             this.Texture = contentManager.Load<Texture2D>(contentPath);
-            this.Location = position;
+            this.Location = location;
+            this.Size = size;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sprite"/> class.
+        /// </summary>
+        /// <remarks>
+        /// This constructor should be used for dynamic sprite creation and will not be properly
+        /// saved to a scene as there will be no content path.
+        /// </remarks>
+        /// <param name="texture">The texture.</param>
+        public Sprite(Texture2D texture) : this(texture, Point.Zero, new Point(texture.Width, texture.Height)) {
+        }
+
+        /// <summary> Initializes a new instance of the <see cref="Sprite"/> class. <remarks> This
+        /// constructor should be used for dynamic sprite creation and will not be properly saved to
+        /// a scene as there will be no content path. </remarks> <param name="texture">The
+        /// texture.</param> <param name="location">The location of this specific sprite on the <see
+        /// cref="Texture2D"/>.</param> <param name="size">The size of this specific sprite on the
+        /// <see cref="Texture2D"/>.</param>
+        public Sprite(Texture2D texture, Point location, Point size) {
+            this.Texture = texture;
+            this.Location = location;
             this.Size = size;
         }
 
