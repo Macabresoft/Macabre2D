@@ -158,11 +158,7 @@
             return component;
         }
 
-        /// <summary>
-        /// Adds a component as a child.
-        /// </summary>
-        /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
-        /// <param name="component">Component.</param>
+        /// <inheritdoc/>
         public bool AddChild(BaseComponent component) {
             if (component == null) {
                 throw new ArgumentNullException(nameof(component));

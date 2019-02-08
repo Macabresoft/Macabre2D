@@ -98,6 +98,12 @@
 
             scene.SaveAsJson(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = Scene.LoadFromJson(@"TestGame - CurrentLevel.json", new Serializer());
+
+            var arrowSprite = PrimitiveDrawer.CreateArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
+            var arrowSpriteRenderer = new SpriteRenderer();
+            arrowSpriteRenderer.Sprite = arrowSprite;
+            arrowSpriteRenderer.LocalPosition += new Vector2(2f, -2f);
+            this.CurrentScene.AddChild(arrowSpriteRenderer);
         }
     }
 }

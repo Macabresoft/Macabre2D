@@ -124,7 +124,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Sprite != null && this._scene?.Game?.Content != null) {
+            if (this.Sprite?.ContentPath != null && this._scene?.Game?.Content != null) {
                 this.Sprite.Texture = this._scene.Game.Content.Load<Texture2D>(this.Sprite.ContentPath);
             }
 

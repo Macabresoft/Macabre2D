@@ -25,6 +25,45 @@
         }
 
         /// <summary>
+        /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size, size);
+            var pixels = new Color[size * size];
+
+            var index = 0;
+            for (var y = size - 1; y >= 0; y--) {
+                var buffer = (size - (size - y)) / 2;
+                var fill = size - (buffer * 2);
+
+                var difference = size - (buffer * 2 + fill);
+                fill += difference;
+
+                for (var x = 0; x < buffer; x++) {
+                    pixels[index] = Color.Transparent;
+                    index++;
+                }
+
+                for (var x = 0; x < fill; x++) {
+                    pixels[index] = color;
+                    index++;
+                }
+
+                for (var x = 0; x < buffer; x++) {
+                    pixels[index] = Color.Transparent;
+                    index++;
+                }
+            }
+
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
         /// Draws the circle.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>

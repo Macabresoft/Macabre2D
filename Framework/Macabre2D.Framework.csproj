@@ -109,7 +109,7 @@
     <Compile Include="Physics\LineSegment.cs" />
     <Compile Include="Physics\RaycastHit.cs" />
     <Compile Include="Physics\RectangleCollider.cs" />
-    <Compile Include="Rendering\Sprite.cs" />
+    <Compile Include="Sprite.cs" />
     <Compile Include="Rendering\SpriteAnimation.cs" />
     <Compile Include="Rendering\SpriteAnimationStep.cs" />
     <Compile Include="Rendering\SpriteAnimator.cs" />

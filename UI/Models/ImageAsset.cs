@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
-    using Macabre2D.Framework.Rendering;
+    using Macabre2D.Framework;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;

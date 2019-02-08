@@ -42,6 +42,13 @@
         IGame Game { get; }
 
         /// <summary>
+        /// Adds a component as a child.
+        /// </summary>
+        /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
+        /// <param name="component">The component.</param>
+        bool AddChild(BaseComponent component);
+
+        /// <summary>
         /// Draws this scene.
         /// </summary>
         /// <param name="gameTime">The game time.</param>
