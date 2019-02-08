@@ -29,6 +29,16 @@
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateArrowSprite(GraphicsDevice graphicsDevice, int size) {
+            return PrimitiveDrawer.CreateArrowSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The arrow sprite.</returns>
         public static Sprite CreateArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {

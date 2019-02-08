@@ -40,6 +40,13 @@
         }
 
         /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>The color.</value>
+        [DataMember]
+        public Color Color { get; set; } = Color.White;
+
+        /// <summary>
         /// Gets or sets the offset. If OFfsetType is anything other than Custom, this will be
         /// overridden when LoadContent(...) is called. This value is in pixels.
         /// </summary>
@@ -114,7 +121,7 @@
                 this.Sprite.Texture,
                 transform.Position * this._scene.Game.GameSettings.PixelsPerUnit,
                 new Rectangle(this.Sprite.Location, this.Sprite.Size),
-                Color.White,
+                this.Color,
                 transform.Rotation.Angle,
                 Vector2.Zero,
                 transform.Scale,
