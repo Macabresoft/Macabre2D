@@ -27,6 +27,7 @@
         /// <summary>
         /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
         /// </summary>
+        /// <remarks>This call will make all the pixels of the sprite white.</remarks>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
         /// <returns>The arrow sprite.</returns>
@@ -69,6 +70,33 @@
                 }
             }
 
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
+        /// Creates the quad sprite.
+        /// </summary>
+        /// <remarks>This call will make all the pixels of the sprite white.</remarks>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The quad sprite.</returns>
+        public static Sprite CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) {
+            return PrimitiveDrawer.CreateQuadSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the quad sprite.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The quad sprite.</returns>
+        public static Sprite CreateQuadSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size.X, size.Y);
+            var pixels = new Color[size.X * size.Y];
+            pixels.Populate(color);
             texture.SetData(pixels);
             return new Sprite(texture);
         }

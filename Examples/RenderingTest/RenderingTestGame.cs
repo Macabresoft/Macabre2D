@@ -113,6 +113,20 @@
             arrowSpriteRenderer2.LocalScale = new Vector2(0.75f, 2f);
             arrowSpriteRenderer2.LocalRotation.Angle = 1f;
             this.CurrentScene.AddChild(arrowSpriteRenderer2);
+
+            var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
+            var quadSpriteRenderer1 = new SpriteRenderer();
+            quadSpriteRenderer1.Sprite = quadSprite1;
+            quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
+            this.CurrentScene.AddChild(quadSpriteRenderer1);
+
+            var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
+            var quadSpriteRenderer2 = new SpriteRenderer();
+            quadSpriteRenderer2.Color = Color.Khaki;
+            quadSpriteRenderer2.Sprite = quadSprite2;
+            quadSpriteRenderer2.LocalRotation.Angle = 0.5f;
+            quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
+            this.CurrentScene.AddChild(quadSpriteRenderer2);
         }
     }
 }
