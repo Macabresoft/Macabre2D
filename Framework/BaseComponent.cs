@@ -608,7 +608,7 @@
         /// Initialize this instance.
         /// </summary>
         internal void Initialize(IScene scene) {
-            if (!this.IsInitialized) {
+            if (!this.IsInitialized || this._scene == null || this._scene != scene) {
                 this._scene = scene;
                 this.ResolveChildren();
 

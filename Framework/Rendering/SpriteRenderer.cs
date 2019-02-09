@@ -112,7 +112,7 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, float viewHeight) {
-            if (this.Sprite == null || this.Sprite.Texture == null) {
+            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game?.GameSettings == null) {
                 return;
             }
 
@@ -171,7 +171,7 @@
         }
 
         private Transform CreateTransform() {
-            var pixelDensity = this._scene.Game.GameSettings.PixelsPerUnit;
+            var pixelDensity = this._scene?.Game?.GameSettings?.PixelsPerUnit ?? 1f;
             return this.GetWorldTransform(this.Offset / pixelDensity);
         }
 

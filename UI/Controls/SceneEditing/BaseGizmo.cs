@@ -6,8 +6,6 @@
     using Microsoft.Xna.Framework.Input;
 
     public abstract class BaseGizmo {
-        private LineDrawer _xAxisLineDrawer;
-        private LineDrawer _yAxisLineDrawer;
 
         public BaseGizmo(EditorGame editorGame) {
             this.EditorGame = editorGame;
@@ -19,44 +17,53 @@
 
         protected EditorGame EditorGame { get; }
 
-        public virtual void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
+        protected LineDrawer XAxisLineDrawer { get; private set; }
+
+        protected LineDrawer YAxisLineDrawer { get; private set; }
+
+        public void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
                 var worldTransform = selectedComponent.WorldTransform;
-                var length = this.GetDynamicLineLength(viewHeight);
-                this._xAxisLineDrawer.StartPoint = worldTransform.Position;
-                this._xAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * length;
-                this._yAxisLineDrawer.StartPoint = worldTransform.Position;
-                this._yAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * length;
+                var ratio = this.GetViewHeightRatio(viewHeight);
+                var length = ratio * 2f;
+                this.XAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * length;
+                this.YAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.YAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * length;
 
-                this._xAxisLineDrawer.Color = this.XAxisColor;
-                this._yAxisLineDrawer.Color = this.YAxisColor;
+                this.XAxisLineDrawer.Color = this.XAxisColor;
+                this.YAxisLineDrawer.Color = this.YAxisColor;
 
-                this._xAxisLineDrawer.Draw(gameTime, viewHeight);
-                this._yAxisLineDrawer.Draw(gameTime, viewHeight);
+                this.XAxisLineDrawer.Draw(gameTime, viewHeight);
+                this.YAxisLineDrawer.Draw(gameTime, viewHeight);
+
+                this.DrawGizmo(gameTime, worldTransform, viewHeight, ratio);
             }
         }
 
         public virtual void Initialize() {
-            this._xAxisLineDrawer = new LineDrawer() {
+            this.XAxisLineDrawer = new LineDrawer() {
                 Color = XAxisColor,
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
-            this._yAxisLineDrawer = new LineDrawer() {
+            this.YAxisLineDrawer = new LineDrawer() {
                 Color = YAxisColor,
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
-            this._xAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
-            this._yAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
+            this.XAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
+            this.YAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
         }
 
         public abstract void Update(GameTime gameTime, MouseState mouseState, BaseComponent selectedComponent);
 
-        private float GetDynamicLineLength(float viewHeight) {
-            var result = 2f;
+        protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio);
+
+        private float GetViewHeightRatio(float viewHeight) {
+            var result = 1f;
             if (this.EditorGame?.GameSettings is GameSettings gameSettings) {
                 result *= (viewHeight / gameSettings.PixelsPerUnit);
             }

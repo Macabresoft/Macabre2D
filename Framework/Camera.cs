@@ -166,12 +166,13 @@
 
         private Matrix CreateViewMatrix() {
             if (this._scene?.Game is IGame game) {
+                var pixelsPerUnit = game.GameSettings?.PixelsPerUnit ?? 1f;
                 var viewPort = game.GraphicsDevice.Viewport;
                 var origin = new Vector2(viewPort.Width * 0.5f, viewPort.Height * 0.5f);
-                var zoom = viewPort.Height / (game.GameSettings.PixelsPerUnit * this.ViewHeight);
+                var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
                 var worldTransform = this.WorldTransform;
 
-                return Matrix.CreateTranslation(new Vector3(-worldTransform.Position * game.GameSettings.PixelsPerUnit, 0f)) *
+                return Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
                     Matrix.CreateRotationZ(worldTransform.Rotation.Angle) *
                     Matrix.CreateScale(zoom, -zoom, 0f) *
                     Matrix.CreateTranslation(new Vector3(origin, 0f));

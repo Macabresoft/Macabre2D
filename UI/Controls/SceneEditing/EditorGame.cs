@@ -40,9 +40,7 @@
                 this._currentScene = value;
 
                 if (this._isInitialized && this._currentScene != null) {
-                    this._currentScene.Initialize(this);
-                    this._selectionEditor.Reinitialize();
-                    this._cameraWrapper.RefreshCamera();
+                    this.InitializeComponents();
                 }
 
                 if (this._isContentLoaded) {
@@ -59,8 +57,10 @@
             }
 
             set {
-                this._gameSettings = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.GameSettings)));
+                if (value != null) {
+                    this._gameSettings = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.GameSettings)));
+                }
             }
         }
 
@@ -113,10 +113,8 @@
             this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
             this._keyboard = new WpfKeyboard(this);
             this._mouse = new WpfMouse(this);
-            this.CurrentScene?.Initialize(this);
-            this._cameraWrapper.RefreshCamera();
-            this._cameraWrapper.Initialize();
-            this._selectionEditor.Reinitialize();
+
+            this.InitializeComponents();
             base.Initialize();
             this._isInitialized = true;
         }
@@ -128,23 +126,34 @@
         }
 
         protected override void Update(GameTime gameTime) {
-            var mouseState = this._mouse.GetState();
-            if (this.IsMouseInsideEditor(mouseState)) {
-                if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
-                    var mousePosition = this._cameraWrapper.Camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
-                    foreach (var drawable in this.CurrentScene.GetVisibleDrawableComponents()) {
-                        if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent component) {
-                            this._selectionService.SelectComponent(component);
+            if (this.CurrentScene != null) {
+                var mouseState = this._mouse.GetState();
+                if (this.IsMouseInsideEditor(mouseState)) {
+                    if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
+                        var mousePosition = this._cameraWrapper.Camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
+                        foreach (var drawable in this.CurrentScene.GetVisibleDrawableComponents()) {
+                            if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent component) {
+                                this._selectionService.SelectComponent(component);
+                            }
                         }
                     }
-                }
 
-                var keyboardState = this._keyboard.GetState();
-                this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
-                this._previousLeftMouseButtonState = mouseState.LeftButton;
+                    var keyboardState = this._keyboard.GetState();
+                    this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
+                    this._previousLeftMouseButtonState = mouseState.LeftButton;
+                }
+                else {
+                    this._previousLeftMouseButtonState = ButtonState.Released;
+                }
             }
-            else {
-                this._previousLeftMouseButtonState = ButtonState.Released;
+        }
+
+        private void InitializeComponents() {
+            if (this.CurrentScene != null) {
+                this.CurrentScene.Initialize(this);
+                this._cameraWrapper.RefreshCamera();
+                this._cameraWrapper.Initialize();
+                this._selectionEditor.Reinitialize();
             }
         }
 
