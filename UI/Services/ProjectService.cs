@@ -149,6 +149,7 @@
         public async Task<bool> BuildProject() {
             var result = true;
             var tempDirectoryPath = this.GetTempDirectoryPath();
+
             await Task.Run(async () => {
                 var referencePath = this.GetReferencePath();
                 if (!Directory.Exists(referencePath)) {
@@ -180,6 +181,12 @@
                 if (result) {
                     await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
                     FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
+                }
+                else if (!Directory.Exists(tempDirectoryPath)) {
+                    Directory.CreateDirectory(tempDirectoryPath);
+                    foreach (var file in this._referenceFiles) {
+                        File.Copy(file, Path.Combine(tempDirectoryPath, file), true);
+                    }
                 }
             });
 
