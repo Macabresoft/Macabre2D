@@ -90,15 +90,15 @@
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\build\native\MonoGame.Framework.dll.config">
+      <Link>MonoGame.Framework.dll.config</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\packages\MonoGame.Framework.DesktopGL.3.6.0.1625\content\net40\MonoGame.Framework.dll.config">
-      <Link>MonoGame.Framework.dll.config</Link>
-    </None>
     <None Include="app.config" />
     <None Include="..\..\Dependencies\x64\libopenal.so.1">
       <Link>x64\libopenal.so.1</Link>
