@@ -61,9 +61,9 @@
             var gridSize = this.GetGridSize();
             this._primaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
-                Color = new Color(255, 255, 255, 50),
+                Color = new Color(255, 255, 255, 100),
                 ColumnWidth = gridSize,
-                LineThickness = 0.5f,
+                LineThickness = 1f,
                 RowHeight = gridSize,
                 UseDynamicLineThickness = true
             };
@@ -73,9 +73,9 @@
             var smallGridSize = gridSize / 2f;
             this._secondaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
-                Color = new Color(255, 255, 255, 20),
+                Color = new Color(255, 255, 255, 75),
                 ColumnWidth = smallGridSize,
-                LineThickness = 0.5f,
+                LineThickness = 1f,
                 RowHeight = smallGridSize,
                 UseDynamicLineThickness = true
             };
