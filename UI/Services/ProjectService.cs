@@ -255,9 +255,10 @@
 
                 this.CurrentProject = project;
                 await this.SaveProject();
-                await this.BuildProject();
+                await this.LoadProject(project.PathToProject);
                 this.HasChanges = true;
-                return project;
+
+                return this.CurrentProject;
             }
 
             return null;
