@@ -66,6 +66,17 @@
         }
 
         /// <summary>
+        /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
+        /// screen regardless of the current view size.
+        /// </summary>
+        /// <param name="unitViewHeight">Height of the unit view.</param>
+        /// <param name="pixelViewHeight">Height of the pixel view.</param>
+        /// <returns>A pixel agnostic ratio.</returns>
+        public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
+            return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
+        }
+
+        /// <summary>
         /// Tries to get custom setting.
         /// </summary>
         /// <param name="settingName">Name of the setting.</param>

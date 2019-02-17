@@ -19,6 +19,10 @@
             var arrowSprite = PrimitiveDrawer.CreateArrowSprite(this.EditorGame.GraphicsDevice, 32);
             this._xAxisSpriteRenderer.Sprite = arrowSprite;
             this._yAxisSpriteRenderer.Sprite = arrowSprite;
+            this._xAxisSpriteRenderer.OffsetType = OffsetType.Center;
+            this._yAxisSpriteRenderer.OffsetType = OffsetType.Center;
+            this._xAxisSpriteRenderer.Initialize(this.EditorGame.CurrentScene);
+            this._yAxisSpriteRenderer.Initialize(this.EditorGame.CurrentScene);
         }
 
         public override void Update(GameTime gameTime, MouseState mouseState, BaseComponent selectedComponent) {
@@ -27,14 +31,17 @@
         }
 
         protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio) {
+            var scale = viewRatio * 0.5f;
             this._xAxisSpriteRenderer.Color = this.XAxisColor;
             this._xAxisSpriteRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
-            this._xAxisSpriteRenderer.LocalScale = new Vector2(viewRatio);
+            this._xAxisSpriteRenderer.LocalScale = new Vector2(scale);
+            this._xAxisSpriteRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle - MathHelper.ToRadians(90f);
             this._xAxisSpriteRenderer.Draw(gameTime, viewHeight);
 
             this._yAxisSpriteRenderer.Color = this.YAxisColor;
             this._yAxisSpriteRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
-            this._yAxisSpriteRenderer.LocalScale = new Vector2(viewRatio);
+            this._yAxisSpriteRenderer.LocalScale = new Vector2(scale);
+            this._yAxisSpriteRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle;
             this._yAxisSpriteRenderer.Draw(gameTime, viewHeight);
         }
     }

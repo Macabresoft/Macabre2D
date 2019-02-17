@@ -96,6 +96,10 @@
                     this._sprite = value;
                     this.LoadContent();
                     this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+
+                    if (this.IsInitialized) {
+                        this.SetOffset();
+                    }
                 }
             }
         }
@@ -135,12 +139,12 @@
                 this.Sprite.Texture = this._scene.Game.Content.Load<Texture2D>(this.Sprite.ContentPath);
             }
 
-            this.SetOffset();
             base.LoadContent();
         }
 
         /// <inheritdoc/>
         protected override void Initialize() {
+            this.SetOffset();
             this.TransformChanged += this.Self_TransformChanged;
         }
 

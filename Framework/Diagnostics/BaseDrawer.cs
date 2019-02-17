@@ -50,7 +50,7 @@
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
             if (this.UseDynamicLineThickness && this._scene?.Game?.GameSettings is GameSettings gameSettings) {
-                result *= (viewHeight / gameSettings.PixelsPerUnit);
+                result *= gameSettings.GetPixelAgnosticRatio(viewHeight, this._scene.Game.GraphicsDevice.Viewport.Height);
             }
 
             return result;

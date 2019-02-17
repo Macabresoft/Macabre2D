@@ -24,12 +24,11 @@
         public void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
                 var worldTransform = selectedComponent.WorldTransform;
-                var ratio = this.GetViewHeightRatio(viewHeight);
-                var length = ratio * 2f;
+                var (ratio, lineLength) = this.GetViewHeightRatio(viewHeight);
                 this.XAxisLineDrawer.StartPoint = worldTransform.Position;
-                this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * length;
+                this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * lineLength;
                 this.YAxisLineDrawer.StartPoint = worldTransform.Position;
-                this.YAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * length;
+                this.YAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * lineLength;
 
                 this.XAxisLineDrawer.Color = this.XAxisColor;
                 this.YAxisLineDrawer.Color = this.YAxisColor;
@@ -62,13 +61,15 @@
 
         protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio);
 
-        private float GetViewHeightRatio(float viewHeight) {
-            var result = 1f;
+        private (float ratio, float lineLength) GetViewHeightRatio(float viewHeight) {
+            var ratio = 1f;
+            var lineLength = 1f;
             if (this.EditorGame?.GameSettings is GameSettings gameSettings) {
-                result *= (viewHeight / gameSettings.PixelsPerUnit);
+                ratio = gameSettings.GetPixelAgnosticRatio(viewHeight, this.EditorGame.GraphicsDevice.Viewport.Height);
+                lineLength = ratio * 4f;
             }
 
-            return result;
+            return (ratio, lineLength);
         }
     }
 }
