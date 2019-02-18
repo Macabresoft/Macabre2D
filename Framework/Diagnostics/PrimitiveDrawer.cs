@@ -102,6 +102,48 @@
         }
 
         /// <summary>
+        /// Creates the right triangle sprite. The right angle will be in the bottom right corner of
+        /// the sprite.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>The right triangle sprite.</returns>
+        public static Sprite CreateRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
+            return PrimitiveDrawer.CreateRightTriangleSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the right triangle sprite. The right angle will be in the bottom right corner of
+        /// the sprite.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The right triangle sprite.</returns>
+        public static Sprite CreateRightTriangleSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size.X, size.Y);
+            var pixels = new Color[size.X * size.Y];
+
+            var counter = 0;
+            for (var y = 0; y < size.Y; y++) {
+                var xOffset = Convert.ToInt32(size.X * ((y + 1f) / size.Y));
+
+                for (var x = 0; x < size.X - xOffset; x++) {
+                    pixels[counter] = Color.Transparent;
+                    counter++;
+                }
+
+                for (var x = 0; x < xOffset; x++) {
+                    pixels[counter] = color;
+                    counter++;
+                }
+            }
+
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
         /// Draws the circle.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>

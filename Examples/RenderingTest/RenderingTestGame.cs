@@ -127,6 +127,12 @@
             quadSpriteRenderer2.LocalRotation.Angle = 0.5f;
             quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
             this.CurrentScene.AddChild(quadSpriteRenderer2);
+
+            var rightTriangleSprite1 = PrimitiveDrawer.CreateRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
+            var rightTriangleSpriteRenderer1 = new SpriteRenderer();
+            rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
+            rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
+            this.CurrentScene.AddChild(rightTriangleSpriteRenderer1);
         }
     }
 }
