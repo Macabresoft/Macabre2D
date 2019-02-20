@@ -102,8 +102,7 @@
         }
 
         /// <summary>
-        /// Creates the right triangle sprite. The right angle will be in the bottom right corner of
-        /// the sprite.
+        /// Creates the right triangle sprite. The right angle will be in the top left corner of the sprite.
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
@@ -113,8 +112,7 @@
         }
 
         /// <summary>
-        /// Creates the right triangle sprite. The right angle will be in the bottom right corner of
-        /// the sprite.
+        /// Creates the right triangle sprite. The right angle will be in the top left corner of the sprite.
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
@@ -129,12 +127,12 @@
                 var xOffset = Convert.ToInt32(size.X * ((y + 1f) / size.Y));
 
                 for (var x = 0; x < size.X - xOffset; x++) {
-                    pixels[counter] = Color.Transparent;
+                    pixels[counter] = color;
                     counter++;
                 }
 
                 for (var x = 0; x < xOffset; x++) {
-                    pixels[counter] = color;
+                    pixels[counter] = Color.Transparent;
                     counter++;
                 }
             }
