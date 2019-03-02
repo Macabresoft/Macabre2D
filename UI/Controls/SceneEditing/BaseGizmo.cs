@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
@@ -57,7 +58,7 @@
             this.YAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
         }
 
-        public abstract void Update(GameTime gameTime, MouseState mouseState, BaseComponent selectedComponent);
+        public abstract bool Update(GameTime gameTime, MouseState mouseState, Vector2 mousePosition, ComponentWrapper selectedComponent);
 
         protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio);
 

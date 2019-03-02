@@ -7,6 +7,7 @@
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
 
     public sealed class SelectionEditor {
         private readonly EditorGame _editorGame;
@@ -22,6 +23,7 @@
             UseDynamicLineThickness = true
         };
 
+        private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
         private TranslateGizmo _translateGizmo;
 
         public SelectionEditor(EditorGame editorGame) {
@@ -58,6 +60,31 @@
             this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
             this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
             this._translateGizmo.Initialize();
+        }
+
+        public void Update(GameTime gameTime, MouseState mouseState) {
+            if (this._editorGame.CurrentScene != null && this._editorGame.CurrentCamera != null) {
+                var hadInteractions = false;
+                var mousePosition = this._editorGame.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
+
+                if (this._selectionService.SelectedItem?.Component != null) {
+                    hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._selectionService.SelectedItem);
+                }
+
+                if (hadInteractions) {
+                    // We must force the editor to recognize that we've made a change.
+                    this._selectionService.SelectedItem.RaisePropertyChanged("Position");
+                }
+                else if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
+                    foreach (var drawable in this._editorGame.CurrentScene.GetVisibleDrawableComponents()) {
+                        if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
+                            this._selectionService.SelectComponent(drawableComponent);
+                        }
+                    }
+                }
+            }
+
+            this._previousLeftMouseButtonState = mouseState.LeftButton;
         }
 
         private void ResetDependencies(object newValue) {
