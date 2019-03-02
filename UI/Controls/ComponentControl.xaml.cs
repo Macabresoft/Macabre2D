@@ -188,37 +188,40 @@
 
         private static async void OnComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is ComponentControl control) {
-                if (control != null && e.NewValue != null) {
+                if (e.OldValue is ComponentWrapper oldWrapper) {
+                    oldWrapper.PropertyChanged -= control.Wrapper_PropertyChanged;
+                }
+
+                if (e.NewValue is ComponentWrapper wrapper) {
                     var task = control.PopulateEditors();
                     await control._busyService.PerformTask(task);
 
-                    if (e.NewValue is ComponentWrapper wrapper) {
-                        control._drawableGrid.Visibility = Visibility.Collapsed;
-                        control._updateableGrid.Visibility = Visibility.Collapsed;
-                        control._updateableAsyncGrid.Visibility = Visibility.Collapsed;
-                        control._baseComponentSeparator.Visibility = Visibility.Collapsed;
-                        var showSeparator = false;
+                    control._drawableGrid.Visibility = Visibility.Collapsed;
+                    control._updateableGrid.Visibility = Visibility.Collapsed;
+                    control._updateableAsyncGrid.Visibility = Visibility.Collapsed;
+                    control._baseComponentSeparator.Visibility = Visibility.Collapsed;
+                    var showSeparator = false;
 
-                        if (wrapper.Component is IDrawableComponent drawableComponent) {
-                            control._drawableGrid.Visibility = Visibility.Visible;
-                            showSeparator = true;
-                        }
-
-                        if (wrapper.Component is IUpdateableComponent updateableComponent) {
-                            control._updateableGrid.Visibility = Visibility.Visible;
-                            showSeparator = true;
-                        }
-                        else if (wrapper.Component is IUpdateableComponentAsync updateableComponentAsync) {
-                            control._updateableAsyncGrid.Visibility = Visibility.Visible;
-                            showSeparator = true;
-                        }
-
-                        if (showSeparator && control.Editors.Any()) {
-                            control._baseComponentSeparator.Visibility = Visibility.Visible;
-                        }
+                    if (wrapper.Component is IDrawableComponent drawableComponent) {
+                        control._drawableGrid.Visibility = Visibility.Visible;
+                        showSeparator = true;
                     }
 
-                    control.RaisePropertyChanged();
+                    if (wrapper.Component is IUpdateableComponent updateableComponent) {
+                        control._updateableGrid.Visibility = Visibility.Visible;
+                        showSeparator = true;
+                    }
+                    else if (wrapper.Component is IUpdateableComponentAsync updateableComponentAsync) {
+                        control._updateableAsyncGrid.Visibility = Visibility.Visible;
+                        showSeparator = true;
+                    }
+
+                    if (showSeparator && control.Editors.Any()) {
+                        control._baseComponentSeparator.Visibility = Visibility.Visible;
+                    }
+
+                    control.RaisePropertiesChanged();
+                    wrapper.PropertyChanged += control.Wrapper_PropertyChanged;
                 }
                 else {
                     control.Editors.Clear();
@@ -231,17 +234,21 @@
             this.Editors.Reset(editors);
         }
 
-        private void RaisePropertyChanged() {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsComponentEnabled)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsComponentVisible)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentDrawOrder)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentUpdateOrder)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentName)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentScale)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentPosition)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentRotation)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentTypeName)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ComponentLayer)));
+        private void RaisePropertiesChanged() {
+            this.RaisePropertyChanged(nameof(this.IsComponentEnabled));
+            this.RaisePropertyChanged(nameof(this.IsComponentVisible));
+            this.RaisePropertyChanged(nameof(this.ComponentDrawOrder));
+            this.RaisePropertyChanged(nameof(this.ComponentUpdateOrder));
+            this.RaisePropertyChanged(nameof(this.ComponentName));
+            this.RaisePropertyChanged(nameof(this.ComponentScale));
+            this.RaisePropertyChanged(nameof(this.ComponentPosition));
+            this.RaisePropertyChanged(nameof(this.ComponentRotation));
+            this.RaisePropertyChanged(nameof(this.ComponentTypeName));
+            this.RaisePropertyChanged(nameof(this.ComponentLayer));
+        }
+
+        private void RaisePropertyChanged(string propertyName) {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void UpdateComponentProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
@@ -256,6 +263,32 @@
                 });
 
             this._undoService.Do(undoCommand);
+        }
+
+        private void Wrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (sender is ComponentWrapper wrapper) {
+                if (e.PropertyName == nameof(wrapper.Component.LocalPosition)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentPosition));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.LocalRotation)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentRotation));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.LocalScale)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentScale));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.DrawOrder)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentDrawOrder));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.Layers)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentLayer));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.Name)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentName));
+                }
+                else if (e.PropertyName == nameof(wrapper.Component.UpdateOrder)) {
+                    this.RaisePropertyChanged(nameof(this.ComponentUpdateOrder));
+                }
+            }
         }
     }
 }
