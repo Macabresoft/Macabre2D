@@ -63,6 +63,15 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="CircleCollider"/> class.
+        /// </summary>
+        /// <param name="radius">The radius.</param>
+        /// <param name="scalingType">Type of the scaling.</param>
+        public CircleCollider(float radius, RadiusScalingType scalingType) : this(radius) {
+            this._radiusScalingType = scalingType;
+        }
+
+        /// <summary>
         /// Gets the center.
         /// </summary>
         /// <value>The center.</value>
@@ -264,15 +273,16 @@
         }
 
         private float CreateScaledRadius() {
+            var worldTransform = this.Body.WorldTransform;
             switch (this.RadiusScalingType) {
                 case RadiusScalingType.X:
-                    return this._radius * this.Transform.Scale.X;
+                    return this._radius * worldTransform.Scale.X;
 
                 case RadiusScalingType.Y:
-                    return this._radius * this.Transform.Scale.Y;
+                    return this._radius * worldTransform.Scale.Y;
 
                 case RadiusScalingType.Average:
-                    return this._radius * 0.5f * (this.Transform.Scale.X + this.Transform.Scale.Y);
+                    return this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y);
             }
 
             return this._radius;

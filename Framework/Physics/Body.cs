@@ -94,6 +94,7 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
+            this.TransformChanged -= this.Self_TransformChanged;
             this.TransformChanged += this.Self_TransformChanged;
             this._collider?.Initialize(this);
         }
