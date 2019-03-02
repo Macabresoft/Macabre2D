@@ -18,14 +18,14 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember]
-        public Color Color { get; set; }
+        public Color Color { get; set; } = Color.White;
 
         /// <summary>
         /// Gets or sets the line thickness.
         /// </summary>
         /// <value>The line thickness.</value>
         [DataMember]
-        public float LineThickness { get; set; }
+        public float LineThickness { get; set; } = 1f;
 
         /// <summary>
         /// Gets or sets a value indicating whether this should use dynamic line thickness.
