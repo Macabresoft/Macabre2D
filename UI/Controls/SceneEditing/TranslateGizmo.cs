@@ -11,6 +11,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
+    using System.Windows.Input;
 
     public sealed class TranslateGizmo : BaseGizmo {
 
@@ -85,6 +86,7 @@
                     else {
                         this._previousButtonState = ButtonState.Released;
                         hadInteractions = false;
+                        System.Windows.Input.Mouse.OverrideCursor = null;
                     }
                 }
                 else {
@@ -93,18 +95,21 @@
                         this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
                         hadInteractions = true;
                         this.CurrentAxis = GizmoAxis.Neutral;
+                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                     else if (this._xAxisBody.Collider.Contains(mousePosition)) {
                         this._previousButtonState = ButtonState.Pressed;
                         this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
                         hadInteractions = true;
                         this.CurrentAxis = GizmoAxis.X;
+                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                     else if (this._yAxisBody.Collider.Contains(mousePosition)) {
                         this._previousButtonState = ButtonState.Pressed;
                         this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
                         hadInteractions = true;
                         this.CurrentAxis = GizmoAxis.Y;
+                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                 }
             }
@@ -121,6 +126,7 @@
 
                     this._undoService.Do(undoCommand);
                     this.CurrentAxis = GizmoAxis.None;
+                    System.Windows.Input.Mouse.OverrideCursor = null;
                 }
 
                 this._previousButtonState = ButtonState.Released;
