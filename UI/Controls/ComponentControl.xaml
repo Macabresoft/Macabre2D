@@ -32,6 +32,7 @@
                 </Grid.RowDefinitions>
 
                 <valueEditors:StringEditor Grid.Row="0"
+                                           Title="Name"
                                            Value="{Binding ComponentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Grid Grid.Row="1">
