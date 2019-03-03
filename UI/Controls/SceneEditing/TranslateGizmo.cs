@@ -10,6 +10,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
+    using System;
 
     public sealed class TranslateGizmo : BaseGizmo {
 
@@ -18,13 +19,23 @@
         };
 
         private readonly SpriteRenderer _xAxisArrowRenderer = new SpriteRenderer();
+
+        private readonly Body _xAxisBody = new Body() {
+            Collider = new CircleCollider(1f, RadiusScalingType.X)
+        };
+
         private readonly SpriteRenderer _xAxisTriangleRenderer = new SpriteRenderer();
+
         private readonly SpriteRenderer _yAxisArrowRenderer = new SpriteRenderer();
+
+        private readonly Body _yAxisBody = new Body() {
+            Collider = new CircleCollider(1f, RadiusScalingType.X)
+        };
+
         private readonly SpriteRenderer _yAxisTriangleRenderer = new SpriteRenderer();
         private ButtonState _previousButtonState = ButtonState.Released;
         private IUndoService _undoService;
         private Vector2 _unmovedWorldPosition;
-        private bool _wasMoved;
 
         public TranslateGizmo(EditorGame editorGame) : base(editorGame) {
             this._undoService = ViewContainer.Resolve<IUndoService>();
@@ -37,6 +48,8 @@
             this._yAxisArrowRenderer.Sprite = arrowSprite;
             this._xAxisArrowRenderer.OffsetType = OffsetType.Center;
             this._yAxisArrowRenderer.OffsetType = OffsetType.Center;
+            this._xAxisArrowRenderer.AddChild(this._xAxisBody);
+            this._yAxisArrowRenderer.AddChild(this._yAxisBody);
             this._xAxisArrowRenderer.Initialize(this.EditorGame.CurrentScene);
             this._yAxisArrowRenderer.Initialize(this.EditorGame.CurrentScene);
 
@@ -54,34 +67,60 @@
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
-                    selectedComponent.Component.SetWorldPosition(mousePosition);
-                    selectedComponent.UpdateProperty(nameof(selectedComponent.Component.LocalPosition), selectedComponent.Component.LocalPosition);
                     hadInteractions = true;
-                    this._wasMoved = true;
+
+                    if (this.CurrentAxis == GizmoAxis.Neutral) {
+                        this.UpdatePosition(selectedComponent, mousePosition);
+                    }
+                    else if (this.CurrentAxis == GizmoAxis.X) {
+                        var newPosition = this.MoveAlongAxis(this.XAxisLineDrawer.StartPoint, this.XAxisLineDrawer.EndPoint, mousePosition);
+                        var distance = this.XAxisLineDrawer.EndPoint - this.XAxisLineDrawer.StartPoint;
+                        this.UpdatePosition(selectedComponent, newPosition - distance);
+                    }
+                    else if (this.CurrentAxis == GizmoAxis.Y) {
+                        var newPosition = this.MoveAlongAxis(this.YAxisLineDrawer.StartPoint, this.YAxisLineDrawer.EndPoint, mousePosition);
+                        var distance = this.YAxisLineDrawer.EndPoint - this.YAxisLineDrawer.StartPoint;
+                        this.UpdatePosition(selectedComponent, newPosition - distance);
+                    }
+                    else {
+                        this._previousButtonState = ButtonState.Released;
+                        hadInteractions = false;
+                    }
                 }
                 else {
                     if (this._neutralAxisBody.Collider.Contains(mousePosition)) {
                         this._previousButtonState = ButtonState.Pressed;
                         this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
                         hadInteractions = true;
+                        this.CurrentAxis = GizmoAxis.Neutral;
+                    }
+                    else if (this._xAxisBody.Collider.Contains(mousePosition)) {
+                        this._previousButtonState = ButtonState.Pressed;
+                        this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
+                        hadInteractions = true;
+                        this.CurrentAxis = GizmoAxis.X;
+                    }
+                    else if (this._yAxisBody.Collider.Contains(mousePosition)) {
+                        this._previousButtonState = ButtonState.Pressed;
+                        this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
+                        hadInteractions = true;
+                        this.CurrentAxis = GizmoAxis.Y;
                     }
                 }
             }
             else {
-                if (this._wasMoved) {
+                if (this.CurrentAxis != GizmoAxis.None) {
                     var originalPosition = this._unmovedWorldPosition;
                     var newPosition = selectedComponent.Component.WorldTransform.Position;
                     var undoCommand = new UndoCommand(() => {
-                        selectedComponent.Component.SetWorldPosition(newPosition);
-                        selectedComponent.UpdateProperty(nameof(selectedComponent.Component.LocalPosition), selectedComponent.Component.LocalPosition);
+                        this.UpdatePosition(selectedComponent, newPosition);
                     },
                     () => {
-                        selectedComponent.Component.SetWorldPosition(originalPosition);
-                        selectedComponent.UpdateProperty(nameof(selectedComponent.Component.LocalPosition), selectedComponent.Component.LocalPosition);
+                        this.UpdatePosition(selectedComponent, originalPosition);
                     });
 
                     this._undoService.Do(undoCommand);
-                    this._wasMoved = false;
+                    this.CurrentAxis = GizmoAxis.None;
                 }
 
                 this._previousButtonState = ButtonState.Released;
@@ -115,6 +154,38 @@
             this._yAxisTriangleRenderer.LocalScale = new Vector2(scale);
             this._yAxisTriangleRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle;
             this._yAxisTriangleRenderer.Draw(gameTime, viewHeight);
+        }
+
+        private Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
+            var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
+            var yIntercept = end.Y - slope * end.X;
+            var newPosition = moveToPosition;
+
+            if (Math.Abs(slope) < 0.5f) {
+                if (slope == 0f) {
+                    newPosition = new Vector2(moveToPosition.X, end.Y);
+                }
+                else {
+                    var newX = (moveToPosition.Y - yIntercept) / slope;
+                    newPosition = new Vector2(newX, moveToPosition.Y);
+                }
+            }
+            else {
+                if (Math.Abs(slope) == 1f) {
+                    newPosition = new Vector2(end.X, moveToPosition.Y);
+                }
+                else {
+                    var newY = (slope * moveToPosition.X) + yIntercept;
+                    newPosition = new Vector2(moveToPosition.X, newY);
+                }
+            }
+
+            return newPosition;
+        }
+
+        private void UpdatePosition(ComponentWrapper component, Vector2 newPosition) {
+            component.Component.SetWorldPosition(newPosition);
+            component.UpdateProperty(nameof(component.Component.LocalPosition), component.Component.LocalPosition);
         }
     }
 }

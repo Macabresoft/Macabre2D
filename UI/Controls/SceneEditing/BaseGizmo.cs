@@ -12,9 +12,18 @@
             this.EditorGame = editorGame;
         }
 
+        protected enum GizmoAxis {
+            X,
+            Y,
+            Neutral,
+            None
+        }
+
         public Color XAxisColor { get; set; } = Color.Red;
 
         public Color YAxisColor { get; set; } = Color.Green;
+
+        protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
 
         protected EditorGame EditorGame { get; }
 
