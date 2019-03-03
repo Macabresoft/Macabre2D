@@ -83,53 +83,24 @@
                         var distance = this.YAxisLineDrawer.EndPoint - this.YAxisLineDrawer.StartPoint;
                         this.UpdatePosition(selectedComponent, newPosition - distance);
                     }
-                    else {
-                        this._previousButtonState = ButtonState.Released;
-                        hadInteractions = false;
-                        System.Windows.Input.Mouse.OverrideCursor = null;
-                    }
                 }
                 else {
                     if (this._neutralAxisBody.Collider.Contains(mousePosition)) {
-                        this._previousButtonState = ButtonState.Pressed;
-                        this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
+                        this.StartDrag(GizmoAxis.Neutral, selectedComponent.Component.WorldTransform.Position);
                         hadInteractions = true;
-                        this.CurrentAxis = GizmoAxis.Neutral;
-                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                     else if (this._xAxisBody.Collider.Contains(mousePosition)) {
-                        this._previousButtonState = ButtonState.Pressed;
-                        this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
+                        this.StartDrag(GizmoAxis.X, selectedComponent.Component.WorldTransform.Position);
                         hadInteractions = true;
-                        this.CurrentAxis = GizmoAxis.X;
-                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                     else if (this._yAxisBody.Collider.Contains(mousePosition)) {
-                        this._previousButtonState = ButtonState.Pressed;
-                        this._unmovedWorldPosition = selectedComponent.Component.WorldTransform.Position;
+                        this.StartDrag(GizmoAxis.Y, selectedComponent.Component.WorldTransform.Position);
                         hadInteractions = true;
-                        this.CurrentAxis = GizmoAxis.Y;
-                        System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
                     }
                 }
             }
             else {
-                if (this.CurrentAxis != GizmoAxis.None) {
-                    var originalPosition = this._unmovedWorldPosition;
-                    var newPosition = selectedComponent.Component.WorldTransform.Position;
-                    var undoCommand = new UndoCommand(() => {
-                        this.UpdatePosition(selectedComponent, newPosition);
-                    },
-                    () => {
-                        this.UpdatePosition(selectedComponent, originalPosition);
-                    });
-
-                    this._undoService.Do(undoCommand);
-                    this.CurrentAxis = GizmoAxis.None;
-                    System.Windows.Input.Mouse.OverrideCursor = null;
-                }
-
-                this._previousButtonState = ButtonState.Released;
+                this.EndDrag(selectedComponent);
             }
 
             return hadInteractions;
@@ -162,6 +133,27 @@
             this._yAxisTriangleRenderer.Draw(gameTime, viewHeight);
         }
 
+        private void EndDrag(ComponentWrapper selectedComponent) {
+            if (this.CurrentAxis != GizmoAxis.None) {
+                var originalPosition = this._unmovedWorldPosition;
+                var newPosition = selectedComponent.Component.WorldTransform.Position;
+                var undoCommand = new UndoCommand(() => {
+                    this.UpdatePosition(selectedComponent, newPosition);
+                },
+                () => {
+                    this.UpdatePosition(selectedComponent, originalPosition);
+                });
+
+                this._undoService.Do(undoCommand);
+                this.CurrentAxis = GizmoAxis.None;
+                System.Windows.Input.Mouse.OverrideCursor = null;
+            }
+
+            this._previousButtonState = ButtonState.Released;
+            this.XAxisColor = new Color(this.XAxisColor, 1f);
+            this.YAxisColor = new Color(this.YAxisColor, 1f);
+        }
+
         private Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
             var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
@@ -187,6 +179,15 @@
             }
 
             return newPosition;
+        }
+
+        private void StartDrag(GizmoAxis axis, Vector2 currentPosition) {
+            this._previousButtonState = ButtonState.Pressed;
+            this._unmovedWorldPosition = currentPosition;
+            this.CurrentAxis = axis;
+            System.Windows.Input.Mouse.OverrideCursor = Cursors.SizeAll;
+            this.XAxisColor = new Color(this.XAxisColor, 0.5f);
+            this.YAxisColor = new Color(this.YAxisColor, 0.5f);
         }
 
         private void UpdatePosition(ComponentWrapper component, Vector2 newPosition) {
