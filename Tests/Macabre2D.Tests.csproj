@@ -70,6 +70,7 @@
     <Compile Include="Physics\PolygonColliderTests.cs" />
     <Compile Include="Physics\RectangleColliderTests.cs" />
     <Compile Include="Rendering\SpriteAnimatorTests.cs" />
+    <Compile Include="SerializerTests.cs" />
     <Compile Include="TestComponent.cs" />
     <Compile Include="TestUpdateableComponent.cs" />
     <Compile Include="SceneTests.cs" />
