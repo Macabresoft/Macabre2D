@@ -37,7 +37,7 @@
         }
 
         public IScene Load() {
-            return Scene.LoadFromJson(this.GetPath(), new Serializer());
+            return new Serializer().Deserialize<Scene>(this.GetPath());
         }
 
         public override string ToString() {

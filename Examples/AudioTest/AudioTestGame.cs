@@ -20,7 +20,7 @@
             audioPlayer.AddChild(new VolumeController());
 
             scene.SaveAsJson(@"TestGame - CurrentLevel.json", new Serializer());
-            this.CurrentScene = Scene.LoadFromJson(@"TestGame - CurrentLevel.json", new Serializer());
+            this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
         }
     }
 }

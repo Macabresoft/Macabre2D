@@ -129,25 +129,6 @@
         internal List<BaseModule> ModulesForSaving { get; } = new List<BaseModule>();
 
         /// <summary>
-        /// Loads a scene from the specified JSON file.
-        /// </summary>
-        /// <param name="filePath">Path to the file.</param>
-        /// <param name="serializer">The serializer.</param>
-        /// <returns>The scene deserialized from JSON.</returns>
-        /// <exception cref="NotSupportedException">
-        /// The file path provided did not lead to a valid scene.
-        /// </exception>
-        public static Scene LoadFromJson(string filePath, Serializer serializer) {
-            var scene = serializer.Deserialize<Scene>(filePath);
-
-            if (scene == null) {
-                throw new NotSupportedException("The file path provided did not lead to a valid scene.");
-            }
-
-            return scene;
-        }
-
-        /// <summary>
         /// Adds a component as a child of this scene.
         /// </summary>
         /// <typeparam name="T">A component type.</typeparam>
