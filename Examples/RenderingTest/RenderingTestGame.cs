@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Rendering;
+    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using System.Diagnostics.CodeAnalysis;
 
@@ -96,7 +97,7 @@
 
             scene.AddChild(new MouseClickDebugger());
 
-            scene.SaveAsJson(@"TestGame - CurrentLevel.json", new Serializer());
+            scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
 
             var arrowSprite1 = PrimitiveDrawer.CreateArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);

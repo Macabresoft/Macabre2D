@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Audio;
+    using Macabre2D.Framework.Serialization;
 
     /// <summary>
     /// This is the main type for your game.
@@ -19,7 +20,7 @@
             audioPlayer.AudioClip.ContentPath = "laser";
             audioPlayer.AddChild(new VolumeController());
 
-            scene.SaveAsJson(@"TestGame - CurrentLevel.json", new Serializer());
+            scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
         }
     }

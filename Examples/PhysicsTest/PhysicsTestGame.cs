@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Physics;
+    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using System.Diagnostics.CodeAnalysis;
 
@@ -93,7 +94,7 @@
             lineDrawer.LineThickness = 1f;
             scene.AddChild(lineBody);
 
-            scene.SaveAsJson(@"TestGame - CurrentLevel.json", new Serializer());
+            scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
         }
     }

@@ -431,11 +431,11 @@
         }
 
         /// <summary>
-        /// Saves this scene to a JSON file with the specified file name.
+        /// Saves this scene to a file with the specified file name using the specified <see cref="ISerializer"/>
         /// </summary>
         /// <param name="filePath">Path of the file.</param>
         /// <param name="serializer">The serializer.</param>
-        public void SaveAsJson(string filePath, Serializer serializer) {
+        public void SaveToFile(string filePath, ISerializer serializer) {
             try {
                 this._modules.RebuildCache();
                 this.ModulesForSaving.AddRange(this._modules);

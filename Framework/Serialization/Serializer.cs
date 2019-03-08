@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework {
+﻿namespace Macabre2D.Framework.Serialization {
 
     using Newtonsoft.Json;
     using System.IO;
@@ -8,7 +8,7 @@
     /// Serializes to Json.
     /// </summary>
     /// <seealso cref="ISerializationService"/>
-    public sealed class Serializer {
+    public sealed class Serializer : ISerializer {
         private readonly JsonSerializer _jsonSerializer;
 
         /// <summary>
@@ -29,14 +29,10 @@
             this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
             this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             this._jsonSerializer.TypeNameHandling = TypeNameHandling.All;
+            this._jsonSerializer.Converters.Add(new JsonColorConverter());
         }
 
-        /// <summary>
-        /// Deserializes a file at the specified path.
-        /// </summary>
-        /// <typeparam name="T">The type to deserialize to.</typeparam>
-        /// <param name="path">The path.</param>
-        /// <returns>A deserialized object from the specified file.</returns>
+        /// <inheritdoc/>
         public T Deserialize<T>(string path) {
             using (var streamReader = new StreamReader(path))
             using (var jsonReader = new JsonTextReader(streamReader)) {
@@ -44,12 +40,7 @@
             }
         }
 
-        /// <summary>
-        /// Deserializes from string.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="json">The json.</param>
-        /// <returns>A deserialized object from the provided JSON.</returns>
+        /// <inheritdoc/>
         public T DeserializeFromString<T>(string json) {
             using (var stringReader = new StringReader(json))
             using (var jsonReader = new JsonTextReader(stringReader)) {
@@ -57,11 +48,7 @@
             }
         }
 
-        /// <summary>
-        /// Serializes the specified object.
-        /// </summary>
-        /// <param name="value">The thing to serialize.</param>
-        /// <param name="path">The path.</param>
+        /// <inheritdoc/>
         public void Serialize(object value, string path) {
             var directoryName = Path.GetDirectoryName(path);
             if (!string.IsNullOrWhiteSpace(directoryName)) {
@@ -74,11 +61,7 @@
             }
         }
 
-        /// <summary>
-        /// Serializes the specified value to a string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The JSON string of an object.</returns>
+        /// <inheritdoc/>
         public string SerializeToString(object value) {
             var stringBuilder = new StringBuilder();
             using (var stringWriter = new StringWriter(stringBuilder))

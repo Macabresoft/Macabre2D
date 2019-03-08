@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
-    using Macabre2D.Framework;
+    using Macabre2D.Framework.Serialization;
 
     public abstract class AddableAsset : MetadataAsset {
         public abstract string FileExtension { get; }

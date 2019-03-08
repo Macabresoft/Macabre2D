@@ -87,6 +87,8 @@
     <Compile Include="IGame.cs" />
     <Compile Include="IIdentifiable.cs" />
     <Compile Include="IScene.cs" />
+    <Compile Include="ISerializer.cs" />
+    <Compile Include="Serialization\JsonColorConverter.cs" />
     <Compile Include="LazyExtensions.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Physics\Body.cs" />
@@ -133,7 +135,7 @@
     <Compile Include="MacabreGame.cs" />
     <Compile Include="EventExtensions.cs" />
     <Compile Include="Rotation.cs" />
-    <Compile Include="Serializer.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="FilterSortCollection.cs" />
     <Compile Include="FilterCollection.cs" />

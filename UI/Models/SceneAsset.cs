@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Serialization;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Text;

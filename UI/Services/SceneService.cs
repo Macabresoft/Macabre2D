@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Audio;
     using Macabre2D.Framework.Rendering;
+    using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
@@ -89,7 +90,7 @@
                     await Task.Run(() => {
                         var scene = this.CurrentScene.Scene;
                         var scenePath = this.CurrentScene.SceneAsset.GetPath();
-                        scene.SaveAsJson(scenePath, this._serializer);
+                        scene.SaveToFile(scenePath, this._serializer);
 
                         // This may seem odd, but we want to force a save of the metadata asset when
                         // a scene gets saved. This stores camera position and view height between sessions.

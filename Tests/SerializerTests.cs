@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Tests {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using NUnit.Framework;
     using System.IO;

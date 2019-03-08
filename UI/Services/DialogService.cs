@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
@@ -103,7 +104,7 @@
                     Parent = parent
                 };
 
-                scene.SaveAsJson(sceneAsset.GetPath(), this._serializer);
+                scene.SaveToFile(sceneAsset.GetPath(), this._serializer);
 
                 if (project.StartUpSceneAsset == null) {
                     project.StartUpSceneAsset = sceneAsset;
