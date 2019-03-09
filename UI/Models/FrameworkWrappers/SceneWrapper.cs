@@ -107,6 +107,8 @@
         }
 
         private void Load(Scene scene) {
+            this.Scene = scene;
+
             foreach (var component in scene.ComponentsForSaving) {
                 this.AddChild(new ComponentWrapper(component));
             }
