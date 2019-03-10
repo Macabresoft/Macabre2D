@@ -15,6 +15,11 @@
     <TreeView x:Name="_treeView"
               ItemsSource="{Binding RootAsset, ElementName=_assetBrowser, Converter={StaticResource _assetParentToCollectionConverter}}"
               SelectedItemChanged="TreeView_SelectedItemChanged">
+        <TreeView.Resources>
+            <ContextMenu x:Key="AssetContextMenu">
+                <MenuItem Header="Open in File Explorer" Click="OpenInFileExplorerMenuItem_Click" />
+            </ContextMenu>
+        </TreeView.Resources>
         <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem" BasedOn="{StaticResource MetroTreeViewItem}">
                 <Setter Property="Visibility">
@@ -32,6 +37,8 @@
                         Value="{Binding AssetDoubleClickedCommand, ElementName=_assetBrowser}" />
                 <Setter Property="behaviors:MouseDoubleClickBehavior.CommandParameter"
                         Value="{Binding}" />
+                <Setter Property="ContextMenu" Value="{StaticResource AssetContextMenu}" />
+                <EventSetter Event="PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown" />
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.ItemTemplate>

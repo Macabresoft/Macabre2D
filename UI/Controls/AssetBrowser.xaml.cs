@@ -1,7 +1,10 @@
 ﻿namespace Macabre2D.UI.Controls {
 
     using GalaSoft.MvvmLight.Command;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using System.Diagnostics;
+    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -68,8 +71,30 @@
             }
         }
 
+        private void OpenInFileExplorerMenuItem_Click(object sender, RoutedEventArgs e) {
+            var directory = this.SelectedAsset.Type == AssetType.Folder ? this.SelectedAsset.GetPath() : new FileInfo(this.SelectedAsset.GetPath()).Directory.FullName;
+            Process.Start(directory);
+        }
+
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
             this.SelectedAsset = e.NewValue as Asset;
+
+            if (this.SelectedAsset.Type == AssetType.Folder) {
+                // Set context menu to folder
+            }
+            else {
+                // Set context menu to
+            }
+        }
+
+        private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            if (e.OriginalSource is DependencyObject dependencyObject) {
+                var treeViewItem = dependencyObject.FindAncestor<TreeViewItem>();
+                if (treeViewItem != null) {
+                    treeViewItem.Focus();
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
