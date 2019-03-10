@@ -18,7 +18,7 @@
                 StartupScenePath = "ThisSceneIsAHoldUp"
             };
 
-            var fileLocation = "GameSettingsForTest.m2dgs";
+            var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "GameSettingsForTest.m2dgs");
             GameSettings deserializedGameSettings = null;
             var serializer = new Serializer();
             try {
