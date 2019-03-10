@@ -78,13 +78,6 @@
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
             this.SelectedAsset = e.NewValue as Asset;
-
-            if (this.SelectedAsset.Type == AssetType.Folder) {
-                // Set context menu to folder
-            }
-            else {
-                // Set context menu to
-            }
         }
 
         private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
