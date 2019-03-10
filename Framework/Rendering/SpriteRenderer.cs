@@ -14,7 +14,7 @@
     /// <seealso cref="IDrawableComponent"/>
     /// <seealso cref="IDisposable"/>
     /// <seealso cref="BaseComponent"/>
-    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent {
+    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IIdentifiableContentComponent {
         private Lazy<BoundingArea> _boundingArea;
         private Vector2 _offset;
 
@@ -134,12 +134,24 @@
         }
 
         /// <inheritdoc/>
+        public bool HasContent(Guid id) {
+            return this._sprite?.Id == id;
+        }
+
+        /// <inheritdoc/>
         public override void LoadContent() {
             if (this.Sprite?.ContentPath != null && this._scene?.Game?.Content != null) {
                 this.Sprite.Texture = this._scene.Game.Content.Load<Texture2D>(this.Sprite.ContentPath);
             }
 
             base.LoadContent();
+        }
+
+        /// <inheritdoc/>
+        public void RemoveContent(Guid id) {
+            if (this.HasContent(id)) {
+                this.Sprite = null;
+            }
         }
 
         /// <inheritdoc/>

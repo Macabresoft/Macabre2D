@@ -84,6 +84,7 @@
     <Compile Include="EmptyComponent.cs" />
     <Compile Include="GameSettings.cs" />
     <Compile Include="IBaseComponent.cs" />
+    <Compile Include="IIdentifiableContentComponent.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="IIdentifiable.cs" />
     <Compile Include="IScene.cs" />

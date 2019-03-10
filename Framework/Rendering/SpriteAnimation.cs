@@ -113,6 +113,10 @@
             return this._steps.Remove(step);
         }
 
+        internal bool HasSprite(Guid id) {
+            return this._steps.Any(x => x.Sprite?.Id == id);
+        }
+
         internal void LoadContent(ContentManager contentManager) {
             if (!this._isLoaded) {
                 try {
@@ -123,6 +127,13 @@
                 finally {
                     this._isLoaded = true;
                 }
+            }
+        }
+
+        internal void RemoveSprite(Guid id) {
+            var staps = this._steps.Where(x => x.Sprite?.Id == id);
+            foreach (var step in staps) {
+                step.Sprite = null;
             }
         }
     }

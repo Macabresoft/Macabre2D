@@ -2,12 +2,13 @@
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
+    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Plays a <see cref="AudioClip"/>.
     /// </summary>
-    public sealed class AudioPlayer : BaseComponent {
+    public sealed class AudioPlayer : BaseComponent, IIdentifiableContentComponent {
 
         [DataMember]
         private AudioClip _audioClip;
@@ -121,6 +122,11 @@
         }
 
         /// <inheritdoc/>
+        public bool HasContent(Guid id) {
+            return this.AudioClip?.Id == id;
+        }
+
+        /// <inheritdoc/>
         public override void LoadContent() {
             if (this._audioClip != null && this._scene?.Game != null) {
                 this._audioClip.LoadSoundEffect(this._scene.Game.Content, this.Volume, this.Pan, this.Pitch);
@@ -144,6 +150,13 @@
         public void Play() {
             if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Playing) {
                 this._audioClip.SoundEffectInstance.Play();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void RemoveContent(Guid id) {
+            if (this.HasContent(id)) {
+                this._audioClip = null;
             }
         }
 

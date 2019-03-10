@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
     using System;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -10,7 +11,7 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync {
+    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync, IIdentifiableContentComponent {
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
@@ -57,6 +58,14 @@
         }
 
         /// <inheritdoc/>
+        public bool HasContent(Guid id) {
+            return this._defaultAnimation?.Id == id ||
+                this._spriteAnimation?.Id == id ||
+                this._defaultAnimation?.HasSprite(id) == true ||
+                this._spriteAnimation?.HasSprite(id) == true;
+        }
+
+        /// <inheritdoc/>
         public override void LoadContent() {
             var contentManager = this._scene?.Game?.Content;
             if (contentManager != null) {
@@ -90,8 +99,7 @@
             this.Stop();
             this._spriteAnimation = animation;
 
-            var contentManager = this._scene?.Game?.Content;
-            if (contentManager != null) {
+            if (this._scene?.Game?.Content is ContentManager contentManager) {
                 this._spriteAnimation?.LoadContent(contentManager);
             }
 
@@ -100,6 +108,27 @@
             }
 
             this.Play();
+        }
+
+        /// <inheritdoc/>
+        public void RemoveContent(Guid id) {
+            if (this._defaultAnimation?.Id == id) {
+                this._defaultAnimation = null;
+            }
+            else {
+                this._defaultAnimation?.RemoveSprite(id);
+            }
+
+            if (this._spriteAnimation?.Id == id) {
+                if (this.IsEnabled) {
+                    this.Stop();
+                }
+
+                this._spriteAnimation = null;
+            }
+            else {
+                this._spriteAnimation?.RemoveSprite(id);
+            }
         }
 
         /// <summary>

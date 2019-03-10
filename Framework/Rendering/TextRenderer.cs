@@ -10,7 +10,7 @@
     /// <summary>
     /// A component which will render the specified text.
     /// </summary>
-    public sealed class TextRenderer : BaseComponent, IDrawableComponent {
+    public sealed class TextRenderer : BaseComponent, IDrawableComponent, IIdentifiableContentComponent {
         private Lazy<BoundingArea> _boundingArea;
         private Font _font;
         private string _text = string.Empty;
@@ -97,12 +97,24 @@
         }
 
         /// <inheritdoc/>
+        public bool HasContent(Guid id) {
+            return this._font?.Id == id;
+        }
+
+        /// <inheritdoc/>
         public override void LoadContent() {
             if (this._scene?.Game != null && this.Font != null) {
                 this.Font.LoadSpriteFont(this._scene.Game.Content);
             }
 
             base.LoadContent();
+        }
+
+        /// <inheritdoc/>
+        public void RemoveContent(Guid id) {
+            if (this.HasContent(id)) {
+                this.Font = null;
+            }
         }
 
         /// <inheritdoc/>
