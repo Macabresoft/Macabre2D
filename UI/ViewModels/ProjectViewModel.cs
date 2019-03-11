@@ -8,6 +8,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     public sealed class ProjectViewModel : NotifyPropertyChanged {
@@ -34,7 +35,7 @@
             this._undoService = undoService;
 
             this.AddAssetCommand = new RelayCommand(this.AddAsset);
-            this._deleteAssetCommand = new RelayCommand(this.DeleteAsset, () => this.SelectedAsset?.Parent != null);
+            this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.SelectedAsset?.Parent != null);
             this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => asset.Type == AssetType.Scene);
 
             this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -228,11 +229,12 @@
             }
         }
 
-        private void DeleteAsset() {
+        private async Task DeleteAsset() {
             if (this.SelectedAsset != null) {
                 if (this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.SelectedAsset.Name}? This action cannot be undone.")) {
                     this.SelectedAsset.Delete();
                     this.SelectedAsset = null;
+                    await this.ProjectService.SaveProject();
                 }
             }
         }
