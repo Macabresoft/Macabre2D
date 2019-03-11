@@ -11,9 +11,9 @@
     using System.Windows.Input;
 
     public sealed class ProjectViewModel : NotifyPropertyChanged {
+        private readonly RelayCommand _deleteAssetCommand;
         private readonly IDialogService _dialogService;
         private readonly IMonoGameService _monoGameService;
-        private readonly RelayCommand _removeAssetCommand;
         private readonly ISceneService _sceneService;
         private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
@@ -34,7 +34,7 @@
             this._undoService = undoService;
 
             this.AddAssetCommand = new RelayCommand(this.AddAsset);
-            this._removeAssetCommand = new RelayCommand(this.RemoveAsset, () => this.SelectedAsset?.Parent != null);
+            this._deleteAssetCommand = new RelayCommand(this.DeleteAsset, () => this.SelectedAsset?.Parent != null);
             this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => asset.Type == AssetType.Scene);
 
             this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -45,6 +45,12 @@
         }
 
         public ICommand AddAssetCommand { get; }
+
+        public ICommand DeleteAssetCommand {
+            get {
+                return this._deleteAssetCommand;
+            }
+        }
 
         public Color FallbackBackgroundColor {
             get {
@@ -124,12 +130,6 @@
 
         public IProjectService ProjectService { get; }
 
-        public ICommand RemoveAssetCommand {
-            get {
-                return this._removeAssetCommand;
-            }
-        }
-
         public Asset SelectedAsset {
             get {
                 return this._selectedAsset;
@@ -141,7 +141,7 @@
                     this.RaisePropertyChanged(nameof(this.SelectedImageAsset));
                     this.RaisePropertyChanged(nameof(this.SelectedSpriteAnimationAsset));
                     this.RaisePropertyChanged(nameof(this.SelectedSpriteWrapper));
-                    this._removeAssetCommand.RaiseCanExecuteChanged();
+                    this._deleteAssetCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -228,6 +228,15 @@
             }
         }
 
+        private void DeleteAsset() {
+            if (this.SelectedAsset != null) {
+                if (this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.SelectedAsset.Name}? This action cannot be undone.")) {
+                    this.SelectedAsset.Delete();
+                    this.SelectedAsset = null;
+                }
+            }
+        }
+
         private void OpenScene(Asset asset) {
             if (asset is SceneAsset scene) {
                 this._sceneService.LoadScene(this.ProjectService.CurrentProject, scene);
@@ -246,11 +255,6 @@
             this.RaisePropertyChanged(nameof(this.PixelsPerUnit));
             this.RaisePropertyChanged(nameof(this.ProjectName));
             this.RaisePropertyChanged(nameof(this.SelectedStartUpSceneAsset));
-        }
-
-        private void RemoveAsset() {
-            this.SelectedAsset?.Delete();
-            this.SelectedAsset = null;
         }
     }
 }
