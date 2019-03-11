@@ -23,6 +23,8 @@
             }
         }
 
+        public IScene Scene { get; private set; }
+
         public override AssetType Type {
             get {
                 return AssetType.Scene;
@@ -38,7 +40,11 @@
         }
 
         public IScene Load() {
-            return new Serializer().Deserialize<Scene>(this.GetPath());
+            if (this.Scene == null) {
+                this.Scene = new Serializer().Deserialize<Scene>(this.GetPath());
+            }
+
+            return this.Scene;
         }
 
         public override string ToString() {

@@ -33,6 +33,11 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
+        public override void Delete() {
+            this.RemoveIdentifiableContentFromScenes(this.AudioClip.Id);
+            base.Delete();
+        }
+
         public override void Refresh() {
             this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
             base.Refresh();

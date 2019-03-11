@@ -312,7 +312,7 @@
         }
 
         /// <inheritdoc/>
-        public List<T> GetAllComponentsOfType<T>() where T : BaseComponent {
+        public List<T> GetAllComponentsOfType<T>() {
             var components = new List<T>();
 
             foreach (var component in this._components) {

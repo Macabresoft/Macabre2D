@@ -38,6 +38,10 @@
 
                     if (this._currentScene != null) {
                         this.CurrentScene.PropertyChanged += this.CurrentScene_PropertyChanged;
+
+                        if (this._currentScene.SceneAsset != null) {
+                            this._currentScene.SceneAsset.OnDeleted += this.SceneAsset_OnDeleted;
+                        }
                     }
                 }
             }
@@ -175,6 +179,10 @@
                     }
                 }
             }
+        }
+
+        private void SceneAsset_OnDeleted(object sender, System.EventArgs e) {
+            this.CurrentScene = null;
         }
     }
 }

@@ -24,9 +24,10 @@
             }
         }
 
-        public void Delete() {
+        public override void Delete() {
             File.Delete(this.GetPath());
             File.Delete(this.GetMetadataPath());
+            this.RaiseOnDeleted();
         }
 
         public string GetMetadataPath() {

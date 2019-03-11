@@ -83,9 +83,9 @@
             <Button Content="Add"
                     Command="{Binding AddAssetCommand}"
                     ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item." />
-            <!--<Button Content="Remove"
+            <Button Content="Remove"
                     Command="{Binding RemoveAssetCommand}"
-                    ToolTip="Removes the selected asset from the tree, including all children if the item is a folder." />-->
+                    ToolTip="Removes the selected asset from the tree, including all children if the item is a folder." />
         </StackPanel>
 
         <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"

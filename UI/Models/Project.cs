@@ -169,6 +169,10 @@
             internal ProjectAsset() : base("Assets") {
             }
 
+            public override void Delete() {
+                return; // You can't delete the project asset node.
+            }
+
             public override string GetContentPath() {
                 return string.Empty;
             }

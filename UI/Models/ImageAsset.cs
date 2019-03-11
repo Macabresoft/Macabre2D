@@ -108,6 +108,15 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
+        public override void Delete() {
+            foreach (var child in this._children) {
+                child.Delete();
+            }
+
+            this._children.Clear();
+            base.Delete();
+        }
+
         public override void Refresh() {
             using (var imageStream = File.OpenRead(this.GetPath())) {
                 var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.Default);

@@ -515,7 +515,7 @@
         /// </summary>
         /// <typeparam name="T">A component.</typeparam>
         /// <returns>All components of the specified type in this object and this object's children.</returns>
-        public List<T> GetComponentsInChildren<T>() where T : BaseComponent {
+        public List<T> GetComponentsInChildren<T>() {
             var components = new List<T>();
             components.AddRange(this._children.OfType<T>());
 

@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using System;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
 
@@ -41,6 +42,8 @@
 
         internal Asset() {
         }
+
+        public event EventHandler OnDeleted;
 
         [DataMember]
         public Guid Id { get; private set; } = Guid.NewGuid();
@@ -86,6 +89,15 @@
             return;
         }
 
+        public virtual void Delete() {
+            var path = this.GetPath();
+            var fileAttributes = File.GetAttributes(path);
+            if ((fileAttributes & FileAttributes.Directory) != FileAttributes.Directory) {
+                File.Delete(path);
+                this.RaiseOnDeleted();
+            }
+        }
+
         public virtual string GetContentPath() {
             if (this.Parent != null && !string.IsNullOrEmpty(this.Name)) {
                 return Path.Combine(this.Parent.GetContentPath(), this.Name);
@@ -118,6 +130,27 @@
             }
 
             return root as FolderAsset;
+        }
+
+        protected void RaiseOnDeleted() {
+            this.OnDeleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected void RemoveIdentifiableContentFromScenes(Guid id) {
+            var projectAsset = this.GetRootFolder();
+
+            if (projectAsset != null) {
+                var sceneAssets = projectAsset.GetAssetsOfType<SceneAsset>();
+
+                foreach (var sceneAsset in sceneAssets) {
+                    var scene = sceneAsset.Load();
+                    var contentAssets = scene.GetAllComponentsOfType<IIdentifiableContentComponent>();
+
+                    foreach (var contentAsset in contentAssets.Where(x => x.HasContent(id))) {
+                        contentAsset.RemoveContent(id);
+                    }
+                }
+            }
         }
 
         private void Parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

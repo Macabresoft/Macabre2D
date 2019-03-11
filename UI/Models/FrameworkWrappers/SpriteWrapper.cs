@@ -103,6 +103,10 @@
             }
         }
 
+        public override void Delete() {
+            this.RemoveIdentifiableContentFromScenes(this.Sprite.Id);
+        }
+
         public override string GetContentPath() {
             return this.ImageAsset.GetContentPath();
         }

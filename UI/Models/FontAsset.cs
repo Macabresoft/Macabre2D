@@ -100,6 +100,11 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
+        public override void Delete() {
+            this.RemoveIdentifiableContentFromScenes(this.SavableValue.Id);
+            base.Delete();
+        }
+
         public override void Refresh() {
             this.SavableValue.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
 

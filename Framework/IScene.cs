@@ -84,7 +84,7 @@
         /// </summary>
         /// <typeparam name="T">A component.</typeparam>
         /// <returns>All components of the specified type that are tracked by this scene.</returns>
-        List<T> GetAllComponentsOfType<T>() where T : BaseComponent;
+        List<T> GetAllComponentsOfType<T>();
 
         /// <summary>
         /// Gets the module.

@@ -38,11 +38,22 @@
         public bool AddChild(Asset child) {
             if (child != null && !this._children.Any(x => string.Equals(x.Name, child.Name, StringComparison.CurrentCultureIgnoreCase))) {
                 this._children.Add(child);
+                child.OnDeleted += this.Child_OnDeleted;
                 this.RaisePropertyChanged(nameof(this.Children));
                 return true;
             }
 
             return false;
+        }
+
+        public override void Delete() {
+            var children = this._children.ToList();
+            foreach (var child in children) {
+                child.Delete();
+            }
+
+            Directory.Delete(this.GetPath(), true);
+            this.RaiseOnDeleted();
         }
 
         public IEnumerable<Asset> GetAllContentAssets() {
@@ -113,6 +124,12 @@
             return false;
         }
 
+        private void Child_OnDeleted(object sender, EventArgs e) {
+            if (sender is Asset asset) {
+                this._children.Remove(asset);
+            }
+        }
+
         private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(nameof(this.Children));
         }
@@ -125,7 +142,7 @@
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove) {
-                foreach (var child in e.NewItems.Cast<Asset>().Where(x => x.Parent == this)) {
+                foreach (var child in e.OldItems.Cast<Asset>().Where(x => x.Parent == this)) {
                     child.Parent = null;
                     child.PropertyChanged -= this.Child_PropertyChanged;
                 }
