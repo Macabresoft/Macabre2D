@@ -139,6 +139,14 @@
             return result;
         }
 
+        protected override void ResetContentPath(string newPath) {
+            base.ResetContentPath(newPath);
+
+            foreach (var sprite in this.Children.Select(x => x.Sprite).Where(x => x != null)) {
+                sprite.ContentPath = newPath;
+            }
+        }
+
         private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(nameof(this.Children));
         }

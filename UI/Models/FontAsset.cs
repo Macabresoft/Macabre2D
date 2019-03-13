@@ -142,6 +142,14 @@
             }
         }
 
+        protected override void ResetContentPath(string newPath) {
+            base.ResetContentPath(newPath);
+
+            if (this.SavableValue != null) {
+                this.SavableValue.ContentPath = newPath;
+            }
+        }
+
         protected override void SaveChanges(Serializer serializer) {
             var defaultSpriteFont = Resources.DefaultSpriteFont;
             defaultSpriteFont = defaultSpriteFont.Replace("<FontName>Arial</FontName>", $"<FontName>{this.FontName}</FontName>");

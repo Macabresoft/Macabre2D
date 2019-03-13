@@ -43,6 +43,14 @@
             base.Refresh();
         }
 
+        protected override void RenameAsset(string originalPath, string newPath) {
+            base.RenameAsset(originalPath, newPath);
+
+            if (this.AudioClip != null) {
+                this.AudioClip.ContentPath = this.GetContentPath();
+            }
+        }
+
         private void AudioAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.Name)) {
                 this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);

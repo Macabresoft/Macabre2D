@@ -50,5 +50,13 @@
         public override string ToString() {
             return Path.GetFileNameWithoutExtension(this.Name);
         }
+
+        protected override void ResetContentPath(string newPath) {
+            base.ResetContentPath(newPath);
+
+            if (this.Scene is Scene scene) {
+                scene.Name = this.Name;
+            }
+        }
     }
 }

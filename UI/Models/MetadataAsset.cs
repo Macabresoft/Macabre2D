@@ -31,7 +31,7 @@
         }
 
         public string GetMetadataPath() {
-            return $"{this.GetPath()}{FileHelper.MetaDataExtension}";
+            return this.GetMetadataPath(this.GetPath());
         }
 
         public void Save(Serializer serializer) {
@@ -46,8 +46,23 @@
             }
         }
 
+        protected override void RenameAsset(string originalPath, string newPath) {
+            base.RenameAsset(originalPath, newPath);
+
+            var originalMetadataPath = this.GetMetadataPath(originalPath);
+            var newMetadataPath = this.GetMetadataPath(newPath);
+
+            if (File.Exists(originalMetadataPath)) {
+                File.Move(originalMetadataPath, newMetadataPath);
+            }
+        }
+
         protected virtual void SaveChanges(Serializer serializer) {
             return;
+        }
+
+        private string GetMetadataPath(string assetPath) {
+            return $"{assetPath}{FileHelper.MetaDataExtension}";
         }
 
         private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

@@ -54,7 +54,10 @@
             }
 
             set {
-                this.Set(ref this._name, value);
+                var originalPath = this.GetPath();
+                if (this.Set(ref this._name, value)) {
+                    this.RenameAsset(originalPath, this.GetPath());
+                }
             }
         }
 
@@ -153,10 +156,27 @@
             }
         }
 
+        protected virtual void RenameAsset(string originalPath, string newPath) {
+            File.Move(originalPath, newPath);
+            this.ResetContentPath(newPath);
+        }
+
+        protected virtual void ResetContentPath(string newPath) {
+            return;
+        }
+
         private void Parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.Parent)) {
                 // Raise the parent property changed so that children know to refresh thier paths.
                 this.RaisePropertyChanged(nameof(this.Parent));
+                this.ResetContentPath(this.GetPath());
+            }
+            else if (e.PropertyName == nameof(this.Name)) {
+                this.ResetContentPath(this.GetPath());
+
+                if (this is FolderAsset) {
+                    this.RaisePropertyChanged(nameof(this.Name));
+                }
             }
         }
     }
