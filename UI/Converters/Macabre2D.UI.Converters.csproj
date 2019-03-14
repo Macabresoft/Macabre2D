@@ -88,6 +88,8 @@
     <Compile Include="AssetTypeMaskToVisibilityConverter.cs" />
     <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="ComponentParentToCollectionConverter.cs" />
+    <Compile Include="InverseMultiBoolToVisibilityConverter.cs" />
+    <Compile Include="MultiBoolToVisibilityConverter.cs" />
     <Compile Include="EnumerableToVisibilityConverter.cs" />
     <Compile Include="EnumTypeToValuesConverter.cs" />
     <Compile Include="HyphenateTextConverter.cs" />

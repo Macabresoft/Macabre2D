@@ -3,7 +3,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Models.FrameworkWrappers;assembly=Macabre2D.UI.Models"
-             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
+             xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:ComponentParentToCollectionConverter x:Key="_componentParentToCollectionConverter" />
     </UserControl.Resources>
@@ -42,45 +43,9 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type frameworkWrappers:ComponentWrapper}"
                                           ItemsSource="{Binding Children}">
-                    <Grid>
-                        <TextBlock x:Name="_treeViewItemText"
-                                   Text="{Binding Path=Name}"
-                                   MouseLeftButtonDown="TreeItem_MouseLeftButtonDown" />
-                        <TextBox x:Name="_editableTextBox"
-                                 Text="{Binding Path=Name}"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 HorizontalAlignment="Stretch"
-                                 IsVisibleChanged="TreeItem_IsVisibleChanged"
-                                 KeyDown="TreeItem_KeyDown"
-                                 LostFocus="TreeItem_LostFocus"
-                                 Margin="-1,1"
-                                 Visibility="Hidden" />
-                    </Grid>
-                    <HierarchicalDataTemplate.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding IsEditing, ElementName=_componentHierarchy}"
-                                           Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter TargetName="_editableTextBox"
-                                    Property="Visibility"
-                                    Value="Visible" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding IsEditing, ElementName=_componentHierarchy}"
-                                           Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter TargetName="_treeViewItemText"
-                                    Property="Visibility"
-                                    Value="Collapsed" />
-                        </MultiDataTrigger>
-                    </HierarchicalDataTemplate.Triggers>
+                    <local:EditableTreeViewItemControl AllowUndo="True"
+                                                       Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       ValidEditableTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

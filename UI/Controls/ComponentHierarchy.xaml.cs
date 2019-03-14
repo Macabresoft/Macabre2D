@@ -8,11 +8,11 @@
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using System.Windows.Media;
 
     public partial class ComponentHierarchy : UserControl, INotifyPropertyChanged {
 
@@ -41,8 +41,6 @@
         private readonly RelayCommand _removeComponentCommand;
         private readonly IComponentSelectionService _selectionService;
         private readonly IUndoService _undoService;
-        private bool _isEditing;
-        private string _oldText;
         private Point _startPoint = new Point(0d, 0d);
 
         public ComponentHierarchy() {
@@ -63,20 +61,6 @@
         public ICommand AddComponentCommand {
             get {
                 return this._addComponentCommand;
-            }
-        }
-
-        public bool IsEditing {
-            get {
-                return this._isEditing;
-            }
-
-            set {
-                if (this._isEditing != value) {
-                    this._isEditing = value;
-
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsEditing)));
-                }
             }
         }
 
@@ -101,12 +85,10 @@
             set { this.SetValue(SelectedItemProperty, value); }
         }
 
-        private static TreeViewItem FindTreeItem(DependencyObject source) {
-            while (source != null && !(source is TreeViewItem)) {
-                source = VisualTreeHelper.GetParent(source);
+        public IEnumerable<Type> ValidTypes {
+            get {
+                return new[] { typeof(ComponentWrapper) };
             }
-
-            return source as TreeViewItem;
         }
 
         private void AddComponent() {
@@ -150,42 +132,10 @@
             }
         }
 
-        private void TreeItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (sender is TextBox textBox && textBox.IsVisible) {
-                textBox.Focus();
-                textBox.SelectAll();
-                this._oldText = textBox.Text;
-            }
-        }
-
-        private void TreeItem_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
-                this.IsEditing = false;
-            }
-            else if (e.Key == Key.Escape) {
-                if (sender is TextBox textBox) {
-                    textBox.Text = this._oldText;
-                    this.IsEditing = false;
-                }
-            }
-        }
-
-        private void TreeItem_LostFocus(object sender, RoutedEventArgs e) {
-            this.IsEditing = false;
-        }
-
         private void TreeItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            var treeViewItem = FindTreeItem(e.OriginalSource as DependencyObject);
+            var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
             if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.EditorGame is EditorGame editorGame) {
                 editorGame.FocusComponent(componentWrapper.Component);
-            }
-        }
-
-        private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var treeViewItem = FindTreeItem(e.OriginalSource as DependencyObject);
-            if (treeViewItem != null && treeViewItem.IsSelected && treeViewItem.DataContext is ComponentWrapper) {
-                this.IsEditing = true;
-                e.Handled = true;
             }
         }
 
@@ -249,7 +199,6 @@
             this.SelectedComponent = e.NewValue as ComponentWrapper;
             this._addComponentCommand.RaiseCanExecuteChanged();
             this._removeComponentCommand.RaiseCanExecuteChanged();
-            this.IsEditing = false;
         }
     }
 }

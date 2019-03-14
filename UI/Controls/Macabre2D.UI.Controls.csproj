@@ -163,6 +163,9 @@
     <Compile Include="AssetEditors\SpriteWrapperEditor.xaml.cs">
       <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditableTreeViewItemControl.xaml.cs">
+      <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SceneEditing\BaseGizmo.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
     <Compile Include="SceneEditing\SceneEditorControl.xaml.cs">
@@ -272,6 +275,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetEditors\SpriteWrapperEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditableTreeViewItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
