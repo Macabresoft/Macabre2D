@@ -3,6 +3,7 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -18,21 +19,27 @@
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata());
 
+        public static readonly DependencyProperty InvalidTypesProperty = DependencyProperty.Register(
+            nameof(InvalidTypes),
+            typeof(IEnumerable<Type>),
+            typeof(EditableTreeViewItemControl),
+            new PropertyMetadata(new List<Type>()));
+
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             nameof(Text),
             typeof(string),
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(string.Empty, new PropertyChangedCallback(OnTextChanged)));
 
-        public static readonly DependencyProperty ValidEditableTypesProperty = DependencyProperty.Register(
-            nameof(ValidEditableTypes),
-            typeof(IEnumerable<object>),
+        public static readonly DependencyProperty ValidTypesProperty = DependencyProperty.Register(
+            nameof(ValidTypes),
+            typeof(IEnumerable<Type>),
             typeof(EditableTreeViewItemControl),
-            new PropertyMetadata());
+            new PropertyMetadata(new List<Type>()));
 
         private readonly IUndoService _undoService;
+
         private bool _isEditing;
-        private TreeView _treeView;
 
         public EditableTreeViewItemControl() {
             this._undoService = ViewContainer.Resolve<IUndoService>();
@@ -44,6 +51,11 @@
         public bool AllowUndo {
             get { return (bool)this.GetValue(AllowUndoProperty); }
             set { this.SetValue(AllowUndoProperty, value); }
+        }
+
+        public IEnumerable<Type> InvalidTypes {
+            get { return (IEnumerable<Type>)this.GetValue(InvalidTypesProperty); }
+            set { this.SetValue(InvalidTypesProperty, value); }
         }
 
         public bool IsEditing {
@@ -65,9 +77,9 @@
             set { this.SetValue(TextProperty, value); }
         }
 
-        public IEnumerable<object> ValidEditableTypes {
-            get { return (IEnumerable<object>)this.GetValue(ValidEditableTypesProperty); }
-            set { this.SetValue(ValidEditableTypesProperty, value); }
+        public IEnumerable<Type> ValidTypes {
+            get { return (IEnumerable<Type>)this.GetValue(ValidTypesProperty); }
+            set { this.SetValue(ValidTypesProperty, value); }
         }
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -76,33 +88,35 @@
             }
         }
 
+        private bool CanEditTreeViewItem(TreeViewItem treeViewItem) {
+            return treeViewItem?.DataContext != null &&
+                treeViewItem.IsSelected &&
+                (this.InvalidTypes == null || !this.InvalidTypes.Contains(treeViewItem.DataContext.GetType())) &&
+                (this.ValidTypes == null || !this.ValidTypes.Any() || this.ValidTypes.Contains(treeViewItem.DataContext.GetType()));
+        }
+
         private void CommitNewText(string oldText, string newText) {
             if (this.AllowUndo) {
                 var undoCommand = new UndoCommand(() => {
-                    this.Text = newText;
-                    this._editableTextBox.Text = newText;
+                    this.SetText(newText);
                 }, () => {
-                    this.Text = oldText;
-                    this._editableTextBox.Text = oldText;
+                    this.SetText(oldText);
                 });
 
                 this._undoService.Do(undoCommand);
             }
             else {
-                this.Text = newText;
+                this.SetText(newText);
             }
 
             this.IsEditing = false;
         }
 
-        private void EditableTreeViewItemControl_Loaded(object sender, RoutedEventArgs e) {
-            this._treeView = this.FindAncestor<TreeView>();
-            this._treeView.SelectedItemChanged += this.TreeView_SelectedItemChanged;
-        }
-
-        private void EditableTreeViewItemControl_Unloaded(object sender, RoutedEventArgs e) {
-            this._treeView.SelectedItemChanged -= this.TreeView_SelectedItemChanged;
-            this._treeView = null;
+        private void SetText(string text) {
+            this.Dispatcher.BeginInvoke((Action)(() => {
+                this.Text = text;
+                this._editableTextBox.Text = text;
+            }));
         }
 
         private void TreeItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
@@ -131,15 +145,11 @@
 
         private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-            if (treeViewItem != null && treeViewItem.IsSelected && (!this.ValidEditableTypes.Any() || this.ValidEditableTypes.Contains(treeViewItem.DataContext.GetType()))) {
+            if (this.CanEditTreeViewItem(treeViewItem)) {
                 this._editableTextBox.Text = this.Text;
                 this.IsEditing = true;
                 e.Handled = true;
             }
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            this.CommitNewText(this.Text, this._editableTextBox.Text);
         }
     }
 }

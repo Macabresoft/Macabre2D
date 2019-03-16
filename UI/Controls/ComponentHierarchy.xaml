@@ -45,7 +45,7 @@
                                           ItemsSource="{Binding Children}">
                     <local:EditableTreeViewItemControl AllowUndo="True"
                                                        Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                       ValidEditableTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}" />
+                                                       ValidTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
