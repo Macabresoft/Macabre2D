@@ -10,6 +10,8 @@
         <converters:AssetTypeToIconConverter x:Key="_assetTypeToIconConverter" />
         <converters:AssetTypeMaskToVisibilityConverter x:Key="_assetTypeMaskToVisibilityConverter" />
         <converters:AssetParentToCollectionConverter x:Key="_assetParentToCollectionConverter" />
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
         <converters:EnumerableToVisibilityConverter x:Key="_enumerableToVisibilityConverter" />
     </UserControl.Resources>
     <TreeView x:Name="_treeView"
@@ -47,7 +49,13 @@
                 <StackPanel Orientation="Horizontal">
                     <local:Icon VectorPath="{Binding Path=Type, Converter={StaticResource _assetTypeToIconConverter}}" />
                     <TextBlock Text="{Binding Path=Name}"
+                               Visibility="{Binding IsEditable, ElementName=_assetBrowser, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
                                VerticalAlignment="Center" />
+                    <local:EditableTreeViewItemControl AllowUndo="True"
+                                                       IsFileName="True"
+                                                       Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       InvalidTypes="{Binding InvalidTypes, ElementName=_assetBrowser, Mode=OneWay}"
+                                                       Visibility="{Binding IsEditable, ElementName=_assetBrowser, Converter={StaticResource _boolToVisibilityConverter}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>

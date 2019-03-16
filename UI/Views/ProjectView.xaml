@@ -6,6 +6,7 @@
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
+        <converters:RemoveFileExtensionConverter x:Key="_removeFileExtensionConverter" />
     </UserControl.Resources>
     <Grid Grid.Column="0">
         <Grid.RowDefinitions>
@@ -51,7 +52,13 @@
                       Grid.Column="1"
                       VerticalAlignment="Center"
                       ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
-                      SelectedItem="{Binding SelectedStartUpSceneAsset}" />
+                      SelectedItem="{Binding SelectedStartUpSceneAsset}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Name, Converter={StaticResource _removeFileExtensionConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
             <TextBlock Grid.Row="2"
                        Grid.Column="0"
@@ -90,6 +97,7 @@
 
         <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"
                                Grid.Row="3"
+                               IsEditable="True"
                                RootAsset="{Binding ProjectService.CurrentProject.AssetFolder}"
                                AssetDoubleClickedCommand="{Binding OpenSceneCommand}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
@@ -101,19 +109,6 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
             <controls:AssetEditorControl Asset="{Binding SelectedAsset}" />
-            <!--<Grid>
-                <controls:ImageAssetControl Asset="{Binding SelectedImageAsset}"
-                                            Visibility="{Binding SelectedImageAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
-
-                <controls:SpriteViewer Sprite="{Binding SelectedSpriteWrapper}"
-                                       Visibility="{Binding SelectedSpriteWrapper, Converter={StaticResource _nullToVisibilityConverter}}" />
-
-                <controls:SpriteAnimationAssetControl Asset="{Binding SelectedSpriteAnimationAsset}"
-                                                      Visibility="{Binding SelectedSpriteAnimationAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
-
-                <controls:FontAssetControl Asset="{Binding SelectedFontAsset}"
-                                           Visibility="{Binding SelectedFontAsset, Converter={StaticResource _nullToVisibilityConverter}}" />
-            </Grid>-->
         </ScrollViewer>
     </Grid>
 </UserControl>

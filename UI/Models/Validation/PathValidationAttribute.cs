@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models.Validation {
 
+    using Macabre2D.UI.Common;
     using System.IO;
     using System.Text;
     using System.Windows.Controls;
@@ -22,7 +23,7 @@
 
         public override ValidationResult Validate(object value) {
             if (value is string text) {
-                if (!string.IsNullOrEmpty(text) && text.IndexOfAny(this._invalidPathChars) < 0) {
+                if (FileHelper.IsValidFileName(text)) {
                     return ValidationResult.ValidResult;
                 }
             }

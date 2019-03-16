@@ -23,6 +23,8 @@
 
         Type ShowSelectTypeDialog(Type type);
 
+        void ShowWarningMessageBox(string title, string message);
+
         MessageBoxResult ShowYesNoCancelMessageBox(string title, string message);
 
         bool ShowYesNoMessageBox(string title, string message);

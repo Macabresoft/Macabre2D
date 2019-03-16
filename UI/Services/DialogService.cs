@@ -149,6 +149,10 @@
             return result.HasValue && result.Value ? window.ViewModel?.SelectedType : null;
         }
 
+        public void ShowWarningMessageBox(string title, string message) {
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
         public MessageBoxResult ShowYesNoCancelMessageBox(string title, string message) {
             return MessageBox.Show(message, title, MessageBoxButton.YesNoCancel);
         }

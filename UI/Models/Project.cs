@@ -157,7 +157,7 @@
             this.RaisePropertyChanged(nameof(this.AssetFolder));
         }
 
-        private class ProjectAsset : FolderAsset {
+        internal class ProjectAsset : FolderAsset {
 
             [DataMember]
             private readonly Project _project;

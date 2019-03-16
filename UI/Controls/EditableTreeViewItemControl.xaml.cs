@@ -6,6 +6,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
@@ -20,10 +21,16 @@
             new PropertyMetadata());
 
         public static readonly DependencyProperty InvalidTypesProperty = DependencyProperty.Register(
-            nameof(InvalidTypes),
+                    nameof(InvalidTypes),
             typeof(IEnumerable<Type>),
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(new List<Type>()));
+
+        public static readonly DependencyProperty IsFileNameProperty = DependencyProperty.Register(
+                    nameof(IsFileName),
+            typeof(bool),
+            typeof(EditableTreeViewItemControl),
+            new PropertyMetadata(false));
 
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             nameof(Text),
@@ -37,11 +44,13 @@
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(new List<Type>()));
 
+        private readonly IDialogService _dialogService;
         private readonly IUndoService _undoService;
-
+        private string _fileExtension;
         private bool _isEditing;
 
         public EditableTreeViewItemControl() {
+            this._dialogService = ViewContainer.Resolve<IDialogService>();
             this._undoService = ViewContainer.Resolve<IUndoService>();
             this.InitializeComponent();
         }
@@ -72,6 +81,11 @@
             }
         }
 
+        public bool IsFileName {
+            get { return (bool)this.GetValue(IsFileNameProperty); }
+            set { this.SetValue(IsFileNameProperty, value); }
+        }
+
         public string Text {
             get { return (string)this.GetValue(TextProperty); }
             set { this.SetValue(TextProperty, value); }
@@ -84,7 +98,7 @@
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is EditableTreeViewItemControl control) {
-                control._editableTextBox.Text = e.NewValue as string;
+                control._editableTextBox.Text = control.GetEditableText(e.NewValue as string);
             }
         }
 
@@ -96,26 +110,41 @@
         }
 
         private void CommitNewText(string oldText, string newText) {
-            if (this.AllowUndo) {
-                var undoCommand = new UndoCommand(() => {
-                    this.SetText(newText);
-                }, () => {
-                    this.SetText(oldText);
-                });
-
-                this._undoService.Do(undoCommand);
+            if (this.IsFileName && !FileHelper.IsValidFileName(newText)) {
+                this._dialogService.ShowWarningMessageBox("Invalid File Name", $"'{newText}' contains invalid characters.");
             }
             else {
-                this.SetText(newText);
+                if (this.AllowUndo) {
+                    var undoCommand = new UndoCommand(() => {
+                        this.SetText(newText);
+                    }, () => {
+                        this.SetText(oldText);
+                    });
+
+                    this._undoService.Do(undoCommand);
+                }
+                else {
+                    this.SetText(newText);
+                }
             }
 
             this.IsEditing = false;
         }
 
+        private string GetEditableText(string originalText) {
+            var result = originalText;
+
+            if (this.IsFileName) {
+                result = Path.GetFileNameWithoutExtension(originalText);
+            }
+
+            return result;
+        }
+
         private void SetText(string text) {
             this.Dispatcher.BeginInvoke((Action)(() => {
                 this.Text = text;
-                this._editableTextBox.Text = text;
+                this._editableTextBox.Text = this.GetEditableText(text);
             }));
         }
 
@@ -128,7 +157,8 @@
 
         private void TreeItem_KeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {
-                this.CommitNewText(this.Text, this._editableTextBox.Text);
+                var newText = this.IsFileName ? $"{this._editableTextBox.Text}{Path.GetExtension(this.Text)}" : this._editableTextBox.Text;
+                this.CommitNewText(this.Text, newText);
             }
             else if (e.Key == Key.Escape) {
                 if (sender is TextBox textBox) {
@@ -140,13 +170,13 @@
 
         private void TreeItem_LostFocus(object sender, RoutedEventArgs e) {
             this.IsEditing = false;
-            this._editableTextBox.Text = this.Text;
+            this._editableTextBox.Text = this.GetEditableText(this.Text);
         }
 
         private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
             if (this.CanEditTreeViewItem(treeViewItem)) {
-                this._editableTextBox.Text = this.Text;
+                this._editableTextBox.Text = this.GetEditableText(this.Text);
                 this.IsEditing = true;
                 e.Handled = true;
             }

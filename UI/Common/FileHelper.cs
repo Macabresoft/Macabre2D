@@ -100,5 +100,9 @@ namespace Macabre2D.UI.Common {
         public static bool IsMetadataFile(string fileName) {
             return fileName.ToUpper().EndsWith(FileHelper.MetaDataExtension.ToUpper());
         }
+
+        public static bool IsValidFileName(string fileName) {
+            return !string.IsNullOrEmpty(fileName) && fileName.IndexOfAny(Path.GetInvalidPathChars()) < 0;
+        }
     }
 }

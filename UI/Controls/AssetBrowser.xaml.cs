@@ -3,6 +3,8 @@
     using GalaSoft.MvvmLight.Command;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Windows;
@@ -23,8 +25,14 @@
             typeof(AssetBrowser),
             new PropertyMetadata(AssetType.All));
 
+        public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register(
+            nameof(IsEditable),
+            typeof(bool),
+            typeof(AssetBrowser),
+            new PropertyMetadata(false));
+
         public static readonly DependencyProperty RootAssetProperty = DependencyProperty.Register(
-            nameof(RootAsset),
+                    nameof(RootAsset),
             typeof(IParent<Asset>),
             typeof(AssetBrowser),
             new PropertyMetadata());
@@ -49,6 +57,17 @@
         public AssetType AssetTypeMask {
             get { return (AssetType)this.GetValue(AssetTypeMaskProperty); }
             set { this.SetValue(AssetTypeMaskProperty, value); }
+        }
+
+        public IEnumerable<Type> InvalidTypes {
+            get {
+                return new[] { typeof(Project.ProjectAsset) };
+            }
+        }
+
+        public bool IsEditable {
+            get { return (bool)this.GetValue(IsEditableProperty); }
+            set { this.SetValue(IsEditableProperty, value); }
         }
 
         public RelayCommand NavigateToAssetCommand { get; }
