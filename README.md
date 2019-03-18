@@ -15,6 +15,7 @@ The full source code is available here from GitHub:
  * Set up the MonoGame submodules by calling the following in the MonoGame folder: `git submodule update --init`
  * Run MonoGame/Protobuild.exe to generate MonoGame project files and solutions.
  * Run BuildMonoGame.bat to build the MonoGame solutions required by Macabre2D.
+ * Restore NuGet packages for Macabre2D.sln.
  * Open Macabre2D.sln. From here you can run the editor or example projects.
 
 ## Thanks
