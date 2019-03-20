@@ -199,139 +199,210 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\AssimpNet.dll.config">
+      <Link>Pipeline\AssimpNet.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\ATI.TextureConverter.dll.config">
+      <Link>Pipeline\ATI.TextureConverter.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\MGCB.exe.config">
+      <Link>Pipeline\MGCB.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Nvidia.TextureTools.dll.config">
+      <Link>Pipeline\Nvidia.TextureTools.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Pipeline.exe.config">
+      <Link>Pipeline\Pipeline.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\PVRTexLibNET.dll.config">
+      <Link>Pipeline\PVRTexLibNET.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\Effect.template">
+      <Link>Pipeline\Templates\Effect.template</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\LocalizedSpriteFont.spritefont">
+      <Link>Pipeline\Templates\LocalizedSpriteFont.spritefont</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\LocalizedSpriteFont.template">
+      <Link>Pipeline\Templates\LocalizedSpriteFont.template</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\SpriteEffect.template">
+      <Link>Pipeline\Templates\SpriteEffect.template</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\SpriteFont.spritefont">
+      <Link>Pipeline\Templates\SpriteFont.spritefont</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\SpriteFont.template">
+      <Link>Pipeline\Templates\SpriteFont.template</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\XmlContent.template">
+      <Link>Pipeline\Templates\XmlContent.template</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
-    <None Include="mgcb\MonoGame.Common.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\MonoGame.Content.Builder.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\Tools\Templates\Effect.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\Tools\Templates\SpriteEffect.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\Tools\Templates\SpriteFont.spritefont">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\Tools\Templates\SpriteFont.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="mgcb\Tools\Templates\XmlContent.template">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mgcb\Tools\2MGFX.exe">
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Assimp64.dll">
+      <Link>Pipeline\Assimp64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\AssimpNet.dll">
+      <Link>Pipeline\AssimpNet.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\AssimpNet.pdb">
+      <Link>Pipeline\AssimpNet.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\ATI.TextureConverter.dll">
+      <Link>Pipeline\ATI.TextureConverter.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\CppNet.dll">
+      <Link>Pipeline\CppNet.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Eto.dll">
+      <Link>Pipeline\Eto.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Eto.Wpf.dll">
+      <Link>Pipeline\Eto.Wpf.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\ffmpeg.exe">
+      <Link>Pipeline\ffmpeg.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\ffprobe.exe">
+      <Link>Pipeline\ffprobe.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\FreeImage.dll">
+      <Link>Pipeline\FreeImage.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\FreeImageNET.dll">
+      <Link>Pipeline\FreeImageNET.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\freetype6.dll">
+      <Link>Pipeline\freetype6.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\libmojoshader_64.dll">
+      <Link>Pipeline\libmojoshader_64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\MGCB.exe">
+      <Link>Pipeline\MGCB.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\MonoGame.Build.Tasks.dll">
+      <Link>Pipeline\MonoGame.Build.Tasks.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\MonoGame.Framework.Content.Pipeline.dll">
+      <Link>Pipeline\MonoGame.Framework.Content.Pipeline.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\MonoGame.Framework.dll">
+      <Link>Pipeline\MonoGame.Framework.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Nvidia.TextureTools.dll">
+      <Link>Pipeline\Nvidia.TextureTools.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\nvtt.dll">
+      <Link>Pipeline\nvtt.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Pipeline.exe">
+      <Link>Pipeline\Pipeline.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\PVRTexLibNET.dll">
+      <Link>Pipeline\PVRTexLibNET.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\PVRTexLibWrapper.dll">
+      <Link>Pipeline\PVRTexLibWrapper.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.D3DCompiler.dll">
+      <Link>Pipeline\SharpDX.D3DCompiler.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.Direct2D1.dll">
+      <Link>Pipeline\SharpDX.Direct2D1.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.Direct3D11.dll">
+      <Link>Pipeline\SharpDX.Direct3D11.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.dll">
+      <Link>Pipeline\SharpDX.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.DXGI.dll">
+      <Link>Pipeline\SharpDX.DXGI.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.MediaFoundation.dll">
+      <Link>Pipeline\SharpDX.MediaFoundation.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.XAudio2.dll">
+      <Link>Pipeline\SharpDX.XAudio2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpDX.XInput.dll">
+      <Link>Pipeline\SharpDX.XInput.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\SharpFont.dll">
+      <Link>Pipeline\SharpFont.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\Effect.fx">
+      <Link>Pipeline\Templates\Effect.fx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="mgcb\Tools\Assimp64.dll">
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\Effect.png">
+      <Link>Pipeline\Templates\Effect.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\AssimpNet.dll">
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\Font.png">
+      <Link>Pipeline\Templates\Font.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\ATI.TextureConverter.dll">
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\SpriteEffect.fx">
+      <Link>Pipeline\Templates\SpriteEffect.fx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\CppNet.dll">
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\Xml.png">
+      <Link>Pipeline\Templates\Xml.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\ffmpeg.exe">
+    </None>
+    <None Include="..\..\MonoGame\Tools\Pipeline\bin\Windows\AnyCPU\Release\Templates\XmlContent.xml">
+      <Link>Pipeline\Templates\XmlContent.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\ffprobe.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\FreeImage.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\FreeImageNET.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\freetype6.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\libmojoshader_64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\MGCB.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\MonoGame.Framework.Content.Pipeline.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\MonoGame.Framework.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Nvidia.TextureTools.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\nvtt.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Pipeline.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\PVRTexLibNET.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\PVRTexLibWrapper.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.D3DCompiler.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.Direct2D1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.Direct3D11.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.Direct3D9.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.DXGI.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.MediaFoundation.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.RawInput.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.XAudio2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpDX.XInput.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\SharpFont.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\Effect.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\Effect.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\Font.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\SpriteEffect.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\Xml.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mgcb\Tools\Templates\XmlContent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets" Condition="Exists('..\..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets')" />

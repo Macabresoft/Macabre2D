@@ -101,11 +101,11 @@
         public async Task<bool> BuildContent() {
             var result = true;
             var configurationName = "Debug"; //TODO : allow release
+            this.CurrentProject.AssetFolder.Refresh();
             await Task.Run(() => {
-                this.CurrentProject.AssetFolder.Refresh();
                 this.GenerateContentFile(configurationName);
 
-                var mgcbFilePath = Path.Combine("mgcb", "Tools", "MGCB.exe");
+                var mgcbFilePath = Path.Combine("Pipeline", "MGCB.exe");
                 var sourcePath = this.GetSourcePath();
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                     var process = new Process();
