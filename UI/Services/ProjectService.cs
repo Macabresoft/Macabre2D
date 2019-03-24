@@ -196,73 +196,7 @@
         }
 
         public async Task<Project> CreateProject(string initialDirectory = null) {
-            if (this._dialogService.ShowCreateProjectDialog(out var project, initialDirectory)) {
-                Directory.CreateDirectory(project.Directory);
-
-                if (File.Exists(project.PathToProject)) {
-                    if (!this._dialogService.ShowYesNoMessageBox("Project Already Exists", "A project already exists at the selected location. Overwrite?")) {
-                        return null;
-                    }
-
-                    var backupPath = project.PathToProject + FileHelper.BackupExtension;
-                    File.Delete(backupPath);
-                    File.Copy(project.PathToProject, backupPath);
-                }
-
-                await Task.Run(() => this._serializer.Serialize(project, project.PathToProject));
-
-                Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
-                var dependenciesDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, DependenciesLocation));
-                Directory.CreateDirectory(Path.Combine(project.Directory, SettingsLocation));
-                var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
-
-                var linksDirectory = Directory.CreateDirectory(Path.Combine(dependenciesDirectory.FullName, "Links"));
-                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x64"));
-                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x86"));
-                foreach (var linkFile in this._linkFiles) {
-                    File.Copy(linkFile, Path.Combine(linksDirectory.FullName, linkFile));
-                }
-
-                ZipFile.ExtractToDirectory("Source.zip", sourceDirectory.FullName);
-
-                if (!string.Equals(project.SafeName, TemplateName, StringComparison.CurrentCultureIgnoreCase)) {
-                    var files = new List<string>(Directory.GetFiles(sourceDirectory.FullName, "*.cs", SearchOption.AllDirectories));
-                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.csproj", SearchOption.AllDirectories));
-                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.sln", SearchOption.AllDirectories));
-
-                    foreach (var file in files) {
-                        var text = File.ReadAllText(file);
-                        text = text.Replace(TemplateName, project.SafeName);
-                        File.WriteAllText(file, text);
-
-                        var newFile = file.Replace(TemplateName, project.SafeName);
-
-                        if (!string.Equals(file, newFile, StringComparison.CurrentCultureIgnoreCase)) {
-                            File.Delete(newFile);
-                            File.Move(file, newFile);
-                        }
-                    }
-                }
-
-                var scene = await this._sceneService.CreateScene();
-                scene.SceneAsset = new SceneAsset($"Default{FileHelper.SceneExtension}") {
-                    Parent = project.AssetFolder
-                };
-
-                project.SceneAssets.Add(scene.SceneAsset);
-                project.StartUpSceneAsset = scene.SceneAsset;
-                project.LastSceneOpened = scene.SceneAsset;
-                await this._sceneService.SaveCurrentScene(project);
-
-                this.CurrentProject = project;
-                await this.SaveProject();
-                await this.LoadProject(project.PathToProject);
-                this.HasChanges = true;
-
-                return this.CurrentProject;
-            }
-
-            return null;
+            return await this.CreateProject(string.Empty, initialDirectory);
         }
 
         public string GetBinPath(bool debug) {
@@ -332,6 +266,77 @@
         public async Task<Project> SelectAndLoadProject(string initialDirectory = null) {
             if (this._dialogService.ShowFileBrowser(FileHelper.ProjectFilter, out var location, initialDirectory)) {
                 await this.LoadProject(location);
+            }
+
+            return null;
+        }
+
+        internal async Task<Project> CreateProject(string copyFromDirectory, string initialDirectory = null) {
+            if (this._dialogService.ShowCreateProjectDialog(out var project, initialDirectory)) {
+                Directory.CreateDirectory(project.Directory);
+
+                if (File.Exists(project.PathToProject)) {
+                    if (!this._dialogService.ShowYesNoMessageBox("Project Already Exists", "A project already exists at the selected location. Overwrite?")) {
+                        return null;
+                    }
+
+                    var backupPath = project.PathToProject + FileHelper.BackupExtension;
+                    File.Delete(backupPath);
+                    File.Copy(project.PathToProject, backupPath);
+                }
+
+                await Task.Run(() => this._serializer.Serialize(project, project.PathToProject));
+
+                Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
+                var dependenciesDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, DependenciesLocation));
+                Directory.CreateDirectory(Path.Combine(project.Directory, SettingsLocation));
+                var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
+
+                var linksDirectory = Directory.CreateDirectory(Path.Combine(dependenciesDirectory.FullName, "Links"));
+                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x64"));
+                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x86"));
+                foreach (var linkFile in this._linkFiles) {
+                    File.Copy(string.IsNullOrEmpty(copyFromDirectory) ? linkFile : Path.Combine(copyFromDirectory, linkFile), Path.Combine(linksDirectory.FullName, linkFile));
+                }
+
+                var sourceFileName = "Source.zip";
+                ZipFile.ExtractToDirectory(string.IsNullOrEmpty(copyFromDirectory) ? sourceFileName : Path.Combine(copyFromDirectory, sourceFileName), sourceDirectory.FullName);
+
+                if (!string.Equals(project.SafeName, TemplateName, StringComparison.CurrentCultureIgnoreCase)) {
+                    var files = new List<string>(Directory.GetFiles(sourceDirectory.FullName, "*.cs", SearchOption.AllDirectories));
+                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.csproj", SearchOption.AllDirectories));
+                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.sln", SearchOption.AllDirectories));
+
+                    foreach (var file in files) {
+                        var text = File.ReadAllText(file);
+                        text = text.Replace(TemplateName, project.SafeName);
+                        File.WriteAllText(file, text);
+
+                        var newFile = file.Replace(TemplateName, project.SafeName);
+
+                        if (!string.Equals(file, newFile, StringComparison.CurrentCultureIgnoreCase)) {
+                            File.Delete(newFile);
+                            File.Move(file, newFile);
+                        }
+                    }
+                }
+
+                var scene = await this._sceneService.CreateScene();
+                scene.SceneAsset = new SceneAsset($"Default{FileHelper.SceneExtension}") {
+                    Parent = project.AssetFolder
+                };
+
+                project.SceneAssets.Add(scene.SceneAsset);
+                project.StartUpSceneAsset = scene.SceneAsset;
+                project.LastSceneOpened = scene.SceneAsset;
+                await this._sceneService.SaveCurrentScene(project);
+
+                this.CurrentProject = project;
+                await this.SaveProject();
+                await this.LoadProject(project.PathToProject);
+                this.HasChanges = true;
+
+                return this.CurrentProject;
             }
 
             return null;
