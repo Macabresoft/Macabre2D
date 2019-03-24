@@ -42,6 +42,12 @@
         IGame Game { get; }
 
         /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        string Name { get; }
+
+        /// <summary>
         /// Adds a component as a child.
         /// </summary>
         /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
