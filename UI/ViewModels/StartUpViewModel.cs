@@ -14,12 +14,19 @@
             this._busyService = busyService;
             this.ProjectService = projectService;
             this._sceneService = sceneService;
-            this.OpenProjectCommand = new RelayCommand(async () => await this.OpenProject());
+            this.NewProjectCommand = new RelayCommand(async () => await this.NewProject(), () => !this._busyService.IsBusy);
+            this.OpenProjectCommand = new RelayCommand(async () => await this.OpenProject(), () => !this._busyService.IsBusy);
         }
+
+        public ICommand NewProjectCommand { get; }
 
         public ICommand OpenProjectCommand { get; }
 
         public IProjectService ProjectService { get; }
+
+        private async Task NewProject() {
+            await this._busyService.PerformTask(this.ProjectService.CreateProject(FileHelper.DefaultProjectPath));
+        }
 
         private async Task OpenProject() {
             await this._busyService.PerformTask(this.ProjectService.SelectAndLoadProject(FileHelper.DefaultProjectPath));
