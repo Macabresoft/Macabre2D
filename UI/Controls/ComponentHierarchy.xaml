@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Models.FrameworkWrappers;assembly=Macabre2D.UI.Models"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:dragDrop="urn:gong-wpf-dragdrop"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:ComponentParentToCollectionConverter x:Key="_componentParentToCollectionConverter" />
@@ -26,11 +27,9 @@
 
         <TreeView Grid.Row="1"
                   x:Name="_treeView"
-                  AllowDrop="True"
-                  PreviewMouseLeftButtonDown="TreeView_MouseDown"
-                  PreviewMouseMove="TreeView_MouseMove"
-                  Drop="TreeView_Drop"
-                  DragEnter="TreeView_DragEnter"
+                  dragDrop:DragDrop.IsDragSource="True"
+                  dragDrop:DragDrop.IsDropTarget="True"
+                  dragDrop:DragDrop.DropHandler="{Binding}"
                   ItemsSource="{Binding Root, Converter={StaticResource _componentParentToCollectionConverter}}"
                   SelectedItemChanged="TreeView_SelectedItemChanged">
             <TreeView.ItemContainerStyle>
