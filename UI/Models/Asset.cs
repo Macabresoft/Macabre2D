@@ -157,8 +157,10 @@
         }
 
         protected virtual void RenameAsset(string originalPath, string newPath) {
-            File.Move(originalPath, newPath);
-            this.ResetContentPath(newPath);
+            if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath)) {
+                File.Move(originalPath, newPath);
+                this.ResetContentPath(newPath);
+            }
         }
 
         protected virtual void ResetContentPath(string newPath) {
