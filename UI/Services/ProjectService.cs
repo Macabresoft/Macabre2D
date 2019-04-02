@@ -167,12 +167,11 @@
                     }
 
                     var configurationName = "Debug"; // TODO: Allow release
-                    this.GenerateContentFile(configurationName);
                     this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
 
                     var properties = new Dictionary<string, string> {
-                    { "Configuration", configurationName }
-                };
+                        { "Configuration", configurationName }
+                    };
 
                     var solutionPath = this.GetSolutionPath();
                     var buildParameters = new Microsoft.Build.Execution.BuildParameters();
