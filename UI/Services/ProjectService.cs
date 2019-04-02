@@ -22,8 +22,8 @@
         private const string GameplayName = @"Gameplay";
         private const string ReferencesLocation = @"References";
         private const string ReleaseName = @"Release";
-        private const short SecondsToAttemptBuildContent = 5;
-        private const short SecondsToAttemptDelete = 15;
+        private const short SecondsToAttemptBuildContent = 60;
+        private const short SecondsToAttemptDelete = 60;
         private const string SettingsLocation = @"Settings";
         private const string SourceLocation = @"Source";
         private const string TemplateName = @"TotallyUniqueName123ABC";
@@ -148,48 +148,50 @@
         }
 
         public async Task<bool> BuildProject() {
-            var result = true;
+            var result = await this.BuildContent();
             var tempDirectoryPath = this.GetTempDirectoryPath();
 
-            await Task.Run(async () => {
-                var referencePath = this.GetReferencePath();
-                if (!Directory.Exists(referencePath)) {
-                    Directory.CreateDirectory(referencePath);
-                }
+            if (result) {
+                await Task.Run(async () => {
+                    var referencePath = this.GetReferencePath();
+                    if (!Directory.Exists(referencePath)) {
+                        Directory.CreateDirectory(referencePath);
+                    }
 
-                foreach (var file in this._referenceFiles) {
-                    File.Copy(file, Path.Combine(referencePath, file), true);
-                }
+                    foreach (var file in this._referenceFiles) {
+                        File.Copy(file, Path.Combine(referencePath, file), true);
+                    }
 
-                foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    configuration.CopyMonoGameFrameworkDLL(referencePath);
-                }
+                    foreach (var configuration in this.CurrentProject.BuildConfigurations) {
+                        configuration.CopyMonoGameFrameworkDLL(referencePath);
+                    }
 
-                var configurationName = "Debug"; // TODO: Allow release
-                this.GenerateContentFile(configurationName);
-                this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
+                    var configurationName = "Debug"; // TODO: Allow release
+                    this.GenerateContentFile(configurationName);
+                    this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
 
-                var properties = new Dictionary<string, string> {
+                    var properties = new Dictionary<string, string> {
                     { "Configuration", configurationName }
                 };
 
-                var solutionPath = this.GetSolutionPath();
-                var buildParameters = new Microsoft.Build.Execution.BuildParameters();
-                var buildRequest = new Microsoft.Build.Execution.BuildRequestData(solutionPath, properties, null, new string[] { "Build" }, null);
-                var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
-                result &= buildResult.OverallResult == Microsoft.Build.Execution.BuildResultCode.Success;
+                    var solutionPath = this.GetSolutionPath();
+                    var buildParameters = new Microsoft.Build.Execution.BuildParameters();
+                    var buildRequest = new Microsoft.Build.Execution.BuildRequestData(solutionPath, properties, null, new string[] { "Build" }, null);
+                    var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
+                    result &= buildResult.OverallResult == Microsoft.Build.Execution.BuildResultCode.Success;
 
-                if (result) {
-                    await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
-                    FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
-                }
-                else if (!Directory.Exists(tempDirectoryPath)) {
-                    Directory.CreateDirectory(tempDirectoryPath);
-                    foreach (var file in this._referenceFiles) {
-                        File.Copy(file, Path.Combine(tempDirectoryPath, file), true);
+                    if (result) {
+                        await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
+                        FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
                     }
-                }
-            });
+                    else if (!Directory.Exists(tempDirectoryPath)) {
+                        Directory.CreateDirectory(tempDirectoryPath);
+                        foreach (var file in this._referenceFiles) {
+                            File.Copy(file, Path.Combine(tempDirectoryPath, file), true);
+                        }
+                    }
+                });
+            }
 
             await this._assemblyService.LoadAssemblies(tempDirectoryPath);
             return result;

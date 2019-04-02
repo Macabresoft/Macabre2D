@@ -10,7 +10,7 @@
     internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly EditorGame _editorGame;
         private readonly ISceneService _sceneService;
-        private Camera _camera;
+        private Camera _camera = new Camera();
         private int _previousScrollWheelValue = 0;
         private GridDrawer _primaryGridDrawer;
         private GridDrawer _secondaryGridDrawer;
@@ -25,7 +25,11 @@
                 return this._camera;
             }
 
-            set {
+            private set {
+                if (value == null) {
+                    value = new Camera();
+                }
+
                 var oldCamera = this._camera;
                 if (this.Set(ref this._camera, value)) {
                     if (this._camera != null && this._editorGame.CurrentScene != null && this._editorGame.IsInitialized) {
@@ -44,7 +48,7 @@
         }
 
         internal void Draw(GameTime gameTime) {
-            if (this._editorGame.ShowGrid) {
+            if (this._editorGame.ShowGrid && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
                 if (this._editorGame.CurrentScene != null) {
                     var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                     this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
@@ -84,7 +88,7 @@
         }
 
         internal void RefreshCamera() {
-            this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera ?? new Camera();
+            this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera;
             if (this._editorGame.IsInitialized && this._editorGame.CurrentScene != null) {
                 this.Camera.Initialize(this._editorGame.CurrentScene);
             }
