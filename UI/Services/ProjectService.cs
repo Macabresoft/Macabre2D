@@ -101,7 +101,7 @@
         public async Task<bool> BuildContent() {
             var result = true;
             var configurationName = "Debug"; //TODO : allow release
-            this.CurrentProject.AssetFolder.Refresh();
+
             await Task.Run(() => {
                 this.GenerateContentFile(configurationName);
 
