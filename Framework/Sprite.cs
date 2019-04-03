@@ -117,6 +117,20 @@
             this.Dispose(true);
         }
 
+        internal void SetErrorTexture(SpriteBatch spriteBatch) {
+            if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
+                var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);
+                var pixels = new Color[this.Size.X * this.Size.Y];
+
+                for (var i = 0; i < pixels.Length; i++) {
+                    pixels[i] = Color.HotPink;
+                }
+
+                errorTexture.SetData(pixels); // TODO: make this configurable so people can ignore their broken textures with a transparent one
+                this.Texture = errorTexture;
+            }
+        }
+
         private void Dispose(bool disposing) {
             if (!this._disposedValue) {
                 if (disposing) {
