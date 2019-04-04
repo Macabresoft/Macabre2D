@@ -1,18 +1,20 @@
-﻿namespace Macabre2D.UI.Models {
-
+﻿namespace Macabre2D.UI.Models
+{
     using Macabre2D.Framework.Audio;
     using System;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Text;
 
-    public sealed class AudioAsset : MetadataAsset {
-
-        public AudioAsset(string name) : base(name) {
+    public sealed class AudioAsset : MetadataAsset
+    {
+        public AudioAsset(string name) : base(name)
+        {
             this.PropertyChanged += this.AudioAsset_PropertyChanged;
         }
 
-        public AudioAsset() : this(string.Empty) {
+        public AudioAsset() : this(string.Empty)
+        {
         }
 
         [DataMember]
@@ -24,7 +26,8 @@
             }
         }
 
-        public override void BuildProcessorCommands(StringBuilder contentStringBuilder) {
+        public override void BuildProcessorCommands(StringBuilder contentStringBuilder)
+        {
             var path = this.GetContentPath();
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine($@"/importer:{this.GetImporterName()}");
@@ -33,42 +36,53 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
-        public override void Delete() {
+        public override void Delete()
+        {
             this.RemoveIdentifiableContentFromScenes(this.AudioClip.Id);
             base.Delete();
         }
 
-        public override void Refresh() {
+        public override void Refresh()
+        {
             this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
             base.Refresh();
         }
 
-        protected override void RenameAsset(string originalPath, string newPath) {
-            base.RenameAsset(originalPath, newPath);
+        internal override void MoveAsset(string originalPath, string newPath)
+        {
+            base.MoveAsset(originalPath, newPath);
 
-            if (this.AudioClip != null) {
+            if (this.AudioClip != null)
+            {
                 this.AudioClip.ContentPath = this.GetContentPath();
             }
         }
 
-        private void AudioAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
+        private void AudioAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.Name))
+            {
                 this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
             }
         }
 
-        private string GetImporterName() {
+        private string GetImporterName()
+        {
             var result = string.Empty;
-            if (this.Name.ToUpper().EndsWith(".WAV")) {
+            if (this.Name.ToUpper().EndsWith(".WAV"))
+            {
                 result = "WavImporter";
             }
-            else if (this.Name.ToUpper().EndsWith(".MP3")) {
+            else if (this.Name.ToUpper().EndsWith(".MP3"))
+            {
                 result = "Mp3Importer";
             }
-            else if (this.Name.ToUpper().EndsWith(".WMA")) {
+            else if (this.Name.ToUpper().EndsWith(".WMA"))
+            {
                 result = "WmaImporter";
             }
-            else {
+            else
+            {
                 throw new NotSupportedException("You have an audio asset with an unsupported file extension. Please use .mp3, .wav, or .wma.");
             }
 

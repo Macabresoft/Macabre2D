@@ -1,21 +1,24 @@
-﻿namespace Macabre2D.UI.Models.FrameworkWrappers {
-
+﻿namespace Macabre2D.UI.Models.FrameworkWrappers
+{
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
     using System.IO;
     using System.Runtime.Serialization;
 
-    public sealed class SpriteWrapper : Asset {
+    public sealed class SpriteWrapper : Asset
+    {
         private ImageAsset _imageAsset;
         private Sprite _sprite;
 
-        public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) : this() {
+        public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) : this()
+        {
             this.Sprite = sprite;
             this.ImageAsset = imageAsset;
         }
 
-        internal SpriteWrapper() {
+        internal SpriteWrapper()
+        {
             this.PropertyChanged += this.SpriteWrapper_PropertyChanged;
         }
 
@@ -32,12 +35,15 @@
 
             set {
                 var oldImageAsset = this._imageAsset;
-                if (this.Set(ref this._imageAsset, value)) {
-                    if (this._imageAsset != null) {
+                if (this.Set(ref this._imageAsset, value))
+                {
+                    if (this._imageAsset != null)
+                    {
                         this._imageAsset.PropertyChanged += this.ImageAsset_PropertyChanged;
                     }
 
-                    if (oldImageAsset != null) {
+                    if (oldImageAsset != null)
+                    {
                         oldImageAsset.PropertyChanged -= this.ImageAsset_PropertyChanged;
                     }
                 }
@@ -46,7 +52,8 @@
 
         public Point Location {
             get {
-                if (this.Sprite != null) {
+                if (this.Sprite != null)
+                {
                     return this.Sprite.Location;
                 }
 
@@ -63,7 +70,8 @@
 
         public Point Size {
             get {
-                if (this.Sprite != null) {
+                if (this.Sprite != null)
+                {
                     return this.Sprite.Size;
                 }
 
@@ -85,7 +93,8 @@
             }
 
             private set {
-                if (this.Set(ref this._sprite, value)) {
+                if (this.Set(ref this._sprite, value))
+                {
                     this._sprite.Name = this.Name;
                 }
             }
@@ -103,33 +112,42 @@
             }
         }
 
-        public override void Delete() {
+        public override void Delete()
+        {
             this.RemoveIdentifiableContentFromScenes(this.Sprite.Id);
         }
 
-        public override string GetContentPath() {
+        public override string GetContentPath()
+        {
             return this.ImageAsset.GetContentPath();
         }
 
-        public override string GetPath() {
+        public override string GetPath()
+        {
             return this.ImageAsset?.GetPath();
         }
 
-        protected override void RenameAsset(string originalPath, string newPath) {
+        internal override void MoveAsset(string originalPath, string newPath)
+        {
             return; // A sprite being renamed doesn't require an asset rename, as it is stored inside of an ImageAsset. This is a weird hack, sorry.
         }
 
-        private void ImageAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Parent.Name) || e.PropertyName == nameof(this.Parent.Parent)) {
+        private void ImageAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.Parent.Name) || e.PropertyName == nameof(this.Parent.Parent))
+            {
                 this.Sprite.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
             }
         }
 
-        private void SpriteWrapper_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
+        private void SpriteWrapper_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.Name))
+            {
                 this.Sprite.Name = this.Name;
             }
-            else if (e.PropertyName == nameof(this.Sprite)) {
+            else if (e.PropertyName == nameof(this.Sprite))
+            {
                 this.RaisePropertyChanged(nameof(this.Name));
                 this.RaisePropertyChanged(nameof(this.Location));
                 this.RaisePropertyChanged(nameof(this.Size));

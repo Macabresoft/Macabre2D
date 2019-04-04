@@ -1,5 +1,5 @@
-﻿namespace Macabre2D.UI.Models {
-
+﻿namespace Macabre2D.UI.Models
+{
     using Macabre2D.Framework;
     using System;
     using System.IO;
@@ -8,7 +8,8 @@
     using System.Text;
 
     [Flags]
-    public enum AssetType {
+    public enum AssetType
+    {
         Folder = 0,
 
         File = 1 << 0,
@@ -29,18 +30,20 @@
     }
 
     [DataContract]
-    public class Asset : NotifyPropertyChanged {
-
+    public class Asset : NotifyPropertyChanged
+    {
         [DataMember]
         private string _name;
 
         private FolderAsset _parent;
 
-        public Asset(string name) {
+        public Asset(string name)
+        {
             this._name = name;
         }
 
-        internal Asset() {
+        internal Asset()
+        {
         }
 
         public event EventHandler OnDeleted;
@@ -55,8 +58,9 @@
 
             set {
                 var originalPath = this.GetPath();
-                if (this.Set(ref this._name, value)) {
-                    this.RenameAsset(originalPath, this.GetPath());
+                if (this.Set(ref this._name, value))
+                {
+                    this.MoveAsset(originalPath, this.GetPath());
                 }
             }
         }
@@ -68,15 +72,20 @@
 
             set {
                 var originalParent = this._parent as FolderAsset;
-                if (this.Set(ref this._parent, value)) {
-                    if (originalParent != null) {
+                var originalPath = this.GetPath();
+                if (this.Set(ref this._parent, value))
+                {
+                    if (originalParent != null)
+                    {
                         originalParent.PropertyChanged -= this.Parent_PropertyChanged;
                         originalParent.RemoveChild(this);
                     }
 
-                    if (this._parent != null) {
+                    if (this._parent != null)
+                    {
                         this._parent.PropertyChanged += this.Parent_PropertyChanged;
                         this._parent.AddChild(this);
+                        this.MoveAsset(originalPath, this.GetPath());
                     }
                 }
             }
@@ -88,95 +97,118 @@
             }
         }
 
-        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder) {
+        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder)
+        {
             return;
         }
 
-        public virtual void Delete() {
+        public virtual void Delete()
+        {
             var path = this.GetPath();
             var fileAttributes = File.GetAttributes(path);
-            if ((fileAttributes & FileAttributes.Directory) != FileAttributes.Directory) {
+            if ((fileAttributes & FileAttributes.Directory) != FileAttributes.Directory)
+            {
                 File.Delete(path);
                 this.RaiseOnDeleted();
             }
         }
 
-        public virtual string GetContentPath() {
-            if (this.Parent != null && !string.IsNullOrEmpty(this.Name)) {
+        public virtual string GetContentPath()
+        {
+            if (this.Parent != null && !string.IsNullOrEmpty(this.Name))
+            {
                 return Path.Combine(this.Parent.GetContentPath(), this.Name);
             }
 
             return (this.Name ?? string.Empty);
         }
 
-        public virtual string GetPath() {
-            if (this.Parent != null && !string.IsNullOrEmpty(this.Name)) {
+        public virtual string GetPath()
+        {
+            if (this.Parent != null && !string.IsNullOrEmpty(this.Name))
+            {
                 return Path.Combine(this.Parent.GetPath(), this.Name);
             }
 
             return (this.Name ?? string.Empty);
         }
 
-        public virtual void Refresh() {
+        public virtual void Refresh()
+        {
             return;
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return this.Name;
         }
 
-        internal FolderAsset GetRootFolder() {
+        internal FolderAsset GetRootFolder()
+        {
             var root = this;
 
-            while (root.Parent is FolderAsset folderAsset) {
+            while (root.Parent is FolderAsset folderAsset)
+            {
                 root = folderAsset;
             }
 
             return root as FolderAsset;
         }
 
-        protected void RaiseOnDeleted() {
+        internal virtual void MoveAsset(string originalPath, string newPath)
+        {
+            if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath))
+            {
+                File.Move(originalPath, newPath);
+                this.ResetContentPath(newPath);
+            }
+        }
+
+        protected void RaiseOnDeleted()
+        {
             this.OnDeleted?.Invoke(this, EventArgs.Empty);
         }
 
-        protected void RemoveIdentifiableContentFromScenes(Guid id) {
+        protected void RemoveIdentifiableContentFromScenes(Guid id)
+        {
             var projectAsset = this.GetRootFolder();
 
-            if (projectAsset != null) {
+            if (projectAsset != null)
+            {
                 var sceneAssets = projectAsset.GetAssetsOfType<SceneAsset>();
 
-                foreach (var sceneAsset in sceneAssets) {
+                foreach (var sceneAsset in sceneAssets)
+                {
                     var scene = sceneAsset.Load();
                     var contentAssets = scene.GetAllComponentsOfType<IIdentifiableContentComponent>();
 
-                    foreach (var contentAsset in contentAssets.Where(x => x.HasContent(id))) {
+                    foreach (var contentAsset in contentAssets.Where(x => x.HasContent(id)))
+                    {
                         contentAsset.RemoveContent(id);
                     }
                 }
             }
         }
 
-        protected virtual void RenameAsset(string originalPath, string newPath) {
-            if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath)) {
-                File.Move(originalPath, newPath);
-                this.ResetContentPath(newPath);
-            }
-        }
-
-        protected virtual void ResetContentPath(string newPath) {
+        protected virtual void ResetContentPath(string newPath)
+        {
             return;
         }
 
-        private void Parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Parent)) {
+        private void Parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.Parent))
+            {
                 // Raise the parent property changed so that children know to refresh thier paths.
                 this.RaisePropertyChanged(nameof(this.Parent));
                 this.ResetContentPath(this.GetPath());
             }
-            else if (e.PropertyName == nameof(this.Name)) {
+            else if (e.PropertyName == nameof(this.Name))
+            {
                 this.ResetContentPath(this.GetPath());
 
-                if (this is FolderAsset) {
+                if (this is FolderAsset)
+                {
                     this.RaisePropertyChanged(nameof(this.Name));
                 }
             }
