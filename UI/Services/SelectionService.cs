@@ -37,7 +37,7 @@
                         result = child;
                     }
                     else {
-                        this.FindWrapperInChildren(child, component);
+                        result = this.FindWrapperInChildren(child, component);
                     }
 
                     if (result != null) {
