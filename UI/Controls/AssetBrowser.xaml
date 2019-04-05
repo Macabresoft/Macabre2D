@@ -5,6 +5,7 @@
              xmlns:models="clr-namespace:Macabre2D.UI.Models;assembly=Macabre2D.UI.Models"
              xmlns:behaviors="clr-namespace:Macabre2D.UI.Common.Behaviors;assembly=Macabre2D.UI.Common"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:dragDrop="urn:gong-wpf-dragdrop"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:AssetTypeToIconConverter x:Key="_assetTypeToIconConverter" />
@@ -15,6 +16,9 @@
         <converters:EnumerableToVisibilityConverter x:Key="_enumerableToVisibilityConverter" />
     </UserControl.Resources>
     <TreeView x:Name="_treeView"
+              dragDrop:DragDrop.IsDragSource="{Binding IsEditable, ElementName=_assetBrowser}"
+              dragDrop:DragDrop.IsDropTarget="{Binding IsEditable, ElementName=_assetBrowser}"
+              dragDrop:DragDrop.DropHandler="{Binding ElementName=_assetBrowser}"
               ItemsSource="{Binding RootAsset, ElementName=_assetBrowser, Converter={StaticResource _assetParentToCollectionConverter}}"
               SelectedItemChanged="TreeView_SelectedItemChanged">
         <TreeView.Resources>

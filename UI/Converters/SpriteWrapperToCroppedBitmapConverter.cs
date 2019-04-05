@@ -13,7 +13,11 @@
             if (value is SpriteWrapper spriteWrapper) {
                 var path = spriteWrapper.GetPath();
                 if (!string.IsNullOrWhiteSpace(path)) {
-                    var source = new BitmapImage(new Uri(spriteWrapper.GetPath()));
+                    var source = new BitmapImage();
+                    source.BeginInit();
+                    source.UriSource = new Uri(path, UriKind.Absolute);
+                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.EndInit();
 
                     var x = Math.Min(source.PixelWidth, spriteWrapper.Location.X);
                     var y = Math.Min(source.PixelHeight, spriteWrapper.Location.Y);

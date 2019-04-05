@@ -1,17 +1,20 @@
 ﻿namespace Macabre2D.UI.Controls {
 
     using GalaSoft.MvvmLight.Command;
+    using GongSolutions.Wpf.DragDrop;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
 
-    public partial class AssetBrowser : UserControl {
+    public partial class AssetBrowser : UserControl, IDropTarget {
 
         public static readonly DependencyProperty AssetDoubleClickedCommandProperty = DependencyProperty.Register(
             nameof(AssetDoubleClickedCommand),
@@ -84,25 +87,63 @@
             set { this.SetValue(SelectedAssetProperty, value); }
         }
 
-        private void AssetBrowser_Loaded(object sender, RoutedEventArgs e) {
-            if (this._treeView.ItemContainerGenerator.ContainerFromIndex(0) is TreeViewItem item) {
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            if (dropInfo.Data is DefaultDataWrapper source &&
+                dropInfo.TargetItem is Asset target)
+            {
+                var assets = source.Items.OfType<Asset>().Where(x => x.GetType() != typeof(SpriteWrapper));
+                if (target is FolderAsset folderAsset && assets.Any())
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Move;
+                }
+                else
+                {
+                    dropInfo.DropTargetAdorner = null;
+                    dropInfo.Effects = DragDropEffects.None;
+                }
+            }
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            if (dropInfo.Data is DefaultDataWrapper source && dropInfo.TargetItem is FolderAsset folder)
+            {
+                var assets = source.Items.OfType<Asset>().Where(x => x.GetType() != typeof(SpriteWrapper));
+                foreach (var asset in assets)
+                {
+                    asset.Parent = folder;
+                }
+            }
+        }
+
+        private void AssetBrowser_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this._treeView.ItemContainerGenerator.ContainerFromIndex(0) is TreeViewItem item)
+            {
                 item.IsSelected = true;
             }
         }
 
-        private void OpenInFileExplorerMenuItem_Click(object sender, RoutedEventArgs e) {
+        private void OpenInFileExplorerMenuItem_Click(object sender, RoutedEventArgs e)
+        {
             var directory = this.SelectedAsset.Type == AssetType.Folder ? this.SelectedAsset.GetPath() : new FileInfo(this.SelectedAsset.GetPath()).Directory.FullName;
             Process.Start(directory);
         }
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
             this.SelectedAsset = e.NewValue as Asset;
         }
 
-        private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            if (e.OriginalSource is DependencyObject dependencyObject) {
+        private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is DependencyObject dependencyObject)
+            {
                 var treeViewItem = dependencyObject.FindAncestor<TreeViewItem>();
-                if (treeViewItem != null) {
+                if (treeViewItem != null)
+                {
                     treeViewItem.Focus();
                     e.Handled = true;
                 }
