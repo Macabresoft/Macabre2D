@@ -1,18 +1,16 @@
-﻿namespace Macabre2D.UI.Models
-{
+﻿namespace Macabre2D.UI.Models {
+
     using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
     using System.IO;
 
-    public class MetadataAsset : Asset
-    {
-        public MetadataAsset(string fileName) : base(fileName)
-        {
+    public class MetadataAsset : Asset {
+
+        public MetadataAsset(string fileName) : base(fileName) {
             this.PropertyChanged += this.Self_PropertyChanged;
         }
 
-        public MetadataAsset() : this(string.Empty)
-        {
+        public MetadataAsset() : this(string.Empty) {
         }
 
         public bool HasChanges {
@@ -26,59 +24,48 @@
             }
         }
 
-        public override void Delete()
-        {
+        public override void Delete() {
             File.Delete(this.GetPath());
             File.Delete(this.GetMetadataPath());
             this.RaiseOnDeleted();
         }
 
-        public string GetMetadataPath()
-        {
+        public string GetMetadataPath() {
             return this.GetMetadataPath(this.GetPath());
         }
 
-        public void Save(Serializer serializer)
-        {
-            if (this.HasChanges)
-            {
-                try
-                {
+        public void Save(Serializer serializer) {
+            if (this.HasChanges) {
+                try {
                     this.SaveChanges(serializer);
                     serializer.Serialize(this, this.GetMetadataPath());
                 }
-                finally
-                {
+                finally {
                     this.HasChanges = false;
                 }
             }
         }
 
-        internal override void MoveAsset(string originalPath, string newPath)
-        {
+        internal override void MoveAsset(string originalPath, string newPath) {
             base.MoveAsset(originalPath, newPath);
 
             var originalMetadataPath = this.GetMetadataPath(originalPath);
             var newMetadataPath = this.GetMetadataPath(newPath);
 
-            if (File.Exists(originalMetadataPath))
-            {
+            if (File.Exists(originalMetadataPath)) {
                 File.Move(originalMetadataPath, newMetadataPath);
             }
         }
 
-        protected virtual void SaveChanges(Serializer serializer)
-        {
+        protected virtual void SaveChanges(Serializer serializer) {
             return;
         }
 
-        private string GetMetadataPath(string assetPath)
-        {
+        private string GetMetadataPath(string assetPath) {
             return $"{assetPath}{FileHelper.MetaDataExtension}";
         }
 
-        private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+        private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.HasChanges = true;
         }
     }

@@ -1,5 +1,4 @@
-﻿namespace Macabre2D.UI.Controls
-{
+﻿namespace Macabre2D.UI.Controls {
 
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
@@ -13,8 +12,7 @@
     using System.Windows.Controls;
     using System.Windows.Input;
 
-    public partial class EditableTreeViewItemControl : UserControl, INotifyPropertyChanged
-    {
+    public partial class EditableTreeViewItemControl : UserControl, INotifyPropertyChanged {
 
         public static readonly DependencyProperty AllowUndoProperty = DependencyProperty.Register(
             nameof(AllowUndo),
@@ -50,8 +48,7 @@
         private readonly IUndoService _undoService;
         private bool _isEditing;
 
-        public EditableTreeViewItemControl()
-        {
+        public EditableTreeViewItemControl() {
             this._dialogService = ViewContainer.Resolve<IDialogService>();
             this._undoService = ViewContainer.Resolve<IUndoService>();
             this.InitializeComponent();
@@ -75,8 +72,7 @@
             }
 
             set {
-                if (this._isEditing != value)
-                {
+                if (this._isEditing != value) {
                     this._isEditing = value;
 
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsEditing)));
@@ -99,44 +95,34 @@
             set { this.SetValue(ValidTypesProperty, value); }
         }
 
-        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is EditableTreeViewItemControl control)
-            {
+        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            if (d is EditableTreeViewItemControl control) {
                 control._editableTextBox.Text = control.GetEditableText(e.NewValue as string);
             }
         }
 
-        private bool CanEditTreeViewItem(TreeViewItem treeViewItem)
-        {
+        private bool CanEditTreeViewItem(TreeViewItem treeViewItem) {
             return treeViewItem?.DataContext != null &&
                 treeViewItem.IsSelected &&
                 (this.InvalidTypes == null || !this.InvalidTypes.Contains(treeViewItem.DataContext.GetType())) &&
                 (this.ValidTypes == null || !this.ValidTypes.Any() || this.ValidTypes.Contains(treeViewItem.DataContext.GetType()));
         }
 
-        private void CommitNewText(string oldText, string newText)
-        {
-            if (this.IsFileName && !FileHelper.IsValidFileName(newText))
-            {
+        private void CommitNewText(string oldText, string newText) {
+            if (this.IsFileName && !FileHelper.IsValidFileName(newText)) {
                 this._dialogService.ShowWarningMessageBox("Invalid File Name", $"'{newText}' contains invalid characters.");
             }
-            else
-            {
-                if (this.AllowUndo)
-                {
-                    var undoCommand = new UndoCommand(() =>
-                    {
+            else {
+                if (this.AllowUndo) {
+                    var undoCommand = new UndoCommand(() => {
                         this.SetText(newText);
-                    }, () =>
-                    {
+                    }, () => {
                         this.SetText(oldText);
                     });
 
                     this._undoService.Do(undoCommand);
                 }
-                else
-                {
+                else {
                     this.SetText(newText);
                 }
             }
@@ -144,64 +130,51 @@
             this.IsEditing = false;
         }
 
-        private string GetEditableText(string originalText)
-        {
+        private string GetEditableText(string originalText) {
             var result = originalText;
 
-            if (this.IsFileName)
-            {
+            if (this.IsFileName) {
                 result = Path.GetFileNameWithoutExtension(originalText);
             }
 
             return result;
         }
 
-        private void SetText(string text)
-        {
-            this.Dispatcher.BeginInvoke((Action)(() =>
-            {
+        private void SetText(string text) {
+            this.Dispatcher.BeginInvoke((Action)(() => {
                 this.Text = text;
                 this._editableTextBox.Text = this.GetEditableText(text);
             }));
         }
 
-        private void TreeItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is TextBox textBox && textBox.IsVisible)
-            {
+        private void TreeItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (sender is TextBox textBox && textBox.IsVisible) {
                 textBox.Focus();
                 textBox.SelectAll();
             }
         }
 
-        private void TreeItem_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
+        private void TreeItem_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
                 var newText = this.IsFileName ? $"{this._editableTextBox.Text}{Path.GetExtension(this.Text)}" : this._editableTextBox.Text;
                 this.CommitNewText(this.Text, newText);
             }
-            else if (e.Key == Key.Escape)
-            {
-                if (sender is TextBox textBox)
-                {
+            else if (e.Key == Key.Escape) {
+                if (sender is TextBox textBox) {
                     textBox.Text = this.Text;
                     this.IsEditing = false;
                 }
             }
         }
 
-        private void TreeItem_LostFocus(object sender, RoutedEventArgs e)
-        {
+        private void TreeItem_LostFocus(object sender, RoutedEventArgs e) {
             this.IsEditing = false;
             this._editableTextBox.Text = this.GetEditableText(this.Text);
         }
 
-        private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-            if (this.CanEditTreeViewItem(treeViewItem))
-            {
+            if (this.CanEditTreeViewItem(treeViewItem)) {
                 this._editableTextBox.Text = this.GetEditableText(this.Text);
                 this.IsEditing = true;
                 e.Handled = true;
