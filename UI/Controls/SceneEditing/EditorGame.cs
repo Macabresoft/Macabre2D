@@ -1,8 +1,6 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
-    using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using MonoGame.Framework.WpfInterop;
@@ -12,17 +10,17 @@
     public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionEditor _selectionEditor;
-        private readonly IComponentSelectionService _selectionService;
         private IScene _currentScene;
         private GameSettings _gameSettings = new GameSettings();
+#pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
         private IGraphicsDeviceService _graphicsDeviceManager;
+#pragma warning restore IDE0052 // Remove unread private members
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
 
         public EditorGame() : base() {
-            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
             this._cameraWrapper = new EditorCameraWrapper(this);
             this._selectionEditor = new SelectionEditor(this);
         }
