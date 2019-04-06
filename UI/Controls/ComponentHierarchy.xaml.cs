@@ -114,7 +114,7 @@
         }
 
         private void AddComponent() {
-            var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseComponent));
+            var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseComponent), "Select a Component");
             if (type != null) {
                 var baseComponent = Activator.CreateInstance(type) as BaseComponent;
                 baseComponent.Name = type.Name;

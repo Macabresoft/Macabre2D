@@ -19,9 +19,9 @@
 
         Asset ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask);
 
-        (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type);
+        (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title);
 
-        Type ShowSelectTypeDialog(Type type);
+        Type ShowSelectTypeDialog(Type type, string title);
 
         void ShowWarningMessageBox(string title, string message);
 

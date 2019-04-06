@@ -63,7 +63,7 @@
         }
 
         private void AddModule() {
-            var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseModule));
+            var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseModule), "Select a Module");
 
             if (type != null) {
                 var baseModule = Activator.CreateInstance(type) as BaseModule;

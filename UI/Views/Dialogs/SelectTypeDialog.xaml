@@ -9,7 +9,7 @@
                    Width="600"
                    Height="600"
                    ResizeMode="NoResize"
-                   Title="Select a Component"
+                   Title="Select a Type"
                    WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

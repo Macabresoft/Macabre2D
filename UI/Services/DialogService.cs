@@ -131,8 +131,9 @@
             return asset;
         }
 
-        public (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type) {
+        public (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title) {
             var window = this._container.Resolve<SelectTypeDialog>(new DependencyOverride(typeof(Type), new InjectionParameter(type)));
+            window.Title = title;
             window.ShowNameTextBox = true;
             var result = window.ShowDialog();
 
@@ -143,8 +144,9 @@
             return (null, null);
         }
 
-        public Type ShowSelectTypeDialog(Type type) {
+        public Type ShowSelectTypeDialog(Type type, string title) {
             var window = this._container.Resolve<SelectTypeDialog>(new DependencyOverride(typeof(Type), new InjectionParameter(type)));
+            window.Title = title;
             var result = window.ShowDialog();
             return result.HasValue && result.Value ? window.ViewModel?.SelectedType : null;
         }
