@@ -3,6 +3,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
@@ -40,9 +41,9 @@
 
         <local:IconToggleButton Grid.Row="1"
                                 Grid.Column="2"
-                                IsNotToggledIcon="{StaticResource ChevronLeftIcon}"
+                                IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.ChevronLeft}"
                                 IsToggled="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _inverseBoolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsToggledIcon="{StaticResource ChevronDownIcon}" />
+                                IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.ChevronDown}" />
 
         <ContentControl Grid.Row="2"
                         Grid.ColumnSpan="3"

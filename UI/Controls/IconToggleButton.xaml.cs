@@ -1,25 +1,25 @@
 ﻿namespace Macabre2D.UI.Controls {
 
+    using MahApps.Metro.IconPacks;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Shapes;
 
     public partial class IconToggleButton : UserControl {
 
-        public static readonly DependencyProperty IsNotToggledIconProperty = DependencyProperty.Register(
-            nameof(IsNotToggledIcon),
-            typeof(Path),
+        public static readonly DependencyProperty IsNotToggledKindProperty = DependencyProperty.Register(
+            nameof(IsNotToggledKind),
+            typeof(PackIconMaterialKind),
             typeof(IconToggleButton),
             new PropertyMetadata());
 
-        public static readonly DependencyProperty IsToggledIconProperty = DependencyProperty.Register(
-            nameof(IsToggledIcon),
-            typeof(Path),
+        public static readonly DependencyProperty IsToggledKindProperty = DependencyProperty.Register(
+            nameof(IsToggledKind),
+            typeof(PackIconMaterialKind),
             typeof(IconToggleButton),
             new PropertyMetadata());
 
         public static readonly DependencyProperty IsToggledProperty = DependencyProperty.Register(
-                    nameof(IsToggled),
+            nameof(IsToggled),
             typeof(bool),
             typeof(IconToggleButton),
             new PropertyMetadata(false));
@@ -28,9 +28,9 @@
             this.InitializeComponent();
         }
 
-        public Path IsNotToggledIcon {
-            get { return (Path)this.GetValue(IsNotToggledIconProperty); }
-            set { this.SetValue(IsNotToggledIconProperty, value); }
+        public PackIconMaterialKind IsNotToggledKind {
+            get { return (PackIconMaterialKind)this.GetValue(IsNotToggledKindProperty); }
+            set { this.SetValue(IsNotToggledKindProperty, value); }
         }
 
         public bool IsToggled {
@@ -38,9 +38,9 @@
             set { this.SetValue(IsToggledProperty, value); }
         }
 
-        public Path IsToggledIcon {
-            get { return (Path)this.GetValue(IsToggledIconProperty); }
-            set { this.SetValue(IsToggledIconProperty, value); }
+        public PackIconMaterialKind IsToggledKind {
+            get { return (PackIconMaterialKind)this.GetValue(IsToggledKindProperty); }
+            set { this.SetValue(IsToggledKindProperty, value); }
         }
     }
 }

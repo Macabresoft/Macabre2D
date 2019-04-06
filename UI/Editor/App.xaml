@@ -1,7 +1,6 @@
 ﻿<Application x:Class=" Macabre2D.UI.Editor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,6 +12,7 @@
                 <!-- Accent and AppTheme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Mauve.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.IconPacks.Material;component/Themes/PackIconMaterial.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/Margins.xaml" />

@@ -3,7 +3,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
-             xmlns:local="clr-namespace:Macabre2D.UI.Controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              Margin="{StaticResource StandardMarginAll}">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
@@ -14,16 +14,12 @@
                   Height="24"
                   Margin="0">
         <Grid>
-            <local:Icon VectorPath="{Binding IsToggledIcon, ElementName=_iconToggleButton}"
-                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}"
-                        Padding="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center" />
-            <local:Icon VectorPath="{Binding IsNotToggledIcon, ElementName=_iconToggleButton}"
-                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
-                        Padding="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center" />
+            <iconPacks:PackIconMaterial Kind="{Binding IsToggledKind, ElementName=_iconToggleButton}"
+                                        Foreground="{StaticResource BlackBrush}"
+                                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}" />
+            <iconPacks:PackIconMaterial Kind="{Binding IsNotToggledKind, ElementName=_iconToggleButton}"
+                                        Foreground="{StaticResource BlackBrush}"
+                                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}" />
         </Grid>
     </ToggleButton>
 </UserControl>

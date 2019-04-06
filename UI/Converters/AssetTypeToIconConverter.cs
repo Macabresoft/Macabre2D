@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.Converters {
 
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using MahApps.Metro.IconPacks;
     using System;
     using System.Globalization;
     using System.Windows.Data;
@@ -9,35 +9,44 @@
     public sealed class AssetTypeToIconConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            var kind = PackIconMaterialKind.File;
             if (value is AssetType assetType) {
                 switch (assetType) {
                     case AssetType.Folder:
-                        return IconHelper.GetFolderIcon();
+                        kind = PackIconMaterialKind.Folder;
+                        break;
 
                     case AssetType.Image:
-                        return IconHelper.GetFileImageIcon();
+                        kind = PackIconMaterialKind.FileImage;
+                        break;
 
                     case AssetType.Audio:
-                        return IconHelper.GetFileAudioIcon();
+                        kind = PackIconMaterialKind.FileMusic;
+                        break;
 
                     case AssetType.Scene:
-                        return IconHelper.GetFileSceneIcon();
+                        kind = PackIconMaterialKind.FileCloud;
+                        break;
 
                     case AssetType.File:
-                        return IconHelper.GetFileIcon();
+                        kind = PackIconMaterialKind.File;
+                        break;
 
                     case AssetType.Sprite:
-                        return IconHelper.GetSpriteIcon();
+                        kind = PackIconMaterialKind.ImageOutline;
+                        break;
 
                     case AssetType.SpriteAnimation:
-                        return IconHelper.GetFileSpriteAnimationIcon();
+                        kind = PackIconMaterialKind.FileVideo;
+                        break;
 
                     case AssetType.Font:
-                        return IconHelper.GetFontIcon();
+                        kind = PackIconMaterialKind.FileDocument;
+                        break;
                 }
             }
 
-            return IconHelper.GetFileIcon();
+            return kind;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

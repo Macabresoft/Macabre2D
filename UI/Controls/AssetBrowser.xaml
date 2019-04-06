@@ -6,6 +6,7 @@
              xmlns:behaviors="clr-namespace:Macabre2D.UI.Common.Behaviors;assembly=Macabre2D.UI.Common"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
              xmlns:dragDrop="urn:gong-wpf-dragdrop"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:AssetTypeToIconConverter x:Key="_assetTypeToIconConverter" />
@@ -51,7 +52,7 @@
             <HierarchicalDataTemplate DataType="{x:Type models:Asset}"
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
-                    <local:Icon VectorPath="{Binding Path=Type, Converter={StaticResource _assetTypeToIconConverter}}" />
+                    <iconPacks:PackIconMaterial Kind="{Binding Path=Type, Converter={StaticResource _assetTypeToIconConverter}}" />
                     <TextBlock Text="{Binding Path=Name}"
                                Visibility="{Binding IsEditable, ElementName=_assetBrowser, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
                                VerticalAlignment="Center" />
