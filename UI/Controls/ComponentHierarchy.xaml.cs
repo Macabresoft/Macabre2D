@@ -10,7 +10,6 @@
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -88,28 +87,16 @@
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo) {
-            if (dropInfo.Data is DefaultDataWrapper source &&
-                dropInfo.TargetItem is IHierarchical<ComponentWrapper, IParent<ComponentWrapper>> target) {
-                var components = source.Items.OfType<ComponentWrapper>();
-
-                if (components.Any()) {
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                    dropInfo.Effects = DragDropEffects.Move;
-                }
-                else {
-                    dropInfo.DropTargetAdorner = null;
-                    dropInfo.Effects = DragDropEffects.None;
-                }
+            if (dropInfo.Data is ComponentWrapper &&
+                dropInfo.TargetItem is IParent<ComponentWrapper>) {
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                dropInfo.Effects = DragDropEffects.Move;
             }
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo) {
-            if (dropInfo.Data is DefaultDataWrapper source && dropInfo.TargetItem is IHierarchical<ComponentWrapper, IParent<ComponentWrapper>> target) {
-                var components = source.Items.OfType<ComponentWrapper>();
-
-                foreach (var component in components) {
-                    component.Parent = target;
-                }
+            if (dropInfo.Data is ComponentWrapper component && dropInfo.TargetItem is IParent<ComponentWrapper> target) {
+                component.Parent = target;
             }
         }
 
