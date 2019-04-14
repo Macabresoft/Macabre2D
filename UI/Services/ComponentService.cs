@@ -5,12 +5,12 @@
     using Macabre2D.UI.ServiceInterfaces;
     using System;
 
-    public sealed class ComponentSelectionService : NotifyPropertyChanged, IComponentSelectionService {
+    public sealed class ComponentService : NotifyPropertyChanged, IComponentService {
         private readonly ISceneService _sceneService;
 
         private ComponentWrapper _selectedItem;
 
-        public ComponentSelectionService(ISceneService sceneService) {
+        public ComponentService(ISceneService sceneService) {
             this._sceneService = sceneService;
         }
 

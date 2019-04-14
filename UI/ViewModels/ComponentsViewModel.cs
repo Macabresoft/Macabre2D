@@ -5,13 +5,12 @@
 
     public sealed class ComponentsViewModel : NotifyPropertyChanged {
 
-        public ComponentsViewModel(ISceneService sceneService, IComponentSelectionService selectionService) {
+        public ComponentsViewModel(ISceneService sceneService, IComponentService componentService) {
             this.SceneService = sceneService;
-            this.SelectionService = selectionService;
+            this.ComponentService = componentService;
         }
 
+        public IComponentService ComponentService { get; }
         public ISceneService SceneService { get; }
-
-        public IComponentSelectionService SelectionService { get; }
     }
 }

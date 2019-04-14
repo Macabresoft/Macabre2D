@@ -10,8 +10,8 @@
     using Microsoft.Xna.Framework.Input;
 
     public sealed class SelectionEditor {
+        private readonly IComponentService _componentService;
         private readonly EditorGame _editorGame;
-        private readonly IComponentSelectionService _selectionService;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             LineThickness = 0.6f,
@@ -28,8 +28,8 @@
 
         public SelectionEditor(EditorGame editorGame) {
             this._editorGame = editorGame;
-            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
-            this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
+            this._componentService = ViewContainer.Resolve<IComponentService>();
+            this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._translateGizmo = new TranslateGizmo(editorGame);
         }
 
@@ -42,7 +42,7 @@
 
             this._boundingAreaDrawer.Draw(gameTime, viewHeight);
             this._colliderDrawer.Draw(gameTime, viewHeight);
-            this._translateGizmo.Draw(gameTime, viewHeight, this._selectionService.SelectedItem?.Component);
+            this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
         }
 
         public void Reinitialize() {
@@ -56,7 +56,7 @@
                 UseDynamicLineThickness = true
             };
 
-            this.ResetDependencies(this._selectionService.SelectedItem);
+            this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
             this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
             this._translateGizmo.Initialize();
@@ -67,24 +67,33 @@
                 var hadInteractions = false;
                 var mousePosition = this._editorGame.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
-                if (this._selectionService.SelectedItem?.Component != null) {
-                    hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._selectionService.SelectedItem);
+                if (this._componentService.SelectedItem?.Component != null) {
+                    hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
                 }
 
                 if (hadInteractions) {
                     // We must force the editor to recognize that we've made a change.
-                    this._selectionService.SelectedItem.RaisePropertyChanged("Position");
+                    this._componentService.SelectedItem.RaisePropertyChanged("Position");
                 }
                 else if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
                     foreach (var drawable in this._editorGame.CurrentScene.GetVisibleDrawableComponents()) {
                         if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
-                            this._selectionService.SelectComponent(drawableComponent);
+                            this._componentService.SelectComponent(drawableComponent);
                         }
                     }
                 }
             }
 
             this._previousLeftMouseButtonState = mouseState.LeftButton;
+        }
+
+        private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
+            if (e.NewValue is ComponentWrapper wrapper) {
+                this.ResetDependencies(wrapper.Component);
+            }
+            else {
+                this.ResetDependencies(null);
+            }
         }
 
         private void ResetDependencies(object newValue) {
@@ -99,15 +108,6 @@
             else {
                 this._boundingAreaDrawer.Boundable = null;
                 this._colliderDrawer.Body = null;
-            }
-        }
-
-        private void SelectionService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (e.NewValue is ComponentWrapper wrapper) {
-                this.ResetDependencies(wrapper.Component);
-            }
-            else {
-                this.ResetDependencies(null);
             }
         }
     }

@@ -88,7 +88,7 @@
     <Compile Include="IDialogService.cs" />
     <Compile Include="ILoggingService.cs" />
     <Compile Include="IMonoGameService.cs" />
-    <Compile Include="IComponentSelectionService.cs" />
+    <Compile Include="IComponentService.cs" />
     <Compile Include="IValueEditorService.cs" />
     <Compile Include="IProjectService.cs" />
     <Compile Include="ISceneService.cs" />

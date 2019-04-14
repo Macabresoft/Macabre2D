@@ -5,7 +5,7 @@
     using System;
     using System.ComponentModel;
 
-    public interface IComponentSelectionService : INotifyPropertyChanged {
+    public interface IComponentService : INotifyPropertyChanged {
 
         event EventHandler<ValueChangedEventArgs<ComponentWrapper>> SelectionChanged;
 

@@ -35,19 +35,19 @@
             new PropertyMetadata());
 
         private readonly RelayCommand _addComponentCommand;
+        private readonly IComponentService _componentService;
         private readonly IDialogService _dialogService;
         private readonly IMonoGameService _monoGameService;
         private readonly RelayCommand _removeComponentCommand;
-        private readonly IComponentSelectionService _selectionService;
         private readonly IUndoService _undoService;
 
         public ComponentHierarchy() {
             this._dialogService = ViewContainer.Resolve<IDialogService>();
             this._monoGameService = ViewContainer.Resolve<IMonoGameService>();
-            this._selectionService = ViewContainer.Resolve<IComponentSelectionService>();
+            this._componentService = ViewContainer.Resolve<IComponentService>();
             this._undoService = ViewContainer.Resolve<IUndoService>();
 
-            this._selectionService.SelectionChanged += this.SelectionService_SelectionChanged;
+            this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._addComponentCommand = new RelayCommand(this.AddComponent, () => this.SelectedItem != null);
             this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem != null && this.SelectedItem is ComponentWrapper);
             this.InitializeComponent();
@@ -115,6 +115,12 @@
             }
         }
 
+        private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
+            if (e.NewValue != null && this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
+                treeViewItem.IsSelected = true;
+            }
+        }
+
         private void RemoveComponent() {
             if (this.SelectedItem is ComponentWrapper component) {
                 UndoCommand undoCommand;
@@ -132,12 +138,6 @@
                 }
 
                 this._undoService.Do(undoCommand);
-            }
-        }
-
-        private void SelectionService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (e.NewValue != null && this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
-                treeViewItem.IsSelected = true;
             }
         }
 

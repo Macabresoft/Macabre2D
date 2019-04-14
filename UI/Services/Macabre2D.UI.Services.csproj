@@ -161,7 +161,7 @@
     <Compile Include="DialogService.cs" />
     <Compile Include="LoggingService.cs" />
     <Compile Include="MonoGameService.cs" />
-    <Compile Include="SelectionService.cs" />
+    <Compile Include="ComponentService.cs" />
     <Compile Include="ValueEditorService.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
