@@ -156,7 +156,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyService.cs" />
-    <Compile Include="AssetEditorService.cs" />
+    <Compile Include="AssetService.cs" />
     <Compile Include="BusyService.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="LoggingService.cs" />

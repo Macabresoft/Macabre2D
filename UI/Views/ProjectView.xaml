@@ -100,7 +100,7 @@
                                IsEditable="True"
                                RootAsset="{Binding ProjectService.CurrentProject.AssetFolder}"
                                AssetDoubleClickedCommand="{Binding OpenSceneCommand}"
-                               SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                               SelectedAsset="{Binding AssetService.SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
 
         <GridSplitter Grid.Row="4"
                       Style="{StaticResource HorizontalGridSplitter}" />
@@ -108,7 +108,7 @@
         <ScrollViewer Grid.Row="5"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
-            <controls:AssetEditorControl Asset="{Binding SelectedAsset}" />
+            <controls:AssetEditorControl Asset="{Binding AssetService.SelectedAsset}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

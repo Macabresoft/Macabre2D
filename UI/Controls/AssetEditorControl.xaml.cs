@@ -15,11 +15,11 @@
             typeof(AssetEditorControl),
             new PropertyMetadata(null, new PropertyChangedCallback(OnAssetChanged)));
 
-        private readonly IAssetEditorService _assetEditorService;
+        private readonly IAssetService _assetService;
         private DependencyObject _editor = null;
 
         public AssetEditorControl() {
-            this._assetEditorService = ViewContainer.Resolve<IAssetEditorService>();
+            this._assetService = ViewContainer.Resolve<IAssetService>();
             this.InitializeComponent();
         }
 
@@ -43,7 +43,7 @@
 
         private static void OnAssetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is AssetEditorControl control) {
-                control.Editor = control._assetEditorService.GetEditor(e.NewValue as Asset);
+                control.Editor = control._assetService.GetEditor(e.NewValue as Asset);
             }
         }
     }

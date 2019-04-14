@@ -4,7 +4,6 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System;
@@ -18,15 +17,16 @@
         private readonly ISceneService _sceneService;
         private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
-        private Asset _selectedAsset;
 
         public ProjectViewModel(
+            IAssetService assetService,
             IDialogService dialogService,
             IMonoGameService monoGameService,
             IProjectService projectService,
             ISceneService sceneService,
             Serializer serializer,
             IUndoService undoService) {
+            this.AssetService = assetService;
             this._dialogService = dialogService;
             this._monoGameService = monoGameService;
             this.ProjectService = projectService;
@@ -35,9 +35,10 @@
             this._undoService = undoService;
 
             this.AddAssetCommand = new RelayCommand(this.AddAsset);
-            this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.SelectedAsset?.Parent != null);
+            this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.AssetService.SelectedAsset?.Parent != null);
             this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => asset.Type == AssetType.Scene);
 
+            this.AssetService.PropertyChanged += this.AssetService_PropertyChanged;
             this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
 
             if (this.ProjectService.CurrentProject != null) {
@@ -46,6 +47,8 @@
         }
 
         public ICommand AddAssetCommand { get; }
+
+        public IAssetService AssetService { get; }
 
         public ICommand DeleteAssetCommand {
             get {
@@ -131,46 +134,6 @@
 
         public IProjectService ProjectService { get; }
 
-        public Asset SelectedAsset {
-            get {
-                return this._selectedAsset;
-            }
-
-            set {
-                if (this.Set(ref this._selectedAsset, value)) {
-                    this.RaisePropertyChanged(nameof(this.SelectedFontAsset));
-                    this.RaisePropertyChanged(nameof(this.SelectedImageAsset));
-                    this.RaisePropertyChanged(nameof(this.SelectedSpriteAnimationAsset));
-                    this.RaisePropertyChanged(nameof(this.SelectedSpriteWrapper));
-                    this._deleteAssetCommand.RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-        public FontAsset SelectedFontAsset {
-            get {
-                return this.SelectedAsset as FontAsset;
-            }
-        }
-
-        public ImageAsset SelectedImageAsset {
-            get {
-                return this.SelectedAsset as ImageAsset;
-            }
-        }
-
-        public SpriteAnimationAsset SelectedSpriteAnimationAsset {
-            get {
-                return this.SelectedAsset as SpriteAnimationAsset;
-            }
-        }
-
-        public SpriteWrapper SelectedSpriteWrapper {
-            get {
-                return this.SelectedAsset as SpriteWrapper;
-            }
-        }
-
         public SceneAsset SelectedStartUpSceneAsset {
             get {
                 return this.ProjectService.CurrentProject?.StartUpSceneAsset;
@@ -201,7 +164,7 @@
                     asset.Name = result.Name;
                 }
 
-                var selectedAsset = this.SelectedAsset;
+                var selectedAsset = this.AssetService.SelectedAsset;
                 if (selectedAsset != null) {
                     var undoCommand = new UndoCommand(
                         () => {
@@ -223,6 +186,12 @@
             }
         }
 
+        private void AssetService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IAssetService.SelectedAsset)) {
+                this._deleteAssetCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         private void CurrentProject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.ProjectService.CurrentProject.StartUpSceneAsset)) {
                 this.RaisePropertyChanged(nameof(this.SelectedStartUpSceneAsset));
@@ -230,12 +199,11 @@
         }
 
         private async Task DeleteAsset() {
-            if (this.SelectedAsset != null) {
-                if (this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.SelectedAsset.Name}? This action cannot be undone.")) {
-                    this.SelectedAsset.Delete();
-                    this.SelectedAsset = null;
-                    await this.ProjectService.SaveProject();
-                }
+            if (this.AssetService.SelectedAsset != null &&
+                this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.AssetService.SelectedAsset.Name}? This action cannot be undone.")) {
+                this.AssetService.SelectedAsset.Delete();
+                this.AssetService.SelectedAsset = null;
+                await this.ProjectService.SaveProject();
             }
         }
 

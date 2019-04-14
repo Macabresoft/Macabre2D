@@ -76,7 +76,7 @@
             this._container.RegisterInstance(typeof(JsonSerializer), serializer, new ContainerControlledLifetimeManager());
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
             this._container.RegisterType<IAssemblyService, AssemblyService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IAssetEditorService, AssetEditorService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<IAssetService, AssetService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IBusyService, BusyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IDialogService, DialogService>();
             this._container.RegisterType<ILoggingService, LoggingService>();

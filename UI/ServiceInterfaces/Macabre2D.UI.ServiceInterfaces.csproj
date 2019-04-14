@@ -83,7 +83,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="IAssemblyService.cs" />
-    <Compile Include="IAssetEditorService.cs" />
+    <Compile Include="IAssetService.cs" />
     <Compile Include="IBusyService.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="ILoggingService.cs" />
