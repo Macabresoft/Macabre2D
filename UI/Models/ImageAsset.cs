@@ -139,7 +139,7 @@
             return result;
         }
 
-        protected override void ResetContentPath(string newPath) {
+        internal override void ResetContentPath(string newPath) {
             base.ResetContentPath(newPath);
 
             foreach (var sprite in this.Children.Select(x => x.Sprite).Where(x => x != null)) {

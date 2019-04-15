@@ -21,7 +21,7 @@
             new PropertyMetadata());
 
         public static readonly DependencyProperty InvalidTypesProperty = DependencyProperty.Register(
-                    nameof(InvalidTypes),
+            nameof(InvalidTypes),
             typeof(IEnumerable<Type>),
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(new List<Type>()));
@@ -31,6 +31,18 @@
             typeof(bool),
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShouldSetTextAutomaticallyProperty = DependencyProperty.Register(
+            nameof(ShouldSetTextAutomatically),
+            typeof(bool),
+            typeof(EditableTreeViewItemControl),
+            new PropertyMetadata(true));
+
+        public static readonly DependencyProperty TextChangedCommandProperty = DependencyProperty.Register(
+            nameof(TextChangedCommand),
+            typeof(ICommand),
+            typeof(EditableTreeViewItemControl),
+            new PropertyMetadata());
 
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             nameof(Text),
@@ -45,7 +57,9 @@
             new PropertyMetadata(new List<Type>()));
 
         private readonly IDialogService _dialogService;
+
         private readonly IUndoService _undoService;
+
         private bool _isEditing;
 
         public EditableTreeViewItemControl() {
@@ -85,9 +99,19 @@
             set { this.SetValue(IsFileNameProperty, value); }
         }
 
+        public bool ShouldSetTextAutomatically {
+            get { return (bool)this.GetValue(ShouldSetTextAutomaticallyProperty); }
+            set { this.SetValue(ShouldSetTextAutomaticallyProperty, value); }
+        }
+
         public string Text {
             get { return (string)this.GetValue(TextProperty); }
             set { this.SetValue(TextProperty, value); }
+        }
+
+        public ICommand TextChangedCommand {
+            get { return (ICommand)this.GetValue(TextChangedCommandProperty); }
+            set { this.SetValue(TextChangedCommandProperty, value); }
         }
 
         public IEnumerable<Type> ValidTypes {
@@ -113,17 +137,23 @@
                 this._dialogService.ShowWarningMessageBox("Invalid File Name", $"'{newText}' contains invalid characters.");
             }
             else {
-                if (this.AllowUndo) {
-                    var undoCommand = new UndoCommand(() => {
-                        this.SetText(newText);
-                    }, () => {
-                        this.SetText(oldText);
-                    });
-
-                    this._undoService.Do(undoCommand);
+                if (this.TextChangedCommand?.CanExecute(newText) == true) {
+                    this.TextChangedCommand.Execute(newText);
                 }
-                else {
-                    this.SetText(newText);
+
+                if (this.ShouldSetTextAutomatically) {
+                    if (this.AllowUndo) {
+                        var undoCommand = new UndoCommand(() => {
+                            this.SetText(newText);
+                        }, () => {
+                            this.SetText(oldText);
+                        });
+
+                        this._undoService.Do(undoCommand);
+                    }
+                    else {
+                        this.SetText(newText);
+                    }
                 }
             }
 
@@ -161,7 +191,7 @@
             }
             else if (e.Key == Key.Escape) {
                 if (sender is TextBox textBox) {
-                    textBox.Text = this.Text;
+                    textBox.Text = this.GetEditableText(this.Text);
                     this.IsEditing = false;
                 }
             }

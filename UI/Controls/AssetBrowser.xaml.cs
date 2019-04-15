@@ -1,10 +1,11 @@
 ﻿namespace Macabre2D.UI.Controls {
 
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
+    using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -46,7 +47,11 @@
             typeof(AssetBrowser),
             new PropertyMetadata());
 
+        private readonly IAssetService _assetService;
+
         public AssetBrowser() {
+            this._assetService = ViewContainer.Resolve<IAssetService>();
+            this.TextChangedCommand = new RelayCommand<string>(x => this._assetService.RenameAsset(this._assetService.SelectedAsset, x));
             this.InitializeComponent();
 
             this.Loaded += this.AssetBrowser_Loaded;
@@ -74,7 +79,6 @@
         }
 
         public RelayCommand NavigateToAssetCommand { get; }
-
         public RelayCommand RefreshCommand { get; }
 
         public IParent<Asset> RootAsset {
@@ -86,6 +90,8 @@
             get { return (Asset)this.GetValue(SelectedAssetProperty); }
             set { this.SetValue(SelectedAssetProperty, value); }
         }
+
+        public ICommand TextChangedCommand { get; }
 
         void IDropTarget.DragOver(IDropInfo dropInfo) {
             if (dropInfo.Data is Asset asset &&
@@ -103,7 +109,7 @@
 
         void IDropTarget.Drop(IDropInfo dropInfo) {
             if (dropInfo.Data is Asset asset && dropInfo.TargetItem is FolderAsset folder && !(asset is SpriteWrapper || asset is ProjectAsset)) {
-                asset.Parent = folder;
+                this._assetService.ChangeAssetParent(asset, folder);
             }
         }
 

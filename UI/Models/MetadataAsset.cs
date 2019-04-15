@@ -24,6 +24,10 @@
             }
         }
 
+        public static string GetMetadataPath(string assetPath) {
+            return $"{assetPath}{FileHelper.MetaDataExtension}";
+        }
+
         public override void Delete() {
             File.Delete(this.GetPath());
             File.Delete(this.GetMetadataPath());
@@ -31,7 +35,7 @@
         }
 
         public string GetMetadataPath() {
-            return this.GetMetadataPath(this.GetPath());
+            return MetadataAsset.GetMetadataPath(this.GetPath());
         }
 
         public void Save(Serializer serializer) {
@@ -46,23 +50,8 @@
             }
         }
 
-        internal override void MoveAsset(string originalPath, string newPath) {
-            base.MoveAsset(originalPath, newPath);
-
-            var originalMetadataPath = this.GetMetadataPath(originalPath);
-            var newMetadataPath = this.GetMetadataPath(newPath);
-
-            if (File.Exists(originalMetadataPath)) {
-                File.Move(originalMetadataPath, newMetadataPath);
-            }
-        }
-
         protected virtual void SaveChanges(Serializer serializer) {
             return;
-        }
-
-        private string GetMetadataPath(string assetPath) {
-            return $"{assetPath}{FileHelper.MetaDataExtension}";
         }
 
         private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

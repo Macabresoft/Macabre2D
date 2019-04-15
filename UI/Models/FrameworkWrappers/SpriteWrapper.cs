@@ -115,10 +115,6 @@
             return this.ImageAsset?.GetPath();
         }
 
-        internal override void MoveAsset(string originalPath, string newPath) {
-            return; // A sprite being renamed doesn't require an asset rename, as it is stored inside of an ImageAsset. This is a weird hack, sorry.
-        }
-
         private void ImageAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.Parent.Name) || e.PropertyName == nameof(this.Parent.Parent)) {
                 this.Sprite.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);

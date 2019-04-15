@@ -43,11 +43,11 @@
             base.Refresh();
         }
 
-        internal override void MoveAsset(string originalPath, string newPath) {
-            base.MoveAsset(originalPath, newPath);
+        internal override void ResetContentPath(string newPath) {
+            base.ResetContentPath(newPath);
 
             if (this.AudioClip != null) {
-                this.AudioClip.ContentPath = this.GetContentPath();
+                this.AudioClip.ContentPath = newPath;
             }
         }
 

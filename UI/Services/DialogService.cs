@@ -72,6 +72,24 @@
             return false;
         }
 
+        public bool ShowNameChangeDialog(string originalName, string fileExtension, string dialogTitle, out string newName) {
+            var wasNameChanged = false;
+            newName = originalName;
+            var window = this._container.Resolve<NameChangeDialog>(new ParameterOverride("originalName", originalName), new ParameterOverride("extension", fileExtension));
+
+            if (!string.IsNullOrEmpty(dialogTitle)) {
+                window.Title = dialogTitle;
+            }
+
+            var result = window.ShowDialog();
+            if (result.HasValue && result.Value) {
+                newName = window.ViewModel.NewName;
+                wasNameChanged = true;
+            }
+
+            return wasNameChanged;
+        }
+
         public SaveDiscardCancelResult ShowSaveDiscardCancelDialog() {
             var projectService = this._container.Resolve<IProjectService>();
             var sceneService = this._container.Resolve<ISceneService>();

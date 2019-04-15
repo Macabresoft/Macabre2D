@@ -13,6 +13,8 @@
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);
 
+        bool ShowNameChangeDialog(string originalName, string fileExtension, string dialogTitle, out string newName);
+
         SaveDiscardCancelResult ShowSaveDiscardCancelDialog();
 
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);

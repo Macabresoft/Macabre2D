@@ -7,6 +7,10 @@
     public interface IAssetService : INotifyPropertyChanged {
         Asset SelectedAsset { get; set; }
 
+        void ChangeAssetParent(Asset assetToMove, FolderAsset newParent);
+
         DependencyObject GetEditor(Asset asset);
+
+        void RenameAsset(Asset asset, string newName);
     }
 }

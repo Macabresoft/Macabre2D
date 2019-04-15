@@ -58,8 +58,10 @@
                                VerticalAlignment="Center" />
                     <local:EditableTreeViewItemControl AllowUndo="True"
                                                        IsFileName="True"
-                                                       Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Text="{Binding Path=Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                        InvalidTypes="{Binding InvalidTypes, ElementName=_assetBrowser, Mode=OneWay}"
+                                                       ShouldSetTextAutomatically="False"
+                                                       TextChangedCommand="{Binding TextChangedCommand, ElementName=_assetBrowser, Mode=OneWay}"
                                                        Visibility="{Binding IsEditable, ElementName=_assetBrowser, Converter={StaticResource _boolToVisibilityConverter}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>

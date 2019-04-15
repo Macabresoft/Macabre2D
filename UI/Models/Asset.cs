@@ -54,10 +54,7 @@
             }
 
             set {
-                var originalPath = this.GetPath();
-                if (this.Set(ref this._name, value)) {
-                    this.MoveAsset(originalPath, this.GetPath());
-                }
+                this.Set(ref this._name, value);
             }
         }
 
@@ -78,7 +75,6 @@
                     if (this._parent != null) {
                         this._parent.PropertyChanged += this.Parent_PropertyChanged;
                         this._parent.AddChild(this);
-                        this.MoveAsset(originalPath, this.GetPath());
                     }
                 }
             }
@@ -137,11 +133,8 @@
             return root as FolderAsset;
         }
 
-        internal virtual void MoveAsset(string originalPath, string newPath) {
-            if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath)) {
-                File.Move(originalPath, newPath);
-                this.ResetContentPath(newPath);
-            }
+        internal virtual void ResetContentPath(string newPath) {
+            return;
         }
 
         protected void RaiseOnDeleted() {
@@ -163,10 +156,6 @@
                     }
                 }
             }
-        }
-
-        protected virtual void ResetContentPath(string newPath) {
-            return;
         }
 
         private void Parent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

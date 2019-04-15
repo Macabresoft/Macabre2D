@@ -124,18 +124,6 @@
             return false;
         }
 
-        internal override void MoveAsset(string originalPath, string newPath) {
-            if (!Directory.Exists(newPath)) {
-                Directory.CreateDirectory(newPath);
-
-                foreach (var child in this.Children) {
-                    child.MoveAsset(Path.Combine(originalPath, child.Name), child.GetPath());
-                }
-
-                Directory.Delete(originalPath, true);
-            }
-        }
-
         private void Child_OnDeleted(object sender, EventArgs e) {
             if (sender is Asset asset) {
                 this._children.Remove(asset);
