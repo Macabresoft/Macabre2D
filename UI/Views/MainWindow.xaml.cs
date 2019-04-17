@@ -37,6 +37,11 @@
             this.Close();
         }
 
+        private void MenuItem_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+            // We don't want double clicking a menu item to cause the title bar double click event.
+            e.Handled = true;
+        }
+
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (e.AddedItems.Cast<TabItem>().FirstOrDefault() is TabItem tabItem && tabItem.Tag is TabTypes type && this.DataContext is MainWindowViewModel viewModel) {
                 viewModel.SelectedTabType = type;

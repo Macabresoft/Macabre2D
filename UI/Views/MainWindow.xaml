@@ -1,4 +1,5 @@
 ﻿<metro:MetroWindow x:Class="Macabre2D.UI.Views.MainWindow"
+                   x:Name="_mainWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
@@ -18,13 +19,83 @@
         <converters:EqualityToVisibilityConverter x:Key="_equalityToVisibilityConverter" />
         <system:String x:Key="_macabre2D">Macabre2D</system:String>
     </metro:MetroWindow.Resources>
-    <metro:MetroWindow.Title>
-        <MultiBinding Converter="{StaticResource _hyphenateTextConverter}">
-            <Binding Path="ProjectService.CurrentProject.Name" />
-            <Binding Path="SceneService.CurrentScene.Name" />
-            <Binding Source="{StaticResource _macabre2D}" />
-        </MultiBinding>
-    </metro:MetroWindow.Title>
+    <metro:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <Grid VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Menu Grid.Column="0"
+                      Background="Transparent"
+                      VerticalAlignment="Center">
+                    <MenuItem Header="_File"
+                              Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                              Padding="{StaticResource StandardMarginLR}"
+                              PreviewMouseDoubleClick="MenuItem_PreviewMouseDoubleClick">
+                        <MenuItem Header="_New Project"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.CreateProjectCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="_Open Project"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.OpenProjectCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="{Binding ProjectService.CurrentProject.Name, FallbackValue=''}"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  HeaderStringFormat="Save {0}"
+                                  Command="{Binding DataContext.SaveProjectCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="_Exit"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Click="Exit_Click" />
+                    </MenuItem>
+                    <MenuItem Header="_Edit"
+                              Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                              Padding="{StaticResource StandardMarginLR}"
+                              PreviewMouseDoubleClick="MenuItem_PreviewMouseDoubleClick">
+                        <MenuItem Header="_Undo"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.UndoCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="_Redo"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.RedoCommand, ElementName=_mainWindow}" />
+                    </MenuItem>
+                    <MenuItem Header="_Project"
+                              Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                              Padding="{StaticResource StandardMarginLR}"
+                              PreviewMouseDoubleClick="MenuItem_PreviewMouseDoubleClick"
+                              Visibility="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToVisibilityConverter}}">
+                        <MenuItem Header="_Build/Refresh Assemblies"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.RefreshAssembliesCommand, ElementName=_mainWindow}"
+                                  ToolTip="Will build the project's solution and refresh the assemblies that the editor has access to. This requires a semi-restart of Macabre2D." />
+                        <MenuItem Header="Open in _Code Editor"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.OpenProjectInCodeEditorCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="Open in _File Explorer"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.OpenProjectInFileExplorer, ElementName=_mainWindow}" />
+                        <MenuItem Header="_Refresh Assets and Generate Content"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  Command="{Binding DataContext.RefreshAssetsCommand, ElementName=_mainWindow}"
+                                  ToolTip="Will refresh this project's assets and generate MonoGame content files. This will perform a refresh on the scene editor." />
+                    </MenuItem>
+                </Menu>
+
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource _hyphenateTextConverter}">
+                            <Binding Path="DataContext.ProjectService.CurrentProject.Name"
+                                     ElementName="_mainWindow" />
+                            <Binding Path="DataContext.SceneService.CurrentScene.Name"
+                                     ElementName="_mainWindow" />
+                            <Binding Source="{StaticResource _macabre2D}" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+    </metro:MetroWindow.TitleTemplate>
     <metro:MetroWindow.InputBindings>
         <KeyBinding Modifiers="Ctrl"
                     Key="S"
@@ -37,94 +108,60 @@
                     Command="{Binding RedoCommand}" />
     </metro:MetroWindow.InputBindings>
     <Grid>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_New Project"
-                              Command="{Binding CreateProjectCommand}" />
-                    <MenuItem Header="_Open Project"
-                              Command="{Binding OpenProjectCommand}" />
-                    <MenuItem Header="{Binding ProjectService.CurrentProject.Name, FallbackValue=''}"
-                              HeaderStringFormat="Save {0}"
-                              Command="{Binding SaveProjectCommand}" />
-                    <MenuItem Header="_Exit"
-                              Click="Exit_Click" />
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="_Undo"
-                              Command="{Binding UndoCommand}" />
-                    <MenuItem Header="_Redo"
-                              Command="{Binding RedoCommand}" />
-                </MenuItem>
-                <MenuItem Header="_Project"
-                          Visibility="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToVisibilityConverter}}">
-                    <MenuItem Header="_Build/Refresh Assemblies"
-                              Command="{Binding RefreshAssembliesCommand}"
-                              ToolTip="Will build the project's solution and refresh the assemblies that the editor has access to. This requires a semi-restart of Macabre2D." />
-                    <MenuItem Header="Open in _Code Editor"
-                              Command="{Binding OpenProjectInCodeEditorCommand}" />
-                    <MenuItem Header="Open in _File Explorer"
-                              Command="{Binding OpenProjectInFileExplorer}" />
-                    <MenuItem Header="_Refresh Assets and Generate Content"
-                              Command="{Binding RefreshAssetsCommand}"
-                              ToolTip="Will refresh this project's assets and generate MonoGame content files. This will perform a refresh on the scene editor." />
-                </MenuItem>
-            </Menu>
-            <controls:ContentSwitcher SwitchValue="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToBoolConverter}}"
-                                      x:Name="_contentSwitcher">
-                <controls:ContentSwitcher.TrueContent>
-                    <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
-                          DockPanel.Dock="Bottom">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width=".25*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width=".75*" />
-                        </Grid.ColumnDefinitions>
+        <controls:ContentSwitcher SwitchValue="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToBoolConverter}}"
+                                  x:Name="_contentSwitcher">
+            <controls:ContentSwitcher.TrueContent>
+                <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".25*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width=".75*" />
+                    </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                            <metro:MetroAnimatedSingleRowTabControl SelectionChanged="TabControl_SelectionChanged"
-                                                                    Grid.Row="0"
-                                                                    Margin="{StaticResource StandardMarginB}">
-                                <TabItem Header="Project"
-                                         Tag="{x:Static viewModels:TabTypes.Project}"
-                                         Style="{StaticResource HeaderTabItem}" />
-                                <TabItem Header="Components"
-                                         Tag="{x:Static viewModels:TabTypes.Components}"
-                                         Style="{StaticResource HeaderTabItem}" />
-                                <TabItem Header="Modules"
-                                         Tag="{x:Static viewModels:TabTypes.Modules}"
-                                         Style="{StaticResource HeaderTabItem}" />
-                            </metro:MetroAnimatedSingleRowTabControl>
+                        <metro:MetroAnimatedSingleRowTabControl SelectionChanged="TabControl_SelectionChanged"
+                                                                Grid.Row="0"
+                                                                Margin="{StaticResource StandardMarginB}">
+                            <TabItem Header="Project"
+                                     Tag="{x:Static viewModels:TabTypes.Project}"
+                                     Style="{StaticResource HeaderTabItem}" />
+                            <TabItem Header="Components"
+                                     Tag="{x:Static viewModels:TabTypes.Components}"
+                                     Style="{StaticResource HeaderTabItem}" />
+                            <TabItem Header="Modules"
+                                     Tag="{x:Static viewModels:TabTypes.Modules}"
+                                     Style="{StaticResource HeaderTabItem}" />
+                        </metro:MetroAnimatedSingleRowTabControl>
 
-                            <local:ProjectView Grid.Row="1"
-                                               Margin="{StaticResource DoubleMarginAll}"
-                                               Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
+                        <local:ProjectView Grid.Row="1"
+                                           Margin="{StaticResource DoubleMarginAll}"
+                                           Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
 
-                            <local:ComponentsView Grid.Row="1"
-                                                  Margin="{StaticResource DoubleMarginAll}"
-                                                  Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
+                        <local:ComponentsView Grid.Row="1"
+                                              Margin="{StaticResource DoubleMarginAll}"
+                                              Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
 
-                            <local:ModulesView Grid.Row="1"
-                                               Margin="{StaticResource DoubleMarginAll}"
-                                               Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
-                        </Grid>
-
-                        <GridSplitter Grid.Column="1"
-                                      Style="{StaticResource VerticalGridSplitter}" />
-
-                        <sceneEditing:SceneEditorControl Grid.Column="2" />
+                        <local:ModulesView Grid.Row="1"
+                                           Margin="{StaticResource DoubleMarginAll}"
+                                           Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
                     </Grid>
-                </controls:ContentSwitcher.TrueContent>
-                <controls:ContentSwitcher.FalseContent>
-                    <local:StartupView />
-                </controls:ContentSwitcher.FalseContent>
-            </controls:ContentSwitcher>
-        </DockPanel>
+
+                    <GridSplitter Grid.Column="1"
+                                  Style="{StaticResource VerticalGridSplitter}" />
+
+                    <sceneEditing:SceneEditorControl Grid.Column="2" />
+                </Grid>
+            </controls:ContentSwitcher.TrueContent>
+            <controls:ContentSwitcher.FalseContent>
+                <local:StartupView />
+            </controls:ContentSwitcher.FalseContent>
+        </controls:ContentSwitcher>
+
         <Border Background="#11FFFFFF"
                 Visibility="{Binding BusyService.IsBusy, Converter={StaticResource _boolToVisibilityConverter}}">
             <metro:ProgressRing HorizontalAlignment="Center"
