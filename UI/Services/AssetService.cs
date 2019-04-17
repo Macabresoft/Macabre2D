@@ -46,7 +46,7 @@
                 var originalParent = assetToMove.Parent;
                 var newPath = originalPath;
 
-                var undoCommand = new UndoCommand(async () => {
+                var undoCommand = new UndoCommand(() => {
                     assetToMove.Parent = newParent;
                     newPath = assetToMove.GetPath();
                     this.MoveAsset(assetToMove, originalPath);
