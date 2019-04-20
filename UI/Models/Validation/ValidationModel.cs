@@ -27,7 +27,7 @@
 
         public bool HasErrors {
             get {
-                return this._validationErrors.Any(x => x.Value.Any());
+                return this.GetErrors().Any();
             }
         }
 
@@ -51,7 +51,13 @@
                 errors.AddRange(propertyErrors);
             }
 
+            errors.AddRange(this.RunCustomValidation());
+
             return errors;
+        }
+
+        protected virtual IEnumerable<string> RunCustomValidation() {
+            return new List<string>();
         }
 
         protected override bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = "") {

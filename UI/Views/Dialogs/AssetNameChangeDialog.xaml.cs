@@ -2,17 +2,17 @@
 
     using Macabre2D.UI.ViewModels.Dialogs;
 
-    public partial class NameChangeDialog {
+    public partial class AssetNameChangeDialog {
 
-        public NameChangeDialog(NameChangeViewModel viewModel) {
+        public AssetNameChangeDialog(AssetNameChangeViewModel viewModel) {
             this.ViewModel = viewModel;
             viewModel.Finished += ViewModel_Finished;
             this.InitializeComponent();
         }
 
-        public NameChangeViewModel ViewModel {
+        public AssetNameChangeViewModel ViewModel {
             get {
-                return this.DataContext as NameChangeViewModel;
+                return this.DataContext as AssetNameChangeViewModel;
             }
 
             set {

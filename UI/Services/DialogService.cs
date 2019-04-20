@@ -23,6 +23,35 @@
             this._serializer = serializer;
         }
 
+        public bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, string dialogTitle, out string newName) {
+            var wasNameChanged = false;
+            newName = name;
+
+            var extension = Path.GetExtension(name) ?? string.Empty;
+            var nameWithoutExtension = name;
+            if (!string.IsNullOrWhiteSpace(extension)) {
+                nameWithoutExtension = Path.GetFileNameWithoutExtension(name);
+            }
+
+            var window = this._container.Resolve<AssetNameChangeDialog>(
+                new ParameterOverride("name", nameWithoutExtension),
+                new ParameterOverride("extension", extension),
+                new ParameterOverride("asset", asset),
+                new ParameterOverride("parent", parent));
+
+            if (!string.IsNullOrEmpty(dialogTitle)) {
+                window.Title = dialogTitle;
+            }
+
+            var result = window.ShowDialog();
+            if (result.HasValue && result.Value) {
+                newName = $"{window.ViewModel.NewName}{extension}";
+                wasNameChanged = true;
+            }
+
+            return wasNameChanged;
+        }
+
         public bool ShowCreateProjectDialog(out Project project, string initialDirectory = null) {
             var window = this._container.Resolve<CreateProjectDialog>();
             window.ViewModel.FilePath = initialDirectory;
@@ -70,24 +99,6 @@
 
             path = string.Empty;
             return false;
-        }
-
-        public bool ShowNameChangeDialog(string originalName, string fileExtension, string dialogTitle, out string newName) {
-            var wasNameChanged = false;
-            newName = originalName;
-            var window = this._container.Resolve<NameChangeDialog>(new ParameterOverride("originalName", originalName), new ParameterOverride("extension", fileExtension));
-
-            if (!string.IsNullOrEmpty(dialogTitle)) {
-                window.Title = dialogTitle;
-            }
-
-            var result = window.ShowDialog();
-            if (result.HasValue && result.Value) {
-                newName = window.ViewModel.NewName;
-                wasNameChanged = true;
-            }
-
-            return wasNameChanged;
         }
 
         public SaveDiscardCancelResult ShowSaveDiscardCancelDialog() {

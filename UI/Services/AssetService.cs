@@ -41,16 +41,19 @@
                 throw new ArgumentNullException(nameof(newParent));
             }
 
-            if (this.ValidateNewParent(assetToMove, newParent)) {
+            if (this.ValidateNewParent(assetToMove, newParent, out var newName)) {
+                var originalName = assetToMove.Name;
                 var originalPath = assetToMove.GetPath();
                 var originalParent = assetToMove.Parent;
                 var newPath = originalPath;
 
                 var undoCommand = new UndoCommand(() => {
+                    assetToMove.Name = newName;
                     assetToMove.Parent = newParent;
                     newPath = assetToMove.GetPath();
                     this.MoveAsset(assetToMove, originalPath);
                 }, () => {
+                    assetToMove.Name = originalName;
                     assetToMove.Parent = originalParent;
                     this.MoveAsset(assetToMove, newPath);
                 });
@@ -87,7 +90,7 @@
         }
 
         public void RenameAsset(Asset asset, string newName) {
-            if (this.ValidateAssetName(newName, asset.Parent, out var validName)) {
+            if (this.ValidateAssetName(newName, asset, asset.Parent, out var validName)) {
                 var originalPath = asset.GetPath();
                 var newPath = Path.Combine(Path.GetDirectoryName(originalPath), validName);
                 var originalName = asset.Name;
@@ -144,15 +147,18 @@
             }
         }
 
-        private bool ValidateAssetName(string name, FolderAsset parentAsset, out string newName) {
+        private bool ValidateAssetName(string name, Asset asset, FolderAsset parentAsset, out string newName) {
+            var result = !string.IsNullOrWhiteSpace(name);
             var nameWithoutExtension = Path.GetFileNameWithoutExtension(name);
-            var result = !string.IsNullOrWhiteSpace(nameWithoutExtension);
+            if (string.IsNullOrWhiteSpace(nameWithoutExtension)) {
+                nameWithoutExtension = name;
+            }
+
             newName = name;
 
-            if (!result || parentAsset.Children.Any(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase))) {
-                var extension = Path.GetExtension(name);
-                if (this._dialogService.ShowNameChangeDialog(nameWithoutExtension, extension, "Invalid Name, Choose a New One", out var chosenName)) {
-                    result = this.ValidateAssetName($"{chosenName}{extension}", parentAsset, out newName);
+            if (!result || parentAsset.Children.Any(x => string.Equals(x.NameWithoutExtension, nameWithoutExtension, StringComparison.OrdinalIgnoreCase))) {
+                if (this._dialogService.ShowAssetNameChangeDialog(name, asset, parentAsset, "Invalid Name, Choose a New One", out newName)) {
+                    result = this.ValidateAssetName(newName, asset, parentAsset, out newName);
                 }
                 else {
                     result = false;
@@ -162,13 +168,12 @@
             return result;
         }
 
-        private bool ValidateNewParent(Asset assetToMove, FolderAsset newParent) {
+        private bool ValidateNewParent(Asset assetToMove, FolderAsset newParent, out string newName) {
             var result = false;
+            newName = assetToMove.Name;
+
             if (assetToMove.Parent == null || newParent.Id != assetToMove.Parent.Id) {
-                result = this.ValidateAssetName(assetToMove.Name, newParent, out var newName);
-                if (!string.Equals(assetToMove.Name, newName, StringComparison.OrdinalIgnoreCase)) {
-                    assetToMove.Name = newName;
-                }
+                result = this.ValidateAssetName(assetToMove.Name, assetToMove, newParent, out newName);
             }
 
             return result;

@@ -1,10 +1,10 @@
-﻿<metro:MetroWindow x:Class="Macabre2D.UI.Views.Dialogs.NameChangeDialog"
+﻿<metro:MetroWindow x:Class="Macabre2D.UI.Views.Dialogs.AssetNameChangeDialog"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    Style="{StaticResource StandardWindowStyle}"
-                   Title="Change Name"
+                   Title="Change Asset Name"
                    WindowStartupLocation="CenterScreen"
                    SizeToContent="WidthAndHeight"
                    Width="300">
@@ -31,7 +31,7 @@
 
             <TextBox Grid.Column="1"
                      VerticalAlignment="Center"
-                     Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                     Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" />
 
             <TextBlock Grid.Column="2"
                        Margin="{StaticResource StandardMarginAll}"

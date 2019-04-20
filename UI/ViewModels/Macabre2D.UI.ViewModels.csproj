@@ -102,7 +102,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Dialogs\CreateProjectViewModel.cs" />
-    <Compile Include="Dialogs\NameChangeViewModel.cs" />
+    <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
     <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
     <Compile Include="Dialogs\SaveSceneViewModel.cs" />

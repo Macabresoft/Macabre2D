@@ -7,13 +7,13 @@
 
     public interface IDialogService {
 
+        bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, string dialogTitle, out string newName);
+
         bool ShowCreateProjectDialog(out Project project, string initialDirectory = null);
 
         bool ShowFileBrowser(string filter, out string path, string initialDirectory = null);
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);
-
-        bool ShowNameChangeDialog(string originalName, string fileExtension, string dialogTitle, out string newName);
 
         SaveDiscardCancelResult ShowSaveDiscardCancelDialog();
 

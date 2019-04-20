@@ -45,6 +45,12 @@
 
         public event EventHandler OnDeleted;
 
+        public string Extension {
+            get {
+                return Path.GetExtension(this.Name) ?? string.Empty;
+            }
+        }
+
         [DataMember]
         public Guid Id { get; private set; } = Guid.NewGuid();
 
@@ -55,6 +61,17 @@
 
             set {
                 this.Set(ref this._name, value);
+            }
+        }
+
+        public string NameWithoutExtension {
+            get {
+                var nameWithoutExtension = Path.GetFileNameWithoutExtension(this.Name);
+                if (string.IsNullOrWhiteSpace(nameWithoutExtension)) {
+                    nameWithoutExtension = this.Name;
+                }
+
+                return nameWithoutExtension;
             }
         }
 
