@@ -104,5 +104,14 @@ namespace Macabre2D.UI.Common {
         public static bool IsValidFileName(string fileName) {
             return !string.IsNullOrEmpty(fileName) && fileName.IndexOfAny(Path.GetInvalidPathChars()) < 0;
         }
+
+        public static string WithoutExtension(this string fileOrFolderName) {
+            var result = Path.GetFileNameWithoutExtension(fileOrFolderName);
+            if (string.IsNullOrWhiteSpace(result)) {
+                result = fileOrFolderName;
+            }
+
+            return result;
+        }
     }
 }

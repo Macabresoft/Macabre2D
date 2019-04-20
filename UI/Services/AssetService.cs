@@ -157,7 +157,7 @@
             newName = name;
 
             if (!result || parentAsset.Children.Any(x => string.Equals(x.NameWithoutExtension, nameWithoutExtension, StringComparison.OrdinalIgnoreCase))) {
-                if (this._dialogService.ShowAssetNameChangeDialog(name, asset, parentAsset, "Invalid Name, Choose a New One", out newName)) {
+                if (this._dialogService.ShowAssetNameChangeDialog(name, asset, parentAsset, out newName)) {
                     result = this.ValidateAssetName(newName, asset, parentAsset, out newName);
                 }
                 else {

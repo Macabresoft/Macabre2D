@@ -23,7 +23,7 @@
             this._serializer = serializer;
         }
 
-        public bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, string dialogTitle, out string newName) {
+        public bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, out string newName) {
             var wasNameChanged = false;
             newName = name;
 
@@ -38,10 +38,6 @@
                 new ParameterOverride("extension", extension),
                 new ParameterOverride("asset", asset),
                 new ParameterOverride("parent", parent));
-
-            if (!string.IsNullOrEmpty(dialogTitle)) {
-                window.Title = dialogTitle;
-            }
 
             var result = window.ShowDialog();
             if (result.HasValue && result.Value) {

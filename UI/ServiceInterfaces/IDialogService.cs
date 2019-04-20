@@ -7,7 +7,7 @@
 
     public interface IDialogService {
 
-        bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, string dialogTitle, out string newName);
+        bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, out string newName);
 
         bool ShowCreateProjectDialog(out Project project, string initialDirectory = null);
 

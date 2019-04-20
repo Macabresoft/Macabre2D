@@ -63,7 +63,7 @@
     </Style>
 
     <Style TargetType="Separator" BasedOn="{StaticResource MetroStatusBarSeparator}">
-        <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+        <Setter Property="Background" Value="{StaticResource AccentColorBrush}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
         <Setter Property="VerticalAlignment" Value="Center" />

@@ -1,11 +1,11 @@
-﻿using Macabre2D.UI.Models;
-using Macabre2D.UI.Models.Validation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿namespace Macabre2D.UI.ViewModels.Dialogs {
 
-namespace Macabre2D.UI.ViewModels.Dialogs {
+    using Macabre2D.UI.Common;
+    using Macabre2D.UI.Models;
+    using Macabre2D.UI.Models.Validation;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public sealed class AssetNameChangeViewModel : OKCancelDialogViewModel {
         private readonly Asset _asset;
@@ -17,6 +17,19 @@ namespace Macabre2D.UI.ViewModels.Dialogs {
             this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
             this.Extension = string.IsNullOrWhiteSpace(extension) ? null : extension;
             this.NewName = name;
+
+            var unavailableNames = new List<string>();
+            if (this._asset is FolderAsset) {
+                unavailableNames.AddRange(this._parent.Children.Where(x => x.Id != this._asset.Id).Select(x => x.Name));
+            }
+            else if (!string.IsNullOrWhiteSpace(this.Extension)) {
+                unavailableNames.AddRange(this._parent.Children.Where(x => x.Id != this._asset.Id && !(x is FolderAsset)).Select(x => x.Name.WithoutExtension()));
+            }
+            else {
+                unavailableNames.AddRange(this._parent.Children.Where(x => x.Id != this._asset.Id).Select(x => x.Name.WithoutExtension()));
+            }
+
+            this.UnavailableNames = unavailableNames;
         }
 
         public string Extension { get; }
@@ -33,33 +46,25 @@ namespace Macabre2D.UI.ViewModels.Dialogs {
             }
         }
 
+        public ICollection<string> UnavailableNames { get; }
+
         protected override IEnumerable<string> RunCustomValidation() {
             var errors = base.RunCustomValidation().ToList();
             if (this._asset is FolderAsset folder) {
                 var peerAssets = this._parent.Children.Where(x => x.Id != this._asset.Id);
 
-                foreach (var peerAsset in peerAssets) {
-                    if (string.Equals(this.NewName, peerAsset.Name, StringComparison.OrdinalIgnoreCase)) {
+                foreach (var unavailableName in this.UnavailableNames) {
+                    if (string.Equals(this.NewName, unavailableName, StringComparison.OrdinalIgnoreCase)) {
                         errors.Add($"'{this.NewName}' is already in use.");
                         break;
                     }
                 }
             }
             else {
-                var peerAssets = this._parent.Children.Where(x => x.Id != this._asset.Id);
-
-                if (!string.IsNullOrWhiteSpace(this.Extension)) {
-                    peerAssets = peerAssets.Where(x => !(x is FolderAsset));
-                }
-
-                foreach (var peerAsset in peerAssets) {
-                    var compareToName = Path.GetFileNameWithoutExtension(peerAsset.Name);
-                    if (string.IsNullOrEmpty(compareToName)) {
-                        compareToName = peerAsset.Name;
-                    }
-
-                    if (string.Equals(this.NewName, compareToName, StringComparison.OrdinalIgnoreCase)) {
+                foreach (var unavailableName in this.UnavailableNames) {
+                    if (string.Equals(this.NewName, unavailableName, StringComparison.OrdinalIgnoreCase)) {
                         errors.Add($"'{this.NewName}' is already in use.");
+                        break;
                     }
                 }
             }

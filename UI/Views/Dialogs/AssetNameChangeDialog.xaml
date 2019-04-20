@@ -3,6 +3,7 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls"
                    Style="{StaticResource StandardWindowStyle}"
                    Title="Change Asset Name"
                    WindowStartupLocation="CenterScreen"
@@ -14,27 +15,39 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Margin="{StaticResource DoubleMarginLTR}"
-              Grid.Row="0">
+
+        <TextBlock Grid.Row="0"
+                   FontWeight="Bold"
+                   Margin="{StaticResource StandardMarginAll}"
+                   VerticalAlignment="Center"
+                   Text="Unavailable Names" />
+
+        <ScrollViewer Grid.Row="1"
+                      MaxHeight="200"
+                      Margin="{StaticResource DoubleMarginLRB}"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Visible">
+            <ItemsControl ItemsSource="{Binding UnavailableNames}"
+                          Foreground="{StaticResource AccentColorBrush}" />
+        </ScrollViewer>
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Name:" />
+            <valueEditors:StringEditor Grid.Row="0"
+                                       VerticalAlignment="Center"
+                                       Title="Name"
+                                       Value="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" />
 
-            <TextBox Grid.Column="1"
-                     VerticalAlignment="Center"
-                     Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" />
-
-            <TextBlock Grid.Column="2"
-                       Margin="{StaticResource StandardMarginAll}"
+            <TextBlock Grid.Column="1"
+                       Margin="{StaticResource StandardMarginTRB}"
                        VerticalAlignment="Center"
                        Text="{Binding Extension, Mode=OneTime}"
                        Visibility="{Binding Extension, Mode=OneTime, Converter={StaticResource _nullToVisibilityConverter}}" />
@@ -42,7 +55,7 @@
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="1"
+                    Grid.Row="3"
                     Margin="{StaticResource StandardMarginAll}">
             <Button Content="_OK"
                     Command="{Binding OKCommand}"

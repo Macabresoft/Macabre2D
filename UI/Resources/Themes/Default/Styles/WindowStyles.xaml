@@ -3,7 +3,7 @@
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls">
     <Style TargetType="metro:MetroWindow"  BasedOn="{StaticResource {x:Type metro:MetroWindow}}" x:Key="StandardWindowStyle">
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="TitleCharacterCasing" Value="Normal" />
         <Setter Property="IconTemplate">
