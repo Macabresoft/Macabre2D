@@ -148,24 +148,24 @@
         }
 
         public async Task<bool> BuildProject() {
+            var referencePath = this.GetReferencePath();
+            if (!Directory.Exists(referencePath)) {
+                Directory.CreateDirectory(referencePath);
+            }
+
+            foreach (var file in this._referenceFiles) {
+                File.Copy(file, Path.Combine(referencePath, file), true);
+            }
+
+            foreach (var configuration in this.CurrentProject.BuildConfigurations) {
+                configuration.CopyMonoGameFrameworkDLL(referencePath);
+            }
+
             var result = await this.BuildContent();
             var tempDirectoryPath = this.GetTempDirectoryPath();
 
             if (result) {
                 await Task.Run(async () => {
-                    var referencePath = this.GetReferencePath();
-                    if (!Directory.Exists(referencePath)) {
-                        Directory.CreateDirectory(referencePath);
-                    }
-
-                    foreach (var file in this._referenceFiles) {
-                        File.Copy(file, Path.Combine(referencePath, file), true);
-                    }
-
-                    foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                        configuration.CopyMonoGameFrameworkDLL(referencePath);
-                    }
-
                     var configurationName = "Debug"; // TODO: Allow release
                     this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
 
