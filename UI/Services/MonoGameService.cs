@@ -4,6 +4,7 @@
     using Macabre2D.UI.Controls.SceneEditing;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
+    using Microsoft.Xna.Framework;
     using System.Linq;
     using System.Windows;
 
@@ -50,6 +51,12 @@
             set {
                 this.Set(ref this._showSelection, value);
                 this._editorGame.ShowSelection = this._showSelection;
+            }
+        }
+
+        public void CenterCamera() {
+            if (this._editorGame.CurrentCamera != null) {
+                this._editorGame.CurrentCamera.LocalPosition = Vector2.Zero;
             }
         }
 

@@ -26,6 +26,12 @@
                                        Margin="{StaticResource StandardMarginLTRB}"
                                        ToolTip="Toggle highlighting the current selected component's collider and bounding area in the scene editor." />
 
+            <Button Command="{Binding CenterCameraCommand, ElementName=_sceneEditorControl}"
+                    ToolTip="Center the current camera to (0, 0)">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ImageFilterCenterFocus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+
             <valueEditors:ColorEditor ToolTip="Change the current scene's background color."
                                       Width="96"
                                       Value="{Binding SceneService.CurrentScene.BackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

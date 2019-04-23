@@ -9,6 +9,8 @@
 
         bool ShowSelection { get; set; }
 
+        void CenterCamera();
+
         void ResetCamera();
     }
 }

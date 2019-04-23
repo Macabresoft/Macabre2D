@@ -27,7 +27,7 @@
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ICamera CurrentCamera {
+        public Camera CurrentCamera {
             get {
                 return this._cameraWrapper?.Camera;
             }
