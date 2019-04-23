@@ -5,17 +5,19 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
+    /// <summary>
+    /// An interface to read common game settings.
+    /// </summary>
     public interface IGameSettings {
 
         /// <summary>
-        /// Gets or sets the color of the game background when there is no scene opened.
+        /// Gets the color of the game background when there is no scene opened.
         /// </summary>
         /// <value>The fallback background color.</value>
         Color FallbackBackgroundColor { get; }
 
         /// <summary>
-        /// Gets or sets the pixels per unit. This value is the number of pixels per abritrary
-        /// Macabre2D units.
+        /// Getsthe pixels per unit. This value is the number of pixels per abritrary Macabre2D units.
         /// </summary>
         /// <value>The pixel density.</value>
         int PixelsPerUnit { get; }
@@ -37,7 +39,7 @@
         float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
 
         /// <summary>
-        /// Tries to get custom setting.
+        /// Tries to get a custom setting.
         /// </summary>
         /// <param name="settingName">Name of the setting.</param>
         /// <param name="settingValue">The setting value.</param>
