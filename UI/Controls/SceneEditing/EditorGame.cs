@@ -11,7 +11,6 @@
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionEditor _selectionEditor;
         private IScene _currentScene;
-        private GameSettings _gameSettings = new GameSettings();
 #pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
         private IGraphicsDeviceService _graphicsDeviceManager;
 #pragma warning restore IDE0052 // Remove unread private members
@@ -19,10 +18,12 @@
         private bool _isInitialized = false;
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
+        private IGameSettings _settings;
 
         public EditorGame() : base() {
             this._cameraWrapper = new EditorCameraWrapper(this);
             this._selectionEditor = new SelectionEditor(this);
+            this.Settings = new GameSettings();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -53,15 +54,16 @@
             }
         }
 
-        public GameSettings GameSettings {
+        public IGameSettings Settings {
             get {
-                return this._gameSettings;
+                return this._settings;
             }
 
             set {
                 if (value != null) {
-                    this._gameSettings = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.GameSettings)));
+                    this._settings = value;
+                    GameSettings.Instance = this._settings;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Settings)));
                 }
             }
         }
@@ -106,8 +108,8 @@
 
                     this.CurrentScene.Game.SpriteBatch.End();
                 }
-                else if (this.GameSettings != null) {
-                    this.GraphicsDevice.Clear(this.GameSettings.FallbackBackgroundColor);
+                else if (this.Settings != null) {
+                    this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
                 }
             }
         }

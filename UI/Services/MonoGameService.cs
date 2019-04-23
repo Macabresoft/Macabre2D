@@ -22,7 +22,7 @@
             this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
             this._projectService = projectService;
             this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
-            this._editorGame.GameSettings = this._projectService.CurrentProject?.GameSettings;
+            this._editorGame.Settings = this._projectService.CurrentProject?.GameSettings;
             this.SetContentPath();
         }
 
@@ -66,7 +66,7 @@
 
         private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this._projectService.CurrentProject)) {
-                this._editorGame.GameSettings = this._projectService.CurrentProject?.GameSettings;
+                this._editorGame.Settings = this._projectService.CurrentProject?.GameSettings;
                 this.SetContentPath();
             }
         }

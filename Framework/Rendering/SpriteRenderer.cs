@@ -116,14 +116,14 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, float viewHeight) {
-            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game?.GameSettings == null) {
+            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game?.Settings == null) {
                 return;
             }
 
             var transform = this.SpriteTransform;
             this._scene.Game.SpriteBatch.Draw(
                 this.Sprite.Texture,
-                transform.Position * this._scene.Game.GameSettings.PixelsPerUnit,
+                transform.Position * this._scene.Game.Settings.PixelsPerUnit,
                 new Rectangle(this.Sprite.Location, this.Sprite.Size),
                 this.Color,
                 transform.Rotation.Angle,
@@ -168,7 +168,7 @@
         private BoundingArea CreateBoundingArea() {
             if (this.Sprite != null && this._scene?.Game is IGame game) {
                 var transform = this.SpriteTransform;
-                var pixelDensity = game.GameSettings.PixelsPerUnit;
+                var pixelDensity = game.Settings.PixelsPerUnit;
                 var width = this.Sprite.Size.X / pixelDensity;
                 var height = this.Sprite.Size.Y / pixelDensity;
                 var offset = this.Offset / pixelDensity;
@@ -192,7 +192,7 @@
         }
 
         private Transform CreateTransform() {
-            var pixelDensity = this._scene?.Game?.GameSettings?.PixelsPerUnit ?? 1f;
+            var pixelDensity = this._scene?.Game?.Settings?.PixelsPerUnit ?? 1f;
             return this.GetWorldTransform(this.Offset / pixelDensity);
         }
 
@@ -206,7 +206,7 @@
                 return;
             }
 
-            var pixelDensity = this._scene.Game.GameSettings.PixelsPerUnit;
+            var pixelDensity = this._scene.Game.Settings.PixelsPerUnit;
 
             switch (this.OffsetType) {
                 case OffsetType.Bottom:

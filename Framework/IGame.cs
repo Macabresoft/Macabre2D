@@ -21,16 +21,16 @@
         IScene CurrentScene { get; }
 
         /// <summary>
-        /// Gets the game settings.
-        /// </summary>
-        /// <value>The game settings.</value>
-        GameSettings GameSettings { get; }
-
-        /// <summary>
         /// Gets the graphics device.
         /// </summary>
         /// <value>The graphics device.</value>
         GraphicsDevice GraphicsDevice { get; }
+
+        /// <summary>
+        /// Gets the game settings.
+        /// </summary>
+        /// <value>The game settings.</value>
+        IGameSettings Settings { get; }
 
         /// <summary>
         /// Gets the sprite batch.

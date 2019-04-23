@@ -11,17 +11,15 @@
     /// </summary>
     public sealed class PrimitiveDrawer {
         private readonly Texture2D _pixel;
-        private readonly GameSettings _settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PrimitiveDrawer"/> class.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
         /// <param name="gameSettings">The game settings.</param>
-        public PrimitiveDrawer(SpriteBatch spriteBatch, GameSettings gameSettings) {
+        public PrimitiveDrawer(SpriteBatch spriteBatch) {
             this._pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             this._pixel.SetData(new[] { Color.White });
-            this._settings = gameSettings;
         }
 
         /// <summary>
@@ -176,7 +174,16 @@
         public void DrawLine(SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness) {
             var length = Vector2.Distance(point1, point2);
             var angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
-            spriteBatch.Draw(this._pixel, point1 * this._settings.PixelsPerUnit, null, color, angle, Vector2.Zero, new Vector2(length * this._settings.PixelsPerUnit, thickness), SpriteEffects.None, 0);
+            spriteBatch.Draw(
+                this._pixel,
+                point1 * GameSettings.Instance.PixelsPerUnit,
+                null,
+                color,
+                angle,
+                Vector2.Zero,
+                new Vector2(length * GameSettings.Instance.PixelsPerUnit, thickness),
+                SpriteEffects.None,
+                0);
         }
 
         /// <summary>

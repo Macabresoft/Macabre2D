@@ -72,12 +72,8 @@
         protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio);
 
         private (float ratio, float lineLength) GetViewHeightRatio(float viewHeight) {
-            var ratio = 1f;
-            var lineLength = 1f;
-            if (this.EditorGame?.GameSettings is GameSettings gameSettings) {
-                ratio = gameSettings.GetPixelAgnosticRatio(viewHeight, this.EditorGame.GraphicsDevice.Viewport.Height);
-                lineLength = ratio * 4f;
-            }
+            var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.EditorGame.GraphicsDevice.Viewport.Height);
+            var lineLength = ratio * 4f;
 
             return (ratio, lineLength);
         }

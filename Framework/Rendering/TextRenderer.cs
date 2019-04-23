@@ -86,7 +86,7 @@
                 this._scene.Game.SpriteBatch.DrawString(
                     this.Font.SpriteFont,
                     this.Text,
-                    transform.Position * this._scene.Game.GameSettings.PixelsPerUnit,
+                    transform.Position * this._scene.Game.Settings.PixelsPerUnit,
                     this.Color,
                     transform.Rotation.Angle,
                     Vector2.Zero,
@@ -125,8 +125,8 @@
         private BoundingArea CreateBoundingArea() {
             var size = this.Font.SpriteFont.MeasureString(this.Text);
 
-            var width = size.X / this._scene.Game.GameSettings.PixelsPerUnit;
-            var height = (size.Y * this.LocalScale.X) / this._scene.Game.GameSettings.PixelsPerUnit;
+            var width = size.X / this._scene.Game.Settings.PixelsPerUnit;
+            var height = (size.Y * this.LocalScale.X) / this._scene.Game.Settings.PixelsPerUnit;
 
             if (this.LocalScale.X < 0f) {
                 width *= -1;

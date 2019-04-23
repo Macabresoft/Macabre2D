@@ -16,6 +16,7 @@
         private IScene _currentScene;
         private bool _isInitialized;
         private bool _isLoaded;
+        private IGameSettings _settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MacabreGame"/> class.
@@ -51,7 +52,16 @@
         }
 
         /// <inheritdoc/>
-        public GameSettings GameSettings { get; private set; }
+        public IGameSettings Settings {
+            get {
+                return this._settings;
+            }
+
+            set {
+                this._settings = value ?? new GameSettings();
+                GameSettings.Instance = this._settings;
+            }
+        }
 
         /// <inheritdoc/>
         public SpriteBatch SpriteBatch {
@@ -66,8 +76,8 @@
                 this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
                 this.CurrentScene.Draw(gameTime);
             }
-            else if (this.GameSettings != null) {
-                this.GraphicsDevice.Clear(this.GameSettings.FallbackBackgroundColor);
+            else {
+                this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
             }
         }
 
@@ -82,15 +92,15 @@
         protected override void LoadContent() {
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             try {
-                this.GameSettings = this.Content.Load<GameSettings>(GameSettings.ContentFileName);
-                this.CurrentScene = this.Content.Load<Scene>(this.GameSettings.StartupScenePath);
+                this.Settings = this.Content.Load<GameSettings>(GameSettings.ContentFileName);
+                this.CurrentScene = this.Content.Load<Scene>(this.Settings.StartupScenePath);
                 this.CurrentScene?.LoadContent();
             }
             catch (ContentLoadException) {
                 //TODO: Log an error here? This is required for my precious example projects right now.
                 // Maybe when I can migrate example projects to the actual editing environment, I get
                 // rid of this try/catch situation, cuz it ugly
-                this.GameSettings = new GameSettings();
+                this.Settings = new GameSettings();
             }
 
             this._isLoaded = true;

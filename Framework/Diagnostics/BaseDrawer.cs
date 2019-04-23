@@ -49,8 +49,8 @@
         /// <returns>The appropriate line thickness for this drawer.</returns>
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
-            if (this.UseDynamicLineThickness && this._scene?.Game?.GameSettings is GameSettings gameSettings) {
-                result *= gameSettings.GetPixelAgnosticRatio(viewHeight, this._scene.Game.GraphicsDevice.Viewport.Height);
+            if (this.UseDynamicLineThickness && this._scene?.Game != null) {
+                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this._scene.Game.GraphicsDevice.Viewport.Height);
             }
 
             return result;
@@ -60,7 +60,7 @@
         protected override void Initialize() {
             if (this._scene != null) {
                 this.PrimitiveDrawer = this._scene.ResolveDependency(
-                    () => new PrimitiveDrawer(this._scene.Game.SpriteBatch, this._scene.Game.GameSettings));
+                    () => new PrimitiveDrawer(this._scene.Game.SpriteBatch));
             }
         }
     }

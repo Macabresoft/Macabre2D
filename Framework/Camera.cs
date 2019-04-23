@@ -166,7 +166,7 @@
 
         private Matrix CreateViewMatrix() {
             if (this._scene?.Game is IGame game) {
-                var pixelsPerUnit = game.GameSettings?.PixelsPerUnit ?? 1f;
+                var pixelsPerUnit = game.Settings.PixelsPerUnit;
                 var viewPort = game.GraphicsDevice.Viewport;
                 var origin = new Vector2(viewPort.Width * 0.5f, viewPort.Height * 0.5f);
                 var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
