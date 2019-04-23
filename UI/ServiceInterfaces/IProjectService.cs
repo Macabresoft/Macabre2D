@@ -9,9 +9,9 @@
 
         bool HasChanges { get; set; }
 
-        Task<bool> BuildContent();
+        Task<bool> BuildContent(BuildMode mode);
 
-        Task<bool> BuildProject();
+        Task<bool> BuildProject(BuildMode mode);
 
         Task<Project> CreateProject(string initialDirectory = null);
 

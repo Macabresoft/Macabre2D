@@ -98,12 +98,11 @@
             }
         }
 
-        public async Task<bool> BuildContent() {
+        public async Task<bool> BuildContent(BuildMode mode) {
             var result = true;
-            var configurationName = "Debug"; //TODO : allow release
 
             await Task.Run(() => {
-                this.GenerateContentFile(configurationName);
+                this.GenerateContentFile(mode);
 
                 var mgcbFilePath = Path.Combine("Pipeline", "MGCB.exe");
                 var sourcePath = this.GetSourcePath();
@@ -130,7 +129,7 @@
 
                     if (process.ExitCode == 0) {
                         var sourceDirectory = Path.Combine(contentPath, "bin", configuration.Platform.ToString());
-                        var targetDirectory = configuration.GetCompiledContentPath(this.GetSourcePath(), configurationName);
+                        var targetDirectory = configuration.GetCompiledContentPath(this.GetSourcePath(), mode);
 
                         if (Directory.Exists(targetDirectory)) {
                             Directory.Delete(targetDirectory, true);
@@ -147,7 +146,7 @@
             return result;
         }
 
-        public async Task<bool> BuildProject() {
+        public async Task<bool> BuildProject(BuildMode mode) {
             var referencePath = this.GetReferencePath();
             if (!Directory.Exists(referencePath)) {
                 Directory.CreateDirectory(referencePath);
@@ -161,16 +160,15 @@
                 configuration.CopyMonoGameFrameworkDLL(referencePath);
             }
 
-            var result = await this.BuildContent();
+            var result = await this.BuildContent(mode);
             var tempDirectoryPath = this.GetTempDirectoryPath();
 
             if (result) {
                 await Task.Run(async () => {
-                    var configurationName = "Debug"; // TODO: Allow release
                     this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
 
                     var properties = new Dictionary<string, string> {
-                        { "Configuration", configurationName }
+                        { "Configuration", mode.ToString() }
                     };
 
                     var solutionPath = this.GetSolutionPath();
@@ -227,7 +225,7 @@
                 }
             }
             else {
-                await this.BuildProject();
+                await this.BuildProject(BuildMode.Debug);
 
                 if (this.CurrentProject?.LastSceneOpened != null) {
                     await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
@@ -347,9 +345,9 @@
             this.HasChanges = true;
         }
 
-        private void GenerateContentFile(string configurationName) {
+        private void GenerateContentFile(BuildMode mode) {
             var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
-            var dllPath = $@"..\..\{GameplayName}\bin\{configurationName}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
+            var dllPath = $@"..\..\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             var sourcePath = this.GetSourcePath();
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                 configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);

@@ -79,9 +79,8 @@
 
         private void SetContentPath() {
             if (this._projectService.CurrentProject != null) {
-                var configurationName = "Debug"; //TODO : allow release
                 var desktopBuildConfiguration = this._projectService.CurrentProject.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL);
-                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), configurationName));
+                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), BuildMode.Debug));
             }
         }
     }

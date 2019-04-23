@@ -108,7 +108,7 @@
         }
 
         private async Task RefreshAssets() {
-            await this.BusyService.PerformTask(this.ProjectService.BuildContent());
+            await this.BusyService.PerformTask(this.ProjectService.BuildContent(BuildMode.Debug));
         }
 
         private async Task SaveProject() {

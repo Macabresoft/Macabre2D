@@ -8,6 +8,11 @@
     using System.Runtime.Serialization;
     using System.Text;
 
+    public enum BuildMode {
+        Debug,
+        Release
+    }
+
     public enum BuildPlatform {
         DesktopGL = 0
     }
@@ -42,8 +47,8 @@
             this.CreateContentFile(contentPath, assets, referencePaths);
         }
 
-        public string GetCompiledContentPath(string sourcePath, string configurationName) {
-            return Path.Combine(sourcePath, this.Platform.ToString(), "bin", configurationName, "Content");
+        public string GetCompiledContentPath(string sourcePath, BuildMode mode) {
+            return Path.Combine(sourcePath, this.Platform.ToString(), "bin", mode.ToString(), "Content");
         }
 
         public string GetContentPath(string sourcePath) {
