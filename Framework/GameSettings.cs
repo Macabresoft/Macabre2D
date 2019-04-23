@@ -11,6 +11,11 @@
     public interface IGameSettings {
 
         /// <summary>
+        /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
+        /// </summary>
+        Color ErrorSpritesColor { get; }
+
+        /// <summary>
         /// Gets the color of the game background when there is no scene opened.
         /// </summary>
         /// <value>The fallback background color.</value>
@@ -90,7 +95,11 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Color FallbackBackgroundColor { get; set; } = Color.HotPink;
+        public Color ErrorSpritesColor { get; set; } = Color.HotPink;
+
+        /// <inheritdoc/>
+        [DataMember]
+        public Color FallbackBackgroundColor { get; set; } = Color.Black;
 
         /// <inheritdoc/>
         [DataMember]

@@ -24,6 +24,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -81,6 +82,17 @@
                                       Grid.Column="1"
                                       VerticalAlignment="Center"
                                       Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="4"
+                       Grid.Column="0"
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Error Sprite Color:" />
+
+            <valueEditors:ColorEditor Grid.Row="4"
+                                      Grid.Column="1"
+                                      VerticalAlignment="Center"
+                                      Value="{Binding ErrorSpritesColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
         <Separator Grid.Row="1" />

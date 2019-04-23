@@ -56,9 +56,34 @@
             }
         }
 
+        public Color ErrorSpritesColor {
+            get {
+                return this.ProjectService.CurrentProject?.GameSettings.ErrorSpritesColor ?? Color.HotPink;
+            }
+
+            set {
+                var originalValue = this.ErrorSpritesColor;
+                if (value != originalValue) {
+                    var originalHasChanges = this.ProjectService.HasChanges;
+                    var undoCommand = new UndoCommand(
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.ErrorSpritesColor = value;
+                            this.ProjectService.HasChanges = true;
+                        },
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.ErrorSpritesColor = originalValue;
+                            this.ProjectService.HasChanges = originalHasChanges;
+                        },
+                        () => this.RaisePropertyChanged(nameof(this.ErrorSpritesColor)));
+
+                    this._undoService.Do(undoCommand);
+                }
+            }
+        }
+
         public Color FallbackBackgroundColor {
             get {
-                return this.ProjectService.CurrentProject?.GameSettings.FallbackBackgroundColor ?? Color.HotPink;
+                return this.ProjectService.CurrentProject?.GameSettings.FallbackBackgroundColor ?? Color.Black;
             }
 
             set {
@@ -221,6 +246,7 @@
         }
 
         private void RaisePropertyChangedEvents() {
+            this.RaisePropertyChanged(nameof(this.ErrorSpritesColor));
             this.RaisePropertyChanged(nameof(this.FallbackBackgroundColor));
             this.RaisePropertyChanged(nameof(this.PixelsPerUnit));
             this.RaisePropertyChanged(nameof(this.ProjectName));

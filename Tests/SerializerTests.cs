@@ -13,6 +13,7 @@
         [Category("Unit Test")]
         public static void Serializer_GameSettingsSerializeTest() {
             var gameSettings = new GameSettings() {
+                ErrorSpritesColor = Color.Red,
                 FallbackBackgroundColor = Color.Coral,
                 PixelsPerUnit = 200,
                 StartupScenePath = "ThisSceneIsAHoldUp"
@@ -29,20 +30,20 @@
                 File.Delete(fileLocation);
             }
 
-            Assert.NotNull(deserializedGameSettings);
-            Assert.AreEqual(gameSettings.FallbackBackgroundColor, deserializedGameSettings.FallbackBackgroundColor);
-            Assert.AreEqual(gameSettings.PixelsPerUnit, deserializedGameSettings.PixelsPerUnit);
-            Assert.AreEqual(gameSettings.StartupScenePath, deserializedGameSettings.StartupScenePath);
-
-            deserializedGameSettings = null;
+            CompareGameSettings(gameSettings, deserializedGameSettings);
 
             var gameSettingsString = serializer.SerializeToString(gameSettings);
             deserializedGameSettings = serializer.DeserializeFromString<GameSettings>(gameSettingsString);
 
-            Assert.NotNull(deserializedGameSettings);
-            Assert.AreEqual(gameSettings.FallbackBackgroundColor, deserializedGameSettings.FallbackBackgroundColor);
-            Assert.AreEqual(gameSettings.PixelsPerUnit, deserializedGameSettings.PixelsPerUnit);
-            Assert.AreEqual(gameSettings.StartupScenePath, deserializedGameSettings.StartupScenePath);
+            CompareGameSettings(gameSettings, deserializedGameSettings);
+        }
+
+        private static void CompareGameSettings(IGameSettings originalSettings, IGameSettings deserializedSettings) {
+            Assert.NotNull(deserializedSettings);
+            Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
+            Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
+            Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
+            Assert.AreEqual(originalSettings.StartupScenePath, deserializedSettings.StartupScenePath);
         }
     }
 }
