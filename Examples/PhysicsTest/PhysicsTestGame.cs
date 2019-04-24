@@ -5,6 +5,7 @@
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
@@ -18,7 +19,8 @@
         }
 
         protected override void LoadContent() {
-            base.LoadContent();
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+
             var scene = new Scene();
 
             var camera = new Camera();
@@ -96,6 +98,7 @@
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
+            this._isLoaded = true;
         }
     }
 }

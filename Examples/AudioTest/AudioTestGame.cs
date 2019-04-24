@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Audio;
     using Macabre2D.Framework.Serialization;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// This is the main type for your game.
@@ -10,7 +11,7 @@
     public class AudioTestGame : MacabreGame {
 
         protected override void LoadContent() {
-            base.LoadContent();
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new Scene();
 
             var audioPlayer = new AudioPlayer();
@@ -22,6 +23,7 @@
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
+            this._isLoaded = true;
         }
     }
 }

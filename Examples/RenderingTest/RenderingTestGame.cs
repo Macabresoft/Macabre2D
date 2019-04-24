@@ -5,6 +5,7 @@
     using Macabre2D.Framework.Rendering;
     using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
@@ -17,7 +18,7 @@
         }
 
         protected override void LoadContent() {
-            base.LoadContent();
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new Scene();
 
             var cameraScroller = new CameraScroller();
@@ -134,6 +135,7 @@
             rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
             rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
             this.CurrentScene.AddChild(rightTriangleSpriteRenderer1);
+            this._isLoaded = true;
         }
     }
 }

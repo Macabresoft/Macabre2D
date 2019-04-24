@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -11,11 +10,11 @@
     /// </summary>
     public class MacabreGame : Game, IGame {
         protected readonly GraphicsDeviceManager _graphics;
+        protected bool _isLoaded;
         protected SpriteBatch _spriteBatch;
 
         private IScene _currentScene;
         private bool _isInitialized;
-        private bool _isLoaded;
         private IGameSettings _settings;
 
         /// <summary>
@@ -24,6 +23,7 @@
         public MacabreGame() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
+            this.Settings = new GameSettings();
         }
 
         /// <inheritdoc/>
@@ -58,8 +58,10 @@
             }
 
             set {
-                this._settings = value ?? new GameSettings();
-                GameSettings.Instance = this._settings;
+                if (value != null) {
+                    this._settings = value;
+                    GameSettings.Instance = this._settings;
+                }
             }
         }
 
@@ -91,18 +93,9 @@
         /// <inheritdoc/>
         protected override void LoadContent() {
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
-            try {
-                this.Settings = this.Content.Load<GameSettings>(GameSettings.ContentFileName);
-                this.CurrentScene = this.Content.Load<Scene>(this.Settings.StartupScenePath);
-                this.CurrentScene?.LoadContent();
-            }
-            catch (ContentLoadException) {
-                //TODO: Log an error here? This is required for my precious example projects right now.
-                // Maybe when I can migrate example projects to the actual editing environment, I get
-                // rid of this try/catch situation, cuz it ugly
-                this.Settings = new GameSettings();
-            }
-
+            this.Settings = this.Content.Load<GameSettings>(GameSettings.ContentFileName);
+            this.CurrentScene = this.Content.Load<Scene>(this.Settings.StartupScenePath);
+            this.CurrentScene?.LoadContent();
             this._isLoaded = true;
         }
 
