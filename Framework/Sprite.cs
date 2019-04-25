@@ -126,7 +126,7 @@
                     pixels[i] = GameSettings.Instance.ErrorSpritesColor;
                 }
 
-                errorTexture.SetData(pixels); // TODO: make this configurable so people can ignore their broken textures with a transparent one
+                errorTexture.SetData(pixels);
                 this.Texture = errorTexture;
             }
         }
