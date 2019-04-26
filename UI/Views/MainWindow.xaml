@@ -39,10 +39,11 @@
                         <MenuItem Header="_Open Project"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   Command="{Binding DataContext.OpenProjectCommand, ElementName=_mainWindow}" />
-                        <MenuItem Header="{Binding ProjectService.CurrentProject.Name, FallbackValue=''}"
+                        <MenuItem Header="{Binding DataContext.ProjectService.CurrentProject.Name, ElementName=_mainWindow, FallbackValue='Project'}"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   HeaderStringFormat="Save {0}"
                                   Command="{Binding DataContext.SaveProjectCommand, ElementName=_mainWindow}" />
+                        <Separator />
                         <MenuItem Header="_Exit"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   Click="Exit_Click" />
