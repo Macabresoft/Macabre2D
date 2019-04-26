@@ -55,6 +55,7 @@
         public ICommand CreateProjectCommand { get; }
 
         public ICommand ExportProjectCommand { get; }
+
         public ICommand OpenProjectCommand { get; }
 
         public ICommand OpenProjectInCodeEditorCommand { get; }
@@ -74,6 +75,7 @@
         public ICommand RefreshAssetsCommand { get; }
 
         public ICommand SaveProjectCommand { get; }
+
         public ISceneService SceneService { get; }
 
         public TabTypes SelectedTabType {
