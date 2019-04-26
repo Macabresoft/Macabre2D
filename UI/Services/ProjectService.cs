@@ -16,6 +16,7 @@
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private const string AssetsLocation = @"Assets";
+        private const string BinariesLocation = @"Binaries";
         private const string BinName = @"bin";
         private const string DebugName = @"Debug";
         private const string DependenciesLocation = @"Dependencies";
@@ -178,8 +179,10 @@
                     result &= buildResult.OverallResult == Microsoft.Build.Execution.BuildResultCode.Success;
 
                     if (result) {
-                        await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
-                        FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
+                        if (mode == BuildMode.Debug) {
+                            await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
+                            FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
+                        }
                     }
                     else if (!Directory.Exists(tempDirectoryPath)) {
                         Directory.CreateDirectory(tempDirectoryPath);
@@ -196,6 +199,22 @@
 
         public async Task<Project> CreateProject(string initialDirectory = null) {
             return await this.CreateProject(string.Empty, initialDirectory);
+        }
+
+        public async Task ExportProject() {
+            if (await this.BuildProject(BuildMode.Release)) {
+                var sourcePath = this.GetSourcePath();
+
+                foreach (var configuration in this.CurrentProject.BuildConfigurations) {
+                    var binaryFolderPath = configuration.GetBinaryFolderPath(sourcePath, BuildMode.Release);
+                    var releaseLocation = Path.Combine(this.GetBinariesPath(), configuration.Platform.ToString());
+                    await FileHelper.DeleteDirectory(releaseLocation, 10000, true);
+                    FileHelper.CopyDirectory(binaryFolderPath, releaseLocation);
+                }
+            }
+            else {
+                this._dialogService.ShowWarningMessageBox("Build Failed", "The build failed so the project could not be exported.");
+            }
         }
 
         public string GetBinPath(bool debug) {
@@ -287,6 +306,7 @@
                 await Task.Run(() => this._serializer.Serialize(project, project.PathToProject));
 
                 Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
+                Directory.CreateDirectory(Path.Combine(project.Directory, BinariesLocation));
                 var dependenciesDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, DependenciesLocation));
                 Directory.CreateDirectory(Path.Combine(project.Directory, SettingsLocation));
                 var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
@@ -352,6 +372,10 @@
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                 configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);
             }
+        }
+
+        private string GetBinariesPath() {
+            return Path.Combine(this.CurrentProject.Directory, BinariesLocation);
         }
 
         private string GetReferencePath() {

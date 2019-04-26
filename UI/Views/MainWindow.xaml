@@ -43,6 +43,10 @@
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   HeaderStringFormat="Save {0}"
                                   Command="{Binding DataContext.SaveProjectCommand, ElementName=_mainWindow}" />
+                        <MenuItem Header="{Binding DataContext.ProjectService.CurrentProject.Name, ElementName=_mainWindow, FallbackValue='Project'}"
+                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
+                                  HeaderStringFormat="Export {0}"
+                                  Command="{Binding DataContext.ExportProjectCommand, ElementName=_mainWindow}" />
                         <Separator />
                         <MenuItem Header="_Exit"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"

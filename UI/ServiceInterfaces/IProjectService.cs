@@ -15,6 +15,8 @@
 
         Task<Project> CreateProject(string initialDirectory = null);
 
+        Task ExportProject();
+
         string GetBinPath(bool debug);
 
         string GetSourcePath();

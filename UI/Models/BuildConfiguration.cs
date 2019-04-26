@@ -47,8 +47,12 @@
             this.CreateContentFile(contentPath, assets, referencePaths);
         }
 
+        public string GetBinaryFolderPath(string sourcePath, BuildMode mode) {
+            return Path.Combine(sourcePath, this.Platform.ToString(), "bin", mode.ToString());
+        }
+
         public string GetCompiledContentPath(string sourcePath, BuildMode mode) {
-            return Path.Combine(sourcePath, this.Platform.ToString(), "bin", mode.ToString(), "Content");
+            return Path.Combine(this.GetBinaryFolderPath(sourcePath, mode), "Content");
         }
 
         public string GetContentPath(string sourcePath) {

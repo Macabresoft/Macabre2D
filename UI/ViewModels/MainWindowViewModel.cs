@@ -39,6 +39,7 @@
 
             this.RefreshAssembliesCommand = new RelayCommand(this.RefreshAssemblies);
             this.CreateProjectCommand = new RelayCommand(async () => await this.CreateProject());
+            this.ExportProjectCommand = new RelayCommand(async () => await this.ExportProject());
             this.OpenProjectCommand = new RelayCommand(async () => await this.OpenProject());
             this.OpenProjectInCodeEditorCommand = new RelayCommand(this.ProjectService.OpenProjectInCodeEditor);
             this.OpenProjectInFileExplorer = new RelayCommand(this.ProjectService.NavigateToProjectLocation);
@@ -53,6 +54,7 @@
 
         public ICommand CreateProjectCommand { get; }
 
+        public ICommand ExportProjectCommand { get; }
         public ICommand OpenProjectCommand { get; }
 
         public ICommand OpenProjectInCodeEditorCommand { get; }
@@ -72,7 +74,6 @@
         public ICommand RefreshAssetsCommand { get; }
 
         public ICommand SaveProjectCommand { get; }
-
         public ISceneService SceneService { get; }
 
         public TabTypes SelectedTabType {
@@ -93,6 +94,11 @@
 
         private async Task CreateProject() {
             await this.BusyService.PerformTask(this.ProjectService.CreateProject(FileHelper.DefaultProjectPath));
+        }
+
+        private async Task ExportProject() {
+            var task = this.ProjectService.ExportProject();
+            await this.BusyService.PerformTask(task);
         }
 
         private async Task OpenProject() {
