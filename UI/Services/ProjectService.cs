@@ -10,6 +10,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
+    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
@@ -112,18 +113,21 @@
                     var contentPath = configuration.GetContentPath(sourcePath);
                     var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
                     var output = new StringBuilder();
+                    var errorOutput = new StringBuilder();
                     process.StartInfo.WorkingDirectory = Path.GetDirectoryName(contentFilePath);
                     process.StartInfo.FileName = MGCBExecutableName;
-                    process.StartInfo.Arguments = $"/@:{contentFilePath} /platform:{configuration.Platform.ToString()}";
+                    process.StartInfo.Arguments = $"/@:\"{contentFilePath}\" /platform:\"{configuration.Platform.ToString()}\"";
                     process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     process.StartInfo.UseShellExecute = false;
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;
                     process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
+                    process.ErrorDataReceived += (sender, e) => errorOutput.AppendLine(e.Data);
 
                     process.Start();
                     process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
                     process.WaitForExit(SecondsToAttemptBuildContent * 1000);
 
                     this._loggingService.LogInfo($"Running {process.StartInfo.FileName} {process.StartInfo.Arguments}", output.ToString());
@@ -139,6 +143,7 @@
                         FileHelper.CopyDirectory(sourceDirectory, targetDirectory);
                     }
                     else {
+                        this._loggingService.LogInfo($"Errors from: {process.StartInfo.FileName} {process.StartInfo.Arguments}", output.ToString());
                         result = false;
                     }
                 }
