@@ -21,6 +21,7 @@
         private const string DebugName = @"Debug";
         private const string DependenciesLocation = @"Dependencies";
         private const string GameplayName = @"Gameplay";
+        private const string MGCBExecutableName = "MGCB.exe";
         private const string ReferencesLocation = @"References";
         private const string ReleaseName = @"Release";
         private const short SecondsToAttemptBuildContent = 60;
@@ -105,7 +106,6 @@
             await Task.Run(() => {
                 this.GenerateContentFile(mode);
 
-                var mgcbFilePath = Path.Combine("Pipeline", "MGCB.exe");
                 var sourcePath = this.GetSourcePath();
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                     var process = new Process();
@@ -113,7 +113,7 @@
                     var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
                     var output = new StringBuilder();
                     process.StartInfo.WorkingDirectory = Path.GetDirectoryName(contentFilePath);
-                    process.StartInfo.FileName = mgcbFilePath;
+                    process.StartInfo.FileName = MGCBExecutableName;
                     process.StartInfo.Arguments = $"/@:{contentFilePath} /platform:{configuration.Platform.ToString()}";
                     process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -158,7 +158,7 @@
             }
 
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.CopyMonoGameFrameworkDLL(referencePath);
+                configuration.CopyMonoGameFrameworkDLL(referencePath, mode);
             }
 
             var result = await this.BuildContent(mode);

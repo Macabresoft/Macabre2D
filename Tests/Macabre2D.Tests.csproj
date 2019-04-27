@@ -39,10 +39,6 @@
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MonoGame.Framework, Version=3.8.0.326, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\MonoGame.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -85,34 +81,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\libopenal.1.dylib">
-      <Link>libopenal.1.dylib</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\libSDL2-2.0.0.dylib">
-      <Link>libSDL2-2.0.0.dylib</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\MonoGame.Framework.dll.config">
-      <Link>MonoGame.Framework.dll.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\libopenal.so.1">
-      <Link>x64\libopenal.so.1</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\libSDL2-2.0.so.0">
-      <Link>x64\libSDL2-2.0.so.0</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\libopenal.so.1">
-      <Link>x86\libopenal.so.1</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\libSDL2-2.0.so.0">
-      <Link>x86\libSDL2-2.0.so.0</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -123,6 +91,10 @@
     <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj">
       <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsGL.csproj">
+      <Project>{6d75e618-19ca-4c51-9546-f10965fbc0b8}</Project>
+      <Name>MonoGame.Framework.WindowsGL</Name>
     </ProjectReference>
     <ProjectReference Include="..\UI\Common\Macabre2D.UI.Common.csproj">
       <Project>{4e44cdc9-54cc-41c7-abec-00eaeaab623a}</Project>
@@ -144,24 +116,6 @@
       <Project>{1571ed27-bbde-4b17-b80b-0da350770ac7}</Project>
       <Name>Macabre2D.UI.Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\SDL2.dll">
-      <Link>x64\SDL2.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\soft_oal.dll">
-      <Link>x64\soft_oal.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\SDL2.dll">
-      <Link>x86\SDL2.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\soft_oal.dll">
-      <Link>x86\soft_oal.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

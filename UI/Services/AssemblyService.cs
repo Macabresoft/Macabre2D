@@ -14,7 +14,7 @@
         private bool _hasLoaded = false;
 
         public async Task LoadAssemblies(string path) {
-            if (!this._hasLoaded) {
+            if (!this._hasLoaded && Directory.Exists(path)) {
                 try {
                     await Task.Run(() => {
                         var assemblyPaths = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
