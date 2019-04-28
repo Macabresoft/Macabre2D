@@ -29,6 +29,7 @@
             this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
             this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             this._jsonSerializer.TypeNameHandling = TypeNameHandling.All;
+            this._jsonSerializer.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
             this._jsonSerializer.Converters.Add(new JsonColorConverter());
         }
 
