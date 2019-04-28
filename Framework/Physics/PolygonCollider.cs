@@ -22,14 +22,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
         /// </summary>
-        public PolygonCollider() {
+        public PolygonCollider() : base() {
+            this._worldPoints = this._worldPoints.Reset(this.CreateWorldPoints);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
         /// </summary>
         /// <param name="points">The points.</param>
-        public PolygonCollider(IEnumerable<Vector2> points) {
+        public PolygonCollider(IEnumerable<Vector2> points) : this() {
             this._points.AddRange(points);
         }
 
@@ -278,7 +279,7 @@
         private List<Vector2> CreateWorldPoints() {
             var worldPoints = new List<Vector2>();
             foreach (var point in this._points) {
-                var worldPoint = this.Body.GetWorldTransform(this.Offset + point).Position;
+                var worldPoint = this.Body?.GetWorldTransform(this.Offset + point).Position ?? point;
                 worldPoints.Add(worldPoint);
             }
 

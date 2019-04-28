@@ -22,7 +22,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangleCollider"/> class.
         /// </summary>
-        private RectangleCollider() {
+        private RectangleCollider() : base() {
         }
 
         /// <summary>

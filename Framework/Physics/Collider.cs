@@ -43,6 +43,7 @@
         /// Initializes a new instance of the <see cref="Collider"/> class.
         /// </summary>
         public Collider() {
+            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
         }
 
         /// <summary>
@@ -74,7 +75,10 @@
             }
 
             set {
-                this._offset = value;
+                if (this._offset != value) {
+                    this._offset = value;
+                    this.Reset();
+                }
             }
         }
 

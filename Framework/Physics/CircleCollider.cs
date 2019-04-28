@@ -51,14 +51,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="CircleCollider"/> class.
         /// </summary>
-        public CircleCollider() {
+        public CircleCollider() : base() {
+            this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircleCollider"/> class.
         /// </summary>
         /// <param name="radius">The radius.</param>
-        public CircleCollider(float radius) {
+        public CircleCollider(float radius) : this() {
             this.Radius = radius;
         }
 
