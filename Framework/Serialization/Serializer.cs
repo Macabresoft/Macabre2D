@@ -28,8 +28,7 @@
             this._jsonSerializer.Formatting = Formatting.Indented;
             this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
             this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            this._jsonSerializer.TypeNameHandling = TypeNameHandling.All;
-            this._jsonSerializer.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
+            this._jsonSerializer.TypeNameHandling = TypeNameHandling.Auto;
             this._jsonSerializer.Converters.Add(new JsonColorConverter());
         }
 

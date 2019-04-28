@@ -5,13 +5,12 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
+    using MGCB;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
-    using System.Reflection;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
 
@@ -102,57 +101,6 @@
         }
 
         public async Task<bool> BuildContent(BuildMode mode) {
-            var result = true;
-
-            await Task.Run(() => {
-                this.GenerateContentFile(mode);
-
-                var sourcePath = this.GetSourcePath();
-                foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    var process = new Process();
-                    var contentPath = configuration.GetContentPath(sourcePath);
-                    var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
-                    var output = new StringBuilder();
-                    var errorOutput = new StringBuilder();
-                    process.StartInfo.WorkingDirectory = Path.GetDirectoryName(contentFilePath);
-                    process.StartInfo.FileName = MGCBExecutableName;
-                    process.StartInfo.Arguments = $"/@:\"{contentFilePath}\" /platform:\"{configuration.Platform.ToString()}\"";
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
-                    process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
-                    process.ErrorDataReceived += (sender, e) => errorOutput.AppendLine(e.Data);
-
-                    process.Start();
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.WaitForExit(SecondsToAttemptBuildContent * 1000);
-
-                    this._loggingService.LogInfo($"Running {process.StartInfo.FileName} {process.StartInfo.Arguments}", output.ToString());
-
-                    if (process.ExitCode == 0) {
-                        var sourceDirectory = Path.Combine(contentPath, "bin", configuration.Platform.ToString());
-                        var targetDirectory = configuration.GetCompiledContentPath(this.GetSourcePath(), mode);
-
-                        if (Directory.Exists(targetDirectory)) {
-                            Directory.Delete(targetDirectory, true);
-                        }
-
-                        FileHelper.CopyDirectory(sourceDirectory, targetDirectory);
-                    }
-                    else {
-                        this._loggingService.LogInfo($"Errors from: {process.StartInfo.FileName} {process.StartInfo.Arguments}", output.ToString());
-                        result = false;
-                    }
-                }
-            });
-
-            return result;
-        }
-
-        public async Task<bool> BuildProject(BuildMode mode) {
             var referencePath = this.GetReferencePath();
             if (!Directory.Exists(referencePath)) {
                 Directory.CreateDirectory(referencePath);
@@ -166,6 +114,38 @@
                 configuration.CopyMonoGameFrameworkDLL(referencePath, mode);
             }
 
+            var result = true;
+            await Task.Run(() => {
+                this.GenerateContentFile(mode);
+
+                var sourcePath = this.GetSourcePath();
+                foreach (var configuration in this.CurrentProject.BuildConfigurations) {
+                    var currentDirectory = Directory.GetCurrentDirectory();
+                    var exitCode = -1;
+
+                    var contentPath = configuration.GetContentPath(sourcePath);
+                    var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
+                    var contentDirectory = Path.GetDirectoryName(contentFilePath);
+                    var outputDirectory = Path.Combine(contentDirectory, "..", "bin", mode.ToString(), "Content");
+                    Directory.CreateDirectory(outputDirectory);
+
+                    exitCode = ContentBuilder.BuildContent(
+                        out var exception,
+                        $"/@:{contentFilePath}", $"/platform:{configuration.Platform.ToString()}",
+                        $@"/outputDir:{outputDirectory}",
+                        $"/workingDir:{contentDirectory}");
+
+                    if (exitCode != 0) {
+                        result = false;
+                        this._loggingService.LogError($"Content could not be built for '{this.CurrentProject.Name}' in '{mode.ToString()}' mode: {exception.Message}");
+                    }
+                }
+            });
+
+            return result;
+        }
+
+        public async Task<bool> BuildProject(BuildMode mode) {
             var result = await this.BuildContent(mode);
             var tempDirectoryPath = this.GetTempDirectoryPath();
 
@@ -372,8 +352,8 @@
 
         private void GenerateContentFile(BuildMode mode) {
             var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
-            var dllPath = $@"..\..\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             var sourcePath = this.GetSourcePath();
+            var dllPath = $@"{sourcePath}\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                 configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);
             }

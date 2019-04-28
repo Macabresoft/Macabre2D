@@ -103,7 +103,7 @@
             }
         }
 
-        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder) {
+        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder, string contentPath) {
             return;
         }
 

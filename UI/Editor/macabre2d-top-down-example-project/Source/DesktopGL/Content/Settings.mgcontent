@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>F:/GitHub Repos/macabre2d-top-down-example-project/Source/DesktopGL/Content/Settings.m2dgs</SourceFile>
+  <SourceTime>2019-04-27T22:00:35.7001807-05:00</SourceTime>
+  <DestFile>F:/GitHub Repos/macabre2d-top-down-example-project/Source/DesktopGL/Content/../../../../../../macabre2d-top-down-example-project/Source/DesktopGL/Content/Settings.xnb</DestFile>
+  <DestTime>2019-04-27T22:00:51.7205084-05:00</DestTime>
+  <Importer>GameSettingsImporter</Importer>
+  <ImporterTime>2019-04-27T21:51:50.6207162-05:00</ImporterTime>
+  <Processor>GameSettingsProcessor</Processor>
+  <ProcessorTime>2019-04-27T21:51:50.6207162-05:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

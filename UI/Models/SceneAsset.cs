@@ -31,8 +31,8 @@
             }
         }
 
-        public override void BuildProcessorCommands(StringBuilder contentStringBuilder) {
-            var path = this.GetContentPath();
+        public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string contentPath) {
+            var path = Path.Combine(contentPath, this.GetContentPath());
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine(@"/importer:SceneImporter");
             contentStringBuilder.AppendLine(@"/processor:SceneProcessor");

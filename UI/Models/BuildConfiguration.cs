@@ -33,7 +33,7 @@
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
         public void CopyMonoGameFrameworkDLL(string destination, BuildMode mode) {
-            var source = Path.Combine("..", "..", "..", "..", "MonoGame", "MonoGame.Framework", "bin");
+            var source = Path.Combine("..", "..", "..", "..", "..", "MonoGame", "MonoGame.Framework", "bin");
 
             switch (this.Platform) {
                 case BuildPlatform.DesktopGL:
@@ -79,6 +79,7 @@
 
         private void CreateContentFile(string contentPath, IEnumerable<Asset> assets, params string[] referencePaths) {
             var stringBuilder = new StringBuilder();
+
             stringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine(@"/outputDir:bin/$(Platform)");
@@ -90,7 +91,8 @@
             stringBuilder.AppendLine();
             stringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(@"/reference:..\..\..\Dependencies\References\Macabre2D.Framework.dll");
+            stringBuilder.AppendLine($@"/reference:..\..\..\Dependencies\References\Newtonsoft.Json.dll");
+            stringBuilder.AppendLine($@"/reference:..\..\..\Dependencies\References\Macabre2D.Framework.dll");
 
             foreach (var referencePath in referencePaths) {
                 stringBuilder.AppendLine($@"/reference:{referencePath}");
@@ -100,7 +102,7 @@
             stringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
             stringBuilder.AppendLine();
 
-            var gameSettingsPath = $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
+            var gameSettingsPath = $@"{contentPath}\{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
             stringBuilder.AppendLine($"#begin {gameSettingsPath}");
             stringBuilder.AppendLine(@"/importer:GameSettingsImporter");
             stringBuilder.AppendLine(@"/processor:GameSettingsProcessor");
@@ -108,7 +110,7 @@
             stringBuilder.AppendLine();
 
             foreach (var asset in assets) {
-                asset.BuildProcessorCommands(stringBuilder);
+                asset.BuildProcessorCommands(stringBuilder, contentPath);
                 stringBuilder.AppendLine();
             }
 
