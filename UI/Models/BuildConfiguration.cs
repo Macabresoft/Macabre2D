@@ -32,18 +32,8 @@
         [DataMember]
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
-        public void CopyMonoGameFrameworkDLL(string destination, BuildMode mode) {
-            var source = Path.Combine("..", "..", "..", "..", "..", "MonoGame", "MonoGame.Framework", "bin");
-
-            switch (this.Platform) {
-                case BuildPlatform.DesktopGL:
-                    source = Path.Combine(source, "WindowsGL", "AnyCPU", mode.ToString());
-                    break;
-                    ////case BuildPlatform.WindowsDX:
-                    ////    source = Path.Combine(source, "Windows", "AnyCPU", mode.ToString());
-                    ////    break;
-            }
-
+        public void CopyMonoGameFrameworkDLL(string destination) {
+            var source = Path.Combine("Configurations", this.Platform.ToString());
             var target = Path.Combine(destination, this.Platform.ToString());
             FileHelper.CopyDirectory(source, target);
         }

@@ -111,7 +111,7 @@
             }
 
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.CopyMonoGameFrameworkDLL(referencePath, mode);
+                configuration.CopyMonoGameFrameworkDLL(referencePath);
             }
 
             var result = true;
