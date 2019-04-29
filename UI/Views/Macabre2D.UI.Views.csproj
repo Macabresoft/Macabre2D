@@ -140,9 +140,6 @@
     <Compile Include="Dialogs\AssetNameChangeDialog.xaml.cs">
       <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\OKCancelButtonsControl.xaml.cs">
-      <DependentUpon>OKCancelButtonsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\SaveDiscardCancelDialog.xaml.cs">
       <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
     </Compile>
@@ -220,10 +217,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\AssetNameChangeDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\OKCancelButtonsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

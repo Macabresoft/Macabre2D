@@ -25,6 +25,7 @@
             <Button Content="_Save"
                     Command="{Binding SaveCommand}"
                     HorizontalAlignment="Right"
+                    IsDefault="True"
                     Width="65" />
             <Button Content="_Discard"
                     Command="{Binding DiscardCommand}"
@@ -32,6 +33,7 @@
                     Width="65" />
             <Button Content="_Cancel"
                     Command="{Binding CancelCommand}"
+                    IsCancel="True"
                     Width="65" />
         </StackPanel>
     </Grid>

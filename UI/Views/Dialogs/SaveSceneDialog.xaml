@@ -51,9 +51,11 @@
             <Button Content="_OK"
                     Command="{Binding OKCommand}"
                     HorizontalAlignment="Right"
+                    IsDefault="True"
                     Width="65" />
             <Button Content="_Cancel"
                     Command="{Binding CancelCommand}"
+                    IsCancel="True"
                     Width="65" />
         </StackPanel>
     </Grid>
