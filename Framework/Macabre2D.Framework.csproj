@@ -105,6 +105,7 @@
     <Compile Include="IIdentifiable.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="ISerializer.cs" />
+    <Compile Include="Serialization\Cloner.cs" />
     <Compile Include="Serialization\JsonColorConverter.cs" />
     <Compile Include="LazyExtensions.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
