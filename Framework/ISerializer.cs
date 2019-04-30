@@ -1,4 +1,6 @@
-﻿namespace Macabre2D.Framework {
+﻿using System;
+
+namespace Macabre2D.Framework {
 
     /// <summary>
     /// Interface for a serializer to be used by the framework.
@@ -16,10 +18,18 @@
         /// <summary>
         /// Deserializes from string.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type to deserialize to.</typeparam>
         /// <param name="json">The json.</param>
         /// <returns>A deserialized object from the provided JSON.</returns>
         T DeserializeFromString<T>(string json);
+
+        /// <summary>
+        /// Deserializes from string.
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <returns>A deserialized object from the provided JSON.</returns>
+        object DeserializeFromString(string json, Type type);
 
         /// <summary>
         /// Serializes the specified object.

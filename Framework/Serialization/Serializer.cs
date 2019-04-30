@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework.Serialization {
 
     using Newtonsoft.Json;
+    using System;
     using System.IO;
     using System.Text;
 
@@ -45,6 +46,14 @@
             using (var stringReader = new StringReader(json))
             using (var jsonReader = new JsonTextReader(stringReader)) {
                 return this._jsonSerializer.Deserialize<T>(jsonReader);
+            }
+        }
+
+        /// <inheritdoc/>
+        public object DeserializeFromString(string json, Type type) {
+            using (var stringReader = new StringReader(json))
+            using (var jsonReader = new JsonTextReader(stringReader)) {
+                return this._jsonSerializer.Deserialize(jsonReader, type);
             }
         }
 

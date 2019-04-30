@@ -3,6 +3,7 @@
     using GalaSoft.MvvmLight.Command;
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.SceneEditing;
     using Macabre2D.UI.Models;
@@ -35,6 +36,7 @@
             new PropertyMetadata());
 
         private readonly RelayCommand _addComponentCommand;
+        private readonly RelayCommand _cloneComponentCommand;
         private readonly IComponentService _componentService;
         private readonly IDialogService _dialogService;
         private readonly IMonoGameService _monoGameService;
@@ -49,13 +51,20 @@
 
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._addComponentCommand = new RelayCommand(this.AddComponent, () => this.SelectedItem != null);
-            this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem != null && this.SelectedItem is ComponentWrapper);
+            this._cloneComponentCommand = new RelayCommand(this.CloneComponent, () => this.SelectedItem is ComponentWrapper);
+            this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem is ComponentWrapper);
             this.InitializeComponent();
         }
 
         public ICommand AddComponentCommand {
             get {
                 return this._addComponentCommand;
+            }
+        }
+
+        public ICommand CloneComponentCommand {
+            get {
+                return this._cloneComponentCommand;
             }
         }
 
@@ -103,15 +112,26 @@
         private void AddComponent() {
             var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseComponent), "Select a Component");
             if (type != null) {
-                var baseComponent = Activator.CreateInstance(type) as BaseComponent;
-                baseComponent.Name = type.Name;
-                var componentWrapper = new ComponentWrapper(baseComponent);
+                var addedComponent = Activator.CreateInstance(type) as BaseComponent;
+                addedComponent.Name = type.Name;
+                this.AddComponent(addedComponent, this.SelectedItem);
+            }
+        }
 
-                var undoCommand = new UndoCommand(
-                    () => this.SelectedItem.AddChild(componentWrapper),
-                    () => this.SelectedItem.RemoveChild(componentWrapper));
+        private void AddComponent(BaseComponent component, IParent<ComponentWrapper> parent) {
+            var componentWrapper = new ComponentWrapper(component);
 
-                this._undoService.Do(undoCommand);
+            var undoCommand = new UndoCommand(
+                () => parent.AddChild(componentWrapper),
+                () => parent.RemoveChild(componentWrapper));
+
+            this._undoService.Do(undoCommand);
+        }
+
+        private void CloneComponent() {
+            if (this.SelectedItem is ComponentWrapper componentWrapper) {
+                var clone = componentWrapper.Component.Clone();
+                this.AddComponent(clone, componentWrapper.Parent);
             }
         }
 
@@ -152,6 +172,7 @@
             this.SelectedItem = e.NewValue as IParent<ComponentWrapper>;
             this.SelectedComponent = e.NewValue as ComponentWrapper;
             this._addComponentCommand.RaiseCanExecuteChanged();
+            this._cloneComponentCommand.RaiseCanExecuteChanged();
             this._removeComponentCommand.RaiseCanExecuteChanged();
         }
     }

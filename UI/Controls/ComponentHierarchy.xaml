@@ -23,6 +23,9 @@
             <Button Content="Remove"
                     Command="{Binding RemoveComponentCommand}"
                     ToolTip="Removes the selected component from the tree, including all children." />
+            <Button Content="Clone              "
+                    Command="{Binding CloneComponentCommand}"
+                    ToolTip="Clones the selected component and all its children." />
         </StackPanel>
 
         <TreeView Grid.Row="1"
