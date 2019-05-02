@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.Tests {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Rendering;
-    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using NSubstitute;
     using NUnit.Framework;

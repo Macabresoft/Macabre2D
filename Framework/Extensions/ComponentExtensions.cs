@@ -1,11 +1,12 @@
-﻿namespace Macabre2D.Framework.Serialization {
+﻿namespace Macabre2D.Framework.Extensions {
 
+    using Macabre2D.Framework.Serialization;
     using System;
 
     /// <summary>
     /// Clones objects using <see cref="ISerializer"/>.
     /// </summary>
-    public static class Cloner {
+    public static class ComponentExtensions {
         private static ISerializer _serializer = new Serializer();
 
         /// <summary>
@@ -22,8 +23,8 @@
                 var parent = component.Parent;
                 try {
                     component.Parent = null;
-                    var json = Cloner._serializer.SerializeToString(component);
-                    clone = Cloner._serializer.DeserializeFromString(json, cloneToType) as T;
+                    var json = ComponentExtensions._serializer.SerializeToString(component);
+                    clone = ComponentExtensions._serializer.DeserializeFromString(json, cloneToType) as T;
                     var cloneParent = clone.Parent;
                     clone.SetNewComponentIds();
                     clone.Parent = parent;

@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.Command;
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Serialization;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.SceneEditing;
     using Macabre2D.UI.Models;
