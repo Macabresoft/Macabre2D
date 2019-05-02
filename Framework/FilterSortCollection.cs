@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabre2D.Framework.Extensions;
     using System;
     using System.Collections.Generic;
 

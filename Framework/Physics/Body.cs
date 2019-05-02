@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework.Physics {
 
+    using Macabre2D.Framework.Extensions;
     using System;
     using System.Runtime.Serialization;
 

@@ -2,6 +2,7 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using System;

@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.ViewModels.Dialogs {
 
     using GalaSoft.MvvmLight.CommandWpf;
-    using Macabre2D.Framework;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models.Validation;
     using System;
     using System.Windows.Input;

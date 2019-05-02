@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework {
+﻿namespace Macabre2D.Framework.Extensions {
 
     /// <summary>
     /// Extensions for arrays.

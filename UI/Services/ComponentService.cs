@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using System;

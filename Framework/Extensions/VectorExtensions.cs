@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework {
+﻿namespace Macabre2D.Framework.Extensions {
 
     using Microsoft.Xna.Framework;
     using System;

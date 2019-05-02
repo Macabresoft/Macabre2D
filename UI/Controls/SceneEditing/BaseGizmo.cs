@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
