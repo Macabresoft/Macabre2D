@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework {
+﻿namespace Macabre2D.Framework.Rendering {
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
