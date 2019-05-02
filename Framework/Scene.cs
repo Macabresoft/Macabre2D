@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using Macabre2D.Framework.Extensions;
+    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

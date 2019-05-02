@@ -104,7 +104,6 @@
     <Compile Include="IGame.cs" />
     <Compile Include="IIdentifiable.cs" />
     <Compile Include="IScene.cs" />
-    <Compile Include="ISerializer.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Serialization\JsonColorConverter.cs" />
     <Compile Include="Extensions\LazyExtensions.cs" />
