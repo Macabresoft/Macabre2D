@@ -8,7 +8,7 @@
     /// <summary>
     /// Plays a <see cref="AudioClip"/>.
     /// </summary>
-    public sealed class AudioPlayer : BaseComponent, IIdentifiableContentComponent {
+    public sealed class AudioPlayer : BaseComponent, IAssetComponent {
 
         [DataMember]
         private AudioClip _audioClip;
@@ -122,7 +122,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasContent(Guid id) {
+        public bool HasAsset(Guid id) {
             return this.AudioClip?.Id == id;
         }
 
@@ -154,10 +154,13 @@
         }
 
         /// <inheritdoc/>
-        public void RemoveContent(Guid id) {
-            if (this.HasContent(id)) {
+        public bool RemoveAsset(Guid id) {
+            var result = this.HasAsset(id);
+            if (result) {
                 this._audioClip = null;
             }
+
+            return result;
         }
 
         /// <summary>

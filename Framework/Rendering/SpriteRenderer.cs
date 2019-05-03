@@ -15,7 +15,7 @@
     /// <seealso cref="IDrawableComponent"/>
     /// <seealso cref="IDisposable"/>
     /// <seealso cref="BaseComponent"/>
-    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IIdentifiableContentComponent {
+    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent {
         private Lazy<BoundingArea> _boundingArea;
         private Vector2 _offset;
 
@@ -135,7 +135,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasContent(Guid id) {
+        public bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
         }
 
@@ -154,10 +154,13 @@
         }
 
         /// <inheritdoc/>
-        public void RemoveContent(Guid id) {
-            if (this.HasContent(id)) {
+        public bool RemoveAsset(Guid id) {
+            var result = this.HasAsset(id);
+            if (result) {
                 this.Sprite = null;
             }
+
+            return result;
         }
 
         /// <inheritdoc/>

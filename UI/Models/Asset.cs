@@ -166,10 +166,10 @@
 
                 foreach (var sceneAsset in sceneAssets) {
                     var scene = sceneAsset.Load();
-                    var contentAssets = scene.GetAllComponentsOfType<IIdentifiableContentComponent>();
+                    var contentAssets = scene.GetAllComponentsOfType<IAssetComponent>();
 
-                    foreach (var contentAsset in contentAssets.Where(x => x.HasContent(id))) {
-                        contentAsset.RemoveContent(id);
+                    foreach (var contentAsset in contentAssets.Where(x => x.HasAsset(id))) {
+                        contentAsset.RemoveAsset(id);
                     }
                 }
             }

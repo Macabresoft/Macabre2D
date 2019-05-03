@@ -11,7 +11,7 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync, IIdentifiableContentComponent {
+    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync, IAssetComponent {
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
@@ -58,7 +58,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasContent(Guid id) {
+        public bool HasAsset(Guid id) {
             return this._defaultAnimation?.Id == id ||
                 this._spriteAnimation?.Id == id ||
                 this._defaultAnimation?.HasSprite(id) == true ||
@@ -111,12 +111,14 @@
         }
 
         /// <inheritdoc/>
-        public void RemoveContent(Guid id) {
+        public bool RemoveAsset(Guid id) {
+            bool result;
             if (this._defaultAnimation?.Id == id) {
                 this._defaultAnimation = null;
+                result = true;
             }
             else {
-                this._defaultAnimation?.RemoveSprite(id);
+                result = this._defaultAnimation?.RemoveSprite(id) ?? false;
             }
 
             if (this._spriteAnimation?.Id == id) {
@@ -125,10 +127,13 @@
                 }
 
                 this._spriteAnimation = null;
+                result = true;
             }
             else {
-                this._spriteAnimation?.RemoveSprite(id);
+                result = result || (this._spriteAnimation?.RemoveSprite(id) ?? false);
             }
+
+            return result;
         }
 
         /// <summary>

@@ -17,9 +17,9 @@
             var audioClip = new AudioClip();
             audioPlayer.AudioClip = audioClip;
 
-            Assert.True(audioPlayer.HasContent(audioClip.Id));
-            audioPlayer.RemoveContent(audioClip.Id);
-            Assert.False(audioPlayer.HasContent(audioClip.Id));
+            Assert.True(audioPlayer.HasAsset(audioClip.Id));
+            audioPlayer.RemoveAsset(audioClip.Id);
+            Assert.False(audioPlayer.HasAsset(audioClip.Id));
         }
 
         [Test]
@@ -41,23 +41,23 @@
 
             var firstStep = steps.First();
             var firstSpriteId = firstStep.Sprite.Id;
-            Assert.True(spriteAnimator.HasContent(firstSpriteId));
+            Assert.True(spriteAnimator.HasAsset(firstSpriteId));
 
-            spriteAnimator.RemoveContent(firstSpriteId);
-            Assert.False(spriteAnimator.HasContent(firstSpriteId));
+            spriteAnimator.RemoveAsset(firstSpriteId);
+            Assert.False(spriteAnimator.HasAsset(firstSpriteId));
             Assert.Null(firstStep.Sprite);
 
             var lastStep = steps.Last();
             var lastSpriteId = lastStep.Sprite.Id;
-            Assert.True(spriteAnimator.HasContent(lastSpriteId));
+            Assert.True(spriteAnimator.HasAsset(lastSpriteId));
 
-            spriteAnimator.RemoveContent(lastSpriteId);
-            Assert.False(spriteAnimator.HasContent(lastSpriteId));
+            spriteAnimator.RemoveAsset(lastSpriteId);
+            Assert.False(spriteAnimator.HasAsset(lastSpriteId));
             Assert.Null(lastStep.Sprite);
-            Assert.True(spriteAnimator.HasContent(spriteAnimationId));
+            Assert.True(spriteAnimator.HasAsset(spriteAnimationId));
 
-            spriteAnimator.RemoveContent(spriteAnimationId);
-            Assert.False(spriteAnimator.HasContent(spriteAnimationId));
+            spriteAnimator.RemoveAsset(spriteAnimationId);
+            Assert.False(spriteAnimator.HasAsset(spriteAnimationId));
         }
 
         [Test]
@@ -67,9 +67,9 @@
             var sprite = new Sprite();
             spriteRenderer.Sprite = sprite;
 
-            Assert.True(spriteRenderer.HasContent(sprite.Id));
-            spriteRenderer.RemoveContent(sprite.Id);
-            Assert.False(spriteRenderer.HasContent(sprite.Id));
+            Assert.True(spriteRenderer.HasAsset(sprite.Id));
+            spriteRenderer.RemoveAsset(sprite.Id);
+            Assert.False(spriteRenderer.HasAsset(sprite.Id));
         }
 
         [Test]
@@ -79,9 +79,9 @@
             var font = new Font();
             textRenderer.Font = font;
 
-            Assert.True(textRenderer.HasContent(font.Id));
-            textRenderer.RemoveContent(font.Id);
-            Assert.False(textRenderer.HasContent(font.Id));
+            Assert.True(textRenderer.HasAsset(font.Id));
+            textRenderer.RemoveAsset(font.Id);
+            Assert.False(textRenderer.HasAsset(font.Id));
         }
     }
 }

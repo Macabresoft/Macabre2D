@@ -130,11 +130,15 @@
             }
         }
 
-        internal void RemoveSprite(Guid id) {
+        internal bool RemoveSprite(Guid id) {
+            var result = false;
             var staps = this._steps.Where(x => x.Sprite?.Id == id);
             foreach (var step in staps) {
+                result = true;
                 step.Sprite = null;
             }
+
+            return result;
         }
     }
 }

@@ -11,7 +11,7 @@
     /// <summary>
     /// A component which will render the specified text.
     /// </summary>
-    public sealed class TextRenderer : BaseComponent, IDrawableComponent, IIdentifiableContentComponent {
+    public sealed class TextRenderer : BaseComponent, IDrawableComponent, IAssetComponent {
         private Lazy<BoundingArea> _boundingArea;
         private Font _font;
         private string _text = string.Empty;
@@ -98,7 +98,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasContent(Guid id) {
+        public bool HasAsset(Guid id) {
             return this._font?.Id == id;
         }
 
@@ -112,10 +112,13 @@
         }
 
         /// <inheritdoc/>
-        public void RemoveContent(Guid id) {
-            if (this.HasContent(id)) {
+        public bool RemoveAsset(Guid id) {
+            var result = this.HasAsset(id);
+            if (result) {
                 this.Font = null;
             }
+
+            return result;
         }
 
         /// <inheritdoc/>
