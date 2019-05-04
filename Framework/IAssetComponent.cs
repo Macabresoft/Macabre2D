@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interface for a component that has assets.
@@ -28,14 +29,23 @@
     /// Interface for a component that has assets of a specific type.
     /// </summary>
     /// <typeparam name="T">The type of asset.</typeparam>
-    public interface IAssetComponent<T> : IAssetComponent {
+    public interface IAssetComponent<T> : IAssetComponent where T : IIdentifiable {
 
         /// <summary>
-        /// Replaces the asset with a new instance.
+        /// Gets the owned asset identifiers on this object.
         /// </summary>
-        /// <param name="currentId">The current identifier before.</param>
-        /// <param name="newAsset">The new asset.</param>
-        void ReplaceAsset(Guid currentId, T newAsset);
+        /// <returns>The owned asset identifiers.</returns>
+        IEnumerable<Guid> GetOwnedAssetIds();
+
+        /// <summary>
+        /// Refreshes the asset with a new instance.
+        /// </summary>
+        /// <remarks>
+        /// This is mostly used by the editor to consolidate assets on load. Then editing on sprite
+        /// instance edits them all, because they are the same.
+        /// </remarks>
+        /// <param name="newAssetInstance">The new instance of the asset.</param>
+        void RefreshAsset(T newInstance);
 
         /// <summary>
         /// Tries to get an asset on this component with the specified identifier.

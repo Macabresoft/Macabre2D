@@ -98,6 +98,11 @@
         }
 
         /// <inheritdoc/>
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return this.Font != null ? new[] { this.Font.Id } : new Guid[0];
+        }
+
+        /// <inheritdoc/>
         public bool HasAsset(Guid id) {
             return this._font?.Id == id;
         }
@@ -112,6 +117,13 @@
         }
 
         /// <inheritdoc/>
+        public void RefreshAsset(Font newInstance) {
+            if (this.Font == null || this.Font.Id == newInstance?.Id) {
+                this.Font = newInstance;
+            }
+        }
+
+        /// <inheritdoc/>
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -119,13 +131,6 @@
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        public void ReplaceAsset(Guid currentId, Font newAsset) {
-            if (this.Font == null || this.Font.Id == currentId) {
-                this.Font = newAsset;
-            }
         }
 
         /// <inheritdoc/>

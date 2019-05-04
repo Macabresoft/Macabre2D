@@ -1,8 +1,10 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
+    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
@@ -55,6 +57,34 @@
                     this._frameRate = value;
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        IEnumerable<Guid> IAssetComponent<SpriteAnimation>.GetOwnedAssetIds() {
+            var ids = new HashSet<Guid>();
+            if (this._defaultAnimation != null) {
+                ids.Add(this._defaultAnimation.Id);
+            }
+
+            if (this._spriteAnimation != null) {
+                ids.Add(this._spriteAnimation.Id);
+            }
+
+            return ids;
+        }
+
+        /// <inheritdoc/>
+        IEnumerable<Guid> IAssetComponent<Sprite>.GetOwnedAssetIds() {
+            var ids = new HashSet<Guid>();
+            if (this._defaultAnimation != null) {
+                ids.AddRange(this._defaultAnimation.GetSpriteIds());
+            }
+
+            if (this._spriteAnimation != null) {
+                ids.AddRange(this._defaultAnimation.GetSpriteIds());
+            }
+
+            return ids;
         }
 
         /// <inheritdoc/>
@@ -111,6 +141,27 @@
         }
 
         /// <inheritdoc/>
+        void IAssetComponent<Sprite>.RefreshAsset(Sprite newInstance) {
+            if (newInstance != null) {
+                this._defaultAnimation?.RefreshSprite(newInstance);
+                this._spriteAnimation?.RefreshSprite(newInstance);
+            }
+        }
+
+        /// <inheritdoc/>
+        void IAssetComponent<SpriteAnimation>.RefreshAsset(SpriteAnimation newInstance) {
+            if (newInstance != null) {
+                if (this._defaultAnimation?.Id == newInstance.Id) {
+                    this._defaultAnimation = newInstance;
+                }
+
+                if (this._spriteAnimation?.Id == newInstance.Id) {
+                    this._spriteAnimation = newInstance;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public bool RemoveAsset(Guid id) {
             bool result;
             if (this._defaultAnimation?.Id == id) {
@@ -134,23 +185,6 @@
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        void IAssetComponent<Sprite>.ReplaceAsset(Guid currentId, Sprite newAsset) {
-            this._defaultAnimation?.ReplaceSprite(currentId, newAsset);
-            this._spriteAnimation?.ReplaceSprite(currentId, newAsset);
-        }
-
-        /// <inheritdoc/>
-        void IAssetComponent<SpriteAnimation>.ReplaceAsset(Guid currentId, SpriteAnimation newAsset) {
-            if (this._defaultAnimation.Id == currentId) {
-                this._defaultAnimation = newAsset;
-            }
-
-            if (this._spriteAnimation?.Id == currentId) {
-                this._spriteAnimation = newAsset;
-            }
         }
 
         /// <summary>

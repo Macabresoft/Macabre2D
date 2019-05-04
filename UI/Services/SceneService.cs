@@ -74,6 +74,9 @@
                 }
 
                 this.CurrentScene = await Task.Run(() => new SceneWrapper(asset));
+
+                // TODO: Generesize this by looping through all assets, getting their asset type, and refreshing from there.
+                // IIdentifiableAsset<T> where T must be IIdentifiable.
                 this.RefreshSpritesFromAssets(project);
                 this.RefreshAudioClipsFromAssets(project);
                 this.RefreshFontsFromAssets(project);
@@ -129,16 +132,19 @@
         }
 
         private void RefreshAudioClipsFromAssets(Project project) {
-            var audioPlayers = this.CurrentScene.Scene.GetAllComponentsOfType<AudioPlayer>();
-            if (audioPlayers.Any()) {
-                var audioAssets = project.AssetFolder.GetAssetsOfType<AudioAsset>();
+            var audioClipComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<AudioClip>>();
+            if (audioClipComponents.Any()) {
+                var audioAssets = project.AssetFolder.GetAssetsOfType<AudioAsset>().Select(x => x.AudioClip).ToDictionary(x => x.Id);
 
-                foreach (var audioClip in audioAssets.Select(x => x.AudioClip)) {
-                    for (var i = audioPlayers.Count - 1; i >= 0; i--) {
-                        var audioPlayer = audioPlayers.ElementAt(i);
-                        if (audioClip.Id == audioPlayer.AudioClip.Id) {
-                            audioPlayer.AudioClip = audioClip;
-                            audioPlayers.RemoveAt(i);
+                foreach (var audioClipComponent in audioClipComponents) {
+                    var ids = audioClipComponent.GetOwnedAssetIds();
+
+                    foreach (var id in ids) {
+                        if (audioAssets.TryGetValue(id, out var sprite)) {
+                            audioClipComponent.RefreshAsset(sprite);
+                        }
+                        else {
+                            audioClipComponent.RemoveAsset(id);
                         }
                     }
                 }
@@ -146,16 +152,19 @@
         }
 
         private void RefreshFontsFromAssets(Project project) {
-            var textRenderers = this.CurrentScene.Scene.GetAllComponentsOfType<TextRenderer>();
-            if (textRenderers.Any()) {
-                var fontAssets = project.AssetFolder.GetAssetsOfType<FontAsset>();
+            var fontComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Font>>();
+            if (fontComponents.Any()) {
+                var fonts = project.AssetFolder.GetAssetsOfType<FontAsset>().Select(x => x.SavableValue).ToDictionary(x => x.Id);
 
-                foreach (var font in fontAssets.Select(x => x.SavableValue)) {
-                    for (var i = textRenderers.Count - 1; i >= 0; i--) {
-                        var textRenderer = textRenderers.ElementAt(i);
-                        if (font.Id == textRenderer.Font.Id) {
-                            textRenderer.Font = font;
-                            textRenderers.RemoveAt(i);
+                foreach (var fontComponent in fontComponents) {
+                    var ids = fontComponent.GetOwnedAssetIds();
+
+                    foreach (var id in ids) {
+                        if (fonts.TryGetValue(id, out var sprite)) {
+                            fontComponent.RefreshAsset(sprite);
+                        }
+                        else {
+                            fontComponent.RemoveAsset(id);
                         }
                     }
                 }
@@ -165,16 +174,19 @@
         private void RefreshSpritesFromAssets(Project project) {
             // Note: this allows us to edit sprites freely and have all of the changes reflect up
             // into the objects. This is exactly what we should do with prefabs.
-            var spriteRenderers = this.CurrentScene.Scene.GetAllComponentsOfType<SpriteRenderer>();
-            if (spriteRenderers.Any()) {
-                var imageAssets = project.AssetFolder.GetAssetsOfType<ImageAsset>();
+            var spriteComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Sprite>>();
+            if (spriteComponents.Any()) {
+                var sprites = project.AssetFolder.GetAssetsOfType<SpriteWrapper>().Select(x => x.Sprite).ToDictionary(x => x.Id);
 
-                foreach (var spriteWrapper in imageAssets.SelectMany(x => x.Children)) {
-                    for (var i = spriteRenderers.Count - 1; i >= 0; i--) {
-                        var spriteRenderer = spriteRenderers.ElementAt(i);
-                        if (spriteWrapper.Sprite.Id == spriteRenderer.Sprite.Id) {
-                            spriteRenderer.Sprite = spriteWrapper.Sprite;
-                            spriteRenderers.RemoveAt(i);
+                foreach (var spriteComponent in spriteComponents) {
+                    var ids = spriteComponent.GetOwnedAssetIds();
+
+                    foreach (var id in ids) {
+                        if (sprites.TryGetValue(id, out var sprite)) {
+                            spriteComponent.RefreshAsset(sprite);
+                        }
+                        else {
+                            spriteComponent.RemoveAsset(id);
                         }
                     }
                 }

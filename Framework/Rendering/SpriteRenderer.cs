@@ -134,6 +134,10 @@
                 0f);
         }
 
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return this.Sprite != null ? new[] { this.Sprite.Id } : new Guid[0];
+        }
+
         /// <inheritdoc/>
         public bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
@@ -154,6 +158,13 @@
         }
 
         /// <inheritdoc/>
+        public void RefreshAsset(Sprite newInstance) {
+            if (newInstance != null && this.Sprite?.Id == newInstance.Id) {
+                this.Sprite = newInstance;
+            }
+        }
+
+        /// <inheritdoc/>
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -161,13 +172,6 @@
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        public void ReplaceAsset(Guid currentId, Sprite newAsset) {
-            if (this.Sprite == null || this.Sprite.Id == currentId) {
-                this.Sprite = newAsset;
-            }
         }
 
         /// <inheritdoc/>

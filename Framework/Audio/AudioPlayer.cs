@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
     using System;
+    using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -122,6 +123,11 @@
         }
 
         /// <inheritdoc/>
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return this.AudioClip != null ? new[] { this.AudioClip.Id } : new Guid[0];
+        }
+
+        /// <inheritdoc/>
         public bool HasAsset(Guid id) {
             return this.AudioClip?.Id == id;
         }
@@ -154,6 +160,17 @@
         }
 
         /// <inheritdoc/>
+        public void RefreshAsset(Guid currentId, AudioClip newAsset) {
+            if (this.AudioClip == null || this.AudioClip.Id == currentId) {
+                this.AudioClip = newAsset;
+            }
+        }
+
+        public void RefreshAsset(AudioClip newInstance) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -161,13 +178,6 @@
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        public void ReplaceAsset(Guid currentId, AudioClip newAsset) {
-            if (this.AudioClip == null || this.AudioClip.Id == currentId) {
-                this.AudioClip = newAsset;
-            }
         }
 
         /// <summary>

@@ -113,6 +113,10 @@
             return this._steps.Remove(step);
         }
 
+        internal IEnumerable<Guid> GetSpriteIds() {
+            return this._steps.Where(x => x.Sprite != null).Select(x => x.Sprite.Id);
+        }
+
         internal bool HasSprite(Guid id) {
             return this._steps.Any(x => x.Sprite?.Id == id);
         }
@@ -130,6 +134,13 @@
             }
         }
 
+        internal void RefreshSprite(Sprite sprite) {
+            var staps = this._steps.Where(x => x.Sprite != null && x.Sprite.Id == sprite.Id);
+            foreach (var step in staps) {
+                step.Sprite = sprite;
+            }
+        }
+
         internal bool RemoveSprite(Guid id) {
             var result = false;
             var staps = this._steps.Where(x => x.Sprite?.Id == id);
@@ -139,13 +150,6 @@
             }
 
             return result;
-        }
-
-        internal void ReplaceSprite(Guid id, Sprite sprite) {
-            var staps = this._steps.Where(x => x.Sprite?.Id == id);
-            foreach (var step in staps) {
-                step.Sprite = sprite;
-            }
         }
     }
 }

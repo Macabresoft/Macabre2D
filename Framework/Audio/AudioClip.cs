@@ -67,7 +67,14 @@
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
         public void LoadSoundEffect(ContentManager contentManager, float volume, float pan, float pitch) {
-            var soundEffect = contentManager.Load<SoundEffect>(this.ContentPath);
+            SoundEffect soundEffect = null;
+            try {
+                soundEffect = contentManager.Load<SoundEffect>(this.ContentPath);
+            }
+            catch (NoAudioHardwareException) {
+                // MonoGame crashes if no audio hardware is detected and at that point we should just
+                // bail on loading the sound effect.
+            }
 
             if (soundEffect != null) {
                 this.SoundEffectInstance = soundEffect.CreateInstance();
