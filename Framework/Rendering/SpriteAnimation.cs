@@ -140,5 +140,12 @@
 
             return result;
         }
+
+        internal void ReplaceSprite(Guid id, Sprite sprite) {
+            var staps = this._steps.Where(x => x.Sprite?.Id == id);
+            foreach (var step in staps) {
+                step.Sprite = sprite;
+            }
+        }
     }
 }

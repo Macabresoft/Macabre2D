@@ -11,7 +11,7 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync, IAssetComponent {
+    public sealed class SpriteAnimator : BaseComponent, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation>, IAssetComponent<Sprite> {
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
@@ -136,6 +136,23 @@
             return result;
         }
 
+        /// <inheritdoc/>
+        void IAssetComponent<Sprite>.ReplaceAsset(Guid currentId, Sprite newAsset) {
+            this._defaultAnimation?.ReplaceSprite(currentId, newAsset);
+            this._spriteAnimation?.ReplaceSprite(currentId, newAsset);
+        }
+
+        /// <inheritdoc/>
+        void IAssetComponent<SpriteAnimation>.ReplaceAsset(Guid currentId, SpriteAnimation newAsset) {
+            if (this._defaultAnimation.Id == currentId) {
+                this._defaultAnimation = newAsset;
+            }
+
+            if (this._spriteAnimation?.Id == currentId) {
+                this._spriteAnimation = newAsset;
+            }
+        }
+
         /// <summary>
         /// Stops this instance.
         /// </summary>
@@ -144,6 +161,26 @@
             this._millisecondsPassed = 0;
             this._currentFrameIndex = 0;
             this._currentStepIndex = 0;
+        }
+
+        /// <inheritdoc/>
+        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        bool IAssetComponent<SpriteAnimation>.TryGetAsset(Guid id, out SpriteAnimation asset) {
+            if (this._defaultAnimation?.Id == id) {
+                asset = this._defaultAnimation;
+            }
+            else if (this._spriteAnimation?.Id == id) {
+                asset = this._spriteAnimation;
+            }
+            else {
+                asset = null;
+            }
+
+            return asset != null;
         }
 
         /// <summary>

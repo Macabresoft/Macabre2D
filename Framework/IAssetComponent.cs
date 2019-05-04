@@ -31,6 +31,13 @@
     public interface IAssetComponent<T> : IAssetComponent {
 
         /// <summary>
+        /// Replaces the asset with a new instance.
+        /// </summary>
+        /// <param name="currentId">The current identifier before.</param>
+        /// <param name="newAsset">The new asset.</param>
+        void ReplaceAsset(Guid currentId, T newAsset);
+
+        /// <summary>
         /// Tries to get an asset on this component with the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>

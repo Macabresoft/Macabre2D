@@ -15,7 +15,7 @@
     /// <seealso cref="IDrawableComponent"/>
     /// <seealso cref="IDisposable"/>
     /// <seealso cref="BaseComponent"/>
-    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent {
+    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite> {
         private Lazy<BoundingArea> _boundingArea;
         private Vector2 _offset;
 
@@ -160,6 +160,20 @@
                 this.Sprite = null;
             }
 
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public void ReplaceAsset(Guid currentId, Sprite newAsset) {
+            if (this.Sprite == null || this.Sprite.Id == currentId) {
+                this.Sprite = newAsset;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetAsset(Guid id, out Sprite asset) {
+            var result = this.Sprite != null && this.Sprite.Id == id;
+            asset = result ? this.Sprite : null;
             return result;
         }
 

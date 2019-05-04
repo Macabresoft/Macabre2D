@@ -8,7 +8,7 @@
     /// <summary>
     /// Plays a <see cref="AudioClip"/>.
     /// </summary>
-    public sealed class AudioPlayer : BaseComponent, IAssetComponent {
+    public sealed class AudioPlayer : BaseComponent, IAssetComponent<AudioClip> {
 
         [DataMember]
         private AudioClip _audioClip;
@@ -163,6 +163,13 @@
             return result;
         }
 
+        /// <inheritdoc/>
+        public void ReplaceAsset(Guid currentId, AudioClip newAsset) {
+            if (this.AudioClip == null || this.AudioClip.Id == currentId) {
+                this.AudioClip = newAsset;
+            }
+        }
+
         /// <summary>
         /// Stop this instance.
         /// </summary>
@@ -180,6 +187,13 @@
             if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Stopped) {
                 this._audioClip.SoundEffectInstance.Stop(isImmediate);
             }
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetAsset(Guid id, out AudioClip asset) {
+            var result = this.AudioClip?.Id == id;
+            asset = result ? this.AudioClip : null;
+            return result;
         }
 
         /// <inheritdoc/>
