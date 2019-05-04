@@ -104,10 +104,6 @@
         [DataMember]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Gets the cameras.
-        /// </summary>
-        /// <value>The cameras.</value>
         internal FilterSortCollection<ICamera> Cameras { get; } = new FilterSortCollection<ICamera>(
             c => c.IsEnabled,
             (c, handler) => c.IsEnabledChanged += handler,
@@ -116,17 +112,9 @@
             (c, handler) => c.RenderOrderChanged += handler,
             (c, handler) => c.RenderOrderChanged -= handler);
 
-        /// <summary>
-        /// Gets the components for saving.
-        /// </summary>
-        /// <value>The components for saving.</value>
         [DataMember]
         internal List<BaseComponent> ComponentsForSaving { get; } = new List<BaseComponent>();
 
-        /// <summary>
-        /// Gets the modules for saving.
-        /// </summary>
-        /// <value>The modules for saving.</value>
         [DataMember]
         internal List<BaseModule> ModulesForSaving { get; } = new List<BaseModule>();
 

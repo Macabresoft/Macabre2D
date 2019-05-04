@@ -48,10 +48,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the sound effect instance.
-        /// </summary>
-        /// <value>The sound effect instance.</value>
         internal SoundEffectInstance SoundEffectInstance { get; set; }
 
         /// <inheritdoc/>

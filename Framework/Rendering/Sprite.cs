@@ -106,10 +106,6 @@
         [DataMember]
         public Point Size { get; set; }
 
-        /// <summary>
-        /// Gets or sets the texture.
-        /// </summary>
-        /// <value>The texture.</value>
         internal Texture2D Texture { get; set; }
 
         /// <inheritdoc/>

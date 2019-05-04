@@ -83,10 +83,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets the transform.
-        /// </summary>
-        /// <value>The transform.</value>
         internal Transform Transform {
             get {
                 return this._transform.Value;
@@ -226,18 +222,11 @@
             return this.TryHit(ray, out hit);
         }
 
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        /// <param name="body">The body.</param>
         internal void Initialize(Body body) {
             this.Body = body;
             this.Reset();
         }
 
-        /// <summary>
-        /// Resets components of this collider. This includes the bounding area.
-        /// </summary>
         internal virtual void Reset() {
             this._transform = this._transform.Reset(() => this.Body.GetWorldTransform(this.Offset));
             this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);

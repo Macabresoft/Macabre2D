@@ -51,10 +51,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the sprite font.
-        /// </summary>
-        /// <value>The sprite font.</value>
         internal SpriteFont SpriteFont { get; set; }
 
         /// <summary>

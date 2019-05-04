@@ -57,11 +57,6 @@
     /// </summary>
     [DataContract]
     public sealed class GameSettings : IGameSettings {
-
-        /// <summary>
-        /// The name of the content file for <see cref="GameSettings"/>. This is the same for every
-        /// project and there is only one.
-        /// </summary>
         internal const string ContentFileName = "Settings";
 
         private static IGameSettings _settings = new GameSettings();
@@ -72,7 +67,7 @@
         private int _pixelsPerUnit = 32;
 
         /// <summary>
-        /// The singleton instance of game settings.
+        /// Gets the singleton instance of game settings.
         /// </summary>
         /// <remarks>
         /// Honestly, I'm not a huge fan of singletons. They feel like bad design to me. But there
@@ -86,7 +81,8 @@
             get {
                 return GameSettings._settings;
             }
-            set {
+
+            internal set {
                 if (value != null) {
                     GameSettings._settings = value;
                 }

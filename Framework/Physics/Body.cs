@@ -83,12 +83,6 @@
             }
         }
 
-        /// <summary>
-        /// Raises the collision occured event.
-        /// </summary>
-        /// <param name="eventArgs">
-        /// The <see cref="CollisionEventArgs"/> instance containing the event data.
-        /// </param>
         internal void RaiseCollisionOccured(CollisionEventArgs eventArgs) {
             this.CollisionOccured.SafeInvoke(this, eventArgs);
         }

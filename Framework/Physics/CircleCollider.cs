@@ -209,9 +209,6 @@
             return new Projection(axis, minimum, maximum);
         }
 
-        /// <summary>
-        /// Resets components of this collider. This includes the bounding area.
-        /// </summary>
         internal override void Reset() {
             base.Reset();
             this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);

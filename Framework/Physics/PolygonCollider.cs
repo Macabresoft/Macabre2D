@@ -69,10 +69,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets the world points.
-        /// </summary>
-        /// <value>The world points.</value>
         internal IReadOnlyCollection<Vector2> WorldPoints {
             get {
                 return this._worldPoints.Value;
@@ -208,7 +204,6 @@
             return Projection.CreatePolygonProjection(axis, this.WorldPoints);
         }
 
-        /// <inheritdoc/>
         internal override void Reset() {
             base.Reset();
 

@@ -33,6 +33,11 @@
         private readonly Lazy<float> _valueB;
         private readonly Lazy<float> _valueC;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LineSegment"/> class.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
         public LineSegment(Vector2 start, Vector2 end) {
             this.Start = start;
             this.End = end;
@@ -42,12 +47,6 @@
             this._valueC = new Lazy<float>(() => this.ValueA * this.Start.X + this.ValueB * this.Start.Y);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LineSegment"/> class.
-        /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="direction">The direction.</param>
-        /// <param name="distance">The distance.</param>
         internal LineSegment(Vector2 start, Vector2 direction, float distance) : this(start, start + direction * distance) {
             this.Direction = direction;
             this.Distance = distance;
@@ -60,30 +59,18 @@
             }
         }
 
-        /// <summary>
-        /// Gets the A value used in intersection algorithms.
-        /// </summary>
-        /// <value>The A value.</value>
         internal float ValueA {
             get {
                 return this._valueA.Value;
             }
         }
 
-        /// <summary>
-        /// Gets the B value used in intersection algorithms.
-        /// </summary>
-        /// <value>The B value.</value>
         internal float ValueB {
             get {
                 return this._valueB.Value;
             }
         }
 
-        /// <summary>
-        /// Gets the C value used in intersection algorithms.
-        /// </summary>
-        /// <value>The C value.</value>
         internal float ValueC {
             get {
                 return this._valueC.Value;

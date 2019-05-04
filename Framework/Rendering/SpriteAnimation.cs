@@ -31,11 +31,6 @@
         public SpriteAnimation() {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimation"/> class.
-        /// </summary>
-        /// <param name="steps">The steps.</param>
-        /// <param name="shouldLoop">if set to <c>true</c> [should loop].</param>
         internal SpriteAnimation(IEnumerable<SpriteAnimationStep> steps, bool shouldLoop) {
             this._steps.AddRange(steps);
             this._shouldLoop = shouldLoop;
