@@ -89,7 +89,7 @@
             return assets;
         }
 
-        public override void Refresh() {
+        public virtual void Refresh() {
             if (this.Type == AssetType.Folder) {
                 var serializer = new Serializer();
                 var path = this.GetPath();

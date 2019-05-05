@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
@@ -116,11 +115,11 @@
             return this._steps.Any(x => x.Sprite?.Id == id);
         }
 
-        internal void LoadContent(ContentManager contentManager) {
+        internal void LoadContent() {
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._steps.Select(x => x.Sprite).Where(x => x?.Texture != null)) {
-                        sprite.Texture = contentManager.Load<Texture2D>(sprite.ContentPath);
+                        sprite.Texture = AssetManager.Instance.Load<Texture2D>(sprite.ContentId);
                     }
                 }
                 finally {

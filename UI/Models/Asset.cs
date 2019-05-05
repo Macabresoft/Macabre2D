@@ -54,6 +54,12 @@
         [DataMember]
         public Guid Id { get; private set; } = Guid.NewGuid();
 
+        public virtual bool IsContent {
+            get {
+                return false;
+            }
+        }
+
         public string Name {
             get {
                 return this._name;
@@ -132,7 +138,7 @@
             return (this.Name ?? string.Empty);
         }
 
-        public virtual void Refresh() {
+        public virtual void Refresh(AssetManager assetManager) {
             return;
         }
 
@@ -150,8 +156,12 @@
             return root as FolderAsset;
         }
 
-        internal virtual void ResetContentPath(string newPath) {
+        internal virtual void ResetContentPath() {
             return;
+        }
+
+        protected string GetContentPathWithoutExtension() {
+            return Path.ChangeExtension(this.GetContentPath(), null);
         }
 
         protected void RaiseOnDeleted() {
@@ -179,10 +189,10 @@
             if (e.PropertyName == nameof(this.Parent)) {
                 // Raise the parent property changed so that children know to refresh thier paths.
                 this.RaisePropertyChanged(nameof(this.Parent));
-                this.ResetContentPath(this.GetPath());
+                this.ResetContentPath();
             }
             else if (e.PropertyName == nameof(this.Name)) {
-                this.ResetContentPath(this.GetPath());
+                this.ResetContentPath();
 
                 if (this is FolderAsset) {
                     this.RaisePropertyChanged(nameof(this.Name));

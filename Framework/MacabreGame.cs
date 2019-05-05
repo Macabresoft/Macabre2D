@@ -13,6 +13,7 @@
         protected bool _isLoaded;
         protected SpriteBatch _spriteBatch;
 
+        private AssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
         private bool _isInitialized;
         private IGameSettings _settings;
@@ -24,6 +25,23 @@
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
             this.Settings = new GameSettings();
+        }
+
+        /// <inheritdoc/>
+        public AssetManager AssetManager {
+            get {
+                return this._assetManager;
+            }
+
+            set {
+                if (value != null) {
+                    this._assetManager = value;
+
+                    if (this.Content != null) {
+                        this._assetManager.Initialize(this.Content);
+                    }
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -92,9 +110,11 @@
 
         /// <inheritdoc/>
         protected override void LoadContent() {
+            this.AssetManager.Load<AssetManager>(AssetManager.ContentFileName);
+            this.AssetManager.Initialize(this.Content);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this.Settings = this.Content.Load<GameSettings>(GameSettings.ContentFileName);
-            this.CurrentScene = this.Content.Load<Scene>(this.Settings.StartupScenePath);
+            this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
+            this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupScenePath);
             this.CurrentScene?.LoadContent();
             this._isLoaded = true;
         }

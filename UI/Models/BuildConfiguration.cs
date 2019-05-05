@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Content;
     using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
     using System.Collections.Generic;
@@ -38,9 +39,10 @@
             FileHelper.CopyDirectory(source, target);
         }
 
-        public void GenerateContent(string sourcePath, IEnumerable<Asset> assets, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
+        public void GenerateContent(string sourcePath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
             var contentPath = this.GetContentPath(sourcePath);
             this.EraseContent(contentPath);
+            serializer.Serialize(gameSettings, Path.Combine(contentPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
             serializer.Serialize(gameSettings, Path.Combine(contentPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
             this.CopyContent(contentPath, assets);
             this.CreateContentFile(contentPath, assets, referencePaths);
@@ -94,9 +96,16 @@
 
             var gameSettingsPath = $@"{contentPath}\{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
             stringBuilder.AppendLine($"#begin {gameSettingsPath}");
-            stringBuilder.AppendLine(@"/importer:GameSettingsImporter");
-            stringBuilder.AppendLine(@"/processor:GameSettingsProcessor");
+            stringBuilder.AppendLine($@"/importer:{nameof(GameSettingsImporter)}");
+            stringBuilder.AppendLine($@"/processor:{nameof(GameSettingsProcessor)}");
             stringBuilder.AppendLine($@"/build:{gameSettingsPath}");
+            stringBuilder.AppendLine();
+
+            var assetManagerPath = $@"{contentPath}\{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}";
+            stringBuilder.AppendLine($"#begin {assetManagerPath}");
+            stringBuilder.AppendLine($@"/importer:{nameof(AssetManagerImporter)}");
+            stringBuilder.AppendLine($@"/processor:{nameof(AssetManagerProcessor)}");
+            stringBuilder.AppendLine($@"/build:{assetManagerPath}");
             stringBuilder.AppendLine();
 
             foreach (var asset in assets) {

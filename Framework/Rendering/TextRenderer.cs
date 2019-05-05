@@ -110,7 +110,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this._scene?.Game != null && this.Font != null) {
-                this.Font.LoadSpriteFont(this._scene.Game.Content);
+                this.Font.LoadSpriteFont();
             }
 
             base.LoadContent();

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using Macabre2D.Framework;
     using Macabre2D.Framework.Audio;
     using System;
     using System.IO;
@@ -9,7 +10,6 @@
     public sealed class AudioAsset : MetadataAsset {
 
         public AudioAsset(string name) : base(name) {
-            this.PropertyChanged += this.AudioAsset_PropertyChanged;
         }
 
         public AudioAsset() : this(string.Empty) {
@@ -38,23 +38,10 @@
             base.Delete();
         }
 
-        public override void Refresh() {
-            this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
-            base.Refresh();
-        }
-
-        internal override void ResetContentPath(string newPath) {
-            base.ResetContentPath(newPath);
-
-            if (this.AudioClip != null) {
-                this.AudioClip.ContentPath = newPath;
-            }
-        }
-
-        private void AudioAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
-                this.AudioClip.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
-            }
+        public override void Refresh(AssetManager assetManager) {
+            this.AudioClip.ContentId = this.Id;
+            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+            base.Refresh(assetManager);
         }
 
         private string GetImporterName() {

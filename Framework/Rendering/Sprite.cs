@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Runtime.Serialization;
@@ -25,58 +24,49 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
         /// </summary>
-        /// <param name="contentPath">The content path.</param>
-        /// <param name="contentManager">The content manager.</param>
-        public Sprite(string contentPath, ContentManager contentManager) {
-            this.ContentPath = contentPath;
-            this.Texture = contentManager.Load<Texture2D>(contentPath);
-            this.Size = new Point(this.Texture.Width, this.Texture.Height);
-            this.Location = Point.Zero;
+        public Sprite(Guid id) {
+            this.ContentId = id;
+            this.LoadTexture();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Macabre2D.Sprite"/> class.
         /// </summary>
-        /// <param name="contentPath">Content path.</param>
-        /// <param name="contentManager">Content manager.</param>
+        /// <param name="id">The identifier.</param>
         /// <param name="location">The location of this specific sprite on the <see cref="Texture2D"/>.</param>
         /// <param name="size">The size of this specific sprite on the <see cref="Texture2D"/>.</param>
-        public Sprite(string contentPath, ContentManager contentManager, Point location, Point size) {
-            this.ContentPath = contentPath;
-            this.Texture = contentManager.Load<Texture2D>(contentPath);
-            this.Location = location;
-            this.Size = size;
+        public Sprite(Guid id, Point location, Point size) {
+            this.ContentId = id;
+            this.LoadTexture(location, size);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
         /// </summary>
+        /// <param name="texture">The texture.</param>
         /// <remarks>
         /// This constructor should be used for dynamic sprite creation and will not be properly
         /// saved to a scene as there will be no content path.
         /// </remarks>
-        /// <param name="texture">The texture.</param>
         public Sprite(Texture2D texture) : this(texture, Point.Zero, new Point(texture.Width, texture.Height)) {
         }
 
-        /// <summary> Initializes a new instance of the <see cref="Sprite"/> class. <remarks> This
-        /// constructor should be used for dynamic sprite creation and will not be properly saved to
-        /// a scene as there will be no content path. </remarks> <param name="texture">The
-        /// texture.</param> <param name="location">The location of this specific sprite on the <see
-        /// cref="Texture2D"/>.</param> <param name="size">The size of this specific sprite on the
-        /// <see cref="Texture2D"/>.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sprite"/> class.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="size">The size.</param>
         public Sprite(Texture2D texture, Point location, Point size) {
-            this.Texture = texture;
-            this.Location = location;
-            this.Size = size;
+            this.LoadTexture(texture, location, size);
         }
 
         /// <summary>
-        /// Gets or sets the content path.
+        /// Gets or sets the content identifier.
         /// </summary>
-        /// <value>The content path.</value>
+        /// <value>The content identifier.</value>
         [DataMember]
-        public string ContentPath { get; set; }
+        public Guid ContentId { get; internal set; }
 
         /// <inheritdoc/>
         public Guid Id {
@@ -135,6 +125,22 @@
 
                 this._disposedValue = true;
             }
+        }
+
+        private void LoadTexture() {
+            var texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+            this.LoadTexture(texture, Point.Zero, new Point(texture.Width, texture.Height));
+        }
+
+        private void LoadTexture(Point location, Point size) {
+            var texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+            this.LoadTexture(texture, location, size);
+        }
+
+        private void LoadTexture(Texture2D texture, Point location, Point size) {
+            this.Texture = texture;
+            this.Location = location;
+            this.Size = size;
         }
     }
 }

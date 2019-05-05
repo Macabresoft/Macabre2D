@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework.Audio {
 
     using Microsoft.Xna.Framework.Audio;
-    using Microsoft.Xna.Framework.Content;
     using System;
     using System.Runtime.Serialization;
 
@@ -24,22 +23,22 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioClip"/> class.
         /// </summary>
-        /// <param name="contentPath">The content path.</param>
+        /// <param name="contentId">The content identifier.</param>
         /// <param name="contentManager">The content manager.</param>
         /// <param name="volume">The volume.</param>
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
-        public AudioClip(string contentPath, ContentManager contentManager, float volume, float pan, float pitch) {
-            this.ContentPath = contentPath;
-            this.LoadSoundEffect(contentManager, volume, pan, pitch);
+        public AudioClip(Guid contentId, float volume, float pan, float pitch) {
+            this.ContentId = contentId;
+            this.LoadSoundEffect(volume, pan, pitch);
         }
 
         /// <summary>
-        /// Gets or sets the content path.
+        /// Gets or sets the content identifier.
         /// </summary>
-        /// <value>The content path.</value>
+        /// <value>The content identifier.</value>
         [DataMember]
-        public string ContentPath { get; set; }
+        public Guid ContentId { get; set; }
 
         /// <inheritdoc/>
         public Guid Id {
@@ -62,10 +61,10 @@
         /// <param name="volume">The volume.</param>
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
-        public void LoadSoundEffect(ContentManager contentManager, float volume, float pan, float pitch) {
+        public void LoadSoundEffect(float volume, float pan, float pitch) {
             SoundEffect soundEffect = null;
             try {
-                soundEffect = contentManager.Load<SoundEffect>(this.ContentPath);
+                soundEffect = AssetManager.Instance.Load<SoundEffect>(this.ContentId);
             }
             catch (NoAudioHardwareException) {
                 // MonoGame crashes if no audio hardware is detected and at that point we should just

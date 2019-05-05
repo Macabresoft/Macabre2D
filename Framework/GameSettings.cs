@@ -59,7 +59,7 @@
     public sealed class GameSettings : IGameSettings {
         internal const string ContentFileName = "Settings";
 
-        private static IGameSettings _settings = new GameSettings();
+        private static IGameSettings _instance = new GameSettings();
 
         [DataMember]
         private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
@@ -79,12 +79,12 @@
         /// </remarks>
         public static IGameSettings Instance {
             get {
-                return GameSettings._settings;
+                return GameSettings._instance;
             }
 
             internal set {
                 if (value != null) {
-                    GameSettings._settings = value;
+                    GameSettings._instance = value;
                 }
             }
         }

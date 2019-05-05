@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -97,10 +96,9 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            var contentManager = this._scene?.Game?.Content;
-            if (contentManager != null) {
-                this._defaultAnimation?.LoadContent(contentManager);
-                this._spriteAnimation?.LoadContent(contentManager);
+            if (this._scene?.Game != null) {
+                this._defaultAnimation?.LoadContent();
+                this._spriteAnimation?.LoadContent();
             }
 
             base.LoadContent();
@@ -129,8 +127,8 @@
             this.Stop();
             this._spriteAnimation = animation;
 
-            if (this._scene?.Game?.Content is ContentManager contentManager) {
-                this._spriteAnimation?.LoadContent(contentManager);
+            if (this._scene?.Game != null) {
+                this._spriteAnimation?.LoadContent();
             }
 
             if (this._spriteAnimation != null && this._spriteRenderer != null) {

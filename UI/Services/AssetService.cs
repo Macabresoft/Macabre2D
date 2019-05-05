@@ -115,7 +115,7 @@
                 var newPath = asset.GetPath();
                 if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath)) {
                     File.Move(originalPath, newPath);
-                    asset.ResetContentPath(newPath);
+                    asset.ResetContentPath();
                 }
 
                 if (asset is MetadataAsset metadataAsset) {

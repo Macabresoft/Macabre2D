@@ -50,11 +50,21 @@
             }
         }
 
+        internal override void ResetContentPath() {
+            if (this.GetRootFolder() is Project.ProjectAsset projectAsset) {
+                projectAsset.Project?.AssetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+            }
+        }
+
         protected virtual void SaveChanges(Serializer serializer) {
             return;
         }
 
         private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Name)) {
+                this.ResetContentPath();
+            }
+
             this.HasChanges = true;
         }
     }

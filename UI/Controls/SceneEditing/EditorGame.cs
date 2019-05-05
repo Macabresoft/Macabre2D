@@ -10,6 +10,7 @@
     public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionEditor _selectionEditor;
+        private AssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
 #pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
         private IGraphicsDeviceService _graphicsDeviceManager;
@@ -27,6 +28,24 @@
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public AssetManager AssetManager {
+            get {
+                return this._assetManager;
+            }
+
+            set {
+                if (value != null) {
+                    this._assetManager = value;
+
+                    if (this.Content != null) {
+                        this._assetManager.Initialize(this.Content);
+                    }
+
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AssetManager)));
+                }
+            }
+        }
 
         public Camera CurrentCamera {
             get {
@@ -126,6 +145,7 @@
         }
 
         protected override void LoadContent() {
+            this.AssetManager.Initialize(this.Content);
             this.CurrentScene?.LoadContent();
             base.LoadContent();
             this._isContentLoaded = true;

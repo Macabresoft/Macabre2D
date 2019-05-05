@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 namespace Macabre2D.UI.Common {
 
     public static class FileHelper {
+        public const string AssetManagerExtension = ".m2dam";
+
         public const string BackupExtension = ".backup";
 
         public const string ContentExtension = ".mgcb";

@@ -3,20 +3,15 @@
     using Macabre2D.Framework.Rendering;
     using Microsoft.Xna.Framework;
     using System;
-    using System.IO;
     using System.Runtime.Serialization;
 
     public sealed class SpriteWrapper : Asset {
         private ImageAsset _imageAsset;
         private Sprite _sprite;
 
-        public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) : this() {
+        public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) {
             this.Sprite = sprite;
             this.ImageAsset = imageAsset;
-        }
-
-        internal SpriteWrapper() {
-            this.PropertyChanged += this.SpriteWrapper_PropertyChanged;
         }
 
         public int Height {
@@ -31,16 +26,7 @@
             }
 
             set {
-                var oldImageAsset = this._imageAsset;
-                if (this.Set(ref this._imageAsset, value)) {
-                    if (this._imageAsset != null) {
-                        this._imageAsset.PropertyChanged += this.ImageAsset_PropertyChanged;
-                    }
-
-                    if (oldImageAsset != null) {
-                        oldImageAsset.PropertyChanged -= this.ImageAsset_PropertyChanged;
-                    }
-                }
+                this.Set(ref this._imageAsset, value);
             }
         }
 
@@ -113,12 +99,6 @@
 
         public override string GetPath() {
             return this.ImageAsset?.GetPath();
-        }
-
-        private void ImageAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Parent.Name) || e.PropertyName == nameof(this.Parent.Parent)) {
-                this.Sprite.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
-            }
         }
 
         private void SpriteWrapper_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

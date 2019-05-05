@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using Macabre2D.Framework;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
@@ -23,10 +24,6 @@
         private float _spacing = 0;
         private FontStyle _style = FontStyle.Regular;
         private bool _useKerning = true;
-
-        public FontAsset() {
-            this.PropertyChanged += this.FontAsset_PropertyChanged;
-        }
 
         public override string FileExtension {
             get {
@@ -105,8 +102,9 @@
             base.Delete();
         }
 
-        public override void Refresh() {
-            this.SavableValue.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
+        public override void Refresh(AssetManager assetManager) {
+            this.SavableValue.ContentId = this.Id;
+            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
 
             const string assetXmlPath = @"/XnaContent/Asset/";
             var spriteFontXml = new XmlDocument();
@@ -142,14 +140,6 @@
             }
         }
 
-        internal override void ResetContentPath(string newPath) {
-            base.ResetContentPath(newPath);
-
-            if (this.SavableValue != null) {
-                this.SavableValue.ContentPath = newPath;
-            }
-        }
-
         protected override void SaveChanges(Serializer serializer) {
             var defaultSpriteFont = Resources.DefaultSpriteFont;
             defaultSpriteFont = defaultSpriteFont.Replace("<FontName>Arial</FontName>", $"<FontName>{this.FontName}</FontName>");
@@ -159,12 +149,6 @@
             defaultSpriteFont = defaultSpriteFont.Replace("<Style>Regular</Style>", $"<Style>{this.Style}</Style>");
             defaultSpriteFont = defaultSpriteFont.Replace("<Id>00000000-0000-0000-0000-000000000000</Id>", $"<Id>{this.SavableValue.Id}</Id>");
             File.WriteAllText(this.GetPath(), defaultSpriteFont);
-        }
-
-        private void FontAsset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
-                this.SavableValue.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
-            }
         }
     }
 }

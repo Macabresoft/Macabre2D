@@ -51,8 +51,8 @@
             return Path.GetFileNameWithoutExtension(this.Name);
         }
 
-        internal override void ResetContentPath(string newPath) {
-            base.ResetContentPath(newPath);
+        internal override void ResetContentPath() {
+            base.ResetContentPath();
 
             if (this.Scene is Scene scene) {
                 scene.Name = this.Name;

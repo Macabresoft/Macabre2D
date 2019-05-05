@@ -56,6 +56,9 @@
         }
 
         [DataMember]
+        public AssetManager AssetManager { get; } = new AssetManager();
+
+        [DataMember]
         public IReadOnlyCollection<BuildConfiguration> BuildConfigurations {
             get {
                 return this._buildConfigurations;
@@ -117,12 +120,12 @@
         public void Refresh() {
             var startupId = this._startUpSceneAsset?.Id;
             var lastSceneId = this.LastSceneOpened?.Id;
-
+            this.AssetManager.ClearMappings();
             this._assetFolder.Refresh();
             var nonFolderAssets = this._assetFolder.GetAllContentAssets();
 
             foreach (var asset in nonFolderAssets) {
-                asset.Refresh();
+                asset.Refresh(this.AssetManager);
                 if (asset is MetadataAsset metadataAsset) {
                     metadataAsset.HasChanges = false;
                 }
@@ -167,6 +170,12 @@
             }
 
             internal ProjectAsset() : base("Assets") {
+            }
+
+            public Project Project {
+                get {
+                    return this._project;
+                }
             }
 
             public override void Delete() {

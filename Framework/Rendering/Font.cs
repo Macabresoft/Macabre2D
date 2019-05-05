@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Runtime.Serialization;
@@ -25,17 +24,17 @@
         /// </summary>
         /// <param name="contentPath">The content path.</param>
         /// <param name="contentManager">The content manager.</param>
-        public Font(string contentPath, ContentManager contentManager) {
-            this.ContentPath = contentPath;
-            this.LoadSpriteFont(contentManager);
+        public Font(Guid id) {
+            this.ContentId = id;
+            this.LoadSpriteFont();
         }
 
         /// <summary>
-        /// Gets or sets the content path.
+        /// Gets the content identifier.
         /// </summary>
-        /// <value>The content path.</value>
+        /// <value>The content identifier.</value>
         [DataMember]
-        public string ContentPath { get; set; }
+        public Guid ContentId { get; internal set; }
 
         /// <summary>
         /// Gets the identifier. This is necessary to keep all of the same audio clips in sync.
@@ -56,9 +55,8 @@
         /// <summary>
         /// Loads the sound effect.
         /// </summary>
-        /// <param name="contentManager">The content manager.</param>
-        public void LoadSpriteFont(ContentManager contentManager) {
-            this.SpriteFont = contentManager.Load<SpriteFont>(this.ContentPath);
+        public void LoadSpriteFont() {
+            this.SpriteFont = AssetManager.Instance.Load<SpriteFont>(this.ContentId);
         }
     }
 }

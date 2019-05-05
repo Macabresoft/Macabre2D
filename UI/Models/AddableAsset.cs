@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using Macabre2D.Framework;
     using Macabre2D.Framework.Serialization;
 
     public abstract class AddableAsset : MetadataAsset {
@@ -9,7 +10,7 @@
     public abstract class AddableAsset<T> : AddableAsset where T : new() {
         public T SavableValue { get; private set; } = new T();
 
-        public override void Refresh() {
+        public override void Refresh(AssetManager assetMAnager) {
             var serializer = new Serializer();
             this.SavableValue = serializer.Deserialize<T>(this.GetPath());
         }

@@ -145,9 +145,9 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Sprite?.ContentPath != null && this._scene?.Game?.Content != null) {
+            if (this.Sprite != null && this.Sprite.ContentId != Guid.Empty && this._scene?.Game != null) {
                 try {
-                    this.Sprite.Texture = this._scene.Game.Content.Load<Texture2D>(this.Sprite.ContentPath);
+                    this.Sprite.Texture = AssetManager.Instance.Load<Texture2D>(this.Sprite.ContentId);
                 }
                 catch {
                     this.Sprite.SetErrorTexture(this._scene.Game.SpriteBatch);

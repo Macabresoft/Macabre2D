@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using Macabre2D.Framework;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
@@ -64,7 +65,7 @@
             if (!this.Children.Contains(wrapper) && wrapper.ImageAsset == this) {
                 result = true;
                 wrapper.PropertyChanged += this.Child_PropertyChanged;
-                wrapper.Sprite.ContentPath = Path.ChangeExtension(this.GetContentPath(), null);
+                wrapper.Sprite.ContentId = this.Id;
                 this._children.Add(wrapper);
                 this.RaisePropertyChanged(nameof(this.Children));
             }
@@ -75,7 +76,7 @@
         public SpriteWrapper AddNewSprite() {
             var contentPath = this.GetContentPath();
             var sprite = new Sprite {
-                ContentPath = Path.ChangeExtension(contentPath, null),
+                ContentId = this.Id,
                 Size = new Point(this.Width, this.Height)
             };
 
@@ -117,14 +118,15 @@
             base.Delete();
         }
 
-        public override void Refresh() {
+        public override void Refresh(AssetManager assetManager) {
             using (var imageStream = File.OpenRead(this.GetPath())) {
                 var decoder = BitmapDecoder.Create(imageStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.Default);
                 this.Width = decoder.Frames[0].PixelWidth;
                 this.Height = decoder.Frames[0].PixelHeight;
             }
 
-            base.Refresh();
+            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+            base.Refresh(assetManager);
         }
 
         public bool RemoveChild(SpriteWrapper spriteWrapper) {
@@ -137,14 +139,6 @@
             }
 
             return result;
-        }
-
-        internal override void ResetContentPath(string newPath) {
-            base.ResetContentPath(newPath);
-
-            foreach (var sprite in this.Children.Select(x => x.Sprite).Where(x => x != null)) {
-                sprite.ContentPath = newPath;
-            }
         }
 
         private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using Macabre2D.Framework;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
@@ -41,8 +42,8 @@
             }
         }
 
-        public override void Refresh() {
-            base.Refresh();
+        public override void Refresh(AssetManager assetManager) {
+            base.Refresh(assetManager);
             this.Steps.CollectionChanged -= this.Steps_CollectionChanged;
             this.Steps.Clear();
 

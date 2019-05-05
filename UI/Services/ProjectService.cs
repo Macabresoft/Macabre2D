@@ -21,30 +21,14 @@
         private const string DebugName = @"Debug";
         private const string DependenciesLocation = @"Dependencies";
         private const string GameplayName = @"Gameplay";
-        private const string MGCBExecutableName = "MGCB.exe";
         private const string ReferencesLocation = @"References";
         private const string ReleaseName = @"Release";
-        private const short SecondsToAttemptBuildContent = 60;
         private const short SecondsToAttemptDelete = 60;
         private const string SettingsLocation = @"Settings";
         private const string SourceLocation = @"Source";
         private const string TemplateName = @"TotallyUniqueName123ABC";
         private readonly IAssemblyService _assemblyService;
         private readonly IDialogService _dialogService;
-
-        private readonly string[] _linkFiles = new string[] {
-            @"libopenal.1.dylib",
-            @"libSDL2-2.0.0.dylib",
-            @"MonoGame.Framework.dll.config",
-            @"x64\libopenal.so.1",
-            @"x64\libSDL2-2.0.so.0",
-            @"x64\SDL2.dll",
-            @"x64\soft_oal.dll",
-            @"x86\libopenal.so.1",
-            @"x86\libSDL2-2.0.so.0",
-            @"x86\SDL2.dll",
-            @"x86\soft_oal.dll"
-        };
 
         private readonly ILoggingService _loggingService;
 
@@ -296,13 +280,6 @@
                 Directory.CreateDirectory(Path.Combine(project.Directory, SettingsLocation));
                 var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
 
-                var linksDirectory = Directory.CreateDirectory(Path.Combine(dependenciesDirectory.FullName, "Links"));
-                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x64"));
-                Directory.CreateDirectory(Path.Combine(linksDirectory.FullName, "x86"));
-                foreach (var linkFile in this._linkFiles) {
-                    File.Copy(string.IsNullOrEmpty(copyFromDirectory) ? linkFile : Path.Combine(copyFromDirectory, linkFile), Path.Combine(linksDirectory.FullName, linkFile));
-                }
-
                 var sourceFileName = "Source.zip";
                 ZipFile.ExtractToDirectory(string.IsNullOrEmpty(copyFromDirectory) ? sourceFileName : Path.Combine(copyFromDirectory, sourceFileName), sourceDirectory.FullName);
 
@@ -355,7 +332,7 @@
             var sourcePath = this.GetSourcePath();
             var dllPath = $@"{sourcePath}\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);
+                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPath);
             }
         }
 

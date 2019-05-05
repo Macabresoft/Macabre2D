@@ -71,6 +71,11 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssetManager.cs" />
+    <Compile Include="Content\AssetManagerImporter.cs" />
+    <Compile Include="Content\AssetManagerProcessor.cs" />
+    <Compile Include="Content\AssetManagerReader.cs" />
+    <Compile Include="Content\AssetManagerWriter.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Audio\AudioClip.cs" />
@@ -104,6 +109,7 @@
     <Compile Include="IAssetComponent.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="IIdentifiable.cs" />
+    <Compile Include="IIdentifiableContent.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Serialization\JsonColorConverter.cs" />

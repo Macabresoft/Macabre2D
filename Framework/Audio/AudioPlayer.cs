@@ -135,7 +135,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this._audioClip != null && this._scene?.Game != null) {
-                this._audioClip.LoadSoundEffect(this._scene.Game.Content, this.Volume, this.Pan, this.Pitch);
+                this._audioClip.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
             }
 
             base.LoadContent();

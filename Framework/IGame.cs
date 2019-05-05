@@ -9,6 +9,12 @@
     public interface IGame {
 
         /// <summary>
+        /// Gets the asset manager.
+        /// </summary>
+        /// <value>The asset manager.</value>
+        AssetManager AssetManager { get; }
+
+        /// <summary>
         /// Gets the content manager.
         /// </summary>
         /// <value>The content manager.</value>
