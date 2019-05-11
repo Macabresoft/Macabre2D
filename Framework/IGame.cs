@@ -12,7 +12,7 @@
         /// Gets the asset manager.
         /// </summary>
         /// <value>The asset manager.</value>
-        AssetManager AssetManager { get; }
+        IAssetManager AssetManager { get; }
 
         /// <summary>
         /// Gets the content manager.

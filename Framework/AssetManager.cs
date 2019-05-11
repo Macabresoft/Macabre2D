@@ -6,10 +6,50 @@
     using System.Runtime.Serialization;
 
     /// <summary>
+    /// Interface to manage assets.
+    /// </summary>
+    public interface IAssetManager {
+
+        /// <summary>
+        /// Clears the mappings.
+        /// </summary>
+        void ClearMappings();
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        /// <param name="contentManager">The content manager.</param>
+        void Initialize(ContentManager contentManager);
+
+        /// <summary>
+        /// Loads the asset at the specified path.
+        /// </summary>
+        /// <typeparam name="T">The type of asset to load.</typeparam>
+        /// <param name="path">The path.</param>
+        /// <returns>The asset.</returns>
+        T Load<T>(string path);
+
+        /// <summary>
+        /// Loads the asset with the specified identifier.
+        /// </summary>
+        /// <typeparam name="T">The type of asset to load.</typeparam>
+        /// <param name="Id">The identifier.</param>
+        /// <returns>The asset.</returns>
+        T Load<T>(Guid id);
+
+        /// <summary>
+        /// Sets the mapping.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="contentPath">The content path.</param>
+        void SetMapping(Guid id, string contentPath);
+    }
+
+    /// <summary>
     /// Maps content with identifiers. This should be the primary way that content is accessed.
     /// </summary>
     [DataContract]
-    public sealed class AssetManager {
+    public sealed class AssetManager : IAssetManager {
         internal const string ContentFileName = "AssetManager";
 
         [DataMember]
@@ -23,14 +63,20 @@
         /// <summary>
         /// Gets the singleton instance of an asset manager.
         /// </summary>
-        public static AssetManager Instance { get; private set; }
+        public static IAssetManager Instance { get; internal set; }
 
-        /// <summary>
-        /// Loads the asset at the specified path.
-        /// </summary>
-        /// <typeparam name="T">The type of asset to load.</typeparam>
-        /// <param name="path">The path.</param>
-        /// <returns>The asset.</returns>
+        /// <inheritdoc/>
+        public void ClearMappings() {
+            this._idToStringMapping.Clear();
+        }
+
+        /// <inheritdoc/>
+        public void Initialize(ContentManager contentManager) {
+            this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
+            AssetManager.Instance = this;
+        }
+
+        /// <inheritdoc/>
         public T Load<T>(string path) {
             T result;
 
@@ -44,12 +90,7 @@
             return result;
         }
 
-        /// <summary>
-        /// Loads the asset with the specified identifier.
-        /// </summary>
-        /// <typeparam name="T">The type of asset to load.</typeparam>
-        /// <param name="Id">The identifier.</param>
-        /// <returns>The asset.</returns>
+        /// <inheritdoc/>
         public T Load<T>(Guid id) {
             T result;
 
@@ -63,16 +104,8 @@
             return result;
         }
 
-        internal void ClearMappings() {
-            this._idToStringMapping.Clear();
-        }
-
-        internal void Initialize(ContentManager contentManager) {
-            this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
-            AssetManager.Instance = this;
-        }
-
-        internal void SetMapping(Guid id, string contentPath) {
+        /// <inheritdoc/>
+        public void SetMapping(Guid id, string contentPath) {
             this._idToStringMapping[id] = contentPath;
         }
     }

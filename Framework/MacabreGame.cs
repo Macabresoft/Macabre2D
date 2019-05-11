@@ -13,7 +13,7 @@
         protected bool _isLoaded;
         protected SpriteBatch _spriteBatch;
 
-        private AssetManager _assetManager = new AssetManager();
+        private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
         private bool _isInitialized;
         private IGameSettings _settings;
@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public AssetManager AssetManager {
+        public IAssetManager AssetManager {
             get {
                 return this._assetManager;
             }
@@ -110,7 +110,7 @@
 
         /// <inheritdoc/>
         protected override void LoadContent() {
-            this.AssetManager.Load<AssetManager>(AssetManager.ContentFileName);
+            this.AssetManager.Load<AssetManager>(Framework.AssetManager.ContentFileName);
             this.AssetManager.Initialize(this.Content);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
