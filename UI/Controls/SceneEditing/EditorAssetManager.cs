@@ -16,6 +16,10 @@
             this._assetManager.ClearMappings();
         }
 
+        public string GetPath(Guid id) {
+            return this._assetManager.GetPath(id);
+        }
+
         public void Initialize(ContentManager contentManager) {
             this._assetManager.Initialize(contentManager);
             AssetManager.Instance = this;

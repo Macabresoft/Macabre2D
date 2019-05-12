@@ -16,6 +16,13 @@
         void ClearMappings();
 
         /// <summary>
+        /// Gets the path.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The path.</returns>
+        string GetPath(Guid id);
+
+        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="contentManager">The content manager.</param>
@@ -68,6 +75,12 @@
         /// <inheritdoc/>
         public void ClearMappings() {
             this._idToStringMapping.Clear();
+        }
+
+        /// <inheritdoc/>
+        public string GetPath(Guid id) {
+            this._idToStringMapping.TryGetValue(id, out var result);
+            return result;
         }
 
         /// <inheritdoc/>

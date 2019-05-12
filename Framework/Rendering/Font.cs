@@ -22,8 +22,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Font"/> class.
         /// </summary>
-        /// <param name="contentPath">The content path.</param>
-        /// <param name="contentManager">The content manager.</param>
+        /// <param name="id">The identifier.</param>
         public Font(Guid id) {
             this.ContentId = id;
             this.LoadSpriteFont();
