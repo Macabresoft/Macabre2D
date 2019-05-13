@@ -114,7 +114,7 @@
             this.AssetManager.Initialize(this.Content);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
-            this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupScenePath);
+            this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupSceneContentId);
             this.CurrentScene?.LoadContent();
             this._isLoaded = true;
         }

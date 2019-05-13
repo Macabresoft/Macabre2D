@@ -4,6 +4,7 @@
     using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using NUnit.Framework;
+    using System;
     using System.IO;
 
     [TestFixture]
@@ -16,7 +17,7 @@
                 ErrorSpritesColor = Color.Red,
                 FallbackBackgroundColor = Color.Coral,
                 PixelsPerUnit = 200,
-                StartupScenePath = "ThisSceneIsAHoldUp"
+                StartupSceneContentId = Guid.NewGuid()
             };
 
             var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "GameSettingsForTest.m2dgs");
@@ -43,7 +44,7 @@
             Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
             Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
             Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
-            Assert.AreEqual(originalSettings.StartupScenePath, deserializedSettings.StartupScenePath);
+            Assert.AreEqual(originalSettings.StartupSceneContentId, deserializedSettings.StartupSceneContentId);
         }
     }
 }

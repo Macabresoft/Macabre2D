@@ -28,11 +28,10 @@
         int PixelsPerUnit { get; }
 
         /// <summary>
-        /// Adds the custom setting.
+        /// Gets the startup scene content identifier.
         /// </summary>
-        /// <param name="settingName">Name of the setting.</param>
-        /// <param name="settingValue">The setting value.</param>
-        string StartupScenePath { get; }
+        /// <value>The startup scene content identifier.</value>
+        Guid StartupSceneContentId { get; }
 
         /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -115,7 +114,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public string StartupScenePath { get; internal set; }
+        public Guid StartupSceneContentId { get; internal set; }
 
         /// <summary>
         /// Adds the custom setting.

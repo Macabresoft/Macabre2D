@@ -135,7 +135,7 @@
 
             if (result) {
                 await Task.Run(async () => {
-                    this.CurrentProject.GameSettings.StartupScenePath = Path.ChangeExtension(this.CurrentProject.StartUpSceneAsset?.GetContentPath(), null);
+                    this.CurrentProject.GameSettings.StartupSceneContentId = this.CurrentProject.StartUpSceneAsset?.Id ?? Guid.Empty;
 
                     var properties = new Dictionary<string, string> {
                         { "Configuration", mode.ToString() }
