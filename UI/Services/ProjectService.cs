@@ -24,7 +24,6 @@
         private const string ReferencesLocation = @"References";
         private const string ReleaseName = @"Release";
         private const short SecondsToAttemptDelete = 60;
-        private const string SettingsLocation = @"Settings";
         private const string SourceLocation = @"Source";
         private const string TemplateName = @"TotallyUniqueName123ABC";
         private readonly IAssemblyService _assemblyService;
@@ -277,7 +276,6 @@
                 Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
                 Directory.CreateDirectory(Path.Combine(project.Directory, BinariesLocation));
                 var dependenciesDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, DependenciesLocation));
-                Directory.CreateDirectory(Path.Combine(project.Directory, SettingsLocation));
                 var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
 
                 var sourceFileName = "Source.zip";
