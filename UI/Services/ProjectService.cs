@@ -21,6 +21,7 @@
         private const string DebugName = @"Debug";
         private const string DependenciesLocation = @"Dependencies";
         private const string GameplayName = @"Gameplay";
+        private const string GitIgnoreFileName = @".gitignore";
         private const string ReferencesLocation = @"References";
         private const string ReleaseName = @"Release";
         private const short SecondsToAttemptDelete = 60;
@@ -28,6 +29,7 @@
         private const string TemplateName = @"TotallyUniqueName123ABC";
         private readonly IAssemblyService _assemblyService;
         private readonly IDialogService _dialogService;
+        private readonly GitIgnoreCreator _gitIgnoreCreator = new GitIgnoreCreator();
 
         private readonly ILoggingService _loggingService;
 
@@ -272,6 +274,7 @@
                 }
 
                 await Task.Run(() => this._serializer.Serialize(project, project.PathToProject));
+                this._gitIgnoreCreator.CreateAndSave(Path.Combine(project.Directory, GitIgnoreFileName), true);
 
                 Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
                 Directory.CreateDirectory(Path.Combine(project.Directory, BinariesLocation));

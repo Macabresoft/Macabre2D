@@ -60,6 +60,7 @@
                 Assert.NotNull(projectService.CurrentProject);
                 Assert.AreEqual(project, projectService.CurrentProject);
                 Assert.True(File.Exists(project.PathToProject));
+                Assert.True(File.Exists(Path.Combine(projectDirectory, ".gitignore")));
             }
             finally {
                 if (Directory.Exists(projectDirectory)) {

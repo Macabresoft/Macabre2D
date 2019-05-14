@@ -146,6 +146,8 @@
     <Compile Include="AssetService.cs" />
     <Compile Include="BusyService.cs" />
     <Compile Include="DialogService.cs" />
+    <Compile Include="GitIgnoreCreator.cs" />
+    <Compile Include="TextCreator.cs" />
     <Compile Include="LoggingService.cs" />
     <Compile Include="MonoGameService.cs" />
     <Compile Include="ComponentService.cs" />
