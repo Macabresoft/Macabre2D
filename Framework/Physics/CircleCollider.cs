@@ -272,19 +272,26 @@
         }
 
         private float CreateScaledRadius() {
-            var worldTransform = this.Body.WorldTransform;
-            switch (this.RadiusScalingType) {
-                case RadiusScalingType.X:
-                    return this._radius * worldTransform.Scale.X;
+            var result = this._radius;
 
-                case RadiusScalingType.Y:
-                    return this._radius * worldTransform.Scale.Y;
+            if (this.Body != null) {
+                var worldTransform = this.Body.WorldTransform;
+                switch (this.RadiusScalingType) {
+                    case RadiusScalingType.X:
+                        result = this._radius * worldTransform.Scale.X;
+                        break;
 
-                case RadiusScalingType.Average:
-                    return this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y);
+                    case RadiusScalingType.Y:
+                        result = this._radius * worldTransform.Scale.Y;
+                        break;
+
+                    case RadiusScalingType.Average:
+                        result = this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y);
+                        break;
+                }
             }
 
-            return this._radius;
+            return result;
         }
     }
 }

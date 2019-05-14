@@ -44,7 +44,7 @@
         /// Initializes a new instance of the <see cref="Collider"/> class.
         /// </summary>
         public Collider() {
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+            this.ResetLazyFields();
         }
 
         /// <summary>
@@ -228,8 +228,7 @@
         }
 
         internal virtual void Reset() {
-            this._transform = this._transform.Reset(() => this.Body.GetWorldTransform(this.Offset));
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+            this.ResetLazyFields();
         }
 
         /// <summary>
@@ -258,5 +257,10 @@
         /// <param name="result">The result.</param>
         /// <returns>A value indicating whether or not a hit occurred.</returns>
         protected abstract bool TryHit(LineSegment ray, out RaycastHit result);
+
+        private void ResetLazyFields() {
+            this._transform = this._transform.Reset(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
+            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+        }
     }
 }
