@@ -34,10 +34,7 @@
     [DataContract]
     public abstract class Collider : IBoundable {
         private Lazy<BoundingArea> _boundingArea;
-
-        [DataMember]
         private Vector2 _offset;
-
         private Lazy<Transform> _transform;
 
         /// <summary>
@@ -70,6 +67,7 @@
         /// Gets the offset.
         /// </summary>
         /// <value>The offset.</value>
+        [DataMember]
         public Vector2 Offset {
             get {
                 return this._offset;
@@ -251,16 +249,19 @@
         }
 
         /// <summary>
+        /// Resets the lazy fields.
+        /// </summary>
+        protected virtual void ResetLazyFields() {
+            this._transform = this._transform.Reset(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
+            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+        }
+
+        /// <summary>
         /// Tries to process a hit between this collider and a ray.
         /// </summary>
         /// <param name="ray">The ray.</param>
         /// <param name="result">The result.</param>
         /// <returns>A value indicating whether or not a hit occurred.</returns>
         protected abstract bool TryHit(LineSegment ray, out RaycastHit result);
-
-        private void ResetLazyFields() {
-            this._transform = this._transform.Reset(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
-        }
     }
 }

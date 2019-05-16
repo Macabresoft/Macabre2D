@@ -40,20 +40,14 @@
     /// </summary>
     /// <seealso cref="Collider"/>
     public sealed class CircleCollider : Collider {
-
-        [DataMember]
         private float _radius;
-
-        [DataMember]
         private RadiusScalingType _radiusScalingType = RadiusScalingType.None;
-
         private Lazy<float> _scaledRadius;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircleCollider"/> class.
         /// </summary>
         public CircleCollider() : base() {
-            this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);
         }
 
         /// <summary>
@@ -94,6 +88,7 @@
         /// Gets or sets the radius.
         /// </summary>
         /// <value>The radius.</value>
+        [DataMember]
         public float Radius {
             get {
                 return this._radius;
@@ -101,6 +96,7 @@
 
             set {
                 this._radius = value;
+                this.ResetScaledRadius();
             }
         }
 
@@ -108,6 +104,7 @@
         /// Gets or sets the type of the radius scaling.
         /// </summary>
         /// <value>The type of the radius scaling.</value>
+        [DataMember]
         public RadiusScalingType RadiusScalingType {
             get {
                 return this._radiusScalingType;
@@ -116,7 +113,7 @@
             set {
                 if (this._radiusScalingType != value) {
                     this._radiusScalingType = value;
-                    this.Reset();
+                    this.ResetScaledRadius();
                 }
             }
         }
@@ -209,11 +206,6 @@
             return new Projection(axis, minimum, maximum);
         }
 
-        internal override void Reset() {
-            base.Reset();
-            this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);
-        }
-
         /// <inheritdoc/>
         protected override BoundingArea CreateBoundingArea() {
             return new BoundingArea(
@@ -221,6 +213,12 @@
                 this.Center.X + this.ScaledRadius,
                 this.Center.Y - this.ScaledRadius,
                 this.Center.Y + this.ScaledRadius);
+        }
+
+        /// <inheritdoc/>
+        protected override void ResetLazyFields() {
+            base.ResetLazyFields();
+            this.ResetScaledRadius();
         }
 
         /// <inheritdoc/>
@@ -292,6 +290,10 @@
             }
 
             return result;
+        }
+
+        private void ResetScaledRadius() {
+            this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);
         }
     }
 }
