@@ -96,7 +96,7 @@
 
             set {
                 this._radius = value;
-                this.ResetScaledRadius();
+                this.ResetLazyFields();
             }
         }
 
@@ -113,7 +113,7 @@
             set {
                 if (this._radiusScalingType != value) {
                     this._radiusScalingType = value;
-                    this.ResetScaledRadius();
+                    this.ResetLazyFields();
                 }
             }
         }
