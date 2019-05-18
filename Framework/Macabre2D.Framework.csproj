@@ -112,6 +112,7 @@
     <Compile Include="IIdentifiableContent.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
+    <Compile Include="ResettableLazy.cs" />
     <Compile Include="Serialization\JsonColorConverter.cs" />
     <Compile Include="Extensions\LazyExtensions.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />

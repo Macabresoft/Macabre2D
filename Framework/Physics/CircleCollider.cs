@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework.Physics {
 
-    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -40,14 +39,15 @@
     /// </summary>
     /// <seealso cref="Collider"/>
     public sealed class CircleCollider : Collider {
+        private readonly ResettableLazy<float> _scaledRadius;
         private float _radius;
         private RadiusScalingType _radiusScalingType = RadiusScalingType.None;
-        private Lazy<float> _scaledRadius;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircleCollider"/> class.
         /// </summary>
         public CircleCollider() : base() {
+            this._scaledRadius = new ResettableLazy<float>(this.CreateScaledRadius);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@
         }
 
         private void ResetScaledRadius() {
-            this._scaledRadius = this._scaledRadius.Reset(this.CreateScaledRadius);
+            this._scaledRadius.Reset();
         }
     }
 }

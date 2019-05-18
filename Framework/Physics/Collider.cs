@@ -33,15 +33,16 @@
     /// </summary>
     [DataContract]
     public abstract class Collider : IBoundable {
-        private Lazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<Transform> _transform;
         private Vector2 _offset;
-        private Lazy<Transform> _transform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Collider"/> class.
         /// </summary>
         public Collider() {
-            this.ResetLazyFields();
+            this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
+            this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
         /// <summary>
@@ -252,8 +253,8 @@
         /// Resets the lazy fields.
         /// </summary>
         protected virtual void ResetLazyFields() {
-            this._transform = this._transform.Reset(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+            this._transform.Reset();
+            this._boundingArea.Reset();
         }
 
         /// <summary>
