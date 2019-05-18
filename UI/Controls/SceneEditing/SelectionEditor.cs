@@ -15,12 +15,14 @@
         private readonly EditorGame _editorGame;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
-            LineThickness = 0.6f,
+            Color = new Color(255, 255, 255, 150),
+            LineThickness = 1f,
             UseDynamicLineThickness = true
         };
 
         private ColliderDrawer _colliderDrawer = new ColliderDrawer() {
-            LineThickness = 0.6f,
+            Color = new Color(255, 255, 255, 150),
+            LineThickness = 1f,
             UseDynamicLineThickness = true
         };
 
@@ -48,12 +50,14 @@
 
         public void Reinitialize() {
             this._boundingAreaDrawer = new BoundingAreaDrawer() {
-                LineThickness = 0.6f,
+                Color = new Color(255, 255, 255, 150),
+                LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
             this._colliderDrawer = new ColliderDrawer() {
-                LineThickness = 0.6f,
+                Color = new Color(255, 255, 255, 150),
+                LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
