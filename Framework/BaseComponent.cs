@@ -23,6 +23,7 @@
 
         private readonly List<Func<BaseComponent, bool>> _resolveChildActions = new List<Func<BaseComponent, bool>>();
         private readonly Transform _transform = new Transform();
+        private readonly ResettableLazy<Matrix> _transformMatrix;
 
         [DataMember]
         private int _drawOrder;
@@ -45,8 +46,6 @@
         [DataMember]
         private BaseComponent _parent;
 
-        private Lazy<Matrix> _transformMatrix;
-
         [DataMember]
         private int _updateOrder;
 
@@ -57,7 +56,8 @@
             this.IsEnabledChanged += this.Self_EnabledChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this._localRotation.AngleChanged += this.LocalRotation_AngleChanged;
-            this.HandleMatrixOrTransformChanged();
+            this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
+            //this.HandleMatrixOrTransformChanged();
         }
 
         /// <inheritdoc/>
@@ -693,7 +693,7 @@
         }
 
         private void HandleMatrixOrTransformChanged() {
-            this._transformMatrix = this._transformMatrix.Reset(this.GetMatrix);
+            this._transformMatrix.Reset();
             this.TransformChanged.SafeInvoke(this);
             this._isTransformUpToDate = false;
         }
