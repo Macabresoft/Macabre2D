@@ -74,7 +74,7 @@
 
         private (float ratio, float lineLength) GetViewHeightRatio(float viewHeight) {
             var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.EditorGame.GraphicsDevice.Viewport.Height);
-            var lineLength = ratio * 4f;
+            var lineLength = viewHeight / 5f;
 
             return (ratio, lineLength);
         }
