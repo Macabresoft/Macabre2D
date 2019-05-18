@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
-    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -12,7 +11,7 @@
     /// A component which will render the specified text.
     /// </summary>
     public sealed class TextRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Font> {
-        private Lazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<BoundingArea> _boundingArea;
         private Font _font;
         private string _text = string.Empty;
 
@@ -20,7 +19,7 @@
         /// Initializes a new instance of the <see cref="TextRenderer"/> class.
         /// </summary>
         public TextRenderer() {
-            this._boundingArea = new Lazy<BoundingArea>(this.CreateBoundingArea);
+            this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
         /// <inheritdoc/>
@@ -51,8 +50,8 @@
                 this._font = value;
                 this.LoadContent();
 
-                if (this.IsInitialized && this._boundingArea.IsValueCreated) {
-                    this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+                if (this.IsInitialized) {
+                    this._boundingArea.Reset();
                 }
             }
         }
@@ -74,8 +73,8 @@
 
                 this._text = value;
 
-                if (this.IsInitialized && this._boundingArea.IsValueCreated) {
-                    this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+                if (this.IsInitialized) {
+                    this._boundingArea.Reset();
                 }
             }
         }
@@ -172,7 +171,7 @@
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+            this._boundingArea.Reset();
         }
     }
 }
