@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
-    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -16,21 +15,21 @@
     /// <seealso cref="IDisposable"/>
     /// <seealso cref="BaseComponent"/>
     public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite> {
-        private Lazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<Transform> _spriteTransform;
         private Vector2 _offset;
 
         [DataMember]
         private OffsetType _offsetType = OffsetType.Custom;
 
         private Sprite _sprite;
-        private Lazy<Transform> _spriteTransform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderer"/> class.
         /// </summary>
         public SpriteRenderer() {
-            this._boundingArea = new Lazy<BoundingArea>(this.CreateBoundingArea);
-            this._spriteTransform = new Lazy<Transform>(this.CreateTransform);
+            this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+            this._spriteTransform = new ResettableLazy<Transform>(this.CreateTransform);
         }
 
         /// <inheritdoc/>
@@ -59,8 +58,8 @@
             }
             set {
                 this._offset = value;
-                this._spriteTransform = this._spriteTransform.Reset(this.CreateTransform);
-                this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+                this._spriteTransform.Reset();
+                this._boundingArea.Reset();
             }
         }
 
@@ -96,7 +95,7 @@
                 if (this._sprite != value) {
                     this._sprite = value;
                     this.LoadContent();
-                    this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+                    this._boundingArea.Reset();
 
                     if (this.IsInitialized) {
                         this.SetOffset();
@@ -219,8 +218,8 @@
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._spriteTransform = this._spriteTransform.Reset(this.CreateTransform);
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
+            this._spriteTransform.Reset();
+            this._boundingArea.Reset();
         }
 
         private void SetOffset() {
