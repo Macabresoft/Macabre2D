@@ -12,8 +12,8 @@
     /// Represents a camera into the game world.
     /// </summary>
     public sealed class Camera : BaseComponent, ICamera {
-        private Lazy<BoundingArea> _boundingArea;
-        private Lazy<Matrix> _matrix;
+        private readonly ResettableLazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<Matrix> _matrix;
         private int _renderOrder;
         private float _viewHeight = 10f;
 
@@ -21,8 +21,8 @@
         /// Initializes a new instance of the <see cref="Camera"/> class.
         /// </summary>
         public Camera() : base() {
-            this._boundingArea = new Lazy<BoundingArea>(this.CreateBoundingArea);
-            this._matrix = new Lazy<Matrix>(this.CreateViewMatrix);
+            this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+            this._matrix = new ResettableLazy<Matrix>(this.CreateViewMatrix);
         }
 
         /// <inheritdoc/>
@@ -73,8 +73,8 @@
 
                 if (value != this._viewHeight) {
                     this._viewHeight = value;
-                    this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
-                    this._matrix = this._matrix.Reset(this.CreateViewMatrix);
+                    this._boundingArea.Reset();
+                    this._matrix.Reset();
                     this.ViewHeightChanged.SafeInvoke(this);
                 }
             }
@@ -135,8 +135,8 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
-            this._matrix = this._matrix.Reset(this.CreateViewMatrix);
+            this._boundingArea.Reset();
+            this._matrix.Reset();
             this.TransformChanged += this.Self_TransformChanged;
         }
 
@@ -197,8 +197,8 @@
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._boundingArea = this._boundingArea.Reset(this.CreateBoundingArea);
-            this._matrix = this._matrix.Reset(this.CreateViewMatrix);
+            this._boundingArea.Reset();
+            this._matrix.Reset();
         }
     }
 }
