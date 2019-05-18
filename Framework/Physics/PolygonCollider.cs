@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -16,15 +15,17 @@
         [DataMember]
         protected readonly List<Vector2> _points = new List<Vector2>();
 
-        private Lazy<Vector2> _center;
-        private Lazy<List<Vector2>> _normals;
-        private Lazy<List<Vector2>> _worldPoints;
+        private ResettableLazy<Vector2> _center;
+        private ResettableLazy<List<Vector2>> _normals;
+        private ResettableLazy<List<Vector2>> _worldPoints;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
         /// </summary>
         public PolygonCollider() : base() {
-            this._worldPoints = this._worldPoints.Reset(this.CreateWorldPoints);
+            this._worldPoints = new ResettableLazy<List<Vector2>>(this.CreateWorldPoints);
+            this._normals = new ResettableLazy<List<Vector2>>(this.GetNormals);
+            this._center = new ResettableLazy<Vector2>(() => this.WorldPoints.GetAverage());
         }
 
         /// <summary>
@@ -205,13 +206,8 @@
         }
 
         internal override void Reset() {
-            base.Reset();
-
             this.ForceClockwise();
-
-            this._worldPoints = this._worldPoints.Reset(this.CreateWorldPoints);
-            this._normals = this._normals.Reset(this.GetNormals);
-            this._center = this._center.Reset(this.WorldPoints.GetAverage);
+            base.Reset();
         }
 
         /// <inheritdoc/>
@@ -244,6 +240,14 @@
             }
 
             return normals;
+        }
+
+        /// <inheritdoc/>
+        protected override void ResetLazyFields() {
+            base.ResetLazyFields();
+            this._worldPoints.Reset();
+            this._normals.Reset();
+            this._center.Reset();
         }
 
         /// <inheritdoc/>
