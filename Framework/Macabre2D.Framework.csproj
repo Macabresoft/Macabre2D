@@ -104,6 +104,7 @@
     <Compile Include="Diagnostics\LineStripDrawer.cs" />
     <Compile Include="Diagnostics\PrimitiveDrawer.cs" />
     <Compile Include="EmptyComponent.cs" />
+    <Compile Include="Extensions\KeyboardStateExtensions.cs" />
     <Compile Include="GameSettings.cs" />
     <Compile Include="IBaseComponent.cs" />
     <Compile Include="IAssetComponent.cs" />

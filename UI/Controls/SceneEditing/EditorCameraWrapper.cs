@@ -110,9 +110,8 @@
                 this._previousScrollWheelValue = mouseState.ScrollWheelValue;
             }
 
-            if (this._editorGame.IsFocused) {
+            if (this._editorGame.IsFocused && !keyboardState.IsModifierKeyDown()) {
                 var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
-
                 if (keyboardState.IsKeyDown(Keys.W)) {
                     this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }
