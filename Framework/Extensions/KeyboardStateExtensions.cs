@@ -8,7 +8,7 @@
     /// </summary>
     public static class KeyboardStateExtensions {
 
-        private static Keys[] _modifierKeys = new Keys[] {
+        private static readonly Keys[] _modifierKeys = new Keys[] {
             Keys.LeftControl,
             Keys.RightControl,
             Keys.LeftAlt,
@@ -18,12 +18,32 @@
         };
 
         /// <summary>
+        /// Determines whether all of the specified keys are currently down.
+        /// </summary>
+        /// <param name="keyboardState">State of the keyboard.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns><c>true</c> if all of the keys are down; otherwise, <c>false</c>.</returns>
+        public static bool AreAllKeysDown(this KeyboardState keyboardState, params Keys[] keys) {
+            return keys.All(x => keyboardState.IsKeyDown(x));
+        }
+
+        /// <summary>
+        /// Determines whether any of the specified keys are currently down.
+        /// </summary>
+        /// <param name="keyboardState">State of the keyboard.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns><c>true</c> if any of the keys are down; otherwise, <c>false</c>.</returns>
+        public static bool IsAnyKeyDown(this KeyboardState keyboardState, params Keys[] keys) {
+            return keys.Any(x => keyboardState.IsKeyDown(x));
+        }
+
+        /// <summary>
         /// Determines whether or not a modifier key is currently down.
         /// </summary>
         /// <param name="keyboardState">State of the keyboard.</param>
         /// <returns><c>true</c> if a modifier key is down; otherwise, <c>false</c>.</returns>
         public static bool IsModifierKeyDown(this KeyboardState keyboardState) {
-            return KeyboardStateExtensions._modifierKeys.Any(x => keyboardState.IsKeyDown(x));
+            return keyboardState.IsAnyKeyDown(KeyboardStateExtensions._modifierKeys);
         }
     }
 }
