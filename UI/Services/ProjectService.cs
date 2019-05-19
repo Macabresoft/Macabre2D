@@ -122,7 +122,7 @@
 
                     if (exitCode != 0) {
                         result = false;
-                        this._loggingService.LogError($"Content could not be built for '{this.CurrentProject.Name}' in '{mode.ToString()}' mode: {exception.Message}");
+                        this._loggingService.LogError($"Content could not be built for '{this.CurrentProject.Name}' in '{mode.ToString()}' mode: {exception?.Message}");
                     }
                 }
             });
@@ -214,13 +214,16 @@
                 }
             }
             else {
-                await this.BuildProject(BuildMode.Debug);
+                var buildTask = this.BuildProject(BuildMode.Debug);
 
                 if (this.CurrentProject?.LastSceneOpened != null) {
-                    await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
+                    var sceneTask = this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
+                    await Task.WhenAll(buildTask, sceneTask);
                 }
                 else {
-                    var scene = await this._sceneService.CreateScene();
+                    var sceneTask = this._sceneService.CreateScene();
+                    await Task.WhenAll(buildTask, sceneTask);
+                    var scene = sceneTask.Result;
                     this.CurrentProject.LastSceneOpened = scene.SceneAsset;
                     this._sceneService.HasChanges = true;
                 }
