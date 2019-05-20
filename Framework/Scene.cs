@@ -380,9 +380,7 @@
         /// <param name="component">The component.</param>
         /// <returns>A value indicating whether or not the component was removed.</returns>
         public bool RemoveChild(BaseComponent component) {
-            var result = this._components.Remove(component);
-            result |= this.ComponentsForSaving.Remove(component);
-            return result;
+            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
         }
 
         /// <summary>
