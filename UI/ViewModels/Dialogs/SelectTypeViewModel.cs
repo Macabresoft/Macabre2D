@@ -41,7 +41,8 @@
             }
 
             set {
-                if (this.Set(ref this._selectedType, value) && string.IsNullOrEmpty(this.Name)) {
+                var originalType = this._selectedType;
+                if (this.Set(ref this._selectedType, value) && (string.IsNullOrEmpty(this.Name) || originalType?.Name == this.Name)) {
                     this.Name = this.SelectedType.Name;
                 }
             }
