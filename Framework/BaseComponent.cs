@@ -538,6 +538,28 @@
         }
 
         /// <summary>
+        /// Determines whether this instance is an ancestor of the specified component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <returns>
+        /// <c>true</c> if this instance is an ancestor of the specified component; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsAncestorOf(BaseComponent component) {
+            var result = false;
+            if (component != null) {
+                foreach (var child in this.Children) {
+                    if (result) {
+                        break;
+                    }
+
+                    result = child.Id == component.Id || child.IsAncestorOf(component);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Loads the content.
         /// </summary>
         public virtual void LoadContent() {

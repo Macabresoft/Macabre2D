@@ -301,6 +301,62 @@
 
         [Test]
         [Category("Unit Test")]
+        public static void Component_IsAncestorOfTest() {
+            using (var component = new TestComponent())
+            using (var child1 = new TestComponent())
+            using (var child1A = new TestComponent())
+            using (var child1B = new TestComponent())
+            using (var child1A1 = new TestComponent())
+            using (var child2 = new TestComponent())
+            using (var child3 = new TestComponent())
+            using (var child3A = new TestComponent())
+            using (var looseComponent = new TestComponent()) {
+                var scene = Substitute.For<IScene>();
+                component.Initialize(scene);
+                looseComponent.Initialize(scene);
+
+                child1.Parent = component;
+                child1A.Parent = child1;
+                child1B.Parent = child1;
+                child1A1.Parent = child1A;
+                child2.Parent = component;
+                child3.Parent = component;
+                child3A.Parent = child3;
+
+                Assert.True(component.IsAncestorOf(child1));
+                Assert.True(component.IsAncestorOf(child1A));
+                Assert.True(component.IsAncestorOf(child1B));
+                Assert.True(component.IsAncestorOf(child1A1));
+                Assert.True(component.IsAncestorOf(child2));
+                Assert.True(component.IsAncestorOf(child3));
+                Assert.True(component.IsAncestorOf(child3A));
+                Assert.False(component.IsAncestorOf(looseComponent));
+
+                Assert.False(looseComponent.IsAncestorOf(child1));
+                Assert.False(looseComponent.IsAncestorOf(child1A));
+                Assert.False(looseComponent.IsAncestorOf(child1B));
+                Assert.False(looseComponent.IsAncestorOf(child1A1));
+                Assert.False(looseComponent.IsAncestorOf(child2));
+                Assert.False(looseComponent.IsAncestorOf(child3));
+                Assert.False(looseComponent.IsAncestorOf(child3A));
+                Assert.False(looseComponent.IsAncestorOf(component));
+
+                Assert.True(child1A.IsAncestorOf(child1A1));
+                Assert.True(child3.IsAncestorOf(child3A));
+
+                Assert.False(component.IsAncestorOf(component));
+                Assert.False(child1A1.IsAncestorOf(child1A));
+
+                Assert.True(child1.IsAncestorOf(child1A));
+                Assert.True(child1.IsAncestorOf(child1A1));
+                Assert.True(child1.IsAncestorOf(child1B));
+
+                Assert.False(component.IsAncestorOf(null));
+            }
+        }
+
+        [Test]
+        [Category("Unit Test")]
         public static void Component_ParentChangedTest() {
             using (var parent = new TestComponent())
             using (var child = new TestComponent()) {
