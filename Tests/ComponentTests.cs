@@ -357,6 +357,37 @@
 
         [Test]
         [Category("Unit Test")]
+        public static void Component_IsDescendentOfTest() {
+            using (var component = new TestComponent())
+            using (var child1 = new TestComponent())
+            using (var child1A = new TestComponent())
+            using (var child1A1 = new TestComponent())
+            using (var child2 = new TestComponent())
+            using (var looseComponent = new TestComponent()) {
+                var scene = Substitute.For<IScene>();
+                component.Initialize(scene);
+                looseComponent.Initialize(scene);
+
+                child1.Parent = component;
+                child1A.Parent = child1;
+                child1A1.Parent = child1A;
+                child2.Parent = component;
+
+                Assert.True(child1.IsDescendentOf(component));
+                Assert.True(child1A.IsDescendentOf(component));
+                Assert.True(child1A1.IsDescendentOf(component));
+                Assert.True(child2.IsDescendentOf(component));
+
+                Assert.False(looseComponent.IsDescendentOf(component));
+                Assert.False(child2.IsDescendentOf(child1));
+                Assert.False(child1A.IsDescendentOf(child1A1));
+                Assert.False(child2.IsDescendentOf(null));
+                Assert.False(component.IsDescendentOf(component));
+            }
+        }
+
+        [Test]
+        [Category("Unit Test")]
         public static void Component_ParentChangedTest() {
             using (var parent = new TestComponent())
             using (var child = new TestComponent()) {

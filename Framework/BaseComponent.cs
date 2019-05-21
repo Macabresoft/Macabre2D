@@ -560,6 +560,23 @@
         }
 
         /// <summary>
+        /// Determines whether this instance is a descendent of the specified component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <returns>
+        /// <c>true</c> if this instance is a descendent of the specified component; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsDescendentOf(BaseComponent component) {
+            var result = false;
+
+            if (component != null) {
+                result = component.Id == this.Parent?.Id || (this.Parent?.IsDescendentOf(component) == true);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Loads the content.
         /// </summary>
         public virtual void LoadContent() {
