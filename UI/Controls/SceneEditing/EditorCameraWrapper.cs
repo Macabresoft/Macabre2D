@@ -9,15 +9,14 @@
     using Microsoft.Xna.Framework.Input;
 
     internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
-        private readonly EditorGame _editorGame;
         private readonly ISceneService _sceneService;
         private Camera _camera = new Camera();
+        private EditorGame _game;
         private int _previousScrollWheelValue = 0;
         private GridDrawer _primaryGridDrawer;
         private GridDrawer _secondaryGridDrawer;
 
-        internal EditorCameraWrapper(EditorGame editorGame) {
-            this._editorGame = editorGame;
+        internal EditorCameraWrapper() {
             this._sceneService = ViewContainer.Resolve<ISceneService>();
         }
 
@@ -33,10 +32,6 @@
 
                 var oldCamera = this._camera;
                 if (this.Set(ref this._camera, value)) {
-                    if (this._camera != null && this._editorGame.CurrentScene != null && this._editorGame.IsInitialized) {
-                        this.Initialize();
-                    }
-
                     if (oldCamera != null) {
                         oldCamera.ViewHeightChanged -= this.Camera_ViewHeightChanged;
                     }
@@ -49,9 +44,9 @@
         }
 
         internal void Draw(GameTime gameTime) {
-            if (this._editorGame.ShowGrid && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
-                if (this._editorGame.CurrentScene != null) {
-                    var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+            if (this._game.ShowGrid && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
+                if (this._game.CurrentScene != null) {
+                    var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                     this._primaryGridDrawer.Color = new Color(contrastingColor, 60);
                     this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
                 }
@@ -61,8 +56,11 @@
             }
         }
 
-        internal void Initialize() {
-            this._camera.Initialize(this._editorGame.CurrentScene);
+        internal void Initialize(EditorGame game) {
+            this._game = game;
+            this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera;
+            this.Camera.Initialize(this._game.CurrentScene);
+
             var gridSize = this.GetGridSize();
             this._primaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
@@ -73,7 +71,7 @@
                 UseDynamicLineThickness = true
             };
 
-            this._primaryGridDrawer.Initialize(this._editorGame.CurrentScene);
+            this._primaryGridDrawer.Initialize(this._game.CurrentScene);
 
             var smallGridSize = gridSize / 2f;
             this._secondaryGridDrawer = new GridDrawer() {
@@ -85,14 +83,7 @@
                 UseDynamicLineThickness = true
             };
 
-            this._secondaryGridDrawer.Initialize(this._editorGame.CurrentScene);
-        }
-
-        internal void RefreshCamera() {
-            this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera;
-            if (this._editorGame.IsInitialized && this._editorGame.CurrentScene != null) {
-                this.Camera.Initialize(this._editorGame.CurrentScene);
-            }
+            this._secondaryGridDrawer.Initialize(this._game.CurrentScene);
         }
 
         internal void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
@@ -110,7 +101,7 @@
                 this._previousScrollWheelValue = mouseState.ScrollWheelValue;
             }
 
-            if (this._editorGame.IsFocused && !keyboardState.IsModifierKeyDown()) {
+            if (this._game.IsFocused && !keyboardState.IsModifierKeyDown()) {
                 var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
                 if (keyboardState.IsKeyDown(Keys.W)) {
                     this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
@@ -151,6 +142,9 @@
             }
 
             return gridSize;
+        }
+
+        private void RefreshCamera() {
         }
     }
 }

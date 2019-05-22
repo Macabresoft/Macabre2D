@@ -12,7 +12,7 @@
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
-        private readonly EditorGame _editorGame;
+        private readonly TranslateGizmo _translateGizmo;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             Color = new Color(255, 255, 255, 150),
@@ -26,19 +26,18 @@
             UseDynamicLineThickness = true
         };
 
+        private EditorGame _game;
         private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
-        private TranslateGizmo _translateGizmo;
 
-        public SelectionEditor(EditorGame editorGame) {
-            this._editorGame = editorGame;
+        public SelectionEditor() {
             this._componentService = ViewContainer.Resolve<IComponentService>();
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._translateGizmo = ViewContainer.Resolve<TranslateGizmo>();
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
-            if (this._editorGame.CurrentScene != null) {
-                var contrastingColor = this._editorGame.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+            if (this._game.CurrentScene != null) {
+                var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                 this._boundingAreaDrawer.Color = contrastingColor;
                 this._colliderDrawer.Color = contrastingColor;
             }
@@ -48,7 +47,9 @@
             this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
         }
 
-        public void Reinitialize() {
+        public void Initialize(EditorGame game) {
+            this._game = game;
+
             this._boundingAreaDrawer = new BoundingAreaDrawer() {
                 Color = new Color(255, 255, 255, 150),
                 LineThickness = 1f,
@@ -62,15 +63,15 @@
             };
 
             this.ResetDependencies(this._componentService.SelectedItem);
-            this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
-            this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
-            this._translateGizmo.Initialize(this._editorGame);
+            this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
+            this._colliderDrawer.Initialize(this._game.CurrentScene);
+            this._translateGizmo.Initialize(this._game);
         }
 
         public void Update(GameTime gameTime, MouseState mouseState) {
-            if (this._editorGame.CurrentScene != null && this._editorGame.CurrentCamera != null) {
+            if (this._game.CurrentScene != null && this._game.CurrentCamera != null) {
                 var hadInteractions = false;
-                var mousePosition = this._editorGame.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
+                var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
                     hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
@@ -81,7 +82,7 @@
                     this._componentService.SelectedItem.RaisePropertyChanged("Position");
                 }
                 else if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
-                    foreach (var drawable in this._editorGame.CurrentScene.GetVisibleDrawableComponents()) {
+                    foreach (var drawable in this._game.CurrentScene.GetVisibleDrawableComponents()) {
                         if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
                             this._componentService.SelectComponent(drawableComponent);
                         }

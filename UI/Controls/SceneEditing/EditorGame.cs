@@ -22,8 +22,8 @@
         private IGameSettings _settings;
 
         public EditorGame() : base() {
-            this._cameraWrapper = new EditorCameraWrapper(this);
-            this._selectionEditor = new SelectionEditor(this);
+            this._cameraWrapper = new EditorCameraWrapper();
+            this._selectionEditor = new SelectionEditor();
             this.Settings = new GameSettings();
         }
 
@@ -163,9 +163,8 @@
         private void InitializeComponents() {
             if (this.CurrentScene != null) {
                 this.CurrentScene.Initialize(this);
-                this._cameraWrapper.RefreshCamera();
-                this._cameraWrapper.Initialize();
-                this._selectionEditor.Reinitialize();
+                this._cameraWrapper.Initialize(this);
+                this._selectionEditor.Initialize(this);
             }
         }
     }
