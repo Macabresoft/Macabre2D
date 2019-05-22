@@ -315,13 +315,15 @@
                 component.Initialize(scene);
                 looseComponent.Initialize(scene);
 
-                child1.Parent = component;
+                component.AddChild(child1);
                 child1A.Parent = child1;
                 child1B.Parent = child1;
                 child1A1.Parent = child1A;
                 child2.Parent = component;
                 child3.Parent = component;
                 child3A.Parent = child3;
+
+                Assert.AreEqual(3, component.Children.Count);
 
                 Assert.True(component.IsAncestorOf(child1));
                 Assert.True(component.IsAncestorOf(child1A));

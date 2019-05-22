@@ -57,7 +57,6 @@
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this._localRotation.AngleChanged += this.LocalRotation_AngleChanged;
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
-            //this.HandleMatrixOrTransformChanged();
         }
 
         /// <inheritdoc/>
@@ -327,15 +326,19 @@
         /// Adds the child.
         /// </summary>
         /// <param name="child">Child.</param>
-        public void AddChild(BaseComponent child) {
-            if (child != null && !this._children.Any(x => x.Id == child.Id) && child.Id != this.Id) {
+        public bool AddChild(BaseComponent child) {
+            var result = false;
+            if (child != null && child.Id != this.Id && !this._children.Any(x => x.Id == child.Id) && !this.IsDescendentOf(child)) {
                 this._children.Add(child);
                 child.Parent = this;
+                result = true;
 
                 if (this.IsInitialized) {
                     child.Initialize(this._scene);
                 }
             }
+
+            return result;
         }
 
         /// <summary>
@@ -589,10 +592,14 @@
         /// Removes the child.
         /// </summary>
         /// <param name="child">Child.</param>
-        public void RemoveChild(BaseComponent child) {
+        public bool RemoveChild(BaseComponent child) {
+            var result = false;
             if (child != null && this._children.Remove(child)) {
                 child.Parent = null;
+                result = true;
             }
+
+            return result;
         }
 
         /// <summary>
