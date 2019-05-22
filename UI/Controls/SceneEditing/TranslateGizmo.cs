@@ -4,7 +4,6 @@
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Rendering;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
@@ -35,33 +34,31 @@
 
         private readonly SpriteRenderer _yAxisTriangleRenderer = new SpriteRenderer();
         private ButtonState _previousButtonState = ButtonState.Released;
-        private IUndoService _undoService;
         private Vector2 _unmovedWorldPosition;
 
-        public TranslateGizmo(EditorGame editorGame) : base(editorGame) {
-            this._undoService = ViewContainer.Resolve<IUndoService>();
+        public TranslateGizmo(IUndoService undoService) : base(undoService) {
         }
 
-        public override void Initialize() {
-            base.Initialize();
-            var arrowSprite = PrimitiveDrawer.CreateArrowSprite(this.EditorGame.GraphicsDevice, 64);
+        public override void Initialize(IGame game) {
+            base.Initialize(game);
+            var arrowSprite = PrimitiveDrawer.CreateArrowSprite(this.Game.GraphicsDevice, 64);
             this._xAxisArrowRenderer.Sprite = arrowSprite;
             this._yAxisArrowRenderer.Sprite = arrowSprite;
             this._xAxisArrowRenderer.OffsetType = OffsetType.Center;
             this._yAxisArrowRenderer.OffsetType = OffsetType.Center;
             this._xAxisArrowRenderer.AddChild(this._xAxisBody);
             this._yAxisArrowRenderer.AddChild(this._yAxisBody);
-            this._xAxisArrowRenderer.Initialize(this.EditorGame.CurrentScene);
-            this._yAxisArrowRenderer.Initialize(this.EditorGame.CurrentScene);
+            this._xAxisArrowRenderer.Initialize(this.Game.CurrentScene);
+            this._yAxisArrowRenderer.Initialize(this.Game.CurrentScene);
 
-            var triangleSprite = PrimitiveDrawer.CreateRightTriangleSprite(this.EditorGame.GraphicsDevice, new Point(64));
+            var triangleSprite = PrimitiveDrawer.CreateRightTriangleSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisTriangleRenderer.Sprite = triangleSprite;
             this._yAxisTriangleRenderer.Sprite = triangleSprite;
             this._xAxisTriangleRenderer.OffsetType = OffsetType.Center;
             this._yAxisTriangleRenderer.OffsetType = OffsetType.Center;
             this._xAxisTriangleRenderer.AddChild(this._neutralAxisBody);
-            this._xAxisTriangleRenderer.Initialize(this.EditorGame.CurrentScene);
-            this._yAxisTriangleRenderer.Initialize(this.EditorGame.CurrentScene);
+            this._xAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
+            this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
         public override bool Update(GameTime gameTime, MouseState mouseState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
@@ -144,7 +141,7 @@
                     this.UpdatePosition(selectedComponent, originalPosition);
                 });
 
-                this._undoService.Do(undoCommand);
+                this.UndoService.Do(undoCommand);
                 this.CurrentAxis = GizmoAxis.None;
                 System.Windows.Input.Mouse.OverrideCursor = null;
             }

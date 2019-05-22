@@ -33,7 +33,7 @@
             this._editorGame = editorGame;
             this._componentService = ViewContainer.Resolve<IComponentService>();
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
-            this._translateGizmo = new TranslateGizmo(editorGame);
+            this._translateGizmo = ViewContainer.Resolve<TranslateGizmo>();
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
@@ -64,7 +64,7 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._editorGame.CurrentScene);
             this._colliderDrawer.Initialize(this._editorGame.CurrentScene);
-            this._translateGizmo.Initialize();
+            this._translateGizmo.Initialize(this._editorGame);
         }
 
         public void Update(GameTime gameTime, MouseState mouseState) {

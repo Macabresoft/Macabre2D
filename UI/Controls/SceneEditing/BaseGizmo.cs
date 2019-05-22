@@ -4,13 +4,14 @@
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models.FrameworkWrappers;
+    using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
     public abstract class BaseGizmo {
 
-        public BaseGizmo(EditorGame editorGame) {
-            this.EditorGame = editorGame;
+        public BaseGizmo(IUndoService undoService) {
+            this.UndoService = undoService;
         }
 
         protected enum GizmoAxis {
@@ -26,7 +27,9 @@
 
         protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
 
-        protected EditorGame EditorGame { get; }
+        protected IGame Game { get; private set; }
+
+        protected IUndoService UndoService { get; }
 
         protected LineDrawer XAxisLineDrawer { get; private set; }
 
@@ -51,7 +54,9 @@
             }
         }
 
-        public virtual void Initialize() {
+        public virtual void Initialize(IGame game) {
+            this.Game = game;
+
             this.XAxisLineDrawer = new LineDrawer() {
                 Color = XAxisColor,
                 LineThickness = 1f,
@@ -64,8 +69,8 @@
                 UseDynamicLineThickness = true
             };
 
-            this.XAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
-            this.YAxisLineDrawer.Initialize(this.EditorGame.CurrentScene);
+            this.XAxisLineDrawer.Initialize(this.Game.CurrentScene);
+            this.YAxisLineDrawer.Initialize(this.Game.CurrentScene);
         }
 
         public abstract bool Update(GameTime gameTime, MouseState mouseState, Vector2 mousePosition, ComponentWrapper selectedComponent);
@@ -73,7 +78,7 @@
         protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio);
 
         private (float ratio, float lineLength) GetViewHeightRatio(float viewHeight) {
-            var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.EditorGame.GraphicsDevice.Viewport.Height);
+            var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.Game.GraphicsDevice.Viewport.Height);
             var lineLength = viewHeight / 5f;
 
             return (ratio, lineLength);
