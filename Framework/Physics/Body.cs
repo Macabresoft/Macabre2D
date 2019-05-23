@@ -32,8 +32,6 @@
     /// </summary>
     /// <seealso cref="BaseComponent"/>
     public class Body : BaseComponent, IBoundable {
-
-        [DataMember]
         private Collider _collider;
 
         [DataMember]
@@ -55,6 +53,7 @@
         /// Gets the colliders.
         /// </summary>
         /// <value>The colliders.</value>
+        [DataMember]
         public Collider Collider {
             get {
                 return this._collider;
