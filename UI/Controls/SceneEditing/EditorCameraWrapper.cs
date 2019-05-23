@@ -143,8 +143,5 @@
 
             return gridSize;
         }
-
-        private void RefreshCamera() {
-        }
     }
 }
