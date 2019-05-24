@@ -21,9 +21,9 @@
         private WpfMouse _mouse;
         private IGameSettings _settings;
 
-        public EditorGame() : base() {
-            this._cameraWrapper = new EditorCameraWrapper();
-            this._selectionEditor = new SelectionEditor();
+        public EditorGame(EditorCameraWrapper cameraWrapper, SelectionEditor selectionEditor) : base() {
+            this._cameraWrapper = cameraWrapper;
+            this._selectionEditor = selectionEditor;
             this.Settings = new GameSettings();
         }
 

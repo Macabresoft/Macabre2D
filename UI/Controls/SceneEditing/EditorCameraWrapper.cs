@@ -3,12 +3,11 @@
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Extensions;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    internal sealed class EditorCameraWrapper : NotifyPropertyChanged {
+    public sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly ISceneService _sceneService;
         private Camera _camera = new Camera();
         private EditorGame _game;
@@ -16,11 +15,11 @@
         private GridDrawer _primaryGridDrawer;
         private GridDrawer _secondaryGridDrawer;
 
-        internal EditorCameraWrapper() {
-            this._sceneService = ViewContainer.Resolve<ISceneService>();
+        public EditorCameraWrapper(ISceneService sceneService) {
+            this._sceneService = sceneService;
         }
 
-        internal Camera Camera {
+        public Camera Camera {
             get {
                 return this._camera;
             }
@@ -43,7 +42,7 @@
             }
         }
 
-        internal void Draw(GameTime gameTime) {
+        public void Draw(GameTime gameTime) {
             if (this._game.ShowGrid && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
                 if (this._game.CurrentScene != null) {
                     var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
@@ -56,7 +55,7 @@
             }
         }
 
-        internal void Initialize(EditorGame game) {
+        public void Initialize(EditorGame game) {
             this._game = game;
             this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera;
             this.Camera.Initialize(this._game.CurrentScene);
@@ -86,7 +85,7 @@
             this._secondaryGridDrawer.Initialize(this._game.CurrentScene);
         }
 
-        internal void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
+        public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
             if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
                 var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 5f;
 
