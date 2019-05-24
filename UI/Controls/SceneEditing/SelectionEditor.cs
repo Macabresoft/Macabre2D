@@ -4,7 +4,6 @@
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Extensions;
     using Macabre2D.Framework.Physics;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
@@ -29,10 +28,10 @@
         private EditorGame _game;
         private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
 
-        public SelectionEditor() {
-            this._componentService = ViewContainer.Resolve<IComponentService>();
+        public SelectionEditor(IComponentService componentService, TranslateGizmo translateGizmo) {
+            this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
-            this._translateGizmo = ViewContainer.Resolve<TranslateGizmo>();
+            this._translateGizmo = translateGizmo;
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
