@@ -23,7 +23,7 @@
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Selection}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.SelectionOff}"
-                                       Margin="{StaticResource StandardMarginLTRB}"
+                                       Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Toggle highlighting the current selected component's collider and bounding area in the scene editor." />
 
             <Button Command="{Binding CenterCameraCommand, ElementName=_sceneEditorControl}"
@@ -32,8 +32,12 @@
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
 
-            <valueEditors:ColorEditor ToolTip="Change the current scene's background color."
-                                      Width="96"
+            <Separator HorizontalAlignment="Center"
+                       VerticalAlignment="Stretch" />
+
+            <valueEditors:ColorEditor Title="Background"
+                                      ToolTip="Change the current scene's background color."
+                                      Width="200"
                                       Value="{Binding SceneService.CurrentScene.BackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 

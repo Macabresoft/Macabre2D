@@ -42,11 +42,6 @@
                Top="{StaticResource StandardMarginSize}"
                Right="{StaticResource StandardMarginSize}"
                Bottom="{StaticResource StandardMarginSize}" />
-    <Thickness x:Key="StandardMarginLTRB"
-               Left="{StaticResource StandardMarginSize}"
-               Top="{StaticResource StandardMarginSize}"
-               Right="{StaticResource StandardMarginSize}"
-               Bottom="{StaticResource StandardMarginSize}" />
     <Thickness x:Key="StandardMarginR" Right="{StaticResource StandardMarginSize}" />
     <Thickness x:Key="StandardMarginRB"
                Right="{StaticResource StandardMarginSize}"
