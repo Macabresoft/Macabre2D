@@ -11,6 +11,7 @@
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
+        private readonly ScaleGizmo _scaleGizmo;
         private readonly TranslateGizmo _translateGizmo;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
@@ -28,9 +29,10 @@
         private EditorGame _game;
         private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
 
-        public SelectionEditor(IComponentService componentService, TranslateGizmo translateGizmo) {
+        public SelectionEditor(IComponentService componentService, ScaleGizmo scaleGizmo, TranslateGizmo translateGizmo) {
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._scaleGizmo = scaleGizmo;
             this._translateGizmo = translateGizmo;
         }
 
@@ -48,7 +50,7 @@
                 // TODO: make a rotation gizmo
             }
             else if (this._game.ShowScaleGizmo) {
-                // TODO: make a scale gizmo
+                this._scaleGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
             }
             else if (this._game.ShowTranslationGizmo) {
                 this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
@@ -73,6 +75,7 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
             this._colliderDrawer.Initialize(this._game.CurrentScene);
+            this._scaleGizmo.Initialize(this._game);
             this._translateGizmo.Initialize(this._game);
         }
 
@@ -86,7 +89,7 @@
                         // TODO: make a rotation gizmo
                     }
                     else if (this._game.ShowScaleGizmo) {
-                        // TODO: make a scale gizmo
+                        hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
                     }
                     else if (this._game.ShowTranslationGizmo) {
                         hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);

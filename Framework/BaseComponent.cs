@@ -607,7 +607,17 @@
         /// </summary>
         /// <param name="position">The position.</param>
         public void SetWorldPosition(Vector2 position) {
-            this.SetWorldTransform(position, this.WorldTransform.Rotation.Angle);
+            var currentTransform = this.WorldTransform;
+            this.SetWorldTransform(position, currentTransform.Rotation.Angle, currentTransform.Scale);
+        }
+
+        /// <summary>
+        /// Sets the world scale.
+        /// </summary>
+        /// <param name="scale">The scale.</param>
+        public void SetWorldScale(Vector2 scale) {
+            var currentTransform = this.WorldTransform;
+            this.SetWorldTransform(currentTransform.Position, currentTransform.Rotation.Angle, scale);
         }
 
         /// <summary>
@@ -617,21 +627,29 @@
         /// <param name="angle">The angle.</param>
         public void SetWorldTransform(Vector2 position, float angle) {
             var currentTransform = this.WorldTransform;
+            this.SetWorldTransform(position, angle, currentTransform.Scale);
+        }
+
+        /// <summary>
+        /// Sets the world transform.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="angle">The angle.</param>
+        /// <param name="scale">The scale.</param>
+        public void SetWorldTransform(Vector2 position, float angle, Vector2 scale) {
             var matrix =
-                Matrix.CreateScale(currentTransform.Scale.X, currentTransform.Scale.Y, 1f) *
+                Matrix.CreateScale(scale.X, scale.Y, 1f) *
                 Matrix.CreateRotationZ(angle) *
                 Matrix.CreateTranslation(position.X, position.Y, 0f);
 
             if (this.Parent != null) {
-                matrix = matrix * Matrix.Invert(this.Parent.TransformMatrix);
+                matrix *= Matrix.Invert(this.Parent.TransformMatrix);
             }
 
             var localTransform = matrix.ToTransform();
-
             this._localPosition = localTransform.Position;
             this._localRotation = localTransform.Rotation;
             this._localScale = localTransform.Scale;
-
             this.HandleMatrixOrTransformChanged();
         }
 

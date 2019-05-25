@@ -154,8 +154,7 @@
         private Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
             var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
-            var newPosition = moveToPosition;
-
+            Vector2 newPosition;
             if (Math.Abs(slope) < 0.5f) {
                 if (slope == 0f) {
                     newPosition = new Vector2(moveToPosition.X, end.Y);
@@ -189,7 +188,7 @@
 
         private void UpdatePosition(ComponentWrapper component, Vector2 newPosition) {
             component.Component.SetWorldPosition(newPosition);
-            component.UpdateProperty(nameof(component.Component.LocalPosition), component.Component.LocalPosition);
+            component.UpdateProperty(nameof(BaseComponent.LocalPosition), component.Component.LocalPosition);
         }
     }
 }
