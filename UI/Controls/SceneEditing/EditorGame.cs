@@ -87,9 +87,15 @@
             }
         }
 
-        public bool ShowGrid { get; internal set; }
+        public bool ShowGrid { get; internal set; } = true;
 
-        public bool ShowSelection { get; internal set; }
+        public bool ShowRotationGizmo { get; internal set; }
+
+        public bool ShowScaleGizmo { get; internal set; }
+
+        public bool ShowSelection { get; internal set; } = true;
+
+        public bool ShowTranslationGizmo { get; internal set; } = true;
 
         public SpriteBatch SpriteBatch { get; private set; }
 

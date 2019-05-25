@@ -10,6 +10,8 @@
         <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
     </UserControl.Resources>
     <ToggleButton IsChecked="{Binding IsToggled, ElementName=_iconToggleButton}"
+                  Command="{Binding ToggleCommand, ElementName=_iconToggleButton}"
+                  CommandParameter="{Binding ToggleCommandParameter, ElementName=_iconToggleButton}"
                   Width="24"
                   Height="24"
                   Margin="0">

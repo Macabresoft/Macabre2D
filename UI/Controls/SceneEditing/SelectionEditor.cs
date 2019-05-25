@@ -43,7 +43,16 @@
 
             this._boundingAreaDrawer.Draw(gameTime, viewHeight);
             this._colliderDrawer.Draw(gameTime, viewHeight);
-            this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
+
+            if (this._game.ShowRotationGizmo) {
+                // TODO: make a rotation gizmo
+            }
+            else if (this._game.ShowScaleGizmo) {
+                // TODO: make a scale gizmo
+            }
+            else if (this._game.ShowTranslationGizmo) {
+                this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
+            }
         }
 
         public void Initialize(EditorGame game) {
@@ -73,7 +82,15 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
+                    if (this._game.ShowRotationGizmo) {
+                        // TODO: make a rotation gizmo
+                    }
+                    else if (this._game.ShowScaleGizmo) {
+                        // TODO: make a scale gizmo
+                    }
+                    else if (this._game.ShowTranslationGizmo) {
+                        hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
+                    }
                 }
 
                 if (hadInteractions) {

@@ -13,7 +13,10 @@
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
         private bool _showGrid = true;
+        private bool _showRotationGizmo;
+        private bool _showScaleGizmo;
         private bool _showSelection = true;
+        private bool _showTranslationGizmo = true;
 
         public MonoGameService(EditorGame editorGame, IProjectService projectService, ISceneService sceneService) {
             this._editorGame = editorGame;
@@ -44,6 +47,46 @@
             }
         }
 
+        public bool ShowRotationGizmo {
+            get {
+                return this._showRotationGizmo;
+            }
+
+            set {
+                if (this._showRotationGizmo && !this._showScaleGizmo && !this._showTranslationGizmo && !value) {
+                    return;
+                }
+
+                this.Set(ref this._showRotationGizmo, value);
+                this._editorGame.ShowRotationGizmo = this._showRotationGizmo;
+
+                if (this._showRotationGizmo) {
+                    this.ShowScaleGizmo = false;
+                    this.ShowTranslationGizmo = false;
+                }
+            }
+        }
+
+        public bool ShowScaleGizmo {
+            get {
+                return this._showScaleGizmo;
+            }
+
+            set {
+                if (this._showScaleGizmo && !this._showRotationGizmo && !this._showTranslationGizmo && !value) {
+                    return;
+                }
+
+                this.Set(ref this._showScaleGizmo, value);
+                this._editorGame.ShowScaleGizmo = this._showScaleGizmo;
+
+                if (this._showScaleGizmo) {
+                    this.ShowRotationGizmo = false;
+                    this.ShowTranslationGizmo = false;
+                }
+            }
+        }
+
         public bool ShowSelection {
             get {
                 return this._showSelection;
@@ -52,6 +95,26 @@
             set {
                 this.Set(ref this._showSelection, value);
                 this._editorGame.ShowSelection = this._showSelection;
+            }
+        }
+
+        public bool ShowTranslationGizmo {
+            get {
+                return this._showTranslationGizmo;
+            }
+
+            set {
+                if (this._showTranslationGizmo && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
+                    return;
+                }
+
+                this.Set(ref this._showTranslationGizmo, value);
+                this._editorGame.ShowTranslationGizmo = this._showTranslationGizmo;
+
+                if (this._showTranslationGizmo) {
+                    this.ShowRotationGizmo = false;
+                    this.ShowScaleGizmo = false;
+                }
             }
         }
 

@@ -35,6 +35,27 @@
             <Separator HorizontalAlignment="Center"
                        VerticalAlignment="Stretch" />
 
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowTranslationGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Triangle}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.TriangleOutline}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip="Translation Gizmo" />
+
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowScaleGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Square}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.SquareOutline}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip="Scale Gizmo" />
+
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowRotationGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Circle}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.CircleOutline}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip="Rotation Gizmo" />
+
+            <Separator HorizontalAlignment="Center"
+                       VerticalAlignment="Stretch" />
+
             <valueEditors:ColorEditor Title="Background"
                                       ToolTip="Change the current scene's background color."
                                       Width="200"
