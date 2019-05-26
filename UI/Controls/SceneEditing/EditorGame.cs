@@ -160,8 +160,9 @@
         protected override void Update(GameTime gameTime) {
             if (this.CurrentScene != null) {
                 var mouseState = this._mouse.GetState();
-                this._selectionEditor.Update(gameTime, mouseState);
                 var keyboardState = this._keyboard.GetState();
+
+                this._selectionEditor.Update(gameTime, mouseState, keyboardState);
                 this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
             }
         }

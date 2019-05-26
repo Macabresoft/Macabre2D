@@ -79,7 +79,7 @@
             this._translateGizmo.Initialize(this._game);
         }
 
-        public void Update(GameTime gameTime, MouseState mouseState) {
+        public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
             if (this._game.CurrentScene != null && this._game.CurrentCamera != null) {
                 var hadInteractions = false;
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
@@ -89,10 +89,10 @@
                         // TODO: make a rotation gizmo
                     }
                     else if (this._game.ShowScaleGizmo) {
-                        hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
+                        hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                     }
                     else if (this._game.ShowTranslationGizmo) {
-                        hadInteractions = this._translateGizmo.Update(gameTime, mouseState, mousePosition, this._componentService.SelectedItem);
+                        hadInteractions = this._translateGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                     }
                 }
 

@@ -9,7 +9,6 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
-    using System;
     using System.Windows.Input;
 
     public sealed class TranslateGizmo : BaseGizmo {
@@ -61,7 +60,7 @@
             this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
-        public override bool Update(GameTime gameTime, MouseState mouseState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
@@ -103,7 +102,8 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio) {
+        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
+            this.ResetEndPoint(worldTransform, viewRatio, lineLength);
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
             this._xAxisArrowRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
@@ -149,32 +149,6 @@
             this._previousButtonState = ButtonState.Released;
             this.XAxisColor = new Color(this.XAxisColor, 1f);
             this.YAxisColor = new Color(this.YAxisColor, 1f);
-        }
-
-        private Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
-            var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
-            var yIntercept = end.Y - slope * end.X;
-            Vector2 newPosition;
-            if (Math.Abs(slope) < 0.5f) {
-                if (slope == 0f) {
-                    newPosition = new Vector2(moveToPosition.X, end.Y);
-                }
-                else {
-                    var newX = (moveToPosition.Y - yIntercept) / slope;
-                    newPosition = new Vector2(newX, moveToPosition.Y);
-                }
-            }
-            else {
-                if (Math.Abs(slope) == 1f) {
-                    newPosition = new Vector2(end.X, moveToPosition.Y);
-                }
-                else {
-                    var newY = (slope * moveToPosition.X) + yIntercept;
-                    newPosition = new Vector2(moveToPosition.X, newY);
-                }
-            }
-
-            return newPosition;
         }
 
         private void StartDrag(GizmoAxis axis, Vector2 currentPosition) {
