@@ -144,6 +144,13 @@
             rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
             rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
             this.CurrentScene.AddChild(rightTriangleSpriteRenderer1);
+
+            var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
+            var circleSpriteRenderer = new SpriteRenderer();
+            circleSpriteRenderer.Sprite = circleSprite;
+            circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
+            this.CurrentScene.AddChild(circleSpriteRenderer);
+
             this._isLoaded = true;
         }
     }

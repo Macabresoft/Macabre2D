@@ -75,6 +75,38 @@
         }
 
         /// <summary>
+        /// Creates the circle sprite.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="complexity">The complexity.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>A filled circle sprite.</returns>
+        public static Sprite CreateCircleSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size, size);
+            var pixels = new Color[size * size];
+            var radius = size / 2;
+            var center = new Vector2(radius - 1);
+
+            var counter = 0;
+            for (var x = 0; x < size; x++) {
+                for (var y = 0; y < size; y++) {
+                    if (Vector2.Distance(new Vector2(x, y), center) < radius) {
+                        pixels[counter] = color;
+                    }
+                    else {
+                        pixels[counter] = Color.Transparent;
+                    }
+
+                    counter++;
+                }
+            }
+
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
         /// Creates the quad sprite.
         /// </summary>
         /// <remarks>This call will make all the pixels of the sprite white.</remarks>
