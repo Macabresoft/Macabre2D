@@ -73,6 +73,8 @@
             }
         }
 
+        public bool HideGizmos { get; internal set; }
+
         public IGameSettings Settings {
             get {
                 return this._settings;
@@ -126,11 +128,7 @@
                     this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
                     this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullClockwise, null, this._cameraWrapper.Camera.ViewMatrix);
                     this._cameraWrapper.Draw(gameTime);
-
-                    if (this.ShowSelection) {
-                        this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
-                    }
-
+                    this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
                     this.CurrentScene.Game.SpriteBatch.End();
                 }
                 else if (this.Settings != null) {

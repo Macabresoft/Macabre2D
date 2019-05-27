@@ -12,6 +12,7 @@
         private readonly EditorGame _editorGame;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
+        private bool _hideGizmos;
         private bool _showGrid = true;
         private bool _showRotationGizmo;
         private bool _showScaleGizmo;
@@ -36,6 +37,27 @@
             }
         }
 
+        public bool HideGizmos {
+            get {
+                return this._hideGizmos;
+            }
+
+            set {
+                if (this._hideGizmos && !this._showTranslationGizmo && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
+                    return;
+                }
+
+                this.Set(ref this._hideGizmos, value);
+                this._editorGame.HideGizmos = this._hideGizmos;
+
+                if (this._hideGizmos) {
+                    this.ShowRotationGizmo = false;
+                    this.ShowScaleGizmo = false;
+                    this.ShowTranslationGizmo = false;
+                }
+            }
+        }
+
         public bool ShowGrid {
             get {
                 return this._showGrid;
@@ -53,7 +75,7 @@
             }
 
             set {
-                if (this._showRotationGizmo && !this._showScaleGizmo && !this._showTranslationGizmo && !value) {
+                if (this._showRotationGizmo && !this._hideGizmos && !this._showScaleGizmo && !this._showTranslationGizmo && !value) {
                     return;
                 }
 
@@ -61,6 +83,7 @@
                 this._editorGame.ShowRotationGizmo = this._showRotationGizmo;
 
                 if (this._showRotationGizmo) {
+                    this.HideGizmos = false;
                     this.ShowScaleGizmo = false;
                     this.ShowTranslationGizmo = false;
                 }
@@ -73,7 +96,7 @@
             }
 
             set {
-                if (this._showScaleGizmo && !this._showRotationGizmo && !this._showTranslationGizmo && !value) {
+                if (this._showScaleGizmo && !this._hideGizmos && !this._showRotationGizmo && !this._showTranslationGizmo && !value) {
                     return;
                 }
 
@@ -81,6 +104,7 @@
                 this._editorGame.ShowScaleGizmo = this._showScaleGizmo;
 
                 if (this._showScaleGizmo) {
+                    this.HideGizmos = false;
                     this.ShowRotationGizmo = false;
                     this.ShowTranslationGizmo = false;
                 }
@@ -104,7 +128,7 @@
             }
 
             set {
-                if (this._showTranslationGizmo && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
+                if (this._showTranslationGizmo && !this._hideGizmos && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
                     return;
                 }
 
@@ -112,6 +136,7 @@
                 this._editorGame.ShowTranslationGizmo = this._showTranslationGizmo;
 
                 if (this._showTranslationGizmo) {
+                    this.HideGizmos = false;
                     this.ShowRotationGizmo = false;
                     this.ShowScaleGizmo = false;
                 }

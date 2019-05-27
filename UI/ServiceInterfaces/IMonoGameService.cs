@@ -5,6 +5,7 @@
     public interface IMonoGameService {
         DependencyObject EditorGame { get; }
 
+        bool HideGizmos { get; set; }
         bool ShowGrid { get; set; }
 
         bool ShowRotationGizmo { get; set; }

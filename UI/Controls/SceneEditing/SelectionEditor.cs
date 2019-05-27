@@ -49,8 +49,10 @@
                 this._colliderDrawer.Color = contrastingColor;
             }
 
-            this._boundingAreaDrawer.Draw(gameTime, viewHeight);
-            this._colliderDrawer.Draw(gameTime, viewHeight);
+            if (this._game.ShowSelection) {
+                this._boundingAreaDrawer.Draw(gameTime, viewHeight);
+                this._colliderDrawer.Draw(gameTime, viewHeight);
+            }
 
             if (this._game.ShowRotationGizmo) {
                 this._rotationGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);

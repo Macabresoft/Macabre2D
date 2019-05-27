@@ -53,6 +53,12 @@
                                        Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Rotation Gizmo" />
 
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.HideGizmos, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOff}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOffOutline}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       ToolTip="Hides all gizmos." />
+
             <Separator HorizontalAlignment="Center"
                        VerticalAlignment="Stretch" />
 
