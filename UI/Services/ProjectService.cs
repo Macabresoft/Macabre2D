@@ -333,7 +333,7 @@
             var sourcePath = this.GetSourcePath();
             var dllPath = $@"{sourcePath}\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPath);
+                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);
             }
         }
 

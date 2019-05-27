@@ -39,7 +39,7 @@
             FileHelper.CopyDirectory(source, target);
         }
 
-        public void GenerateContent(string sourcePath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
+        public void GenerateContent(string sourcePath, IEnumerable<Asset> assets, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
             var contentPath = this.GetContentPath(sourcePath);
             this.EraseContent(contentPath);
             serializer.Serialize(gameSettings, Path.Combine(contentPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
