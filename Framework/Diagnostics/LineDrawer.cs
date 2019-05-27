@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework.Diagnostics {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws a line.
@@ -28,8 +29,7 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, float viewHeight) {
-            if (this.StartPoint != this.EndPoint && this._scene?.Game is IGame game) {
-                var spriteBatch = game.SpriteBatch;
+            if (this.StartPoint != this.EndPoint && this._scene?.Game?.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewHeight);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);
             }

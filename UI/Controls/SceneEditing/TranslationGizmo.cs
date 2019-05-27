@@ -11,7 +11,7 @@
     using Microsoft.Xna.Framework.Input;
     using System.Windows.Input;
 
-    public sealed class TranslateGizmo : BaseGizmo {
+    public sealed class TranslationGizmo : BaseGizmo {
 
         private readonly Body _neutralAxisBody = new Body() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
@@ -35,7 +35,7 @@
         private ButtonState _previousButtonState = ButtonState.Released;
         private Vector2 _unmovedWorldPosition;
 
-        public TranslateGizmo(IUndoService undoService) : base(undoService) {
+        public TranslationGizmo(IUndoService undoService) : base(undoService) {
         }
 
         public override void Initialize(IGame game) {
@@ -104,6 +104,7 @@
 
         protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
             this.ResetEndPoint(worldTransform, viewRatio, lineLength);
+
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
             this._xAxisArrowRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;

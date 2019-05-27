@@ -32,9 +32,9 @@
 
         protected IUndoService UndoService { get; }
 
-        protected LineDrawer XAxisLineDrawer { get; private set; }
+        protected LineDrawer XAxisLineDrawer { get; } = new LineDrawer();
 
-        protected LineDrawer YAxisLineDrawer { get; private set; }
+        protected LineDrawer YAxisLineDrawer { get; } = new LineDrawer();
 
         public void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
@@ -55,17 +55,13 @@
         public virtual void Initialize(IGame game) {
             this.Game = game;
 
-            this.XAxisLineDrawer = new LineDrawer() {
-                Color = XAxisColor,
-                LineThickness = 1f,
-                UseDynamicLineThickness = true
-            };
+            this.XAxisLineDrawer.Color = this.XAxisColor;
+            this.XAxisLineDrawer.LineThickness = 1f;
+            this.XAxisLineDrawer.UseDynamicLineThickness = true;
 
-            this.YAxisLineDrawer = new LineDrawer() {
-                Color = YAxisColor,
-                LineThickness = 1f,
-                UseDynamicLineThickness = true
-            };
+            this.YAxisLineDrawer.Color = this.YAxisColor;
+            this.YAxisLineDrawer.LineThickness = 1f;
+            this.YAxisLineDrawer.UseDynamicLineThickness = true;
 
             this.XAxisLineDrawer.Initialize(this.Game.CurrentScene);
             this.YAxisLineDrawer.Initialize(this.Game.CurrentScene);
@@ -76,7 +72,7 @@
         protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength);
 
         protected float GetDefaultLineLength(float viewHeight) {
-            return viewHeight / 5f;
+            return viewHeight * 0.1f;
         }
 
         protected Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {

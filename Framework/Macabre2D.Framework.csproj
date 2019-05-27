@@ -76,6 +76,7 @@
     <Compile Include="Content\AssetManagerProcessor.cs" />
     <Compile Include="Content\AssetManagerReader.cs" />
     <Compile Include="Content\AssetManagerWriter.cs" />
+    <Compile Include="Diagnostics\CircleDrawer.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Audio\AudioClip.cs" />

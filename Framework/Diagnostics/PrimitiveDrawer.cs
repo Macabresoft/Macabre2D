@@ -79,7 +79,16 @@
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
-        /// <param name="complexity">The complexity.</param>
+        /// <returns>A filled circle sprite.</returns>
+        public static Sprite CreateCircleSprite(GraphicsDevice graphicsDevice, int size) {
+            return PrimitiveDrawer.CreateCircleSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the circle sprite.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>A filled circle sprite.</returns>
         public static Sprite CreateCircleSprite(GraphicsDevice graphicsDevice, int size, Color color) {

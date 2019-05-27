@@ -266,26 +266,26 @@
         }
 
         private void Wrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (sender is ComponentWrapper wrapper) {
-                if (e.PropertyName == nameof(wrapper.Component.LocalPosition)) {
+            if (sender is ComponentWrapper) {
+                if (e.PropertyName == nameof(BaseComponent.LocalPosition)) {
                     this.RaisePropertyChanged(nameof(this.ComponentPosition));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.LocalRotation)) {
+                else if (e.PropertyName == nameof(BaseComponent.LocalRotation)) {
                     this.RaisePropertyChanged(nameof(this.ComponentRotation));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.LocalScale)) {
+                else if (e.PropertyName == nameof(BaseComponent.LocalScale)) {
                     this.RaisePropertyChanged(nameof(this.ComponentScale));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.DrawOrder)) {
+                else if (e.PropertyName == nameof(BaseComponent.DrawOrder)) {
                     this.RaisePropertyChanged(nameof(this.ComponentDrawOrder));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.Layers)) {
+                else if (e.PropertyName == nameof(BaseComponent.Layers)) {
                     this.RaisePropertyChanged(nameof(this.ComponentLayer));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.Name)) {
+                else if (e.PropertyName == nameof(BaseComponent.Name)) {
                     this.RaisePropertyChanged(nameof(this.ComponentName));
                 }
-                else if (e.PropertyName == nameof(wrapper.Component.UpdateOrder)) {
+                else if (e.PropertyName == nameof(BaseComponent.UpdateOrder)) {
                     this.RaisePropertyChanged(nameof(this.ComponentUpdateOrder));
                 }
             }

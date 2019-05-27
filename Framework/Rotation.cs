@@ -32,7 +32,7 @@
         public event EventHandler AngleChanged;
 
         /// <summary>
-        /// Gets or sets the angle.
+        /// Gets or sets the angle in radians.
         /// </summary>
         /// <value>The angle.</value>
         [DataMember]

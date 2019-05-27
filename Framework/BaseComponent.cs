@@ -612,6 +612,15 @@
         }
 
         /// <summary>
+        /// Sets the world rotation.
+        /// </summary>
+        /// <param name="angle">The angle.</param>
+        public void SetWorldRotation(float angle) {
+            var currentTransform = this.WorldTransform;
+            this.SetWorldTransform(currentTransform.Position, angle, currentTransform.Scale);
+        }
+
+        /// <summary>
         /// Sets the world scale.
         /// </summary>
         /// <param name="scale">The scale.</param>
@@ -648,7 +657,7 @@
 
             var localTransform = matrix.ToTransform();
             this._localPosition = localTransform.Position;
-            this._localRotation = localTransform.Rotation;
+            this._localRotation.Angle = localTransform.Rotation.Angle;
             this._localScale = localTransform.Scale;
             this.HandleMatrixOrTransformChanged();
         }

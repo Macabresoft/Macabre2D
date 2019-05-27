@@ -11,8 +11,9 @@
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
+        private readonly RotationGizmo _rotationGizmo;
         private readonly ScaleGizmo _scaleGizmo;
-        private readonly TranslateGizmo _translateGizmo;
+        private readonly TranslationGizmo _translateGizmo;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             Color = new Color(255, 255, 255, 150),
@@ -29,9 +30,14 @@
         private EditorGame _game;
         private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
 
-        public SelectionEditor(IComponentService componentService, ScaleGizmo scaleGizmo, TranslateGizmo translateGizmo) {
+        public SelectionEditor(
+            IComponentService componentService,
+            RotationGizmo rotationGizmo,
+            ScaleGizmo scaleGizmo,
+            TranslationGizmo translateGizmo) {
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._rotationGizmo = rotationGizmo;
             this._scaleGizmo = scaleGizmo;
             this._translateGizmo = translateGizmo;
         }
@@ -47,7 +53,7 @@
             this._colliderDrawer.Draw(gameTime, viewHeight);
 
             if (this._game.ShowRotationGizmo) {
-                // TODO: make a rotation gizmo
+                this._rotationGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
             }
             else if (this._game.ShowScaleGizmo) {
                 this._scaleGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
@@ -75,6 +81,7 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
             this._colliderDrawer.Initialize(this._game.CurrentScene);
+            this._rotationGizmo.Initialize(this._game);
             this._scaleGizmo.Initialize(this._game);
             this._translateGizmo.Initialize(this._game);
         }
@@ -86,7 +93,7 @@
 
                 if (this._componentService.SelectedItem?.Component != null) {
                     if (this._game.ShowRotationGizmo) {
-                        // TODO: make a rotation gizmo
+                        hadInteractions = this._rotationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                     }
                     else if (this._game.ShowScaleGizmo) {
                         hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
