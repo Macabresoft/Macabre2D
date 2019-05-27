@@ -214,16 +214,13 @@
                 }
             }
             else {
-                var buildTask = this.BuildProject(BuildMode.Debug);
+                await this.BuildProject(BuildMode.Debug);
 
                 if (this.CurrentProject?.LastSceneOpened != null) {
-                    var sceneTask = this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
-                    await Task.WhenAll(buildTask, sceneTask);
+                    await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
                 }
                 else {
-                    var sceneTask = this._sceneService.CreateScene();
-                    await Task.WhenAll(buildTask, sceneTask);
-                    var scene = sceneTask.Result;
+                    var scene = await this._sceneService.CreateScene();
                     this.CurrentProject.LastSceneOpened = scene.SceneAsset;
                     this._sceneService.HasChanges = true;
                 }
