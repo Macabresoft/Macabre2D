@@ -2,11 +2,12 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Serialization;
+    using Macabre2D.UI.Common;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Text;
 
-    public sealed class SceneAsset : MetadataAsset {
+    public sealed class SceneAsset : AddableAsset<Scene> {
 
         [DataMember]
         private Camera _camera = new Camera();
@@ -23,7 +24,11 @@
             }
         }
 
-        public IScene Scene { get; private set; }
+        public override string FileExtension {
+            get {
+                return FileHelper.SceneExtension;
+            }
+        }
 
         public override AssetType Type {
             get {
@@ -39,14 +44,6 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
-        public IScene Load() {
-            if (this.Scene == null) {
-                this.Scene = new Serializer().Deserialize<Scene>(this.GetPath());
-            }
-
-            return this.Scene;
-        }
-
         public override string ToString() {
             return Path.GetFileNameWithoutExtension(this.Name);
         }
@@ -54,9 +51,13 @@
         internal override void ResetContentPath() {
             base.ResetContentPath();
 
-            if (this.Scene is Scene scene) {
+            if (this.SavableValue is Scene scene) {
                 scene.Name = this.Name;
             }
+        }
+
+        protected override void SaveChanges(Serializer serializer) {
+            this.SavableValue.SaveToFile(this.GetPath(), serializer);
         }
     }
 }

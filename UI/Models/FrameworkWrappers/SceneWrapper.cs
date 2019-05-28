@@ -16,7 +16,8 @@
         public SceneWrapper(SceneAsset sceneAsset) : this() {
             this.SceneAsset = sceneAsset;
             this.SceneAsset.PropertyChanged += this.SceneAsset_PropertyChanged;
-            this.Load(this.SceneAsset.Load() as Scene);
+            this.SceneAsset.Refresh(null);
+            this.Load(this.SceneAsset.SavableValue as Scene);
         }
 
         public SceneWrapper(Scene scene) : this() {

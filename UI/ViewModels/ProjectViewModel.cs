@@ -178,7 +178,7 @@
         }
 
         private void AddAsset() {
-            var result = this._dialogService.ShowSelectTypeAndNameDialog(typeof(AddableAsset<>), "Select an Asset");
+            var result = this._dialogService.ShowSelectTypeAndNameDialog(typeof(AddableAsset), "Select an Asset");
             if (result.Type != null && !string.IsNullOrEmpty(result.Name)) {
                 var asset = Activator.CreateInstance(result.Type) as AddableAsset;
 

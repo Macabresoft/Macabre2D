@@ -6,7 +6,7 @@
 
     public class MetadataAsset : Asset {
 
-        public MetadataAsset(string fileName) : base(fileName) {
+        public MetadataAsset(string name) : base(name) {
             this.PropertyChanged += this.Self_PropertyChanged;
         }
 

@@ -175,7 +175,8 @@
                 var sceneAssets = projectAsset.GetAssetsOfType<SceneAsset>();
 
                 foreach (var sceneAsset in sceneAssets) {
-                    var scene = sceneAsset.Load();
+                    sceneAsset.Refresh(null);
+                    var scene = sceneAsset.SavableValue;
                     var contentAssets = scene.GetAllComponentsOfType<IAssetComponent>();
 
                     foreach (var contentAsset in contentAssets.Where(x => x.HasAsset(id))) {

@@ -96,11 +96,6 @@
                 if (sceneExists) {
                     await Task.Run(() => {
                         var scene = this.CurrentScene.Scene;
-                        var scenePath = this.CurrentScene.SceneAsset.GetPath();
-                        scene.SaveToFile(scenePath, this._serializer);
-
-                        // This may seem odd, but we want to force a save of the metadata asset when
-                        // a scene gets saved. This stores camera position and view height between sessions.
                         this.CurrentScene.SceneAsset.HasChanges = true;
                         this.CurrentScene.SceneAsset.Save(this._serializer);
                     });
