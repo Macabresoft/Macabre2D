@@ -7,6 +7,7 @@
     using Macabre2D.UI.Resources.Properties;
     using System;
     using System.IO;
+    using System.Runtime.Serialization;
     using System.Text;
     using System.Xml;
 
@@ -30,6 +31,9 @@
                 return FileHelper.SpriteFontExtension;
             }
         }
+
+        [DataMember]
+        public Guid FontId { get; private set; } = new Guid();
 
         public string FontName {
             get {
@@ -104,6 +108,7 @@
 
         public override void Refresh(AssetManager assetManager) {
             this.SavableValue.ContentId = this.Id;
+            this.SavableValue.Id = this.FontId;
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
 
             const string assetXmlPath = @"/XnaContent/Asset/";
@@ -126,18 +131,6 @@
             if (bool.TryParse(spriteFontXml.SelectSingleNode($"{assetXmlPath}UseKerning").InnerText, out var useKerning)) {
                 this._useKerning = useKerning;
             }
-
-            if (Guid.TryParse(spriteFontXml.SelectSingleNode($"{assetXmlPath}Id")?.InnerText, out var id)) {
-                if (id != Guid.Empty) {
-                    this.SavableValue.Id = id;
-                }
-                else {
-                    this.SavableValue.Id = Guid.NewGuid();
-                }
-            }
-            else {
-                this.SavableValue.Id = Guid.NewGuid();
-            }
         }
 
         protected override void SaveChanges(Serializer serializer) {
@@ -145,9 +138,8 @@
             defaultSpriteFont = defaultSpriteFont.Replace("<FontName>Arial</FontName>", $"<FontName>{this.FontName}</FontName>");
             defaultSpriteFont = defaultSpriteFont.Replace("<Size>12</Size>", $"<Size>{this.Size}</Size>");
             defaultSpriteFont = defaultSpriteFont.Replace("<Spacing>0</Spacing>", $"<Spacing>{this.Spacing}</Spacing>");
-            defaultSpriteFont = defaultSpriteFont.Replace("<UseKerning>true</UseKerning>", $"<UseKerning>{this.UseKerning}</UseKerning>");
+            defaultSpriteFont = defaultSpriteFont.Replace("<UseKerning>true</UseKerning>", $"<UseKerning>{this.UseKerning.ToString().ToLower()}</UseKerning>");
             defaultSpriteFont = defaultSpriteFont.Replace("<Style>Regular</Style>", $"<Style>{this.Style}</Style>");
-            defaultSpriteFont = defaultSpriteFont.Replace("<Id>00000000-0000-0000-0000-000000000000</Id>", $"<Id>{this.SavableValue.Id}</Id>");
             File.WriteAllText(this.GetPath(), defaultSpriteFont);
         }
     }
