@@ -1,6 +1,9 @@
 [submodule "MonoGame"]
 	path = MonoGame
 	url = https://github.com/BrettStory/MonoGame
+	branch = develop
 [submodule "WpfInterop"]
 	path = WpfInterop
 	url = git@github.com:BrettStory/MonoGame.Framework.WpfInterop.git
+	
+	branch = master
