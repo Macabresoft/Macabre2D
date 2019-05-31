@@ -11,8 +11,7 @@ Currently, the Macabre2D editor only supports Windows. The framework itself is t
 The full source code is available here from GitHub:
 
  * Clone the source: `git clone https://github.com/BrettStory/Macabre2D`
- * Set up the root submodules by calling the following at the base of the repository: `git submodule update --init`
- * Set up the MonoGame submodules by calling the following in the MonoGame folder: `git submodule update --init`
+ * Set up the root submodules by calling the following at the base of the repository: `git submodule update --init --recursive`
  * Run MonoGame/Protobuild.exe to generate MonoGame project files and solutions.
  * Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
  * Restore NuGet packages for Macabre2D.sln.
