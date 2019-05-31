@@ -204,10 +204,6 @@
       <Project>{7de47032-a904-4c29-bd22-2d235e8d91ba}</Project>
       <Name>MonoGame.Framework.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MonoGame\Tools\MGCB\MGCB.Windows.csproj">
-      <Project>{4243474d-572e-6e69-646f-77734d474342}</Project>
-      <Name>MGCB.Windows</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\MonoGame\Tools\MonoGame.Build.Tasks\MonoGame.Build.Tasks.Windows.csproj">
       <Project>{e2d9e2ae-b875-d3d6-92b1-ecdc6c642e54}</Project>
       <Name>MonoGame.Build.Tasks.Windows</Name>

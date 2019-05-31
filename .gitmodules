@@ -5,5 +5,4 @@
 [submodule "WpfInterop"]
 	path = WpfInterop
 	url = git@github.com:BrettStory/MonoGame.Framework.WpfInterop.git
-	
 	branch = master

@@ -5,7 +5,7 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
-    using MGCB;
+    using Macabre2D.UI.Services.Content;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

@@ -142,11 +142,27 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\MonoGame\Tools\MGCB\BuildContent.cs">
+      <Link>MGCB\BuildContent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MonoGame\Tools\MGCB\CommandLineParser.cs">
+      <Link>MGCB\CommandLineParser.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MonoGame\Tools\MGCB\ConsoleLogger.cs">
+      <Link>MGCB\ConsoleLogger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MonoGame\Tools\MGCB\Program.cs">
+      <Link>MGCB\Program.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MonoGame\Tools\MGCB\SourceFileCollection.cs">
+      <Link>MGCB\SourceFileCollection.cs</Link>
+    </Compile>
     <Compile Include="AssemblyService.cs" />
     <Compile Include="AssetService.cs" />
     <Compile Include="BusyService.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="GitIgnoreCreator.cs" />
+    <Compile Include="Content\ContentBuilder.cs" />
     <Compile Include="TextCreator.cs" />
     <Compile Include="LoggingService.cs" />
     <Compile Include="MonoGameService.cs" />
@@ -162,13 +178,13 @@
       <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\MonoGame\MonoGame.Framework.Content.Pipeline\MonoGame.Framework.Content.Pipeline.Windows.csproj">
+      <Project>{b950de10-ac5d-4bd9-b817-51247c4a732d}</Project>
+      <Name>MonoGame.Framework.Content.Pipeline.Windows</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.Windows.csproj">
       <Project>{7de47032-a904-4c29-bd22-2d235e8d91ba}</Project>
       <Name>MonoGame.Framework.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\MonoGame\Tools\MGCB\MGCB.Windows.csproj">
-      <Project>{4243474d-572e-6e69-646f-77734d474342}</Project>
-      <Name>MGCB.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfInterop\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop.csproj">
       <Project>{809f0d79-aedc-4754-a213-fdbe97ccd6d6}</Project>

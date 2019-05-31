@@ -60,8 +60,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Build.Tasks.Window
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.WpfInterop", "WpfInterop\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop.csproj", "{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGCB.Windows", "MonoGame\Tools\MGCB\MGCB.Windows.csproj", "{4243474D-572E-6E69-646F-77734D474342}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,10 +142,6 @@ Global
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4243474D-572E-6E69-646F-77734D474342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4243474D-572E-6E69-646F-77734D474342}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4243474D-572E-6E69-646F-77734D474342}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4243474D-572E-6E69-646F-77734D474342}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,7 +166,6 @@ Global
 		{B950DE10-AC5D-4BD9-B817-51247C4A732D} = {4EFE9D07-00FF-4974-A582-BF8CD8DD74A1}
 		{E2D9E2AE-B875-D3D6-92B1-ECDC6C642E54} = {4EFE9D07-00FF-4974-A582-BF8CD8DD74A1}
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6} = {4EFE9D07-00FF-4974-A582-BF8CD8DD74A1}
-		{4243474D-572E-6E69-646F-77734D474342} = {4EFE9D07-00FF-4974-A582-BF8CD8DD74A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}
