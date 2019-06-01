@@ -90,7 +90,7 @@
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var newItem in e.NewItems.OfType<ComponentWrapper>()) {
                     newItem.PropertyChanged += this.ComponentPropertyChanged;
-                    this.Scene.AddChild(newItem.Component);
+                    this.Scene.AddComponent(newItem.Component);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove) {

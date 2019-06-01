@@ -80,7 +80,7 @@
                         }
                         else if (this._parent is SceneWrapper sceneWrapper) {
                             this.Component.Parent = null;
-                            sceneWrapper.Scene.AddChild(this.Component);
+                            sceneWrapper.Scene.AddComponent(this.Component);
                         }
                     }
 

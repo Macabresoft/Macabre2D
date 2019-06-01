@@ -24,7 +24,7 @@
             var scene = new Scene();
 
             var camera = new Camera();
-            scene.AddChild(camera);
+            scene.AddComponent(camera);
 
             var physicsModule = scene.AddModule<PhysicsModule>(1f / 60f);
             physicsModule.Gravity = new Gravity(new Vector2(0f, -9f));
@@ -40,7 +40,7 @@
             circleDrawer.Color = Color.Green;
             circleDrawer.LineThickness = 2f;
             circleBody.AddChild(new VelocityChanger());
-            scene.AddChild(circleBody);
+            scene.AddComponent(circleBody);
 
             for (var y = 0; y < 1; y++) {
                 for (var x = 0; x < 1; x++) {
@@ -55,7 +55,7 @@
                     smallCircleBody.AddChild(smallCircleDrawer);
                     smallCircleDrawer.Color = Color.OrangeRed;
                     smallCircleDrawer.LineThickness = 1f;
-                    scene.AddChild(smallCircleBody);
+                    scene.AddComponent(smallCircleBody);
                 }
             }
 
@@ -67,7 +67,7 @@
             rectangleBody.AddChild(rectangleDrawer);
             rectangleDrawer.Color = Color.White;
             rectangleDrawer.LineThickness = 1f;
-            scene.AddChild(rectangleBody);
+            scene.AddComponent(rectangleBody);
 
             var angleBody1 = new Body();
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
@@ -76,7 +76,7 @@
             angleBody1.AddChild(angleDrawer1);
             angleDrawer1.Color = Color.White;
             angleDrawer1.LineThickness = 1f;
-            scene.AddChild(angleBody1);
+            scene.AddComponent(angleBody1);
 
             var angleBody2 = new Body();
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
@@ -85,7 +85,7 @@
             angleBody2.AddChild(angleDrawer2);
             angleDrawer2.Color = Color.White;
             angleDrawer2.LineThickness = 1f;
-            scene.AddChild(angleBody2);
+            scene.AddComponent(angleBody2);
 
             var lineBody = new Body();
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
@@ -94,7 +94,7 @@
             lineBody.AddChild(lineDrawer);
             lineDrawer.Color = Color.White;
             lineDrawer.LineThickness = 1f;
-            scene.AddChild(lineBody);
+            scene.AddComponent(lineBody);
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");

@@ -48,11 +48,54 @@
         string Name { get; }
 
         /// <summary>
-        /// Adds a component as a child.
+        /// Adds a component as a child of this scene.
+        /// </summary>
+        /// <typeparam name="T">A component type.</typeparam>
+        /// <returns>The added component.</returns>
+        T AddComponent<T>() where T : BaseComponent, new();
+
+        /// <summary>
+        /// Adds a component as a child of this scene.
         /// </summary>
         /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
         /// <param name="component">The component.</param>
-        bool AddChild(BaseComponent component);
+        bool AddComponent(BaseComponent component);
+
+        /// <summary>
+        /// Adds the module.
+        /// </summary>
+        /// <typeparam name="T">A type of module.</typeparam>
+        /// <returns>The added module.</returns>
+        T AddModule<T>() where T : BaseModule, new();
+
+        /// <summary>
+        /// Adds the module.
+        /// </summary>
+        /// <param name="module">The module.</param>
+        /// <returns>A value indicating whether or not the module was added.</returns>
+        bool AddModule(BaseModule module);
+
+        /// <summary>
+        /// Adds the fixed time step module.
+        /// </summary>
+        /// <param name="module">The module.</param>
+        /// <param name="timeStep">The time step.</param>
+        /// <returns>A value indicating whether or not the module was added.</returns>
+        bool AddModule(FixedTimeStepModule module, float timeStep);
+
+        /// <summary>
+        /// Adds the fixed time step module.
+        /// </summary>
+        /// <typeparam name="T">A type of module with a fixed time step.</typeparam>
+        /// <param name="timeStep">The time step.</param>
+        /// <returns>The added module.</returns>
+        T AddModule<T>(float timeStep) where T : FixedTimeStepModule, new();
+
+        /// <summary>
+        /// Destroys the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        void DestroyComponent(BaseComponent component);
 
         /// <summary>
         /// Draws this scene.
@@ -128,6 +171,19 @@
         /// </summary>
         /// <param name="action">The action.</param>
         void QueueEndOfFrameAction(Action<GameTime> action);
+
+        /// <summary>
+        /// Removes the child component without destroying it.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <returns>A value indicating whether or not the component was removed.</returns>
+        bool RemoveChild(BaseComponent component);
+
+        /// <summary>
+        /// Removes the module.
+        /// </summary>
+        /// <param name="module">The module.</param>
+        void RemoveModule(BaseModule module);
 
         /// <summary>
         /// Resolves the dependency.

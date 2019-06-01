@@ -27,7 +27,7 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
                 scene.Initialize(Substitute.For<IGame>());
-                scene.AddChild(parent);
+                scene.AddComponent(parent);
 
                 Assert.True(parentHasBeenAdded);
                 Assert.True(child1HasBeenAdded);
@@ -56,7 +56,7 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
                 scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
-                scene.AddChild(parent);
+                scene.AddComponent(parent);
 
                 Assert.False(parentHasBeenAdded);
                 Assert.False(child1HasBeenAdded);
@@ -79,7 +79,7 @@
             using (var scene = new Scene())
             using (var child = new TestComponent())
             using (var parent = new TestComponent()) {
-                scene.AddChild(parent);
+                scene.AddComponent(parent);
                 child.Parent = parent;
 
                 var hasBeenAdded = false;
@@ -99,7 +99,7 @@
             using (var scene = new Scene())
             using (var child = new TestComponent())
             using (var parent = new TestComponent()) {
-                scene.AddChild(parent);
+                scene.AddComponent(parent);
                 child.Parent = parent;
 
                 var hasBeenAdded = false;
@@ -124,7 +124,7 @@
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
                 scene.Initialize(Substitute.For<IGame>());
-                scene.AddChild(component);
+                scene.AddComponent(component);
 
                 Assert.True(hasBeenAdded);
                 Assert.Contains(component, scene.Children.ToList());
@@ -139,7 +139,7 @@
                 var hasBeenAdded = false;
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
-                scene.AddChild(component);
+                scene.AddComponent(component);
 
                 Assert.False(hasBeenAdded);
 
@@ -155,7 +155,7 @@
         public static void Scene_DestroyComponent_NullParentTest() {
             using (var scene = new Scene())
             using (var component = new TestComponent()) {
-                scene.AddChild(component);
+                scene.AddComponent(component);
                 scene.Initialize(Substitute.For<IGame>());
                 Assert.Contains(component, scene.Children.ToList());
 

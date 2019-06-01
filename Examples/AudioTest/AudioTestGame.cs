@@ -19,7 +19,7 @@
             var scene = new Scene();
 
             var audioPlayer = new AudioPlayer();
-            scene.AddChild(audioPlayer);
+            scene.AddComponent(audioPlayer);
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClip = new AudioClip();
             audioPlayer.AudioClip.ContentId = lasterId;

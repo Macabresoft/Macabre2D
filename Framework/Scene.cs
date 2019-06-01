@@ -118,19 +118,15 @@
         [DataMember]
         internal List<BaseModule> ModulesForSaving { get; } = new List<BaseModule>();
 
-        /// <summary>
-        /// Adds a component as a child of this scene.
-        /// </summary>
-        /// <typeparam name="T">A component type.</typeparam>
-        /// <returns>The added component.</returns>
-        public T AddChild<T>() where T : BaseComponent, new() {
+        /// <inheritdoc/>
+        public T AddComponent<T>() where T : BaseComponent, new() {
             var component = new T { IsEnabled = true };
-            this.AddChild(component);
+            this.AddComponent(component);
             return component;
         }
 
         /// <inheritdoc/>
-        public bool AddChild(BaseComponent component) {
+        public bool AddComponent(BaseComponent component) {
             if (component == null) {
                 throw new ArgumentNullException(nameof(component));
             }
@@ -145,28 +141,20 @@
 
             if (!this._components.Any(x => x.Id == component.Id)) {
                 this._components.Add(component);
-                this.AddComponent(component);
+                this.TrackComponent(component);
             }
 
             return true;
         }
 
-        /// <summary>
-        /// Adds the module.
-        /// </summary>
-        /// <typeparam name="T">A type of module.</typeparam>
-        /// <returns>The added module.</returns>
+        /// <inheritdoc/>
         public T AddModule<T>() where T : BaseModule, new() {
             var module = new T();
             this.AddModule(module);
             return module;
         }
 
-        /// <summary>
-        /// Adds the module.
-        /// </summary>
-        /// <param name="module">The module.</param>
-        /// <returns>A value indicating whether or not the module was added.</returns>
+        // <inheritdoc/>
         public bool AddModule(BaseModule module) {
             if (this.Game == null) {
                 if (!this.ModulesForSaving.Any(x => x.Id == module.Id)) {
@@ -185,33 +173,20 @@
             return true;
         }
 
-        /// <summary>
-        /// Adds the fixed time step module.
-        /// </summary>
-        /// <param name="module">The module.</param>
-        /// <param name="timeStep">The time step.</param>
-        /// <returns>A value indicating whether or not the module was added.</returns>
+        /// <inheritdoc/>
         public bool AddModule(FixedTimeStepModule module, float timeStep) {
             module.TimeStep = timeStep;
             return this.AddModule(module);
         }
 
-        /// <summary>
-        /// Adds the fixed time step module.
-        /// </summary>
-        /// <typeparam name="T">A type of module with a fixed time step.</typeparam>
-        /// <param name="timeStep">The time step.</param>
-        /// <returns>The added module.</returns>
+        /// <inheritdoc/>
         public T AddModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
             var module = this.AddModule<T>();
             this.AddModule(module, timeStep);
             return module;
         }
 
-        /// <summary>
-        /// Destroys the component.
-        /// </summary>
-        /// <param name="component">The component.</param>
+        /// <inheritdoc/>
         public void DestroyComponent(BaseComponent component) {
             this.RemoveComponent(component);
             this.ComponentRemoved.SafeInvoke(this, component);
@@ -348,7 +323,7 @@
                 }
 
                 foreach (var component in this.ComponentsForSaving) {
-                    this.AddChild(component);
+                    this.AddComponent(component);
                 }
 
                 this.ComponentsForSaving.Clear();
@@ -374,19 +349,12 @@
             this._endOfFrameActions.Add(action);
         }
 
-        /// <summary>
-        /// Removes the child component without destroying it.
-        /// </summary>
-        /// <param name="component">The component.</param>
-        /// <returns>A value indicating whether or not the component was removed.</returns>
+        /// <inheritdoc/>
         public bool RemoveChild(BaseComponent component) {
             return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
         }
 
-        /// <summary>
-        /// Removes the module.
-        /// </summary>
-        /// <param name="module">The module.</param>
+        /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
             if (this._modules.Remove(module)) {
                 this.ModuleRemoved.SafeInvoke(this, module);
@@ -453,32 +421,11 @@
             this._modules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
         }
 
-        private void AddComponent(BaseComponent component) {
-            this._updateables.Add(component);
-            this._updateableAsyncs.Add(component);
-            this._drawables.Add(component);
-            this.Cameras.Add(component);
-
-            if (component.Parent == null) {
-                component.Initialize(this);
-                component.LoadContent();
-            }
-
-            foreach (var child in component.Children) {
-                this.AddComponent(child);
-            }
-
-            component.ParentChanged += this.Component_ParentChanged;
-            component.SubscribeToChildrenChanged(this._componentChildrenChangedHandler);
-            component.SessionId = Interlocked.Increment(ref this._sessionIdCounter);
-            this.ComponentAdded.SafeInvoke(this, component);
-        }
-
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var component in e.NewItems.OfType<BaseComponent>()) {
                     if (this.Game != null) {
-                        this.AddComponent(component);
+                        this.TrackComponent(component);
                     }
                 }
             }
@@ -551,6 +498,27 @@
             foreach (var child in component.Children) {
                 this.RemoveComponent(child);
             }
+        }
+
+        private void TrackComponent(BaseComponent component) {
+            this._updateables.Add(component);
+            this._updateableAsyncs.Add(component);
+            this._drawables.Add(component);
+            this.Cameras.Add(component);
+
+            if (component.Parent == null) {
+                component.Initialize(this);
+                component.LoadContent();
+            }
+
+            foreach (var child in component.Children) {
+                this.TrackComponent(child);
+            }
+
+            component.ParentChanged += this.Component_ParentChanged;
+            component.SubscribeToChildrenChanged(this._componentChildrenChangedHandler);
+            component.SessionId = Interlocked.Increment(ref this._sessionIdCounter);
+            this.ComponentAdded.SafeInvoke(this, component);
         }
     }
 }
