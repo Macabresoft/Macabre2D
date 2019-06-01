@@ -101,7 +101,7 @@
             return newPosition;
         }
 
-        protected void ResetEndPoint(Transform worldTransform, float ratio, float lineLength) {
+        protected void ResetEndPoint(Transform worldTransform, float lineLength) {
             this.XAxisLineDrawer.StartPoint = worldTransform.Position;
             this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * lineLength;
             this.YAxisLineDrawer.StartPoint = worldTransform.Position;

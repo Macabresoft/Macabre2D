@@ -105,7 +105,7 @@
 
         protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
             if (this._previousButtonState == ButtonState.Released) {
-                this.ResetEndPoint(worldTransform, viewRatio, lineLength);
+                this.ResetEndPoint(worldTransform, lineLength);
             }
 
             this._defaultLineLength = lineLength;

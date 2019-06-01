@@ -103,7 +103,7 @@
         }
 
         protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
-            this.ResetEndPoint(worldTransform, viewRatio, lineLength);
+            this.ResetEndPoint(worldTransform, lineLength);
 
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
