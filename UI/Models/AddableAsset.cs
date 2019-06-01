@@ -12,25 +12,48 @@
         }
 
         public abstract string FileExtension { get; }
+
+        public bool RequiresCreation { get; set; }
     }
 
     public abstract class AddableAsset<T> : AddableAsset where T : new() {
+        private ResettableLazy<T> _savableValue;
 
         public AddableAsset() : base() {
+            this._savableValue = new ResettableLazy<T>(this.DeserializeSavableValue);
         }
 
         public AddableAsset(string name) : base(name) {
+            this._savableValue = new ResettableLazy<T>(this.DeserializeSavableValue);
         }
 
-        public T SavableValue { get; private set; } = new T();
+        public T SavableValue {
+            get {
+                return this._savableValue.Value;
+            }
+        }
 
         public override void Refresh(AssetManager assetManager) {
-            var serializer = new Serializer();
-            this.SavableValue = serializer.Deserialize<T>(this.GetPath());
+            this._savableValue.Reset();
+        }
+
+        protected virtual T DeserializeSavableValue() {
+            T result;
+
+            if (this.RequiresCreation) {
+                result = new T();
+            }
+            else {
+                var serializer = new Serializer();
+                result = serializer.Deserialize<T>(this.GetPath());
+            }
+
+            return result;
         }
 
         protected override void SaveChanges(Serializer serializer) {
             serializer.Serialize(this.SavableValue, this.GetPath());
+            this.RequiresCreation = false;
         }
     }
 }

@@ -133,6 +133,10 @@
             }
         }
 
+        protected override Font DeserializeSavableValue() {
+            return new Font();
+        }
+
         protected override void SaveChanges(Serializer serializer) {
             var defaultSpriteFont = Resources.DefaultSpriteFont;
             defaultSpriteFont = defaultSpriteFont.Replace("<FontName>Arial</FontName>", $"<FontName>{this.FontName}</FontName>");
