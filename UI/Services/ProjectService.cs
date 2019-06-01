@@ -11,6 +11,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
 
@@ -219,8 +220,11 @@
                 if (this.CurrentProject?.LastSceneOpened != null) {
                     await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
                 }
+                else if (this.CurrentProject?.SceneAssets.FirstOrDefault() is SceneAsset sceneAsset) {
+                    await this._sceneService.LoadScene(this.CurrentProject, sceneAsset);
+                }
                 else {
-                    var scene = await this._sceneService.CreateScene();
+                    var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
                     this.CurrentProject.LastSceneOpened = scene.SceneAsset;
                     this._sceneService.HasChanges = true;
                 }
@@ -303,11 +307,7 @@
                     }
                 }
 
-                var scene = await this._sceneService.CreateScene();
-                scene.SceneAsset = new SceneAsset($"Default{FileHelper.SceneExtension}") {
-                    Parent = project.AssetFolder
-                };
-
+                var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
                 project.SceneAssets.Add(scene.SceneAsset);
                 project.StartUpSceneAsset = scene.SceneAsset;
                 project.LastSceneOpened = scene.SceneAsset;

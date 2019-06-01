@@ -10,7 +10,7 @@
 
         bool HasChanges { get; set; }
 
-        Task<SceneWrapper> CreateScene();
+        Task<SceneWrapper> CreateScene(FolderAsset parentAsset, string name);
 
         Task<SceneWrapper> LoadScene(Project project, SceneAsset asset);
 

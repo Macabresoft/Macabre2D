@@ -48,7 +48,7 @@
             var sceneWrapper = new SceneWrapper(scene);
 
             dialogService.ShowYesNoMessageBox(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
-            sceneService.CreateScene().Returns(sceneWrapper);
+            sceneService.CreateScene(Arg.Any<FolderAsset>(), Arg.Any<string>()).Returns(sceneWrapper);
             sceneService.SaveCurrentScene(Arg.Any<Project>()).Returns(true);
             sceneService.LoadScene(Arg.Any<Project>(), Arg.Any<SceneAsset>()).Returns(sceneWrapper);
 
