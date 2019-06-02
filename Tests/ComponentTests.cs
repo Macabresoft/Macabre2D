@@ -561,10 +561,12 @@
 
         private class WithChildrenComponent : BaseComponent {
 #pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable CS0649 // Never assigned to
 
             [Child]
             private TestComponent _testComponent;
 
+#pragma warning restore CS0649 // Never assigned to
 #pragma warning restore IDE0044 // Add readonly modifier
 
             [Child]
