@@ -31,14 +31,10 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public Transform(Matrix matrix) {
-            Vector3 position;
-            Quaternion rotation;
-            Vector3 scale;
+            matrix.Decompose2D(out var scale, out var rotation, out var position);
 
-            matrix.Decompose(out scale, out rotation, out position);
-
-            this._scale = scale.ToVector2();
-            this._position = position.ToVector2();
+            this._scale = scale;
+            this._position = position;
 
             var direction = Vector2.Transform(Vector2.UnitX, rotation);
             this._rotation = new Rotation((float)Math.Atan2(direction.Y, direction.X));
@@ -133,10 +129,10 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public void UpdateTransform(Matrix matrix) {
-            matrix.Decompose(out var scale, out var rotation, out var position);
+            matrix.Decompose2D(out var scale, out var rotation, out var position);
 
-            this._scale = scale.ToVector2();
-            this._position = position.ToVector2();
+            this._scale = scale;
+            this._position = position;
 
             var direction = Vector2.Transform(Vector2.UnitX, rotation);
             this._rotation = new Rotation((float)Math.Atan2(direction.Y, direction.X));

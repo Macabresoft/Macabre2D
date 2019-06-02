@@ -759,7 +759,7 @@
                 Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
 
             if (this.Parent != null) {
-                transformMatrix = transformMatrix * this.Parent.TransformMatrix;
+                transformMatrix *= this.Parent.TransformMatrix;
             }
 
             return transformMatrix;

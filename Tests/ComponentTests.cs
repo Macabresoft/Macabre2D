@@ -474,6 +474,40 @@
 
         [Test]
         [Category("Unit Test")]
+        public static void Component_Trasnform_NoParentTest() {
+            // TODO: this test is failing because of some weird interaction between scale and rotation.
+
+            using (var component = new TestComponent()) {
+                component.Initialize(Substitute.For<IScene>());
+
+                var random = new Random();
+                var floatDelta = 0.0001f;
+
+                for (var i = 0; i < 100; i++) {
+                    component.LocalPosition = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
+                    Assert.AreEqual(component.LocalPosition.X, component.WorldTransform.Position.X, floatDelta);
+                    Assert.AreEqual(component.LocalPosition.Y, component.WorldTransform.Position.Y, floatDelta);
+                }
+
+                component.LocalPosition = Vector2.One;
+
+                for (var i = 0; i < 100; i++) {
+                    component.LocalRotation.Angle = random.Next(0, 10) / 3f;
+                    Assert.AreEqual(component.LocalRotation.Angle, component.WorldTransform.Rotation.Angle, floatDelta);
+                }
+
+                component.LocalRotation.Angle = 0f;
+
+                for (var i = 0; i < 100; i++) {
+                    component.LocalScale = new Vector2(random.Next(-1000, -1) / 3f, random.Next(-1000, -1) / 3f);
+                    Assert.AreEqual(component.LocalScale.X, component.WorldTransform.Scale.X, floatDelta);
+                    Assert.AreEqual(component.LocalScale.Y, component.WorldTransform.Scale.Y, floatDelta);
+                }
+            }
+        }
+
+        [Test]
+        [Category("Unit Test")]
         public static void Component_UpdateOrderTest() {
             using (var component = new TestComponent()) {
                 component.UpdateOrder = 0;
