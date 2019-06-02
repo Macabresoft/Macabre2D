@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
+    using Macabre2D.Framework.Extensions;
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Models;
@@ -50,12 +51,13 @@
                 if (this._previousButtonState == ButtonState.Pressed) {
                     hadInteractions = true;
 
+                    var worldTransform = selectedComponent.Component.WorldTransform;
                     if (this.CurrentAxis == GizmoAxis.X) {
                         var newPosition = this.MoveAlongAxis(this.XAxisLineDrawer.StartPoint, this.XAxisLineDrawer.EndPoint, mousePosition);
                         var newLineLength = Vector2.Distance(this.XAxisLineDrawer.StartPoint, newPosition);
                         this.XAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, worldTransform) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -72,7 +74,7 @@
                         var newLineLength = Vector2.Distance(this.YAxisLineDrawer.StartPoint, newPosition); // TODO Allow negative by checking for actual distance
                         this.YAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, worldTransform) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -143,6 +145,14 @@
             this._previousButtonState = ButtonState.Released;
             this.XAxisColor = new Color(this.XAxisColor, 1f);
             this.YAxisColor = new Color(this.YAxisColor, 1f);
+        }
+
+        private float GetScaleSign(Vector2 dragPosition, Transform componentTransform) {
+            var dragStartPoint = componentTransform.Position + (this.CurrentAxis == GizmoAxis.X ? Vector2.UnitX.RotateRadians(componentTransform.Rotation.Angle) : -Vector2.UnitY.RotateRadians(-componentTransform.Rotation.Angle)) * this._defaultLineLength;
+            var dragDistanceFromComponent = Vector2.Distance(dragPosition, componentTransform.Position);
+            var totalDragDistance = Vector2.Distance(dragPosition, dragStartPoint);
+
+            return (totalDragDistance > this._defaultLineLength && dragDistanceFromComponent < totalDragDistance) ? -1f : 1f;
         }
 
         private void StartDrag(GizmoAxis axis, Vector2 currentScale) {
