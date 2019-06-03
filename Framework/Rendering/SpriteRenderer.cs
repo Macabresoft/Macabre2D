@@ -188,18 +188,17 @@
 
         private BoundingArea CreateBoundingArea() {
             if (this.Sprite != null && this._scene?.Game is IGame game) {
-                var transform = this.SpriteTransform;
-                var pixelDensity = game.Settings.PixelsPerUnit;
+                var pixelDensity = (float)game.Settings.PixelsPerUnit;
                 var width = this.Sprite.Size.X / pixelDensity;
                 var height = this.Sprite.Size.Y / pixelDensity;
                 var offset = this.Offset / pixelDensity;
 
                 var points = new List<Vector2> {
-                this.GetWorldTransform(offset).Position,
-                this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
-                this.GetWorldTransform(offset + new Vector2(width, height)).Position,
-                this.GetWorldTransform(offset + new Vector2(0f, height)).Position
-            };
+                    this.GetWorldTransform(offset).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height)).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height)).Position
+                };
 
                 var minimumX = points.Min(x => x.X);
                 var minimumY = points.Min(x => x.Y);
