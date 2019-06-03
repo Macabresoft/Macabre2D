@@ -187,6 +187,7 @@
         }
 
         private BoundingArea CreateBoundingArea() {
+            BoundingArea result;
             if (this.Sprite != null && this._scene?.Game is IGame game) {
                 var pixelDensity = (float)game.Settings.PixelsPerUnit;
                 var width = this.Sprite.Size.X / pixelDensity;
@@ -205,10 +206,13 @@
                 var maximumX = points.Max(x => x.X);
                 var maximumY = points.Max(x => x.Y);
 
-                return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            }
+            else {
+                result = new BoundingArea();
             }
 
-            return new BoundingArea();
+            return result;
         }
 
         private Transform CreateTransform() {

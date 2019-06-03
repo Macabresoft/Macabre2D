@@ -25,7 +25,7 @@
         /// <inheritdoc/>
         public BoundingArea BoundingArea {
             get {
-                return this.Font != null ? this._boundingArea.Value : new BoundingArea();
+                return this._boundingArea.Value;
             }
         }
 
@@ -145,29 +145,37 @@
         }
 
         private BoundingArea CreateBoundingArea() {
-            var size = this.Font.SpriteFont.MeasureString(this.Text);
+            BoundingArea result;
+            if (this.Font != null && this._scene?.Game is IGame game) {
+                var size = this.Font.SpriteFont.MeasureString(this.Text);
 
-            var width = size.X / this._scene.Game.Settings.PixelsPerUnit;
-            var height = (size.Y * this.LocalScale.X) / this._scene.Game.Settings.PixelsPerUnit;
+                var width = size.X / game.Settings.PixelsPerUnit;
+                var height = (size.Y * this.LocalScale.X) / game.Settings.PixelsPerUnit;
 
-            if (this.LocalScale.X < 0f) {
-                width *= -1;
-                height *= -1;
+                if (this.LocalScale.X < 0f) {
+                    width *= -1;
+                    height *= -1;
+                }
+
+                var points = new List<Vector2> {
+                    this.WorldTransform.Position,
+                    this.GetWorldTransform(new Vector2(width, 0f)).Position,
+                    this.GetWorldTransform(new Vector2(width, height)).Position,
+                    this.GetWorldTransform(new Vector2(0f, height)).Position
+                };
+
+                var minimumX = points.Min(x => x.X);
+                var minimumY = points.Min(x => x.Y);
+                var maximumX = points.Max(x => x.X);
+                var maximumY = points.Max(x => x.Y);
+
+                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            }
+            else {
+                result = new BoundingArea();
             }
 
-            var points = new List<Vector2> {
-                this.WorldTransform.Position,
-                this.GetWorldTransform(new Vector2(width, 0f)).Position,
-                this.GetWorldTransform(new Vector2(width, height)).Position,
-                this.GetWorldTransform(new Vector2(0f, height)).Position
-            };
-
-            var minimumX = points.Min(x => x.X);
-            var minimumY = points.Min(x => x.Y);
-            var maximumX = points.Max(x => x.X);
-            var maximumY = points.Max(x => x.Y);
-
-            return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            return result;
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
