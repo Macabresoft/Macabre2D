@@ -14,7 +14,7 @@
     /// The base class for all components.
     /// </summary>
     [DataContract]
-    public abstract class BaseComponent : IDisposable {
+    public abstract class BaseComponent : IBaseComponent, IDisposable {
         protected bool _disposedValue;
         protected IScene _scene;
 
