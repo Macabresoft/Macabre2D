@@ -35,6 +35,11 @@
 
                     if (originalScene != null) {
                         originalScene.PropertyChanged -= this.CurrentScene_PropertyChanged;
+
+                        if (originalScene.SceneAsset != null) {
+                            originalScene.SceneAsset.OnDeleted -= this.SceneAsset_OnDeleted;
+                            originalScene.SceneAsset.OnRefreshed -= this.SceneAsset_OnRefreshed;
+                        }
                     }
 
                     if (this._currentScene != null) {
@@ -42,6 +47,10 @@
 
                         if (this._currentScene.SceneAsset != null) {
                             this._currentScene.SceneAsset.OnDeleted += this.SceneAsset_OnDeleted;
+                            this._currentScene.SceneAsset.OnRefreshed += this.SceneAsset_OnRefreshed;
+
+                            var assetFolder = this._currentScene.SceneAsset.GetRootFolder();
+                            this.RefreshAssets(assetFolder);
                         }
                     }
                 }
@@ -80,13 +89,6 @@
                 }
 
                 this.CurrentScene = await Task.Run(() => new SceneWrapper(asset));
-
-                // TODO: Generesize this by looping through all assets, getting their asset type, and refreshing from there.
-                // IIdentifiableAsset<T> where T must be IIdentifiable.
-                this.RefreshSpritesFromAssets(project);
-                this.RefreshAudioClipsFromAssets(project);
-                this.RefreshFontsFromAssets(project);
-
                 this.HasChanges = false;
                 return this.CurrentScene;
             }
@@ -132,10 +134,18 @@
             this.HasChanges = true;
         }
 
-        private void RefreshAudioClipsFromAssets(Project project) {
+        private void RefreshAssets(FolderAsset rootFolderAsset) {
+            // TODO: Generesize this by looping through all assets, getting their asset type, and refreshing from there.
+            // IIdentifiableAsset<T> where T must be IIdentifiable.
+            this.RefreshSpritesFromAssets(rootFolderAsset);
+            this.RefreshAudioClipsFromAssets(rootFolderAsset);
+            this.RefreshFontsFromAssets(rootFolderAsset);
+        }
+
+        private void RefreshAudioClipsFromAssets(FolderAsset assetFolder) {
             var audioClipComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<AudioClip>>();
             if (audioClipComponents.Any()) {
-                var audioAssets = project.AssetFolder.GetAssetsOfType<AudioAsset>().Select(x => x.AudioClip).ToDictionary(x => x.Id);
+                var audioAssets = assetFolder.GetAssetsOfType<AudioAsset>().Select(x => x.AudioClip).ToDictionary(x => x.Id);
 
                 foreach (var audioClipComponent in audioClipComponents) {
                     var ids = audioClipComponent.GetOwnedAssetIds();
@@ -152,10 +162,10 @@
             }
         }
 
-        private void RefreshFontsFromAssets(Project project) {
+        private void RefreshFontsFromAssets(FolderAsset assetFolder) {
             var fontComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Font>>();
             if (fontComponents.Any()) {
-                var fonts = project.AssetFolder.GetAssetsOfType<FontAsset>().Select(x => x.SavableValue).ToDictionary(x => x.Id);
+                var fonts = assetFolder.GetAssetsOfType<FontAsset>().Select(x => x.SavableValue).ToDictionary(x => x.Id);
 
                 foreach (var fontComponent in fontComponents) {
                     var ids = fontComponent.GetOwnedAssetIds();
@@ -172,12 +182,12 @@
             }
         }
 
-        private void RefreshSpritesFromAssets(Project project) {
+        private void RefreshSpritesFromAssets(FolderAsset assetFolder) {
             // Note: this allows us to edit sprites freely and have all of the changes reflect up
             // into the objects. This is exactly what we should do with prefabs.
             var spriteComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Sprite>>();
             if (spriteComponents.Any()) {
-                var sprites = project.AssetFolder.GetAssetsOfType<SpriteWrapper>().Select(x => x.Sprite).ToDictionary(x => x.Id);
+                var sprites = assetFolder.GetAssetsOfType<SpriteWrapper>().Select(x => x.Sprite).ToDictionary(x => x.Id);
 
                 foreach (var spriteComponent in spriteComponents) {
                     var ids = spriteComponent.GetOwnedAssetIds();
@@ -196,6 +206,12 @@
 
         private void SceneAsset_OnDeleted(object sender, System.EventArgs e) {
             this.CurrentScene = null;
+        }
+
+        private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
+            if (sender is SceneAsset sceneAsset) {
+                this.CurrentScene = new SceneWrapper(sceneAsset);
+            }
         }
     }
 }

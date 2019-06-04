@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Serialization;
+    using System;
 
     public abstract class AddableAsset : MetadataAsset {
 
@@ -34,7 +35,12 @@
         }
 
         public override void Refresh(AssetManager assetManager) {
+            if (this._savableValue.IsValueCreated && this.SavableValue is IDisposable disposable) {
+                disposable.Dispose();
+            }
+
             this._savableValue.Reset();
+            base.Refresh(assetManager);
         }
 
         protected virtual T DeserializeSavableValue() {

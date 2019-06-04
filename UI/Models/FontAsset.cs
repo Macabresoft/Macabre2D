@@ -131,6 +131,8 @@
             if (bool.TryParse(spriteFontXml.SelectSingleNode($"{assetXmlPath}UseKerning").InnerText, out var useKerning)) {
                 this._useKerning = useKerning;
             }
+
+            this.RaiseOnRefreshed();
         }
 
         protected override Font DeserializeSavableValue() {

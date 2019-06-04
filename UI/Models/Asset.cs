@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Extensions;
     using System;
     using System.IO;
     using System.Linq;
@@ -44,6 +45,8 @@
         }
 
         public event EventHandler OnDeleted;
+
+        public event EventHandler OnRefreshed;
 
         public string Extension {
             get {
@@ -139,6 +142,7 @@
         }
 
         public virtual void Refresh(AssetManager assetManager) {
+            this.RaiseOnRefreshed();
             return;
         }
 
@@ -168,6 +172,10 @@
             this.OnDeleted?.Invoke(this, EventArgs.Empty);
         }
 
+        protected void RaiseOnRefreshed() {
+            this.OnRefreshed.SafeInvoke(this);
+        }
+
         protected void RemoveIdentifiableContentFromScenes(Guid id) {
             var projectAsset = this.GetRootFolder();
 
@@ -181,6 +189,7 @@
 
                     foreach (var contentAsset in contentAssets.Where(x => x.HasAsset(id))) {
                         contentAsset.RemoveAsset(id);
+                        sceneAsset.HasChanges = true;
                     }
                 }
             }
