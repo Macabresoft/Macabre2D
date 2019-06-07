@@ -162,7 +162,6 @@
     <Compile Include="BaseComponent.cs" />
     <Compile Include="MacabreGame.cs" />
     <Compile Include="Extensions\EventExtensions.cs" />
-    <Compile Include="Rotation.cs" />
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="FilterSortCollection.cs" />

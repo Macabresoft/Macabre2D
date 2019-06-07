@@ -25,56 +25,6 @@
         }
 
         /// <summary>
-        /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
-        /// </summary>
-        /// <remarks>This call will make all the pixels of the sprite white.</remarks>
-        /// <param name="graphicsDevice">The graphics device.</param>
-        /// <param name="size">The size.</param>
-        /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateArrowSprite(GraphicsDevice graphicsDevice, int size) {
-            return PrimitiveDrawer.CreateArrowSprite(graphicsDevice, size, Color.White);
-        }
-
-        /// <summary>
-        /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
-        /// </summary>
-        /// <param name="graphicsDevice">The graphics device.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="color">The color.</param>
-        /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
-            var texture = new Texture2D(graphicsDevice, size, size);
-            var pixels = new Color[size * size];
-
-            var index = 0;
-            for (var y = size - 1; y >= 0; y--) {
-                var buffer = (size - (size - y)) / 2;
-                var fill = size - (buffer * 2);
-
-                var difference = size - (buffer * 2 + fill);
-                fill += difference;
-
-                for (var x = 0; x < buffer; x++) {
-                    pixels[index] = Color.Transparent;
-                    index++;
-                }
-
-                for (var x = 0; x < fill; x++) {
-                    pixels[index] = color;
-                    index++;
-                }
-
-                for (var x = 0; x < buffer; x++) {
-                    pixels[index] = Color.Transparent;
-                    index++;
-                }
-            }
-
-            texture.SetData(pixels);
-            return new Sprite(texture);
-        }
-
-        /// <summary>
         /// Creates the circle sprite.
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
@@ -116,6 +66,51 @@
         }
 
         /// <summary>
+        /// Creates the arrow sprite. This will be pointing forwards (to the right by default).
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) {
+            return PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the arrow sprite. This will be pointing forwards (to the right by default).
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size, size);
+            var pixels = new Color[size * size];
+
+            var index = 0;
+            for (var y = size - 1; y >= 0; y--) {
+                var buffer = Math.Abs(size - (y * 2f));
+                var fill = size - buffer;
+
+                //var difference = size - (buffer * 2 + fill);
+                //fill += difference;
+
+                for (var x = 0; x < fill; x++) {
+                    pixels[index] = color;
+                    index++;
+                }
+
+                for (var x = 0; x < buffer; x++) {
+                    pixels[index] = Color.Transparent;
+                    index++;
+                }
+            }
+
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
         /// Creates the quad sprite.
         /// </summary>
         /// <remarks>This call will make all the pixels of the sprite white.</remarks>
@@ -148,8 +143,8 @@
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
         /// <returns>The right triangle sprite.</returns>
-        public static Sprite CreateRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
-            return PrimitiveDrawer.CreateRightTriangleSprite(graphicsDevice, size, Color.White);
+        public static Sprite CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
+            return PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -159,7 +154,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The right triangle sprite.</returns>
-        public static Sprite CreateRightTriangleSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
+        public static Sprite CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
             var texture = new Texture2D(graphicsDevice, size.X, size.Y);
             var pixels = new Color[size.X * size.Y];
 
@@ -167,14 +162,64 @@
             for (var y = 0; y < size.Y; y++) {
                 var xOffset = Convert.ToInt32(size.X * ((y + 1f) / size.Y));
 
-                for (var x = 0; x < size.X - xOffset; x++) {
+                for (var x = 0; x <= size.X - xOffset; x++) {
                     pixels[counter] = color;
                     counter++;
                 }
 
-                for (var x = 0; x < xOffset; x++) {
+                for (var x = 0; x < xOffset - 1; x++) {
                     pixels[counter] = Color.Transparent;
                     counter++;
+                }
+            }
+
+            texture.SetData(pixels);
+            return new Sprite(texture);
+        }
+
+        /// <summary>
+        /// Creates the arrow sprite. This will be pointing upwards, so rotate appropriately.
+        /// </summary>
+        /// <remarks>This call will make all the pixels of the sprite white.</remarks>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) {
+            return PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
+        }
+
+        /// <summary>
+        /// Creates the arrow sprite. This will be pointing upwards.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="size">The size.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The arrow sprite.</returns>
+        public static Sprite CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+            var texture = new Texture2D(graphicsDevice, size, size);
+            var pixels = new Color[size * size];
+
+            var index = 0;
+            for (var y = size - 1; y >= 0; y--) {
+                var buffer = (size - (size - y)) / 2;
+                var fill = size - (buffer * 2);
+
+                var difference = size - (buffer * 2 + fill);
+                fill += difference;
+
+                for (var x = 0; x < buffer; x++) {
+                    pixels[index] = Color.Transparent;
+                    index++;
+                }
+
+                for (var x = 0; x < fill; x++) {
+                    pixels[index] = color;
+                    index++;
+                }
+
+                for (var x = 0; x < buffer; x++) {
+                    pixels[index] = Color.Transparent;
+                    index++;
                 }
             }
 

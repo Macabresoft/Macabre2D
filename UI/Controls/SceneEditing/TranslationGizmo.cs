@@ -40,23 +40,25 @@
 
         public override void Initialize(IGame game) {
             base.Initialize(game);
-            var arrowSprite = PrimitiveDrawer.CreateArrowSprite(this.Game.GraphicsDevice, 64);
-            this._xAxisArrowRenderer.Sprite = arrowSprite;
-            this._yAxisArrowRenderer.Sprite = arrowSprite;
+
+            this._xAxisArrowRenderer.Sprite = PrimitiveDrawer.CreateForwardArrowSprite(this.Game.GraphicsDevice, 64);
             this._xAxisArrowRenderer.OffsetType = OffsetType.Center;
-            this._yAxisArrowRenderer.OffsetType = OffsetType.Center;
             this._xAxisArrowRenderer.AddChild(this._xAxisBody);
-            this._yAxisArrowRenderer.AddChild(this._yAxisBody);
             this._xAxisArrowRenderer.Initialize(this.Game.CurrentScene);
+
+            this._yAxisArrowRenderer.Sprite = PrimitiveDrawer.CreateUpwardsArrowSprite(this.Game.GraphicsDevice, 64);
+            this._yAxisArrowRenderer.OffsetType = OffsetType.Center;
+            this._yAxisArrowRenderer.AddChild(this._yAxisBody);
             this._yAxisArrowRenderer.Initialize(this.Game.CurrentScene);
 
-            var triangleSprite = PrimitiveDrawer.CreateRightTriangleSprite(this.Game.GraphicsDevice, new Point(64));
+            var triangleSprite = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisTriangleRenderer.Sprite = triangleSprite;
-            this._yAxisTriangleRenderer.Sprite = triangleSprite;
             this._xAxisTriangleRenderer.OffsetType = OffsetType.Center;
-            this._yAxisTriangleRenderer.OffsetType = OffsetType.Center;
             this._xAxisTriangleRenderer.AddChild(this._neutralAxisBody);
             this._xAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
+
+            this._yAxisTriangleRenderer.Sprite = triangleSprite;
+            this._yAxisTriangleRenderer.OffsetType = OffsetType.Center;
             this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
@@ -109,25 +111,21 @@
             this._xAxisArrowRenderer.Color = this.XAxisColor;
             this._xAxisArrowRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._xAxisArrowRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle - MathHelper.ToRadians(90f);
             this._xAxisArrowRenderer.Draw(gameTime, viewHeight);
 
             this._yAxisArrowRenderer.Color = this.YAxisColor;
             this._yAxisArrowRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._yAxisArrowRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle;
             this._yAxisArrowRenderer.Draw(gameTime, viewHeight);
 
             this._xAxisTriangleRenderer.Color = this.XAxisColor;
             this._xAxisTriangleRenderer.LocalPosition = this.XAxisLineDrawer.StartPoint;
             this._xAxisTriangleRenderer.LocalScale = new Vector2(scale);
-            this._xAxisTriangleRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle + MathHelper.ToRadians(180f);
             this._xAxisTriangleRenderer.Draw(gameTime, viewHeight);
 
             this._yAxisTriangleRenderer.Color = this.YAxisColor;
             this._yAxisTriangleRenderer.LocalPosition = this.YAxisLineDrawer.StartPoint;
-            this._yAxisTriangleRenderer.LocalScale = new Vector2(scale);
-            this._yAxisTriangleRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle;
+            this._yAxisTriangleRenderer.LocalScale = new Vector2(-scale);
             this._yAxisTriangleRenderer.Draw(gameTime, viewHeight);
         }
 

@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
-    using Macabre2D.Framework.Extensions;
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Models;
@@ -116,13 +115,11 @@
             this._xAxisSquareRenderer.Color = this.XAxisColor;
             this._xAxisSquareRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._xAxisSquareRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle - MathHelper.ToRadians(90f);
             this._xAxisSquareRenderer.Draw(gameTime, viewHeight);
 
             this._yAxisSquareRenderer.Color = this.YAxisColor;
             this._yAxisSquareRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._yAxisSquareRenderer.LocalRotation.Angle = worldTransform.Rotation.Angle;
             this._yAxisSquareRenderer.Draw(gameTime, viewHeight);
         }
 
@@ -148,7 +145,7 @@
         }
 
         private float GetScaleSign(Vector2 dragPosition, Transform componentTransform) {
-            var dragStartPoint = componentTransform.Position + (this.CurrentAxis == GizmoAxis.X ? Vector2.UnitX.RotateRadians(componentTransform.Rotation.Angle) : -Vector2.UnitY.RotateRadians(-componentTransform.Rotation.Angle)) * this._defaultLineLength;
+            var dragStartPoint = componentTransform.Position + (this.CurrentAxis == GizmoAxis.X ? new Vector2(this._defaultLineLength, 0f) : new Vector2(0f, this._defaultLineLength));
             var dragDistanceFromComponent = Vector2.Distance(dragPosition, componentTransform.Position);
             var totalDragDistance = Vector2.Distance(dragPosition, dragStartPoint);
 

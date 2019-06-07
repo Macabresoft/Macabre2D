@@ -15,9 +15,6 @@
         private Vector2 _position;
 
         [DataMember]
-        private Rotation _rotation;
-
-        [DataMember]
         private Vector2 _scale;
 
         /// <summary>
@@ -31,22 +28,10 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public Transform(Matrix matrix) {
-            matrix.Decompose2D(out var scale, out var rotation, out var position);
+            var decomposedMatrix = matrix.Decompose2D();
 
-            this._scale = scale;
-            this._position = position;
-
-            var direction = Vector2.Transform(Vector2.UnitX, rotation);
-            this._rotation = new Rotation((float)Math.Atan2(direction.Y, direction.X));
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Transform"/> struct.
-        /// </summary>
-        /// <param name="position">The position.</param>
-        /// <param name="angle">The angle of the rotation.</param>
-        /// <param name="scale">The scale.</param>
-        public Transform(Vector2 position, float angle, Vector2 scale) : this(position, new Rotation(angle), scale) {
+            this._scale = decomposedMatrix.Scale;
+            this._position = decomposedMatrix.Position;
         }
 
         /// <summary>
@@ -55,9 +40,8 @@
         /// <param name="position">The position.</param>
         /// <param name="rotation">The rotation.</param>
         /// <param name="scale">The scale.</param>
-        public Transform(Vector2 position, Rotation rotation, Vector2 scale) {
+        public Transform(Vector2 position, Vector2 scale) {
             this._position = position;
-            this._rotation = rotation;
             this._scale = scale;
         }
 
@@ -84,16 +68,6 @@
         }
 
         /// <summary>
-        /// Gets the rotation.
-        /// </summary>
-        /// <value>The rotation.</value>
-        public Rotation Rotation {
-            get {
-                return this._rotation;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the scale.
         /// </summary>
         /// <value>The scale.</value>
@@ -114,11 +88,9 @@
         /// Updates the transform.
         /// </summary>
         /// <param name="position">The position.</param>
-        /// <param name="angle">The angle.</param>
         /// <param name="scale">The scale.</param>
-        public void UpdateTransform(Vector2 position, float angle, Vector2 scale) {
+        public void UpdateTransform(Vector2 position, Vector2 scale) {
             this._position = position;
-            this._rotation = new Rotation(angle);
             this._scale = scale;
 
             this.TransformChanged.SafeInvoke(this);
@@ -129,13 +101,10 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public void UpdateTransform(Matrix matrix) {
-            matrix.Decompose2D(out var scale, out var rotation, out var position);
+            var decomposedMatrix = matrix.Decompose2D();
 
-            this._scale = scale;
-            this._position = position;
-
-            var direction = Vector2.Transform(Vector2.UnitX, rotation);
-            this._rotation = new Rotation((float)Math.Atan2(direction.Y, direction.X));
+            this._scale = decomposedMatrix.Scale;
+            this._position = decomposedMatrix.Position;
 
             this.TransformChanged.SafeInvoke(this);
         }

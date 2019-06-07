@@ -24,7 +24,6 @@
                 var random = new Random();
                 child.LocalPosition = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
                 child.LocalScale = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
-                child.LocalRotation.Angle = random.Next(0, 10) / 3f;
 
                 component.AddChild(child);
 
@@ -34,7 +33,6 @@
                     var cloneChild = clone.Children.First();
                     Assert.AreEqual(child.LocalPosition, cloneChild.LocalPosition);
                     Assert.AreEqual(child.LocalScale, cloneChild.LocalScale);
-                    Assert.AreEqual(child.LocalRotation.Angle, cloneChild.LocalRotation.Angle);
                     Assert.AreNotEqual(child.Id, cloneChild.Id);
                 }
             }
@@ -50,7 +48,6 @@
                 var random = new Random();
                 component.LocalPosition = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
                 component.LocalScale = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
-                component.LocalRotation.Angle = random.Next(0, 10) / 3f;
 
                 parent.AddChild(component);
 
@@ -69,13 +66,11 @@
                 var random = new Random();
                 component.LocalPosition = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
                 component.LocalScale = new Vector2(random.Next(-1000, 1000) / 3f, random.Next(-1000, 1000) / 3f);
-                component.LocalRotation.Angle = random.Next(0, 10) / 3f;
 
                 using (var clone = component.Clone()) {
                     Assert.AreNotEqual(component.Id, clone.Id);
                     Assert.AreEqual(component.LocalPosition, clone.LocalPosition);
                     Assert.AreEqual(component.LocalScale, clone.LocalScale);
-                    Assert.AreEqual(component.LocalRotation.Angle, clone.LocalRotation.Angle);
                 }
             }
         }
@@ -488,15 +483,6 @@
                 }
 
                 component.LocalPosition = Vector2.One;
-
-                // TODO: this test is failing because of some eweird interaction between scale and rotation.
-
-                ////for (var i = 0; i < 100; i++) {
-                ////    component.LocalRotation.Angle = random.Next(0, 10) / 3f;
-                ////    Assert.AreEqual(component.LocalRotation.Angle, component.WorldTransform.Rotation.Angle, floatDelta);
-                ////}
-
-                ////component.LocalRotation.Angle = 0f;
 
                 for (var i = 0; i < 100; i++) {
                     component.LocalScale = new Vector2(random.Next(-1000, -1) / 3f, random.Next(-1000, -1) / 3f);

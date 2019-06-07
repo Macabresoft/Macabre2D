@@ -173,8 +173,8 @@
                 var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
                 var worldTransform = this.WorldTransform;
 
-                return Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
-                    Matrix.CreateRotationZ(worldTransform.Rotation.Angle) *
+                return
+                    Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
                     Matrix.CreateScale(zoom, -zoom, 0f) *
                     Matrix.CreateTranslation(new Vector3(origin, 0f));
             }

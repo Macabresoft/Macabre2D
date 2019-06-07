@@ -14,7 +14,6 @@
         private readonly ISceneService _sceneService;
         private bool _hideGizmos;
         private bool _showGrid = true;
-        private bool _showRotationGizmo;
         private bool _showScaleGizmo;
         private bool _showSelection = true;
         private bool _showTranslationGizmo = true;
@@ -43,7 +42,7 @@
             }
 
             set {
-                if (this._hideGizmos && !this._showTranslationGizmo && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
+                if (this._hideGizmos && !this._showTranslationGizmo && !this._showScaleGizmo && !value) {
                     return;
                 }
 
@@ -51,7 +50,6 @@
                 this._editorGame.HideGizmos = this._hideGizmos;
 
                 if (this._hideGizmos) {
-                    this.ShowRotationGizmo = false;
                     this.ShowScaleGizmo = false;
                     this.ShowTranslationGizmo = false;
                 }
@@ -69,34 +67,13 @@
             }
         }
 
-        public bool ShowRotationGizmo {
-            get {
-                return this._showRotationGizmo;
-            }
-
-            set {
-                if (this._showRotationGizmo && !this._hideGizmos && !this._showScaleGizmo && !this._showTranslationGizmo && !value) {
-                    return;
-                }
-
-                this.Set(ref this._showRotationGizmo, value);
-                this._editorGame.ShowRotationGizmo = this._showRotationGizmo;
-
-                if (this._showRotationGizmo) {
-                    this.HideGizmos = false;
-                    this.ShowScaleGizmo = false;
-                    this.ShowTranslationGizmo = false;
-                }
-            }
-        }
-
         public bool ShowScaleGizmo {
             get {
                 return this._showScaleGizmo;
             }
 
             set {
-                if (this._showScaleGizmo && !this._hideGizmos && !this._showRotationGizmo && !this._showTranslationGizmo && !value) {
+                if (this._showScaleGizmo && !this._hideGizmos && !this._showTranslationGizmo && !value) {
                     return;
                 }
 
@@ -105,7 +82,6 @@
 
                 if (this._showScaleGizmo) {
                     this.HideGizmos = false;
-                    this.ShowRotationGizmo = false;
                     this.ShowTranslationGizmo = false;
                 }
             }
@@ -128,7 +104,7 @@
             }
 
             set {
-                if (this._showTranslationGizmo && !this._hideGizmos && !this._showRotationGizmo && !this._showScaleGizmo && !value) {
+                if (this._showTranslationGizmo && !this._hideGizmos && !this._showScaleGizmo && !value) {
                     return;
                 }
 
@@ -137,7 +113,6 @@
 
                 if (this._showTranslationGizmo) {
                     this.HideGizmos = false;
-                    this.ShowRotationGizmo = false;
                     this.ShowScaleGizmo = false;
                 }
             }

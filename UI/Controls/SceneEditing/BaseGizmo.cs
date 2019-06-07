@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.Framework.Diagnostics;
-    using Macabre2D.Framework.Extensions;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
@@ -103,9 +102,9 @@
 
         protected void ResetEndPoint(Transform worldTransform, float lineLength) {
             this.XAxisLineDrawer.StartPoint = worldTransform.Position;
-            this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(worldTransform.Rotation.Angle) * lineLength;
+            this.XAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(lineLength, 0f);
             this.YAxisLineDrawer.StartPoint = worldTransform.Position;
-            this.YAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-worldTransform.Rotation.Angle) * lineLength;
+            this.YAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(0f, lineLength);
         }
     }
 }

@@ -15,7 +15,6 @@
 
         public ComponentWrapper(BaseComponent component) {
             this.Component = component ?? throw new ArgumentNullException(nameof(component));
-            this.Component.LocalRotation.AngleChanged += this.LocalRotation_AngleChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
 
             foreach (var child in this.Component.Children) {
@@ -149,10 +148,6 @@
             }
 
             return result;
-        }
-
-        private void LocalRotation_AngleChanged(object sender, EventArgs e) {
-            this.RaisePropertyChanged(nameof(BaseComponent.LocalRotation));
         }
     }
 }

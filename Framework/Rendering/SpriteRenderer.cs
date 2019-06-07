@@ -126,7 +126,7 @@
                 transform.Position * this._scene.Game.Settings.PixelsPerUnit,
                 new Rectangle(this.Sprite.Location, this.Sprite.Size),
                 this.Color,
-                transform.Rotation.Angle,
+                0f,
                 Vector2.Zero,
                 transform.Scale,
                 SpriteEffects.FlipVertically,

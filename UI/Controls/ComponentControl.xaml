@@ -58,10 +58,6 @@
                                            Title="Scale"
                                            Value="{Binding ComponentScale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <valueEditors:FloatEditor Grid.Row="4"
-                                          Title="Rotation"
-                                          Value="{Binding ComponentRotation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
                 <valueEditors:EnumEditor Grid.Row="5"
                                          Grid.Column="1"
                                          EnumType="{x:Type framework:Layers}"

@@ -68,7 +68,7 @@
     <Compile Include="MouseClickDebugger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Spinner.cs" />
+    <Compile Include="Scaler.cs" />
     <Compile Include="RenderingTestGame.cs" />
     <Compile Include="MovingDot.cs" />
   </ItemGroup>

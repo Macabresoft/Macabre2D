@@ -8,8 +8,6 @@
         bool HideGizmos { get; set; }
         bool ShowGrid { get; set; }
 
-        bool ShowRotationGizmo { get; set; }
-
         bool ShowScaleGizmo { get; set; }
 
         bool ShowSelection { get; set; }

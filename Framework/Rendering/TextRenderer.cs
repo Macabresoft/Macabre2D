@@ -88,7 +88,7 @@
                     this.Text,
                     transform.Position * this._scene.Game.Settings.PixelsPerUnit,
                     this.Color,
-                    transform.Rotation.Angle,
+                    0f,
                     Vector2.Zero,
                     transform.Scale.X,
                     SpriteEffects.FlipVertically,

@@ -47,12 +47,6 @@
                                        Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Scale Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowRotationGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Circle}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.CircleOutline}"
-                                       Margin="{StaticResource StandardMarginAll}"
-                                       ToolTip="Rotation Gizmo" />
-
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.HideGizmos, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOff}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOffOutline}"

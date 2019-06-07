@@ -38,9 +38,6 @@
 
         private Vector2 _localPosition;
 
-        [DataMember]
-        private Rotation _localRotation = new Rotation(0f);
-
         private Vector2 _localScale = Vector2.One;
 
         [DataMember]
@@ -55,7 +52,6 @@
         public BaseComponent() {
             this.IsEnabledChanged += this.Self_EnabledChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
-            this._localRotation.AngleChanged += this.LocalRotation_AngleChanged;
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
         }
 
@@ -192,16 +188,6 @@
                     this._localPosition = value;
                     this.HandleMatrixOrTransformChanged();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the local rotation. This is stored in radians, not degrees.
-        /// </summary>
-        /// <value>The local rotation.</value>
-        public Rotation LocalRotation {
-            get {
-                return this._localRotation;
             }
         }
 
@@ -608,16 +594,7 @@
         /// <param name="position">The position.</param>
         public void SetWorldPosition(Vector2 position) {
             var currentTransform = this.WorldTransform;
-            this.SetWorldTransform(position, currentTransform.Rotation.Angle, currentTransform.Scale);
-        }
-
-        /// <summary>
-        /// Sets the world rotation.
-        /// </summary>
-        /// <param name="angle">The angle.</param>
-        public void SetWorldRotation(float angle) {
-            var currentTransform = this.WorldTransform;
-            this.SetWorldTransform(currentTransform.Position, angle, currentTransform.Scale);
+            this.SetWorldTransform(position, this.WorldTransform.Scale);
         }
 
         /// <summary>
@@ -625,39 +602,25 @@
         /// </summary>
         /// <param name="scale">The scale.</param>
         public void SetWorldScale(Vector2 scale) {
-            var currentTransform = this.WorldTransform;
-            this.SetWorldTransform(currentTransform.Position, currentTransform.Rotation.Angle, scale);
+            this.SetWorldTransform(this.WorldTransform.Position, scale);
         }
 
         /// <summary>
         /// Sets the world transform.
         /// </summary>
         /// <param name="position">The position.</param>
-        /// <param name="angle">The angle.</param>
-        public void SetWorldTransform(Vector2 position, float angle) {
-            var currentTransform = this.WorldTransform;
-            this.SetWorldTransform(position, angle, currentTransform.Scale);
-        }
-
-        /// <summary>
-        /// Sets the world transform.
-        /// </summary>
-        /// <param name="position">The position.</param>
-        /// <param name="angle">The angle.</param>
         /// <param name="scale">The scale.</param>
-        public void SetWorldTransform(Vector2 position, float angle, Vector2 scale) {
+        public void SetWorldTransform(Vector2 position, Vector2 scale) {
             var matrix =
                 Matrix.CreateScale(scale.X, scale.Y, 1f) *
-                Matrix.CreateRotationZ(angle) *
                 Matrix.CreateTranslation(position.X, position.Y, 0f);
 
             if (this.Parent != null) {
-                matrix = Matrix.Invert(this.Parent.TransformMatrix) * matrix;
+                matrix *= Matrix.Invert(this.Parent.TransformMatrix);
             }
 
             var localTransform = matrix.ToTransform();
             this._localPosition = localTransform.Position;
-            this._localRotation.Angle = localTransform.Rotation.Angle;
             this._localScale = localTransform.Scale;
             this.HandleMatrixOrTransformChanged();
         }
@@ -755,11 +718,10 @@
         private Matrix GetMatrix() {
             var transformMatrix =
                 Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
-                Matrix.CreateRotationZ(this.LocalRotation.Angle) *
                 Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
 
             if (this.Parent != null) {
-                transformMatrix = this.Parent.TransformMatrix * transformMatrix;
+                transformMatrix *= this.Parent.TransformMatrix;
             }
 
             return transformMatrix;
@@ -769,10 +731,6 @@
             this._transformMatrix.Reset();
             this.TransformChanged.SafeInvoke(this);
             this._isTransformUpToDate = false;
-        }
-
-        private void LocalRotation_AngleChanged(object sender, EventArgs e) {
-            this.HandleMatrixOrTransformChanged();
         }
 
         private void Parent_EnabledChanged(object sender, EventArgs e) {

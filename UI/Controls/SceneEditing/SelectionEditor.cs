@@ -11,9 +11,8 @@
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
-        private readonly RotationGizmo _rotationGizmo;
         private readonly ScaleGizmo _scaleGizmo;
-        private readonly TranslationGizmo _translateGizmo;
+        private readonly TranslationGizmo _translationGizmo;
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             Color = new Color(255, 255, 255, 150),
@@ -32,14 +31,12 @@
 
         public SelectionEditor(
             IComponentService componentService,
-            RotationGizmo rotationGizmo,
             ScaleGizmo scaleGizmo,
-            TranslationGizmo translateGizmo) {
+            TranslationGizmo translationGizmo) {
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
-            this._rotationGizmo = rotationGizmo;
             this._scaleGizmo = scaleGizmo;
-            this._translateGizmo = translateGizmo;
+            this._translationGizmo = translationGizmo;
         }
 
         public void Draw(GameTime gameTime, float viewHeight) {
@@ -54,14 +51,11 @@
                 this._colliderDrawer.Draw(gameTime, viewHeight);
             }
 
-            if (this._game.ShowRotationGizmo) {
-                this._rotationGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
-            }
-            else if (this._game.ShowScaleGizmo) {
+            if (this._game.ShowScaleGizmo) {
                 this._scaleGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
             }
             else if (this._game.ShowTranslationGizmo) {
-                this._translateGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
+                this._translationGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
             }
         }
 
@@ -83,9 +77,8 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
             this._colliderDrawer.Initialize(this._game.CurrentScene);
-            this._rotationGizmo.Initialize(this._game);
             this._scaleGizmo.Initialize(this._game);
-            this._translateGizmo.Initialize(this._game);
+            this._translationGizmo.Initialize(this._game);
         }
 
         public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
@@ -94,14 +87,11 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    if (this._game.ShowRotationGizmo) {
-                        hadInteractions = this._rotationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
-                    }
-                    else if (this._game.ShowScaleGizmo) {
+                    if (this._game.ShowScaleGizmo) {
                         hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                     }
                     else if (this._game.ShowTranslationGizmo) {
-                        hadInteractions = this._translateGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
+                        hadInteractions = this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                     }
                 }
 

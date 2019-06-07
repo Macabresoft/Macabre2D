@@ -23,7 +23,7 @@
 
         public void Update(GameTime gameTime) {
             var mouseState = Mouse.GetState();
-            this.SetWorldTransform(this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position), 0f);
+            this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position));
             Console.WriteLine(this._camera.LocalPosition);
         }
 

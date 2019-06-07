@@ -96,22 +96,6 @@
             }
         }
 
-        public float ComponentRotation {
-            get {
-                if (this?.Component?.Component != null) {
-                    return MathHelper.ToDegrees(this.Component.Component.LocalRotation.Angle);
-                }
-
-                return 0;
-            }
-
-            set {
-                var result = MathHelper.ToRadians(value);
-                var propertyPath = $"{nameof(this.Component.Component.LocalRotation)}.{nameof(this.Component.Component.LocalRotation.Angle)}";
-                this.UpdateComponentProperty(propertyPath, this.ComponentRotation, result);
-            }
-        }
-
         public Vector2 ComponentScale {
             get {
                 if (this?.Component?.Component != null) {
@@ -242,7 +226,6 @@
             this.RaisePropertyChanged(nameof(this.ComponentName));
             this.RaisePropertyChanged(nameof(this.ComponentScale));
             this.RaisePropertyChanged(nameof(this.ComponentPosition));
-            this.RaisePropertyChanged(nameof(this.ComponentRotation));
             this.RaisePropertyChanged(nameof(this.ComponentTypeName));
             this.RaisePropertyChanged(nameof(this.ComponentLayer));
         }
@@ -269,9 +252,6 @@
             if (sender is ComponentWrapper) {
                 if (e.PropertyName == nameof(BaseComponent.LocalPosition)) {
                     this.RaisePropertyChanged(nameof(this.ComponentPosition));
-                }
-                else if (e.PropertyName == nameof(BaseComponent.LocalRotation)) {
-                    this.RaisePropertyChanged(nameof(this.ComponentRotation));
                 }
                 else if (e.PropertyName == nameof(BaseComponent.LocalScale)) {
                     this.RaisePropertyChanged(nameof(this.ComponentScale));
