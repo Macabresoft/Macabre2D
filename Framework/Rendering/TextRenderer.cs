@@ -15,6 +15,8 @@
         private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
         private readonly ResettableLazy<Vector2> _size;
         private Font _font;
+        private Vector2 _offset;
+        private OffsetType _offsetType = OffsetType.Custom;
         private string _text = string.Empty;
 
         /// <summary>
@@ -57,6 +59,43 @@
                 if (this.IsInitialized) {
                     this._boundingArea.Reset();
                     this._size.Reset();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the offset. If OFfsetType is anything other than Custom, this will be
+        /// overridden when LoadContent(...) is called. This value is in pixels.
+        /// </summary>
+        /// <value>The offset.</value>
+        [DataMember]
+        public Vector2 Offset {
+            get {
+                return this._offset;
+            }
+            set {
+                this._offset = value;
+                this._rotatableTransform.Reset();
+                this._boundingArea.Reset();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of the offset.
+        /// </summary>
+        /// <value>The type of the offset.</value>
+        [DataMember]
+        public OffsetType OffsetType {
+            get {
+                return this._offsetType;
+            }
+            set {
+                if (value != this._offsetType) {
+                    this._offsetType = value;
+
+                    if (this.IsInitialized) {
+                        this.SetOffset();
+                    }
                 }
             }
         }
@@ -162,14 +201,17 @@
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this.Font != null && this.LocalScale.X != 0f && this.LocalScale.Y != 0f && this._scene?.Game is IGame game) {
-                var size = this._size.Value;
+            if (this.Font != null && this.LocalScale.X != 0f && this.LocalScale.Y != 0f) {
+                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
+
+                var size = this._size.Value * inversePixelDensity;
+                var offset = this.Offset * inversePixelDensity;
                 var rotationAngle = this.Rotation.Angle;
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(rotationAngle).Position,
-                    this.GetWorldTransform(new Vector2(size.X, 0f), rotationAngle).Position,
-                    this.GetWorldTransform(new Vector2(size.X, size.Y), rotationAngle).Position,
-                    this.GetWorldTransform(new Vector2(0f, size.Y), rotationAngle).Position
+                    this.GetWorldTransform(offset, rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(size.X, 0f), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(size.X, size.Y), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, size.Y), rotationAngle).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
@@ -187,7 +229,7 @@
         }
 
         private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.Rotation.Angle);
+            return this.GetWorldTransform(this.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
         }
 
         private Vector2 CreateSize() {
@@ -195,8 +237,8 @@
             if (this._scene?.Game is IGame game) {
                 var size = this.Font.SpriteFont.MeasureString(this.Text);
 
-                var width = size.X / game.Settings.PixelsPerUnit;
-                var height = size.Y / game.Settings.PixelsPerUnit;
+                var width = size.X;
+                var height = size.Y;
 
                 if (this.LocalScale.X < 0f) {
                     width *= -1f;
@@ -219,6 +261,51 @@
             this._boundingArea.Reset();
             this._rotatableTransform.Reset();
             this._size.Reset();
+        }
+
+        private void SetOffset() {
+            if (this.Font == null || string.IsNullOrEmpty(this.Text) || this.OffsetType == OffsetType.Custom) {
+                return;
+            }
+
+            var size = this._size.Value;
+            switch (this.OffsetType) {
+                case OffsetType.Bottom:
+                    this.Offset = new Vector2(-size.X * 0.5f, 0f);
+                    break;
+
+                case OffsetType.BottomLeft:
+                    this.Offset = Vector2.Zero;
+                    break;
+
+                case OffsetType.BottomRight:
+                    this.Offset = new Vector2(-size.X, 0f);
+                    break;
+
+                case OffsetType.Center:
+                    this.Offset = new Vector2(-size.X * 0.5f, -size.Y * 0.5f);
+                    break;
+
+                case OffsetType.Left:
+                    this.Offset = new Vector2(0f, -size.Y * 0.5f);
+                    break;
+
+                case OffsetType.Right:
+                    this.Offset = new Vector2(-size.X, -size.Y * 0.5f);
+                    break;
+
+                case OffsetType.Top:
+                    this.Offset = new Vector2(-size.X * 0.5f, -size.Y);
+                    break;
+
+                case OffsetType.TopLeft:
+                    this.Offset = new Vector2(0f, -size.Y);
+                    break;
+
+                case OffsetType.TopRight:
+                    this.Offset = new Vector2(-size.X, -size.Y);
+                    break;
+            }
         }
     }
 }

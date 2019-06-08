@@ -22,6 +22,17 @@
         Color FallbackBackgroundColor { get; }
 
         /// <summary>
+        /// Gets the inverse of <see cref="PixelsPerUnit"/>.
+        /// </summary>
+        /// <value>
+        /// <remarks>This will be calculated when <see cref="PixelsPerUnit"/> is set. Multiplication
+        /// is a quicker operation than division, so if you find yourself dividing by <see
+        /// cref="PixelsPerUnit"/> regularly, consider multiplying by this instead as it will produce
+        /// the same value, but quicker.</remarks> The inverse pixels per unit.
+        /// </value>
+        float InversePixelsPerUnit { get; }
+
+        /// <summary>
         /// Getsthe pixels per unit. This value is the number of pixels per abritrary Macabre2D units.
         /// </summary>
         /// <value>The pixel density.</value>
@@ -97,6 +108,9 @@
         public Color FallbackBackgroundColor { get; set; } = Color.Black;
 
         /// <inheritdoc/>
+        public float InversePixelsPerUnit { get; private set; } = 1f / 32f;
+
+        /// <inheritdoc/>
         [DataMember]
         public int PixelsPerUnit {
             get {
@@ -109,6 +123,7 @@
                 }
 
                 this._pixelsPerUnit = value;
+                this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
             }
         }
 

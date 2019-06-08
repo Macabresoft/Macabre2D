@@ -108,14 +108,14 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, float viewHeight) {
-            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game?.Settings == null) {
+            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game == null) {
                 return;
             }
 
             var transform = this._rotatableTransform.Value;
             this._scene.Game.SpriteBatch.Draw(
                 this.Sprite.Texture,
-                transform.Position * this._scene.Game.Settings.PixelsPerUnit,
+                transform.Position * GameSettings.Instance.PixelsPerUnit,
                 new Rectangle(this.Sprite.Location, this.Sprite.Size),
                 this.Color,
                 transform.Rotation.Angle,
@@ -186,11 +186,11 @@
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this.Sprite != null && this._scene?.Game is IGame game) {
-                var pixelDensity = (float)game.Settings.PixelsPerUnit;
-                var width = this.Sprite.Size.X / pixelDensity;
-                var height = this.Sprite.Size.Y / pixelDensity;
-                var offset = this.Offset / pixelDensity;
+            if (this.Sprite != null) {
+                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
+                var width = this.Sprite.Size.X * inversePixelDensity;
+                var height = this.Sprite.Size.Y * inversePixelDensity;
+                var offset = this.Offset * inversePixelDensity;
                 var angle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
@@ -215,8 +215,7 @@
         }
 
         private RotatableTransform CreateRotatableTransform() {
-            var pixelDensity = this._scene?.Game?.Settings?.PixelsPerUnit ?? 1f;
-            return this.GetWorldTransform(this.Offset / pixelDensity, this.Rotation.Angle);
+            return this.GetWorldTransform(this.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
