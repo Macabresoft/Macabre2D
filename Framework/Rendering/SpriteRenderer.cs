@@ -14,14 +14,11 @@
     /// <seealso cref="IDrawableComponent"/>
     /// <seealso cref="IDisposable"/>
     /// <seealso cref="BaseComponent"/>
-    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite> {
+    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private readonly ResettableLazy<Transform> _spriteTransform;
+        private readonly ResettableLazy<RotatableTransform> _spriteTransform;
         private Vector2 _offset;
-
-        [DataMember]
         private OffsetType _offsetType = OffsetType.Custom;
-
         private Sprite _sprite;
 
         /// <summary>
@@ -29,7 +26,7 @@
         /// </summary>
         public SpriteRenderer() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._spriteTransform = new ResettableLazy<Transform>(this.CreateTransform);
+            this._spriteTransform = new ResettableLazy<RotatableTransform>(this.CreateTransform);
         }
 
         /// <inheritdoc/>
@@ -67,6 +64,7 @@
         /// Gets or sets the type of the offset.
         /// </summary>
         /// <value>The type of the offset.</value>
+        [DataMember]
         public OffsetType OffsetType {
             get {
                 return this._offsetType;
@@ -81,6 +79,10 @@
                 }
             }
         }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
         /// Gets or sets the sprite.
@@ -108,7 +110,7 @@
         /// Gets the transform.
         /// </summary>
         /// <value>The transform.</value>
-        private Transform SpriteTransform {
+        private RotatableTransform SpriteTransform {
             get {
                 return this._spriteTransform.Value;
             }
@@ -126,7 +128,7 @@
                 transform.Position * this._scene.Game.Settings.PixelsPerUnit,
                 new Rectangle(this.Sprite.Location, this.Sprite.Size),
                 this.Color,
-                0f,
+                transform.Rotation.Angle,
                 Vector2.Zero,
                 transform.Scale,
                 SpriteEffects.FlipVertically,
@@ -184,6 +186,12 @@
         protected override void Initialize() {
             this.SetOffset();
             this.TransformChanged += this.Self_TransformChanged;
+
+            if (this.Rotation == null) {
+                this.Rotation = new Rotation();
+            }
+
+            this.Rotation.AngleChanged += this.Self_TransformChanged;
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -193,12 +201,13 @@
                 var width = this.Sprite.Size.X / pixelDensity;
                 var height = this.Sprite.Size.Y / pixelDensity;
                 var offset = this.Offset / pixelDensity;
+                var angle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(offset).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, height)).Position,
-                    this.GetWorldTransform(offset + new Vector2(0f, height)).Position
+                    this.GetWorldTransform(offset, angle).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, 0f), angle).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height), angle).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height), angle).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
@@ -215,9 +224,9 @@
             return result;
         }
 
-        private Transform CreateTransform() {
+        private RotatableTransform CreateTransform() {
             var pixelDensity = this._scene?.Game?.Settings?.PixelsPerUnit ?? 1f;
-            return this.GetWorldTransform(this.Offset / pixelDensity);
+            return this.GetWorldTransform(this.Offset / pixelDensity, this.Rotation.Angle);
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
@@ -229,8 +238,6 @@
             if (this.Sprite == null || this.Sprite.Texture == null || this.OffsetType == OffsetType.Custom) {
                 return;
             }
-
-            var pixelDensity = this._scene.Game.Settings.PixelsPerUnit;
 
             switch (this.OffsetType) {
                 case OffsetType.Bottom:

@@ -9,7 +9,7 @@
     /// Represents transform information for an object.
     /// </summary>
     [DataContract]
-    public sealed class Transform {
+    public class Transform {
 
         [DataMember]
         private Vector2 _position;
@@ -62,7 +62,7 @@
             set {
                 if (this._position != value) {
                     this._position = value;
-                    this.TransformChanged.SafeInvoke(this);
+                    this.RaiseTransformChanged();
                 }
             }
         }
@@ -79,7 +79,7 @@
             set {
                 if (this._scale != value) {
                     this._scale = value;
-                    this.TransformChanged.SafeInvoke(this);
+                    this.RaiseTransformChanged();
                 }
             }
         }
@@ -93,20 +93,27 @@
             this._position = position;
             this._scale = scale;
 
-            this.TransformChanged.SafeInvoke(this);
+            this.RaiseTransformChanged();
         }
 
         /// <summary>
         /// Updates the transform.
         /// </summary>
         /// <param name="matrix">The matrix.</param>
-        public void UpdateTransform(Matrix matrix) {
+        public virtual void UpdateTransform(Matrix matrix) {
             var decomposedMatrix = matrix.Decompose2D();
-
             this._scale = decomposedMatrix.Scale;
             this._position = decomposedMatrix.Position;
+            this.RaiseTransformChanged();
+        }
 
+        internal void RaiseTransformChanged() {
             this.TransformChanged.SafeInvoke(this);
+        }
+
+        internal void SetPositionAndScale(Vector2 position, Vector2 scale) {
+            this._position = position;
+            this._scale = scale;
         }
     }
 }

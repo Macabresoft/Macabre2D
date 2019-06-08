@@ -527,6 +527,24 @@
         }
 
         /// <summary>
+        /// Gets the world transform.
+        /// </summary>
+        /// <param name="originOffset">The origin offset.</param>
+        /// <param name="rotation">The rotation.</param>
+        /// <returns>The world transform.</returns>
+        public RotatableTransform GetWorldTransform(Vector2 originOffset, float rotation) {
+            var worldTransform = this.WorldTransform;
+
+            var matrix =
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
+                Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
+                Matrix.CreateRotationZ(rotation) *
+                Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+
+            return matrix.ToRotatableTransform();
+        }
+
+        /// <summary>
         /// Determines whether this instance is an ancestor of the specified component.
         /// </summary>
         /// <param name="component">The component.</param>
