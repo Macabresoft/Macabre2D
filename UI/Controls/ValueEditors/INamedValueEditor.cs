@@ -17,13 +17,14 @@
 
     public sealed class EditableValueChangedEventArgs<T> : EventArgs {
 
-        public EditableValueChangedEventArgs(T value, string propertyName) {
-            this.Value = value;
+        public EditableValueChangedEventArgs(T newValue, T oldValue, string propertyName) {
+            this.NewValue = newValue;
+            this.OldValue = oldValue;
             this.PropertyName = propertyName;
         }
 
+        public T NewValue { get; }
+        public T OldValue { get; }
         public string PropertyName { get; }
-
-        public T Value { get; }
     }
 }

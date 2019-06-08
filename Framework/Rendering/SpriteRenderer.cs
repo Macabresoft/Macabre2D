@@ -54,9 +54,8 @@
                 return this._offset;
             }
             set {
-                this._offset = value;
-                this._rotatableTransform.Reset();
-                this._boundingArea.Reset();
+                this.SetOffset(value);
+                this._offsetType = OffsetType.Custom;
             }
         }
 
@@ -223,6 +222,12 @@
             this._rotatableTransform.Reset();
         }
 
+        private void SetOffset(Vector2 newOffset) {
+            this._offset = newOffset;
+            this._rotatableTransform.Reset();
+            this._boundingArea.Reset();
+        }
+
         private void SetOffset() {
             if (this.Sprite == null || this.Sprite.Texture == null || this.OffsetType == OffsetType.Custom) {
                 return;
@@ -230,39 +235,39 @@
 
             switch (this.OffsetType) {
                 case OffsetType.Bottom:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width * 0.5f, 0f);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, 0f));
                     break;
 
                 case OffsetType.BottomLeft:
-                    this.Offset = Vector2.Zero;
+                    this.SetOffset(Vector2.Zero);
                     break;
 
                 case OffsetType.BottomRight:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width, 0f);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, 0f));
                     break;
 
                 case OffsetType.Center:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height * 0.5f);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height * 0.5f));
                     break;
 
                 case OffsetType.Left:
-                    this.Offset = new Vector2(0f, -this.Sprite.Texture.Height * 0.5f);
+                    this.SetOffset(new Vector2(0f, -this.Sprite.Texture.Height * 0.5f));
                     break;
 
                 case OffsetType.Right:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height * 0.5f);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height * 0.5f));
                     break;
 
                 case OffsetType.Top:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height));
                     break;
 
                 case OffsetType.TopLeft:
-                    this.Offset = new Vector2(0f, -this.Sprite.Texture.Height);
+                    this.SetOffset(new Vector2(0f, -this.Sprite.Texture.Height));
                     break;
 
                 case OffsetType.TopRight:
-                    this.Offset = new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height);
+                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height));
                     break;
             }
         }

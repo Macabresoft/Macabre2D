@@ -56,7 +56,7 @@
 
         protected virtual void OnValueChanged(T newValue, T oldValue, DependencyObject d) {
             if (d is INamedValueEditor<T> editor) {
-                var valueChangedEventArgs = new EditableValueChangedEventArgs<T>(editor.Value, editor.PropertyName);
+                var valueChangedEventArgs = new EditableValueChangedEventArgs<T>(newValue, oldValue, editor.PropertyName);
                 if (editor.ValueChangedCommand != null && editor.ValueChangedCommand.CanExecute(valueChangedEventArgs)) {
                     editor.ValueChangedCommand.Execute(valueChangedEventArgs);
                 }
@@ -83,23 +83,17 @@
                     newValue = (T)e.NewValue;
                 }
                 else {
-                    newValue = default(T);
+                    newValue = default;
                 }
 
                 if (e.OldValue is T) {
                     oldValue = (T)e.OldValue;
                 }
                 else {
-                    oldValue = default(T);
+                    oldValue = default;
                 }
 
                 editor.OnValueChanged(newValue, oldValue, d);
-
-                var valueChangedEventArgs = new EditableValueChangedEventArgs<T>(editor.Value, editor.PropertyName);
-                if (editor.ValueChangedCommand != null && editor.ValueChangedCommand.CanExecute(valueChangedEventArgs)) {
-                    editor.ValueChangedCommand.Execute(valueChangedEventArgs);
-                }
-
                 await editor.OnValueChangedAsync(newValue, oldValue, d);
             }
         }

@@ -74,9 +74,7 @@
                 return this._offset;
             }
             set {
-                this._offset = value;
-                this._rotatableTransform.Reset();
-                this._boundingArea.Reset();
+                this.SetOffset(value);
             }
         }
 
@@ -263,6 +261,12 @@
             this._size.Reset();
         }
 
+        private void SetOffset(Vector2 newOffset) {
+            this._offset = newOffset;
+            this._rotatableTransform.Reset();
+            this._boundingArea.Reset();
+        }
+
         private void SetOffset() {
             if (this.Font == null || string.IsNullOrEmpty(this.Text) || this.OffsetType == OffsetType.Custom) {
                 return;
@@ -271,39 +275,39 @@
             var size = this._size.Value;
             switch (this.OffsetType) {
                 case OffsetType.Bottom:
-                    this.Offset = new Vector2(-size.X * 0.5f, 0f);
+                    this.SetOffset(new Vector2(-size.X * 0.5f, 0f));
                     break;
 
                 case OffsetType.BottomLeft:
-                    this.Offset = Vector2.Zero;
+                    this.SetOffset(Vector2.Zero);
                     break;
 
                 case OffsetType.BottomRight:
-                    this.Offset = new Vector2(-size.X, 0f);
+                    this.SetOffset(new Vector2(-size.X, 0f));
                     break;
 
                 case OffsetType.Center:
-                    this.Offset = new Vector2(-size.X * 0.5f, -size.Y * 0.5f);
+                    this.SetOffset(new Vector2(-size.X * 0.5f, -size.Y * 0.5f));
                     break;
 
                 case OffsetType.Left:
-                    this.Offset = new Vector2(0f, -size.Y * 0.5f);
+                    this.SetOffset(new Vector2(0f, -size.Y * 0.5f));
                     break;
 
                 case OffsetType.Right:
-                    this.Offset = new Vector2(-size.X, -size.Y * 0.5f);
+                    this.SetOffset(new Vector2(-size.X, -size.Y * 0.5f));
                     break;
 
                 case OffsetType.Top:
-                    this.Offset = new Vector2(-size.X * 0.5f, -size.Y);
+                    this.SetOffset(new Vector2(-size.X * 0.5f, -size.Y));
                     break;
 
                 case OffsetType.TopLeft:
-                    this.Offset = new Vector2(0f, -size.Y);
+                    this.SetOffset(new Vector2(0f, -size.Y));
                     break;
 
                 case OffsetType.TopRight:
-                    this.Offset = new Vector2(-size.X, -size.Y);
+                    this.SetOffset(new Vector2(-size.X, -size.Y));
                     break;
             }
         }

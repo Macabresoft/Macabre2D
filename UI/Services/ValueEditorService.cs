@@ -73,7 +73,7 @@
                     Value = value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(string)) {
@@ -83,7 +83,7 @@
                     Value = (string)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<string>>(e => this.UpdateProperty(e.PropertyName, (string)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<string>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(int)) {
@@ -93,7 +93,7 @@
                     Value = (int)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<int>>(e => this.UpdateProperty(e.PropertyName, (int)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<int>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(float)) {
@@ -103,7 +103,7 @@
                     Value = (float)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<float>>(e => this.UpdateProperty(e.PropertyName, (float)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<float>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(bool)) {
@@ -113,7 +113,7 @@
                     Value = (bool)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<bool>>(e => this.UpdateProperty(e.PropertyName, (bool)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<bool>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Vector2)) {
@@ -123,7 +123,7 @@
                     Value = (Vector2)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Vector2>>(e => this.UpdateProperty(e.PropertyName, (Vector2)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Vector2>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Point)) {
@@ -133,7 +133,7 @@
                     Value = (Microsoft.Xna.Framework.Point)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Point>>(e => this.UpdateProperty(e.PropertyName, (Microsoft.Xna.Framework.Point)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Point>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Color)) {
@@ -143,7 +143,7 @@
                     Value = (Microsoft.Xna.Framework.Color)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Color>>(e => this.UpdateProperty(e.PropertyName, (Microsoft.Xna.Framework.Color)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Color>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Sprite)) {
@@ -158,7 +158,7 @@
                     editor.SpriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite.Id == sprite.Id);
                 }
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Sprite>>(e => this.UpdateProperty(e.PropertyName, value as Sprite, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Sprite>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 editor.SelectSpriteCommand = new RelayCommand(() => {
                     var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite);
                     if (asset is SpriteWrapper spriteWrapper) {
@@ -175,7 +175,7 @@
                     Value = value as AudioClip
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<AudioClip>>(e => this.UpdateProperty(e.PropertyName, value as AudioClip, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<AudioClip>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 editor.SelectAudioClipCommand = new RelayCommand(() => {
                     var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Audio, AssetType.Audio);
                     if (asset is AudioAsset audioAsset) {
@@ -197,7 +197,7 @@
                     editor.Asset = spriteAnimationAssets.FirstOrDefault(x => x.SavableValue.Id == animation.Id);
                 }
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<SpriteAnimation>>(e => this.UpdateProperty(e.PropertyName, value as SpriteAnimation, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<SpriteAnimation>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 editor.SelectSpriteAnimationCommand = new RelayCommand(() => {
                     var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation);
                     if (asset is SpriteAnimationAsset spriteAnimationAsset) {
@@ -220,7 +220,7 @@
                     editor.Asset = fontAssets.FirstOrDefault(x => x.SavableValue.Id == font.Id);
                 }
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Font>>(e => this.UpdateProperty(e.PropertyName, value as Font, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Font>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 editor.SelectFontCommand = new RelayCommand(() => {
                     var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font);
                     if (asset is FontAsset fontAsset) {
@@ -241,7 +241,7 @@
                     Value = (Collider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Collider>>(e => this.UpdateProperty(e.PropertyName, (Collider)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Collider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(LineCollider)) {
@@ -252,7 +252,7 @@
                     Value = (LineCollider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<LineCollider>>(e => this.UpdateProperty(e.PropertyName, (LineCollider)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<LineCollider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(RectangleCollider)) {
@@ -263,7 +263,7 @@
                     Value = (RectangleCollider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<RectangleCollider>>(e => this.UpdateProperty(e.PropertyName, (RectangleCollider)value, e.Value, originalObject, editor), true);
+                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<RectangleCollider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType.IsSubclassOf(typeof(BaseComponent))) {
@@ -279,7 +279,7 @@
                         Value = value
                     };
 
-                    editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, value, e.Value, originalObject, editor), true);
+                    editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                     result = editor;
                 }
             }

@@ -6,7 +6,7 @@
     public partial class EnumEditor : NamedValueEditor<object> {
 
         public static readonly DependencyProperty EnumTypeProperty = DependencyProperty.Register(
-            nameof(EnumType),
+            nameof(EnumEditor.EnumType),
             typeof(Type),
             typeof(EnumEditor),
             new PropertyMetadata());
