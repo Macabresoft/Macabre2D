@@ -16,7 +16,7 @@
     /// <seealso cref="BaseComponent"/>
     public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private readonly ResettableLazy<RotatableTransform> _spriteTransform;
+        private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
         private Vector2 _offset;
         private OffsetType _offsetType = OffsetType.Custom;
         private Sprite _sprite;
@@ -26,7 +26,7 @@
         /// </summary>
         public SpriteRenderer() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._spriteTransform = new ResettableLazy<RotatableTransform>(this.CreateTransform);
+            this._rotatableTransform = new ResettableLazy<RotatableTransform>(this.CreateRotatableTransform);
         }
 
         /// <inheritdoc/>
@@ -55,7 +55,7 @@
             }
             set {
                 this._offset = value;
-                this._spriteTransform.Reset();
+                this._rotatableTransform.Reset();
                 this._boundingArea.Reset();
             }
         }
@@ -106,23 +106,13 @@
             }
         }
 
-        /// <summary>
-        /// Gets the transform.
-        /// </summary>
-        /// <value>The transform.</value>
-        private RotatableTransform SpriteTransform {
-            get {
-                return this._spriteTransform.Value;
-            }
-        }
-
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, float viewHeight) {
             if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game?.Settings == null) {
                 return;
             }
 
-            var transform = this.SpriteTransform;
+            var transform = this._rotatableTransform.Value;
             this._scene.Game.SpriteBatch.Draw(
                 this.Sprite.Texture,
                 transform.Position * this._scene.Game.Settings.PixelsPerUnit,
@@ -224,14 +214,14 @@
             return result;
         }
 
-        private RotatableTransform CreateTransform() {
+        private RotatableTransform CreateRotatableTransform() {
             var pixelDensity = this._scene?.Game?.Settings?.PixelsPerUnit ?? 1f;
             return this.GetWorldTransform(this.Offset / pixelDensity, this.Rotation.Angle);
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._spriteTransform.Reset();
             this._boundingArea.Reset();
+            this._rotatableTransform.Reset();
         }
 
         private void SetOffset() {
