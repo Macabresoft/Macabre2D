@@ -27,6 +27,8 @@ namespace Macabre2D.UI.Common {
 
         public const string SpriteFontExtension = ".spritefont";
 
+        public const string TileSetExtension = ".m2dtileset";
+
         public static readonly string DefaultProjectPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Macabre2D", "Projects");
 
         public static readonly string ProjectFilter = $"Project files (*{ProjectExtension})|*{ProjectExtension}|All Files (*.*)|*.*";

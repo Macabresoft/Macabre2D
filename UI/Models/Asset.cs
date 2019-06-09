@@ -26,6 +26,8 @@
 
         Font = 1 << 6,
 
+        TileSet = 1 << 7,
+
         All = ~Folder
     }
 

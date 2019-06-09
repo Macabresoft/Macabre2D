@@ -55,6 +55,12 @@
             }
         }
 
+        internal Sprite[,] Sprites {
+            get {
+                return _sprites;
+            }
+        }
+
         /// <summary>
         /// Sets the sprites.
         /// </summary>
