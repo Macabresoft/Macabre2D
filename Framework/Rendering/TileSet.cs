@@ -24,12 +24,6 @@
             get {
                 return this._sprites.GetLength(0);
             }
-
-            internal set {
-                if (this.Columns != value && value > 0) {
-                    this.ResizeArray(value, this.Rows);
-                }
-            }
         }
 
         /// <inheritdoc/>
@@ -46,12 +40,6 @@
         public int Rows {
             get {
                 return this._sprites.GetLength(1);
-            }
-
-            internal set {
-                if (this.Rows != value && value > 0) {
-                    this.ResizeArray(this.Columns, value);
-                }
             }
         }
 
@@ -77,23 +65,6 @@
             }
 
             this._sprites = sprites;
-        }
-
-        private void ResizeArray(int columns, int rows) {
-            var originalColumns = this._sprites.GetLength(0);
-            var originalRows = this._sprites.GetLength(1);
-            var newArray = new Sprite[columns, rows];
-
-            for (var x = 0; x < columns; x++) {
-                for (var y = 0; y < rows; y++) {
-                    if (x < originalColumns && y < originalRows) {
-                        newArray[x, y] = this._sprites[x, y];
-                    }
-                    else {
-                        newArray[x, y] = null;
-                    }
-                }
-            }
         }
     }
 }
