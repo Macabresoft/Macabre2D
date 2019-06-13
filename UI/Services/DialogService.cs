@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.Framework.Rendering;
     using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
@@ -60,6 +61,22 @@
             }
             else {
                 project = null;
+            }
+
+            return result;
+        }
+
+        public bool ShowEditTileSetDialog(Sprite[,] existingTileSet, out Sprite[,] newSprites) {
+            var window = this._container.Resolve<EditTileSetDialog>();
+            window.ViewModel.Sprites = existingTileSet.Clone() as Sprite[,];
+            window.ShowDialog();
+
+            var result = window.DialogResult.HasValue && window.DialogResult.Value;
+            if (result) {
+                newSprites = window.ViewModel.Sprites;
+            }
+            else {
+                newSprites = null;
             }
 
             return result;
