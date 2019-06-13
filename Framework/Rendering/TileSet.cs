@@ -57,6 +57,10 @@
         /// The array for sprites should have at least one column and one row.
         /// </exception>
         public void SetSprites(Sprite[,] sprites) {
+            if (sprites == null) {
+                throw new ArgumentNullException(nameof(sprites));
+            }
+
             var width = sprites.GetLength(0);
             var height = sprites.GetLength(1);
 

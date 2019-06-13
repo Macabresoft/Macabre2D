@@ -15,6 +15,11 @@
             get {
                 return this.SavableValue.Sprites;
             }
+
+            set {
+                this.SavableValue.SetSprites(value);
+                this.RaisePropertyChanged(nameof(this.Sprites));
+            }
         }
 
         public override AssetType Type {
