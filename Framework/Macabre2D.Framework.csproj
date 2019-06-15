@@ -117,6 +117,7 @@
     <Compile Include="IRotatable.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
+    <Compile Include="Rendering\ITileMap.cs" />
     <Compile Include="Rendering\TileSet.cs" />
     <Compile Include="ResettableLazy.cs" />
     <Compile Include="RotatableTransform.cs" />
