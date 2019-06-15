@@ -124,6 +124,7 @@
                 0f);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<Guid> GetOwnedAssetIds() {
             return this.Sprite != null ? new[] { this.Sprite.Id } : new Guid[0];
         }
