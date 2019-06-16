@@ -38,10 +38,7 @@
         [DataMember]
         public Color Color { get; set; } = Color.White;
 
-        /// <summary>
-        /// Gets or sets the size of the map. This is how many grid tiles it will contain.
-        /// </summary>
-        /// <value>The size of the map.</value>
+        /// <inheritdoc/>
         public Point MapSize {
             get {
                 return this._mapSize;
@@ -78,23 +75,28 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the size of the tiles in pixels. These will still be scaled according to
-        /// pixel density and the current object's scale.
-        /// </summary>
-        /// <value>The size of the tiles.</value>
-        [DataMember]
+        /// <inheritdoc/>
         public Point TileSize {
             get {
-                return this._tileSize;
+                return this.Sprite?.Size ?? Point.Zero;
             }
+        }
 
-            set {
-                if (this._tileSize != value && value.X > 0 && value.Y > 0) {
-                    this._tileSize = value;
-                    this._boundingArea.Reset();
-                }
+        /// <summary>
+        /// Adds an active tile at the specified position.
+        /// </summary>
+        /// <param name="tilePosition">The tile position.</param>
+        public void AddActiveTile(Point tilePosition) {
+            if (this.IsValidTilePosition(tilePosition)) {
+                this._activeTiles.Add(tilePosition);
             }
+        }
+
+        /// <summary>
+        /// Clears all active tiles.
+        /// </summary>
+        public void ClearActiveTiles() {
+            this._activeTiles.Clear();
         }
 
         /// <inheritdoc/>
@@ -105,7 +107,7 @@
 
             // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this._activeTiles) {
-                var position = new Vector2(tile.X * this.TileSize.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.TileSize.Y * GameSettings.Instance.InversePixelsPerUnit);
+                var position = new Vector2(tile.X * this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit);
                 var transform = this.GetWorldTransform(position);
                 this._scene.Game.SpriteBatch.Draw(
                     this.Sprite.Texture,
@@ -137,6 +139,14 @@
             }
         }
 
+        /// <summary>
+        /// Removes the active tile.
+        /// </summary>
+        /// <param name="tilePosition">The tile position.</param>
+        public void RemoveActiveTile(Point tilePosition) {
+            this._activeTiles.Remove(tilePosition);
+        }
+
         /// <inheritdoc/>
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
@@ -160,23 +170,35 @@
         }
 
         private BoundingArea CreateBoundingArea() {
-            var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
-            var width = this.MapSize.X * this.TileSize.X * inversePixelDensity;
-            var height = this.MapSize.X * this.TileSize.X * inversePixelDensity;
+            BoundingArea result;
+            if (this.Sprite != null) {
+                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
+                var width = this.MapSize.X * this.Sprite.Size.X * inversePixelDensity;
+                var height = this.MapSize.X * this.Sprite.Size.X * inversePixelDensity;
 
-            var points = new List<Vector2> {
+                var points = new List<Vector2> {
                 this.WorldTransform.Position,
                 this.GetWorldTransform(new Vector2(width, 0f)).Position,
                 this.GetWorldTransform(new Vector2(width, height)).Position,
                 this.GetWorldTransform(new Vector2(0f, height)).Position
             };
 
-            var minimumX = points.Min(x => x.X);
-            var minimumY = points.Min(x => x.Y);
-            var maximumX = points.Max(x => x.X);
-            var maximumY = points.Max(x => x.Y);
+                var minimumX = points.Min(x => x.X);
+                var minimumY = points.Min(x => x.Y);
+                var maximumX = points.Max(x => x.X);
+                var maximumY = points.Max(x => x.Y);
 
-            return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            }
+            else {
+                result = new BoundingArea();
+            }
+
+            return result;
+        }
+
+        private bool IsValidTilePosition(Point position) {
+            return position.X >= 0 && position.Y >= 0 && position.X < this.MapSize.X && position.Y < this.MapSize.Y;
         }
 
         private void ResizeActiveTiles() {

@@ -9,15 +9,15 @@
     public interface ITileMap : IBoundable {
 
         /// <summary>
-        /// Gets the size of the map.
+        /// Gets or sets the size of the map. This is how many grid tiles it will contain.
         /// </summary>
         /// <value>The size of the map.</value>
         Point MapSize { get; }
 
         /// <summary>
-        /// Gets the size of the tile.
+        /// Gets the size of the tiles.
         /// </summary>
-        /// <value>The size of the tile.</value>
+        /// <value>The size of the tiles.</value>
         Point TileSize { get; }
     }
 }

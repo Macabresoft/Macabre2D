@@ -149,6 +149,25 @@
             circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
             this.CurrentScene.AddComponent(circleSpriteRenderer);
 
+            var binaryTileMap = new BinaryTileMapComponent {
+                DrawOrder = -300,
+                LocalPosition = new Vector2(-5f, -10f),
+                LocalScale = new Vector2(1f, 1f),
+                Sprite = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(64, 64)),
+                MapSize = new Point(5, 10),
+                Color = Color.DarkGray
+            };
+
+            for (var x = 0; x < binaryTileMap.MapSize.X; x++) {
+                for (var y = 0; y < binaryTileMap.MapSize.Y; y++) {
+                    if ((x + y) % 2 == 0) {
+                        binaryTileMap.AddActiveTile(new Point(x, y));
+                    }
+                }
+            }
+
+            this.CurrentScene.AddComponent(binaryTileMap);
+
             this._isLoaded = true;
         }
     }
