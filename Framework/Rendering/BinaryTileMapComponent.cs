@@ -13,6 +13,7 @@
     public sealed class BinaryTileMapComponent : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, ITileable<Sprite> {
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
         private readonly ResettableLazy<BoundingArea> _boundingArea;
+
         private Point _mapSize;
         private Sprite _sprite;
 
@@ -70,6 +71,10 @@
             }
         }
 
+        /// <inheritdoc/>
+        [DataMember]
+        public Rotation Rotation { get; private set; } = new Rotation();
+
         /// <summary>
         /// Gets or sets the sprite.
         /// </summary>
@@ -118,13 +123,13 @@
             // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this._activeTiles) {
                 var position = new Vector2(tile.X * this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit);
-                var transform = this.GetWorldTransform(position);
+                var transform = this.GetWorldTransform(position, this.Rotation.Angle);
                 this._scene.Game.SpriteBatch.Draw(
                     this.Sprite.Texture,
                     transform.Position * GameSettings.Instance.PixelsPerUnit,
                     new Rectangle(this.Sprite.Location, this.Sprite.Size),
                     this.Color,
-                    0f,
+                    transform.Rotation.Angle,
                     Vector2.Zero,
                     transform.Scale,
                     SpriteEffects.FlipVertically,
@@ -179,6 +184,12 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
+
+            if (this.Rotation == null) {
+                this.Rotation = new Rotation();
+            }
+
+            this.Rotation.AngleChanged += this.Self_TransformChanged;
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -186,14 +197,15 @@
             if (this.Sprite != null) {
                 var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
                 var width = this.GridSize.X * this.Sprite.Size.X * inversePixelDensity;
-                var height = this.GridSize.X * this.Sprite.Size.X * inversePixelDensity;
+                var height = this.GridSize.Y * this.Sprite.Size.Y * inversePixelDensity;
+                var angle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
-                this.WorldTransform.Position,
-                this.GetWorldTransform(new Vector2(width, 0f)).Position,
-                this.GetWorldTransform(new Vector2(width, height)).Position,
-                this.GetWorldTransform(new Vector2(0f, height)).Position
-            };
+                    this.GetWorldTransform(angle).Position,
+                    this.GetWorldTransform(new Vector2(width, 0f), angle).Position,
+                    this.GetWorldTransform(new Vector2(width, height), angle).Position,
+                    this.GetWorldTransform(new Vector2(0f, height), angle).Position
+                };
 
                 var minimumX = points.Min(x => x.X);
                 var minimumY = points.Min(x => x.Y);
@@ -207,6 +219,10 @@
             }
 
             return result;
+        }
+
+        private RotatableTransform CreateRotatableTransform() {
+            return this.GetWorldTransform(this.Rotation.Angle);
         }
 
         private bool IsValidTilePosition(Point position) {
