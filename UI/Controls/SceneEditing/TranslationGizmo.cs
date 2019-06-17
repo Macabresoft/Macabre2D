@@ -104,29 +104,29 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             this.ResetEndPoint(worldTransform, lineLength);
 
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
             this._xAxisArrowRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._xAxisArrowRenderer.Draw(gameTime, viewHeight);
+            this._xAxisArrowRenderer.Draw(gameTime, viewBoundingArea);
 
             this._yAxisArrowRenderer.Color = this.YAxisColor;
             this._yAxisArrowRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._yAxisArrowRenderer.Draw(gameTime, viewHeight);
+            this._yAxisArrowRenderer.Draw(gameTime, viewBoundingArea);
 
             this._xAxisTriangleRenderer.Color = this.XAxisColor;
             this._xAxisTriangleRenderer.LocalPosition = this.XAxisLineDrawer.StartPoint;
             this._xAxisTriangleRenderer.LocalScale = new Vector2(scale);
-            this._xAxisTriangleRenderer.Draw(gameTime, viewHeight);
+            this._xAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
 
             this._yAxisTriangleRenderer.Color = this.YAxisColor;
             this._yAxisTriangleRenderer.LocalPosition = this.YAxisLineDrawer.StartPoint;
             this._yAxisTriangleRenderer.LocalScale = new Vector2(-scale);
-            this._yAxisTriangleRenderer.Draw(gameTime, viewHeight);
+            this._yAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {

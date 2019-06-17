@@ -34,7 +34,7 @@
         /// Draws this instance.
         /// </summary>
         /// <param name="gameTime">The game time.</param>
-        /// <param name="viewHeight">Height of the view for the rendering camera.</param>
-        void Draw(GameTime gameTime, float viewHeight);
+        /// <param name="viewBoundingArea">The view bounding area.</param>
+        void Draw(GameTime gameTime, BoundingArea viewBoundingArea);
     }
 }

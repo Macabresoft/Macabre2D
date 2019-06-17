@@ -16,7 +16,7 @@
             }
         }
 
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var spriteBatch = this._scene.Game.SpriteBatch;
             this.PrimitiveDrawer.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
         }

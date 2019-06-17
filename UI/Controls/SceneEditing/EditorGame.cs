@@ -128,7 +128,7 @@
                     this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
                     this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
                     this._cameraWrapper.Draw(gameTime);
-                    this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.ViewHeight);
+                    this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.BoundingArea);
                     this.CurrentScene.Game.SpriteBatch.End();
                 }
                 else if (this.Settings != null) {

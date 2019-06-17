@@ -35,19 +35,19 @@
 
         protected LineDrawer YAxisLineDrawer { get; } = new LineDrawer();
 
-        public void Draw(GameTime gameTime, float viewHeight, BaseComponent selectedComponent) {
+        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
                 var worldTransform = selectedComponent.WorldTransform;
-                var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.Game.GraphicsDevice.Viewport.Height);
-                var lineLength = this.GetDefaultLineLength(viewHeight);
+                var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.GraphicsDevice.Viewport.Height);
+                var lineLength = this.GetDefaultLineLength(viewBoundingArea.Height);
 
                 this.XAxisLineDrawer.Color = this.XAxisColor;
                 this.YAxisLineDrawer.Color = this.YAxisColor;
 
-                this.XAxisLineDrawer.Draw(gameTime, viewHeight);
-                this.YAxisLineDrawer.Draw(gameTime, viewHeight);
+                this.XAxisLineDrawer.Draw(gameTime, viewBoundingArea);
+                this.YAxisLineDrawer.Draw(gameTime, viewBoundingArea);
 
-                this.DrawGizmo(gameTime, worldTransform, viewHeight, ratio, lineLength);
+                this.DrawGizmo(gameTime, worldTransform, viewBoundingArea, ratio, lineLength);
             }
         }
 
@@ -68,7 +68,7 @@
 
         public abstract bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
 
-        protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength);
+        protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
 
         protected float GetDefaultLineLength(float viewHeight) {
             return viewHeight * 0.1f;

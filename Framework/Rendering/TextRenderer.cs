@@ -127,7 +127,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, float viewHeight) {
+        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 var transform = this._rotatableTransform.Value;
                 this._scene.Game.SpriteBatch.DrawString(

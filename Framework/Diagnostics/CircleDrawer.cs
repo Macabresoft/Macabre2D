@@ -46,9 +46,9 @@
         public float Radius { get; set; }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Radius > 0f && this._scene?.Game?.SpriteBatch is SpriteBatch spriteBatch) {
-                var lineThickness = this.GetLineThickness(viewHeight);
+                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawCircle(spriteBatch, this.Radius, this.WorldTransform.Position, this.Complexity, this.Color, lineThickness);
             }
         }

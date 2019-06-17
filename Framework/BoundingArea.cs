@@ -10,14 +10,24 @@
     public struct BoundingArea {
 
         /// <summary>
-        /// Backing field.
+        /// The height of this instance.
+        /// </summary>
+        public readonly float Height;
+
+        /// <summary>
+        /// The maximum poositions of this instance.
         /// </summary>
         public readonly Vector2 Maximum;
 
         /// <summary>
-        /// Backing field.
+        /// The minimum positions of this instance.
         /// </summary>
         public readonly Vector2 Minimum;
+
+        /// <summary>
+        /// The width of this instance.
+        /// </summary>
+        public readonly float Width;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundingArea"/> class.
@@ -27,6 +37,8 @@
         public BoundingArea(Vector2 minimum, Vector2 maximum) {
             this.Minimum = minimum;
             this.Maximum = maximum;
+            this.Height = this.Maximum.Y - this.Minimum.Y;
+            this.Width = this.Maximum.X - this.Minimum.X;
         }
 
         /// <summary>
@@ -39,6 +51,8 @@
         public BoundingArea(float minimumX, float maximumX, float minimumY, float maximumY) {
             this.Minimum = new Vector2(minimumX, minimumY);
             this.Maximum = new Vector2(maximumX, maximumY);
+            this.Height = maximumY - minimumY;
+            this.Width = maximumX - minimumX;
         }
 
         /// <summary>
@@ -49,6 +63,8 @@
         public BoundingArea(float minimumValue, float maximumValue) {
             this.Minimum = new Vector2(minimumValue);
             this.Maximum = new Vector2(maximumValue);
+            this.Height = maximumValue - minimumValue;
+            this.Width = this.Height;
         }
 
         /// <summary>

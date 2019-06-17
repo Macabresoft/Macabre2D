@@ -74,9 +74,9 @@
         }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var spriteBatch = this._scene.Game.SpriteBatch;
-            var lineThickness = this.GetLineThickness(viewHeight);
+            var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var boundingArea = this.BoundingArea;
 
             var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.ColumnWidth);

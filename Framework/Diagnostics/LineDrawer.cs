@@ -28,9 +28,9 @@
         public Vector2 StartPoint { get; set; }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.StartPoint != this.EndPoint && this._scene?.Game?.SpriteBatch is SpriteBatch spriteBatch) {
-                var lineThickness = this.GetLineThickness(viewHeight);
+                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);
             }
         }

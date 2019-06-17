@@ -39,7 +39,7 @@
             this._translationGizmo = translationGizmo;
         }
 
-        public void Draw(GameTime gameTime, float viewHeight) {
+        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this._game.CurrentScene != null) {
                 var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                 this._boundingAreaDrawer.Color = contrastingColor;
@@ -47,15 +47,15 @@
             }
 
             if (this._game.ShowSelection) {
-                this._boundingAreaDrawer.Draw(gameTime, viewHeight);
-                this._colliderDrawer.Draw(gameTime, viewHeight);
+                this._boundingAreaDrawer.Draw(gameTime, viewBoundingArea);
+                this._colliderDrawer.Draw(gameTime, viewBoundingArea);
             }
 
             if (this._game.ShowScaleGizmo) {
-                this._scaleGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
+                this._scaleGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
             else if (this._game.ShowTranslationGizmo) {
-                this._translationGizmo.Draw(gameTime, viewHeight, this._componentService.SelectedItem?.Component);
+                this._translationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
         }
 

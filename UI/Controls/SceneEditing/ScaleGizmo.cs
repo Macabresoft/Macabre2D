@@ -104,7 +104,7 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, float viewHeight, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             if (this._previousButtonState == ButtonState.Released) {
                 this.ResetEndPoint(worldTransform, lineLength);
             }
@@ -115,12 +115,12 @@
             this._xAxisSquareRenderer.Color = this.XAxisColor;
             this._xAxisSquareRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._xAxisSquareRenderer.Draw(gameTime, viewHeight);
+            this._xAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
 
             this._yAxisSquareRenderer.Color = this.YAxisColor;
             this._yAxisSquareRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._yAxisSquareRenderer.Draw(gameTime, viewHeight);
+            this._yAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {

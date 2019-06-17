@@ -480,7 +480,7 @@
                     // As long as it doesn't equal Layers.None, at least one of the layers defined on
                     // the component are also to be rendered by LayersToRender.
                     if ((drawable.Layers & camera.LayersToRender) != Layers.None) {
-                        drawable.Draw(gameTime, camera.ViewHeight);
+                        drawable.Draw(gameTime, camera.BoundingArea);
                     }
                 }
 

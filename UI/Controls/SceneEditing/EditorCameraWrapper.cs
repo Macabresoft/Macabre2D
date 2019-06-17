@@ -50,8 +50,8 @@
                     this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
                 }
 
-                this._primaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
-                this._secondaryGridDrawer.Draw(gameTime, this._camera.ViewHeight);
+                this._primaryGridDrawer.Draw(gameTime, this._camera.BoundingArea);
+                this._secondaryGridDrawer.Draw(gameTime, this._camera.BoundingArea);
             }
         }
 

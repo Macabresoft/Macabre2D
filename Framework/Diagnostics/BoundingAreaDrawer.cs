@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.LineThickness <= 0f || this.Color == Color.Transparent || this.BoundingArea.Maximum == this.BoundingArea.Minimum) {
                 return;
             }
@@ -37,7 +37,7 @@
             if (!boundingArea.IsEmpty) {
                 var minimum = boundingArea.Minimum;
                 var maximum = boundingArea.Maximum;
-                var lineThickness = this.GetLineThickness(viewHeight);
+                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
                 var points = new Vector2[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
                 this.PrimitiveDrawer.DrawPolygon(this._scene.Game.SpriteBatch, this.Color, lineThickness, points);

@@ -30,11 +30,11 @@
         }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, float viewHeight) {
+        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var body = this.Body ?? this.Parent as Body;
             if (body != null) {
                 var spriteBatch = this._scene.Game.SpriteBatch;
-                var lineThickness = this.GetLineThickness(viewHeight);
+                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
                 if (body.Collider is CircleCollider circle) {
                     this.PrimitiveDrawer.DrawCircle(spriteBatch, circle.ScaledRadius, circle.Center, 50, this.Color, lineThickness);

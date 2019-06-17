@@ -106,7 +106,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, float viewHeight) {
+        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game == null) {
                 return;
             }

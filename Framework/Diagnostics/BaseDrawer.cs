@@ -40,7 +40,7 @@
         protected PrimitiveDrawer PrimitiveDrawer { get; private set; }
 
         /// <inheritdoc/>
-        public abstract void Draw(GameTime gameTime, float viewHeight);
+        public abstract void Draw(GameTime gameTime, BoundingArea viewBoundingArea);
 
         /// <summary>
         /// Gets the line thickness.
