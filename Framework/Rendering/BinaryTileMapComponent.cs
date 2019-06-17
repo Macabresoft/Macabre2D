@@ -221,10 +221,6 @@
             return result;
         }
 
-        private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.Rotation.Angle);
-        }
-
         private bool IsValidTilePosition(Point position) {
             return position.X >= 0 && position.Y >= 0 && position.X < this.GridSize.X && position.Y < this.GridSize.Y;
         }
