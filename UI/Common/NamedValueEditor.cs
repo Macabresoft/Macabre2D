@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.Controls.ValueEditors {
+﻿namespace Macabre2D.UI.Common {
 
     using GalaSoft.MvvmLight.CommandWpf;
     using System.ComponentModel;

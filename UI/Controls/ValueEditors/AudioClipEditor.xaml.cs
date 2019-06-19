@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
     using Macabre2D.Framework.Audio;
+    using Macabre2D.UI.Common;
     using System.Windows;
     using System.Windows.Input;
 

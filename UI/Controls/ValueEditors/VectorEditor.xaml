@@ -1,10 +1,10 @@
-﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.VectorEditor"
-                        x:Name="_vectorEditor"
-                        x:TypeArguments="monoGame:Vector2"
-                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
-                        xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework">
+﻿<common:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.VectorEditor"
+                         x:Name="_vectorEditor"
+                         x:TypeArguments="monoGame:Vector2"
+                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                         xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework">
     <Grid DataContext="{Binding ElementName=_vectorEditor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -33,4 +33,4 @@
         <TextBox Grid.Column="4"
                  Text="{Binding Y}" />
     </Grid>
-</local:NamedValueEditor>
+</common:NamedValueEditor>

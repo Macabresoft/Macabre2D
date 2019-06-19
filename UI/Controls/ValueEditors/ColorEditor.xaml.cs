@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
+    using Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using System.Windows;
 

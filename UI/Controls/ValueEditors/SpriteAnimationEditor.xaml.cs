@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
     using Macabre2D.Framework.Rendering;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using System.Windows;
     using System.Windows.Input;

@@ -216,7 +216,6 @@
     <Compile Include="ValueEditors\GenericValueEditor.xaml.cs">
       <DependentUpon>GenericValueEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\INamedValueEditor.cs" />
     <Compile Include="ValueEditors\IntEditor.xaml.cs">
       <DependentUpon>IntEditor.xaml</DependentUpon>
     </Compile>
@@ -229,7 +228,6 @@
     <Compile Include="ValueEditors\LineColliderEditor.xaml.cs">
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\NamedValueEditor.cs" />
     <Compile Include="ValueEditors\PointEditor.xaml.cs">
       <DependentUpon>PointEditor.xaml</DependentUpon>
     </Compile>
@@ -237,9 +235,6 @@
     <Compile Include="SceneEditing\EditorGame.cs" />
     <Compile Include="AssetEditors\SpriteAnimationAssetEditor.xaml.cs">
       <DependentUpon>SpriteAnimationAssetEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ValueEditors\PolygonColliderEditor.xaml.cs">
-      <DependentUpon>PolygonColliderEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\RectangleColliderEditor.xaml.cs">
       <DependentUpon>RectangleColliderEditor.xaml</DependentUpon>
@@ -362,10 +357,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetEditors\SpriteAnimationAssetEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ValueEditors\PolygonColliderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
