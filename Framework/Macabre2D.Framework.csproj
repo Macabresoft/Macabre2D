@@ -72,6 +72,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssetManager.cs" />
+    <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Rendering\BinaryTileMapComponent.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />
     <Compile Include="Content\AssetManagerProcessor.cs" />

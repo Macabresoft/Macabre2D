@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework.Rendering {
 
+    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -107,21 +108,9 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.Sprite == null || this.Sprite.Texture == null || this._scene?.Game == null) {
-                return;
+            if (this._scene?.Game?.SpriteBatch != null) {
+                this._scene.Game.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color);
             }
-
-            var transform = this._rotatableTransform.Value;
-            this._scene.Game.SpriteBatch.Draw(
-                this.Sprite.Texture,
-                transform.Position * GameSettings.Instance.PixelsPerUnit,
-                new Rectangle(this.Sprite.Location, this.Sprite.Size),
-                this.Color,
-                transform.Rotation.Angle,
-                Vector2.Zero,
-                transform.Scale,
-                SpriteEffects.FlipVertically,
-                0f);
         }
 
         /// <inheritdoc/>
