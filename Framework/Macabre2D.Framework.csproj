@@ -113,7 +113,6 @@
     <Compile Include="IAssetComponent.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="IIdentifiable.cs" />
-    <Compile Include="IIdentifiableContent.cs" />
     <Compile Include="IRotatable.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
