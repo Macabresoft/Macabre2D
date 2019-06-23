@@ -12,11 +12,17 @@
         protected readonly GraphicsDeviceManager _graphics;
         protected bool _isLoaded;
         protected SpriteBatch _spriteBatch;
-        private static IGame _instance;
+        private static IGame _instance = new EmptyGame();
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
         private bool _isInitialized;
         private IGameSettings _settings;
+
+        /// <summary>
+        /// Initializes the <see cref="MacabreGame"/> class.
+        /// </summary>
+        static MacabreGame() {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MacabreGame"/> class.

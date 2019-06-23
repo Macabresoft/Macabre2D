@@ -72,6 +72,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssetManager.cs" />
+    <Compile Include="EmptyGame.cs" />
+    <Compile Include="EmptyScene.cs" />
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Rendering\BinaryTileMapComponent.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />

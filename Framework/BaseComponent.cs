@@ -313,7 +313,7 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        protected IScene Scene { get; private set; }
+        protected IScene Scene { get; private set; } = EmptyScene.Instance;
 
         /// <summary>
         /// Adds the child.

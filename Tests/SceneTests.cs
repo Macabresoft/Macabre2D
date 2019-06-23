@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Tests {
 
     using Macabre2D.Framework;
-    using NSubstitute;
     using NUnit.Framework;
     using System.Linq;
 
@@ -26,7 +25,6 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
                 scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
                 scene.AddComponent(parent);
 
@@ -63,7 +61,6 @@
                 Assert.False(child1HasBeenAdded);
                 Assert.False(child2HasBeenAdded);
 
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
 
                 Assert.True(parentHasBeenAdded);
@@ -87,7 +84,6 @@
                 var hasBeenAdded = false;
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
@@ -110,7 +106,6 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
                 Assert.False(hasBeenAdded);
 
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
@@ -128,7 +123,6 @@
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
 
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
                 scene.AddComponent(component);
 
@@ -149,7 +143,6 @@
 
                 Assert.False(hasBeenAdded);
 
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
@@ -163,7 +156,6 @@
             using (var scene = new Scene())
             using (var component = new TestComponent()) {
                 scene.AddComponent(component);
-                MacabreGame.Instance = Substitute.For<IGame>();
                 scene.Initialize();
                 Assert.Contains(component, scene.Children.ToList());
 

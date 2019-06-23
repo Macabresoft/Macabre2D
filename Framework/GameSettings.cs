@@ -77,6 +77,12 @@
         private int _pixelsPerUnit = 32;
 
         /// <summary>
+        /// Initializes the <see cref="GameSettings"/> class.
+        /// </summary>
+        static GameSettings() {
+        }
+
+        /// <summary>
         /// Gets the singleton instance of game settings.
         /// </summary>
         /// <remarks>
