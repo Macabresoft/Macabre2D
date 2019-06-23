@@ -23,6 +23,8 @@
         private EmptyScene() {
         }
 
+#pragma warning disable CS0414
+
         /// <inheritdoc/>
         public event EventHandler<BaseComponent> ComponentAdded;
 
@@ -34,6 +36,8 @@
 
         /// <inheritdoc/>
         public event EventHandler<BaseModule> ModuleRemoved;
+
+#pragma warning restore CS0414
 
         /// <inheritdoc/>
         public static IScene Instance {

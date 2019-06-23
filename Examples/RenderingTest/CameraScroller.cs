@@ -5,10 +5,12 @@
     using Microsoft.Xna.Framework.Input;
 
     public sealed class CameraScroller : BaseComponent, IUpdateableComponent {
+#pragma warning disable CS0649
 
         [Child]
         private Camera _camera;
 
+#pragma warning restore CS0649
         private int _previousScrollValue;
 
         public void Update(GameTime gameTime) {

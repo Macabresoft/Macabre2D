@@ -24,8 +24,12 @@
         private int _millisecondsPerFrame;
         private SpriteAnimation _spriteAnimation;
 
+#pragma warning disable CS0649
+
         [Child]
         private SpriteRenderer _spriteRenderer;
+
+#pragma warning restore CS0649
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimator"/> class.
@@ -96,7 +100,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Scene?.IsInitialized == true) {
+            if (this.Scene.IsInitialized) {
                 this._defaultAnimation?.LoadContent();
                 this._spriteAnimation?.LoadContent();
             }
@@ -127,7 +131,7 @@
             this.Stop();
             this._spriteAnimation = animation;
 
-            if (this.Scene?.IsInitialized == true) {
+            if (this.Scene.IsInitialized) {
                 this._spriteAnimation?.LoadContent();
             }
 

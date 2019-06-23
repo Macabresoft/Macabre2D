@@ -123,7 +123,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Sprite != null && this.Sprite.ContentId != Guid.Empty && this.Scene?.IsInitialized == true) {
+            if (this.Sprite != null && this.Sprite.ContentId != Guid.Empty && this.Scene.IsInitialized) {
                 try {
                     this.Sprite.Texture = AssetManager.Instance.Load<Texture2D>(this.Sprite.ContentId);
                 }
