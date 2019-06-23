@@ -96,7 +96,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this._scene?.Game != null) {
+            if (this.Scene?.IsInitialized == true) {
                 this._defaultAnimation?.LoadContent();
                 this._spriteAnimation?.LoadContent();
             }
@@ -127,7 +127,7 @@
             this.Stop();
             this._spriteAnimation = animation;
 
-            if (this._scene?.Game != null) {
+            if (this.Scene?.IsInitialized == true) {
                 this._spriteAnimation?.LoadContent();
             }
 

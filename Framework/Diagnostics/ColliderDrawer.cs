@@ -33,7 +33,7 @@
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var body = this.Body ?? this.Parent as Body;
             if (body != null) {
-                var spriteBatch = this._scene.Game.SpriteBatch;
+                var spriteBatch = MacabreGame.Instance.SpriteBatch;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
                 if (body.Collider is CircleCollider circle) {

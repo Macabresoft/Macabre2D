@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework.Diagnostics {
 
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws a circle.
@@ -47,9 +46,9 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.Radius > 0f && this._scene?.Game?.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.Radius > 0f) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawCircle(spriteBatch, this.Radius, this.WorldTransform.Position, this.Complexity, this.Color, lineThickness);
+                this.PrimitiveDrawer.DrawCircle(MacabreGame.Instance.SpriteBatch, this.Radius, this.WorldTransform.Position, this.Complexity, this.Color, lineThickness);
             }
         }
     }

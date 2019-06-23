@@ -25,7 +25,15 @@
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
             this.Settings = new GameSettings();
+            MacabreGame.Instance = this;
         }
+
+        /// <summary>
+        /// Gets the singleton instance of <see cref="IGame"/> for the current session.
+        /// </summary>
+        /// <remarks>This is internal so it can be mocked for a test.</remarks>
+        /// <value>The instance.</value>
+        public static IGame Instance { get; internal set; }
 
         /// <inheritdoc/>
         public IAssetManager AssetManager {
@@ -59,7 +67,7 @@
                     this._currentScene = value;
 
                     if (this._isInitialized) {
-                        this._currentScene.Initialize(this);
+                        this._currentScene.Initialize();
                     }
 
                     if (this._isLoaded) {
@@ -104,7 +112,7 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             base.Initialize();
-            this.CurrentScene?.Initialize(this);
+            this.CurrentScene?.Initialize();
             this._isInitialized = true;
         }
 

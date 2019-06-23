@@ -84,10 +84,7 @@
         [DataMember]
         public Color BackgroundColor { get; set; } = Color.Black;
 
-        /// <summary>
-        /// Gets the children.
-        /// </summary>
-        /// <value>The children.</value>
+        /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return this._components;
@@ -95,12 +92,9 @@
         }
 
         /// <inheritdoc/>
-        public IGame Game { get; private set; }
+        public bool IsInitialized { get; private set; }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>The name.</value>
+        /// <inheritdoc/>
         [DataMember]
         public string Name { get; set; }
 
@@ -131,7 +125,7 @@
                 throw new ArgumentNullException(nameof(component));
             }
 
-            if (this.Game == null) {
+            if (!this.IsInitialized) {
                 if (!this.ComponentsForSaving.Any(x => x.Id == component.Id)) {
                     this.ComponentsForSaving.Add(component);
                 }
@@ -156,7 +150,7 @@
 
         // <inheritdoc/>
         public bool AddModule(BaseModule module) {
-            if (this.Game == null) {
+            if (!this.IsInitialized) {
                 if (!this.ModulesForSaving.Any(x => x.Id == module.Id)) {
                     this.ModulesForSaving.Add(module);
                 }
@@ -309,10 +303,9 @@
         }
 
         /// <inheritdoc/>
-        public void Initialize(IGame game) {
-            if (this.Game == null) {
-                this.Game = game;
-
+        public void Initialize() {
+            if (!this.IsInitialized) {
+                this.IsInitialized = true;
                 this._modules.AddRange(this.ModulesForSaving);
                 this.ModulesForSaving.Clear();
 
@@ -424,7 +417,7 @@
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var component in e.NewItems.OfType<BaseComponent>()) {
-                    if (this.Game != null) {
+                    if (this.IsInitialized) {
                         this.TrackComponent(component);
                     }
                 }
@@ -474,7 +467,7 @@
             var potentialDrawables = this._drawTree.RetrievePotentialCollisions(camera.BoundingArea);
 
             if (potentialDrawables.Any()) {
-                this.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullNone, null, camera.ViewMatrix);
+                MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullNone, null, camera.ViewMatrix);
 
                 foreach (var drawable in potentialDrawables) {
                     // As long as it doesn't equal Layers.None, at least one of the layers defined on
@@ -484,7 +477,7 @@
                     }
                 }
 
-                this.Game.SpriteBatch.End();
+                MacabreGame.Instance.SpriteBatch.End();
             }
         }
 

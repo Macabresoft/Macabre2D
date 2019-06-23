@@ -19,7 +19,6 @@
             var animation = CreateAnimation(numberOfSteps, true);
             var animator = CreateAnimator(animation, 1);
             var scene = Substitute.For<IScene>();
-            scene.Game.Returns(null as IGame);
             animator.Initialize(Substitute.For<IScene>());
 
             var gameTime = new GameTime {

@@ -40,7 +40,7 @@
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
                 var points = new Vector2[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
-                this.PrimitiveDrawer.DrawPolygon(this._scene.Game.SpriteBatch, this.Color, lineThickness, points);
+                this.PrimitiveDrawer.DrawPolygon(MacabreGame.Instance.SpriteBatch, this.Color, lineThickness, points);
             }
         }
     }

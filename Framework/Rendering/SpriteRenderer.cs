@@ -108,9 +108,7 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this._scene?.Game?.SpriteBatch != null) {
-                this._scene.Game.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color);
-            }
+            MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color);
         }
 
         /// <inheritdoc/>
@@ -125,12 +123,12 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Sprite != null && this.Sprite.ContentId != Guid.Empty && this._scene?.Game != null) {
+            if (this.Sprite != null && this.Sprite.ContentId != Guid.Empty && this.Scene?.IsInitialized == true) {
                 try {
                     this.Sprite.Texture = AssetManager.Instance.Load<Texture2D>(this.Sprite.ContentId);
                 }
                 catch {
-                    this.Sprite.SetErrorTexture(this._scene.Game.SpriteBatch);
+                    this.Sprite.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
                 }
             }
 

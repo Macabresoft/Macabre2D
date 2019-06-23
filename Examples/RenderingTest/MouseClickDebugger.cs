@@ -17,7 +17,7 @@
         }
 
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            var spriteBatch = this._scene.Game.SpriteBatch;
+            var spriteBatch = MacabreGame.Instance.SpriteBatch;
             this.PrimitiveDrawer.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
         }
 
@@ -31,7 +31,7 @@
             base.Initialize();
             this.Color = Color.Green;
             this.LineThickness = 3f;
-            this._camera = this._scene.GetAllComponentsOfType<Camera>().FirstOrDefault();
+            this._camera = this.Scene.GetAllComponentsOfType<Camera>().FirstOrDefault();
         }
     }
 }

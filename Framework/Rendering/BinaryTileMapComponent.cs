@@ -116,7 +116,7 @@
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.Sprite?.Texture == null || this._scene?.Game?.SpriteBatch == null) {
+            if (this.Sprite?.Texture == null) {
                 return;
             }
 
@@ -124,7 +124,7 @@
             foreach (var tile in this._activeTiles) {
                 var position = new Vector2(tile.X * this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit);
                 var transform = this.GetWorldTransform(position, this.Rotation.Angle);
-                this._scene.Game.SpriteBatch.Draw(this.Sprite, transform, this.Color);
+                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, transform, this.Color);
             }
         }
 

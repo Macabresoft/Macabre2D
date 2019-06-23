@@ -16,13 +16,14 @@
     [DataContract]
     public abstract class BaseComponent : IBaseComponent, IDisposable {
         protected bool _disposedValue;
-        protected IScene _scene;
 
         [DataMember]
         private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
 
         private readonly List<Func<BaseComponent, bool>> _resolveChildActions = new List<Func<BaseComponent, bool>>();
+
         private readonly Transform _transform = new Transform();
+
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
         [DataMember]
@@ -309,6 +310,12 @@
         }
 
         /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        protected IScene Scene { get; private set; }
+
+        /// <summary>
         /// Adds the child.
         /// </summary>
         /// <param name="child">Child.</param>
@@ -320,7 +327,7 @@
                 result = true;
 
                 if (this.IsInitialized) {
-                    child.Initialize(this._scene);
+                    child.Initialize(this.Scene);
                 }
             }
 
@@ -678,8 +685,8 @@
         /// Initialize this instance.
         /// </summary>
         internal void Initialize(IScene scene) {
-            if (!this.IsInitialized || this._scene == null || this._scene != scene) {
-                this._scene = scene;
+            if (!this.IsInitialized || this.Scene == null || this.Scene != scene) {
+                this.Scene = scene;
                 this.ResolveChildren();
 
                 try {

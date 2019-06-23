@@ -130,10 +130,10 @@
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 var transform = this._rotatableTransform.Value;
-                this._scene.Game.SpriteBatch.DrawString(
+                MacabreGame.Instance.SpriteBatch.DrawString(
                     this.Font.SpriteFont,
                     this.Text,
-                    transform.Position * this._scene.Game.Settings.PixelsPerUnit,
+                    transform.Position * GameSettings.Instance.PixelsPerUnit,
                     this.Color,
                     transform.Rotation.Angle,
                     Vector2.Zero,
@@ -155,7 +155,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this._scene?.Game != null && this.Font != null) {
+            if (this.Scene?.IsInitialized == true && this.Font != null) {
                 this.Font.LoadSpriteFont();
             }
 
@@ -231,28 +231,20 @@
         }
 
         private Vector2 CreateSize() {
-            Vector2 result;
-            if (this._scene?.Game is IGame game) {
-                var size = this.Font.SpriteFont.MeasureString(this.Text);
+            var size = this.Font.SpriteFont.MeasureString(this.Text);
 
-                var width = size.X;
-                var height = size.Y;
+            var width = size.X;
+            var height = size.Y;
 
-                if (this.LocalScale.X < 0f) {
-                    width *= -1f;
-                }
-
-                if (this.LocalScale.Y < 0f) {
-                    height *= -1f;
-                }
-
-                result = new Vector2(width, height);
-            }
-            else {
-                result = Vector2.Zero;
+            if (this.LocalScale.X < 0f) {
+                width *= -1f;
             }
 
-            return result;
+            if (this.LocalScale.Y < 0f) {
+                height *= -1f;
+            }
+
+            return new Vector2(width, height);
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {

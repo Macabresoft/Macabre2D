@@ -89,7 +89,7 @@
 
         /// <inheritdoc/>
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
-            if (this._scene?.Game?.GraphicsDevice is GraphicsDevice graphicsDevice) {
+            if (MacabreGame.Instance.GraphicsDevice is GraphicsDevice graphicsDevice) {
                 var ratio = this.ViewHeight / graphicsDevice.Viewport.Height;
                 var pointVector = point.ToVector2();
                 var relativeY = graphicsDevice.Viewport.Height - pointVector.Y;
@@ -141,54 +141,41 @@
         }
 
         private BoundingArea CreateBoundingArea() {
-            if (this._scene?.Game is IGame game) {
-                var viewPort = game.GraphicsDevice.Viewport;
-                var ratio = this.ViewHeight / viewPort.Height;
-                var halfHeight = this.ViewHeight * 0.5f;
-                var halfWidth = this.GetViewWidth(game.GraphicsDevice.Viewport) * 0.5f;
+            var viewPort = MacabreGame.Instance.GraphicsDevice.Viewport;
+            var ratio = this.ViewHeight / viewPort.Height;
+            var halfHeight = this.ViewHeight * 0.5f;
+            var halfWidth = this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport) * 0.5f;
 
-                var points = new List<Vector2> {
-                    this.GetWorldTransform(new Vector2(-halfWidth, -halfHeight)).Position,
-                    this.GetWorldTransform(new Vector2(-halfWidth, halfHeight)).Position,
-                    this.GetWorldTransform(new Vector2(halfWidth, halfHeight)).Position,
-                    this.GetWorldTransform(new Vector2(halfWidth, -halfHeight)).Position
-                };
+            var points = new List<Vector2> {
+                this.GetWorldTransform(new Vector2(-halfWidth, -halfHeight)).Position,
+                this.GetWorldTransform(new Vector2(-halfWidth, halfHeight)).Position,
+                this.GetWorldTransform(new Vector2(halfWidth, halfHeight)).Position,
+                this.GetWorldTransform(new Vector2(halfWidth, -halfHeight)).Position
+            };
 
-                var minimumX = points.Min(x => x.X);
-                var minimumY = points.Min(x => x.Y);
-                var maximumX = points.Max(x => x.X);
-                var maximumY = points.Max(x => x.Y);
+            var minimumX = points.Min(x => x.X);
+            var minimumY = points.Min(x => x.Y);
+            var maximumX = points.Max(x => x.X);
+            var maximumY = points.Max(x => x.Y);
 
-                return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-            }
-
-            return new BoundingArea();
+            return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
         }
 
         private Matrix CreateViewMatrix() {
-            if (this._scene?.Game is IGame game) {
-                var pixelsPerUnit = game.Settings.PixelsPerUnit;
-                var viewPort = game.GraphicsDevice.Viewport;
-                var origin = new Vector2(viewPort.Width * 0.5f, viewPort.Height * 0.5f);
-                var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
-                var worldTransform = this.WorldTransform;
+            var pixelsPerUnit = MacabreGame.Instance.Settings.PixelsPerUnit;
+            var viewPort = MacabreGame.Instance.GraphicsDevice.Viewport;
+            var origin = new Vector2(viewPort.Width * 0.5f, viewPort.Height * 0.5f);
+            var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
+            var worldTransform = this.WorldTransform;
 
-                return
-                    Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
-                    Matrix.CreateScale(zoom, -zoom, 0f) *
-                    Matrix.CreateTranslation(new Vector3(origin, 0f));
-            }
-
-            return new Matrix();
+            return
+                Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
+                Matrix.CreateScale(zoom, -zoom, 0f) *
+                Matrix.CreateTranslation(new Vector3(origin, 0f));
         }
 
         private float GetViewWidth() {
-            var result = 0f;
-            if (this._scene?.Game is var game) {
-                result = this.GetViewWidth(game.GraphicsDevice.Viewport);
-            }
-
-            return result;
+            return this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport);
         }
 
         private float GetViewWidth(Viewport viewport) {

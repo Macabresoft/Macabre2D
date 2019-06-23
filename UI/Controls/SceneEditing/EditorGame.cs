@@ -25,6 +25,7 @@
             this._cameraWrapper = cameraWrapper;
             this._selectionEditor = selectionEditor;
             this.Settings = new GameSettings();
+            MacabreGame.Instance = this;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -126,10 +127,10 @@
                 if (this.CurrentScene != null) {
                     this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
                     this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
-                    this.CurrentScene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
+                    this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
                     this._cameraWrapper.Draw(gameTime);
                     this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.BoundingArea);
-                    this.CurrentScene.Game.SpriteBatch.End();
+                    this.SpriteBatch.End();
                 }
                 else if (this.Settings != null) {
                     this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
@@ -167,7 +168,7 @@
 
         private void InitializeComponents() {
             if (this.CurrentScene != null) {
-                this.CurrentScene.Initialize(this);
+                this.CurrentScene.Initialize();
                 this._cameraWrapper.Initialize(this);
                 this._selectionEditor.Initialize(this);
             }

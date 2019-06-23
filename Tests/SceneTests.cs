@@ -26,7 +26,8 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
                 scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
                 scene.AddComponent(parent);
 
                 Assert.True(parentHasBeenAdded);
@@ -62,7 +63,8 @@
                 Assert.False(child1HasBeenAdded);
                 Assert.False(child2HasBeenAdded);
 
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
 
                 Assert.True(parentHasBeenAdded);
                 Assert.True(child1HasBeenAdded);
@@ -85,7 +87,8 @@
                 var hasBeenAdded = false;
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
 
                 Assert.True(hasBeenAdded);
                 Assert.False(scene.Children.Contains(child));
@@ -107,7 +110,8 @@
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
                 Assert.False(hasBeenAdded);
 
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
 
                 Assert.True(hasBeenAdded);
                 Assert.False(scene.Children.Contains(child));
@@ -123,7 +127,9 @@
                 var hasBeenAdded = false;
 
                 scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
-                scene.Initialize(Substitute.For<IGame>());
+
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
                 scene.AddComponent(component);
 
                 Assert.True(hasBeenAdded);
@@ -143,7 +149,8 @@
 
                 Assert.False(hasBeenAdded);
 
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
 
                 Assert.True(hasBeenAdded);
                 Assert.Contains(component, scene.Children.ToList());
@@ -156,7 +163,8 @@
             using (var scene = new Scene())
             using (var component = new TestComponent()) {
                 scene.AddComponent(component);
-                scene.Initialize(Substitute.For<IGame>());
+                MacabreGame.Instance = Substitute.For<IGame>();
+                scene.Initialize();
                 Assert.Contains(component, scene.Children.ToList());
 
                 var hasBeenRemoved = false;

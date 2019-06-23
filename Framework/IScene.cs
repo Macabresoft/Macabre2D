@@ -36,10 +36,16 @@
         Color BackgroundColor { get; set; }
 
         /// <summary>
-        /// Gets the game.
+        /// Gets the children.
         /// </summary>
-        /// <value>The game.</value>
-        IGame Game { get; }
+        /// <value>The children.</value>
+        IReadOnlyCollection<BaseComponent> Children { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        bool IsInitialized { get; }
 
         /// <summary>
         /// Gets the name.
@@ -158,8 +164,7 @@
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-        /// <param name="game">The game.</param>
-        void Initialize(IGame game);
+        void Initialize();
 
         /// <summary>
         /// Loads the content.
