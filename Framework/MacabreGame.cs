@@ -12,7 +12,7 @@
         protected readonly GraphicsDeviceManager _graphics;
         protected bool _isLoaded;
         protected SpriteBatch _spriteBatch;
-
+        private static IGame _instance;
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
         private bool _isInitialized;
@@ -33,7 +33,17 @@
         /// </summary>
         /// <remarks>This is internal so it can be mocked for a test.</remarks>
         /// <value>The instance.</value>
-        public static IGame Instance { get; internal set; }
+        public static IGame Instance {
+            get {
+                return MacabreGame._instance;
+            }
+
+            internal set {
+                if (value != null) {
+                    MacabreGame._instance = value;
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public IAssetManager AssetManager {
