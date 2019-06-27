@@ -56,12 +56,6 @@
         }
 
         /// <summary>
-        /// Gets the scene.
-        /// </summary>
-        /// <value>The scene.</value>
-        public IScene Scene { get; private set; }
-
-        /// <summary>
         /// Gets or sets the update order.
         /// </summary>
         /// <value>The update order.</value>
@@ -77,6 +71,12 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        protected IScene Scene { get; private set; } = EmptyScene.Instance;
 
         /// <summary>
         /// Initializes the specified scene.
