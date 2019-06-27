@@ -119,6 +119,13 @@
             }
         }
 
+        /// <inheritdoc/>
+        public EngineObjectType EngineObjectType {
+            get {
+                return EngineObjectType.Component;
+            }
+        }
+
         /// <summary>
         /// Gets the forward vector. This the same as (1, 0) when no rotation is applied.
         /// </summary>

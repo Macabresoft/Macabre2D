@@ -74,6 +74,12 @@
             }
         }
 
+        public EngineObjectType EngineObjectType {
+            get {
+                return EngineObjectType.Game;
+            }
+        }
+
         public bool HideGizmos { get; internal set; }
 
         public IGameSettings Settings {

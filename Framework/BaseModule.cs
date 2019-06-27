@@ -10,7 +10,7 @@
     /// </summary>
     /// <seealso cref="IModule"/>
     [DataContract]
-    public class BaseModule : IIdentifiable {
+    public class BaseModule : IHierarchicalEngineObject, IIdentifiable {
 
         [DataMember]
         private bool _isEnabled = true;
@@ -27,6 +27,13 @@
         /// Occurs when [update order changed].
         /// </summary>
         public event EventHandler UpdateOrderChanged;
+
+        /// <inheritdoc/>
+        public EngineObjectType EngineObjectType {
+            get {
+                return EngineObjectType.Module;
+            }
+        }
 
         /// <inheritdoc/>
         [DataMember]

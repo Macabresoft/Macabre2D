@@ -6,7 +6,7 @@
     /// <summary>
     /// Interface for games. Honestly, this was only made so testing could work. Destroy this when possible.
     /// </summary>
-    public interface IGame {
+    public interface IGame : IHierarchicalEngineObject {
 
         /// <summary>
         /// Gets the asset manager.

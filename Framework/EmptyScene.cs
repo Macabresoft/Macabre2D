@@ -65,6 +65,13 @@
         }
 
         /// <inheritdoc/>
+        public EngineObjectType EngineObjectType {
+            get {
+                return EngineObjectType.Scene;
+            }
+        }
+
+        /// <inheritdoc/>
         public bool IsInitialized {
             get {
                 return default;

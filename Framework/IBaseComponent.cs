@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for a base component. Contains shared properties between all components.
     /// </summary>
-    public interface IBaseComponent : IIdentifiable {
+    public interface IBaseComponent : IHierarchicalEngineObject, IIdentifiable {
 
         /// <summary>
         /// Gets the children.
