@@ -76,6 +76,7 @@
     <Compile Include="EmptyScene.cs" />
     <Compile Include="IHierarchicalEngineObject.cs" />
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
+    <Compile Include="IWorldTransformable.cs" />
     <Compile Include="Rendering\BinaryTileMapComponent.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />
     <Compile Include="Content\AssetManagerProcessor.cs" />
@@ -175,6 +176,8 @@
     <Compile Include="Scene.cs" />
     <Compile Include="FilterSortCollection.cs" />
     <Compile Include="FilterCollection.cs" />
+    <Compile Include="TileGrid.cs" />
+    <Compile Include="TileableComponent.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
     <Compile Include="Extensions\VectorExtensions.cs" />

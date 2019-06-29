@@ -10,21 +10,12 @@
     public interface ITileable : IBoundable {
 
         /// <summary>
-        /// Gets or sets the size of the grid. This is how many grid tiles it will contain.
+        /// Gets the grid.
         /// </summary>
-        /// <value>The size of the map.</value>
-        Point GridSize { get; }
+        /// <value>The grid.</value>
+        TileGrid Grid { get; }
 
-        /// <summary>
-        /// Gets the size of the tiles.
-        /// </summary>
-        /// <value>The size of the tiles.</value>
-        Point TileSize { get; }
-
-        /// <summary>
-        /// Adds the default tile at the specified position.
-        /// </summary>
-        /// <param name="position">The position.</param>
+        /// Adds the default tile at the specified position. </summary> <param name="position">The position.</param>
         void AddTile(Point position);
 
         /// <summary>

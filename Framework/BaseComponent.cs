@@ -301,10 +301,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <value>The world transform.</value>
+        /// <inheritdoc/>
         public Transform WorldTransform {
             get {
                 if (!this._isTransformUpToDate) {
@@ -530,47 +527,52 @@
             return components;
         }
 
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <param name="rotation">The rotation.</param>
-        /// <returns>The world transform.</returns>
-        public RotatableTransform GetWorldTransform(float rotation) {
+        /// <inheritdoc/>
+        public RotatableTransform GetWorldTransform(float rotationAngle) {
             var worldTransform = this.WorldTransform;
             var matrix =
                 Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
-                Matrix.CreateRotationZ(rotation) *
+                Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
             return matrix.ToRotatableTransform();
         }
 
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <param name="originOffset">The origin offset.</param>
-        /// <returns>The world transform.</returns>
+        /// <inheritdoc/>
         public Transform GetWorldTransform(Vector2 originOffset) {
             var matrix = Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) * this.TransformMatrix;
             return matrix.ToTransform();
         }
 
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <param name="originOffset">The origin offset.</param>
-        /// <param name="rotation">The rotation.</param>
-        /// <returns>The world transform.</returns>
-        public RotatableTransform GetWorldTransform(Vector2 originOffset, float rotation) {
+        /// <inheritdoc/>
+        public RotatableTransform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
             var worldTransform = this.WorldTransform;
 
             var matrix =
                 Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
                 Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
-                Matrix.CreateRotationZ(rotation) *
+                Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
             return matrix.ToRotatableTransform();
+        }
+
+        /// <inheritdoc/>
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset;
+            return this.GetWorldTransform(position);
+        }
+
+        /// <inheritdoc/>
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            return this.GetWorldTransform(position);
+        }
+
+        /// <inheritdoc/>
+        public RotatableTransform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            return this.GetWorldTransform(position, rotationAngle);
         }
 
         /// <summary>

@@ -154,12 +154,12 @@
                 LocalPosition = new Vector2(-5f, -10f),
                 LocalScale = new Vector2(1f, 1f),
                 Sprite = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(64, 64)),
-                GridSize = new Point(5, 10),
+                Grid = new TileGrid(new Vector2(64, 64) * GameSettings.Instance.InversePixelsPerUnit, Vector2.Zero),
                 Color = Color.DarkGray
             };
 
-            for (var x = 0; x < binaryTileMap.GridSize.X; x++) {
-                for (var y = 0; y < binaryTileMap.GridSize.Y; y++) {
+            for (var x = 0; x < 5; x++) {
+                for (var y = 0; y < 10; y++) {
                     if ((x + y) % 2 == 0) {
                         binaryTileMap.AddTile(new Point(x, y));
                     }
