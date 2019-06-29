@@ -1,14 +1,11 @@
 ﻿namespace Macabre2D.UI.Services {
 
-    using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
     using Macabre2D.Framework.Audio;
     using Macabre2D.Framework.Physics;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.ValueEditors;
-    using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System;
@@ -65,169 +62,125 @@
 
         private async Task<DependencyObject> GetEditorForType(object originalObject, object value, Type memberType, string propertyPath, string memberName, Type declaringTypeToIgnore) {
             DependencyObject result = null;
+
             if (memberType.IsEnum) {
                 var editor = new EnumEditor {
                     EnumType = memberType,
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(string)) {
                 var editor = new StringEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (string)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<string>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(int)) {
                 var editor = new IntEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (int)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<int>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(float)) {
                 var editor = new FloatEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (float)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<float>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(bool)) {
                 var editor = new BoolEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (bool)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<bool>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Vector2)) {
                 var editor = new VectorEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (Vector2)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Vector2>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Point)) {
                 var editor = new PointEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (Microsoft.Xna.Framework.Point)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Point>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Color)) {
                 var editor = new ColorEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (Microsoft.Xna.Framework.Color)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Microsoft.Xna.Framework.Color>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(Sprite)) {
                 var editor = new SpriteEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = value as Sprite
                 };
 
-                if (value is Sprite sprite) {
-                    var spriteWrappers = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<SpriteWrapper>();
-                    editor.SpriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite.Id == sprite.Id);
-                }
-
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Sprite>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
-                editor.SelectSpriteCommand = new RelayCommand(() => {
-                    var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite);
-                    if (asset is SpriteWrapper spriteWrapper) {
-                        editor.SpriteWrapper = spriteWrapper;
-                    }
-                }, true);
-
                 result = editor;
             }
             else if (memberType == typeof(AudioClip)) {
                 var editor = new AudioClipEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = value as AudioClip
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<AudioClip>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
-                editor.SelectAudioClipCommand = new RelayCommand(() => {
-                    var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Audio, AssetType.Audio);
-                    if (asset is AudioAsset audioAsset) {
-                        editor.Value = audioAsset.AudioClip;
-                    }
-                }, true);
-
                 result = editor;
             }
             else if (memberType == typeof(SpriteAnimation)) {
                 var editor = new SpriteAnimationEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = value as SpriteAnimation
                 };
 
-                if (value is SpriteAnimation animation) {
-                    var spriteAnimationAssets = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<SpriteAnimationAsset>();
-                    editor.Asset = spriteAnimationAssets.FirstOrDefault(x => x.SavableValue.Id == animation.Id);
-                }
-
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<SpriteAnimation>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
-                editor.SelectSpriteAnimationCommand = new RelayCommand(() => {
-                    var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation);
-                    if (asset is SpriteAnimationAsset spriteAnimationAsset) {
-                        editor.Asset = spriteAnimationAsset;
-                        editor.Value = spriteAnimationAsset.SavableValue;
-                    }
-                }, true);
-
                 result = editor;
             }
             else if (memberType == typeof(Font)) {
                 var editor = new FontEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = value as Font
                 };
-
-                if (value is Font font) {
-                    var fontAssets = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<FontAsset>();
-                    editor.Asset = fontAssets.FirstOrDefault(x => x.SavableValue.Id == font.Id);
-                }
-
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Font>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
-                editor.SelectFontCommand = new RelayCommand(() => {
-                    var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font);
-                    if (asset is FontAsset fontAsset) {
-                        editor.Asset = fontAsset;
-                        editor.Value = fontAsset.SavableValue;
-                    }
-                }, true);
 
                 result = editor;
             }
@@ -236,34 +189,32 @@
                 colliderTypes.Remove(typeof(PolygonCollider)); // TODO: Eventually allow PolygonCollider.
                 var editor = new ColliderEditor {
                     ColliderTypes = colliderTypes,
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (Collider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<Collider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(LineCollider)) {
-                var colliderTypes = await this._assemblyService.LoadTypes(typeof(Collider));
                 var editor = new LineColliderEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (LineCollider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<LineCollider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType == typeof(RectangleCollider)) {
-                var colliderTypes = await this._assemblyService.LoadTypes(typeof(Collider));
                 var editor = new RectangleColliderEditor {
+                    Owner = originalObject,
                     PropertyName = propertyPath,
                     Title = memberName,
                     Value = (RectangleCollider)value
                 };
 
-                editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<RectangleCollider>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                 result = editor;
             }
             else if (memberType.IsSubclassOf(typeof(BaseComponent))) {
@@ -274,41 +225,17 @@
                 if (value != null) {
                     var editor = new GenericValueEditor {
                         DeclaringType = declaringTypeToIgnore,
+                        Owner = originalObject,
                         PropertyName = propertyPath,
                         Title = memberName,
                         Value = value
                     };
 
-                    editor.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<object>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, originalObject, editor), true);
                     result = editor;
                 }
             }
 
             return result;
-        }
-
-        private void UpdateProperty<T>(string propertyPath, T originalValue, T newValue, object objectToUpdate, INamedValueEditor<T> editor) {
-            if ((originalValue == null && newValue != null) || !originalValue.Equals(newValue)) {
-                var undoCommand = new UndoCommand(
-                    () => {
-                        this.UpdatePropertyWithNotification(propertyPath, newValue, objectToUpdate);
-                        editor.Value = newValue;
-                    },
-                    () => {
-                        this.UpdatePropertyWithNotification(propertyPath, originalValue, objectToUpdate);
-                        editor.Value = originalValue;
-                    });
-
-                this._undoService.Do(undoCommand);
-            }
-        }
-
-        private void UpdatePropertyWithNotification(string propertyPath, object value, object objectToUpdate) {
-            objectToUpdate.SetProperty(propertyPath, value);
-            this._sceneService.HasChanges = true;
-            if (objectToUpdate is NotifyPropertyChanged notifyPropertyChanged) {
-                notifyPropertyChanged.RaisePropertyChanged(propertyPath);
-            }
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿<common:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.LineColliderEditor"
-                         x:Name="_lineColliderEditor"
-                         x:TypeArguments="physics:LineCollider"
-                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                         xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                         xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
-                         xmlns:physics="clr-namespace:Macabre2D.Framework.Physics;assembly=Macabre2D.Framework">
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.LineColliderEditor"
+                        x:Name="_lineColliderEditor"
+                        x:TypeArguments="physics:LineCollider"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
+                        xmlns:physics="clr-namespace:Macabre2D.Framework.Physics;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_lineColliderEditor}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,4 +24,4 @@
                             Title="End"
                             Value="{Binding End, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
-</common:NamedValueEditor>
+</local:NamedValueEditor>

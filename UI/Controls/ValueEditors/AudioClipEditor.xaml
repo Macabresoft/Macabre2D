@@ -1,11 +1,11 @@
-﻿<common:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.AudioClipEditor"
-                         x:Name="_audioClipEditor"
-                         x:TypeArguments="audioFramework:AudioClip"
-                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                         xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
-                         xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                         xmlns:audioFramework="clr-namespace:Macabre2D.Framework.Audio;assembly=Macabre2D.Framework">
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.AudioClipEditor"
+                        x:Name="_audioClipEditor"
+                        x:TypeArguments="audioFramework:AudioClip"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
+                        xmlns:audioFramework="clr-namespace:Macabre2D.Framework.Audio;assembly=Macabre2D.Framework">
     <UserControl.Resources>
         <converters:ContentIdToContentPathConverter x:Key="_contentIdToContentPathConverter" />
     </UserControl.Resources>
@@ -35,4 +35,4 @@
                 Content="Browse"
                 Command="{Binding SelectAudioClipCommand}" />
     </Grid>
-</common:NamedValueEditor>
+</local:NamedValueEditor>

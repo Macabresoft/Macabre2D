@@ -4,15 +4,17 @@
     using System;
 
     public interface INamedValueEditor {
-        string PropertyName { get; }
+        object Owner { get; set; }
 
-        string Title { get; }
+        string PropertyName { get; set; }
+
+        string Title { get; set; }
     }
 
     public interface INamedValueEditor<T> : INamedValueEditor {
         T Value { get; set; }
 
-        RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; set; }
+        RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; }
     }
 
     public sealed class EditableValueChangedEventArgs<T> : EventArgs {
@@ -24,7 +26,9 @@
         }
 
         public T NewValue { get; }
+
         public T OldValue { get; }
+
         public string PropertyName { get; }
     }
 }

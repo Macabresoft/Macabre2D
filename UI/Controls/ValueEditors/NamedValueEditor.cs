@@ -1,6 +1,10 @@
-﻿namespace Macabre2D.UI.Common {
+﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
     using GalaSoft.MvvmLight.CommandWpf;
+    using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
+    using Macabre2D.UI.Models;
+    using Macabre2D.UI.ServiceInterfaces;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using System.Windows;
@@ -8,8 +12,14 @@
 
     public class NamedValueEditor<T> : UserControl, INamedValueEditor<T>, INotifyPropertyChanged {
 
+        public static readonly DependencyProperty OwnerProperty = DependencyProperty.Register(
+            nameof(Owner),
+            typeof(object),
+            typeof(NamedValueEditor<T>),
+            new PropertyMetadata());
+
         public static readonly DependencyProperty PropertyNameProperty = DependencyProperty.Register(
-            nameof(PropertyName),
+                    nameof(PropertyName),
             typeof(string),
             typeof(NamedValueEditor<T>),
             new PropertyMetadata());
@@ -20,19 +30,25 @@
             typeof(NamedValueEditor<T>),
             new PropertyMetadata());
 
-        public static readonly DependencyProperty ValueChangedCommandProperty = DependencyProperty.Register(
-            nameof(ValueChangedCommand),
-            typeof(RelayCommand<EditableValueChangedEventArgs<T>>),
-            typeof(NamedValueEditor<T>),
-            new PropertyMetadata());
-
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             nameof(Value),
             typeof(T),
             typeof(NamedValueEditor<T>),
             new PropertyMetadata(default(T), new PropertyChangedCallback(OnValueChanged)));
 
+        protected readonly ISceneService _sceneService = ViewContainer.Resolve<ISceneService>();
+        protected readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
+
+        public NamedValueEditor() {
+            this.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<T>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, this.Owner, this), e => this.IsLoaded, true);
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public object Owner {
+            get { return this.GetValue(OwnerProperty); }
+            set { this.SetValue(OwnerProperty, value); }
+        }
 
         public string PropertyName {
             get { return (string)this.GetValue(PropertyNameProperty); }
@@ -49,10 +65,7 @@
             set { this.SetValue(ValueProperty, value); }
         }
 
-        public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand {
-            get { return (RelayCommand<EditableValueChangedEventArgs<T>>)this.GetValue(ValueChangedCommandProperty); }
-            set { this.SetValue(ValueChangedCommandProperty, value); }
-        }
+        public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; private set; }
 
         protected virtual void OnValueChanged(T newValue, T oldValue, DependencyObject d) {
             if (d is INamedValueEditor<T> editor) {
@@ -95,6 +108,30 @@
 
                 editor.OnValueChanged(newValue, oldValue, d);
                 await editor.OnValueChangedAsync(newValue, oldValue, d);
+            }
+        }
+
+        private void UpdateProperty<T>(string propertyPath, T originalValue, T newValue, object objectToUpdate, INamedValueEditor<T> editor) {
+            if (objectToUpdate != null && ((originalValue == null && newValue != null) || !originalValue.Equals(newValue))) {
+                var undoCommand = new UndoCommand(
+                    () => {
+                        this.UpdatePropertyWithNotification(propertyPath, newValue, objectToUpdate);
+                        editor.Value = newValue;
+                    },
+                    () => {
+                        this.UpdatePropertyWithNotification(propertyPath, originalValue, objectToUpdate);
+                        editor.Value = originalValue;
+                    });
+
+                this._undoService.Do(undoCommand);
+            }
+        }
+
+        private void UpdatePropertyWithNotification(string propertyPath, object value, object objectToUpdate) {
+            objectToUpdate.SetProperty(propertyPath, value);
+            this._sceneService.HasChanges = true;
+            if (objectToUpdate is NotifyPropertyChanged notifyPropertyChanged) {
+                notifyPropertyChanged.RaisePropertyChanged(propertyPath);
             }
         }
     }

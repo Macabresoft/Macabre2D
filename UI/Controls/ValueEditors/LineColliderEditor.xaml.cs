@@ -3,19 +3,14 @@
     using Macabre2D.Framework.Physics;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System.Runtime.CompilerServices;
     using System.Windows;
 
     public partial class LineColliderEditor : NamedValueEditor<LineCollider> {
         private const string OffsetFieldName = "_offset";
-        private readonly ISceneService _sceneService;
-        private readonly IUndoService _undoService;
 
-        public LineColliderEditor() {
-            this._sceneService = ViewContainer.Resolve<ISceneService>();
-            this._undoService = ViewContainer.Resolve<IUndoService>();
+        public LineColliderEditor() : base() {
             this.InitializeComponent();
         }
 

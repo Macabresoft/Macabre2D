@@ -23,7 +23,7 @@
         private DependencyObject _editor;
         private Type _selectedColliderType;
 
-        public ColliderEditor() {
+        public ColliderEditor() : base() {
             this._busyService = ViewContainer.Resolve<IBusyService>();
             this._valueEditorService = ViewContainer.Resolve<IValueEditorService>();
             this.InitializeComponent();

@@ -1,13 +1,12 @@
-﻿<common:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.SpriteEditor"
-                         x:Name="_spriteEditor"
-                         x:TypeArguments="rendering:Sprite"
-                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                         xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                         xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
-                         xmlns:rendering="clr-namespace:Macabre2D.Framework.Rendering;assembly=Macabre2D.Framework">
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.SpriteEditor"
+                        x:Name="_spriteEditor"
+                        x:TypeArguments="rendering:Sprite"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
+                        xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
+                        xmlns:rendering="clr-namespace:Macabre2D.Framework.Rendering;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_spriteEditor}">
-
         <controls:CollapsableEditor Title="{Binding Title}">
             <controls:CollapsableEditor.CollapsedContent>
                 <Grid>
@@ -55,4 +54,4 @@
             </controls:CollapsableEditor.UncollapsedContent>
         </controls:CollapsableEditor>
     </Grid>
-</common:NamedValueEditor>
+</local:NamedValueEditor>

@@ -228,6 +228,7 @@
     <Compile Include="ValueEditors\LineColliderEditor.xaml.cs">
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\NamedValueEditor.cs" />
     <Compile Include="ValueEditors\PointEditor.xaml.cs">
       <DependentUpon>PointEditor.xaml</DependentUpon>
     </Compile>

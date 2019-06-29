@@ -1,13 +1,12 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
-    using Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using System.Windows;
 
     public partial class ColorEditor : NamedValueEditor<Color> {
         private System.Windows.Media.Color _selectedColor;
 
-        public ColorEditor() {
+        public ColorEditor() : base() {
             this.InitializeComponent();
         }
 

@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
-    using Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using System;
     using System.Windows;
@@ -19,7 +18,7 @@
             typeof(FloatEditor),
             new PropertyMetadata(float.MinValue));
 
-        public FloatEditor() {
+        public FloatEditor() : base() {
             this.InitializeComponent();
         }
 

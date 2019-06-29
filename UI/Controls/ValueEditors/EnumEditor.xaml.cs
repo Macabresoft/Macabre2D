@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
-    using Macabre2D.UI.Common;
     using System;
     using System.Windows;
 
@@ -12,7 +11,7 @@
             typeof(EnumEditor),
             new PropertyMetadata());
 
-        public EnumEditor() {
+        public EnumEditor() : base() {
             this.InitializeComponent();
         }
 

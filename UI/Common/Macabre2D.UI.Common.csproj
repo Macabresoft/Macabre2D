@@ -117,7 +117,6 @@
     <Compile Include="DependencyObjectExtensions.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="INamedValueEditor.cs" />
-    <Compile Include="NamedValueEditor.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="ObservableRangeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

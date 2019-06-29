@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
-    using Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using System;
     using System.Windows;
@@ -34,7 +33,7 @@
         private float _x;
         private float _y;
 
-        public VectorEditor() {
+        public VectorEditor() : base() {
             this.InitializeComponent();
         }
 

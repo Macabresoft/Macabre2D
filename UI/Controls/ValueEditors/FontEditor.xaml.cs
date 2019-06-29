@@ -1,8 +1,11 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
+    using GalaSoft.MvvmLight.Command;
     using Macabre2D.Framework.Rendering;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using Macabre2D.UI.ServiceInterfaces;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Input;
 
@@ -14,13 +17,19 @@
             typeof(FontEditor),
             new PropertyMetadata());
 
-        public static readonly DependencyProperty SelectFontCommandProperty = DependencyProperty.Register(
-            nameof(SelectFontCommand),
-            typeof(ICommand),
-            typeof(FontEditor),
-            new PropertyMetadata());
+        private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
+        private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public FontEditor() {
+        public FontEditor() : base() {
+            this.SelectFontCommand = new RelayCommand(() => {
+                var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font);
+                if (asset is FontAsset fontAsset) {
+                    this.Asset = fontAsset;
+                    this.Value = fontAsset.SavableValue;
+                }
+            }, true);
+
+            this.Loaded += this.FontEditor_Loaded;
             this.InitializeComponent();
         }
 
@@ -29,9 +38,15 @@
             set { this.SetValue(AssetProperty, value); }
         }
 
-        public ICommand SelectFontCommand {
-            get { return (ICommand)this.GetValue(SelectFontCommandProperty); }
-            set { this.SetValue(SelectFontCommandProperty, value); }
+        public ICommand SelectFontCommand { get; }
+
+        private void FontEditor_Loaded(object sender, RoutedEventArgs e) {
+            if (this.Value != null && (this.Asset == null || this.Asset.SavableValue?.Id != this.Value.Id)) {
+                var fontAssets = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<FontAsset>();
+                this.Asset = fontAssets.FirstOrDefault(x => x.SavableValue.Id == this.Value.Id);
+            }
+
+            this.Loaded -= this.FontEditor_Loaded;
         }
     }
 }

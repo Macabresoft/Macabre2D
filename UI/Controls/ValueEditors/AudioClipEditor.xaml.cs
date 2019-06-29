@@ -1,25 +1,27 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
+    using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework.Audio;
     using Macabre2D.UI.Common;
-    using System.Windows;
+    using Macabre2D.UI.Models;
+    using Macabre2D.UI.ServiceInterfaces;
     using System.Windows.Input;
 
     public partial class AudioClipEditor : NamedValueEditor<AudioClip> {
+        private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
+        private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public static readonly DependencyProperty SelectAudioClipCommandProperty = DependencyProperty.Register(
-            nameof(SelectAudioClipCommand),
-            typeof(ICommand),
-            typeof(AudioClipEditor),
-            new PropertyMetadata());
+        public AudioClipEditor() : base() {
+            this.SelectAudioClipCommand = new RelayCommand(() => {
+                var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Audio, AssetType.Audio);
+                if (asset is AudioAsset audioAsset) {
+                    this.Value = audioAsset.AudioClip;
+                }
+            }, true);
 
-        public AudioClipEditor() {
             this.InitializeComponent();
         }
 
-        public ICommand SelectAudioClipCommand {
-            get { return (ICommand)this.GetValue(SelectAudioClipCommandProperty); }
-            set { this.SetValue(SelectAudioClipCommandProperty, value); }
-        }
+        public ICommand SelectAudioClipCommand { get; }
     }
 }
