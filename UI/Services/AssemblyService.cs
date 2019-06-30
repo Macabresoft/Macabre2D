@@ -37,6 +37,32 @@
             }
         }
 
+        public async Task<Type> LoadFirstType(Type baseType) {
+            return await Task.Run(() => {
+                Type resultType = null;
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                var filter = baseType.IsGenericTypeDefinition ? new Func<Type, bool>(type => this.CheckIfTypeMatchGeneric(baseType, type)) : new Func<Type, bool>(type => this.CheckIfTypeMatch(baseType, type));
+                foreach (var assembly in assemblies) {
+                    try {
+                        resultType = assembly.GetTypes().Where(filter).FirstOrDefault();
+                    }
+                    catch (FileLoadException) {
+                    }
+                    catch (BadImageFormatException) {
+                    }
+                    catch (ReflectionTypeLoadException) {
+                    }
+
+                    if (resultType != null) {
+                        break;
+                    }
+                }
+
+                return resultType;
+            });
+        }
+
         public async Task<IList<Type>> LoadTypes(Type baseType) {
             return await Task.Run(() => {
                 var types = new List<Type>();
