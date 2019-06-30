@@ -64,11 +64,13 @@
 
         public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; private set; }
 
-        public virtual Task Initialize(Type memberType, object owner, string propertName, string title) {
-            this.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<T>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, this.Owner), e => this.IsLoaded, true);
+        public virtual Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
             this.Owner = owner;
             this.PropertyName = propertName;
             this.Title = title;
+            this.Value = (T)value;
+
+            this.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<T>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, this.Owner), e => this.IsLoaded, true);
             this.RaisePropertyChanged(nameof(this.ValueChangedCommand));
             return Task.CompletedTask;
         }

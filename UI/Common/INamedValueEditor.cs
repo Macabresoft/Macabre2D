@@ -11,7 +11,7 @@
 
         string Title { get; set; }
 
-        Task Initialize(Type memberType, object owner, string propertName, string title);
+        Task Initialize(object value, Type memberType, object owner, string propertName, string title);
     }
 
     public interface INamedValueEditor<T> : INamedValueEditor {

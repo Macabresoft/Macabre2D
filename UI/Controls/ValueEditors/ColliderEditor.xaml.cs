@@ -73,8 +73,8 @@
             }
         }
 
-        public override async Task Initialize(Type memberType, object owner, string propertName, string title) {
-            await base.Initialize(memberType, owner, propertName, title);
+        public override async Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
+            await base.Initialize(value, memberType, owner, propertName, title);
             var colliderTypes = await this._assemblyService.LoadTypes(typeof(Collider));
             colliderTypes.Remove(typeof(PolygonCollider)); // TODO: Eventually allow PolygonCollider
             this.ColliderTypes = colliderTypes;

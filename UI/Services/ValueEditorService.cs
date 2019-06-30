@@ -53,121 +53,79 @@
             if (memberType.IsEnum) {
                 var editor = new EnumEditor {
                     EnumType = memberType,
-                    Value = value
                 };
 
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(string)) {
-                var editor = new StringEditor {
-                    Value = (string)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new StringEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(int)) {
-                var editor = new IntEditor {
-                    Value = (int)value
-                };
-
+                var editor = new IntEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(float)) {
-                var editor = new FloatEditor {
-                    Value = (float)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new FloatEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(bool)) {
-                var editor = new BoolEditor {
-                    Value = (bool)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new BoolEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Vector2)) {
-                var editor = new VectorEditor {
-                    Value = (Vector2)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new VectorEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Point)) {
-                var editor = new PointEditor {
-                    Value = (Microsoft.Xna.Framework.Point)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new PointEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Microsoft.Xna.Framework.Color)) {
-                var editor = new ColorEditor {
-                    Value = (Microsoft.Xna.Framework.Color)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new ColorEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Sprite)) {
-                var editor = new SpriteEditor {
-                    Value = value as Sprite
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new SpriteEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(AudioClip)) {
-                var editor = new AudioClipEditor {
-                    Value = value as AudioClip
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new AudioClipEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(SpriteAnimation)) {
-                var editor = new SpriteAnimationEditor {
-                    Value = value as SpriteAnimation
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new SpriteAnimationEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Font)) {
-                var editor = new FontEditor {
-                    Value = value as Font
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new FontEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(Collider)) {
-                var editor = new ColliderEditor {
-                    Value = (Collider)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new ColliderEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(LineCollider)) {
-                var editor = new LineColliderEditor {
-                    Value = (LineCollider)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new LineColliderEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType == typeof(RectangleCollider)) {
-                var editor = new RectangleColliderEditor {
-                    Value = (RectangleCollider)value
-                };
-
-                await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                var editor = new RectangleColliderEditor();
+                await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }
             else if (memberType.IsSubclassOf(typeof(BaseComponent))) {
@@ -177,11 +135,10 @@
                 // TODO: I don't know, this should probably work when value is null
                 if (value != null) {
                     var editor = new GenericValueEditor {
-                        DeclaringType = declaringTypeToIgnore,
-                        Value = value
+                        DeclaringType = declaringTypeToIgnore
                     };
 
-                    await editor.Initialize(memberType, originalObject, propertyPath, memberName);
+                    await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                     result = editor;
                 }
             }
