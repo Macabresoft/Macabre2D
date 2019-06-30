@@ -51,10 +51,7 @@
             DependencyObject result = null;
 
             if (memberType.IsEnum) {
-                var editor = new EnumEditor {
-                    EnumType = memberType,
-                };
-
+                var editor = new EnumEditor();
                 await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = editor;
             }

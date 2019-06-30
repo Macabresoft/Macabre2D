@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
     using System;
+    using System.Threading.Tasks;
     using System.Windows;
 
     public partial class EnumEditor : NamedValueEditor<object> {
@@ -18,6 +19,11 @@
         public Type EnumType {
             get { return (Type)this.GetValue(EnumTypeProperty); }
             set { this.SetValue(EnumTypeProperty, value); }
+        }
+
+        public override Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
+            this.EnumType = memberType;
+            return base.Initialize(value, memberType, owner, propertName, title);
         }
     }
 }
