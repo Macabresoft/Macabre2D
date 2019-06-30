@@ -167,8 +167,8 @@
         private void ResetTileValues() {
             var xValues = this._activeTiles.Select(t => t.X);
             var yValues = this._activeTiles.Select(t => t.Y);
-            this._minimumTile = new Point(xValues.Min(), yValues.Min());
-            this._maximumTile = new Point(xValues.Max(), yValues.Max());
+            this._minimumTile = new Point(xValues.Any() ? xValues.Min() : 0, yValues.Any() ? yValues.Min() : 0);
+            this._maximumTile = new Point(xValues.Any() ? xValues.Max() : 0, yValues.Any() ? yValues.Max() : 0);
             this.ResetPositionValues();
         }
 

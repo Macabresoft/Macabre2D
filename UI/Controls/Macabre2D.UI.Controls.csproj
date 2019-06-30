@@ -252,6 +252,9 @@
     <Compile Include="ValueEditors\StringEditor.xaml.cs">
       <DependentUpon>StringEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\TileGridEditor.xaml.cs">
+      <DependentUpon>TileGridEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\VectorEditor.xaml.cs">
       <DependentUpon>VectorEditor.xaml</DependentUpon>
     </Compile>
@@ -380,6 +383,10 @@
     <Page Include="ValueEditors\StringEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ValueEditors\TileGridEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ValueEditors\VectorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

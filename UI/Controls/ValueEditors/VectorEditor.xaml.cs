@@ -101,14 +101,6 @@
             base.OnValueChanged(newValue, oldValue, d);
         }
 
-        private static void OnVectorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            if (d is VectorEditor editor && e.NewValue is Vector2 vector) {
-                editor._x = vector.X;
-                editor._y = vector.Y;
-                editor.RaisePropertyChanged();
-            }
-        }
-
         private void RaisePropertyChanged() {
             this.RaisePropertyChanged(nameof(this.X));
             this.RaisePropertyChanged(nameof(this.Y));
