@@ -11,7 +11,7 @@
             typeof(EnumEditor),
             new PropertyMetadata());
 
-        public EnumEditor() : base() {
+        public EnumEditor() {
             this.InitializeComponent();
         }
 

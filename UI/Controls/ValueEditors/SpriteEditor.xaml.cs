@@ -16,7 +16,7 @@
         private string _absolutePathToImage;
         private SpriteWrapper _spriteWrapper;
 
-        public SpriteEditor() : base() {
+        public SpriteEditor() {
             this.SelectSpriteCommand = new RelayCommand(() => {
                 var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite);
                 if (asset is SpriteWrapper spriteWrapper) {

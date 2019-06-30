@@ -20,7 +20,7 @@
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public FontEditor() : base() {
+        public FontEditor() {
             this.SelectFontCommand = new RelayCommand(() => {
                 var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font);
                 if (asset is FontAsset fontAsset) {

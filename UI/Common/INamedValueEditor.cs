@@ -2,6 +2,7 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using System;
+    using System.Threading.Tasks;
 
     public interface INamedValueEditor {
         object Owner { get; set; }
@@ -9,6 +10,8 @@
         string PropertyName { get; set; }
 
         string Title { get; set; }
+
+        Task Initialize(Type memberType, object owner, string propertName, string title);
     }
 
     public interface INamedValueEditor<T> : INamedValueEditor {

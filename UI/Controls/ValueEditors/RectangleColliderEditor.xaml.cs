@@ -10,7 +10,7 @@
     public partial class RectangleColliderEditor : NamedValueEditor<RectangleCollider> {
         private const string OffsetFieldName = "_offset";
 
-        public RectangleColliderEditor() : base() {
+        public RectangleColliderEditor() {
             this.InitializeComponent();
         }
 

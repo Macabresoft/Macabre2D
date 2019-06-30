@@ -18,14 +18,13 @@
             typeof(ColliderEditor),
             new PropertyMetadata(new List<Type>()));
 
-        private readonly IBusyService _busyService;
-        private readonly IValueEditorService _valueEditorService;
+        private readonly IAssemblyService _assemblyService = ViewContainer.Resolve<IAssemblyService>();
+        private readonly IBusyService _busyService = ViewContainer.Resolve<IBusyService>();
+        private readonly IValueEditorService _valueEditorService = ViewContainer.Resolve<IValueEditorService>();
         private DependencyObject _editor;
         private Type _selectedColliderType;
 
-        public ColliderEditor() : base() {
-            this._busyService = ViewContainer.Resolve<IBusyService>();
-            this._valueEditorService = ViewContainer.Resolve<IValueEditorService>();
+        public ColliderEditor() {
             this.InitializeComponent();
         }
 
@@ -72,6 +71,13 @@
                     this.RaisePropertyChanged(nameof(this.SelectedColliderType));
                 }
             }
+        }
+
+        public override async Task Initialize(Type memberType, object owner, string propertName, string title) {
+            await base.Initialize(memberType, owner, propertName, title);
+            var colliderTypes = await this._assemblyService.LoadTypes(typeof(Collider));
+            colliderTypes.Remove(typeof(PolygonCollider)); // TODO: Eventually allow PolygonCollider
+            this.ColliderTypes = colliderTypes;
         }
 
         protected override void OnValueChanged(Collider newValue, Collider oldValue, DependencyObject d) {

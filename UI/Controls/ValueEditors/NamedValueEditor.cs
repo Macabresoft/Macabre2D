@@ -5,6 +5,7 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
+    using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using System.Windows;
@@ -39,10 +40,6 @@
         protected readonly ISceneService _sceneService = ViewContainer.Resolve<ISceneService>();
         protected readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
-        public NamedValueEditor() {
-            this.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<T>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, this.Owner, this), e => this.IsLoaded, true);
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public object Owner {
@@ -66,6 +63,15 @@
         }
 
         public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; private set; }
+
+        public virtual Task Initialize(Type memberType, object owner, string propertName, string title) {
+            this.ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<T>>(e => this.UpdateProperty(e.PropertyName, e.OldValue, e.NewValue, this.Owner), e => this.IsLoaded, true);
+            this.Owner = owner;
+            this.PropertyName = propertName;
+            this.Title = title;
+            this.RaisePropertyChanged(nameof(this.ValueChangedCommand));
+            return Task.CompletedTask;
+        }
 
         protected virtual void OnValueChanged(T newValue, T oldValue, DependencyObject d) {
             if (d is INamedValueEditor<T> editor) {
@@ -111,16 +117,16 @@
             }
         }
 
-        private void UpdateProperty<T>(string propertyPath, T originalValue, T newValue, object objectToUpdate, INamedValueEditor<T> editor) {
+        private void UpdateProperty(string propertyPath, T originalValue, T newValue, object objectToUpdate) {
             if (objectToUpdate != null && ((originalValue == null && newValue != null) || !originalValue.Equals(newValue))) {
                 var undoCommand = new UndoCommand(
                     () => {
                         this.UpdatePropertyWithNotification(propertyPath, newValue, objectToUpdate);
-                        editor.Value = newValue;
+                        this.Value = newValue;
                     },
                     () => {
                         this.UpdatePropertyWithNotification(propertyPath, originalValue, objectToUpdate);
-                        editor.Value = originalValue;
+                        this.Value = originalValue;
                     });
 
                 this._undoService.Do(undoCommand);

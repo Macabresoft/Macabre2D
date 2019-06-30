@@ -18,7 +18,7 @@
             typeof(FloatEditor),
             new PropertyMetadata(float.MinValue));
 
-        public FloatEditor() : base() {
+        public FloatEditor() {
             this.InitializeComponent();
         }
 

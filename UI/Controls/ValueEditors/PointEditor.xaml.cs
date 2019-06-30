@@ -33,7 +33,7 @@
         private int _x;
         private int _y;
 
-        public PointEditor() : base() {
+        public PointEditor() {
             this.InitializeComponent();
         }
 

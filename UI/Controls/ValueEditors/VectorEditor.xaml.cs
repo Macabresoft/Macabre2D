@@ -33,7 +33,7 @@
         private float _x;
         private float _y;
 
-        public VectorEditor() : base() {
+        public VectorEditor() {
             this.InitializeComponent();
         }
 

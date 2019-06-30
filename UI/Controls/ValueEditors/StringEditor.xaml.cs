@@ -2,7 +2,7 @@
 
     public partial class StringEditor : NamedValueEditor<string> {
 
-        public StringEditor() : base() {
+        public StringEditor() {
             this.InitializeComponent();
         }
     }
