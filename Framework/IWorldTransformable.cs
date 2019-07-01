@@ -38,6 +38,15 @@
         /// <summary>
         /// Gets the world transform.
         /// </summary>
+        /// <param name="originOffset">The origin offset.</param>
+        /// <param name="overrideScale">An override value for scale.</param>
+        /// <param name="rotationAngle">The rotation angle.</param>
+        /// <returns>The world transform.</returns>
+        RotatableTransform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle);
+
+        /// <summary>
+        /// Gets the world transform.
+        /// </summary>
         /// <remarks>This is to be used in conjunction with a <see cref="TileGrid"/>.</remarks>
         /// <param name="grid">The grid.</param>
         /// <param name="gridTileLocation">

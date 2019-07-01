@@ -11,6 +11,7 @@
     /// </summary>
     public sealed class BinaryTileMapComponent : TileableComponent, IAssetComponent<Sprite>, IDrawableComponent, ITileable<Sprite> {
         private Sprite _sprite;
+        private Vector2 _spriteScale;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryTileMapComponent"/> class.
@@ -66,7 +67,7 @@
             // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this.ActiveTiles) {
                 var position = new Vector2(tile.X * this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit);
-                var transform = this.GetWorldTransform(position, this.Rotation.Angle);
+                var transform = this.GetWorldTransform(position, this.LocalScale * this._spriteScale, this.Rotation.Angle);
                 MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, transform, this.Color);
             }
         }
@@ -107,6 +108,24 @@
         public bool TryGetAsset(Guid id, out Sprite asset) {
             var result = this.Sprite != null && this.Sprite.Id == id;
             asset = result ? this.Sprite : null;
+            return result;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnGridChanged() {
+            base.OnGridChanged();
+            this._spriteScale = this.GetSpriteScale();
+        }
+
+        private Vector2 GetSpriteScale() {
+            var result = Vector2.One;
+            if (this.Sprite != null && this.Sprite.Size.X != 0 && this.Sprite.Size.Y != 0) {
+                var spriteWidth = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
+                var spriteHeight = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+
+                result = new Vector2(this.Grid.TileSize.X / spriteWidth, this.Grid.TileSize.Y / spriteHeight);
+            }
+
             return result;
         }
     }
