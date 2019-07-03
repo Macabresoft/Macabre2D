@@ -51,9 +51,9 @@
             }
             set {
                 if (this._sprite != value) {
-                    // TODO: create a scale for the sprite to fit the current grid
                     this._sprite = value;
                     this.LoadContent();
+                    this._spriteScale = this.GetSpriteScale();
                 }
             }
         }
@@ -66,8 +66,8 @@
 
             // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this.ActiveTiles) {
-                var position = new Vector2(tile.X * this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit, tile.Y * this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit);
-                var transform = this.GetWorldTransform(position, this.LocalScale * this._spriteScale, this.Rotation.Angle);
+                var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
+                var transform = this.GetWorldTransform(offset, this.LocalScale * this._spriteScale, this.Rotation.Angle);
                 MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, transform, this.Color);
             }
         }

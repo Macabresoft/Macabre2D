@@ -562,8 +562,8 @@
             var worldTransform = this.WorldTransform;
 
             var matrix =
-                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
                 Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
                 Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
