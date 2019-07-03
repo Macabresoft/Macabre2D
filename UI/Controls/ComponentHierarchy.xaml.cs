@@ -136,7 +136,12 @@
         }
 
         private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (e.NewValue != null && this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
+            if (e.NewValue == null) {
+                if (this._treeView.FindTreeViewItem(this.Root) is TreeViewItem rootTreeViewItem) {
+                    rootTreeViewItem.IsSelected = true;
+                }
+            }
+            else if (this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
                 treeViewItem.IsSelected = true;
             }
         }

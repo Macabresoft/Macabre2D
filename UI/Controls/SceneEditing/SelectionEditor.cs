@@ -89,17 +89,16 @@
                 if (this._componentService.SelectedItem?.Component != null) {
                     if (this._game.ShowScaleGizmo) {
                         hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
+                        this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
                     }
                     else if (this._game.ShowTranslationGizmo) {
                         hadInteractions = this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
+                        this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
                     }
                 }
 
-                if (hadInteractions) {
-                    // We must force the editor to recognize that we've made a change.
-                    this._componentService.SelectedItem.RaisePropertyChanged("Position");
-                }
-                else if (mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
+                if (!hadInteractions && mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
+                    this._componentService.SelectComponent(null);
                     foreach (var drawable in this._game.CurrentScene.GetVisibleDrawableComponents()) {
                         if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
                             this._componentService.SelectComponent(drawableComponent);

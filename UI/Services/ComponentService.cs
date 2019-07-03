@@ -31,7 +31,10 @@
         }
 
         public void SelectComponent(BaseComponent component) {
-            if (this._sceneService.CurrentScene is SceneWrapper scene) {
+            if (component == null) {
+                this.SelectedItem = null;
+            }
+            else if (this._sceneService.CurrentScene is SceneWrapper scene) {
                 ComponentWrapper result = null;
                 foreach (var child in scene.Children) {
                     if (child.Id == component.Id) {
