@@ -200,16 +200,16 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.Font != null && this.LocalScale.X != 0f && this.LocalScale.Y != 0f) {
-                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
-
-                var size = this._size.Value * inversePixelDensity;
-                var offset = this.Offset * inversePixelDensity;
+                var size = this._size.Value;
+                var width = size.X * GameSettings.Instance.InversePixelsPerUnit;
+                var height = size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                var offset = this.Offset * GameSettings.Instance.InversePixelsPerUnit;
                 var rotationAngle = this.Rotation.Angle;
                 var points = new List<Vector2> {
                     this.GetWorldTransform(offset, rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(size.X, 0f), rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(size.X, size.Y), rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(0f, size.Y), rotationAngle).Position
+                    this.GetWorldTransform(offset + new Vector2(width, 0f), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height), rotationAngle).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
@@ -236,13 +236,13 @@
             var width = size.X;
             var height = size.Y;
 
-            if (this.LocalScale.X < 0f) {
-                width *= -1f;
-            }
+            //if (this.LocalScale.X < 0f) {
+            //    width *= -1f;
+            //}
 
-            if (this.LocalScale.Y < 0f) {
-                height *= -1f;
-            }
+            //if (this.LocalScale.Y < 0f) {
+            //    height *= -1f;
+            //}
 
             return new Vector2(width, height);
         }

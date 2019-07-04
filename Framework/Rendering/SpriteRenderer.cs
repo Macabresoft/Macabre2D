@@ -174,17 +174,16 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.Sprite != null) {
-                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
-                var width = this.Sprite.Size.X * inversePixelDensity;
-                var height = this.Sprite.Size.Y * inversePixelDensity;
-                var offset = this.Offset * inversePixelDensity;
-                var angle = this.Rotation.Angle;
+                var width = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
+                var height = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                var offset = this.Offset * GameSettings.Instance.InversePixelsPerUnit;
+                var rotationAngle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(offset, angle).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, 0f), angle).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, height), angle).Position,
-                    this.GetWorldTransform(offset + new Vector2(0f, height), angle).Position
+                    this.GetWorldTransform(offset, rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, 0f), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height), rotationAngle).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height), rotationAngle).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
