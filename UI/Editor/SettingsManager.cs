@@ -6,16 +6,12 @@
     using System.Threading.Tasks;
 
     public sealed class SettingsManager {
-        private const string LastProjectSettingName = "LastProject";
-
         private readonly IMonoGameService _monoGameService;
         private readonly IProjectService _projectService;
-        private readonly ISceneService _sceneService;
 
-        public SettingsManager(IMonoGameService monoGameService, IProjectService projectService, ISceneService sceneService) {
+        public SettingsManager(IMonoGameService monoGameService, IProjectService projectService) {
             this._monoGameService = monoGameService;
             this._projectService = projectService;
-            this._sceneService = sceneService;
         }
 
         public string GetLastOpenTabName() {

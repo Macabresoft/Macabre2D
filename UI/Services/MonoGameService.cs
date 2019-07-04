@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.SceneEditing;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
@@ -12,11 +13,9 @@
         private readonly EditorGame _editorGame;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
-        private bool _hideGizmos;
+        private GizmoType _selectedGizmo = GizmoType.Translation;
         private bool _showGrid = true;
-        private bool _showScaleGizmo;
         private bool _showSelection = true;
-        private bool _showTranslationGizmo = true;
 
         public MonoGameService(EditorGame editorGame, IProjectService projectService, ISceneService sceneService) {
             this._editorGame = editorGame;
@@ -36,22 +35,14 @@
             }
         }
 
-        public bool HideGizmos {
+        public GizmoType SelectedGizmo {
             get {
-                return this._hideGizmos;
+                return this._selectedGizmo;
             }
 
             set {
-                if (this._hideGizmos && !this._showTranslationGizmo && !this._showScaleGizmo && !value) {
-                    return;
-                }
-
-                this.Set(ref this._hideGizmos, value);
-                this._editorGame.HideGizmos = this._hideGizmos;
-
-                if (this._hideGizmos) {
-                    this.ShowScaleGizmo = false;
-                    this.ShowTranslationGizmo = false;
+                if (this.Set(ref this._selectedGizmo, value)) {
+                    this._editorGame.SelectedGizmo = this.SelectedGizmo;
                 }
             }
         }
@@ -67,26 +58,6 @@
             }
         }
 
-        public bool ShowScaleGizmo {
-            get {
-                return this._showScaleGizmo;
-            }
-
-            set {
-                if (this._showScaleGizmo && !this._hideGizmos && !this._showTranslationGizmo && !value) {
-                    return;
-                }
-
-                this.Set(ref this._showScaleGizmo, value);
-                this._editorGame.ShowScaleGizmo = this._showScaleGizmo;
-
-                if (this._showScaleGizmo) {
-                    this.HideGizmos = false;
-                    this.ShowTranslationGizmo = false;
-                }
-            }
-        }
-
         public bool ShowSelection {
             get {
                 return this._showSelection;
@@ -95,26 +66,6 @@
             set {
                 this.Set(ref this._showSelection, value);
                 this._editorGame.ShowSelection = this._showSelection;
-            }
-        }
-
-        public bool ShowTranslationGizmo {
-            get {
-                return this._showTranslationGizmo;
-            }
-
-            set {
-                if (this._showTranslationGizmo && !this._hideGizmos && !this._showScaleGizmo && !value) {
-                    return;
-                }
-
-                this.Set(ref this._showTranslationGizmo, value);
-                this._editorGame.ShowTranslationGizmo = this._showTranslationGizmo;
-
-                if (this._showTranslationGizmo) {
-                    this.HideGizmos = false;
-                    this.ShowScaleGizmo = false;
-                }
             }
         }
 

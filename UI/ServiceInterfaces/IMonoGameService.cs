@@ -1,18 +1,16 @@
 ﻿namespace Macabre2D.UI.ServiceInterfaces {
 
+    using Macabre2D.UI.Common;
     using System.Windows;
 
     public interface IMonoGameService {
         DependencyObject EditorGame { get; }
 
-        bool HideGizmos { get; set; }
+        GizmoType SelectedGizmo { get; set; }
+
         bool ShowGrid { get; set; }
 
-        bool ShowScaleGizmo { get; set; }
-
         bool ShowSelection { get; set; }
-
-        bool ShowTranslationGizmo { get; set; }
 
         void CenterCamera();
 

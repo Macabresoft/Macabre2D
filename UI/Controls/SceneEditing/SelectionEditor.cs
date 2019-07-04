@@ -4,6 +4,7 @@
     using Macabre2D.Framework.Diagnostics;
     using Macabre2D.Framework.Extensions;
     using Macabre2D.Framework.Physics;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
@@ -51,10 +52,10 @@
                 this._colliderDrawer.Draw(gameTime, viewBoundingArea);
             }
 
-            if (this._game.ShowScaleGizmo) {
+            if (this._game.SelectedGizmo == GizmoType.Scale) {
                 this._scaleGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
-            else if (this._game.ShowTranslationGizmo) {
+            else if (this._game.SelectedGizmo == GizmoType.Translation) {
                 this._translationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
         }
@@ -87,11 +88,11 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    if (this._game.ShowScaleGizmo) {
+                    if (this._game.SelectedGizmo == GizmoType.Scale) {
                         hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                         this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
                     }
-                    else if (this._game.ShowTranslationGizmo) {
+                    else if (this._game.SelectedGizmo == GizmoType.Translation) {
                         hadInteractions = this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
                         this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
                     }

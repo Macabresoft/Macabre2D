@@ -170,6 +170,7 @@
       <DependentUpon>SceneEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SceneEditing\SelectionEditor.cs" />
+    <Compile Include="SceneEditing\TileableGizmo.cs" />
     <Compile Include="SceneEditing\TranslationGizmo.cs" />
     <Compile Include="ValueEditors\AudioClipEditor.xaml.cs">
       <DependentUpon>AudioClipEditor.xaml</DependentUpon>

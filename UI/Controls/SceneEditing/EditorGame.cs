@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using MonoGame.Framework.WpfInterop;
@@ -80,7 +81,7 @@
             }
         }
 
-        public bool HideGizmos { get; internal set; }
+        public GizmoType SelectedGizmo { get; internal set; } = GizmoType.Translation;
 
         public IGameSettings Settings {
             get {
@@ -98,13 +99,7 @@
 
         public bool ShowGrid { get; internal set; } = true;
 
-        public bool ShowRotationGizmo { get; internal set; }
-
-        public bool ShowScaleGizmo { get; internal set; }
-
         public bool ShowSelection { get; internal set; } = true;
-
-        public bool ShowTranslationGizmo { get; internal set; } = true;
 
         public SpriteBatch SpriteBatch { get; private set; }
 
