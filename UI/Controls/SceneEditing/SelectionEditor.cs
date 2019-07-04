@@ -89,12 +89,16 @@
 
                 if (this._componentService.SelectedItem?.Component != null) {
                     if (this._game.SelectedGizmo == GizmoType.Scale) {
-                        hadInteractions = this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
-                        this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
+                        if (this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
+                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
+                            hadInteractions = true;
+                        }
                     }
                     else if (this._game.SelectedGizmo == GizmoType.Translation) {
-                        hadInteractions = this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem);
-                        this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
+                        if (this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
+                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
+                            hadInteractions = true;
+                        }
                     }
                 }
 
