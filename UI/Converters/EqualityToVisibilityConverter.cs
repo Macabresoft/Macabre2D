@@ -8,18 +8,13 @@
     public sealed class EqualityToVisibilityConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if (value == null && parameter == null) {
-                return Visibility.Visible;
+            var result = Visibility.Collapsed;
+
+            if ((value == null && parameter == null) || (value != null && value.Equals(parameter))) {
+                result = Visibility.Visible;
             }
-            else if (value == null && parameter != null) {
-                return Visibility.Collapsed;
-            }
-            else if (value.Equals(parameter)) {
-                return Visibility.Visible;
-            }
-            else {
-                return Visibility.Collapsed;
-            }
+
+            return result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
