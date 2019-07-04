@@ -231,20 +231,7 @@
         }
 
         private Vector2 CreateSize() {
-            var size = this.Font.SpriteFont.MeasureString(this.Text);
-
-            var width = size.X;
-            var height = size.Y;
-
-            //if (this.LocalScale.X < 0f) {
-            //    width *= -1f;
-            //}
-
-            //if (this.LocalScale.Y < 0f) {
-            //    height *= -1f;
-            //}
-
-            return new Vector2(width, height);
+            return this.Font.SpriteFont.MeasureString(this.Text);
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
