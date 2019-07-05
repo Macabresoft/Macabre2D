@@ -5,6 +5,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
@@ -30,6 +31,8 @@
             var members = declaringTypeToIgnore != null ?
                 editableObject.GetType().GetFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => x.DeclaringType != declaringTypeToIgnore) :
                 editableObject.GetType().GetFieldsAndProperties(typeof(DataMemberAttribute));
+
+            members = members.OrderBy(x => x.GetCustomAttributes(typeof(DisplayAttribute), false).OfType<DisplayAttribute>().FirstOrDefault()?.Order ?? 1000);
 
             foreach (var member in members) {
                 var propertyPath = currentPath == string.Empty ? member.Name : $"{currentPath}.{member.Name}";

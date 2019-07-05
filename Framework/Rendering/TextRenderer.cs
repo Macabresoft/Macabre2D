@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -40,6 +41,7 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember]
+        [Display(Order = -5)]
         public Color Color { get; set; } = Color.Black;
 
         /// <summary>
@@ -47,6 +49,7 @@
         /// </summary>
         /// <value>The font.</value>
         [DataMember]
+        [Display(Order = -6)]
         public Font Font {
             get {
                 return this._font;
@@ -69,6 +72,7 @@
         /// </summary>
         /// <value>The offset.</value>
         [DataMember]
+        [Display(Order = -2)]
         public Vector2 Offset {
             get {
                 return this._offset;
@@ -83,6 +87,7 @@
         /// </summary>
         /// <value>The type of the offset.</value>
         [DataMember]
+        [Display(Order = -3)]
         public OffsetType OffsetType {
             get {
                 return this._offsetType;
@@ -100,6 +105,7 @@
 
         /// <inheritdoc/>
         [DataMember]
+        [Display(Order = -1)]
         public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
@@ -107,6 +113,7 @@
         /// </summary>
         /// <value>The text.</value>
         [DataMember]
+        [Display(Order = -4)]
         public string Text {
             get {
                 return this._text;
