@@ -79,6 +79,7 @@
             }
             set {
                 this.SetOffset(value);
+                this.OffsetType = OffsetType.Custom;
             }
         }
 
