@@ -49,7 +49,7 @@
             }
         }
 
-        internal SpriteFont SpriteFont { get; set; }
+        internal SpriteFont SpriteFont { get; private set; }
 
         /// <summary>
         /// Loads the sound effect.

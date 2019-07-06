@@ -11,15 +11,9 @@
     /// <summary>
     /// A component which will render a single sprite.
     /// </summary>
-    /// <seealso cref="BaseComponent"/>
-    /// <seealso cref="IDrawableComponent"/>
-    /// <seealso cref="IDisposable"/>
-    /// <seealso cref="BaseComponent"/>
     public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
-        private Vector2 _offset;
-        private OffsetType _offsetType = OffsetType.Custom;
         private Sprite _sprite;
 
         /// <summary>
@@ -45,40 +39,11 @@
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
-        /// Gets or sets the offset. If OFfsetType is anything other than Custom, this will be
-        /// overridden when LoadContent(...) is called. This value is in pixels.
+        /// Gets or sets the offset.
         /// </summary>
         /// <value>The offset.</value>
         [DataMember]
-        public Vector2 Offset {
-            get {
-                return this._offset;
-            }
-            set {
-                this.SetOffset(value);
-                this._offsetType = OffsetType.Custom;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the type of the offset.
-        /// </summary>
-        /// <value>The type of the offset.</value>
-        [DataMember]
-        public OffsetType OffsetType {
-            get {
-                return this._offsetType;
-            }
-            set {
-                if (value != this._offsetType) {
-                    this._offsetType = value;
-
-                    if (this.IsInitialized) {
-                        this.SetOffset();
-                    }
-                }
-            }
-        }
+        public PixelOffset Offset { get; private set; } = new PixelOffset();
 
         /// <inheritdoc/>
         [DataMember]
@@ -100,7 +65,7 @@
                     this._boundingArea.Reset();
 
                     if (this.IsInitialized) {
-                        this.SetOffset();
+                        this.ResetOffset();
                     }
                 }
             }
@@ -161,14 +126,11 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.SetOffset();
             this.TransformChanged += this.Self_TransformChanged;
-
-            if (this.Rotation == null) {
-                this.Rotation = new Rotation();
-            }
-
             this.Rotation.AngleChanged += this.Self_TransformChanged;
+            this.Offset.AmountChanged += this.Offset_AmountChanged;
+            this.Offset.Initialize(this.CreateSize);
+            this.ResetOffset();
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -176,7 +138,7 @@
             if (this.Sprite != null) {
                 var width = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var height = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
-                var offset = this.Offset * GameSettings.Instance.InversePixelsPerUnit;
+                var offset = this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit;
                 var rotationAngle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
@@ -201,62 +163,32 @@
         }
 
         private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
+            return this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
+        }
+
+        private Vector2 CreateSize() {
+            var result = Vector2.Zero;
+            if (this.Sprite?.Texture is Texture2D texture) {
+                return new Vector2(texture.Width, texture.Height);
+            }
+
+            return result;
+        }
+
+        private void Offset_AmountChanged(object sender, EventArgs e) {
+            this._rotatableTransform.Reset();
+            this._boundingArea.Reset();
+        }
+
+        private void ResetOffset() {
+            if (this.IsInitialized && this.Sprite?.Texture != null) {
+                this.Offset.Reset();
+            }
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
             this._boundingArea.Reset();
             this._rotatableTransform.Reset();
-        }
-
-        private void SetOffset(Vector2 newOffset) {
-            this._offset = newOffset;
-            this._rotatableTransform.Reset();
-            this._boundingArea.Reset();
-        }
-
-        private void SetOffset() {
-            if (this.Sprite == null || this.Sprite.Texture == null || this.OffsetType == OffsetType.Custom) {
-                return;
-            }
-
-            switch (this.OffsetType) {
-                case OffsetType.Bottom:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, 0f));
-                    break;
-
-                case OffsetType.BottomLeft:
-                    this.SetOffset(Vector2.Zero);
-                    break;
-
-                case OffsetType.BottomRight:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, 0f));
-                    break;
-
-                case OffsetType.Center:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height * 0.5f));
-                    break;
-
-                case OffsetType.Left:
-                    this.SetOffset(new Vector2(0f, -this.Sprite.Texture.Height * 0.5f));
-                    break;
-
-                case OffsetType.Right:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height * 0.5f));
-                    break;
-
-                case OffsetType.Top:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width * 0.5f, -this.Sprite.Texture.Height));
-                    break;
-
-                case OffsetType.TopLeft:
-                    this.SetOffset(new Vector2(0f, -this.Sprite.Texture.Height));
-                    break;
-
-                case OffsetType.TopRight:
-                    this.SetOffset(new Vector2(-this.Sprite.Texture.Width, -this.Sprite.Texture.Height));
-                    break;
-            }
         }
     }
 }

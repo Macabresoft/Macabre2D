@@ -42,23 +42,23 @@
             base.Initialize(game);
 
             this._xAxisArrowRenderer.Sprite = PrimitiveDrawer.CreateForwardArrowSprite(this.Game.GraphicsDevice, 64);
-            this._xAxisArrowRenderer.OffsetType = OffsetType.Center;
+            this._xAxisArrowRenderer.Offset.Type = PixelOffsetType.Center;
             this._xAxisArrowRenderer.AddChild(this._xAxisBody);
             this._xAxisArrowRenderer.Initialize(this.Game.CurrentScene);
 
             this._yAxisArrowRenderer.Sprite = PrimitiveDrawer.CreateUpwardsArrowSprite(this.Game.GraphicsDevice, 64);
-            this._yAxisArrowRenderer.OffsetType = OffsetType.Center;
+            this._yAxisArrowRenderer.Offset.Type = PixelOffsetType.Center;
             this._yAxisArrowRenderer.AddChild(this._yAxisBody);
             this._yAxisArrowRenderer.Initialize(this.Game.CurrentScene);
 
             var triangleSprite = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisTriangleRenderer.Sprite = triangleSprite;
-            this._xAxisTriangleRenderer.OffsetType = OffsetType.Center;
+            this._xAxisTriangleRenderer.Offset.Type = PixelOffsetType.Center;
             this._xAxisTriangleRenderer.AddChild(this._neutralAxisBody);
             this._xAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
 
             this._yAxisTriangleRenderer.Sprite = triangleSprite;
-            this._yAxisTriangleRenderer.OffsetType = OffsetType.Center;
+            this._yAxisTriangleRenderer.Offset.Type = PixelOffsetType.Center;
             this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
