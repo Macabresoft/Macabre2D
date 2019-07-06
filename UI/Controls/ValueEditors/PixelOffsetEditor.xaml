@@ -1,0 +1,46 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.PixelOffsetEditor"
+                        x:Name="_pixelOffsetEditor"
+                        x:TypeArguments="framework:PixelOffset"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
+                        xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
+    <Grid DataContext="{Binding ElementName=_pixelOffsetEditor}">
+        <controls:CollapsableEditor Title="{Binding Title}">
+            <controls:CollapsableEditor.CollapsedContent>
+                <ComboBox ItemsSource="{Binding OffsetTypes}"
+                          SelectedItem="{Binding OffsetType}" />
+            </controls:CollapsableEditor.CollapsedContent>
+            <controls:CollapsableEditor.UncollapsedContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               FontWeight="Bold"
+                               Text="Type"
+                               VerticalAlignment="Center" />
+
+                    <ComboBox Grid.Row="0"
+                              Grid.Column="1"
+                              ItemsSource="{Binding OffsetTypes}"
+                              SelectedItem="{Binding OffsetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <local:VectorEditor Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Title="Amount"
+                                        Value="{Binding Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </controls:CollapsableEditor.UncollapsedContent>
+        </controls:CollapsableEditor>
+    </Grid>
+</local:NamedValueEditor>

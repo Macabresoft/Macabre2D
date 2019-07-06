@@ -2,9 +2,7 @@
 
     using Macabre2D.Framework.Physics;
     using Macabre2D.UI.Common;
-    using Macabre2D.UI.Models;
     using Microsoft.Xna.Framework;
-    using System.Runtime.CompilerServices;
     using System.Windows;
 
     public partial class RectangleColliderEditor : NamedValueEditor<RectangleCollider> {
@@ -61,23 +59,6 @@
             this.RaisePropertyChanged(nameof(this.Offset));
             this.RaisePropertyChanged(nameof(this.RectangleWidth));
             this.RaisePropertyChanged(nameof(this.RectangleHeight));
-        }
-
-        private void UpdateProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
-            var hasChanges = this._sceneService.HasChanges;
-            var undoCommand = new UndoCommand(
-                () => {
-                    this.Value.SetProperty(propertyPath, newValue);
-                    this.RaisePropertyChanged(localPropertyName);
-                    this._sceneService.HasChanges = true;
-                },
-                () => {
-                    this.Value.SetProperty(propertyPath, originalValue);
-                    this.RaisePropertyChanged(localPropertyName);
-                    this._sceneService.HasChanges = hasChanges;
-                });
-
-            this._undoService.Do(undoCommand);
         }
     }
 }

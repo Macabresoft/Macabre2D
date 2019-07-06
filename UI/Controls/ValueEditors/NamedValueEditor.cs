@@ -7,6 +7,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.ComponentModel;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -93,6 +94,46 @@
 
         protected void RaisePropertyChanged(string propertyName) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected void UpdateProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
+            var hasChanges = this._sceneService.HasChanges;
+            var undoCommand = new UndoCommand(
+                () => {
+                    this.Value.SetProperty(propertyPath, newValue);
+                    this.RaisePropertyChanged(localPropertyName);
+                    this._sceneService.HasChanges = true;
+                },
+                () => {
+                    this.Value.SetProperty(propertyPath, originalValue);
+                    this.RaisePropertyChanged(localPropertyName);
+                    this._sceneService.HasChanges = hasChanges;
+                });
+
+            this._undoService.Do(undoCommand);
+        }
+
+        protected void UpdateProperty(string propertyPath, object originalValue, object newValue, params string[] propertiesToRaiseChanged) {
+            var hasChanges = this._sceneService.HasChanges;
+            var undoCommand = new UndoCommand(
+                () => {
+                    this.Value.SetProperty(propertyPath, newValue);
+                    foreach (var propertyName in propertiesToRaiseChanged) {
+                        this.RaisePropertyChanged(propertyName);
+                    }
+
+                    this._sceneService.HasChanges = true;
+                },
+                () => {
+                    this.Value.SetProperty(propertyPath, originalValue);
+                    foreach (var propertyName in propertiesToRaiseChanged) {
+                        this.RaisePropertyChanged(propertyName);
+                    }
+
+                    this._sceneService.HasChanges = hasChanges;
+                });
+
+            this._undoService.Do(undoCommand);
         }
 
         private static async void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
