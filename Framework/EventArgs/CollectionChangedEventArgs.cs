@@ -6,7 +6,7 @@
     /// <summary>
     /// Event arguments for a collection changed event.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type contained in the collection.</typeparam>
     /// <seealso cref="EventArgs"/>
     public sealed class CollectionChangedEventArgs<T> : EventArgs {
 
