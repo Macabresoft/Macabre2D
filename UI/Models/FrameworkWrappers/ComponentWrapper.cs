@@ -9,6 +9,14 @@
     using System.ComponentModel;
     using System.Linq;
 
+    [Flags]
+    public enum ComponentEditingStyle {
+        None = 0,
+        Standard = 1 << 0,
+        Rotation = 1 << 1,
+        Tile = 1 << 2
+    }
+
     public sealed class ComponentWrapper : NotifyPropertyChanged, IHierarchical<ComponentWrapper, IParent<ComponentWrapper>> {
         internal readonly ObservableCollection<ComponentWrapper> _children = new ObservableCollection<ComponentWrapper>();
         private IParent<ComponentWrapper> _parent;
@@ -20,6 +28,8 @@
             foreach (var child in this.Component.Children) {
                 this._children.Add(new ComponentWrapper(child));
             }
+
+            this.EditingStyle = this.GetEditingStyle();
         }
 
         public IReadOnlyCollection<ComponentWrapper> Children {
@@ -29,6 +39,8 @@
         }
 
         public BaseComponent Component { get; }
+
+        public ComponentEditingStyle EditingStyle { get; }
 
         public Guid Id {
             get {
@@ -133,6 +145,24 @@
             }
 
             this.RaisePropertyChanged(nameof(this.Children));
+        }
+
+        private ComponentEditingStyle GetEditingStyle() {
+            var result = ComponentEditingStyle.None;
+
+            if (this.Component != null) {
+                result = ComponentEditingStyle.Standard;
+                var componentType = this.Component.GetType();
+
+                if (typeof(IRotatable).IsAssignableFrom(componentType)) {
+                    result |= ComponentEditingStyle.Rotation;
+                }
+                else if (typeof(ITileable).IsAssignableFrom(componentType)) {
+                    result |= ComponentEditingStyle.Tile;
+                }
+            }
+
+            return result;
         }
 
         private bool IsAncestorOf(ComponentWrapper wrapper) {

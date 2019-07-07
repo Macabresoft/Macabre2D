@@ -11,7 +11,7 @@
     using Microsoft.Xna.Framework.Input;
     using System.Windows.Input;
 
-    public sealed class ScaleGizmo : BaseGizmo {
+    public sealed class ScaleGizmo : BaseAxisGizmo {
 
         private readonly Body _xAxisBody = new Body() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)

@@ -11,7 +11,7 @@
     using Microsoft.Xna.Framework.Input;
     using System.Windows.Input;
 
-    public sealed class TranslationGizmo : BaseGizmo {
+    public sealed class TranslationGizmo : BaseAxisGizmo {
 
         private readonly Body _neutralAxisBody = new Body() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
