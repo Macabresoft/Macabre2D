@@ -162,7 +162,7 @@
     <Compile Include="EditableTreeViewItemControl.xaml.cs">
       <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SceneEditing\BaseGizmo.cs" />
+    <Compile Include="SceneEditing\BaseAxisGizmo.cs" />
     <Compile Include="SceneEditing\EditorAssetManager.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
     <Compile Include="SceneEditing\ScaleGizmo.cs" />

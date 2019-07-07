@@ -8,9 +8,9 @@
     using Microsoft.Xna.Framework.Input;
     using System;
 
-    public abstract class BaseGizmo {
+    public abstract class BaseAxisGizmo {
 
-        public BaseGizmo(IUndoService undoService) {
+        public BaseAxisGizmo(IUndoService undoService) {
             this.UndoService = undoService;
         }
 
