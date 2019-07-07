@@ -12,9 +12,10 @@
     [Flags]
     public enum ComponentEditingStyle {
         None = 0,
-        Standard = 1 << 0,
-        Rotation = 1 << 1,
-        Tile = 1 << 2
+        Translation = 1 << 0,
+        Scale = 1 << 1,
+        Rotation = 1 << 2,
+        Tile = 1 << 3
     }
 
     public sealed class ComponentWrapper : NotifyPropertyChanged, IHierarchical<ComponentWrapper, IParent<ComponentWrapper>> {
@@ -151,10 +152,14 @@
             var result = ComponentEditingStyle.None;
 
             if (this.Component != null) {
-                result = ComponentEditingStyle.Standard;
                 var componentType = this.Component.GetType();
-
-                if (typeof(IRotatable).IsAssignableFrom(componentType)) {
+                if (typeof(ITranslateable).IsAssignableFrom(componentType)) {
+                    result |= ComponentEditingStyle.Translation;
+                }
+                else if (typeof(IScaleable).IsAssignableFrom(componentType)) {
+                    result |= ComponentEditingStyle.Scale;
+                }
+                else if (typeof(IRotatable).IsAssignableFrom(componentType)) {
                     result |= ComponentEditingStyle.Rotation;
                 }
                 else if (typeof(ITileable).IsAssignableFrom(componentType)) {

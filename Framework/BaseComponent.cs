@@ -627,9 +627,7 @@
             return result;
         }
 
-        /// <summary>
-        /// Loads the content.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual void LoadContent() {
             foreach (var child in this._children) {
                 child.LoadContent();
@@ -650,28 +648,17 @@
             return result;
         }
 
-        /// <summary>
-        /// Sets the world position.
-        /// </summary>
-        /// <param name="position">The position.</param>
+        /// <inheritdoc/>
         public void SetWorldPosition(Vector2 position) {
-            var currentTransform = this.WorldTransform;
             this.SetWorldTransform(position, this.WorldTransform.Scale);
         }
 
-        /// <summary>
-        /// Sets the world scale.
-        /// </summary>
-        /// <param name="scale">The scale.</param>
+        /// <inheritdoc/>
         public void SetWorldScale(Vector2 scale) {
             this.SetWorldTransform(this.WorldTransform.Position, scale);
         }
 
-        /// <summary>
-        /// Sets the world transform.
-        /// </summary>
-        /// <param name="position">The position.</param>
-        /// <param name="scale">The scale.</param>
+        /// <inheritdoc/>
         public void SetWorldTransform(Vector2 position, Vector2 scale) {
             var matrix =
                 Matrix.CreateScale(scale.X, scale.Y, 1f) *

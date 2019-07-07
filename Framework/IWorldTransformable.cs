@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for a class that contains a world <see cref="Transform"/>.
     /// </summary>
-    public interface IWorldTransformable {
+    public interface IWorldTransformable : IScaleable, ITranslateable {
 
         /// <summary>
         /// Gets the world transform.
@@ -82,5 +82,12 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
         RotatableTransform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle);
+
+        /// <summary>
+        /// Sets the world transform.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="scale">The scale.</param>
+        void SetWorldTransform(Vector2 position, Vector2 scale);
     }
 }
