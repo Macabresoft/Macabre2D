@@ -1,7 +1,5 @@
-﻿namespace Macabre2D.Framework.Physics {
+﻿namespace Macabre2D.Framework {
 
-    using Macabre2D.Framework;
-    using Macabre2D.Framework.Extensions;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;

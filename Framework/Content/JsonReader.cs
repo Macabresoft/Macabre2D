@@ -1,6 +1,5 @@
-﻿namespace Macabre2D.Framework.Content {
+﻿namespace Macabre2D.Framework {
 
-    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework.Content;
 
     /// <summary>

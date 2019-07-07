@@ -2,7 +2,6 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;

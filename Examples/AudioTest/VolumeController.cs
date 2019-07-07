@@ -1,5 +1,4 @@
 ﻿using Macabre2D.Framework;
-using Macabre2D.Framework.Audio;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 

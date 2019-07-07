@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Physics {
+﻿namespace Macabre2D.Framework {
 
     /// <summary>
     /// A physics module that handles collisions

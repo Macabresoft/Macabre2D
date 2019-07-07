@@ -1,7 +1,5 @@
-﻿namespace Macabre2D.Framework.Diagnostics {
+﻿namespace Macabre2D.Framework {
 
-    using Macabre2D.Framework.Extensions;
-    using Macabre2D.Framework.Rendering;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

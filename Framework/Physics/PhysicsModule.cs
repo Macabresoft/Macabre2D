@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Physics {
+﻿namespace Macabre2D.Framework {
 
     using System.Collections.Generic;
     using System.Linq;

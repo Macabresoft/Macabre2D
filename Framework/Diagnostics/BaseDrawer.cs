@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Diagnostics {
+﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
     using System.Runtime.Serialization;

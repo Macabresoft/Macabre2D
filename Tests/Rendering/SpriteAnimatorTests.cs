@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Tests.Rendering {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Rendering;
     using Microsoft.Xna.Framework;
     using NSubstitute;
     using NUnit.Framework;

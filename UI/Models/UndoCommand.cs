@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
-    using Macabre2D.Framework.Extensions;
+    using Macabre2D.Framework;
     using System;
 
     public class UndoCommand {

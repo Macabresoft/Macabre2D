@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.Models.FrameworkWrappers {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Rendering;
 
     public sealed class SpriteAnimationStepWrapper : NotifyPropertyChanged {
         private readonly SpriteAnimationAsset _asset;

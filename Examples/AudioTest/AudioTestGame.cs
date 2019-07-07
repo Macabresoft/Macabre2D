@@ -1,8 +1,6 @@
 ﻿namespace Macabre2D.Examples.AudioTest {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Audio;
-    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework.Graphics;
     using System;
 

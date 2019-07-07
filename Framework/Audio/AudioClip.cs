@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Audio {
+﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework.Audio;
     using System;

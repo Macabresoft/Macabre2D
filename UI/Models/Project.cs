@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Serialization;
     using Macabre2D.UI.Models.Validation;
     using System;
     using System.Collections.Generic;

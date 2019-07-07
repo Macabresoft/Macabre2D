@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.Tests.Physics {
 
-    using Macabre2D.Framework.Physics;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using NUnit.Framework;
 

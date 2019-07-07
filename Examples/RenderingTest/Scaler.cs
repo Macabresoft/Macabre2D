@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Examples.RenderingTest {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Rendering;
     using Microsoft.Xna.Framework;
 
     public class Scaler : BaseComponent, IUpdateableComponent {

@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Content {
+﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework.Content.Pipeline;
     using System.IO;

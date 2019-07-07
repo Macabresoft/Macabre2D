@@ -1,9 +1,6 @@
 ﻿namespace Macabre2D.Examples.RenderingTest {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Diagnostics;
-    using Macabre2D.Framework.Rendering;
-    using Macabre2D.Framework.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

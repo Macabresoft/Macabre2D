@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Extensions {
+﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework.Input;
     using System.Linq;

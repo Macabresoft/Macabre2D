@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Framework.Serialization {
+﻿namespace Macabre2D.Framework {
 
     using Newtonsoft.Json;
     using System;

@@ -1,8 +1,6 @@
 ﻿namespace Macabre2D.Tests {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Audio;
-    using Macabre2D.Framework.Rendering;
     using NUnit.Framework;
     using System.Collections.Generic;
     using System.Linq;

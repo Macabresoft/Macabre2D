@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Extensions;
     using System;
     using System.IO;
     using System.Linq;

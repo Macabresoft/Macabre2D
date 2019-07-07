@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Macabre2D.Framework.Physics {
+namespace Macabre2D.Framework {
 
     /// <summary>
     /// A projection used by the physics engine when implementing the Separating Axis Theorem

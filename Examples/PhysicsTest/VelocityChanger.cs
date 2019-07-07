@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Examples.PhysicsTest {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Physics;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 

@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Examples.RenderingTest {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Diagnostics;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;

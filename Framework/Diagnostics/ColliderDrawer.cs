@@ -1,7 +1,6 @@
-﻿namespace Macabre2D.Framework.Diagnostics {
+﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using Physics;
     using System.Linq;
 
     /// <summary>

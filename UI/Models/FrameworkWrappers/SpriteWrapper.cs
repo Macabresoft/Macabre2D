@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Models.FrameworkWrappers {
 
-    using Macabre2D.Framework.Rendering;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;

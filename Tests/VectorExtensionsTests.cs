@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.Tests {
 
-    using Macabre2D.Framework.Extensions;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using NUnit.Framework;
 

@@ -1,9 +1,6 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.Framework.Diagnostics;
-    using Macabre2D.Framework.Extensions;
-    using Macabre2D.Framework.Physics;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
