@@ -36,7 +36,6 @@
 
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
-                var worldTransform = selectedComponent.WorldTransform;
                 var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.GraphicsDevice.Viewport.Height);
                 var lineLength = this.GetDefaultLineLength(viewBoundingArea.Height);
 
@@ -46,7 +45,7 @@
                 this.XAxisLineDrawer.Draw(gameTime, viewBoundingArea);
                 this.YAxisLineDrawer.Draw(gameTime, viewBoundingArea);
 
-                this.DrawGizmo(gameTime, worldTransform, viewBoundingArea, ratio, lineLength);
+                this.DrawGizmo(gameTime, selectedComponent, viewBoundingArea, ratio, lineLength);
             }
         }
 
@@ -67,7 +66,7 @@
 
         public abstract bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
 
-        protected abstract void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
+        protected abstract void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
 
         protected float GetDefaultLineLength(float viewHeight) {
             return viewHeight * 0.1f;
@@ -99,11 +98,20 @@
             return newPosition;
         }
 
-        protected void ResetEndPoint(Transform worldTransform, float lineLength) {
-            this.XAxisLineDrawer.StartPoint = worldTransform.Position;
-            this.XAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(lineLength, 0f);
-            this.YAxisLineDrawer.StartPoint = worldTransform.Position;
-            this.YAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(0f, lineLength);
+        protected void ResetEndPoint(BaseComponent selectedComponent, float lineLength) {
+            var worldTransform = selectedComponent.WorldTransform;
+            if (selectedComponent is IRotatable rotatable) {
+                this.XAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.XAxisLineDrawer.EndPoint = worldTransform.Position + Vector2.UnitX.RotateRadians(rotatable.Rotation.Angle) * lineLength;
+                this.YAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.YAxisLineDrawer.EndPoint = worldTransform.Position - Vector2.UnitY.RotateRadians(-rotatable.Rotation.Angle) * lineLength;
+            }
+            else {
+                this.XAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.XAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(lineLength, 0f);
+                this.YAxisLineDrawer.StartPoint = worldTransform.Position;
+                this.YAxisLineDrawer.EndPoint = worldTransform.Position + new Vector2(0f, lineLength);
+            }
         }
     }
 }

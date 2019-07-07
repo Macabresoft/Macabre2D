@@ -47,13 +47,12 @@
                 if (this._previousButtonState == ButtonState.Pressed) {
                     hadInteractions = true;
 
-                    var worldTransform = selectedComponent.Component.WorldTransform;
                     if (this.CurrentAxis == GizmoAxis.X) {
                         var newPosition = this.MoveAlongAxis(this.XAxisLineDrawer.StartPoint, this.XAxisLineDrawer.EndPoint, mousePosition);
                         var newLineLength = Vector2.Distance(this.XAxisLineDrawer.StartPoint, newPosition);
                         this.XAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = this.GetScaleSign(newPosition, worldTransform) * newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, selectedComponent.Component) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -70,7 +69,7 @@
                         var newLineLength = Vector2.Distance(this.YAxisLineDrawer.StartPoint, newPosition); // TODO Allow negative by checking for actual distance
                         this.YAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = this.GetScaleSign(newPosition, worldTransform) * newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, selectedComponent.Component) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -101,9 +100,9 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             if (this._previousButtonState == ButtonState.Released) {
-                this.ResetEndPoint(worldTransform, lineLength);
+                this.ResetEndPoint(selectedComponent, lineLength);
             }
 
             this._defaultLineLength = lineLength;
@@ -141,11 +140,18 @@
             this.YAxisColor = new Color(this.YAxisColor, 1f);
         }
 
-        private float GetScaleSign(Vector2 dragPosition, Transform componentTransform) {
-            var dragStartPoint = componentTransform.Position + (this.CurrentAxis == GizmoAxis.X ? new Vector2(this._defaultLineLength, 0f) : new Vector2(0f, this._defaultLineLength));
-            var dragDistanceFromComponent = Vector2.Distance(dragPosition, componentTransform.Position);
-            var totalDragDistance = Vector2.Distance(dragPosition, dragStartPoint);
+        private float GetScaleSign(Vector2 dragPosition, BaseComponent selectedComponent) {
+            Vector2 dragStartPoint;
+            var worldTransform = selectedComponent.WorldTransform;
+            if (selectedComponent is IRotatable rotatable) {
+                dragStartPoint = worldTransform.Position + (this.CurrentAxis == GizmoAxis.X ? Vector2.UnitX.RotateRadians(rotatable.Rotation.Angle) : -Vector2.UnitY.RotateRadians(-rotatable.Rotation.Angle)) * this._defaultLineLength;
+            }
+            else {
+                dragStartPoint = worldTransform.Position + (this.CurrentAxis == GizmoAxis.X ? new Vector2(this._defaultLineLength, 0f) : new Vector2(0f, this._defaultLineLength));
+            }
 
+            var dragDistanceFromComponent = Vector2.Distance(dragPosition, worldTransform.Position);
+            var totalDragDistance = Vector2.Distance(dragPosition, dragStartPoint);
             return (totalDragDistance > this._defaultLineLength && dragDistanceFromComponent < totalDragDistance) ? -1f : 1f;
         }
 

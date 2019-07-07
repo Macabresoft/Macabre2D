@@ -165,6 +165,7 @@
     <Compile Include="SceneEditing\BaseAxisGizmo.cs" />
     <Compile Include="SceneEditing\EditorAssetManager.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
+    <Compile Include="SceneEditing\RotationGizmo.cs" />
     <Compile Include="SceneEditing\ScaleGizmo.cs" />
     <Compile Include="SceneEditing\SceneEditorControl.xaml.cs">
       <DependentUpon>SceneEditorControl.xaml</DependentUpon>

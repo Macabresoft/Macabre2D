@@ -101,8 +101,8 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, Transform worldTransform, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
-            this.ResetEndPoint(worldTransform, lineLength);
+        protected override void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
+            this.ResetEndPoint(selectedComponent, lineLength);
 
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
