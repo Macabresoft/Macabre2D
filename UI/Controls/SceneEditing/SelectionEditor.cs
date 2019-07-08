@@ -9,6 +9,7 @@
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
+        private readonly RotationGizmo _rotationGizmo;
         private readonly ScaleGizmo _scaleGizmo;
         private readonly TranslationGizmo _translationGizmo;
 
@@ -29,10 +30,12 @@
 
         public SelectionEditor(
             IComponentService componentService,
+            RotationGizmo rotationGizmo,
             ScaleGizmo scaleGizmo,
             TranslationGizmo translationGizmo) {
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._rotationGizmo = rotationGizmo;
             this._scaleGizmo = scaleGizmo;
             this._translationGizmo = translationGizmo;
         }
@@ -49,7 +52,10 @@
                 this._colliderDrawer.Draw(gameTime, viewBoundingArea);
             }
 
-            if (this._game.SelectedGizmo == GizmoType.Scale) {
+            if (this._game.SelectedGizmo == GizmoType.Rotation) {
+                this._rotationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
+            }
+            else if (this._game.SelectedGizmo == GizmoType.Scale) {
                 this._scaleGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
             else if (this._game.SelectedGizmo == GizmoType.Translation) {
@@ -75,6 +81,7 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
             this._colliderDrawer.Initialize(this._game.CurrentScene);
+            this._rotationGizmo.Initialize(this._game);
             this._scaleGizmo.Initialize(this._game);
             this._translationGizmo.Initialize(this._game);
         }
@@ -85,6 +92,12 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
+                    if (this._game.SelectedGizmo == GizmoType.Rotation) {
+                        if (this._rotationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
+                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(IRotatable.Rotation));
+                            hadInteractions = true;
+                        }
+                    }
                     if (this._game.SelectedGizmo == GizmoType.Scale) {
                         if (this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));

@@ -4,10 +4,12 @@
              xmlns:common="clr-namespace:Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+             xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Models.FrameworkWrappers;assembly=Macabre2D.UI.Models"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
+        <converters:ComponentWrapperEditingStyleToVisibilityConverter x:Key="_editingStyleConverter" />
         <converters:EqualityToBoolConverter x:Key="_equalityToBoolConverter" />
         <converters:InverseBoolConverter x:Key="_inverseBoolConverter" />
     </UserControl.Resources>
@@ -42,23 +44,33 @@
                        VerticalAlignment="Stretch" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.SelectedGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static common:GizmoType.Translation}}"
-                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Triangle}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.TriangleOutline}"
+                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Translation}}"
                                        ToolTip="Translation Gizmo" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.SelectedGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static common:GizmoType.Scale}}"
-                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Square}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.SquareOutline}"
+                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Scale}}"
                                        ToolTip="Scale Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.SelectedGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static common:GizmoType.None}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.SelectedGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static common:GizmoType.Rotation}}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Circle}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.CircleOutline}"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
+                                       ToolTip="Rotation Gizmo" />
+
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.SelectedGizmo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static common:GizmoType.None}}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOff}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOffOutline}"
+                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Hides all gizmos." />
 

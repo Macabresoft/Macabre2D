@@ -113,7 +113,7 @@
 
         private void UpdateAngle(ComponentWrapper component, float newRotationAngle) {
             if (component.Component is IRotatable rotatable) {
-                //component.Component.SetWorldRotation(newRotationAngle); Might not need this??
+                rotatable.Rotation.Angle = newRotationAngle;
                 component.UpdateProperty($"{nameof(IRotatable.Rotation)}.{nameof(Rotation.Angle)}", rotatable.Rotation.Angle);
             }
         }

@@ -114,6 +114,7 @@
     <Compile Include="AssetTypeMaskToVisibilityConverter.cs" />
     <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="ComponentParentToCollectionConverter.cs" />
+    <Compile Include="ComponentWrapperEditingStyleToVisibilityConverter.cs" />
     <Compile Include="ContentIdToContentPathConverter.cs" />
     <Compile Include="EqualityToBoolConverter.cs" />
     <Compile Include="InverseMultiBoolToVisibilityConverter.cs" />

@@ -5,6 +5,10 @@
 
         Translation,
 
-        Scale
+        Scale,
+
+        Rotation,
+
+        Tile
     }
 }

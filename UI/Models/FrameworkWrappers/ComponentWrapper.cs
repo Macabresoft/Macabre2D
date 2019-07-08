@@ -153,16 +153,20 @@
 
             if (this.Component != null) {
                 var componentType = this.Component.GetType();
+
                 if (typeof(ITranslateable).IsAssignableFrom(componentType)) {
                     result |= ComponentEditingStyle.Translation;
                 }
-                else if (typeof(IScaleable).IsAssignableFrom(componentType)) {
+
+                if (typeof(IScaleable).IsAssignableFrom(componentType)) {
                     result |= ComponentEditingStyle.Scale;
                 }
-                else if (typeof(IRotatable).IsAssignableFrom(componentType)) {
+
+                if (typeof(IRotatable).IsAssignableFrom(componentType)) {
                     result |= ComponentEditingStyle.Rotation;
                 }
-                else if (typeof(ITileable).IsAssignableFrom(componentType)) {
+
+                if (typeof(ITileable).IsAssignableFrom(componentType)) {
                     result |= ComponentEditingStyle.Tile;
                 }
             }

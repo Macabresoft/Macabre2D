@@ -9,16 +9,15 @@
     public partial class SceneEditorControl : UserControl {
 
         public SceneEditorControl() {
-            this.MonoGameService = ViewContainer.Resolve<IMonoGameService>();
-            this.SceneService = ViewContainer.Resolve<ISceneService>();
             this.CenterCameraCommand = new RelayCommand(this.MonoGameService.CenterCamera);
             this.InitializeComponent();
         }
 
         public ICommand CenterCameraCommand { get; }
 
-        public IMonoGameService MonoGameService { get; }
+        public IComponentService ComponentService { get; } = ViewContainer.Resolve<IComponentService>();
+        public IMonoGameService MonoGameService { get; } = ViewContainer.Resolve<IMonoGameService>();
 
-        public ISceneService SceneService { get; }
+        public ISceneService SceneService { get; } = ViewContainer.Resolve<ISceneService>();
     }
 }
