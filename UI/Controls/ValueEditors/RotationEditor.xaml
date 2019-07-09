@@ -1,0 +1,12 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.RotationEditor"
+                        x:Name="_rotationEditor"
+                        x:TypeArguments="framework:Rotation"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
+    <Grid>
+        <local:FloatEditor Title="Rotation Angle"
+                           Value="{Binding Angle, ElementName=_rotationEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</local:NamedValueEditor>

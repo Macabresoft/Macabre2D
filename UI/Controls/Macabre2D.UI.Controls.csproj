@@ -244,6 +244,9 @@
     <Compile Include="ValueEditors\RectangleColliderEditor.xaml.cs">
       <DependentUpon>RectangleColliderEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\RotationEditor.xaml.cs">
+      <DependentUpon>RotationEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\SpriteAnimationEditor.xaml.cs">
       <DependentUpon>SpriteAnimationEditor.xaml</DependentUpon>
     </Compile>
@@ -373,6 +376,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ValueEditors\RectangleColliderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ValueEditors\RotationEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
