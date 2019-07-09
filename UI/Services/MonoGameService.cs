@@ -7,11 +7,13 @@
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
 
     public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
+        private readonly Dictionary<Guid, GizmoType> _componentIdToGizmoType = new Dictionary<Guid, GizmoType>();
         private readonly IComponentService _componentService;
         private readonly EditorGame _editorGame;
 
@@ -25,6 +27,7 @@
 
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
+        private bool _hasSelectedGizmoBeenManuallyChanged = false;
         private GizmoType _selectedGizmo = GizmoType.Translation;
         private bool _showGrid = true;
         private bool _showSelection = true;
@@ -55,8 +58,9 @@
             }
 
             set {
-                if (this.Set(ref this._selectedGizmo, value)) {
-                    this._editorGame.SelectedGizmo = this.SelectedGizmo;
+                if (this.SetSelectedGizmo(value)) {
+                    this._hasSelectedGizmoBeenManuallyChanged = true;
+                    this.CacheGizmoType(this._componentService.SelectedItem);
                 }
             }
         }
@@ -93,29 +97,46 @@
             this._editorGame.ResetCamera();
         }
 
+        private void CacheGizmoType(ComponentWrapper component) {
+            // TODO: when we remove GizmoType, make sure the component is able
+            if (component != null && this._gizmoTypeToMatchingEditingStyles.TryGetValue(this.SelectedGizmo, out var editingStyle) && (component.EditingStyle & editingStyle) != ComponentEditingStyle.None) {
+                this._componentIdToGizmoType[component.Id] = this.SelectedGizmo;
+            }
+        }
+
         private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (this.SelectedGizmo != GizmoType.None) {
+            this.CacheGizmoType(e.OldValue);
+            var cachedGizmoType = GizmoType.None;
+            var hasCachedValue = e.NewValue != null && this._componentIdToGizmoType.TryGetValue(e.NewValue.Id, out cachedGizmoType);
+
+            if (!this._hasSelectedGizmoBeenManuallyChanged && hasCachedValue && cachedGizmoType != GizmoType.None) {
+                this.SetSelectedGizmo(cachedGizmoType);
+            }
+            else if (this.SelectedGizmo != GizmoType.None) {
                 if (e.NewValue != null && this._gizmoTypeToMatchingEditingStyles.TryGetValue(this.SelectedGizmo, out var validEditingStyle)) {
                     if ((validEditingStyle & e.NewValue.EditingStyle) == ComponentEditingStyle.None) {
-                        if ((e.NewValue.EditingStyle & ComponentEditingStyle.Translation) == ComponentEditingStyle.Translation) {
-                            this.SelectedGizmo = GizmoType.Translation;
+                        if (hasCachedValue) {
+                            this.SetSelectedGizmo(cachedGizmoType);
+                        }
+                        else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Translation) == ComponentEditingStyle.Translation) {
+                            this.SetSelectedGizmo(GizmoType.Translation);
                         }
                         else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Scale) == ComponentEditingStyle.Scale) {
-                            this.SelectedGizmo = GizmoType.Scale;
+                            this.SetSelectedGizmo(GizmoType.Scale);
                         }
                         else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Rotation) == ComponentEditingStyle.Rotation) {
-                            this.SelectedGizmo = GizmoType.Rotation;
+                            this.SetSelectedGizmo(GizmoType.Rotation);
                         }
                         else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Tile) == ComponentEditingStyle.Tile) {
-                            this.SelectedGizmo = GizmoType.Tile;
+                            this.SetSelectedGizmo(GizmoType.Tile);
                         }
                         else {
-                            this.SelectedGizmo = GizmoType.None;
+                            this.SetSelectedGizmo(GizmoType.None);
                         }
                     }
                 }
                 else {
-                    this.SelectedGizmo = GizmoType.None;
+                    this.SetSelectedGizmo(GizmoType.None);
                 }
             }
         }
@@ -139,6 +160,16 @@
                 var desktopBuildConfiguration = this._projectService.CurrentProject.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL);
                 this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), BuildMode.Debug));
             }
+        }
+
+        private bool SetSelectedGizmo(GizmoType newGizmoType) {
+            this._hasSelectedGizmoBeenManuallyChanged = false;
+            var result = this.Set(ref this._selectedGizmo, newGizmoType, nameof(this.SelectedGizmo));
+            if (result) {
+                this._editorGame.SelectedGizmo = this.SelectedGizmo;
+            }
+
+            return result;
         }
     }
 }
