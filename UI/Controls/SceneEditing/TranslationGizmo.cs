@@ -124,6 +124,13 @@
             this._yAxisTriangleRenderer.LocalPosition = this.YAxisLineDrawer.StartPoint;
             this._yAxisTriangleRenderer.LocalScale = new Vector2(-scale);
             this._yAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
+
+            if (selectedComponent is IRotatable rotatable) {
+                this._xAxisArrowRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+                this._yAxisArrowRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+                this._xAxisTriangleRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+                this._yAxisTriangleRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+            }
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {

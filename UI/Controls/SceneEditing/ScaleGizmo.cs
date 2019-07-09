@@ -117,6 +117,11 @@
             this._yAxisSquareRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisSquareRenderer.LocalScale = new Vector2(scale);
             this._yAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
+
+            if (selectedComponent is IRotatable rotatable) {
+                this._xAxisSquareRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+                this._yAxisSquareRenderer.Rotation.Angle = rotatable.Rotation.Angle;
+            }
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {
