@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
@@ -52,13 +51,13 @@
                 this._colliderDrawer.Draw(gameTime, viewBoundingArea);
             }
 
-            if (this._game.SelectedGizmo == GizmoType.Rotation) {
+            if (this._game.EditingStyle == ComponentEditingStyle.Rotation) {
                 this._rotationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
-            else if (this._game.SelectedGizmo == GizmoType.Scale) {
+            else if (this._game.EditingStyle == ComponentEditingStyle.Scale) {
                 this._scaleGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
-            else if (this._game.SelectedGizmo == GizmoType.Translation) {
+            else if (this._game.EditingStyle == ComponentEditingStyle.Translation) {
                 this._translationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
             }
         }
@@ -92,19 +91,19 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    if (this._game.SelectedGizmo == GizmoType.Rotation) {
+                    if (this._game.EditingStyle == ComponentEditingStyle.Rotation) {
                         if (this._rotationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(nameof(IRotatable.Rotation));
                             hadInteractions = true;
                         }
                     }
-                    if (this._game.SelectedGizmo == GizmoType.Scale) {
+                    if (this._game.EditingStyle == ComponentEditingStyle.Scale) {
                         if (this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
                             hadInteractions = true;
                         }
                     }
-                    else if (this._game.SelectedGizmo == GizmoType.Translation) {
+                    else if (this._game.EditingStyle == ComponentEditingStyle.Translation) {
                         if (this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
                             hadInteractions = true;

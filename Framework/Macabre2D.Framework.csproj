@@ -115,7 +115,7 @@
     <Compile Include="Diagnostics\LineStripDrawer.cs" />
     <Compile Include="Diagnostics\PrimitiveDrawer.cs" />
     <Compile Include="Utility\EmptyComponent.cs" />
-    <Compile Include="Extensions\FloatExtensions.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Extensions\KeyboardStateExtensions.cs" />
     <Compile Include="GameSettings.cs" />
     <Compile Include="Interfaces\IBaseComponent.cs" />

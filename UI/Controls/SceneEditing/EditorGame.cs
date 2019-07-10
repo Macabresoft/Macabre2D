@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using MonoGame.Framework.WpfInterop;
@@ -75,13 +75,13 @@
             }
         }
 
+        public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
+
         public EngineObjectType EngineObjectType {
             get {
                 return EngineObjectType.Game;
             }
         }
-
-        public GizmoType SelectedGizmo { get; internal set; } = GizmoType.Translation;
 
         public IGameSettings Settings {
             get {
