@@ -7,16 +7,22 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
 
     public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
-        private readonly Dictionary<Guid, ComponentEditingStyle> _componentIdToEditingStyle = new Dictionary<Guid, ComponentEditingStyle>();
         private readonly IComponentService _componentService;
+
         private readonly EditorGame _editorGame;
 
         private readonly IProjectService _projectService;
+
+        private readonly ComponentEditingStyle[] _recentlyUsedEditingStyles = new[] {
+            ComponentEditingStyle.Translation,
+            ComponentEditingStyle.Scale,
+            ComponentEditingStyle.Rotation
+        };
+
         private readonly ISceneService _sceneService;
         private ComponentEditingStyle _editingStyle = ComponentEditingStyle.Translation;
         private bool _hasSelectedGizmoBeenManuallyChanged = false;
@@ -45,7 +51,6 @@
             set {
                 if (this.SetEditingStyle(value)) {
                     this._hasSelectedGizmoBeenManuallyChanged = true;
-                    this.CacheEditingStyle(this._componentService.SelectedItem);
                 }
             }
         }
@@ -88,48 +93,33 @@
             this._editorGame.ResetCamera();
         }
 
-        private void CacheEditingStyle(ComponentWrapper component) {
-            // TODO: when we remove editing style, make sure the component is able
-            if (component != null && this.EditingStyle != ComponentEditingStyle.None && component.EditingStyle.HasFlag(this.EditingStyle)) {
-                this._componentIdToEditingStyle[component.Id] = this.EditingStyle;
-            }
-        }
-
         private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            this.CacheEditingStyle(e.OldValue);
-            var cachedEditingStyle = ComponentEditingStyle.None;
-            var hasCachedValue = e.NewValue != null && this._componentIdToEditingStyle.TryGetValue(e.NewValue.Id, out cachedEditingStyle);
+            var editingStyleOverride = this.GetEditingStyleOverride(e.NewValue);
 
-            if (!this._hasSelectedGizmoBeenManuallyChanged && hasCachedValue && cachedEditingStyle != ComponentEditingStyle.None) {
-                this.SetEditingStyle(cachedEditingStyle);
-            }
-            else if (this.EditingStyle != ComponentEditingStyle.None) {
-                if (e.NewValue != null) {
-                    if (!e.NewValue.EditingStyle.HasFlag(this.EditingStyle)) {
-                        if (hasCachedValue) {
-                            this.SetEditingStyle(cachedEditingStyle);
-                        }
-                        else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Translation) == ComponentEditingStyle.Translation) {
-                            this.SetEditingStyle(ComponentEditingStyle.Translation);
-                        }
-                        else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Scale) == ComponentEditingStyle.Scale) {
-                            this.SetEditingStyle(ComponentEditingStyle.Scale);
-                        }
-                        else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Rotation) == ComponentEditingStyle.Rotation) {
-                            this.SetEditingStyle(ComponentEditingStyle.Rotation);
-                        }
-                        else if ((e.NewValue.EditingStyle & ComponentEditingStyle.Tile) == ComponentEditingStyle.Tile) {
-                            this.SetEditingStyle(ComponentEditingStyle.Tile);
-                        }
-                        else {
-                            this.SetEditingStyle(ComponentEditingStyle.None);
-                        }
+            if (e.NewValue != null && editingStyleOverride == ComponentEditingStyle.None && !this._hasSelectedGizmoBeenManuallyChanged && e.NewValue.EditingStyle != ComponentEditingStyle.None) {
+                foreach (var editingStyle in this._recentlyUsedEditingStyles) {
+                    if (e.NewValue.EditingStyle.HasFlag(editingStyle)) {
+                        editingStyleOverride = editingStyle;
+                        break;
                     }
                 }
-                else {
-                    this.SetEditingStyle(ComponentEditingStyle.None);
+            }
+
+            this.SetEditingStyle(editingStyleOverride);
+        }
+
+        private ComponentEditingStyle GetEditingStyleOverride(ComponentWrapper wrapper) {
+            var result = ComponentEditingStyle.None;
+            if (wrapper != null) {
+                if (wrapper.EditingStyle.HasFlag(ComponentEditingStyle.Tile)) {
+                    result = ComponentEditingStyle.Tile;
+                }
+                else if (wrapper.EditingStyle.HasFlag(this.EditingStyle)) {
+                    result = this.EditingStyle;
                 }
             }
+
+            return result;
         }
 
         private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -163,6 +153,26 @@
             var result = this.Set(ref this._editingStyle, newEditingStyle, nameof(this.EditingStyle));
             if (result) {
                 this._editorGame.EditingStyle = this.EditingStyle;
+            }
+
+            var positionOfCurrent = -1;
+            for (var i = 0; i < this._recentlyUsedEditingStyles.Length; i++) {
+                if (this._recentlyUsedEditingStyles[i] == this.EditingStyle) {
+                    positionOfCurrent = i;
+                    break;
+                }
+            }
+
+            if (positionOfCurrent > 0) {
+                var recentlyUsedEditingStyles = this._recentlyUsedEditingStyles.ToList();
+                recentlyUsedEditingStyles.Remove(this.EditingStyle);
+                recentlyUsedEditingStyles.Insert(0, this.EditingStyle);
+
+                if (recentlyUsedEditingStyles.Count == this._recentlyUsedEditingStyles.Length) {
+                    for (var i = 0; i < this._recentlyUsedEditingStyles.Length; i++) {
+                        this._recentlyUsedEditingStyles[i] = recentlyUsedEditingStyles.ElementAt(i);
+                    }
+                }
             }
 
             return result;
