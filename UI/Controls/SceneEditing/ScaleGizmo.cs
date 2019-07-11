@@ -122,6 +122,10 @@
                 this._xAxisSquareRenderer.Rotation.Angle = rotatable.Rotation.Angle;
                 this._yAxisSquareRenderer.Rotation.Angle = rotatable.Rotation.Angle;
             }
+            else {
+                this._xAxisSquareRenderer.Rotation.Angle = 0f;
+                this._yAxisSquareRenderer.Rotation.Angle = 0f;
+            }
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {

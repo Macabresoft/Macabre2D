@@ -131,6 +131,12 @@
                 this._xAxisTriangleRenderer.Rotation.Angle = rotatable.Rotation.Angle;
                 this._yAxisTriangleRenderer.Rotation.Angle = rotatable.Rotation.Angle;
             }
+            else {
+                this._xAxisArrowRenderer.Rotation.Angle = 0f;
+                this._yAxisArrowRenderer.Rotation.Angle = 0f;
+                this._xAxisTriangleRenderer.Rotation.Angle = 0f;
+                this._yAxisTriangleRenderer.Rotation.Angle = 0f;
+            }
         }
 
         private void EndDrag(ComponentWrapper selectedComponent) {
