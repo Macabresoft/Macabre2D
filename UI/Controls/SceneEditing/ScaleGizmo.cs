@@ -28,6 +28,12 @@
         public ScaleGizmo(IUndoService undoService) : base(undoService) {
         }
 
+        public override string EditingPropertyName {
+            get {
+                return nameof(BaseComponent.LocalScale);
+            }
+        }
+
         public override void Initialize(IGame game) {
             base.Initialize(game);
             var squareSprite = PrimitiveDrawer.CreateQuadSprite(this.Game.GraphicsDevice, new Point(64));

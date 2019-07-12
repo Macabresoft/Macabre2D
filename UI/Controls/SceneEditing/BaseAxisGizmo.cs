@@ -7,7 +7,7 @@
     using Microsoft.Xna.Framework.Input;
     using System;
 
-    public abstract class BaseAxisGizmo {
+    public abstract class BaseAxisGizmo : IGizmo {
 
         public BaseAxisGizmo(IUndoService undoService) {
             this.UndoService = undoService;
@@ -18,6 +18,14 @@
             Y,
             Neutral,
             None
+        }
+
+        public abstract string EditingPropertyName { get; }
+
+        public virtual bool OverrideSelectionDisplay {
+            get {
+                return false;
+            }
         }
 
         public Color XAxisColor { get; set; } = Color.Red;

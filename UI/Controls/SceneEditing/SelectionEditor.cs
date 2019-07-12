@@ -5,12 +5,11 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
+    using System.Collections.Generic;
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
-        private readonly RotationGizmo _rotationGizmo;
-        private readonly ScaleGizmo _scaleGizmo;
-        private readonly TranslationGizmo _translationGizmo;
+        private readonly Dictionary<ComponentEditingStyle, IGizmo> _editingStyleToGizmo = new Dictionary<ComponentEditingStyle, IGizmo>();
 
         private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
             Color = new Color(255, 255, 255, 150),
@@ -31,35 +30,34 @@
             IComponentService componentService,
             RotationGizmo rotationGizmo,
             ScaleGizmo scaleGizmo,
+            TileGizmo tileGizmo,
             TranslationGizmo translationGizmo) {
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
-            this._rotationGizmo = rotationGizmo;
-            this._scaleGizmo = scaleGizmo;
-            this._translationGizmo = translationGizmo;
+
+            this._editingStyleToGizmo.Add(ComponentEditingStyle.Rotation, rotationGizmo);
+            this._editingStyleToGizmo.Add(ComponentEditingStyle.Scale, scaleGizmo);
+            this._editingStyleToGizmo.Add(ComponentEditingStyle.Tile, tileGizmo);
+            this._editingStyleToGizmo.Add(ComponentEditingStyle.Translation, translationGizmo);
         }
 
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this._game.CurrentScene != null) {
-                var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
-                this._boundingAreaDrawer.Color = contrastingColor;
-                this._colliderDrawer.Color = contrastingColor;
+            this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo);
+
+            if (gizmo?.OverrideSelectionDisplay != true) {
+                if (this._game.CurrentScene != null) {
+                    var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+                    this._boundingAreaDrawer.Color = contrastingColor;
+                    this._colliderDrawer.Color = contrastingColor;
+                }
+
+                if (this._game.ShowSelection) {
+                    this._boundingAreaDrawer.Draw(gameTime, viewBoundingArea);
+                    this._colliderDrawer.Draw(gameTime, viewBoundingArea);
+                }
             }
 
-            if (this._game.ShowSelection) {
-                this._boundingAreaDrawer.Draw(gameTime, viewBoundingArea);
-                this._colliderDrawer.Draw(gameTime, viewBoundingArea);
-            }
-
-            if (this._game.EditingStyle == ComponentEditingStyle.Rotation) {
-                this._rotationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
-            }
-            else if (this._game.EditingStyle == ComponentEditingStyle.Scale) {
-                this._scaleGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
-            }
-            else if (this._game.EditingStyle == ComponentEditingStyle.Translation) {
-                this._translationGizmo.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
-            }
+            gizmo?.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
         }
 
         public void Initialize(EditorGame game) {
@@ -80,9 +78,10 @@
             this.ResetDependencies(this._componentService.SelectedItem);
             this._boundingAreaDrawer.Initialize(this._game.CurrentScene);
             this._colliderDrawer.Initialize(this._game.CurrentScene);
-            this._rotationGizmo.Initialize(this._game);
-            this._scaleGizmo.Initialize(this._game);
-            this._translationGizmo.Initialize(this._game);
+
+            foreach (var gizmo in this._editingStyleToGizmo.Values) {
+                gizmo.Initialize(this._game);
+            }
         }
 
         public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
@@ -91,23 +90,12 @@
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    if (this._game.EditingStyle == ComponentEditingStyle.Rotation) {
-                        if (this._rotationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
-                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(IRotatable.Rotation));
-                            hadInteractions = true;
+                    if (this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo) && gizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
+                        if (!string.IsNullOrWhiteSpace(gizmo.EditingPropertyName)) {
+                            this._componentService.SelectedItem.RaisePropertyChanged(gizmo.EditingPropertyName);
                         }
-                    }
-                    if (this._game.EditingStyle == ComponentEditingStyle.Scale) {
-                        if (this._scaleGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
-                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalScale));
-                            hadInteractions = true;
-                        }
-                    }
-                    else if (this._game.EditingStyle == ComponentEditingStyle.Translation) {
-                        if (this._translationGizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
-                            this._componentService.SelectedItem.RaisePropertyChanged(nameof(BaseComponent.LocalPosition));
-                            hadInteractions = true;
-                        }
+
+                        hadInteractions = true;
                     }
                 }
 

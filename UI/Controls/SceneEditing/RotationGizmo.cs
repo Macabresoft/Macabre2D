@@ -24,6 +24,12 @@
             this.YAxisColor = Color.Transparent;
         }
 
+        public override string EditingPropertyName {
+            get {
+                return nameof(IRotatable.Rotation);
+            }
+        }
+
         public override void Initialize(IGame game) {
             base.Initialize(game);
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(game.GraphicsDevice, 64);

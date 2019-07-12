@@ -35,6 +35,12 @@
         public TranslationGizmo(IUndoService undoService) : base(undoService) {
         }
 
+        public override string EditingPropertyName {
+            get {
+                return nameof(BaseComponent.LocalPosition);
+            }
+        }
+
         public override void Initialize(IGame game) {
             base.Initialize(game);
 

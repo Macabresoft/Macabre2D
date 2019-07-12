@@ -165,12 +165,14 @@
     <Compile Include="SceneEditing\BaseAxisGizmo.cs" />
     <Compile Include="SceneEditing\EditorAssetManager.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
+    <Compile Include="SceneEditing\IGizmo.cs" />
     <Compile Include="SceneEditing\RotationGizmo.cs" />
     <Compile Include="SceneEditing\ScaleGizmo.cs" />
     <Compile Include="SceneEditing\SceneEditorControl.xaml.cs">
       <DependentUpon>SceneEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SceneEditing\SelectionEditor.cs" />
+    <Compile Include="SceneEditing\TileGizmo.cs" />
     <Compile Include="SceneEditing\TranslationGizmo.cs" />
     <Compile Include="ValueEditors\AudioClipEditor.xaml.cs">
       <DependentUpon>AudioClipEditor.xaml</DependentUpon>
