@@ -163,8 +163,6 @@
                 }
             }
 
-            binaryTileMap.Rotation.Angle = 1f;
-
             var binaryTileMapBoundingArea = new BoundingAreaDrawer();
             binaryTileMap.AddChild(binaryTileMapBoundingArea);
             binaryTileMapBoundingArea.Color = Color.Red;

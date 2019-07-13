@@ -570,6 +570,18 @@
         }
 
         /// <inheritdoc/>
+        public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
+            var worldTransform = this.WorldTransform;
+
+            var matrix =
+                Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
+                Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc/>
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
             var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset;
             return this.GetWorldTransform(position);

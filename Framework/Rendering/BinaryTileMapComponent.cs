@@ -66,7 +66,7 @@
             // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this.ActiveTiles) {
                 var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
-                var transform = this.GetWorldTransform(offset, this.LocalScale * this._spriteScale, this.Rotation.Angle);
+                var transform = this.GetWorldTransform(offset, this.LocalScale * this._spriteScale);
                 MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, transform, this.Color);
             }
         }

@@ -50,10 +50,6 @@
             }
         }
 
-        /// <inheritdoc/>
-        [DataMember]
-        public Rotation Rotation { get; private set; } = new Rotation();
-
         /// <summary>
         /// Gets the active tiles.
         /// </summary>
@@ -106,12 +102,6 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
-
-            if (this.Rotation == null) {
-                this.Rotation = new Rotation();
-            }
-
-            this.Rotation.AngleChanged += this.Self_TransformChanged;
             this.ResetTileValues();
         }
 
@@ -135,13 +125,12 @@
                 var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
                 var width = this._maximumPosition.X - this._minimumPosition.X;
                 var height = this._maximumPosition.Y - this._minimumPosition.Y;
-                var angle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(this.Grid.Offset, angle).Position,
-                    this.GetWorldTransform(new Vector2(width, 0f) + this.Grid.Offset, angle).Position,
-                    this.GetWorldTransform(new Vector2(width, height) + this.Grid.Offset, angle).Position,
-                    this.GetWorldTransform(new Vector2(0f, height) + this.Grid.Offset, angle).Position
+                    this.GetWorldTransform(this.Grid.Offset).Position,
+                    this.GetWorldTransform(new Vector2(width, 0f) + this.Grid.Offset).Position,
+                    this.GetWorldTransform(new Vector2(width, height) + this.Grid.Offset).Position,
+                    this.GetWorldTransform(new Vector2(0f, height) + this.Grid.Offset).Position
                 };
 
                 var minimumX = points.Min(x => x.X);

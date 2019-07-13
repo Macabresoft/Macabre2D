@@ -65,5 +65,16 @@
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, RotatableTransform transform, Color color) {
             spriteBatch.Draw(sprite, transform, transform.Rotation.Angle, color);
         }
+
+        /// <summary>
+        /// Draws the specified sprite.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="transform">The transform.</param>
+        /// <param name="color">The color.</param>
+        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color) {
+            spriteBatch.Draw(sprite, transform, 0f, color);
+        }
     }
 }

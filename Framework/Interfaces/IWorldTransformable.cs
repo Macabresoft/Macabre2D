@@ -47,6 +47,14 @@
         /// <summary>
         /// Gets the world transform.
         /// </summary>
+        /// <param name="originOffset">The origin offset.</param>
+        /// <param name="overrideScale">An override value for scale.</param>
+        /// <returns>The world transform.</returns>
+        Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale);
+
+        /// <summary>
+        /// Gets the world transform.
+        /// </summary>
         /// <remarks>This is to be used in conjunction with a <see cref="TileGrid"/>.</remarks>
         /// <param name="grid">The grid.</param>
         /// <param name="gridTileLocation">
