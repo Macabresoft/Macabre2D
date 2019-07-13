@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -41,7 +42,7 @@
         }
 
         public void Draw(GameTime gameTime) {
-            if (this._game.ShowGrid && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
+            if (this._game.ShowGrid && this._game.EditingStyle != ComponentEditingStyle.Tile && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
                 if (this._game.CurrentScene != null) {
                     var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
                     this._primaryGridDrawer.Color = new Color(contrastingColor, 60);

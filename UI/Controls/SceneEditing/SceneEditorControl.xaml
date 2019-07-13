@@ -66,6 +66,14 @@
                                        Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
                                        ToolTip="Rotation Gizmo" />
 
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
+                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.ViewGrid}"
+                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.GridLarge}"
+                                       IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
+                                       ToolTip="Tile Gizmo" />
+
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.None}}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOff}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOffOutline}"

@@ -20,7 +20,8 @@
         private readonly ComponentEditingStyle[] _recentlyUsedEditingStyles = new[] {
             ComponentEditingStyle.Translation,
             ComponentEditingStyle.Scale,
-            ComponentEditingStyle.Rotation
+            ComponentEditingStyle.Rotation,
+            ComponentEditingStyle.Tile
         };
 
         private readonly ISceneService _sceneService;
