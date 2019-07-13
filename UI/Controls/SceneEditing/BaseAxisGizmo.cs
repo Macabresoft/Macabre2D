@@ -34,7 +34,7 @@
 
         protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
 
-        protected IGame Game { get; private set; }
+        protected EditorGame Game { get; private set; }
 
         protected IUndoService UndoService { get; }
 
@@ -57,7 +57,7 @@
             }
         }
 
-        public virtual void Initialize(IGame game) {
+        public virtual void Initialize(EditorGame game) {
             this.Game = game;
 
             this.XAxisLineDrawer.Color = this.XAxisColor;

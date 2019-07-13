@@ -8,7 +8,8 @@
 
     public sealed class TileGizmo : IGizmo {
         private readonly IUndoService _undoService;
-        private IGame _game;
+        private EditorGame _game;
+        private GridDrawer _gridDrawer;
 
         public TileGizmo(IUndoService undoService) {
             this._undoService = undoService;
@@ -34,8 +35,16 @@
             }
         }
 
-        public void Initialize(IGame game) {
+        public void Initialize(EditorGame game) {
             this._game = game;
+
+            this._gridDrawer = new GridDrawer() {
+                Camera = this._game.CurrentCamera,
+                UseDynamicLineThickness = true,
+                LineThickness = 1f
+            };
+
+            this._gridDrawer.Initialize(this._game.CurrentScene);
         }
 
         public bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {

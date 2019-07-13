@@ -30,7 +30,7 @@
             }
         }
 
-        public override void Initialize(IGame game) {
+        public override void Initialize(EditorGame game) {
             base.Initialize(game);
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(game.GraphicsDevice, 64);
             this._circleRenderer.Sprite = circleSprite;

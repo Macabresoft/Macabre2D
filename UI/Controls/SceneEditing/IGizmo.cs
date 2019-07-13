@@ -11,7 +11,7 @@
 
         void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent);
 
-        void Initialize(IGame game);
+        void Initialize(EditorGame game);
 
         bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
     }

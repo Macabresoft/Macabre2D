@@ -34,7 +34,7 @@
             }
         }
 
-        public override void Initialize(IGame game) {
+        public override void Initialize(EditorGame game) {
             base.Initialize(game);
             var squareSprite = PrimitiveDrawer.CreateQuadSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisSquareRenderer.Sprite = squareSprite;

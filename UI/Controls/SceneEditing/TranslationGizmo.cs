@@ -41,7 +41,7 @@
             }
         }
 
-        public override void Initialize(IGame game) {
+        public override void Initialize(EditorGame game) {
             base.Initialize(game);
 
             this._xAxisArrowRenderer.Sprite = PrimitiveDrawer.CreateForwardArrowSprite(this.Game.GraphicsDevice, 64);

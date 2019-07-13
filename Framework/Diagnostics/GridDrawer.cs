@@ -38,40 +38,10 @@
         }
 
         /// <summary>
-        /// Gets or sets the width of the column.
+        /// Gets or sets the grid.
         /// </summary>
-        /// <value>The width of the column.</value>
-        public float ColumnWidth {
-            get {
-                return this._columnWidth;
-            }
-
-            set {
-                if (value < 0f) {
-                    value = 0f;
-                }
-
-                this._columnWidth = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the height of the row.
-        /// </summary>
-        /// <value>The height of the row.</value>
-        public float RowHeight {
-            get {
-                return this._rowHeight;
-            }
-
-            set {
-                if (value < 0f) {
-                    value = 0f;
-                }
-
-                this._rowHeight = value;
-            }
-        }
+        /// <value>The grid.</value>
+        public TileGrid Grid { get; set; }
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
@@ -79,7 +49,7 @@
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var boundingArea = this.BoundingArea;
 
-            var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.ColumnWidth);
+            var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.Grid.TileSize.X, this.Grid.Offset.X);
             foreach (var column in columns) {
                 this.PrimitiveDrawer.DrawLine(
                     spriteBatch,
@@ -89,7 +59,7 @@
                     lineThickness);
             }
 
-            var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.RowHeight);
+            var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.Grid.TileSize.Y, this.Grid.Offset.Y);
             foreach (var row in rows) {
                 this.PrimitiveDrawer.DrawLine(
                     spriteBatch,
@@ -100,24 +70,23 @@
             }
         }
 
-        private static List<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize) {
+        private static List<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize, float offset) {
             var result = new List<float>();
-            var currentPosition = 0f;
 
-            if (currentPosition < lowerLimit) {
-                while (currentPosition + stepSize < lowerLimit) {
-                    currentPosition += stepSize;
+            if (offset < lowerLimit) {
+                while (offset + stepSize < lowerLimit) {
+                    offset += stepSize;
                 }
             }
-            else if (currentPosition > lowerLimit) {
-                while (currentPosition - stepSize > lowerLimit) {
-                    currentPosition -= stepSize;
+            else if (offset > lowerLimit) {
+                while (offset - stepSize > lowerLimit) {
+                    offset -= stepSize;
                 }
             }
 
-            while (currentPosition <= upperLimit) {
-                result.Add(currentPosition);
-                currentPosition += stepSize;
+            while (offset <= upperLimit) {
+                result.Add(offset);
+                offset += stepSize;
             }
 
             return result;
