@@ -15,6 +15,7 @@
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
         private readonly ResettableLazy<BoundingArea> _boundingArea;
+        private readonly Dictionary<Point, (BoundingArea BoundingArea, Transform Transform)> _tilePositionToBoundingAreaAndTransform = new Dictionary<Point, (BoundingArea, Transform)>();
         private TileGrid _grid = new TileGrid(Vector2.One);
         private Vector2 _maximumPosition;
         private Point _maximumTile;
@@ -60,22 +61,28 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the tile scale.
+        /// </summary>
+        /// <value>The tile scale.</value>
+        protected Vector2 TileScale { get; set; } = Vector2.One;
+
         /// <inheritdoc/>
-        public void AddTile(Point position) {
-            this._activeTiles.Add(position);
+        public void AddTile(Point tile) {
+            if (this._activeTiles.Add(tile)) {
+                if (tile.X > this._maximumTile.X) {
+                    this._maximumTile = new Point(tile.X, this._maximumTile.Y);
+                }
+                else if (tile.X < this._minimumTile.X) {
+                    this._minimumTile = new Point(tile.X, this._minimumTile.Y);
+                }
 
-            if (position.X > this._maximumTile.X) {
-                this._maximumTile = new Point(position.X, this._maximumTile.Y);
-            }
-            else if (position.X < this._minimumTile.X) {
-                this._minimumTile = new Point(position.X, this._minimumTile.Y);
-            }
-
-            if (position.Y > this._maximumTile.Y) {
-                this._maximumTile = new Point(this._maximumTile.X, position.Y);
-            }
-            else if (position.Y < this._minimumTile.Y) {
-                this._minimumTile = new Point(this._minimumTile.X, position.Y);
+                if (tile.Y > this._maximumTile.Y) {
+                    this._maximumTile = new Point(this._maximumTile.X, tile.Y);
+                }
+                else if (tile.Y < this._minimumTile.Y) {
+                    this._minimumTile = new Point(this._minimumTile.X, tile.Y);
+                }
             }
         }
 
@@ -88,20 +95,41 @@
             this._maximumPosition = Vector2.Zero;
             this._minimumTile = Point.Zero;
             this._maximumTile = Point.Zero;
+            this.ResetBoundingArea();
         }
 
         /// <inheritdoc/>
-        public void RemoveTile(Point position) {
-            this._activeTiles.Remove(position);
+        public void RemoveTile(Point tile) {
+            if (this._activeTiles.Remove(tile)) {
+                this._tilePositionToBoundingAreaAndTransform.Remove(tile);
 
-            if (position.X == this._maximumTile.X || position.Y == this._maximumTile.Y || position.X == this._minimumTile.X || position.Y == this._minimumTile.Y) {
-                this.ResetPositionValues();
+                if (tile.X == this._maximumTile.X || tile.Y == this._maximumTile.Y || tile.X == this._minimumTile.X || tile.Y == this._minimumTile.Y) {
+                    this.ResetPositionValues();
+                }
             }
+        }
+
+        /// <summary>
+        /// Gets the bounding area for the tile at the specified position.
+        /// </summary>
+        /// <param name="tile">The tile.</param>
+        /// <returns>The bounding area.</returns>
+        protected (BoundingArea BoundingArea, Transform Transform) GetTileBoundingArea(Point tile) {
+            if (!this._tilePositionToBoundingAreaAndTransform.TryGetValue(tile, out var boundingAreaAndTransform)) {
+                var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
+                var transform = this.GetWorldTransform(offset, this.LocalScale * this.TileScale);
+                var boundingArea = new BoundingArea(transform.Position, transform.Position + this.Grid.TileSize * this.LocalScale);
+                boundingAreaAndTransform = (boundingArea, transform);
+                this._tilePositionToBoundingAreaAndTransform.Add(tile, boundingAreaAndTransform);
+            }
+
+            return boundingAreaAndTransform;
         }
 
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
+            this._tilePositionToBoundingAreaAndTransform.Clear();
             this.ResetTileValues();
         }
 
@@ -116,6 +144,7 @@
         /// Resets the bounding area.
         /// </summary>
         protected void ResetBoundingArea() {
+            this._tilePositionToBoundingAreaAndTransform.Clear();
             this._boundingArea.Reset();
         }
 
@@ -158,6 +187,7 @@
             var yValues = this._activeTiles.Select(t => t.Y);
             this._minimumTile = new Point(xValues.Any() ? xValues.Min() : 0, yValues.Any() ? yValues.Min() : 0);
             this._maximumTile = new Point(xValues.Any() ? xValues.Max() : 0, yValues.Any() ? yValues.Max() : 0);
+            this._tilePositionToBoundingAreaAndTransform.Clear();
             this.ResetPositionValues();
         }
 

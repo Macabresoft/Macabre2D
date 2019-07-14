@@ -10,7 +10,6 @@
     /// </summary>
     public sealed class BinaryTileMapComponent : TileableComponent, IAssetComponent<Sprite>, IDrawableComponent, ITileable<Sprite> {
         private Sprite _sprite;
-        private Vector2 _spriteScale;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryTileMapComponent"/> class.
@@ -52,7 +51,7 @@
                 if (this._sprite != value) {
                     this._sprite = value;
                     this.LoadContent();
-                    this._spriteScale = this.GetSpriteScale();
+                    this.TileScale = this.GetSpriteScale();
                 }
             }
         }
@@ -63,11 +62,11 @@
                 return;
             }
 
-            // TODO: pass in the current camera bounding area to the Draw method and don't render a tile if it isn't within it.
             foreach (var tile in this.ActiveTiles) {
-                var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
-                var transform = this.GetWorldTransform(offset, this.LocalScale * this._spriteScale);
-                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, transform, this.Color);
+                var boundingAreaAndTransform = this.GetTileBoundingArea(tile);
+                if (boundingAreaAndTransform.BoundingArea.Overlaps(viewBoundingArea)) {
+                    MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, boundingAreaAndTransform.Transform, this.Color);
+                }
             }
         }
 
@@ -113,7 +112,7 @@
         /// <inheritdoc/>
         protected override void OnGridChanged() {
             base.OnGridChanged();
-            this._spriteScale = this.GetSpriteScale();
+            this.TileScale = this.GetSpriteScale();
         }
 
         private Vector2 GetSpriteScale() {

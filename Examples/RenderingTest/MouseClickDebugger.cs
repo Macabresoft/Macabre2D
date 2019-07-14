@@ -3,7 +3,6 @@
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
-    using System;
     using System.Linq;
 
     public sealed class MouseClickDebugger : BaseDrawer, IUpdateableComponent {
@@ -23,7 +22,6 @@
         public void Update(GameTime gameTime) {
             var mouseState = Mouse.GetState();
             this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position));
-            Console.WriteLine(this._camera.LocalPosition);
         }
 
         protected override void Initialize() {

@@ -15,14 +15,17 @@
         /// <value>The grid.</value>
         TileGrid Grid { get; }
 
-        /// Adds the default tile at the specified position. </summary> <param name="position">The position.</param>
-        void AddTile(Point position);
+        /// <summary>
+        /// Adds the default tile at the specified position.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        void AddTile(Point tile);
 
         /// <summary>
         /// Removes the tile.
         /// </summary>
-        /// <param name="position">The position.</param>
-        void RemoveTile(Point position);
+        /// <param name="tile">The tile.</param>
+        void RemoveTile(Point tile);
     }
 
     /// <summary>
