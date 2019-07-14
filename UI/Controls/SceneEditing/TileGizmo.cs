@@ -28,10 +28,13 @@
         }
 
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
-            var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this._game.GraphicsDevice.Viewport.Height);
-            if (selectedComponent is IRotatable rotatable) {
-            }
-            else {
+            if (selectedComponent is ITileable tileable) {
+                if (this._game.CurrentScene != null) {
+                    this._gridDrawer.Color = new Color(this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite(), 75);
+                }
+
+                this._gridDrawer.Grid = tileable.Grid;
+                this._gridDrawer.Draw(gameTime, viewBoundingArea);
             }
         }
 

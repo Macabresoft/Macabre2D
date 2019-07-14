@@ -73,20 +73,22 @@
         private static List<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize, float offset) {
             var result = new List<float>();
 
-            if (offset < lowerLimit) {
-                while (offset + stepSize < lowerLimit) {
+            if (stepSize > 0f) {
+                if (offset < lowerLimit) {
+                    while (offset + stepSize < lowerLimit) {
+                        offset += stepSize;
+                    }
+                }
+                else if (offset > lowerLimit) {
+                    while (offset - stepSize > lowerLimit) {
+                        offset -= stepSize;
+                    }
+                }
+
+                while (offset <= upperLimit) {
+                    result.Add(offset);
                     offset += stepSize;
                 }
-            }
-            else if (offset > lowerLimit) {
-                while (offset - stepSize > lowerLimit) {
-                    offset -= stepSize;
-                }
-            }
-
-            while (offset <= upperLimit) {
-                result.Add(offset);
-                offset += stepSize;
             }
 
             return result;
