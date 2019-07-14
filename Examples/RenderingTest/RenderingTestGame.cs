@@ -151,7 +151,7 @@
                 LocalPosition = new Vector2(-5f, -10f),
                 LocalScale = new Vector2(1f, 1f),
                 Sprite = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(64, 64)),
-                Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit, Vector2.Zero),
+                Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit),
                 Color = Color.DarkGray
             };
 

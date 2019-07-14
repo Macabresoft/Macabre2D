@@ -26,6 +26,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TileGrid"/> struct.
         /// </summary>
+        /// <param name="tileSize">Size of the tile.</param>
+        public TileGrid(Vector2 tileSize) : this(tileSize, Vector2.Zero) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TileGrid"/> struct.
+        /// </summary>
         /// <param name="gridSize">Size of the grid.</param>
         /// <param name="tileSize">Size of the tile.</param>
         public TileGrid(Vector2 tileSize, Vector2 offset) {

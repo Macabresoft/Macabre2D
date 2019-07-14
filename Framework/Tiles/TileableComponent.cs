@@ -15,7 +15,7 @@
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private TileGrid _grid;
+        private TileGrid _grid = new TileGrid(Vector2.One);
         private Vector2 _maximumPosition;
         private Point _maximumTile;
         private Vector2 _minimumPosition;

@@ -63,7 +63,7 @@
             this._primaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
                 Color = new Color(255, 255, 255, 100),
-                Grid = new TileGrid(new Vector2(gridSize), Vector2.Zero),
+                Grid = new TileGrid(new Vector2(gridSize)),
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
@@ -74,7 +74,7 @@
             this._secondaryGridDrawer = new GridDrawer() {
                 Camera = this._camera,
                 Color = new Color(255, 255, 255, 75),
-                Grid = new TileGrid(new Vector2(smallGridSize), Vector2.Zero),
+                Grid = new TileGrid(new Vector2(smallGridSize)),
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
@@ -120,10 +120,10 @@
         private void Camera_ViewHeightChanged(object sender, System.EventArgs e) {
             if (this._primaryGridDrawer != null) {
                 var gridSize = this.GetGridSize();
-                this._primaryGridDrawer.Grid = new TileGrid(new Vector2(gridSize), Vector2.Zero);
+                this._primaryGridDrawer.Grid = new TileGrid(new Vector2(gridSize));
 
                 var smallGridSize = gridSize / 2f;
-                this._secondaryGridDrawer.Grid = new TileGrid(new Vector2(smallGridSize), Vector2.Zero);
+                this._secondaryGridDrawer.Grid = new TileGrid(new Vector2(smallGridSize));
             }
         }
 
