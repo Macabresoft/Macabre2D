@@ -63,7 +63,7 @@
             }
 
             foreach (var tile in this.ActiveTiles) {
-                var boundingAreaAndTransform = this.GetTileBoundingArea(tile);
+                var boundingAreaAndTransform = this.GetTileBoundingAreaAndTransform(tile);
                 if (boundingAreaAndTransform.BoundingArea.Overlaps(viewBoundingArea)) {
                     MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, boundingAreaAndTransform.Transform, this.Color);
                 }
@@ -78,6 +78,15 @@
         /// <inheritdoc/>
         public bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
+        }
+
+        /// <inheritdoc/>
+        public override void LoadContent() {
+            if (this.Scene.IsInitialized) {
+                this.Sprite?.LoadContent();
+            }
+
+            base.LoadContent();
         }
 
         /// <inheritdoc/>

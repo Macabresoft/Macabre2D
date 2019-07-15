@@ -103,6 +103,20 @@
             this.Dispose(true);
         }
 
+        /// <summary>
+        /// Loads the content.
+        /// </summary>
+        public void LoadContent() {
+            if (this.ContentId != Guid.Empty) {
+                try {
+                    this.Texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+                }
+                catch {
+                    this.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
+                }
+            }
+        }
+
         internal void SetErrorTexture(SpriteBatch spriteBatch) {
             if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
                 var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);

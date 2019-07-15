@@ -99,6 +99,20 @@
         }
 
         /// <inheritdoc/>
+        public Point GetTileThatContains(Vector2 worldPosition) {
+            var result = Point.Zero;
+
+            if (this.Grid.TileSize.X > 0 && this.Grid.TileSize.Y > 0) {
+                worldPosition -= this.WorldTransform.Position;
+                var xTile = Math.Floor(worldPosition.X / this.Grid.TileSize.X);
+                var yTile = Math.Floor(worldPosition.Y / this.Grid.TileSize.Y);
+                result = new Point((int)xTile, (int)yTile);
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
         public void RemoveTile(Point tile) {
             if (this._activeTiles.Remove(tile)) {
                 this._tilePositionToBoundingAreaAndTransform.Remove(tile);
@@ -114,7 +128,7 @@
         /// </summary>
         /// <param name="tile">The tile.</param>
         /// <returns>The bounding area.</returns>
-        protected (BoundingArea BoundingArea, Transform Transform) GetTileBoundingArea(Point tile) {
+        protected (BoundingArea BoundingArea, Transform Transform) GetTileBoundingAreaAndTransform(Point tile) {
             if (!this._tilePositionToBoundingAreaAndTransform.TryGetValue(tile, out var boundingAreaAndTransform)) {
                 var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
                 var transform = this.GetWorldTransform(offset, this.LocalScale * this.TileScale);

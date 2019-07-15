@@ -51,6 +51,17 @@
         }
 
         public bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+            if (selectedComponent.Component is ITileable tileable) {
+                if (mouseState.LeftButton == ButtonState.Pressed) {
+                    var tile = tileable.GetTileThatContains(mousePosition);
+                    tileable.AddTile(tile);
+                }
+                else if (mouseState.RightButton == ButtonState.Pressed) {
+                    var tile = tileable.GetTileThatContains(mousePosition);
+                    tileable.RemoveTile(tile);
+                }
+            }
+
             return true; // This should always have interactions
         }
     }

@@ -22,6 +22,13 @@
         void AddTile(Point tile);
 
         /// <summary>
+        /// Gets the tile that contains.
+        /// </summary>
+        /// <param name="worldPosition">The world position.</param>
+        /// <returns>The tile that contains the specified world position.</returns>
+        Point GetTileThatContains(Vector2 worldPosition);
+
+        /// <summary>
         /// Removes the tile.
         /// </summary>
         /// <param name="tile">The tile.</param>
