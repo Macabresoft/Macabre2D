@@ -131,7 +131,8 @@
         protected (BoundingArea BoundingArea, Transform Transform) GetTileBoundingAreaAndTransform(Point tile) {
             if (!this._tilePositionToBoundingAreaAndTransform.TryGetValue(tile, out var boundingAreaAndTransform)) {
                 var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
-                var transform = this.GetWorldTransform(offset, this.LocalScale * this.TileScale);
+                var worldTransform = this.WorldTransform;
+                var transform = this.GetWorldTransform(offset, worldTransform.Scale * this.TileScale);
                 var boundingArea = new BoundingArea(transform.Position, transform.Position + this.Grid.TileSize * this.LocalScale);
                 boundingAreaAndTransform = (boundingArea, transform);
                 this._tilePositionToBoundingAreaAndTransform.Add(tile, boundingAreaAndTransform);
@@ -206,6 +207,7 @@
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
+            this._tilePositionToBoundingAreaAndTransform.Clear();
             this.ResetBoundingArea();
         }
     }

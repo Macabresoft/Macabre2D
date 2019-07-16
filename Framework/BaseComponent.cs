@@ -51,6 +51,7 @@
         /// </summary>
         public BaseComponent() {
             this.IsEnabledChanged += this.Self_EnabledChanged;
+            this.ParentChanged += this.BaseComponent_ParentChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
         }
@@ -526,6 +527,19 @@
             return components;
         }
 
+        public TileGrid GetTransformedGrid(TileGrid grid) {
+            var worldTransform = this.WorldTransform;
+
+            var matrix =
+                Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
+                Matrix.CreateScale(grid.TileSize.X, grid.TileSize.Y, 1f) *
+                Matrix.CreateTranslation(grid.Offset.X, grid.Offset.Y, 0f) *
+                Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+
+            var transform = matrix.ToTransform();
+            return new TileGrid(transform.Scale, transform.Position);
+        }
+
         /// <inheritdoc/>
         public RotatableTransform GetWorldTransform(float rotationAngle) {
             var worldTransform = this.WorldTransform;
@@ -763,6 +777,10 @@
         /// Initializes this instance.
         /// </summary>
         protected abstract void Initialize();
+
+        private void BaseComponent_ParentChanged(object sender, BaseComponent e) {
+            this.HandleMatrixOrTransformChanged();
+        }
 
         private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (this.IsInitialized && this._resolveChildActions.Any() && e.Action == NotifyCollectionChangedAction.Add && e.NewItems.OfType<BaseComponent>().FirstOrDefault() is BaseComponent newComponent) {
