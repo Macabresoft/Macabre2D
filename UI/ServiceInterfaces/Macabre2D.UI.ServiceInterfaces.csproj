@@ -78,6 +78,7 @@
     <Compile Include="ILoggingService.cs" />
     <Compile Include="IMonoGameService.cs" />
     <Compile Include="IComponentService.cs" />
+    <Compile Include="IStatusService.cs" />
     <Compile Include="IValueEditorService.cs" />
     <Compile Include="IProjectService.cs" />
     <Compile Include="ISceneService.cs" />
