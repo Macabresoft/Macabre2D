@@ -92,6 +92,7 @@
     <Compile Include="TestComponent.cs" />
     <Compile Include="TestUpdateableComponent.cs" />
     <Compile Include="SceneTests.cs" />
+    <Compile Include="Tiles\TileableComponentTests.cs" />
     <Compile Include="UI\Services\AssemblyServiceTests.cs" />
     <Compile Include="UI\Services\ProjectServiceTests.cs" />
     <Compile Include="UI\Services\UndoServiceTests.cs" />

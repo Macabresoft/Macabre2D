@@ -15,11 +15,11 @@
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private readonly Dictionary<Point, (BoundingArea BoundingArea, Transform Transform)> _tilePositionToBoundingAreaAndTransform = new Dictionary<Point, (BoundingArea, Transform)>();
+        private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
+        private readonly ResettableLazy<Vector2> _tileScale;
+        private readonly ResettableLazy<TileGrid> _worldGrid;
         private TileGrid _grid = new TileGrid(Vector2.One);
-        private Vector2 _maximumPosition;
         private Point _maximumTile;
-        private Vector2 _minimumPosition;
         private Point _minimumTile;
 
         /// <summary>
@@ -27,6 +27,8 @@
         /// </summary>
         public TileableComponent() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+            this._tileScale = new ResettableLazy<Vector2>(this.CreateTileScale);
+            this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
         }
 
         /// <inheritdoc/>
@@ -38,7 +40,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public TileGrid Grid {
+        public TileGrid LocalGrid {
             get {
                 return this._grid;
             }
@@ -48,6 +50,13 @@
                     this._grid = value;
                     this.OnGridChanged();
                 }
+            }
+        }
+
+        /// <inheritdoc/>
+        public TileGrid WorldGrid {
+            get {
+                return this._worldGrid.Value;
             }
         }
 
@@ -65,7 +74,11 @@
         /// Gets or sets the tile scale.
         /// </summary>
         /// <value>The tile scale.</value>
-        protected Vector2 TileScale { get; set; } = Vector2.One;
+        protected Vector2 TileScale {
+            get {
+                return this._tileScale.Value;
+            }
+        }
 
         /// <inheritdoc/>
         public void AddTile(Point tile) {
@@ -91,8 +104,6 @@
         /// </summary>
         public void ClearActiveTiles() {
             this._activeTiles.Clear();
-            this._minimumPosition = Vector2.Zero;
-            this._maximumPosition = Vector2.Zero;
             this._minimumTile = Point.Zero;
             this._maximumTile = Point.Zero;
             this.ResetBoundingArea();
@@ -101,11 +112,12 @@
         /// <inheritdoc/>
         public Point GetTileThatContains(Vector2 worldPosition) {
             var result = Point.Zero;
+            var worldGrid = this.WorldGrid;
 
-            if (this.Grid.TileSize.X > 0 && this.Grid.TileSize.Y > 0) {
-                worldPosition -= this.WorldTransform.Position;
-                var xTile = Math.Floor(worldPosition.X / this.Grid.TileSize.X);
-                var yTile = Math.Floor(worldPosition.Y / this.Grid.TileSize.Y);
+            if (worldGrid.TileSize.X > 0 && worldGrid.TileSize.Y > 0) {
+                worldPosition -= worldGrid.Offset;
+                var xTile = Math.Floor(worldPosition.X / worldGrid.TileSize.X);
+                var yTile = Math.Floor(worldPosition.Y / worldGrid.TileSize.Y);
                 result = new Point((int)xTile, (int)yTile);
             }
 
@@ -115,12 +127,24 @@
         /// <inheritdoc/>
         public void RemoveTile(Point tile) {
             if (this._activeTiles.Remove(tile)) {
-                this._tilePositionToBoundingAreaAndTransform.Remove(tile);
+                this._tilePositionToBoundingArea.Remove(tile);
 
-                if (tile.X == this._maximumTile.X || tile.Y == this._maximumTile.Y || tile.X == this._minimumTile.X || tile.Y == this._minimumTile.Y) {
-                    this.ResetPositionValues();
+                if (tile.X == this._minimumTile.X || tile.Y == this._minimumTile.Y) {
+                    this.ResetMinimumTile();
+                }
+
+                if (tile.X == this._maximumTile.X || tile.Y == this._maximumTile.Y) {
+                    this.ResetMinimumTile();
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates the tile scale.
+        /// </summary>
+        /// <returns>The tile scale.</returns>
+        protected virtual Vector2 CreateTileScale() {
+            return this.WorldGrid.TileSize;
         }
 
         /// <summary>
@@ -128,61 +152,57 @@
         /// </summary>
         /// <param name="tile">The tile.</param>
         /// <returns>The bounding area.</returns>
-        protected (BoundingArea BoundingArea, Transform Transform) GetTileBoundingAreaAndTransform(Point tile) {
-            if (!this._tilePositionToBoundingAreaAndTransform.TryGetValue(tile, out var boundingAreaAndTransform)) {
-                var offset = new Vector2((tile.X * this.Grid.TileSize.X) + this.Grid.Offset.X, (tile.Y * this.Grid.TileSize.Y) + this.Grid.Offset.Y);
-                var worldTransform = this.WorldTransform;
-                var transform = this.GetWorldTransform(offset, worldTransform.Scale * this.TileScale);
-                var boundingArea = new BoundingArea(transform.Position, transform.Position + this.Grid.TileSize * this.LocalScale);
-                boundingAreaAndTransform = (boundingArea, transform);
-                this._tilePositionToBoundingAreaAndTransform.Add(tile, boundingAreaAndTransform);
+        protected BoundingArea GetTileBoundingArea(Point tile) {
+            if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
+                var worldGrid = this.WorldGrid;
+                var tilePosition = worldGrid.GetTilePosition(tile);
+                boundingArea = new BoundingArea(tilePosition, tilePosition + worldGrid.TileSize);
+                this._tilePositionToBoundingArea.Add(tile, boundingArea);
+
+                // We need to pass TileScale into the draw manually. If we just use BoundingArea
+                // here, we can go with the minimum value and bypass the need for transforms at all.
             }
 
-            return boundingAreaAndTransform;
+            return boundingArea;
         }
 
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
-            this._tilePositionToBoundingAreaAndTransform.Clear();
-            this.ResetTileValues();
+            this.ResetBoundingArea();
+            this.ResetMinimumTile();
+            this.ResetMaximumTile();
         }
 
         /// <summary>
-        /// Called when <see cref="Grid"/> changes.
+        /// Called when <see cref="LocalGrid"/> changes.
         /// </summary>
         protected virtual void OnGridChanged() {
-            this.ResetPositionValues();
+            this._worldGrid.Reset();
+            this.ResetTileScale();
+            this.ResetBoundingArea();
         }
 
         /// <summary>
         /// Resets the bounding area.
         /// </summary>
         protected void ResetBoundingArea() {
-            this._tilePositionToBoundingAreaAndTransform.Clear();
+            this._tilePositionToBoundingArea.Clear();
             this._boundingArea.Reset();
+        }
+
+        /// <summary>
+        /// Resets the tile scale.
+        /// </summary>
+        protected void ResetTileScale() {
+            this._tileScale.Reset();
         }
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this._activeTiles.Any()) {
-                var inversePixelDensity = GameSettings.Instance.InversePixelsPerUnit;
-                var width = this._maximumPosition.X - this._minimumPosition.X;
-                var height = this._maximumPosition.Y - this._minimumPosition.Y;
-
-                var points = new List<Vector2> {
-                    this.GetWorldTransform(this.Grid.Offset).Position,
-                    this.GetWorldTransform(new Vector2(width, 0f) + this.Grid.Offset).Position,
-                    this.GetWorldTransform(new Vector2(width, height) + this.Grid.Offset).Position,
-                    this.GetWorldTransform(new Vector2(0f, height) + this.Grid.Offset).Position
-                };
-
-                var minimumX = points.Min(x => x.X);
-                var minimumY = points.Min(x => x.Y);
-                var maximumX = points.Max(x => x.X);
-                var maximumY = points.Max(x => x.Y);
-
-                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                var worldGrid = this.WorldGrid;
+                result = new BoundingArea(worldGrid.GetTilePosition(this._minimumTile), worldGrid.GetTilePosition(this._maximumTile + new Point(1, 1)));
             }
             else {
                 result = new BoundingArea();
@@ -191,23 +211,41 @@
             return result;
         }
 
-        private void ResetPositionValues() {
-            this._minimumPosition = new Vector2(this._minimumTile.X * this.Grid.TileSize.X, this._minimumTile.Y * this.Grid.TileSize.Y);
-            this._maximumPosition = new Vector2((this._maximumTile.X + 1) * this.Grid.TileSize.X, (this._maximumTile.Y + 1) * this.Grid.TileSize.Y);
-            this.ResetBoundingArea();
+        private TileGrid CreateWorldGrid() {
+            var worldTransform = this.WorldTransform;
+
+            var matrix =
+                Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
+                Matrix.CreateScale(this.LocalGrid.TileSize.X, this.LocalGrid.TileSize.Y, 1f) *
+                Matrix.CreateTranslation(this.LocalGrid.Offset.X, this.LocalGrid.Offset.Y, 0f) *
+                Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+
+            var transform = matrix.ToTransform();
+            return new TileGrid(transform.Scale, transform.Position);
         }
 
-        private void ResetTileValues() {
-            var xValues = this._activeTiles.Select(t => t.X);
-            var yValues = this._activeTiles.Select(t => t.Y);
-            this._minimumTile = new Point(xValues.Any() ? xValues.Min() : 0, yValues.Any() ? yValues.Min() : 0);
-            this._maximumTile = new Point(xValues.Any() ? xValues.Max() : 0, yValues.Any() ? yValues.Max() : 0);
-            this._tilePositionToBoundingAreaAndTransform.Clear();
-            this.ResetPositionValues();
+        private void ResetMaximumTile() {
+            if (this._activeTiles.Any()) {
+                this._maximumTile = new Point(this._activeTiles.Select(t => t.X).Max(), this._activeTiles.Select(t => t.Y).Max());
+            }
+            else {
+                this._maximumTile = Point.Zero;
+            }
+        }
+
+        private void ResetMinimumTile() {
+            if (this._activeTiles.Any()) {
+                this._minimumTile = new Point(this._activeTiles.Select(t => t.X).Min(), this._activeTiles.Select(t => t.Y).Min());
+            }
+            else {
+                this._minimumTile = Point.Zero;
+            }
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._tilePositionToBoundingAreaAndTransform.Clear();
+            this._tilePositionToBoundingArea.Clear();
+            this._worldGrid.Reset();
+            this.ResetTileScale();
             this.ResetBoundingArea();
         }
     }

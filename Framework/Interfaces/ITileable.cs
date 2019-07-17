@@ -13,7 +13,13 @@
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
-        TileGrid Grid { get; }
+        TileGrid LocalGrid { get; }
+
+        /// <summary>
+        /// Gets the <see cref="LocalGrid"/> transformed to world coordinates.
+        /// </summary>
+        /// <value>The <see cref="LocalGrid"/> transformed to world coordinates.</value>
+        TileGrid WorldGrid { get; }
 
         /// <summary>
         /// Adds the default tile at the specified position.

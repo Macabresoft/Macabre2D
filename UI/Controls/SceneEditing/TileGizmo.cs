@@ -33,7 +33,7 @@
                     this._gridDrawer.Color = new Color(this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite(), 75);
                 }
 
-                this._gridDrawer.Grid = tileable.Grid;
+                this._gridDrawer.Grid = tileable.WorldGrid;
                 this._gridDrawer.Draw(gameTime, viewBoundingArea);
             }
         }

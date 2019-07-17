@@ -64,5 +64,14 @@
             hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(this.TileSize);
             return hashCode;
         }
+
+        /// <summary>
+        /// Gets the tile position.
+        /// </summary>
+        /// <param name="tile">The tile.</param>
+        /// <returns>The tile position.</returns>
+        public Vector2 GetTilePosition(Point tile) {
+            return new Vector2(tile.X * this.TileSize.X, tile.Y * this.TileSize.Y) + this.Offset;
+        }
     }
 }

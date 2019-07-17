@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -51,21 +52,19 @@
                 if (this._sprite != value) {
                     this._sprite = value;
                     this.LoadContent();
-                    this.TileScale = this.GetSpriteScale();
+                    this.ResetTileScale();
                 }
             }
         }
 
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.Sprite?.Texture == null) {
-                return;
-            }
-
-            foreach (var tile in this.ActiveTiles) {
-                var boundingAreaAndTransform = this.GetTileBoundingAreaAndTransform(tile);
-                if (boundingAreaAndTransform.BoundingArea.Overlaps(viewBoundingArea)) {
-                    MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, boundingAreaAndTransform.Transform, this.Color);
+            if (this.Sprite?.Texture != null && this.ActiveTiles.Any()) {
+                foreach (var tile in this.ActiveTiles) {
+                    var boundingArea = this.GetTileBoundingArea(tile);
+                    if (boundingArea.Overlaps(viewBoundingArea)) {
+                        MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, boundingArea.Minimum, this.TileScale, this.Color);
+                    }
                 }
             }
         }
@@ -119,9 +118,15 @@
         }
 
         /// <inheritdoc/>
-        protected override void OnGridChanged() {
-            base.OnGridChanged();
-            this.TileScale = this.GetSpriteScale();
+        protected override Vector2 CreateTileScale() {
+            var result = base.CreateTileScale();
+            if (this.Sprite != null && this.Sprite.Size.X != 0 && this.Sprite.Size.Y != 0) {
+                var spriteWidth = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
+                var spriteHeight = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                result = new Vector2(this.WorldGrid.TileSize.X / spriteWidth, this.WorldGrid.TileSize.Y / spriteHeight);
+            }
+
+            return result;
         }
 
         private Vector2 GetSpriteScale() {
@@ -130,7 +135,7 @@
                 var spriteWidth = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var spriteHeight = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
 
-                result = new Vector2(this.Grid.TileSize.X / spriteWidth, this.Grid.TileSize.Y / spriteHeight);
+                result = new Vector2(this.WorldGrid.TileSize.X / spriteWidth, this.WorldGrid.TileSize.Y / spriteHeight);
             }
 
             return result;
