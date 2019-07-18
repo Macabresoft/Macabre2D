@@ -1,14 +1,14 @@
-﻿namespace Macabre2D.UI.ServiceInterfaces {
+﻿using System.ComponentModel;
 
-    public interface IStatusService {
-        string CurrentStatusMessage { get; set; }
+namespace Macabre2D.UI.ServiceInterfaces {
 
-        float PrimaryGridSize { get; }
+    public interface IStatusService : INotifyPropertyChanged {
+        float PrimaryGridSize { get; set; }
 
-        float SecondaryGridSize { get; }
+        float SecondaryGridSize { get; set; }
 
-        float ViewHeight { get; }
+        float ViewHeight { get; set; }
 
-        float ViewWidth { get; }
+        float ViewWidth { get; set; }
     }
 }

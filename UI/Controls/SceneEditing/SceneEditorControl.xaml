@@ -20,7 +20,7 @@
 
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
-                    Margin="{StaticResource StandardMarginB}">
+                    Margin="{StaticResource StandardMarginLTB}">
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Grid}"
                                        IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.GridOff}"
@@ -88,6 +88,39 @@
                                       ToolTip="Change the current scene's background color."
                                       Width="200"
                                       Value="{Binding SceneService.CurrentScene.BackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Separator HorizontalAlignment="Center"
+                       VerticalAlignment="Stretch" />
+
+            <TextBlock FontWeight="Bold"
+                       Margin="{StaticResource DoubleMarginL}"
+                       VerticalAlignment="Center"
+                       Text="View Size:" />
+
+            <TextBlock Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}({0:#,#.00}, {1:#,#.00})">
+                        <Binding Path="StatusService.ViewWidth" />
+                        <Binding Path="StatusService.ViewHeight" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock FontWeight="Bold"
+                       Margin="{StaticResource DoubleMarginL}"
+                       VerticalAlignment="Center"
+                       Text="Grid Size" />
+
+            <TextBlock Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}({0:#,#.00}, {1:#,#.00})">
+                        <Binding Path="StatusService.PrimaryGridSize" />
+                        <Binding Path="StatusService.SecondaryGridSize" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </StackPanel>
 
         <ContentControl Grid.Row="1"

@@ -99,6 +99,10 @@
             return Vector2.Zero;
         }
 
+        public float GetViewWidth() {
+            return this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport);
+        }
+
         /// <inheritdoc/>
         public void ZoomTo(Vector2 worldPosition, float zoomAmount) {
             var originalCameraPosition = this.WorldTransform.Position;
@@ -171,10 +175,6 @@
                 Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
                 Matrix.CreateScale(zoom, -zoom, 0f) *
                 Matrix.CreateTranslation(new Vector3(origin, 0f));
-        }
-
-        private float GetViewWidth() {
-            return this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport);
         }
 
         private float GetViewWidth(Viewport viewport) {

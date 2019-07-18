@@ -8,14 +8,16 @@
 
     public sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly ISceneService _sceneService;
+        private readonly IStatusService _statusService;
         private Camera _camera = new Camera();
         private EditorGame _game;
         private int _previousScrollWheelValue = 0;
         private GridDrawer _primaryGridDrawer;
         private GridDrawer _secondaryGridDrawer;
 
-        public EditorCameraWrapper(ISceneService sceneService) {
+        public EditorCameraWrapper(ISceneService sceneService, IStatusService statusService) {
             this._sceneService = sceneService;
+            this._statusService = statusService;
         }
 
         public Camera Camera {
@@ -37,6 +39,8 @@
                     if (this._camera != null) {
                         this._camera.ViewHeightChanged += this.Camera_ViewHeightChanged;
                     }
+
+                    this.ResetStatusProperties();
                 }
             }
         }
@@ -80,6 +84,7 @@
             };
 
             this._secondaryGridDrawer.Initialize(this._game.CurrentScene);
+            this.ResetStatusProperties();
         }
 
         public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
@@ -118,13 +123,15 @@
         }
 
         private void Camera_ViewHeightChanged(object sender, System.EventArgs e) {
-            if (this._primaryGridDrawer != null) {
+            if (this._primaryGridDrawer != null && this._primaryGridDrawer != null) {
                 var gridSize = this.GetGridSize();
                 this._primaryGridDrawer.Grid = new TileGrid(new Vector2(gridSize));
 
                 var smallGridSize = gridSize / 2f;
                 this._secondaryGridDrawer.Grid = new TileGrid(new Vector2(smallGridSize));
             }
+
+            this.ResetStatusProperties();
         }
 
         private int GetGridSize() {
@@ -132,10 +139,24 @@
             var currentMultiple = 4;
             while (currentMultiple < this.Camera.ViewHeight) {
                 gridSize = currentMultiple / 4;
-                currentMultiple = currentMultiple * 2;
+                currentMultiple *= 2;
             }
 
             return gridSize;
+        }
+
+        private void ResetStatusProperties() {
+            if (this._camera != null) {
+                this._statusService.ViewHeight = this._camera.ViewHeight;
+                this._statusService.ViewWidth = this._camera.GetViewWidth();
+            }
+            else {
+                this._statusService.ViewHeight = 0f;
+                this._statusService.ViewWidth = 0f;
+            }
+
+            this._statusService.PrimaryGridSize = this._primaryGridDrawer != null ? this._primaryGridDrawer.Grid.TileSize.X : 0;
+            this._statusService.SecondaryGridSize = this._secondaryGridDrawer != null ? this._secondaryGridDrawer.Grid.TileSize.X : 0f;
         }
     }
 }

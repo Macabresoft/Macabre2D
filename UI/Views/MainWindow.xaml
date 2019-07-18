@@ -127,6 +127,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <metro:MetroAnimatedSingleRowTabControl SelectionChanged="TabControl_SelectionChanged"
@@ -157,6 +158,7 @@
                     </Grid>
 
                     <GridSplitter Grid.Column="1"
+                                  Margin="{StaticResource StandardMarginL}"
                                   Style="{StaticResource VerticalGridSplitter}" />
 
                     <sceneEditing:SceneEditorControl Grid.Column="2" />

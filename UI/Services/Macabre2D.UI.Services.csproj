@@ -164,6 +164,7 @@
     <Compile Include="DialogService.cs" />
     <Compile Include="GitIgnoreCreator.cs" />
     <Compile Include="Content\ContentBuilder.cs" />
+    <Compile Include="StatusService.cs" />
     <Compile Include="TextCreator.cs" />
     <Compile Include="LoggingService.cs" />
     <Compile Include="MonoGameService.cs" />

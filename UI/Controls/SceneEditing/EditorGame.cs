@@ -51,7 +51,7 @@
 
         public Camera CurrentCamera {
             get {
-                return this._cameraWrapper?.Camera;
+                return this._cameraWrapper.Camera;
             }
         }
 

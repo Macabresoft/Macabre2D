@@ -16,8 +16,11 @@
         public ICommand CenterCameraCommand { get; }
 
         public IComponentService ComponentService { get; } = ViewContainer.Resolve<IComponentService>();
+
         public IMonoGameService MonoGameService { get; } = ViewContainer.Resolve<IMonoGameService>();
 
         public ISceneService SceneService { get; } = ViewContainer.Resolve<ISceneService>();
+
+        public IStatusService StatusService { get; } = ViewContainer.Resolve<IStatusService>();
     }
 }
