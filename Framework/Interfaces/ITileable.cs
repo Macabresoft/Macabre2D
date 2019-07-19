@@ -24,8 +24,9 @@
         /// <summary>
         /// Adds the default tile at the specified position.
         /// </summary>
-        /// <param name="position">The position.</param>
-        void AddTile(Point tile);
+        /// <param name="tile">The tile.</param>
+        /// <returns>A value indicating whether or not the tile was added.</returns>
+        bool AddTile(Point tile);
 
         /// <summary>
         /// Gets the tile that contains.
@@ -38,7 +39,8 @@
         /// Removes the tile.
         /// </summary>
         /// <param name="tile">The tile.</param>
-        void RemoveTile(Point tile);
+        /// <returns>A value indicating whether or not the tile was removed.</returns>
+        bool RemoveTile(Point tile);
     }
 
     /// <summary>

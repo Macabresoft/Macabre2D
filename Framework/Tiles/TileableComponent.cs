@@ -81,8 +81,9 @@
         }
 
         /// <inheritdoc/>
-        public void AddTile(Point tile) {
-            if (this._activeTiles.Add(tile)) {
+        public bool AddTile(Point tile) {
+            var result = this._activeTiles.Add(tile);
+            if (result) {
                 if (tile.X > this._maximumTile.X) {
                     this._maximumTile = new Point(tile.X, this._maximumTile.Y);
                 }
@@ -97,6 +98,8 @@
                     this._minimumTile = new Point(this._minimumTile.X, tile.Y);
                 }
             }
+
+            return result;
         }
 
         /// <summary>
@@ -125,8 +128,9 @@
         }
 
         /// <inheritdoc/>
-        public void RemoveTile(Point tile) {
-            if (this._activeTiles.Remove(tile)) {
+        public bool RemoveTile(Point tile) {
+            var result = this._activeTiles.Remove(tile);
+            if (result) {
                 this._tilePositionToBoundingArea.Remove(tile);
 
                 if (tile.X == this._minimumTile.X || tile.Y == this._minimumTile.Y) {
@@ -137,6 +141,8 @@
                     this.ResetMinimumTile();
                 }
             }
+
+            return result;
         }
 
         /// <summary>

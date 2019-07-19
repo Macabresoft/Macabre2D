@@ -1,17 +1,26 @@
 ﻿namespace Macabre2D.UI.Controls.SceneEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public sealed class TileGizmo : IGizmo {
+        private readonly HashSet<Point> _addedTiles = new HashSet<Point>();
+        private readonly HashSet<Point> _removedTiles = new HashSet<Point>();
+        private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
         private EditorGame _game;
         private GridDrawer _gridDrawer;
+        private ButtonState _previousLeftButtonState = ButtonState.Released;
+        private ButtonState _previousRightButtonState = ButtonState.Released;
 
-        public TileGizmo(IUndoService undoService) {
+        public TileGizmo(ISceneService sceneService, IUndoService undoService) {
+            this._sceneService = sceneService;
             this._undoService = undoService;
         }
 
@@ -52,17 +61,93 @@
 
         public bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             if (selectedComponent.Component is ITileable tileable) {
-                if (mouseState.LeftButton == ButtonState.Pressed) {
-                    var tile = tileable.GetTileThatContains(mousePosition);
-                    tileable.AddTile(tile);
+                if (this.ShouldAdd(mouseState)) {
+                    this.AddTile(tileable, mousePosition);
                 }
-                else if (mouseState.RightButton == ButtonState.Pressed) {
-                    var tile = tileable.GetTileThatContains(mousePosition);
-                    tileable.RemoveTile(tile);
+                else if (this._previousLeftButtonState == ButtonState.Pressed && this._addedTiles.Any()) {
+                    this.CommitAdd(tileable);
+                }
+                else if (this.ShouldRemove(mouseState)) {
+                    this.RemoveTile(tileable, mousePosition);
+                }
+                else if (this._previousRightButtonState == ButtonState.Pressed && this._removedTiles.Any()) {
+                    this.CommitRemove(tileable);
                 }
             }
 
             return true; // This should always have interactions
+        }
+
+        private void AddTile(ITileable tileable, Vector2 mousePosition) {
+            var tile = tileable.GetTileThatContains(mousePosition);
+            if (tileable.AddTile(tile)) {
+                this._addedTiles.Add(tile);
+                this._previousLeftButtonState = ButtonState.Pressed;
+                this._previousRightButtonState = ButtonState.Released;
+            }
+        }
+
+        private void CommitAdd(ITileable tileable) {
+            var hasChanges = this._sceneService.HasChanges;
+            var tiles = this._addedTiles.ToList();
+            var undoCommand = new UndoCommand(() => {
+                foreach (var tile in tiles) {
+                    tileable.AddTile(tile);
+                }
+
+                this._sceneService.HasChanges = true;
+            }, () => {
+                foreach (var tile in tiles) {
+                    tileable.RemoveTile(tile);
+                }
+
+                this._sceneService.HasChanges = hasChanges;
+            });
+
+            this._undoService.Do(undoCommand);
+            this._addedTiles.Clear();
+            this._previousRightButtonState = ButtonState.Released;
+            this._previousLeftButtonState = ButtonState.Released;
+        }
+
+        private void CommitRemove(ITileable tileable) {
+            var hasChanges = this._sceneService.HasChanges;
+            var tiles = this._removedTiles.ToList();
+            var undoCommand = new UndoCommand(() => {
+                foreach (var tile in tiles) {
+                    tileable.RemoveTile(tile);
+                }
+
+                this._sceneService.HasChanges = true;
+            }, () => {
+                foreach (var tile in tiles) {
+                    tileable.AddTile(tile);
+                }
+
+                this._sceneService.HasChanges = hasChanges;
+            });
+
+            this._undoService.Do(undoCommand);
+            this._removedTiles.Clear();
+            this._previousRightButtonState = ButtonState.Released;
+            this._previousLeftButtonState = ButtonState.Released;
+        }
+
+        private void RemoveTile(ITileable tileable, Vector2 mousePosition) {
+            var tile = tileable.GetTileThatContains(mousePosition);
+            if (tileable.RemoveTile(tile)) {
+                this._removedTiles.Add(tile);
+                this._previousRightButtonState = ButtonState.Pressed;
+                this._previousLeftButtonState = ButtonState.Released;
+            }
+        }
+
+        private bool ShouldAdd(MouseState mouseState) {
+            return mouseState.LeftButton == ButtonState.Pressed && !(this._previousRightButtonState == ButtonState.Pressed && mouseState.RightButton == ButtonState.Pressed);
+        }
+
+        private bool ShouldRemove(MouseState mouseState) {
+            return mouseState.RightButton == ButtonState.Pressed && !(this._previousLeftButtonState == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Pressed);
         }
     }
 }
