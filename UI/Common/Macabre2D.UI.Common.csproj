@@ -114,9 +114,11 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Behaviors\MouseDoubleClickBehavior.cs" />
+    <Compile Include="ComponentCommand.cs" />
     <Compile Include="DependencyObjectExtensions.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="INamedValueEditor.cs" />
+    <Compile Include="IComponentCommandEditor.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="ObservableRangeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,6 +129,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">
+      <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
+      <Name>Macabre2D.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
