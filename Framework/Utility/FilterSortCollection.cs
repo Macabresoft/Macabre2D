@@ -21,6 +21,7 @@
         private readonly Action<T, EventHandler> _filterChangedSubscriber;
         private readonly Action<T, EventHandler> _filterChangedUnsubscriber;
         private readonly List<T> _items = new List<T>();
+        private readonly object _lock = new object();
         private readonly List<int> _removeJournal = new List<int>();
         private readonly Comparison<T> _sort;
         private readonly Action<T, EventHandler> _sortChangedSubscriber;
@@ -78,9 +79,11 @@
         /// </summary>
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
         public void Add(T item) {
-            this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
-            this.InvalidateCache();
-            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, item));
+            lock (this._lock) {
+                this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
+                this.InvalidateCache();
+                this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, item));
+            }
         }
 
         /// <summary>
@@ -98,29 +101,33 @@
         /// </summary>
         /// <param name="items">The items.</param>
         public void AddRange(IEnumerable<T> items) {
-            foreach (var item in items) {
-                this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
-            }
+            lock (this._lock) {
+                foreach (var item in items) {
+                    this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
+                }
 
-            this.InvalidateCache();
-            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, items));
+                this.InvalidateCache();
+                this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, items));
+            }
         }
 
         /// <summary>
         /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
         public void Clear() {
-            for (var i = 0; i < this._items.Count; ++i) {
-                this._filterChangedUnsubscriber(this._items[i], this.Item_FilterPropertyChanged);
-                this._sortChangedUnsubscriber(this._items[i], this.Item_SortPropertyChanged);
-            }
+            lock (this._lock) {
+                for (var i = 0; i < this._items.Count; ++i) {
+                    this._filterChangedUnsubscriber(this._items[i], this.Item_FilterPropertyChanged);
+                    this._sortChangedUnsubscriber(this._items[i], this.Item_SortPropertyChanged);
+                }
 
-            var items = this._items;
-            this._addJournal.Clear();
-            this._removeJournal.Clear();
-            this._items.Clear();
-            this.InvalidateCache();
-            this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, items));
+                var items = this._items;
+                this._addJournal.Clear();
+                this._removeJournal.Clear();
+                this._items.Clear();
+                this.InvalidateCache();
+                this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, items));
+            }
         }
 
         /// <summary>
@@ -233,19 +240,21 @@
         /// Rebuilds the cache.
         /// </summary>
         public void RebuildCache() {
-            if (this._shouldRebuildCache) {
-                this.ProcessRemoveJournal();
-                this.ProcessAddJournal();
+            lock (this._lock) {
+                if (this._shouldRebuildCache) {
+                    this.ProcessRemoveJournal();
+                    this.ProcessAddJournal();
 
-                // Rebuild the cache
-                this._cachedFilteredItems.Clear();
-                foreach (var item in this._items) {
-                    if (this._filter(item)) {
-                        this._cachedFilteredItems.Add(item);
+                    // Rebuild the cache
+                    this._cachedFilteredItems.Clear();
+                    foreach (var item in this._items) {
+                        if (this._filter(item)) {
+                            this._cachedFilteredItems.Add(item);
+                        }
                     }
-                }
 
-                this._shouldRebuildCache = false;
+                    this._shouldRebuildCache = false;
+                }
             }
         }
 
@@ -259,21 +268,23 @@
         /// returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </returns>
         public bool Remove(T item) {
-            if (this._addJournal.Remove(AddJournalEntry.CreateKey(item))) {
-                this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
-                return true;
-            }
+            lock (this._lock) {
+                if (this._addJournal.Remove(AddJournalEntry.CreateKey(item))) {
+                    this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
+                    return true;
+                }
 
-            var index = this._items.IndexOf(item);
-            if (index >= 0) {
-                this.UnsubscribeFromItemEvents(item);
-                this._removeJournal.Add(index);
-                this.InvalidateCache();
-                this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
-                return true;
-            }
+                var index = this._items.IndexOf(item);
+                if (index >= 0) {
+                    this.UnsubscribeFromItemEvents(item);
+                    this._removeJournal.Add(index);
+                    this.InvalidateCache();
+                    this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(false, item));
+                    return true;
+                }
 
-            return false;
+                return false;
+            }
         }
 
         /// <summary>
@@ -388,7 +399,10 @@
             // variable-length array, but List<T> does not provide such a method.)
             this._removeJournal.Sort(RemoveJournalSortComparison);
             for (var i = 0; i < this._removeJournal.Count; i++) {
-                this._items.RemoveAt(this._removeJournal[i]);
+                var index = this._removeJournal[i];
+                if (index < this._items.Count) {
+                    this._items.RemoveAt(this._removeJournal[i]);
+                }
             }
 
             this._removeJournal.Clear();

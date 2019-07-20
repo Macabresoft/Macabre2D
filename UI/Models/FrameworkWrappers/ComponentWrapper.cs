@@ -130,18 +130,18 @@
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var newItem in e.NewItems.OfType<ComponentWrapper>()) {
                     newItem.Parent = this;
-                    newItem.PropertyChanged += this.ChildPropertyChanged;
                     this.Component.AddChild(newItem.Component);
+                    newItem.PropertyChanged += this.ChildPropertyChanged;
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove) {
                 foreach (var oldItem in e.OldItems.OfType<ComponentWrapper>()) {
+                    oldItem.PropertyChanged -= this.ChildPropertyChanged;
+
                     if (oldItem.Parent == this) {
                         oldItem.Parent = null;
                         this.Component.RemoveChild(oldItem.Component);
                     }
-
-                    oldItem.PropertyChanged -= this.ChildPropertyChanged;
                 }
             }
 

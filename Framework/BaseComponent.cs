@@ -236,14 +236,16 @@
                     this._parent = value;
 
                     if (this._parent != null) {
+                        var wasInitialized = this.IsInitialized;
                         this._parent.AddChild(this);
 
-                        if (this.IsInitialized) {
+                        if (this.IsInitialized == wasInitialized && this.IsInitialized) {
                             this._parent.IsEnabledChanged += this.Parent_EnabledChanged;
                             this._parent.TransformChanged += this.Parent_TransformChanged;
                         }
 
                         if (originalParent != null) {
+                            originalParent.RemoveChild(this);
                             originalParent.IsEnabledChanged -= this.Parent_EnabledChanged;
                             originalParent.TransformChanged -= this.Parent_TransformChanged;
                         }
