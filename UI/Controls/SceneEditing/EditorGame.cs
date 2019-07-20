@@ -26,6 +26,7 @@
             this._cameraWrapper = cameraWrapper;
             this._selectionEditor = selectionEditor;
             this.Settings = new GameSettings();
+            this.SizeChanged += this.EditorGame_SizeChanged;
             MacabreGame.Instance = this;
         }
 
@@ -164,6 +165,12 @@
 
                 this._selectionEditor.Update(gameTime, mouseState, keyboardState);
                 this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
+            }
+        }
+
+        private void EditorGame_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e) {
+            if (this.IsInitialized && (e.NewSize.Width > e.PreviousSize.Width || e.NewSize.Height > e.PreviousSize.Height)) {
+                this.ResetCamera();
             }
         }
 
