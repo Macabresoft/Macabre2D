@@ -3,6 +3,7 @@
     public partial class BoolEditor : NamedValueEditor<bool> {
 
         public BoolEditor() {
+            this.InitializeComponent();
         }
     }
 }
