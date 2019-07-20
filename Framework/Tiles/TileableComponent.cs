@@ -32,6 +32,13 @@
         }
 
         /// <inheritdoc/>
+        public IReadOnlyCollection<Point> ActiveTiles {
+            get {
+                return this._activeTiles;
+            }
+        }
+
+        /// <inheritdoc/>
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
@@ -57,16 +64,6 @@
         public TileGrid WorldGrid {
             get {
                 return this._worldGrid.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the active tiles.
-        /// </summary>
-        /// <value>The active tiles.</value>
-        protected IReadOnlyCollection<Point> ActiveTiles {
-            get {
-                return this._activeTiles;
             }
         }
 
@@ -125,6 +122,17 @@
             }
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        public bool HasActiveTileAt(Point tilePosition) {
+            return this._activeTiles.Contains(tilePosition);
+        }
+
+        /// <inheritdoc/>
+        public bool HasActiveTileAt(Vector2 worldPosition) {
+            var tile = this.GetTileThatContains(worldPosition);
+            return this.HasActiveTileAt(tile);
         }
 
         /// <inheritdoc/>

@@ -103,7 +103,9 @@
                     this._componentService.SelectComponent(null);
                     foreach (var drawable in this._game.CurrentScene.GetVisibleDrawableComponents()) {
                         if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
-                            this._componentService.SelectComponent(drawableComponent);
+                            if (!(drawableComponent is ITileable tileable) || tileable.HasActiveTileAt(mousePosition)) {
+                                this._componentService.SelectComponent(drawableComponent);
+                            }
                         }
                     }
                 }

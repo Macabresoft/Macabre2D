@@ -10,6 +10,12 @@
     public interface ITileable : IBoundable {
 
         /// <summary>
+        /// Gets the active tiles.
+        /// </summary>
+        /// <value>The active tiles.</value>
+        IReadOnlyCollection<Point> ActiveTiles { get; }
+
+        /// <summary>
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
@@ -34,6 +40,24 @@
         /// <param name="worldPosition">The world position.</param>
         /// <returns>The tile that contains the specified world position.</returns>
         Point GetTileThatContains(Vector2 worldPosition);
+
+        /// <summary>
+        /// Determines whether this instance has an active tile at the provided tile position.
+        /// </summary>
+        /// <param name="tilePosition">The tile position.</param>
+        /// <returns>
+        /// <c>true</c> if this instance has a tile at the provided tile position; otherwise, <c>false</c>.
+        /// </returns>
+        bool HasActiveTileAt(Point tilePosition);
+
+        /// <summary>
+        /// Determines whether this instance has an active tile at the provided world position.
+        /// </summary>
+        /// <param name="worldPosition">The world position.</param>
+        /// <returns>
+        /// <c>true</c> if this instance has a tile at the provided world position; otherwise, <c>false</c>.
+        /// </returns>
+        bool HasActiveTileAt(Vector2 worldPosition);
 
         /// <summary>
         /// Removes the tile.
