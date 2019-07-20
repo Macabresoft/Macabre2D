@@ -25,11 +25,11 @@
         public IProjectService ProjectService { get; }
 
         private async Task NewProject() {
-            await this._busyService.PerformTask(this.ProjectService.CreateProject(FileHelper.DefaultProjectPath));
+            await this._busyService.PerformTask(this.ProjectService.CreateProject(FileHelper.DefaultProjectPath), true);
         }
 
         private async Task OpenProject() {
-            await this._busyService.PerformTask(this.ProjectService.SelectAndLoadProject(FileHelper.DefaultProjectPath));
+            await this._busyService.PerformTask(this.ProjectService.SelectAndLoadProject(FileHelper.DefaultProjectPath), true);
         }
     }
 }

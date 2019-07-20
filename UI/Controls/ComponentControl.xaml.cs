@@ -178,7 +178,7 @@
 
                 if (e.NewValue is ComponentWrapper wrapper) {
                     var task = control.PopulateEditors();
-                    await control._busyService.PerformTask(task);
+                    await control._busyService.PerformTask(task, false);
 
                     control._drawableGrid.Visibility = Visibility.Collapsed;
                     control._updateableGrid.Visibility = Visibility.Collapsed;

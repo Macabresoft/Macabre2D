@@ -47,7 +47,7 @@
             var settingsManager = this._container.Resolve<SettingsManager>();
             settingsManager.Initialize();
             var busyService = this._container.Resolve<IBusyService>();
-            busyService.PerformTask(settingsManager.LoadLastProjectOpened());
+            busyService.PerformTask(settingsManager.LoadLastProjectOpened(), true);
 
             var tabName = settingsManager.GetLastOpenTabName();
             var tabs = this._mainWindow.MainTabControl.Items.Cast<TabItem>();

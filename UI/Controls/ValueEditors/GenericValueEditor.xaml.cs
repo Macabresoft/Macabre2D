@@ -33,7 +33,7 @@
         protected override async Task OnValueChangedAsync(object newValue, object oldValue, DependencyObject d) {
             if (this.Value != null) {
                 var task = this.PopulateEditors();
-                await this._busyService.PerformTask(task);
+                await this._busyService.PerformTask(task, false);
             }
             else {
                 this.Editors.Clear();

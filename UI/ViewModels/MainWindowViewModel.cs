@@ -96,17 +96,17 @@
 
         private async Task CreateProject() {
             var task = this.ProjectService.CreateProject(FileHelper.DefaultProjectPath);
-            await this.BusyService.PerformTask(task);
+            await this.BusyService.PerformTask(task, true);
         }
 
         private async Task ExportProject() {
             var task = this.ProjectService.ExportProject();
-            await this.BusyService.PerformTask(task);
+            await this.BusyService.PerformTask(task, true);
         }
 
         private async Task OpenProject() {
             var task = this.ProjectService.SelectAndLoadProject(FileHelper.DefaultProjectPath);
-            await this.BusyService.PerformTask(task);
+            await this.BusyService.PerformTask(task, true);
         }
 
         private void RefreshAssemblies() {
@@ -119,12 +119,12 @@
 
         private async Task RefreshAssets() {
             var task = this.ProjectService.BuildContent(BuildMode.Debug);
-            await this.BusyService.PerformTask(task);
+            await this.BusyService.PerformTask(task, true);
         }
 
         private async Task SaveProject() {
             var task = this.ProjectService.SaveProject();
-            await this.BusyService.PerformTask(task);
+            await this.BusyService.PerformTask(task, true);
         }
 
         private void UndoService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

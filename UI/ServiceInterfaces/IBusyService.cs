@@ -7,14 +7,16 @@
     public interface IBusyService : INotifyPropertyChanged {
         bool IsBusy { get; }
 
-        void PerformAction(Action action);
+        bool ShowBusyIndicator { get; }
 
-        Task PerformTask(Action action);
+        void PerformAction(Action action, bool showBusyIndicator);
 
-        Task PerformTask(Task task);
+        Task PerformTask(Action action, bool showBusyIndicator);
 
-        Task<T> PerformTask<T>(Func<T> function);
+        Task PerformTask(Task task, bool showBusyIndicator);
 
-        Task<T> PerformTask<T>(Task<T> task);
+        Task<T> PerformTask<T>(Func<T> function, bool showBusyIndicator);
+
+        Task<T> PerformTask<T>(Task<T> task, bool showBusyIndicator);
     }
 }

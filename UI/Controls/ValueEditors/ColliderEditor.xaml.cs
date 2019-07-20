@@ -90,7 +90,7 @@
         protected override async Task OnValueChangedAsync(Collider newValue, Collider oldValue, DependencyObject d) {
             if (newValue != null) {
                 var task = this.GetEditor(newValue);
-                await this._busyService.PerformTask(task);
+                await this._busyService.PerformTask(task, false);
             }
             else {
                 this.Editor = null;

@@ -13,6 +13,7 @@
                    WindowState="Maximized">
     <metro:MetroWindow.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:InverseBoolConverter x:Key="_inverseBoolConverter" />
         <converters:NullToBoolConverter x:Key="_nullToBoolConverter" />
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
         <converters:HyphenateTextConverter x:Key="_hyphenateTextConverter" />
@@ -145,14 +146,17 @@
                         </metro:MetroAnimatedSingleRowTabControl>
 
                         <local:ProjectView Grid.Row="1"
+                                           IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
                                            Margin="{StaticResource DoubleMarginAll}"
                                            Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
 
                         <local:ComponentsView Grid.Row="1"
+                                              IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
                                               Margin="{StaticResource DoubleMarginAll}"
                                               Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
 
                         <local:ModulesView Grid.Row="1"
+                                           IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
                                            Margin="{StaticResource DoubleMarginAll}"
                                            Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
                     </Grid>
@@ -170,10 +174,10 @@
         </controls:ContentSwitcher>
 
         <Border Background="#11FFFFFF"
-                Visibility="{Binding BusyService.IsBusy, Converter={StaticResource _boolToVisibilityConverter}}">
+                Visibility="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _boolToVisibilityConverter}}">
             <metro:ProgressRing HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                IsActive="{Binding BusyService.IsBusy}" />
+                                IsActive="{Binding BusyService.ShowBusyIndicator}" />
         </Border>
     </Grid>
 </metro:MetroWindow>
