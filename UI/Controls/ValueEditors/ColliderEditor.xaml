@@ -11,7 +11,9 @@
         <Grid.Resources>
             <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
         </Grid.Resources>
-        <controls:CollapsableEditor Title="{Binding Title}">
+        <controls:CollapsableEditor Title="{Binding Title}"
+                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
+                                    ShowTopSeparator="{Binding ShowTopSeparator}">
             <controls:CollapsableEditor.CollapsedContent>
                 <ComboBox Grid.Column="1"
                           DisplayMemberPath="Name"

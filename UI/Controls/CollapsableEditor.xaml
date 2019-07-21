@@ -25,7 +25,8 @@
         </Grid.ColumnDefinitions>
 
         <Separator Grid.Row="0"
-                   Grid.ColumnSpan="3" />
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding ShowTopSeparator, ElementName=_collapsableEditor, Converter={StaticResource _boolToVisibilityConverter}}" />
 
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
@@ -52,6 +53,7 @@
                         Visibility="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _inverseBoolToVisibilityConverter}}" />
 
         <Separator Grid.Row="3"
-                   Grid.ColumnSpan="3" />
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding ShowBottomSeparator, ElementName=_collapsableEditor, Converter={StaticResource _boolToVisibilityConverter}}" />
     </Grid>
 </UserControl>

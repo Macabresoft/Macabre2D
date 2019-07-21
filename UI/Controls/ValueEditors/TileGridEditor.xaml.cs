@@ -4,7 +4,19 @@
     using Microsoft.Xna.Framework;
     using System.Windows;
 
-    public partial class TileGridEditor : NamedValueEditor<TileGrid> {
+    public partial class TileGridEditor : NamedValueEditor<TileGrid>, ISeparatedValueEditor {
+
+        public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowBottomSeparator),
+            typeof(bool),
+            typeof(TileGridEditor),
+            new PropertyMetadata(true));
+
+        public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowTopSeparator),
+            typeof(bool),
+            typeof(TileGridEditor),
+            new PropertyMetadata(true));
 
         public TileGridEditor() {
             this.InitializeComponent();
@@ -20,6 +32,16 @@
                     this.Value = new TileGrid(this.TileSize, value);
                 }
             }
+        }
+
+        public bool ShowBottomSeparator {
+            get { return (bool)this.GetValue(ShowBottomSeparatorProperty); }
+            set { this.SetValue(ShowBottomSeparatorProperty, value); }
+        }
+
+        public bool ShowTopSeparator {
+            get { return (bool)this.GetValue(ShowTopSeparatorProperty); }
+            set { this.SetValue(ShowTopSeparatorProperty, value); }
         }
 
         public Vector2 TileSize {

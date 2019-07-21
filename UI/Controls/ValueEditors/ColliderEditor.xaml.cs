@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using System.Windows;
 
-    public partial class ColliderEditor : NamedValueEditor<Collider> {
+    public partial class ColliderEditor : NamedValueEditor<Collider>, ISeparatedValueEditor {
 
         public static readonly DependencyProperty ColliderTypesProperty = DependencyProperty.Register(
             nameof(ColliderTypes),
@@ -17,10 +17,26 @@
             typeof(ColliderEditor),
             new PropertyMetadata(new List<Type>()));
 
+        public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowBottomSeparator),
+            typeof(bool),
+            typeof(ColliderEditor),
+            new PropertyMetadata(true));
+
+        public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowTopSeparator),
+            typeof(bool),
+            typeof(ColliderEditor),
+            new PropertyMetadata(true));
+
         private readonly IAssemblyService _assemblyService = ViewContainer.Resolve<IAssemblyService>();
+
         private readonly IBusyService _busyService = ViewContainer.Resolve<IBusyService>();
+
         private readonly IValueEditorService _valueEditorService = ViewContainer.Resolve<IValueEditorService>();
+
         private DependencyObject _editor;
+
         private Type _selectedColliderType;
 
         public ColliderEditor() {
@@ -70,6 +86,16 @@
                     this.RaisePropertyChanged(nameof(this.SelectedColliderType));
                 }
             }
+        }
+
+        public bool ShowBottomSeparator {
+            get { return (bool)this.GetValue(ShowBottomSeparatorProperty); }
+            set { this.SetValue(ShowBottomSeparatorProperty, value); }
+        }
+
+        public bool ShowTopSeparator {
+            get { return (bool)this.GetValue(ShowTopSeparatorProperty); }
+            set { this.SetValue(ShowTopSeparatorProperty, value); }
         }
 
         public override async Task Initialize(object value, Type memberType, object owner, string propertName, string title) {

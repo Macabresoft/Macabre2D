@@ -7,7 +7,9 @@
                         xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
                         xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
     <Grid DataContext="{Binding ElementName=_pixelOffsetEditor}">
-        <controls:CollapsableEditor Title="{Binding Title}">
+        <controls:CollapsableEditor Title="{Binding Title}"
+                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
+                                    ShowTopSeparator="{Binding ShowTopSeparator}">
             <controls:CollapsableEditor.CollapsedContent>
                 <ComboBox ItemsSource="{Binding OffsetTypes}"
                           SelectedItem="{Binding OffsetType}" />

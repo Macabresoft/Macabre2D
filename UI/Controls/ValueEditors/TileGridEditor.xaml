@@ -7,7 +7,9 @@
                         xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
                         xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_tileGridEditor}">
-        <controls:CollapsableEditor Title="{Binding Title}">
+        <controls:CollapsableEditor Title="{Binding Title}"
+                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
+                                    ShowTopSeparator="{Binding ShowTopSeparator}">
             <controls:CollapsableEditor.CollapsedContent>
                 <TextBlock Margin="{StaticResource StandardMarginAll}">
                     <TextBlock.Text>

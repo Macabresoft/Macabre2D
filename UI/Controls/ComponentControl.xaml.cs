@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using Macabre2D.UI.Controls.ValueEditors;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
@@ -215,6 +216,21 @@
 
         private async Task PopulateEditors() {
             var editors = await this._valueEditorService.CreateEditors(this.Component.Component, typeof(BaseComponent));
+            var count = editors.Count;
+            for (var i = 0; i < count; i++) {
+                if (editors.ElementAtOrDefault(i) is ISeparatedValueEditor currentSeparated) {
+                    var previousEditor = editors.ElementAtOrDefault(i);
+                    if (previousEditor == null || previousEditor is ISeparatedValueEditor previousSeparated) {
+                        currentSeparated.ShowTopSeparator = false;
+                    }
+
+                    var nextEditor = editors.ElementAtOrDefault(i + 1);
+                    if (nextEditor == null) {
+                        currentSeparated.ShowBottomSeparator = false;
+                    }
+                }
+            }
+
             this.Editors.Reset(editors);
         }
 

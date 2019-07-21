@@ -228,6 +228,7 @@
     <Compile Include="ModuleList.xaml.cs">
       <DependentUpon>ModuleList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\ISeparatedValueEditor.cs" />
     <Compile Include="ValueEditors\LineColliderEditor.xaml.cs">
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>

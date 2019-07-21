@@ -7,7 +7,9 @@
                         xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
                         xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_spriteEditor}">
-        <controls:CollapsableEditor Title="{Binding Title}">
+        <controls:CollapsableEditor Title="{Binding Title}"
+                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
+                                    ShowTopSeparator="{Binding ShowTopSeparator}">
             <controls:CollapsableEditor.CollapsedContent>
                 <Grid>
                     <Grid.ColumnDefinitions>

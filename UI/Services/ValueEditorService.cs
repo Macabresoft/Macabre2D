@@ -22,11 +22,11 @@
             return editableObject == null ? null : await this.GetEditorForType(editableObject, editableObject, editableObject.GetType(), string.Empty, name, declaringTypeToIgnore);
         }
 
-        public async Task<IEnumerable<DependencyObject>> CreateEditors(object editableObject, Type declaringTypeToIgnore) {
+        public async Task<IList<DependencyObject>> CreateEditors(object editableObject, Type declaringTypeToIgnore) {
             return await this.CreateEditors(string.Empty, editableObject, editableObject, declaringTypeToIgnore);
         }
 
-        private async Task<IEnumerable<DependencyObject>> CreateEditors(string currentPath, object editableObject, object originalObject, Type declaringTypeToIgnore) {
+        private async Task<IList<DependencyObject>> CreateEditors(string currentPath, object editableObject, object originalObject, Type declaringTypeToIgnore) {
             var editors = new List<DependencyObject>();
             var members = declaringTypeToIgnore != null ?
                 editableObject.GetType().GetFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => x.DeclaringType != declaringTypeToIgnore) :

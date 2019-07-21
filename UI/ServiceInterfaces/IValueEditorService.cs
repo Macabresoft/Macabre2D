@@ -9,6 +9,6 @@
 
         Task<DependencyObject> CreateEditor(object editableObject, string name, Type declaringTypeToIgnore);
 
-        Task<IEnumerable<DependencyObject>> CreateEditors(object editableObject, Type declaringTypeToIgnore);
+        Task<IList<DependencyObject>> CreateEditors(object editableObject, Type declaringTypeToIgnore);
     }
 }
