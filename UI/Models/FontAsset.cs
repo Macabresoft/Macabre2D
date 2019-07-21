@@ -59,7 +59,9 @@
             }
 
             set {
-                this.Set(ref this._spacing, value);
+                if (this.Set(ref this._spacing, value) && this.SavableValue?.SpriteFont != null) {
+                    this.SavableValue.SpriteFont.Spacing = this.Spacing;
+                }
             }
         }
 
