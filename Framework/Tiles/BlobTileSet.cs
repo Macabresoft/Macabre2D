@@ -1,15 +1,11 @@
 ﻿namespace Macabre2D.Framework.Tiles {
 
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
-    /// A tile set that supports block style patterns. Connected sprites will only be quadrilateral shapes.
+    /// A complete tile set that can auto-generate as it is painted onto a grid.
     /// </summary>
-    public sealed class BlockTileSet : BaseIdentifiable, IAutoTileSet {
-
-        private readonly Dictionary<CardinalDirection, CardinalDirection> _cardinalDirectionToValidCardinalDirection = new Dictionary<CardinalDirection, CardinalDirection>() {
-        };
+    public sealed class BlobTileSet : BaseIdentifiable, IAutoTileSet {
 
         /// <inheritdoc/>
         public event EventHandler<CardinalDirection> SpriteChanged;
