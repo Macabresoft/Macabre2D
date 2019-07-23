@@ -9,15 +9,10 @@
     /// <summary>
     /// An animation that explicitly uses sprites.
     /// </summary>
-    /// <seealso cref="Macabre2D.Framework.IIdentifiable"/>
-    [DataContract]
-    public sealed class SpriteAnimation : IIdentifiable {
+    public sealed class SpriteAnimation : BaseIdentifiable {
 
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new List<SpriteAnimationStep>();
-
-        [DataMember]
-        private Guid _id = Guid.NewGuid();
 
         private bool _isLoaded = false;
 
@@ -33,13 +28,6 @@
         internal SpriteAnimation(IEnumerable<SpriteAnimationStep> steps, bool shouldLoop) {
             this._steps.AddRange(steps);
             this._shouldLoop = shouldLoop;
-        }
-
-        /// <inheritdoc/>
-        public Guid Id {
-            get {
-                return this._id;
-            }
         }
 
         /// <summary>

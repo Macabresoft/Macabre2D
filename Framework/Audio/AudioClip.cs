@@ -7,12 +7,8 @@
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    [DataContract]
-    public sealed class AudioClip : IDisposable, IIdentifiable {
+    public sealed class AudioClip : BaseIdentifiable, IDisposable {
         private bool _disposedValue = false;
-
-        [DataMember]
-        private Guid _id = Guid.NewGuid();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioClip"/> class.
@@ -39,13 +35,6 @@
         /// <value>The content identifier.</value>
         [DataMember]
         public Guid ContentId { get; set; }
-
-        /// <inheritdoc/>
-        public Guid Id {
-            get {
-                return this._id;
-            }
-        }
 
         internal SoundEffectInstance SoundEffectInstance { get; set; }
 

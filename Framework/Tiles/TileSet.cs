@@ -6,12 +6,7 @@
     /// <summary>
     /// A tile set created from sprites.
     /// </summary>
-    /// <seealso cref="Macabre2D.Framework.IIdentifiable"/>
-    [DataContract]
-    public class TileSet : IIdentifiable {
-
-        [DataMember]
-        private Guid _id = Guid.NewGuid();
+    public class TileSet : BaseIdentifiable {
 
         [DataMember]
         private Sprite[,] _sprites = new Sprite[3, 3];
@@ -23,13 +18,6 @@
         public int Columns {
             get {
                 return this._sprites.GetLength(0);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Guid Id {
-            get {
-                return this._id;
             }
         }
 

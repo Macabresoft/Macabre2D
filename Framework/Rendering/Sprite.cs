@@ -8,12 +8,8 @@
     /// <summary>
     /// Represents a sprite with the content path and the Texture2D.
     /// </summary>
-    [DataContract]
-    public sealed class Sprite : IDisposable, IIdentifiable {
+    public sealed class Sprite : BaseIdentifiable, IDisposable {
         private bool _disposedValue = false;
-
-        [DataMember]
-        private Guid _id = Guid.NewGuid();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
@@ -24,8 +20,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
         /// </summary>
-        public Sprite(Guid id) {
-            this.ContentId = id;
+        /// <param name="contentId">The content identifier.</param>
+        public Sprite(Guid contentId) {
+            this.ContentId = contentId;
             this.LoadTexture();
         }
 
@@ -67,13 +64,6 @@
         /// <value>The content identifier.</value>
         [DataMember]
         public Guid ContentId { get; internal set; }
-
-        /// <inheritdoc/>
-        public Guid Id {
-            get {
-                return this._id;
-            }
-        }
 
         /// <summary>
         /// Gets the location.
