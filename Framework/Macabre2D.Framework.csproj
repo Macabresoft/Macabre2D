@@ -74,7 +74,7 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
-    <Compile Include="Tiles\BlockTileSet.cs" />
+    <Compile Include="Tiles\BlobTileSet.cs" />
     <Compile Include="Tiles\CardinalDirection.cs" />
     <Compile Include="Tiles\IAutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
