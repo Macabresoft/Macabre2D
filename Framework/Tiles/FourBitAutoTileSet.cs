@@ -1,9 +1,9 @@
-﻿namespace Macabre2D.Framework.Tiles {
+﻿namespace Macabre2D.Framework {
 
     using System;
 
     /// <summary>
-    /// Represents the eight cardinal directions. Can be used as flags.
+    /// Represents four directions from a single tile.
     /// </summary>
     [Flags]
     public enum FourBitDirection {

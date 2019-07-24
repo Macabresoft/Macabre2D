@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
+    <Compile Include="Tiles\EightBitAutoTileSet.cs" />
     <Compile Include="Tiles\FourBitAutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
