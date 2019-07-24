@@ -74,9 +74,7 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
-    <Compile Include="Tiles\BlobTileSet.cs" />
-    <Compile Include="Tiles\CardinalDirection.cs" />
-    <Compile Include="Tiles\IAutoTileSet.cs" />
+    <Compile Include="Tiles\FourBitAutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
     <Compile Include="Interfaces\IHierarchicalEngineObject.cs" />
