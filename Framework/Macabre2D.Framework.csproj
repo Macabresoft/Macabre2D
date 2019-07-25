@@ -74,8 +74,11 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
-    <Compile Include="Tiles\EightBitAutoTileSet.cs" />
-    <Compile Include="Tiles\FourBitAutoTileSet.cs" />
+    <Compile Include="Tiles\AutoTileSetSpriteChangedEventArgs.cs" />
+    <Compile Include="Tiles\BaseAutoTileSet.cs" />
+    <Compile Include="Tiles\EightWayAutoTileSet.cs" />
+    <Compile Include="Tiles\FourWayAutoTileSet.cs" />
+    <Compile Include="Tiles\IAutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
     <Compile Include="Interfaces\IHierarchicalEngineObject.cs" />
