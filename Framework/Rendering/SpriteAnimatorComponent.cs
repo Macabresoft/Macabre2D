@@ -200,7 +200,17 @@
 
         /// <inheritdoc/>
         bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
-            throw new NotImplementedException();
+            if (this._defaultAnimation != null) {
+                this._defaultAnimation.TryGetSprite(id, out asset);
+            }
+            else if (this._spriteAnimation != null) {
+                this._spriteAnimation.TryGetSprite(id, out asset);
+            }
+            else {
+                asset = null;
+            }
+
+            return asset != null;
         }
 
         /// <inheritdoc/>

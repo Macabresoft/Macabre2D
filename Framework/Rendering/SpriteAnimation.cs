@@ -133,5 +133,10 @@
 
             return result;
         }
+
+        internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+            sprite = this._steps.FirstOrDefault(x => x.Sprite?.Id == spriteId)?.Sprite;
+            return sprite != null;
+        }
     }
 }
