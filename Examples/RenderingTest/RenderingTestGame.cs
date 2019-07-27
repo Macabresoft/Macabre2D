@@ -54,7 +54,7 @@
             step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
             step.Frames = 2;
 
-            var spriteAnimator = new SpriteAnimator(spriteAnimation) {
+            var spriteAnimator = new SpriteAnimatorComponent(spriteAnimation) {
                 FrameRate = 4
             };
 

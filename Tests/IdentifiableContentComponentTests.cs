@@ -24,7 +24,7 @@
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_SpriteAnimationTest() {
             var spriteAnimation = new SpriteAnimation();
-            var spriteAnimator = new SpriteAnimator(spriteAnimation);
+            var spriteAnimator = new SpriteAnimatorComponent(spriteAnimation);
 
             var spriteAnimationId = spriteAnimation.Id;
 

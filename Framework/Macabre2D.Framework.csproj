@@ -162,7 +162,7 @@
     <Compile Include="Rendering\Sprite.cs" />
     <Compile Include="Rendering\SpriteAnimation.cs" />
     <Compile Include="Rendering\SpriteAnimationStep.cs" />
-    <Compile Include="Rendering\SpriteAnimator.cs" />
+    <Compile Include="Rendering\SpriteAnimatorComponent.cs" />
     <Compile Include="Rendering\SpriteRenderer.cs" />
     <Compile Include="Rendering\Font.cs" />
     <Compile Include="Rendering\TextRenderer.cs" />
