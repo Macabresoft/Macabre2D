@@ -8,43 +8,82 @@
     /// <summary>
     /// Base class for easy and generic implementations of <see cref="IAutoTileSet"/>.
     /// </summary>
-    public abstract class BaseAutoTileSet : BaseIdentifiable {
-
-        [DataMember]
-        private readonly Sprite[] _sprites;
+    public sealed class AutoTileSet : BaseIdentifiable {
+        private const byte CardinalSize = 16;
+        private const byte IntermediateSize = 48;
 
         private bool _isLoaded = false;
 
+        [DataMember]
+        private Sprite[] _sprites = new Sprite[AutoTileSet.CardinalSize];
+
+        [DataMember]
+        private bool _useIntermediateDirections = false;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseAutoTileSet"/> class.
+        /// Initializes a new instance of the <see cref="AutoTileSet"/> class.
         /// </summary>
-        public BaseAutoTileSet() : base() {
-            this._sprites = new Sprite[this.Size];
+        public AutoTileSet() : base() {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Occurs when a sprite changes for a particular index.
+        /// </summary>
         public event EventHandler<byte> SpriteChanged;
 
-        /// <inheritdoc/>
-        public abstract byte Size { get; }
+        /// <summary>
+        /// Gets the size.
+        /// </summary>
+        /// <value>The size.</value>
+        public int Size {
+            get {
+                return this._sprites.Length;
+            }
+        }
 
-        /// <inheritdoc/>
-        public abstract bool UseIntermediateDirections { get; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this should use intermediate directions when
+        /// calculating tiles or just the cardinal directions.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this is using intermediate directions in addition to cardinal directions;
+        /// otherwise, <c>false</c>.
+        /// </value>
+        public bool UseIntermediateDirections {
+            get {
+                return this._useIntermediateDirections;
+            }
 
-        /// <inheritdoc/>
+            set {
+                if (this._useIntermediateDirections != value) {
+                    this._useIntermediateDirections = value;
+                    this.ResetSprites();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the sprite at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>The sprite at the specified index.</returns>
         public Sprite GetSprite(byte index) {
             Sprite result = null;
 
-            if (index < this.Size) {
+            if (index < this._sprites.Length) {
                 result = this._sprites[index];
             }
 
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Sets the sprite at the specified index.
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="index">The index.</param>
         public void SetSprite(Sprite sprite, byte index) {
-            if (index < this.Size) {
+            if (index < this._sprites.Length) {
                 this._sprites[index] = sprite;
                 this.SpriteChanged.SafeInvoke(this, index);
 
@@ -100,6 +139,10 @@
         internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
             sprite = this._sprites.FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
+        }
+
+        private void ResetSprites() {
+            this._sprites = this.UseIntermediateDirections ? new Sprite[AutoTileSet.IntermediateSize] : new Sprite[AutoTileSet.CardinalSize];
         }
     }
 }

@@ -9,7 +9,7 @@
     /// <summary>
     /// A component which maps <see cref="IAutoTileSet"/> onto a <see cref="TileGrid"/>.
     /// </summary>
-    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<BaseAutoTileSet>, IAssetComponent<Sprite> {
+    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
 
         [DataMember]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
@@ -17,13 +17,31 @@
         private Vector2[] _spriteScales = new Vector2[0];
 
         [DataMember]
-        private BaseAutoTileSet _tileSet;
+        private AutoTileSet _tileSet;
 
         /// <summary>
         /// Represents four directions from a single tile.
         /// </summary>
         [Flags]
-        private enum CardinalAndIntermediateDirections : byte {
+        private enum CardinalDirections : byte {
+            None = 0,
+
+            North = 1 << 0,
+
+            West = 1 << 1,
+
+            East = 1 << 2,
+
+            South = 1 << 3,
+
+            All = North | West | East | South
+        }
+
+        /// <summary>
+        /// Represents four directions from a single tile.
+        /// </summary>
+        [Flags]
+        private enum IntermediateDirections : byte {
             None = 0,
 
             NorthWest = 1 << 0,
@@ -46,28 +64,10 @@
         }
 
         /// <summary>
-        /// Represents four directions from a single tile.
-        /// </summary>
-        [Flags]
-        private enum CardinalDirections : byte {
-            None = 0,
-
-            North = 1 << 0,
-
-            West = 1 << 1,
-
-            East = 1 << 2,
-
-            South = 1 << 3,
-
-            All = North | West | East | South
-        }
-
-        /// <summary>
         /// Gets or sets the tile set.
         /// </summary>
         /// <value>The tile set.</value>
-        public BaseAutoTileSet TileSet {
+        public AutoTileSet TileSet {
             get {
                 return this._tileSet;
             }
@@ -93,7 +93,7 @@
         }
 
         /// <inheritdoc/>
-        IEnumerable<Guid> IAssetComponent<BaseAutoTileSet>.GetOwnedAssetIds() {
+        IEnumerable<Guid> IAssetComponent<AutoTileSet>.GetOwnedAssetIds() {
             return this.TileSet == null ? new Guid[0] : new[] { this.TileSet.Id };
         }
 
@@ -124,7 +124,7 @@
         }
 
         /// <inheritdoc/>
-        void IAssetComponent<BaseAutoTileSet>.RefreshAsset(BaseAutoTileSet newInstance) {
+        void IAssetComponent<AutoTileSet>.RefreshAsset(AutoTileSet newInstance) {
             if (newInstance != null && this.TileSet?.Id == newInstance.Id) {
                 this.TileSet = newInstance;
             }
@@ -152,7 +152,7 @@
         }
 
         /// <inheritdoc/>
-        bool IAssetComponent<BaseAutoTileSet>.TryGetAsset(Guid id, out BaseAutoTileSet asset) {
+        bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet asset) {
             var result = false;
             if (this.TileSet?.Id == id) {
                 asset = this.TileSet;
@@ -225,37 +225,37 @@
         private byte GetIndex(Point tile) {
             byte index;
             if (this.TileSet?.UseIntermediateDirections == true) {
-                var direction = CardinalAndIntermediateDirections.None;
+                var direction = IntermediateDirections.None;
                 if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-                    direction |= CardinalAndIntermediateDirections.North;
+                    direction |= IntermediateDirections.North;
                 }
 
                 if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-                    direction |= CardinalAndIntermediateDirections.East;
+                    direction |= IntermediateDirections.East;
                 }
 
                 if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-                    direction |= CardinalAndIntermediateDirections.South;
+                    direction |= IntermediateDirections.South;
                 }
 
                 if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-                    direction |= CardinalAndIntermediateDirections.West;
+                    direction |= IntermediateDirections.West;
                 }
 
                 if (this.HasActiveTileAt(tile + new Point(1, 1))) {
-                    direction |= CardinalAndIntermediateDirections.NorthEast;
+                    direction |= IntermediateDirections.NorthEast;
                 }
 
                 if (this.HasActiveTileAt(tile + new Point(-1, 1))) {
-                    direction |= CardinalAndIntermediateDirections.NorthWest;
+                    direction |= IntermediateDirections.NorthWest;
                 }
 
                 if (this.HasActiveTileAt(tile - new Point(1, 1))) {
-                    direction |= CardinalAndIntermediateDirections.SouthWest;
+                    direction |= IntermediateDirections.SouthWest;
                 }
 
                 if (this.HasActiveTileAt(tile - new Point(-1, 1))) {
-                    direction |= CardinalAndIntermediateDirections.SouthEast;
+                    direction |= IntermediateDirections.SouthEast;
                 }
 
                 index = (byte)direction;
