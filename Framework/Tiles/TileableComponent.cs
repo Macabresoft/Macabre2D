@@ -3,20 +3,14 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A tileable component. Contains a <see cref="TileGrid"/> and implements <see cref="ITileable"/>.
     /// </summary>
     public abstract class TileableComponent : BaseComponent, ITileable {
-
-        [DataMember]
-        private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
-
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
-        private readonly ResettableLazy<Vector2> _tileScale;
         private readonly ResettableLazy<TileGrid> _worldGrid;
         private TileGrid _grid = new TileGrid(Vector2.One);
         private Point _maximumTile;
@@ -25,17 +19,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent"/> class.
         /// </summary>
-        public TileableComponent() {
+        public TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._tileScale = new ResettableLazy<Vector2>(this.CreateTileScale);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
-        }
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Point> ActiveTiles {
-            get {
-                return this._activeTiles;
-            }
         }
 
         /// <inheritdoc/>
@@ -67,19 +53,9 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the tile scale.
-        /// </summary>
-        /// <value>The tile scale.</value>
-        protected Vector2 TileScale {
-            get {
-                return this._tileScale.Value;
-            }
-        }
-
         /// <inheritdoc/>
         public bool AddTile(Point tile) {
-            var result = this._activeTiles.Add(tile);
+            var result = this.TryAddTile(tile);
             if (result) {
                 if (tile.X > this._maximumTile.X) {
                     this._maximumTile = new Point(tile.X, this._maximumTile.Y);
@@ -102,8 +78,8 @@
         /// <summary>
         /// Clears all active tiles.
         /// </summary>
-        public void ClearActiveTiles() {
-            this._activeTiles.Clear();
+        public void ClearTiles() {
+            this.ClearTiles();
             this._minimumTile = Point.Zero;
             this._maximumTile = Point.Zero;
             this.ResetBoundingArea();
@@ -125,9 +101,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasActiveTileAt(Point tilePosition) {
-            return this._activeTiles.Contains(tilePosition);
-        }
+        public abstract bool HasActiveTileAt(Point tilePosition);
 
         /// <inheritdoc/>
         public bool HasActiveTileAt(Vector2 worldPosition) {
@@ -137,7 +111,7 @@
 
         /// <inheritdoc/>
         public bool RemoveTile(Point tile) {
-            var result = this._activeTiles.Remove(tile);
+            var result = this.TryRemoveTile(tile);
             if (result) {
                 this._tilePositionToBoundingArea.Remove(tile);
 
@@ -154,12 +128,21 @@
         }
 
         /// <summary>
-        /// Creates the tile scale.
+        /// Clears the active tiles.
         /// </summary>
-        /// <returns>The tile scale.</returns>
-        protected virtual Vector2 CreateTileScale() {
-            return this.WorldGrid.TileSize;
-        }
+        protected abstract void ClearActiveTiles();
+
+        /// <summary>
+        /// Gets the maximum tile.
+        /// </summary>
+        /// <returns>The maximum tile.</returns>
+        protected abstract Point GetMaximumTile();
+
+        /// <summary>
+        /// Gets the minimum tile.
+        /// </summary>
+        /// <returns>The minimum tile.</returns>
+        protected abstract Point GetMinimumTile();
 
         /// <summary>
         /// Gets the bounding area for the tile at the specified position.
@@ -172,13 +155,32 @@
                 var tilePosition = worldGrid.GetTilePosition(tile);
                 boundingArea = new BoundingArea(tilePosition, tilePosition + worldGrid.TileSize);
                 this._tilePositionToBoundingArea.Add(tile, boundingArea);
-
-                // We need to pass TileScale into the draw manually. If we just use BoundingArea
-                // here, we can go with the minimum value and bypass the need for transforms at all.
             }
 
             return boundingArea;
         }
+
+        /// <summary>
+        /// Gets the tile scale for the specified sprite.
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        /// <returns></returns>
+        protected Vector2 GetTileScale(Sprite sprite) {
+            var result = this.WorldGrid.TileSize;
+            if (sprite != null && sprite.Size.X != 0 && sprite.Size.Y != 0) {
+                var spriteWidth = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
+                var spriteHeight = sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                result = new Vector2(this.WorldGrid.TileSize.X / spriteWidth, this.WorldGrid.TileSize.Y / spriteHeight);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Determines whether this has active tiles.
+        /// </summary>
+        /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
+        protected abstract bool HasActiveTiles();
 
         /// <inheritdoc/>
         protected override void Initialize() {
@@ -193,7 +195,6 @@
         /// </summary>
         protected virtual void OnGridChanged() {
             this._worldGrid.Reset();
-            this.ResetTileScale();
             this.ResetBoundingArea();
         }
 
@@ -206,15 +207,22 @@
         }
 
         /// <summary>
-        /// Resets the tile scale.
+        /// Tries to add the specified tile.
         /// </summary>
-        protected void ResetTileScale() {
-            this._tileScale.Reset();
-        }
+        /// <param name="tile">The tile.</param>
+        /// <returns>A value indicating whether or not the tile was added.</returns>
+        protected abstract bool TryAddTile(Point tile);
+
+        /// <summary>
+        /// Tries to remove the specified tile.
+        /// </summary>
+        /// <param name="tile">The tile.</param>
+        /// <returns>A value indicating whether or not the tile was removed.</returns>
+        protected abstract bool TryRemoveTile(Point tile);
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this._activeTiles.Any()) {
+            if (this.HasActiveTiles()) {
                 var worldGrid = this.WorldGrid;
                 result = new BoundingArea(worldGrid.GetTilePosition(this._minimumTile), worldGrid.GetTilePosition(this._maximumTile + new Point(1, 1)));
             }
@@ -239,8 +247,8 @@
         }
 
         private void ResetMaximumTile() {
-            if (this._activeTiles.Any()) {
-                this._maximumTile = new Point(this._activeTiles.Select(t => t.X).Max(), this._activeTiles.Select(t => t.Y).Max());
+            if (this.HasActiveTiles()) {
+                this._maximumTile = this.GetMaximumTile();
             }
             else {
                 this._maximumTile = Point.Zero;
@@ -248,8 +256,8 @@
         }
 
         private void ResetMinimumTile() {
-            if (this._activeTiles.Any()) {
-                this._minimumTile = new Point(this._activeTiles.Select(t => t.X).Min(), this._activeTiles.Select(t => t.Y).Min());
+            if (this.HasActiveTiles()) {
+                this._minimumTile = this.GetMinimumTile();
             }
             else {
                 this._minimumTile = Point.Zero;
@@ -259,7 +267,6 @@
         private void Self_TransformChanged(object sender, EventArgs e) {
             this._tilePositionToBoundingArea.Clear();
             this._worldGrid.Reset();
-            this.ResetTileScale();
             this.ResetBoundingArea();
         }
     }

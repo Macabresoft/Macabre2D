@@ -74,7 +74,7 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
-    <Compile Include="Tiles\AutoTileSetSpriteChangedEventArgs.cs" />
+    <Compile Include="Tiles\AutoTileMapComponent.cs" />
     <Compile Include="Tiles\BaseAutoTileSet.cs" />
     <Compile Include="Tiles\EightWayAutoTileSet.cs" />
     <Compile Include="Tiles\FourWayAutoTileSet.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="Interfaces\ITranslateable.cs" />
     <Compile Include="Interfaces\IWorldTransformable.cs" />
     <Compile Include="Rendering\PixelOffset.cs" />
-    <Compile Include="Rendering\BinaryTileMapComponent.cs" />
+    <Compile Include="Tiles\BinaryTileMapComponent.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />
     <Compile Include="Content\AssetManagerProcessor.cs" />
     <Compile Include="Content\AssetManagerReader.cs" />
@@ -132,7 +132,6 @@
     <Compile Include="Interfaces\IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Interfaces\ITileable.cs" />
-    <Compile Include="Tiles\TileSet.cs" />
     <Compile Include="Utility\ResettableLazy.cs" />
     <Compile Include="Transformation\RotatableTransform.cs" />
     <Compile Include="Transformation\Rotation.cs" />

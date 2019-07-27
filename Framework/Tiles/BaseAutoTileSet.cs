@@ -19,10 +19,13 @@
         }
 
         /// <inheritdoc/>
-        public event EventHandler<AutoTileSetSpriteChangedEventArgs> SpriteChanged;
+        public event EventHandler<byte> SpriteChanged;
 
         /// <inheritdoc/>
         public abstract byte Size { get; }
+
+        /// <inheritdoc/>
+        public abstract bool UseIntermediateDirections { get; }
 
         /// <inheritdoc/>
         public Sprite GetSprite(byte index) {
@@ -36,10 +39,15 @@
         }
 
         /// <inheritdoc/>
+        public void LoadContent() {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         public void SetSprite(Sprite sprite, byte index) {
             if (index < this.Size) {
                 this._sprites[index] = sprite;
-                this.SpriteChanged.SafeInvoke(this, new AutoTileSetSpriteChangedEventArgs(index, sprite));
+                this.SpriteChanged.SafeInvoke(this, index);
             }
         }
     }

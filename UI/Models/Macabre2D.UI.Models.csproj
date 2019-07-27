@@ -109,7 +109,6 @@
     <Compile Include="SaveDiscardCancelResult.cs" />
     <Compile Include="SceneAsset.cs" />
     <Compile Include="SpriteAnimationAsset.cs" />
-    <Compile Include="TileSetAsset.cs" />
     <Compile Include="UndoCommand.cs" />
     <Compile Include="Validation\CustomValidationResult.cs" />
     <Compile Include="Validation\FileNameValidationAttribute.cs" />

@@ -796,8 +796,8 @@
 
         private void HandleMatrixOrTransformChanged() {
             this._transformMatrix.Reset();
-            this.TransformChanged.SafeInvoke(this);
             this._isTransformUpToDate = false;
+            this.TransformChanged.SafeInvoke(this);
         }
 
         private void Parent_EnabledChanged(object sender, EventArgs e) {

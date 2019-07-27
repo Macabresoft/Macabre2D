@@ -10,12 +10,6 @@
     public interface ITileable : IBoundable {
 
         /// <summary>
-        /// Gets the active tiles.
-        /// </summary>
-        /// <value>The active tiles.</value>
-        IReadOnlyCollection<Point> ActiveTiles { get; }
-
-        /// <summary>
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
