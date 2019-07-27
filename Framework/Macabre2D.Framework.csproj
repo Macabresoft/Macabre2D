@@ -78,7 +78,6 @@
     <Compile Include="Tiles\BaseAutoTileSet.cs" />
     <Compile Include="Tiles\EightWayAutoTileSet.cs" />
     <Compile Include="Tiles\FourWayAutoTileSet.cs" />
-    <Compile Include="Tiles\IAutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
     <Compile Include="Interfaces\IHierarchicalEngineObject.cs" />

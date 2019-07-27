@@ -9,7 +9,7 @@
     /// <summary>
     /// A component which maps <see cref="IAutoTileSet"/> onto a <see cref="TileGrid"/>.
     /// </summary>
-    public sealed class AutoTileMapComponent : TileableComponent {
+    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<BaseAutoTileSet>, IAssetComponent<Sprite> {
 
         [DataMember]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
@@ -17,7 +17,7 @@
         private Vector2[] _spriteScales = new Vector2[0];
 
         [DataMember]
-        private IAutoTileSet _tileSet;
+        private BaseAutoTileSet _tileSet;
 
         /// <summary>
         /// Represents four directions from a single tile.
@@ -67,7 +67,7 @@
         /// Gets or sets the tile set.
         /// </summary>
         /// <value>The tile set.</value>
-        public IAutoTileSet TileSet {
+        public BaseAutoTileSet TileSet {
             get {
                 return this._tileSet;
             }
@@ -93,8 +93,23 @@
         }
 
         /// <inheritdoc/>
+        IEnumerable<Guid> IAssetComponent<BaseAutoTileSet>.GetOwnedAssetIds() {
+            return this.TileSet == null ? new Guid[0] : new[] { this.TileSet.Id };
+        }
+
+        /// <inheritdoc/>
+        IEnumerable<Guid> IAssetComponent<Sprite>.GetOwnedAssetIds() {
+            return this.TileSet == null ? Enumerable.Empty<Guid>() : this.TileSet.GetSpriteIds();
+        }
+
+        /// <inheritdoc/>
         public override bool HasActiveTileAt(Point tilePosition) {
             return this._activeTileToIndex.ContainsKey(tilePosition);
+        }
+
+        /// <inheritdoc/>
+        public bool HasAsset(Guid id) {
+            return this.TileSet?.Id == id || this.TileSet?.HasSprite(id) == true;
         }
 
         /// <inheritdoc/>
@@ -106,6 +121,60 @@
             }
 
             base.LoadContent();
+        }
+
+        /// <inheritdoc/>
+        void IAssetComponent<BaseAutoTileSet>.RefreshAsset(BaseAutoTileSet newInstance) {
+            if (newInstance != null && this.TileSet?.Id == newInstance.Id) {
+                this.TileSet = newInstance;
+            }
+        }
+
+        /// <inheritdoc/>
+        void IAssetComponent<Sprite>.RefreshAsset(Sprite newInstance) {
+            this.TileSet?.RefreshSprite(newInstance);
+        }
+
+        /// <inheritdoc/>
+        public bool RemoveAsset(Guid id) {
+            var result = false;
+            if (this.TileSet != null) {
+                if (this.TileSet.Id == id) {
+                    this.TileSet = null;
+                    result = true;
+                }
+                else {
+                    result = this.TileSet.RemoveSprite(id);
+                }
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        bool IAssetComponent<BaseAutoTileSet>.TryGetAsset(Guid id, out BaseAutoTileSet asset) {
+            var result = false;
+            if (this.TileSet?.Id == id) {
+                asset = this.TileSet;
+                result = true;
+            }
+            else {
+                asset = null;
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
+            if (this.TileSet != null) {
+                this.TileSet.TryGetSprite(id, out asset);
+            }
+            else {
+                asset = null;
+            }
+
+            return asset != null;
         }
 
         /// <inheritdoc/>
