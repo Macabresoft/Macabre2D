@@ -184,6 +184,9 @@
             else if (filePath.ToUpper().EndsWith(FileHelper.SpriteFontExtension.ToUpper())) {
                 result = this.CreateAssetFromMetadata<FontAsset>(filePath, fileName, serializer);
             }
+            else if (filePath.ToUpper().EndsWith(FileHelper.AutoTileSetExtension.ToUpper())) {
+                result = this.CreateAssetFromMetadata<AutoTileSetAsset>(filePath, fileName, serializer);
+            }
             else if (!FileHelper.IsMetadataFile(fileName)) {
                 result = new Asset(fileName);
             }

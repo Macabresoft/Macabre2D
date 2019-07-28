@@ -12,10 +12,10 @@
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
-        private bool _isLoaded = false;
-
         [DataMember]
-        private Sprite[] _sprites = new Sprite[AutoTileSet.CardinalSize];
+        private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
+
+        private bool _isLoaded = false;
 
         [DataMember]
         private bool _useIntermediateDirections = false;
@@ -37,7 +37,7 @@
         /// <value>The size.</value>
         public int Size {
             get {
-                return this._sprites.Length;
+                return this.UseIntermediateDirections ? AutoTileSet.IntermediateSize : AutoTileSet.CardinalSize;
             }
         }
 
@@ -57,7 +57,7 @@
             set {
                 if (this._useIntermediateDirections != value) {
                     this._useIntermediateDirections = value;
-                    this.ResetSprites();
+                    this._indexToSprites.Clear();
                 }
             }
         }
@@ -68,13 +68,8 @@
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
         public Sprite GetSprite(byte index) {
-            Sprite result = null;
-
-            if (index < this._sprites.Length) {
-                result = this._sprites[index];
-            }
-
-            return result;
+            this._indexToSprites.TryGetValue(index, out var sprite);
+            return sprite;
         }
 
         /// <summary>
@@ -83,28 +78,33 @@
         /// <param name="sprite">The sprite.</param>
         /// <param name="index">The index.</param>
         public void SetSprite(Sprite sprite, byte index) {
-            if (index < this._sprites.Length) {
-                this._sprites[index] = sprite;
-                this.SpriteChanged.SafeInvoke(this, index);
+            if (index < this.Size) {
+                if (sprite != null) {
+                    this._indexToSprites[index] = sprite;
+                    this.SpriteChanged.SafeInvoke(this, index);
 
-                if (this._isLoaded) {
-                    sprite?.LoadContent();
+                    if (this._isLoaded) {
+                        sprite?.LoadContent();
+                    }
+                }
+                else {
+                    this._indexToSprites.Remove(index);
                 }
             }
         }
 
         internal IEnumerable<Guid> GetSpriteIds() {
-            return this._sprites.Where(x => x != null).Select(x => x.Id);
+            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id);
         }
 
         internal bool HasSprite(Guid spriteId) {
-            return this._sprites.Any(x => x?.Id == spriteId);
+            return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
         }
 
         internal void LoadContent() {
             if (!this._isLoaded) {
                 try {
-                    foreach (var sprite in this._sprites) {
+                    foreach (var sprite in this._indexToSprites.Values) {
                         sprite?.LoadContent();
                     }
                 }
@@ -116,33 +116,28 @@
 
         internal void RefreshSprite(Sprite sprite) {
             if (sprite != null) {
-                for (byte i = 0; i < this._sprites.Length; i++) {
-                    if (this._sprites[i] is Sprite oldSprite && oldSprite.Id == sprite.Id) {
-                        this._sprites[i] = sprite;
-                    }
+                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => (x.Key, x.Value)).ToList();
+                foreach (var indexToSprite in indexToSpritesForRefresh) {
+                    this._indexToSprites[indexToSprite.Key] = indexToSprite.Value;
                 }
             }
         }
 
         internal bool RemoveSprite(Guid spriteId) {
             var result = false;
-            for (byte i = 0; i < this._sprites.Length; i++) {
-                if (this._sprites[i]?.Id == spriteId) {
-                    this.SetSprite(null, i);
-                    result = true;
-                }
+            var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
+
+            foreach (var index in indexes) {
+                this.SetSprite(null, index);
+                result = true;
             }
 
             return result;
         }
 
         internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
-            sprite = this._sprites.FirstOrDefault(x => x?.Id == spriteId);
+            sprite = this._indexToSprites.Values.FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
-        }
-
-        private void ResetSprites() {
-            this._sprites = this.UseIntermediateDirections ? new Sprite[AutoTileSet.IntermediateSize] : new Sprite[AutoTileSet.CardinalSize];
         }
     }
 }

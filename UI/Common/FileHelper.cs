@@ -6,35 +6,21 @@ namespace Macabre2D.UI.Common {
 
     public static class FileHelper {
         public const string AssetManagerExtension = ".m2dam";
-
+        public const string AutoTileSetExtension = ".m2dautotile";
         public const string BackupExtension = ".backup";
-
         public const string ContentExtension = ".mgcb";
-
         public const string GameSettingsExtension = ".m2dgs";
-
         public const string MetaDataExtension = ".m2dmetadata";
-
         public const string MonoGameFrameworkDLL = "MonoGame.Framework.dll";
-
         public const string ProjectExtension = ".m2dproj";
-
         public const string SceneExtension = ".m2dscene";
-
         public const string SolutionExtension = ".sln";
-
         public const string SpriteAnimationExtension = ".m2dspranim";
-
         public const string SpriteFontExtension = ".spritefont";
-
         public const string TileSetExtension = ".m2dtileset";
-
         public static readonly string DefaultProjectPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Macabre2D", "Projects");
-
         public static readonly string ProjectFilter = $"Project files (*{ProjectExtension})|*{ProjectExtension}|All Files (*.*)|*.*";
-
         public static string[] AudioExtensions = { ".mp3", ".wav", ".wma" };
-
         public static string[] ImageExtensions = { ".png", ".jpg", ".gif" };
 
         public static void CopyDirectory(DirectoryInfo source, DirectoryInfo target) {

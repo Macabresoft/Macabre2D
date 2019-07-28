@@ -24,6 +24,15 @@
             this.RaiseEvents();
         }
 
+        public void Replace(T item, int index) {
+            if (index < this.Items.Count) {
+                var originalItem = this.Items[index];
+                this.Items.RemoveAt(index);
+                this.Items.Insert(index, item);
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, originalItem));
+            }
+        }
+
         public void Reset(IEnumerable<T> items) {
             this.Items.Clear();
             this.AddRange(items);
