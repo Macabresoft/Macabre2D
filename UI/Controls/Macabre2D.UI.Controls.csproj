@@ -156,6 +156,9 @@
     <Compile Include="AssetEditorControl.xaml.cs">
       <DependentUpon>AssetEditorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AssetEditors\AutoTileSetAssetEditor.xaml.cs">
+      <DependentUpon>AutoTileSetAssetEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AssetEditors\SpriteWrapperEditor.xaml.cs">
       <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
     </Compile>
@@ -275,6 +278,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AssetEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AssetEditors\AutoTileSetAssetEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

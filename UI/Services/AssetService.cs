@@ -84,6 +84,11 @@
                     Asset = fontAsset
                 };
             }
+            else if (asset is AutoTileSetAsset autoTileSetAsset) {
+                editor = new AutoTileSetAssetEditor {
+                    Asset = autoTileSetAsset
+                };
+            }
 
             return editor;
         }

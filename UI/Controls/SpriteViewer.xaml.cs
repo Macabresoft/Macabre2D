@@ -7,8 +7,14 @@
 
     public partial class SpriteViewer : UserControl {
 
+        public static readonly DependencyProperty ShowSpriteInfoProperty = DependencyProperty.Register(
+            nameof(ShowSpriteInfo),
+            typeof(bool),
+            typeof(SpriteViewer),
+            new PropertyMetadata(true));
+
         public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
-            nameof(Size),
+                    nameof(Size),
             typeof(int),
             typeof(SpriteViewer),
             new PropertyMetadata(128));
@@ -20,12 +26,17 @@
             new PropertyMetadata(null, new PropertyChangedCallback(OnSpriteChanged)));
 
         public SpriteViewer() {
-            InitializeComponent();
+            this.InitializeComponent();
+        }
+
+        public bool ShowSpriteInfo {
+            get { return (bool)this.GetValue(ShowSpriteInfoProperty); }
+            set { this.SetValue(ShowSpriteInfoProperty, value); }
         }
 
         public int Size {
-            get { return (int)GetValue(SizeProperty); }
-            set { SetValue(SizeProperty, value); }
+            get { return (int)this.GetValue(SizeProperty); }
+            set { this.SetValue(SizeProperty, value); }
         }
 
         public SpriteWrapper Sprite {

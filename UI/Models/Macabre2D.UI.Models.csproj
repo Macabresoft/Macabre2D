@@ -102,6 +102,7 @@
     <Compile Include="FrameworkWrappers\SpriteWrapper.cs" />
     <Compile Include="IHierarchical.cs" />
     <Compile Include="ImageAsset.cs" />
+    <Compile Include="IndexedWrapper.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="MetadataAsset.cs" />
     <Compile Include="ObservableVersion.cs" />

@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
     <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
         <converters:SpriteWrapperToCroppedBitmapConverter x:Key="_spriteWrapperToCroppedBitmapConverter" />
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=_spriteViewer}"
@@ -31,11 +32,13 @@
                    Margin="{StaticResource StandardMarginAll}"
                    Text="{Binding Sprite.Name}"
                    ToolTip="{Binding Sprite.Name}"
-                   TextWrapping="WrapWithOverflow" />
+                   TextWrapping="WrapWithOverflow"
+                   Visibility="{Binding ShowSpriteInfo, Converter={StaticResource _boolToVisibilityConverter}}" />
 
         <TextBlock Grid.Row="1"
                    Grid.Column="1"
-                   Margin="{StaticResource StandardMarginAll}">
+                   Margin="{StaticResource StandardMarginAll}"
+                   Visibility="{Binding ShowSpriteInfo, Converter={StaticResource _boolToVisibilityConverter}}">
             <TextBlock.Text>
                 <MultiBinding StringFormat="{}({0} x {1})">
                     <Binding Path="Sprite.Width" />
