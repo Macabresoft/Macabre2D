@@ -37,18 +37,19 @@
 
         private void ChooseSprite(IndexedWrapper<SpriteWrapper> indexedWrapper) {
             if (indexedWrapper != null) {
-                var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite);
-                var originalValue = indexedWrapper.WrappedObject;
-                var hasChanges = this._projectService.HasChanges;
-                var undoCommand = new UndoCommand(() => {
-                    indexedWrapper.WrappedObject = asset as SpriteWrapper;
-                    this._projectService.HasChanges = true;
-                }, () => {
-                    indexedWrapper.WrappedObject = originalValue;
-                    this._projectService.HasChanges = hasChanges;
-                });
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, out var asset)) {
+                    var originalValue = indexedWrapper.WrappedObject;
+                    var hasChanges = this._projectService.HasChanges;
+                    var undoCommand = new UndoCommand(() => {
+                        indexedWrapper.WrappedObject = asset as SpriteWrapper;
+                        this._projectService.HasChanges = true;
+                    }, () => {
+                        indexedWrapper.WrappedObject = originalValue;
+                        this._projectService.HasChanges = hasChanges;
+                    });
 
-                this._undoService.Do(undoCommand);
+                    this._undoService.Do(undoCommand);
+                }
             }
         }
 

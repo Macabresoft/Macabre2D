@@ -22,8 +22,7 @@
 
         public FontEditor() {
             this.SelectFontCommand = new RelayCommand(() => {
-                var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font);
-                if (asset is FontAsset fontAsset) {
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Font, AssetType.Font, out var asset) && asset is FontAsset fontAsset) {
                     this.Asset = fontAsset;
                     this.Value = fontAsset.SavableValue;
                 }

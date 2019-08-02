@@ -21,7 +21,7 @@
 
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
 
-        Asset ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask);
+        bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, out Asset asset);
 
         (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title);
 

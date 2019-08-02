@@ -22,8 +22,7 @@
 
         public SpriteAnimationEditor() {
             this.SelectSpriteAnimationCommand = new RelayCommand(() => {
-                var asset = this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation);
-                if (asset is SpriteAnimationAsset spriteAnimationAsset) {
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation, out var asset) && asset is SpriteAnimationAsset spriteAnimationAsset) {
                     this.Asset = spriteAnimationAsset;
                     this.Value = spriteAnimationAsset.SavableValue;
                 }

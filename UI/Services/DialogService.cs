@@ -156,19 +156,20 @@
             return null;
         }
 
-        public Asset ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask) {
-            Asset asset = null;
+        public bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, out Asset asset) {
+            asset = null;
             var window = this._container.Resolve<SelectAssetDialog>(
                 new DependencyOverride(typeof(Project), new InjectionParameter(project)),
                 new ParameterOverride("assetMask", new InjectionParameter(assetMask)),
                 new ParameterOverride("selectableAssetMask", new InjectionParameter(selectableAssetMask)));
 
-            var result = window.ShowDialog();
-            if (result.HasValue && result.Value && window.ViewModel.SelectedAsset is Asset selectedAsset) {
+            var dialogResult = window.ShowDialog();
+            var result = dialogResult.HasValue && dialogResult.Value;
+            if (result && window.ViewModel.SelectedAsset is Asset selectedAsset) {
                 asset = selectedAsset;
             }
 
-            return asset;
+            return result;
         }
 
         public (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title) {
