@@ -4,9 +4,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls">
     <Grid DataContext="{Binding ElementName=_autoTileSetAssetEditor}">
-        <ListBox SelectionMode="Single"
+        <ListBox x:Name="_indexedSpritesListBox"
+                 SelectionMode="Single"
                  ItemsSource="{Binding Asset.IndexedSprites}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ContextMenu>
+                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="_Select Sprite"
+                              Command="{Binding DataContext.SelectSpriteCommand}"
+                              CommandParameter="{Binding SelectedItem}" />
+                    <MenuItem Header="_Clear Sprite"
+                              Command="{Binding DataContext.ClearSpriteCommand}"
+                              CommandParameter="{Binding SelectedItem}" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />

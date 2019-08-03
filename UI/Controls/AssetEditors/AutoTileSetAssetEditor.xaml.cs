@@ -25,7 +25,8 @@
 
         public AutoTileSetAssetEditor() {
             this.InitializeComponent();
-            this.ChooseSpriteCommand = new RelayCommand<IndexedWrapper<SpriteWrapper>>(x => this.ChooseSprite(x), x => x != null);
+            this.SelectSpriteCommand = new RelayCommand<IndexedWrapper<SpriteWrapper>>(x => this.SelectSprite(x), x => x != null);
+            this.ClearSpriteCommand = new RelayCommand<IndexedWrapper<SpriteWrapper>>(x => this.SetSprite(x, null), x => x != null);
         }
 
         public AutoTileSetAsset Asset {
@@ -33,30 +34,36 @@
             set { this.SetValue(AssetProperty, value); }
         }
 
-        public RelayCommand<IndexedWrapper<SpriteWrapper>> ChooseSpriteCommand { get; }
+        public RelayCommand<IndexedWrapper<SpriteWrapper>> ClearSpriteCommand { get; }
 
-        private void ChooseSprite(IndexedWrapper<SpriteWrapper> indexedWrapper) {
+        public RelayCommand<IndexedWrapper<SpriteWrapper>> SelectSpriteCommand { get; }
+
+        private void ListBoxItem_MouseDoubleClick(object sender, RoutedEventArgs e) {
+            if (sender is ListBoxItem listBoxItem && listBoxItem.DataContext is IndexedWrapper<SpriteWrapper> indexedWrapper) {
+                this.SelectSprite(indexedWrapper);
+            }
+        }
+
+        private void SelectSprite(IndexedWrapper<SpriteWrapper> indexedWrapper) {
             if (indexedWrapper != null) {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, out var asset)) {
-                    var originalValue = indexedWrapper.WrappedObject;
-                    var hasChanges = this._projectService.HasChanges;
-                    var undoCommand = new UndoCommand(() => {
-                        indexedWrapper.WrappedObject = asset as SpriteWrapper;
-                        this._projectService.HasChanges = true;
-                    }, () => {
-                        indexedWrapper.WrappedObject = originalValue;
-                        this._projectService.HasChanges = hasChanges;
-                    });
-
-                    this._undoService.Do(undoCommand);
+                    this.SetSprite(indexedWrapper, asset as SpriteWrapper);
                 }
             }
         }
 
-        private void ListBoxItem_MouseDoubleClick(object sender, RoutedEventArgs e) {
-            if (sender is ListBoxItem listBoxItem && listBoxItem.DataContext is IndexedWrapper<SpriteWrapper> indexedWrapper) {
-                this.ChooseSprite(indexedWrapper);
-            }
+        private void SetSprite(IndexedWrapper<SpriteWrapper> indexedWrapper, SpriteWrapper newSprite) {
+            var originalValue = indexedWrapper.WrappedObject;
+            var hasChanges = this._projectService.HasChanges;
+            var undoCommand = new UndoCommand(() => {
+                indexedWrapper.WrappedObject = newSprite;
+                this._projectService.HasChanges = true;
+            }, () => {
+                indexedWrapper.WrappedObject = originalValue;
+                this._projectService.HasChanges = hasChanges;
+            });
+
+            this._undoService.Do(undoCommand);
         }
     }
 }
