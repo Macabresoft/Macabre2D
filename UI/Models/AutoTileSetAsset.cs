@@ -27,6 +27,19 @@
             }
         }
 
+        public bool UseIntermediateDirections {
+            get {
+                return this.SavableValue.UseIntermediateDirections;
+            }
+
+            set {
+                if (this.UseIntermediateDirections != value) {
+                    this.SavableValue.UseIntermediateDirections = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
         public override void Refresh(AssetManager assetManager) {
             base.Refresh(assetManager);
 
