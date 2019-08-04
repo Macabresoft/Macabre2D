@@ -123,6 +123,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Images\AutoTileSetCardinal\AutoTileSetCardinalDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Default\Styles\DataGridStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,6 +159,24 @@
       <Link>Configurations\DesktopGL\MonoGame.Framework.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AutoTileSetCardinal\0.png" />
+    <Resource Include="Images\AutoTileSetCardinal\1.png" />
+    <Resource Include="Images\AutoTileSetCardinal\10.png" />
+    <Resource Include="Images\AutoTileSetCardinal\11.png" />
+    <Resource Include="Images\AutoTileSetCardinal\12.png" />
+    <Resource Include="Images\AutoTileSetCardinal\13.png" />
+    <Resource Include="Images\AutoTileSetCardinal\14.png" />
+    <Resource Include="Images\AutoTileSetCardinal\15.png" />
+    <Resource Include="Images\AutoTileSetCardinal\2.png" />
+    <Resource Include="Images\AutoTileSetCardinal\3.png" />
+    <Resource Include="Images\AutoTileSetCardinal\4.png" />
+    <Resource Include="Images\AutoTileSetCardinal\5.png" />
+    <Resource Include="Images\AutoTileSetCardinal\6.png" />
+    <Resource Include="Images\AutoTileSetCardinal\7.png" />
+    <Resource Include="Images\AutoTileSetCardinal\8.png" />
+    <Resource Include="Images\AutoTileSetCardinal\9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
