@@ -15,12 +15,12 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.IconPacks.Material;component/Themes/PackIconMaterial.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Icons.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Images/AutoTileSetCardinal/AutoTileSetCardinalDictionary.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/Margins.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/ImplicitStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/DataGridStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/TabItemStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/WindowStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Canvas/AutoTileCardinalCanvasDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

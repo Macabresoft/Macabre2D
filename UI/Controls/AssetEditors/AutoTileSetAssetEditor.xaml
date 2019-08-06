@@ -5,7 +5,8 @@
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
     <UserControl.Resources>
-        <converters:AutoTileToImageConverter x:Key="_autoTileToImageConverter" />
+        <converters:AutoTileCardinalIndexToCanvasConverter x:Key="_autoTileCardinalIndexToCanvasConverter" />
+        <converters:InverseNullToVisibilityConverter x:Key="_inverseNullToVisibility" />
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=_autoTileSetAssetEditor}">
         <ListBox x:Name="_indexedSpritesListBox"
@@ -31,24 +32,27 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Image Width="64"
-                           Height="64"
-                           Stretch="Uniform">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource _autoTileToImageConverter}">
-                                <Binding Path="WrappedObject" />
-                                <Binding Path="Index" />
-                                <Binding ElementName="_autoTileSetAssetEditor"
-                                         Path="Asset.UseIntermediateDirections" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
+                    <Grid Width="64"
+                          Height="64">
+                        <ContentControl Background="Transparent"
+                                        Content="{Binding Index, Converter={StaticResource _autoTileCardinalIndexToCanvasConverter}}"
+                                        Margin="0"
+                                        Visibility="{Binding WrappedObject, Converter={StaticResource _inverseNullToVisibility}}" />
+                        <controls:SpriteViewer Margin="0"
+                                               Size="64"
+                                               ShowSpriteInfo="False"
+                                               Sprite="{Binding WrappedObject}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                    <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>

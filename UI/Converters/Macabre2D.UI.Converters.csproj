@@ -117,7 +117,7 @@
     <Compile Include="ComponentWrapperEditingStyleToVisibilityConverter.cs" />
     <Compile Include="ContentIdToContentPathConverter.cs" />
     <Compile Include="EqualityToBoolConverter.cs" />
-    <Compile Include="AutoTileToImageConverter.cs" />
+    <Compile Include="AutoTileCardinalIndexToCanvasConverter.cs" />
     <Compile Include="InverseMultiBoolToVisibilityConverter.cs" />
     <Compile Include="MultiBoolToVisibilityConverter.cs" />
     <Compile Include="EnumerableToVisibilityConverter.cs" />
