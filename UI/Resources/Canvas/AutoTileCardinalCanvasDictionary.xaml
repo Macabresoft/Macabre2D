@@ -266,7 +266,7 @@
             Style="{StaticResource AutoTileCanvasStyle}">
         <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Canvas}}}"
               Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Canvas}}}">
-            <Label Content="0"
+            <Label Content="9"
                    Style="{StaticResource AutoTileLabelStyle}" />
         </Grid>
 
