@@ -34,10 +34,9 @@
                 <DataTemplate>
                     <Grid Width="64"
                           Height="64">
-                        <ContentControl Background="Transparent"
-                                        Content="{Binding Index, Converter={StaticResource _autoTileCardinalIndexToCanvasConverter}}"
+                        <ContentControl Content="{Binding Index, Converter={StaticResource _autoTileCardinalIndexToCanvasConverter}}"
                                         Margin="0"
-                                        Visibility="{Binding WrappedObject, Converter={StaticResource _inverseNullToVisibility}}" />
+                                        Visibility="{Binding WrappedObject.Sprite, Converter={StaticResource _inverseNullToVisibility}}" />
                         <controls:SpriteViewer Margin="0"
                                                Size="64"
                                                ShowSpriteInfo="False"

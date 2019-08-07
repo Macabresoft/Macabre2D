@@ -4,6 +4,7 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
 
     public sealed class AutoTileSetAsset : AddableAsset<AutoTileSet> {
@@ -66,7 +67,7 @@
             this._indexedSprites.Reset(spritesToAdd);
         }
 
-        private void IndexedWrapper_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void IndexedWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.SavableValue != null && sender is IndexedWrapper<SpriteWrapper> indexedWrapper && e.PropertyName == nameof(IndexedWrapper<SpriteWrapper>.WrappedObject)) {
                 this.SavableValue.SetSprite(indexedWrapper.WrappedObject?.Sprite, (byte)indexedWrapper.Index);
                 this.RaisePropertyChanged(nameof(this.IndexedSprites));
