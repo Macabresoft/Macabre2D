@@ -14,7 +14,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.IconPacks.Material;component/Themes/PackIconMaterial.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/Margins.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/ImplicitStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Macabre2D.UI.Resources;component/Themes/Default/Styles/DataGridStyles.xaml" />
