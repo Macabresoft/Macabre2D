@@ -17,6 +17,8 @@
                         break;
 
                     case AssetType.Image:
+                    case AssetType.SpriteAnimation:
+                    case AssetType.AutoTileSet:
                         kind = PackIconMaterialKind.FileImage;
                         break;
 
@@ -34,10 +36,6 @@
 
                     case AssetType.Sprite:
                         kind = PackIconMaterialKind.ImageOutline;
-                        break;
-
-                    case AssetType.SpriteAnimation:
-                        kind = PackIconMaterialKind.FileVideo;
                         break;
 
                     case AssetType.Font:
