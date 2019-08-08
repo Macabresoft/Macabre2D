@@ -9,7 +9,7 @@
     /// <summary>
     /// A component which maps <see cref="IAutoTileSet"/> onto a <see cref="TileGrid"/>.
     /// </summary>
-    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
+    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
 
         [DataMember]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
@@ -64,6 +64,13 @@
         }
 
         /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>The color.</value>
+        [DataMember]
+        public Color Color { get; set; } = Color.White;
+
+        /// <summary>
         /// Gets or sets the tile set.
         /// </summary>
         /// <value>The tile set.</value>
@@ -86,6 +93,20 @@
 
                         if (originalValue != null) {
                             originalValue.SpriteChanged -= this.TileSet_SpriteChanged;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+            if (this.TileSet != null) {
+                foreach (var activeTileToIndex in this._activeTileToIndex) {
+                    var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
+                    if (boundingArea.Overlaps(viewBoundingArea)) {
+                        if (this.TileSet.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
+                            MacabreGame.Instance.SpriteBatch.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
                         }
                     }
                 }
@@ -211,7 +232,14 @@
             var result = false;
             if (!this._activeTileToIndex.ContainsKey(tile)) {
                 result = true;
+
                 this._activeTileToIndex[tile] = this.GetIndex(tile);
+
+                for (var x = -1; x <= 1; x++) {
+                    for (var y = -1; y <= 1; y++) {
+                        this.ReevaluateIndex(tile + new Point(x, y));
+                    }
+                }
             }
 
             return result;
@@ -284,9 +312,15 @@
             return index;
         }
 
+        private void ReevaluateIndex(Point tile) {
+            if (this._activeTileToIndex.ContainsKey(tile)) {
+                this._activeTileToIndex[tile] = this.GetIndex(tile);
+            }
+        }
+
         private void ReevaluateIndexes() {
             foreach (var activeTile in this._activeTileToIndex.Keys) {
-                this._activeTileToIndex[activeTile] = this.GetIndex(activeTile);
+                this.ReevaluateIndex(activeTile);
             }
         }
 

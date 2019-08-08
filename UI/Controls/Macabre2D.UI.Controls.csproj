@@ -180,6 +180,9 @@
     <Compile Include="ValueEditors\AudioClipEditor.xaml.cs">
       <DependentUpon>AudioClipEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\AutoTileSetEditor.xaml.cs">
+      <DependentUpon>AutoTileSetEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\BoolEditor.xaml.cs">
       <DependentUpon>BoolEditor.xaml</DependentUpon>
     </Compile>
@@ -298,6 +301,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ValueEditors\AudioClipEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ValueEditors\AutoTileSetEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

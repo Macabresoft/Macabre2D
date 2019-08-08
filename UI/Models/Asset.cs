@@ -70,7 +70,9 @@
             }
 
             set {
-                this.Set(ref this._name, value);
+                if (this.Set(ref this._name, value)) {
+                    this.RaisePropertyChanged(nameof(this.NameWithoutExtension));
+                }
             }
         }
 
