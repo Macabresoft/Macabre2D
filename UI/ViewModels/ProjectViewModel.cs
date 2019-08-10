@@ -189,7 +189,7 @@
                     asset.Name = result.Name;
                 }
 
-                var selectedAsset = this.AssetService.SelectedAsset;
+                var selectedAsset = this.AssetService.SelectedAsset ?? this.ProjectService.CurrentProject.AssetFolder;
                 if (selectedAsset != null) {
                     var undoCommand = new UndoCommand(
                         () => {
@@ -228,7 +228,7 @@
             if (this.AssetService.SelectedAsset != null &&
                 this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.AssetService.SelectedAsset.Name}? This action cannot be undone.")) {
                 this.AssetService.SelectedAsset.Delete();
-                this.AssetService.SelectedAsset = null;
+                this.AssetService.SelectedAsset = this.ProjectService.CurrentProject.AssetFolder;
                 await this.ProjectService.SaveProject();
             }
         }
