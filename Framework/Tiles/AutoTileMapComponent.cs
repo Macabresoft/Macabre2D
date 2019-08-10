@@ -14,6 +14,7 @@
         [DataMember]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
 
+        private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
         private AutoTileSet _tileSet;
 
@@ -221,9 +222,18 @@
         protected override void Initialize() {
             base.Initialize();
 
+            this._previousWorldScale = this.WorldTransform.Scale;
+            this.TransformChanged += this.AutoTileMapComponent_TransformChanged;
+
             if (this.TileSet != null) {
                 this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
             }
+        }
+
+        /// <inheritdoc/>
+        protected override void OnGridChanged() {
+            base.OnGridChanged();
+            this.ResetSpriteScales();
         }
 
         /// <inheritdoc/>
@@ -247,6 +257,13 @@
             }
 
             return result;
+        }
+
+        private void AutoTileMapComponent_TransformChanged(object sender, EventArgs e) {
+            if (this.WorldTransform.Scale != this._previousWorldScale) {
+                this._previousWorldScale = this.WorldTransform.Scale;
+                this.ResetSpriteScales();
+            }
         }
 
         private byte GetIndex(Point tile) {
