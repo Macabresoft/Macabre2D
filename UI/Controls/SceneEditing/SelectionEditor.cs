@@ -85,7 +85,7 @@
         }
 
         public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
-            if (this._game.CurrentScene != null && this._game.CurrentCamera != null) {
+            if (this._game?.CurrentScene != null && this._game.CurrentCamera != null) {
                 var hadInteractions = false;
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 

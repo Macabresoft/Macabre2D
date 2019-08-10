@@ -15,8 +15,6 @@
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
 
         private Vector2[] _spriteScales = new Vector2[0];
-
-        [DataMember]
         private AutoTileSet _tileSet;
 
         /// <summary>
@@ -74,6 +72,7 @@
         /// Gets or sets the tile set.
         /// </summary>
         /// <value>The tile set.</value>
+        [DataMember]
         public AutoTileSet TileSet {
             get {
                 return this._tileSet;
@@ -319,7 +318,8 @@
         }
 
         private void ReevaluateIndexes() {
-            foreach (var activeTile in this._activeTileToIndex.Keys) {
+            var clonedActiveTiles = this._activeTileToIndex.Keys.ToList();
+            foreach (var activeTile in clonedActiveTiles) {
                 this.ReevaluateIndex(activeTile);
             }
         }

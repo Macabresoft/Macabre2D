@@ -74,6 +74,7 @@
             this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
             this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             this._jsonSerializer.TypeNameHandling = TypeNameHandling.Auto;
+            this._jsonSerializer.ContractResolver = new CustomContractResolver();
             this._jsonSerializer.Converters.Add(new JsonColorConverter());
         }
 

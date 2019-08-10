@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
+    <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Tiles\AutoTileMapComponent.cs" />
     <Compile Include="Tiles\AutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
