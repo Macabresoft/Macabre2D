@@ -233,12 +233,7 @@
                 result = true;
 
                 this._activeTileToIndex[tile] = this.GetIndex(tile);
-
-                for (var x = -1; x <= 1; x++) {
-                    for (var y = -1; y <= 1; y++) {
-                        this.ReevaluateIndex(tile + new Point(x, y));
-                    }
-                }
+                this.ReevaluateSurroundingIndexes(tile);
             }
 
             return result;
@@ -246,7 +241,12 @@
 
         /// <inheritdoc/>
         protected override bool TryRemoveTile(Point tile) {
-            return this._activeTileToIndex.Remove(tile);
+            var result = this._activeTileToIndex.Remove(tile);
+            if (result) {
+                this.ReevaluateSurroundingIndexes(tile);
+            }
+
+            return result;
         }
 
         private byte GetIndex(Point tile) {
@@ -321,6 +321,14 @@
             var clonedActiveTiles = this._activeTileToIndex.Keys.ToList();
             foreach (var activeTile in clonedActiveTiles) {
                 this.ReevaluateIndex(activeTile);
+            }
+        }
+
+        private void ReevaluateSurroundingIndexes(Point tile) {
+            for (var x = -1; x <= 1; x++) {
+                for (var y = -1; y <= 1; y++) {
+                    this.ReevaluateIndex(tile + new Point(x, y));
+                }
             }
         }
 
