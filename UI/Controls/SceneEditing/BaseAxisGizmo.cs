@@ -84,7 +84,7 @@
             var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
             Vector2 newPosition;
-            if (Math.Abs(slope) < 0.5f) {
+            if (Math.Abs(slope) <= 0.5f) {
                 if (slope == 0f) {
                     newPosition = new Vector2(moveToPosition.X, end.Y);
                 }
