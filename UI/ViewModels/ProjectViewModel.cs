@@ -201,6 +201,7 @@
                             }
 
                             asset.Save(this._serializer);
+                            asset.Refresh(this.ProjectService.CurrentProject.AssetManager);
                         }, () => {
                             asset.Parent.RemoveChild(asset);
                             asset.Delete();
