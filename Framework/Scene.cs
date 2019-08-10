@@ -348,11 +348,6 @@
         }
 
         /// <inheritdoc/>
-        public bool RemoveChild(BaseComponent component) {
-            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
-        }
-
-        /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
             if (this._modules.Remove(module)) {
                 this.ModuleRemoved.SafeInvoke(this, module);
@@ -484,6 +479,10 @@
 
                 MacabreGame.Instance.SpriteBatch.End();
             }
+        }
+
+        private bool RemoveChild(BaseComponent component) {
+            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
         }
 
         private void RemoveComponent(BaseComponent component) {

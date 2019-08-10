@@ -96,7 +96,7 @@
             else if (e.Action == NotifyCollectionChangedAction.Remove) {
                 foreach (var oldItem in e.OldItems.OfType<ComponentWrapper>()) {
                     oldItem.PropertyChanged -= this.ComponentPropertyChanged;
-                    this.Scene.RemoveChild(oldItem.Component);
+                    this.Scene.DestroyComponent(oldItem.Component);
                 }
             }
 

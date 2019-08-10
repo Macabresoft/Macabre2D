@@ -181,11 +181,6 @@
         }
 
         /// <inheritdoc/>
-        public bool RemoveChild(BaseComponent component) {
-            return default;
-        }
-
-        /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
             return;
         }

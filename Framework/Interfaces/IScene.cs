@@ -178,13 +178,6 @@
         void QueueEndOfFrameAction(Action<GameTime> action);
 
         /// <summary>
-        /// Removes the child component without destroying it.
-        /// </summary>
-        /// <param name="component">The component.</param>
-        /// <returns>A value indicating whether or not the component was removed.</returns>
-        bool RemoveChild(BaseComponent component);
-
-        /// <summary>
         /// Removes the module.
         /// </summary>
         /// <param name="module">The module.</param>
