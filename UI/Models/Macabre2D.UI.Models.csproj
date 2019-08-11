@@ -105,6 +105,7 @@
     <Compile Include="IndexedWrapper.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="MetadataAsset.cs" />
+    <Compile Include="NullAsset.cs" />
     <Compile Include="ObservableVersion.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -19,9 +19,10 @@
         </Grid.RowDefinitions>
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
                                Grid.Row="0"
-                               RootAsset="{Binding Project.AssetFolder}"
-                               AssetTypeMask="{Binding AssetMask}"
-                               SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                               RootAsset="{Binding Project.AssetFolder, Mode=OneWay}"
+                               AssetTypeMask="{Binding AssetMask, Mode=OneWay}"
+                               SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                               AllowNull="{Binding AllowNull, Mode=OneWay}" />
 
         <Grid Grid.Row="1">
             <controls:SpriteViewer Sprite="{Binding SelectedAsset}">

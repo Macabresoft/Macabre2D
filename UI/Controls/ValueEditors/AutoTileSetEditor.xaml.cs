@@ -16,9 +16,9 @@
 
         public AutoTileSetEditor() {
             this.SelectAutoTileSetCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.AutoTileSet, AssetType.AutoTileSet, out var asset) && asset is AutoTileSetAsset autoTileSetAsset) {
-                    this.Asset = autoTileSetAsset;
-                    this.Value = autoTileSetAsset.SavableValue;
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.AutoTileSet, AssetType.AutoTileSet, true, out var asset)) {
+                    this.Asset = asset as AutoTileSetAsset;
+                    this.Value = this.Asset?.SavableValue;
                 }
             }, true);
 

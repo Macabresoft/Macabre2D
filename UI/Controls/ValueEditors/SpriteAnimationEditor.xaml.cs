@@ -22,9 +22,9 @@
 
         public SpriteAnimationEditor() {
             this.SelectSpriteAnimationCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation, out var asset) && asset is SpriteAnimationAsset spriteAnimationAsset) {
-                    this.Asset = spriteAnimationAsset;
-                    this.Value = spriteAnimationAsset.SavableValue;
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.SpriteAnimation, AssetType.SpriteAnimation, true, out var asset)) {
+                    this.Asset = asset as SpriteAnimationAsset;
+                    this.Value = this.Asset?.SavableValue;
                 }
             }, true);
 

@@ -13,8 +13,8 @@
 
         public AudioClipEditor() {
             this.SelectAudioClipCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Audio, AssetType.Audio, out var asset) && asset is AudioAsset audioAsset) {
-                    this.Value = audioAsset.AudioClip;
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Audio, AssetType.Audio, true, out var asset)) {
+                    this.Value = asset is AudioAsset audioAsset ? audioAsset.AudioClip : null;
                 }
             }, true);
 

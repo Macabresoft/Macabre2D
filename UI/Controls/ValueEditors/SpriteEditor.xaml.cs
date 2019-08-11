@@ -31,8 +31,8 @@
 
         public SpriteEditor() {
             this.SelectSpriteCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, out var asset) && asset is SpriteWrapper spriteWrapper) {
-                    this.SpriteWrapper = spriteWrapper;
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, true, out var asset)) {
+                    this.SpriteWrapper = asset as SpriteWrapper;
                 }
             }, true);
 

@@ -20,8 +20,13 @@
               dragDrop:DragDrop.IsDragSource="{Binding IsEditable, ElementName=_assetBrowser}"
               dragDrop:DragDrop.IsDropTarget="{Binding IsEditable, ElementName=_assetBrowser}"
               dragDrop:DragDrop.DropHandler="{Binding ElementName=_assetBrowser}"
-              ItemsSource="{Binding RootAsset, ElementName=_assetBrowser, Converter={StaticResource _assetParentToCollectionConverter}}"
               SelectedItemChanged="TreeView_SelectedItemChanged">
+        <TreeView.ItemsSource>
+            <MultiBinding Converter="{StaticResource _assetParentToCollectionConverter}">
+                <Binding Path="RootAsset" ElementName="_assetBrowser" />
+                <Binding Path="AllowNull" ElementName="_assetBrowser" />
+            </MultiBinding>
+        </TreeView.ItemsSource>
         <TreeView.Resources>
             <ContextMenu x:Key="AssetContextMenu">
                 <MenuItem Header="Open in File Explorer" Click="OpenInFileExplorerMenuItem_Click" />

@@ -17,6 +17,12 @@
 
     public partial class AssetBrowser : UserControl, IDropTarget {
 
+        public static readonly DependencyProperty AllowNullProperty = DependencyProperty.Register(
+            nameof(AllowNull),
+            typeof(bool),
+            typeof(AssetBrowser),
+            new PropertyMetadata(false));
+
         public static readonly DependencyProperty AssetDoubleClickedCommandProperty = DependencyProperty.Register(
             nameof(AssetDoubleClickedCommand),
             typeof(ICommand),
@@ -55,6 +61,11 @@
             this.InitializeComponent();
 
             this.Loaded += this.AssetBrowser_Loaded;
+        }
+
+        public bool AllowNull {
+            get { return (bool)this.GetValue(AllowNullProperty); }
+            set { this.SetValue(AllowNullProperty, value); }
         }
 
         public ICommand AssetDoubleClickedCommand {

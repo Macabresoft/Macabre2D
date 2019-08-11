@@ -191,8 +191,8 @@
         }
 
         private void SelectSprite(SpriteAnimationStepWrapper step) {
-            if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, out var asset) && asset is SpriteWrapper spriteWrapper) {
-                step.Sprite = spriteWrapper;
+            if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, true, out var asset)) {
+                step.Sprite = asset as SpriteWrapper;
             }
         }
     }
