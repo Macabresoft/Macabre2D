@@ -165,7 +165,7 @@
 
         private void HandleSpriteWrapperRemoved(SpriteWrapper spriteWrapper) {
             if (spriteWrapper.Sprite != null) {
-                this.RemoveIdentifiableContentFromScenes(spriteWrapper.Sprite.ContentId);
+                this.RemoveIdentifiableContentFromScenes(spriteWrapper.Sprite.Id);
             }
         }
     }
