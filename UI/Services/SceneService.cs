@@ -184,7 +184,7 @@
             // into the objects. This is exactly what we should do with prefabs.
             var spriteComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Sprite>>();
             if (spriteComponents.Any()) {
-                var sprites = assetFolder.GetAssetsOfType<SpriteWrapper>().Select(x => x.Sprite).ToDictionary(x => x.Id);
+                var sprites = assetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).Select(x => x.Sprite).ToDictionary(x => x.Id);
 
                 foreach (var spriteComponent in spriteComponents) {
                     var ids = spriteComponent.GetOwnedAssetIds();

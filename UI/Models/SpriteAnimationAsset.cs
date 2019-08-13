@@ -48,7 +48,7 @@
 
             if (this.SavableValue.Steps.Any()) {
                 var root = this.GetRootFolder();
-                var sprites = root.GetAssetsOfType<SpriteWrapper>();
+                var sprites = root.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites);
 
                 foreach (var step in this.SavableValue.Steps) {
                     SpriteWrapper spriteWrapper = null;

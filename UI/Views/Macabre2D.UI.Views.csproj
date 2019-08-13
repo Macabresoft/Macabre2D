@@ -152,6 +152,9 @@
     <Compile Include="Dialogs\SelectAssetDialog.xaml.cs">
       <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SelectSpriteDialog.xaml.cs">
+      <DependentUpon>SelectSpriteDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\SelectTypeDialog.xaml.cs">
       <DependentUpon>SelectTypeDialog.xaml</DependentUpon>
     </Compile>
@@ -236,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\SelectAssetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelectSpriteDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

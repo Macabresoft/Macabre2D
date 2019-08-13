@@ -68,12 +68,6 @@
                     Asset = imageAsset
                 };
             }
-            else if (asset is SpriteWrapper spriteWrapper) {
-                editor = new SpriteWrapperEditor {
-                    ImageAsset = spriteWrapper.ImageAsset,
-                    SpriteWrapper = spriteWrapper
-                };
-            }
             else if (asset is SpriteAnimationAsset spriteAnimation) {
                 editor = new SpriteAnimationAssetEditor {
                     Asset = spriteAnimation

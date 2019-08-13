@@ -19,8 +19,6 @@
 
         Audio = 1 << 3,
 
-        Sprite = 1 << 4,
-
         SpriteAnimation = 1 << 5,
 
         Font = 1 << 6,

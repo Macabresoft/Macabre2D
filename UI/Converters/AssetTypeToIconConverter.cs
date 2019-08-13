@@ -34,10 +34,6 @@
                         kind = PackIconMaterialKind.File;
                         break;
 
-                    case AssetType.Sprite:
-                        kind = PackIconMaterialKind.ImageOutline;
-                        break;
-
                     case AssetType.Font:
                         kind = PackIconMaterialKind.FileDocument;
                         break;

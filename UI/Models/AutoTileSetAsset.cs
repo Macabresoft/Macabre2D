@@ -46,7 +46,7 @@
 
             var spritesToAdd = new IndexedWrapper<SpriteWrapper>[this.SavableValue.Size];
             var root = this.GetRootFolder();
-            var spriteWrappers = root.GetAssetsOfType<SpriteWrapper>().Where(x => x.Sprite != null).ToList();
+            var spriteWrappers = root.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).Where(x => x.Sprite != null).ToList();
 
             for (byte i = 0; i < spritesToAdd.Length; i++) {
                 var sprite = this.SavableValue.GetSprite(i);

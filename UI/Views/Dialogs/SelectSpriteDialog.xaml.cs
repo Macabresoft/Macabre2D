@@ -2,17 +2,17 @@
 
     using Macabre2D.UI.ViewModels.Dialogs;
 
-    public partial class SelectAssetDialog {
+    public partial class SelectSpriteDialog {
 
-        public SelectAssetDialog(SelectAssetViewModel viewModel) {
+        public SelectSpriteDialog(SelectSpriteViewModel viewModel) {
             this.ViewModel = viewModel;
             viewModel.Finished += this.ViewModel_Finished;
             this.InitializeComponent();
         }
 
-        public SelectAssetViewModel ViewModel {
+        public SelectSpriteViewModel ViewModel {
             get {
-                return this.DataContext as SelectAssetViewModel;
+                return this.DataContext as SelectSpriteViewModel;
             }
 
             set {

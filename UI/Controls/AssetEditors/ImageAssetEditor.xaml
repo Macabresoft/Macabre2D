@@ -29,7 +29,7 @@
 
         <ListBox Grid.Row="1"
                  Margin="{StaticResource DoubleMarginAll}"
-                 ItemsSource="{Binding Asset.Children}"
+                 ItemsSource="{Binding Asset.Sprites}"
                  SelectedItem="{Binding SelectedSprite}"
                  SelectionMode="Single">
             <ListBox.ItemTemplate>

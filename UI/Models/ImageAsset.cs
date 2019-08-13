@@ -6,18 +6,22 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
     using System.Windows.Media.Imaging;
 
-    public sealed class ImageAsset : MetadataAsset, IParent<SpriteWrapper> {
+    public sealed class ImageAsset : MetadataAsset {
 
         [DataMember]
         private readonly ObservableCollection<SpriteWrapper> _children = new ObservableCollection<SpriteWrapper>();
 
+        [DataMember]
         private int _height;
+
+        [DataMember]
         private int _width;
 
         public ImageAsset(string name) : base(name) {
@@ -27,12 +31,6 @@
         public ImageAsset() : this(string.Empty) {
         }
 
-        public IReadOnlyCollection<SpriteWrapper> Children {
-            get {
-                return this._children;
-            }
-        }
-
         public int Height {
             get {
                 return this._height;
@@ -40,6 +38,12 @@
 
             set {
                 this.Set(ref this._height, value);
+            }
+        }
+
+        public IReadOnlyCollection<SpriteWrapper> Sprites {
+            get {
+                return this._children;
             }
         }
 
@@ -61,12 +65,12 @@
 
         public bool AddChild(SpriteWrapper wrapper) {
             var result = false;
-            if (!this.Children.Contains(wrapper) && wrapper.ImageAsset == this) {
+            if (!this.Sprites.Contains(wrapper) && wrapper.ImageAsset == this) {
                 result = true;
                 wrapper.PropertyChanged += this.Child_PropertyChanged;
                 wrapper.Sprite.ContentId = this.Id;
                 this._children.Add(wrapper);
-                this.RaisePropertyChanged(nameof(this.Children));
+                this.RaisePropertyChanged(nameof(this.Sprites));
             }
 
             return result;
@@ -83,7 +87,7 @@
             var name = Path.GetFileNameWithoutExtension(this.Name);
             var counter = 0;
             var tempName = $"{name}-{counter.ToString("000")}";
-            while (this.Children.Any(x => x.Name == tempName)) {
+            while (this.Sprites.Any(x => x.Name == tempName)) {
                 counter++;
                 tempName = $"{name}-{counter.ToString("000")}";
             }
@@ -110,7 +114,9 @@
 
         public override void Delete() {
             foreach (var child in this._children) {
-                child.Delete();
+                if (child.Sprite != null) {
+                    this.RemoveIdentifiableContentFromScenes(child.Sprite.ContentId);
+                }
             }
 
             this._children.Clear();
@@ -134,28 +140,32 @@
             if (this._children.Remove(spriteWrapper)) {
                 result = true;
                 spriteWrapper.PropertyChanged -= this.Child_PropertyChanged;
-                // TODO: Make sure to investigate and remove all references to the destroyed sprite.
+                this.HandleSpriteWrapperRemoved(spriteWrapper);
             }
 
             return result;
         }
 
-        private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            this.RaisePropertyChanged(nameof(this.Children));
+        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.RaisePropertyChanged(nameof(this.Sprites));
         }
 
-        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+        private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var child in e.NewItems.Cast<SpriteWrapper>()) {
-                    child.ImageAsset = this;
                     child.PropertyChanged += this.Child_PropertyChanged;
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove) {
                 foreach (var child in e.OldItems.Cast<SpriteWrapper>()) {
-                    child.ImageAsset = null;
                     child.PropertyChanged -= this.Child_PropertyChanged;
                 }
+            }
+        }
+
+        private void HandleSpriteWrapperRemoved(SpriteWrapper spriteWrapper) {
+            if (spriteWrapper.Sprite != null) {
+                this.RemoveIdentifiableContentFromScenes(spriteWrapper.Sprite.ContentId);
             }
         }
     }

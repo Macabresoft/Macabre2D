@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Views.Dialogs;
     using Microsoft.Win32;
@@ -157,7 +158,6 @@
         }
 
         public bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, bool allowNull, out Asset asset) {
-            asset = null;
             var window = this._container.Resolve<SelectAssetDialog>(
                 new DependencyOverride(typeof(Project), new InjectionParameter(project)),
                 new ParameterOverride("assetMask", new InjectionParameter(assetMask)),
@@ -166,8 +166,27 @@
 
             var dialogResult = window.ShowDialog();
             var result = dialogResult.HasValue && dialogResult.Value;
+
             if (result) {
                 asset = window.ViewModel.SelectedAsset;
+            }
+            else {
+                asset = null;
+            }
+
+            return result;
+        }
+
+        public bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper) {
+            var window = this._container.Resolve<SelectSpriteDialog>();
+            var dialogResult = window.ShowDialog();
+            var result = dialogResult.HasValue && dialogResult.Value;
+
+            if (result) {
+                spriteWrapper = window.ViewModel.SelectedSprite;
+            }
+            else {
+                spriteWrapper = null;
             }
 
             return result;

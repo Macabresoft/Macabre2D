@@ -3,37 +3,20 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
-                   xmlns:models="clr-namespace:Macabre2D.UI.Models;assembly=Macabre2D.UI.Models"
                    Height="600"
                    Width="800">
-    <metro:MetroWindow.Resources>
-        <converters:AssetTypeMaskToVisibilityConverter x:Key="_assetTypeMaskToVisibilityConverter" />
-    </metro:MetroWindow.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
                                Grid.Row="0"
                                RootAsset="{Binding Project.AssetFolder, Mode=OneWay}"
                                AssetTypeMask="{Binding AssetMask, Mode=OneWay}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                AllowNull="{Binding AllowNull, Mode=OneWay}" />
-
-        <Grid Grid.Row="1">
-            <controls:SpriteViewer Sprite="{Binding SelectedAsset}">
-                <controls:SpriteViewer.Visibility>
-                    <MultiBinding Converter="{StaticResource _assetTypeMaskToVisibilityConverter}">
-                        <Binding Path="SelectedAsset.Type" />
-                        <Binding Source="{x:Static models:AssetType.Sprite}" />
-                    </MultiBinding>
-                </controls:SpriteViewer.Visibility>
-            </controls:SpriteViewer>
-        </Grid>
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"

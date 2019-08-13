@@ -46,8 +46,8 @@
 
         private void SelectSprite(IndexedWrapper<SpriteWrapper> indexedWrapper) {
             if (indexedWrapper != null) {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Image | AssetType.Sprite, AssetType.Sprite, true, out var asset)) {
-                    this.SetSprite(indexedWrapper, asset as SpriteWrapper);
+                if (this._dialogService.ShowSelectSpriteDialog(out var spriteWrapper)) {
+                    this.SetSprite(indexedWrapper, spriteWrapper);
                 }
             }
         }

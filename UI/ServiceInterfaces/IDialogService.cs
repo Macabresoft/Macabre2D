@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Models;
+    using Macabre2D.UI.Models.FrameworkWrappers;
     using System;
     using System.Windows;
 
@@ -22,6 +23,8 @@
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
 
         bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, bool allowNull, out Asset asset);
+
+        bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper);
 
         (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title);
 

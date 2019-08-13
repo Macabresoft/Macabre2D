@@ -3,15 +3,20 @@
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
-    public sealed class SpriteWrapper : Asset {
+    public sealed class SpriteWrapper : NotifyPropertyChanged {
+
+        [DataMember]
         private ImageAsset _imageAsset;
+
+        [DataMember]
         private Sprite _sprite;
 
         public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) {
-            this.Sprite = sprite;
-            this.ImageAsset = imageAsset;
+            this.Sprite = sprite ?? throw new ArgumentNullException(nameof(sprite));
+            this.ImageAsset = imageAsset ?? throw new ArgumentNullException(nameof(imageAsset));
         }
 
         public int Height {
@@ -20,12 +25,18 @@
             }
         }
 
+        public Guid Id {
+            get {
+                return this.Sprite != null ? this.Sprite.Id : Guid.Empty;
+            }
+        }
+
         public ImageAsset ImageAsset {
             get {
                 return this._imageAsset;
             }
 
-            set {
+            private set {
                 this.Set(ref this._imageAsset, value);
             }
         }
@@ -40,9 +51,22 @@
             }
 
             set {
-                this.Sprite.Location = new Point(
-                    Math.Min(value.X, this.ImageAsset.Width - this.Size.X),
-                    Math.Min(value.Y, this.ImageAsset.Height - this.Size.Y));
+                if (this.ImageAsset.Width != 0 && this.ImageAsset.Height != 0) {
+                    this.Sprite.Location = new Point(
+                        Math.Min(value.X, this.ImageAsset.Width - this.Size.X),
+                        Math.Min(value.Y, this.ImageAsset.Height - this.Size.Y));
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Name {
+            get {
+                return this.Sprite?.Name;
+            }
+
+            set {
+                this.Sprite.Name = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -64,22 +88,13 @@
             }
         }
 
-        [DataMember]
         public Sprite Sprite {
             get {
                 return this._sprite;
             }
 
             private set {
-                if (this.Set(ref this._sprite, value)) {
-                    this._sprite.Name = this.Name;
-                }
-            }
-        }
-
-        public override AssetType Type {
-            get {
-                return AssetType.Sprite;
+                this.Set(ref this._sprite, value);
             }
         }
 
@@ -89,23 +104,8 @@
             }
         }
 
-        public override void Delete() {
-            this.RemoveIdentifiableContentFromScenes(this.Sprite.Id);
-        }
-
-        public override string GetContentPath() {
-            return this.ImageAsset.GetContentPath();
-        }
-
-        public override string GetPath() {
-            return this.ImageAsset?.GetPath();
-        }
-
-        private void SpriteWrapper_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
-                this.Sprite.Name = this.Name;
-            }
-            else if (e.PropertyName == nameof(this.Sprite)) {
+        private void SpriteWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Sprite)) {
                 this.RaisePropertyChanged(nameof(this.Name));
                 this.RaisePropertyChanged(nameof(this.Location));
                 this.RaisePropertyChanged(nameof(this.Size));

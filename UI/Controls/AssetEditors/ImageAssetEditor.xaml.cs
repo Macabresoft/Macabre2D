@@ -59,7 +59,7 @@
 
         private static void OnAssetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is ImageAssetEditor control && e.NewValue != null) {
-                control.SelectedSprite = control.Asset.Children.FirstOrDefault();
+                control.SelectedSprite = control.Asset.Sprites.FirstOrDefault();
             }
         }
 
@@ -69,13 +69,13 @@
                 if (newValue == null) {
                     newValue = this.Asset.AddNewSprite();
                 }
-                else if (this.Asset.AddChild(newValue)) {
-                    this.SelectedSprite = newValue;
+                else {
+                    this.Asset.AddChild(newValue);
                 }
             },
             () => {
                 this.Asset.RemoveChild(newValue);
-                this.SelectedSprite = this.Asset.Children.FirstOrDefault();
+                this.SelectedSprite = this.Asset.Sprites.FirstOrDefault();
             });
 
             this._undoService.Do(undoCommand);
@@ -85,7 +85,7 @@
             var originalValue = this.SelectedSprite;
             var undoCommand = new UndoCommand(() => {
                 this.Asset.RemoveChild(originalValue);
-                this.SelectedSprite = this.Asset.Children.FirstOrDefault();
+                this.SelectedSprite = this.Asset.Sprites.FirstOrDefault();
             }, () => {
                 if (this.Asset.AddChild(originalValue)) {
                     this.SelectedSprite = originalValue;
