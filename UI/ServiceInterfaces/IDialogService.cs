@@ -12,8 +12,6 @@
 
         bool ShowCreateProjectDialog(out Project project, string initialDirectory = null);
 
-        bool ShowEditTileSetDialog(Sprite[,] existingTileSet, out Sprite[,] newSprites);
-
         bool ShowFileBrowser(string filter, out string path, string initialDirectory = null);
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);

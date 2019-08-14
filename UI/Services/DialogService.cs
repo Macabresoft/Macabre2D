@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using Macabre2D.UI.Common.Extensions;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
@@ -39,8 +40,7 @@
                 new ParameterOverride("asset", asset),
                 new ParameterOverride("parent", parent));
 
-            var result = window.ShowDialog();
-            if (result.HasValue && result.Value) {
+            if (window.SimpleShowDialog()) {
                 newName = $"{window.ViewModel.NewName}{extension}";
                 wasNameChanged = true;
             }
@@ -51,31 +51,14 @@
         public bool ShowCreateProjectDialog(out Project project, string initialDirectory = null) {
             var window = this._container.Resolve<CreateProjectDialog>();
             window.ViewModel.FilePath = initialDirectory;
-            window.ShowDialog();
-            var result = window.DialogResult.HasValue && window.DialogResult.Value;
 
+            var result = window.SimpleShowDialog();
             if (result) {
                 project = window.ViewModel.Project;
                 project.PathToProject = Path.Combine(window.ViewModel.FilePath, project.SafeName + FileHelper.ProjectExtension);
             }
             else {
                 project = null;
-            }
-
-            return result;
-        }
-
-        public bool ShowEditTileSetDialog(Sprite[,] existingTileSet, out Sprite[,] newSprites) {
-            var window = this._container.Resolve<EditTileSetDialog>();
-            window.ViewModel.Sprites = existingTileSet.Clone() as Sprite[,];
-            window.ShowDialog();
-
-            var result = window.DialogResult.HasValue && window.DialogResult.Value;
-            if (result) {
-                newSprites = window.ViewModel.Sprites;
-            }
-            else {
-                newSprites = null;
             }
 
             return result;
@@ -129,8 +112,7 @@
 
         public SceneAsset ShowSaveSceneWindow(Project project, Scene scene) {
             var window = this._container.Resolve<SaveSceneDialog>(new ParameterOverride("project", project));
-            var result = window.ShowDialog();
-            if (result.HasValue && result.Value) {
+            if (window.SimpleShowDialog()) {
                 var fileName = window.ViewModel.FileName + FileHelper.SceneExtension;
                 FolderAsset parent;
 
@@ -164,9 +146,7 @@
                 new ParameterOverride("selectableAssetMask", new InjectionParameter(selectableAssetMask)),
                 new ParameterOverride("allowNull", new InjectionParameter(allowNull)));
 
-            var dialogResult = window.ShowDialog();
-            var result = dialogResult.HasValue && dialogResult.Value;
-
+            var result = window.SimpleShowDialog();
             if (result) {
                 asset = window.ViewModel.SelectedAsset;
             }
@@ -179,9 +159,7 @@
 
         public bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper) {
             var window = this._container.Resolve<SelectSpriteDialog>();
-            var dialogResult = window.ShowDialog();
-            var result = dialogResult.HasValue && dialogResult.Value;
-
+            var result = window.SimpleShowDialog();
             if (result && !(window.ViewModel.SelectedSprite is NullSpriteWrapper)) {
                 spriteWrapper = window.ViewModel.SelectedSprite;
             }
@@ -196,9 +174,8 @@
             var window = this._container.Resolve<SelectTypeDialog>(new DependencyOverride(typeof(Type), new InjectionParameter(type)));
             window.Title = title;
             window.ShowNameTextBox = true;
-            var result = window.ShowDialog();
 
-            if (result.HasValue && result.Value && window.ViewModel != null) {
+            if (window.SimpleShowDialog() && window.ViewModel != null) {
                 return (window.ViewModel.SelectedType, window.ViewModel.Name);
             }
 
@@ -208,8 +185,7 @@
         public Type ShowSelectTypeDialog(Type type, string title) {
             var window = this._container.Resolve<SelectTypeDialog>(new DependencyOverride(typeof(Type), new InjectionParameter(type)));
             window.Title = title;
-            var result = window.ShowDialog();
-            return result.HasValue && result.Value ? window.ViewModel?.SelectedType : null;
+            return window.SimpleShowDialog() ? window.ViewModel?.SelectedType : null;
         }
 
         public void ShowWarningMessageBox(string title, string message) {

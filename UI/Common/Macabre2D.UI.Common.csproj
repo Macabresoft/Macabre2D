@@ -116,6 +116,7 @@
     <Compile Include="Behaviors\MouseDoubleClickBehavior.cs" />
     <Compile Include="ComponentCommand.cs" />
     <Compile Include="DependencyObjectExtensions.cs" />
+    <Compile Include="Extensions\WindowExtensions.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="INamedValueEditor.cs" />
     <Compile Include="IComponentCommandEditor.cs" />
