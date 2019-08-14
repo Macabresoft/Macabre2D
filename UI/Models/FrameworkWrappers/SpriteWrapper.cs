@@ -6,7 +6,8 @@
     using System.ComponentModel;
     using System.Runtime.Serialization;
 
-    public sealed class SpriteWrapper : NotifyPropertyChanged {
+    [DataContract]
+    public class SpriteWrapper : NotifyPropertyChanged {
 
         [DataMember]
         private ImageAsset _imageAsset;
@@ -17,6 +18,9 @@
         public SpriteWrapper(Sprite sprite, ImageAsset imageAsset) {
             this.Sprite = sprite ?? throw new ArgumentNullException(nameof(sprite));
             this.ImageAsset = imageAsset ?? throw new ArgumentNullException(nameof(imageAsset));
+        }
+
+        internal SpriteWrapper() {
         }
 
         public int Height {

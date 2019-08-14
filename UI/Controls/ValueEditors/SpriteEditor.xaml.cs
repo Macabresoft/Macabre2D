@@ -87,7 +87,7 @@
         private void SpriteEditor_Loaded(object sender, RoutedEventArgs e) {
             if (this.Value != null && (this.SpriteWrapper == null || this.SpriteWrapper.Sprite?.Id != this.Value.Id)) {
                 var spriteWrappers = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites);
-                this.SpriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite.Id == this.Value.Id);
+                this.SpriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite?.Id == this.Value.Id);
             }
 
             this.Loaded -= this.SpriteEditor_Loaded;

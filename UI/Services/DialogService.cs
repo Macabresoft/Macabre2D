@@ -182,7 +182,7 @@
             var dialogResult = window.ShowDialog();
             var result = dialogResult.HasValue && dialogResult.Value;
 
-            if (result) {
+            if (result && !(window.ViewModel.SelectedSprite is NullSpriteWrapper)) {
                 spriteWrapper = window.ViewModel.SelectedSprite;
             }
             else {

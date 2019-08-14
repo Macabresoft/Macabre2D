@@ -10,7 +10,7 @@
 
         public static CroppedBitmap ConvertToCroppedBitmap(SpriteWrapper spriteWrapper) {
             CroppedBitmap bitmap = null;
-            var path = spriteWrapper.ImageAsset.GetPath();
+            var path = spriteWrapper.ImageAsset?.GetPath();
             if (!string.IsNullOrWhiteSpace(path)) {
                 var source = new BitmapImage();
                 source.BeginInit();

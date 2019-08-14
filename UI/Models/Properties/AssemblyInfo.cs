@@ -11,3 +11,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("69ca3091-f9d2-4926-b115-8a8794db9f9a")]
 [assembly: InternalsVisibleTo("Macabre2D.UI.Controls")]
 [assembly: InternalsVisibleTo("Macabre2D.UI.Services")]
+[assembly: InternalsVisibleTo("Macabre2D.UI.ViewModels")]

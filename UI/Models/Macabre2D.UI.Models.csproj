@@ -97,6 +97,7 @@
     <Compile Include="FontAsset.cs" />
     <Compile Include="FrameworkWrappers\ComponentWrapper.cs" />
     <Compile Include="FrameworkWrappers\ModuleWrapper.cs" />
+    <Compile Include="FrameworkWrappers\NullSpriteWrapper.cs" />
     <Compile Include="FrameworkWrappers\SceneWrapper.cs" />
     <Compile Include="FrameworkWrappers\SpriteAnimationStepWrapper.cs" />
     <Compile Include="FrameworkWrappers\SpriteWrapper.cs" />

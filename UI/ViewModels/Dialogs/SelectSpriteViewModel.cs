@@ -11,7 +11,7 @@
 
         public SelectSpriteViewModel(IProjectService projectService) {
             var spriteWrappers = projectService.CurrentProject.AssetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).ToList();
-            spriteWrappers.Insert(0, null);
+            spriteWrappers.Insert(0, new NullSpriteWrapper());
             this.SpriteWrappers = spriteWrappers;
         }
 
