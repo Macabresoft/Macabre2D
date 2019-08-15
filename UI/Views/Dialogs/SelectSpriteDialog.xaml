@@ -38,8 +38,16 @@
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                     <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
                     <Setter Property="Padding" Value="0" />
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}" />
-                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="BorderThickness" Value="4" />
+
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
