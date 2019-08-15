@@ -49,7 +49,6 @@
                Visibility="{Binding SelectedSprite, Converter={StaticResource _inverseNullToVisibilityConverter}}" />
 
         <local:SpriteWrapperEditor Grid.Row="3"
-                                   ImageAsset="{Binding Asset}"
                                    SpriteWrapper="{Binding SelectedSprite}"
                                    Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}" />
     </Grid>

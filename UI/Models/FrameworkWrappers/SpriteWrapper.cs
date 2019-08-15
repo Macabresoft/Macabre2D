@@ -59,8 +59,9 @@
                     this.Sprite.Location = new Point(
                         Math.Min(value.X, this.ImageAsset.Width - this.Size.X),
                         Math.Min(value.Y, this.ImageAsset.Height - this.Size.Y));
-                    this.RaisePropertyChanged();
                 }
+
+                this.RaisePropertyChanged();
             }
         }
 
@@ -85,7 +86,12 @@
             }
 
             set {
-                this.Sprite.Size = value;
+                if (this.ImageAsset.Width != 0 && this.ImageAsset.Height != 0) {
+                    this.Sprite.Size = new Point(
+                        Math.Min(value.X, this.ImageAsset.Width - this.Location.X),
+                        Math.Min(value.Y, this.ImageAsset.Height - this.Location.Y));
+                }
+
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged(nameof(this.Height));
                 this.RaisePropertyChanged(nameof(this.Width));
