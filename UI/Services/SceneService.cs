@@ -43,11 +43,11 @@
                         this.CurrentScene.PropertyChanged += this.CurrentScene_PropertyChanged;
 
                         if (this._currentScene.SceneAsset != null) {
-                            this._currentScene.SceneAsset.OnDeleted += this.SceneAsset_OnDeleted;
-                            this._currentScene.SceneAsset.OnRefreshed += this.SceneAsset_OnRefreshed;
-
                             var assetFolder = this._currentScene.SceneAsset.GetRootFolder();
                             this.RefreshAssets(assetFolder);
+
+                            this._currentScene.SceneAsset.OnDeleted += this.SceneAsset_OnDeleted;
+                            this._currentScene.SceneAsset.OnRefreshed += this.SceneAsset_OnRefreshed;
                         }
                     }
                 }
@@ -207,6 +207,8 @@
 
         private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
             if (sender is SceneAsset sceneAsset) {
+                sceneAsset.OnDeleted -= this.SceneAsset_OnDeleted;
+                sceneAsset.OnRefreshed -= this.SceneAsset_OnRefreshed;
                 this.CurrentScene = new SceneWrapper(sceneAsset);
             }
         }
