@@ -63,24 +63,24 @@
         }
 
         /// <summary>
-        /// Inserts the new collider into its proper position in the quad tree.
+        /// Inserts the item into its proper position in the quad tree.
         /// </summary>
-        /// <param name="newBoundable">The new boundable.</param>
-        public void Insert(T newBoundable) {
+        /// <param name="item">The item to insert.</param>
+        public void Insert(T item) {
             // We only have to null check the first node, because we always add every node at once.
             var hasNodes = this._nodes[0] != null;
 
             if (hasNodes) {
-                var boundingArea = newBoundable.BoundingArea;
+                var boundingArea = item.BoundingArea;
                 var quadrant = this.GetQuadrant(boundingArea);
 
                 if (quadrant != Quadrant.None) {
-                    this._nodes[(int)quadrant].Insert(newBoundable);
+                    this._nodes[(int)quadrant].Insert(item);
                     return;
                 }
             }
 
-            this._boundables.Add(newBoundable);
+            this._boundables.Add(item);
 
             if (this._boundables.Count >= this.MaxObjects && this._depth < this.MaxLevels) {
                 if (!hasNodes) {
@@ -97,6 +97,16 @@
                         this._boundables.Remove(collider);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Inserts all provided items into their proper position in the quad tree.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        public void InsertMany(IEnumerable<T> items) {
+            foreach (var item in items) {
+                this.Insert(item);
             }
         }
 

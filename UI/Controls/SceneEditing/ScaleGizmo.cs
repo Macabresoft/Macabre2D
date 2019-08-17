@@ -10,13 +10,13 @@
 
     public sealed class ScaleGizmo : BaseAxisGizmo {
 
-        private readonly Body _xAxisBody = new Body() {
+        private readonly SimpleBody _xAxisBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _xAxisSquareRenderer = new SpriteRenderer();
 
-        private readonly Body _yAxisBody = new Body() {
+        private readonly SimpleBody _yAxisBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 

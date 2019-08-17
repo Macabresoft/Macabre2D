@@ -11,7 +11,7 @@
 
     public sealed class RotationGizmo : BaseAxisGizmo {
 
-        private readonly Body _circleBody = new Body() {
+        private readonly SimpleBody _circleBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 

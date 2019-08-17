@@ -13,7 +13,7 @@
         /// Gets the bodies.
         /// </summary>
         /// <value>The bodies.</value>
-        protected FilterSortCollection<Body> Bodies { get; } = new FilterSortCollection<Body>(
+        protected FilterSortCollection<IPhysicsBody> Bodies { get; } = new FilterSortCollection<IPhysicsBody>(
             r => r.IsEnabled,
             (r, handler) => r.IsEnabledChanged += handler,
             (r, handler) => r.IsEnabledChanged -= handler,
@@ -30,12 +30,12 @@
         /// <inheritdoc/>
         public override void FixedPostUpdate() {
             this.ColliderTree.Clear();
-            this.Bodies.ForEachFilteredItem(r => this.ColliderTree.Insert(r.Collider));
+            this.Bodies.ForEachFilteredItem(r => this.ColliderTree.InsertMany(r.GetColliders()));
         }
 
         /// <inheritdoc/>
         public override void PostInitialize() {
-            this.Bodies.AddRange(this.Scene.GetAllComponentsOfType<Body>());
+            this.Bodies.AddRange(this.Scene.GetAllComponentsOfType<IPhysicsBody>());
 
             this.Scene.ComponentAdded += this.Scene_ComponentAdded;
             this.Scene.ComponentRemoved += this.Scene_ComponentRemoved;
@@ -97,13 +97,13 @@
         }
 
         private void Scene_ComponentAdded(object sender, BaseComponent e) {
-            if (e is Body body) {
+            if (e is IPhysicsBody body) {
                 this.Bodies.Add(body);
             }
         }
 
         private void Scene_ComponentRemoved(object sender, BaseComponent e) {
-            if (e is Body body) {
+            if (e is IPhysicsBody body) {
                 this.Bodies.Remove(body);
             }
         }

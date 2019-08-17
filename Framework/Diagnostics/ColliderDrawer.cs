@@ -12,7 +12,7 @@
         /// Gets or sets the body.
         /// </summary>
         /// <value>The body.</value>
-        public Body Body { get; set; }
+        public IPhysicsBody Body { get; set; }
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
@@ -20,7 +20,7 @@
                 if (this.Body != null) {
                     return this.Body.BoundingArea;
                 }
-                if (this.Parent is Body body) {
+                if (this.Parent is IPhysicsBody body) {
                     return body.BoundingArea;
                 }
 
@@ -30,19 +30,22 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            var body = this.Body ?? this.Parent as Body;
+            var body = this.Body ?? this.Parent as IPhysicsBody;
             if (body != null) {
                 var spriteBatch = MacabreGame.Instance.SpriteBatch;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
+                var colliders = body.GetColliders();
 
-                if (body.Collider is CircleCollider circle) {
-                    this.PrimitiveDrawer.DrawCircle(spriteBatch, circle.ScaledRadius, circle.Center, 50, this.Color, lineThickness);
-                }
-                else if (body.Collider is LineCollider line) {
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, line.WorldPoints.First(), line.WorldPoints.Last(), this.Color, lineThickness);
-                }
-                else if (body.Collider is PolygonCollider polygon) {
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, polygon.WorldPoints);
+                foreach (var collider in colliders) {
+                    if (collider is CircleCollider circle) {
+                        this.PrimitiveDrawer.DrawCircle(spriteBatch, circle.ScaledRadius, circle.Center, 50, this.Color, lineThickness);
+                    }
+                    else if (collider is LineCollider line) {
+                        this.PrimitiveDrawer.DrawLine(spriteBatch, line.WorldPoints.First(), line.WorldPoints.Last(), this.Color, lineThickness);
+                    }
+                    else if (collider is PolygonCollider polygon) {
+                        this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, polygon.WorldPoints);
+                    }
                 }
             }
         }

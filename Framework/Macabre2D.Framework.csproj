@@ -74,6 +74,9 @@
     </Compile>
     <Compile Include="AssetManager.cs" />
     <Compile Include="BaseIdentifiable.cs" />
+    <Compile Include="Interfaces\IEnableableComponent.cs" />
+    <Compile Include="Interfaces\IIdentifiableComponent.cs" />
+    <Compile Include="Physics\IPhysicsBody.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Tiles\AutoTileMapComponent.cs" />
     <Compile Include="Tiles\AutoTileSet.cs" />
@@ -136,7 +139,7 @@
     <Compile Include="Serialization\JsonColorConverter.cs" />
     <Compile Include="Extensions\LazyExtensions.cs" />
     <Compile Include="Utility\NotifyPropertyChanged.cs" />
-    <Compile Include="Physics\Body.cs" />
+    <Compile Include="Physics\SimpleBody.cs" />
     <Compile Include="BoundingArea.cs" />
     <Compile Include="Physics\CircleCollider.cs" />
     <Compile Include="Physics\Collider.cs" />

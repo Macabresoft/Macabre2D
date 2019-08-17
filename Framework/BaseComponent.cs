@@ -261,12 +261,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets the session identifier. This identifier is unique per session. It is not guaranteed
-        /// to be different across sessions, but it will remain the same for the whole time a scene
-        /// is running.
-        /// </summary>
-        /// <value>The session identifier.</value>
+        /// <inheritdoc/>
         public int SessionId { get; internal set; }
 
         /// <summary>

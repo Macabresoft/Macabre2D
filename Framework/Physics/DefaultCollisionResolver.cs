@@ -35,8 +35,8 @@
                         var inverseMassRatio = 1f - massRatio;
 
                         var bounce = (firstBody.PhysicsMaterial.Bounce + otherBody.PhysicsMaterial.Bounce) * 0.5f;
-                        var firstReflection = this.GetReflectedVelocity(firstBody, otherBody, e.Normal, bounce);
-                        var otherReflection = this.GetReflectedVelocity(otherBody, firstBody, e.Normal, bounce);
+                        var firstReflection = this.GetReflectedVelocity(firstBody, e.Normal, bounce);
+                        var otherReflection = this.GetReflectedVelocity(otherBody, e.Normal, bounce);
 
                         var averageMagnitude = (firstBodyMagnitude + otherBodyMagnitude) * 0.5f;
                         firstBody.Velocity = massRatio * firstReflection + averageMagnitude * inverseMassRatio * e.Normal;
@@ -66,7 +66,7 @@
             return velocity;
         }
 
-        private Vector2 GetNewVelocity(DynamicBody firstBody, Body otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
+        private Vector2 GetNewVelocity(DynamicBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
             var stickyDotProduct = Vector2.Dot(firstBody.Velocity.GetNormalized(), normalPerpindicular);
 
             if (1f - Math.Abs(stickyDotProduct) <= this._module.Stickiness) {
@@ -85,18 +85,18 @@
                     }
                     else {
                         var bounce = (firstBody.PhysicsMaterial.Bounce + otherBody.PhysicsMaterial.Bounce) * 0.5f;
-                        var velocity = this.GetReflectedVelocity(firstBody, otherBody, normal, bounce);
+                        var velocity = this.GetReflectedVelocity(firstBody, normal, bounce);
                         return velocity + this._module.Gravity.Direction * bounceDotProduct;
                     }
                 }
                 else {
                     var bounce = (firstBody.PhysicsMaterial.Bounce + otherBody.PhysicsMaterial.Bounce) * 0.5f;
-                    return this.GetReflectedVelocity(firstBody, otherBody, normal, bounce);
+                    return this.GetReflectedVelocity(firstBody, normal, bounce);
                 }
             }
         }
 
-        private Vector2 GetReflectedVelocity(DynamicBody firstBody, Body otherBody, Vector2 normal, float bounce) {
+        private Vector2 GetReflectedVelocity(DynamicBody firstBody, Vector2 normal, float bounce) {
             var reflectedVelocity = Vector2.Reflect(firstBody.Velocity, normal);
             return reflectedVelocity * bounce;
         }

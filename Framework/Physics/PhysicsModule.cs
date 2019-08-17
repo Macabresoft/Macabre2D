@@ -52,8 +52,8 @@
             this._collisionResolver.Initialize(this);
         }
 
-        private void HandleCollisions(Body body) {
-            if (body.Collider != null && body is DynamicBody dynamicBody) {
+        private void HandleCollisions(IPhysicsBody body) {
+            if (body.HasCollider && body is DynamicBody dynamicBody) {
                 var collisionsOccured = new List<int>();
                 dynamicBody.SetWorldPosition(dynamicBody.WorldTransform.Position + dynamicBody.Velocity * this.TimeStep);
 
@@ -61,30 +61,32 @@
                     dynamicBody.Velocity += this.Gravity.Value * this.TimeStep;
                 }
 
-                var potentials = this.ColliderTree.RetrievePotentialCollisions(body.Collider);
-                foreach (var otherCollider in potentials.Where(c => c != body.Collider && (c.Body.Layers & body.Layers) != Layers.None)) {
-                    var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.SessionId, out var collisions) &&
-                        collisions.Contains(body.SessionId);
+                foreach (var collider in body.GetColliders()) {
+                    var potentials = this.ColliderTree.RetrievePotentialCollisions(collider);
+                    foreach (var otherCollider in potentials.Where(c => c != collider && (c.Body.Layers & body.Layers) != Layers.None)) {
+                        var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.SessionId, out var collisions) &&
+                            collisions.Contains(body.SessionId);
 
-                    if (!hasCollisionAlreadyResolved && body.Collider.CollidesWith(otherCollider, out var collision)) {
-                        this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                        if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision)) {
+                            this._collisionResolver.ResolveCollision(collision, this.TimeStep);
 
-                        body.RaiseCollisionOccured(collision);
+                            body.NotifyCollisionOccured(collision);
 
-                        var otherCollision = new CollisionEventArgs(
-                            collision.SecondCollider,
-                            collision.FirstCollider,
-                            collision.Normal,
-                            -collision.MinimumTranslationVector,
-                            collision.SecondContainsFirst,
-                            collision.FirstContainsSecond);
+                            var otherCollision = new CollisionEventArgs(
+                                collision.SecondCollider,
+                                collision.FirstCollider,
+                                collision.Normal,
+                                -collision.MinimumTranslationVector,
+                                collision.SecondContainsFirst,
+                                collision.FirstContainsSecond);
 
-                        otherCollider.Body.RaiseCollisionOccured(otherCollision);
-                        collisionsOccured.Add(otherCollider.Body.SessionId);
+                            otherCollider.Body.NotifyCollisionOccured(otherCollision);
+                            collisionsOccured.Add(otherCollider.Body.SessionId);
+                        }
                     }
-                }
 
-                this._collisionsHandled[body.SessionId] = collisionsOccured;
+                    this._collisionsHandled[body.SessionId] = collisionsOccured;
+                }
             }
         }
     }

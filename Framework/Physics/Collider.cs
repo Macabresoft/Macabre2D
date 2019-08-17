@@ -47,7 +47,7 @@
         /// Gets the body that this collider is attached to.
         /// </summary>
         /// <value>The body.</value>
-        public Body Body { get; private set; }
+        public IPhysicsBody Body { get; private set; }
 
         /// <inheritdoc/>
         public BoundingArea BoundingArea {
@@ -219,7 +219,7 @@
             return this.TryHit(ray, out hit);
         }
 
-        internal void Initialize(Body body) {
+        internal void Initialize(IPhysicsBody body) {
             this.Body = body;
             this.Reset();
         }

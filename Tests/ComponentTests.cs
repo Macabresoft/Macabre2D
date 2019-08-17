@@ -236,7 +236,7 @@
                 var testComponent = new TestUpdateableComponent();
                 component4.AddChild(testComponent);
                 component2.AddChild(new SpriteAnimatorComponent());
-                component3.AddChild(new Body());
+                component3.AddChild(new SimpleBody());
                 component4.AddChild(new SpriteAnimatorComponent());
 
                 Assert.AreEqual(testComponent, component1.GetComponentInChildren<TestUpdateableComponent>(false));

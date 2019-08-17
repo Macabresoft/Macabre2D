@@ -10,13 +10,13 @@
 
     public sealed class TranslationGizmo : BaseAxisGizmo {
 
-        private readonly Body _neutralAxisBody = new Body() {
+        private readonly SimpleBody _neutralAxisBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _xAxisArrowRenderer = new SpriteRenderer();
 
-        private readonly Body _xAxisBody = new Body() {
+        private readonly SimpleBody _xAxisBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 
@@ -24,7 +24,7 @@
 
         private readonly SpriteRenderer _yAxisArrowRenderer = new SpriteRenderer();
 
-        private readonly Body _yAxisBody = new Body() {
+        private readonly SimpleBody _yAxisBody = new SimpleBody() {
             Collider = new CircleCollider(1f, RadiusScalingType.X)
         };
 

@@ -6,7 +6,7 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
-    public sealed class DynamicBody : Body {
+    public sealed class DynamicBody : SimpleBody {
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is kinematic.

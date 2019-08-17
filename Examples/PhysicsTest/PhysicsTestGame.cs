@@ -56,7 +56,7 @@
                 }
             }
 
-            var rectangleBody = new Body();
+            var rectangleBody = new SimpleBody();
             rectangleBody.Collider = PolygonCollider.CreateRectangle(10f, 1f);
             rectangleBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             rectangleBody.LocalPosition -= new Vector2(0f, 4f);
@@ -66,7 +66,7 @@
             rectangleDrawer.LineThickness = 1f;
             scene.AddComponent(rectangleBody);
 
-            var angleBody1 = new Body();
+            var angleBody1 = new SimpleBody();
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
             angleBody1.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer1 = new ColliderDrawer();
@@ -75,7 +75,7 @@
             angleDrawer1.LineThickness = 1f;
             scene.AddComponent(angleBody1);
 
-            var angleBody2 = new Body();
+            var angleBody2 = new SimpleBody();
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
             angleBody2.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer2 = new ColliderDrawer();
@@ -84,7 +84,7 @@
             angleDrawer2.LineThickness = 1f;
             scene.AddComponent(angleBody2);
 
-            var lineBody = new Body();
+            var lineBody = new SimpleBody();
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
             lineBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var lineDrawer = new ColliderDrawer();
