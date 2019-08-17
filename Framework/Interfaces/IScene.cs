@@ -7,7 +7,7 @@
     /// <summary>
     /// A interface for defining a scene that the <see cref="MacabreGame"/> can interact with.
     /// </summary>
-    public interface IScene : IHierarchicalEngineObject {
+    public interface IScene {
 
         /// <summary>
         /// Occurs when component added.

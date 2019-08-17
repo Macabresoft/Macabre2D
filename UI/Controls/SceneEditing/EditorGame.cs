@@ -78,12 +78,6 @@
 
         public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
 
-        public EngineObjectType EngineObjectType {
-            get {
-                return EngineObjectType.Game;
-            }
-        }
-
         public IGameSettings Settings {
             get {
                 return this._settings;

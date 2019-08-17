@@ -82,7 +82,6 @@
     <Compile Include="Tiles\AutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
-    <Compile Include="Interfaces\IHierarchicalEngineObject.cs" />
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Interfaces\IScaleable.cs" />
     <Compile Include="Interfaces\ITranslateable.cs" />

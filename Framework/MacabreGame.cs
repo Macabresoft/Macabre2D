@@ -94,13 +94,6 @@
         }
 
         /// <inheritdoc/>
-        public EngineObjectType EngineObjectType {
-            get {
-                return EngineObjectType.Game;
-            }
-        }
-
-        /// <inheritdoc/>
         public IGameSettings Settings {
             get {
                 return this._settings;
