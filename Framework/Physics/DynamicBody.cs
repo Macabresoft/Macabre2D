@@ -6,25 +6,16 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
-    public sealed class DynamicBody : SimpleBody {
+    public sealed class DynamicBody : SimpleBody, IDynamicPhysicsBody {
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is kinematic.
-        /// </summary>
-        /// <value><c>true</c> if this instance is kinematic; otherwise, <c>false</c>.</value>
+        /// <inheritdoc/>
         [DataMember]
         public bool IsKinematic { get; set; }
 
-        /// <summary>
-        /// Gets or sets the mass.
-        /// </summary>
-        /// <value>The mass.</value>
+        /// <inheritdoc/>
         public float Mass { get; set; } = 1f;
 
-        /// <summary>
-        /// Gets or sets the velocity. This is always axis aligned.
-        /// </summary>
-        /// <value>The velocity.</value>
+        /// <inheritdoc/>
         public Vector2 Velocity { get; set; }
     }
 }

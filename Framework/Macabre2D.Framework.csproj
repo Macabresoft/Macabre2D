@@ -76,6 +76,7 @@
     <Compile Include="BaseIdentifiable.cs" />
     <Compile Include="Interfaces\IEnableableComponent.cs" />
     <Compile Include="Interfaces\IIdentifiableComponent.cs" />
+    <Compile Include="Physics\IDynamicPhysicsBody.cs" />
     <Compile Include="Physics\IPhysicsBody.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Tiles\AutoTileMapComponent.cs" />

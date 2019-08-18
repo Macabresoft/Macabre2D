@@ -53,7 +53,7 @@
         }
 
         private void HandleCollisions(IPhysicsBody body) {
-            if (body.HasCollider && body is DynamicBody dynamicBody) {
+            if (body.HasCollider && body is IDynamicPhysicsBody dynamicBody) {
                 var collisionsOccured = new List<int>();
                 dynamicBody.SetWorldPosition(dynamicBody.WorldTransform.Position + dynamicBody.Velocity * this.TimeStep);
 

@@ -17,13 +17,13 @@
 
         /// <inheritdoc/>
         public void ResolveCollision(CollisionEventArgs e, float timeStep) {
-            if (e.FirstCollider.Body is DynamicBody firstBody) {
+            if (e.FirstCollider.Body is IDynamicPhysicsBody firstBody) {
                 firstBody.SetWorldPosition(firstBody.WorldTransform.Position + e.MinimumTranslationVector);
 
                 if (firstBody.IsKinematic) {
                     var normalPerpindicular = e.Normal.GetPerpendicular();
 
-                    if (e.SecondCollider.Body is DynamicBody otherBody && otherBody.IsKinematic) {
+                    if (e.SecondCollider.Body is IDynamicPhysicsBody otherBody && otherBody.IsKinematic) {
                         var firstBodyMagnitude = firstBody.Velocity.Length();
                         var otherBodyMagnitude = otherBody.Velocity.Length();
 
@@ -66,7 +66,7 @@
             return velocity;
         }
 
-        private Vector2 GetNewVelocity(DynamicBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
+        private Vector2 GetNewVelocity(IDynamicPhysicsBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
             var stickyDotProduct = Vector2.Dot(firstBody.Velocity.GetNormalized(), normalPerpindicular);
 
             if (1f - Math.Abs(stickyDotProduct) <= this._module.Stickiness) {
@@ -96,7 +96,7 @@
             }
         }
 
-        private Vector2 GetReflectedVelocity(DynamicBody firstBody, Vector2 normal, float bounce) {
+        private Vector2 GetReflectedVelocity(IDynamicPhysicsBody firstBody, Vector2 normal, float bounce) {
             var reflectedVelocity = Vector2.Reflect(firstBody.Velocity, normal);
             return reflectedVelocity * bounce;
         }

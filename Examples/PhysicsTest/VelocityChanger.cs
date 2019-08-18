@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Input;
 
     public sealed class VelocityChanger : BaseComponent, IUpdateableComponent {
-        private DynamicBody _body;
+        private IDynamicPhysicsBody _body;
         private float _speed = 0.5f;
 
         public void Update(GameTime gameTime) {
@@ -33,7 +33,7 @@
         }
 
         protected override void Initialize() {
-            this._body = this.Parent as DynamicBody;
+            this._body = this.Parent as IDynamicPhysicsBody;
         }
     }
 }
