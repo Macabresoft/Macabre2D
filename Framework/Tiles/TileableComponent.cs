@@ -25,6 +25,9 @@
         }
 
         /// <inheritdoc/>
+        public abstract IReadOnlyCollection<Point> ActiveTiles { get; }
+
+        /// <inheritdoc/>
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;

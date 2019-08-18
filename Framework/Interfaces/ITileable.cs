@@ -10,6 +10,12 @@
     public interface ITileable : IBoundable {
 
         /// <summary>
+        /// Gets the active tiles.
+        /// </summary>
+        /// <value>The active tiles.</value>
+        IReadOnlyCollection<Point> ActiveTiles { get; }
+
+        /// <summary>
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
@@ -59,31 +65,5 @@
         /// <param name="tile">The tile.</param>
         /// <returns>A value indicating whether or not the tile was removed.</returns>
         bool RemoveTile(Point tile);
-    }
-
-    /// <summary>
-    /// An interface for tileable components of a specific type.
-    /// </summary>
-    /// <typeparam name="T">The type of the tile.</typeparam>
-    public interface ITileable<T> : ITileable {
-
-        /// <summary>
-        /// Gets the available tiles.
-        /// </summary>
-        /// <value>The available tiles.</value>
-        IEnumerable<T> AvailableTiles { get; }
-
-        /// <summary>
-        /// Gets the default tile.
-        /// </summary>
-        /// <value>The default tile.</value>
-        T DefaultTile { get; }
-
-        /// <summary>
-        /// Sets the default tile.
-        /// </summary>
-        /// <param name="newDefault">The new default.</param>
-        /// <returns>A value indicating whether or not the default tile was changed.</returns>
-        bool SetDefaultTile(T newDefault);
     }
 }

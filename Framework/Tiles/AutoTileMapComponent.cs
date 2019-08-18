@@ -62,6 +62,13 @@
             All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
         }
 
+        /// <inheritdoc/>
+        public override IReadOnlyCollection<Point> ActiveTiles {
+            get {
+                return this._activeTileToIndex.Keys;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the color.
         /// </summary>
