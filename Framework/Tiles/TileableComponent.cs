@@ -77,6 +77,8 @@
                 else if (tile.Y < this.MinimumTile.Y) {
                     this.MinimumTile = new Point(this.MinimumTile.X, tile.Y);
                 }
+
+                this.ResetBoundingArea();
             }
 
             return result;
@@ -90,6 +92,7 @@
             this.MinimumTile = Point.Zero;
             this.MaximumTile = Point.Zero;
             this.ResetBoundingArea();
+            this.ResetTileBoundingAreas();
         }
 
         /// <inheritdoc/>
@@ -124,10 +127,12 @@
 
                 if (tile.X == this.MinimumTile.X || tile.Y == this.MinimumTile.Y) {
                     this.ResetMinimumTile();
+                    this.ResetBoundingArea();
                 }
 
                 if (tile.X == this.MaximumTile.X || tile.Y == this.MaximumTile.Y) {
-                    this.ResetMinimumTile();
+                    this.ResetMaximumTile();
+                    this.ResetBoundingArea();
                 }
             }
 
@@ -193,6 +198,7 @@
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
             this.ResetBoundingArea();
+            this.ResetTileBoundingAreas();
             this.ResetMinimumTile();
             this.ResetMaximumTile();
         }
@@ -203,6 +209,7 @@
         protected virtual void OnGridChanged() {
             this._worldGrid.Reset();
             this.ResetBoundingArea();
+            this.ResetTileBoundingAreas();
         }
 
         /// <summary>
@@ -211,6 +218,13 @@
         protected void ResetBoundingArea() {
             this._tilePositionToBoundingArea.Clear();
             this._boundingArea.Reset();
+        }
+
+        /// <summary>
+        /// Resets the tile bounding areas.
+        /// </summary>
+        protected void ResetTileBoundingAreas() {
+            this._tilePositionToBoundingArea.Clear();
         }
 
         /// <summary>
@@ -260,6 +274,8 @@
             else {
                 this.MaximumTile = Point.Zero;
             }
+
+            this._boundingArea.Reset();
         }
 
         private void ResetMinimumTile() {
@@ -269,12 +285,12 @@
             else {
                 this.MinimumTile = Point.Zero;
             }
+
+            this._boundingArea.Reset();
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
-            this._tilePositionToBoundingArea.Clear();
-            this._worldGrid.Reset();
-            this.ResetBoundingArea();
+            this.OnGridChanged();
         }
     }
 }
