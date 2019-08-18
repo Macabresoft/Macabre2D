@@ -2,12 +2,14 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A <see cref="BaseBody"/> which reacts to a <see cref="ITileable"/> parent and creates
     /// colliders based on the available grid.
     /// </summary>
     public sealed class TileableBody : BaseBody {
+        private readonly List<Collider> _colliders = new List<Collider>();
         private ITileable _tileable;
 
         /// <inheritdoc/>
@@ -20,13 +22,13 @@
         /// <inheritdoc/>
         public override bool HasCollider {
             get {
-                throw new NotImplementedException();
+                return this._colliders.Any();
             }
         }
 
         /// <inheritdoc/>
         public override IEnumerable<Collider> GetColliders() {
-            throw new NotImplementedException();
+            return this._colliders;
         }
 
         /// <inheritdoc/>

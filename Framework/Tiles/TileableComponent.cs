@@ -13,8 +13,6 @@
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
         private readonly ResettableLazy<TileGrid> _worldGrid;
         private TileGrid _grid = new TileGrid(Vector2.One);
-        private Point _maximumTile;
-        private Point _minimumTile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent"/> class.
@@ -50,6 +48,12 @@
         }
 
         /// <inheritdoc/>
+        public Point MaximumTile { get; private set; }
+
+        /// <inheritdoc/>
+        public Point MinimumTile { get; private set; }
+
+        /// <inheritdoc/>
         public TileGrid WorldGrid {
             get {
                 return this._worldGrid.Value;
@@ -60,18 +64,18 @@
         public bool AddTile(Point tile) {
             var result = this.TryAddTile(tile);
             if (result) {
-                if (tile.X > this._maximumTile.X) {
-                    this._maximumTile = new Point(tile.X, this._maximumTile.Y);
+                if (tile.X > this.MaximumTile.X) {
+                    this.MaximumTile = new Point(tile.X, this.MaximumTile.Y);
                 }
-                else if (tile.X < this._minimumTile.X) {
-                    this._minimumTile = new Point(tile.X, this._minimumTile.Y);
+                else if (tile.X < this.MinimumTile.X) {
+                    this.MinimumTile = new Point(tile.X, this.MinimumTile.Y);
                 }
 
-                if (tile.Y > this._maximumTile.Y) {
-                    this._maximumTile = new Point(this._maximumTile.X, tile.Y);
+                if (tile.Y > this.MaximumTile.Y) {
+                    this.MaximumTile = new Point(this.MaximumTile.X, tile.Y);
                 }
-                else if (tile.Y < this._minimumTile.Y) {
-                    this._minimumTile = new Point(this._minimumTile.X, tile.Y);
+                else if (tile.Y < this.MinimumTile.Y) {
+                    this.MinimumTile = new Point(this.MinimumTile.X, tile.Y);
                 }
             }
 
@@ -83,8 +87,8 @@
         /// </summary>
         public void ClearTiles() {
             this.ClearTiles();
-            this._minimumTile = Point.Zero;
-            this._maximumTile = Point.Zero;
+            this.MinimumTile = Point.Zero;
+            this.MaximumTile = Point.Zero;
             this.ResetBoundingArea();
         }
 
@@ -118,11 +122,11 @@
             if (result) {
                 this._tilePositionToBoundingArea.Remove(tile);
 
-                if (tile.X == this._minimumTile.X || tile.Y == this._minimumTile.Y) {
+                if (tile.X == this.MinimumTile.X || tile.Y == this.MinimumTile.Y) {
                     this.ResetMinimumTile();
                 }
 
-                if (tile.X == this._maximumTile.X || tile.Y == this._maximumTile.Y) {
+                if (tile.X == this.MaximumTile.X || tile.Y == this.MaximumTile.Y) {
                     this.ResetMinimumTile();
                 }
             }
@@ -227,7 +231,7 @@
             BoundingArea result;
             if (this.HasActiveTiles()) {
                 var worldGrid = this.WorldGrid;
-                result = new BoundingArea(worldGrid.GetTilePosition(this._minimumTile), worldGrid.GetTilePosition(this._maximumTile + new Point(1, 1)));
+                result = new BoundingArea(worldGrid.GetTilePosition(this.MinimumTile), worldGrid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
             }
             else {
                 result = new BoundingArea();
@@ -251,19 +255,19 @@
 
         private void ResetMaximumTile() {
             if (this.HasActiveTiles()) {
-                this._maximumTile = this.GetMaximumTile();
+                this.MaximumTile = this.GetMaximumTile();
             }
             else {
-                this._maximumTile = Point.Zero;
+                this.MaximumTile = Point.Zero;
             }
         }
 
         private void ResetMinimumTile() {
             if (this.HasActiveTiles()) {
-                this._minimumTile = this.GetMinimumTile();
+                this.MinimumTile = this.GetMinimumTile();
             }
             else {
-                this._minimumTile = Point.Zero;
+                this.MinimumTile = Point.Zero;
             }
         }
 

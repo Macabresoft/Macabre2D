@@ -22,6 +22,20 @@
         TileGrid LocalGrid { get; }
 
         /// <summary>
+        /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid, which
+        /// may or may not be from the same tile.
+        /// </summary>
+        /// <value>The maximum tile.</value>
+        Point MaximumTile { get; }
+
+        /// <summary>
+        /// Gets the minimum tile. This represents the minimum X and Y coordinates of the grid, which
+        /// may or may not be from the same tile.
+        /// </summary>
+        /// <value>The minimum tile.</value>
+        Point MinimumTile { get; }
+
+        /// <summary>
         /// Gets the <see cref="LocalGrid"/> transformed to world coordinates.
         /// </summary>
         /// <value>The <see cref="LocalGrid"/> transformed to world coordinates.</value>
