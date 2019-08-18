@@ -8,17 +8,11 @@
     /// A body to be used by the physics engine.
     /// </summary>
     /// <seealso cref="BaseComponent"/>
-    public class SimpleBody : BaseComponent, IPhysicsBody {
+    public class SimpleBody : BaseBody, IPhysicsBody {
         private Collider _collider;
 
-        [DataMember]
-        private PhysicsMaterial _physicsMaterial = PhysicsMaterial.Default;
-
         /// <inheritdoc/>
-        public event EventHandler<CollisionEventArgs> CollisionOccured;
-
-        /// <inheritdoc/>
-        public BoundingArea BoundingArea {
+        public override BoundingArea BoundingArea {
             get {
                 return this.Collider != null ? this.Collider.BoundingArea : new BoundingArea();
             }
@@ -44,31 +38,15 @@
         }
 
         /// <inheritdoc/>
-        public bool HasCollider {
+        public override bool HasCollider {
             get {
                 return this.Collider != null;
             }
         }
 
         /// <inheritdoc/>
-        public PhysicsMaterial PhysicsMaterial {
-            get {
-                return this._physicsMaterial;
-            }
-
-            set {
-                this._physicsMaterial = value;
-            }
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<Collider> GetColliders() {
+        public override IEnumerable<Collider> GetColliders() {
             return this.Collider != null ? new[] { this.Collider } : new Collider[0];
-        }
-
-        /// <inheritdoc/>
-        public void NotifyCollisionOccured(CollisionEventArgs eventArgs) {
-            this.CollisionOccured.SafeInvoke(this, eventArgs);
         }
 
         /// <inheritdoc/>
