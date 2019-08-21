@@ -124,7 +124,7 @@
         }
 
         private void ResetDependencies(object newValue) {
-            if (newValue is SimpleBody body) {
+            if (newValue is IPhysicsBody body) {
                 this._boundingAreaDrawer.Boundable = body;
                 this._colliderDrawer.Body = body;
             }

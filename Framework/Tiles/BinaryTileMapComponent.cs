@@ -155,11 +155,13 @@
             return this._activeTiles.Any();
         }
 
+        /// <inheritdoc/>
         protected override void Initialize() {
             base.Initialize();
             this.TransformChanged += this.Self_TransformChanged;
         }
 
+        /// <inheritdoc/>
         protected override void OnGridChanged() {
             base.OnGridChanged();
             this._tileScale = this.GetTileScale(this.Sprite);
@@ -170,6 +172,7 @@
             return this._activeTiles.Add(tile);
         }
 
+        /// <inheritdoc/>
         protected override bool TryRemoveTile(Point tile) {
             return this._activeTiles.Remove(tile);
         }

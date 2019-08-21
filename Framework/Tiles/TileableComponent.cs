@@ -6,6 +6,24 @@
     using System.Runtime.Serialization;
 
     /// <summary>
+    /// Represents four directions from a single tile.
+    /// </summary>
+    [Flags]
+    public enum CardinalDirections : byte {
+        None = 0,
+
+        North = 1 << 0,
+
+        West = 1 << 1,
+
+        East = 1 << 2,
+
+        South = 1 << 3,
+
+        All = North | West | East | South
+    }
+
+    /// <summary>
     /// A tileable component. Contains a <see cref="TileGrid"/> and implements <see cref="ITileable"/>.
     /// </summary>
     public abstract class TileableComponent : BaseComponent, ITileable {
@@ -21,6 +39,12 @@
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
         }
+
+        /// <inheritdoc/>
+        public event EventHandler GridChanged;
+
+        /// <inheritdoc/>
+        public event EventHandler TilesChanged;
 
         /// <inheritdoc/>
         public abstract IReadOnlyCollection<Point> ActiveTiles { get; }
@@ -79,6 +103,7 @@
                 }
 
                 this.ResetBoundingArea();
+                this.TilesChanged.SafeInvoke(this);
             }
 
             return result;
@@ -93,6 +118,7 @@
             this.MaximumTile = Point.Zero;
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
+            this.TilesChanged.SafeInvoke(this);
         }
 
         /// <inheritdoc/>
@@ -134,6 +160,8 @@
                     this.ResetMaximumTile();
                     this.ResetBoundingArea();
                 }
+
+                this.TilesChanged.SafeInvoke(this);
             }
 
             return result;
@@ -210,6 +238,7 @@
             this._worldGrid.Reset();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
+            this.GridChanged?.SafeInvoke(this);
         }
 
         /// <summary>

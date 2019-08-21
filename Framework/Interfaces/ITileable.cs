@@ -1,13 +1,24 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
     /// An interface for tileable components.
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.IBoundable"/>
-    public interface ITileable : IBoundable {
+    public interface ITileable : IBoundable, IWorldTransformable {
+
+        /// <summary>
+        /// Occurs when the grid is changed.
+        /// </summary>
+        event EventHandler GridChanged;
+
+        /// <summary>
+        /// Occurs when a tile is added or removed.
+        /// </summary>
+        event EventHandler TilesChanged;
 
         /// <summary>
         /// Gets the active tiles.

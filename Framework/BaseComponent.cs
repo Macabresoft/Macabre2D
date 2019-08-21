@@ -68,9 +68,7 @@
         /// <inheritdoc/>
         public event EventHandler<BaseComponent> ParentChanged;
 
-        /// <summary>
-        /// Occurs when this object's transform changes.
-        /// </summary>
+        /// <inheritdoc/>
         public event EventHandler TransformChanged;
 
         /// <summary>

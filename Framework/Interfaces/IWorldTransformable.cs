@@ -1,11 +1,17 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
+    using System;
 
     /// <summary>
     /// Interface for a class that contains a world <see cref="Transform"/>.
     /// </summary>
     public interface IWorldTransformable : IScaleable, ITranslateable {
+
+        /// <summary>
+        /// Occurs when this object's transform changes.
+        /// </summary>
+        event EventHandler TransformChanged;
 
         /// <summary>
         /// Gets the world transform.
