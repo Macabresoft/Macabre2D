@@ -125,9 +125,8 @@
                     allSegments.Remove(removedSegment);
                 }
 
-                var worldGrid = this._tileable.WorldGrid;
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(worldGrid.GetTilePosition(segment.StartPoint), worldGrid.GetTilePosition(segment.EndPoint));
+                    var collider = new LineCollider(this._tileable.LocalGrid.GetTilePosition(segment.StartPoint), this._tileable.LocalGrid.GetTilePosition(segment.EndPoint));
                     collider.Initialize(this);
                     this._colliders.Add(collider);
                 }
