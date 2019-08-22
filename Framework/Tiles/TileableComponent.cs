@@ -225,6 +225,7 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
+            this._worldGrid.Reset();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
             this.ResetMinimumTile();
