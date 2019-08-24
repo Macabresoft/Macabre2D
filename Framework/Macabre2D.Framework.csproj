@@ -135,6 +135,8 @@
     <Compile Include="Interfaces\IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Interfaces\ITileable.cs" />
+    <Compile Include="Utility\Prefab.cs" />
+    <Compile Include="Utility\PrefabComponent.cs" />
     <Compile Include="Utility\ResettableLazy.cs" />
     <Compile Include="Transformation\RotatableTransform.cs" />
     <Compile Include="Transformation\Rotation.cs" />

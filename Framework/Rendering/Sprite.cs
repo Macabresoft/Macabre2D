@@ -6,7 +6,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Represents a sprite with the content path and the Texture2D.
+    /// Represents a sprite that can be loaded as content.
     /// </summary>
     public sealed class Sprite : BaseIdentifiable, IDisposable {
         private bool _disposedValue = false;
