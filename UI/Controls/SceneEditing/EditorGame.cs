@@ -78,6 +78,12 @@
 
         public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
 
+        public bool InstantiatePrefabs {
+            get {
+                return false;
+            }
+        }
+
         public IGameSettings Settings {
             get {
                 return this._settings;

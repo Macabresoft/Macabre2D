@@ -38,6 +38,13 @@
         }
 
         /// <inheritdoc/>
+        public bool InstantiatePrefabs {
+            get {
+                return false;
+            }
+        }
+
+        /// <inheritdoc/>
         public IGameSettings Settings {
             get {
                 return GameSettings.Instance;

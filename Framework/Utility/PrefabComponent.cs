@@ -32,7 +32,7 @@
                 return this._prefab;
             }
 
-            set {
+            internal set {
                 if (this._prefab != value) {
                     this._prefab = value;
                     this.LoadContent();
@@ -44,11 +44,13 @@
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var component = this.Prefrab?.Component;
             if (component is IDrawableComponent drawable) {
+                var componentWorldTransform = component.WorldTransform;
                 try {
-                    component.Parent = this;
+                    component.SetWorldTransform(this.WorldTransform.Position, this.WorldTransform.Scale);
                     drawable.Draw(gameTime, viewBoundingArea);
                 }
                 finally {
+                    component.SetWorldTransform(componentWorldTransform.Position, componentWorldTransform.Scale);
                     component.Parent = null;
                 }
             }
@@ -66,7 +68,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Scene.IsInitialized) {
+            if (this.Scene.IsInitialized && !MacabreGame.Instance.InstantiatePrefabs) {
                 this.Prefrab?.Component?.LoadContent();
             }
 
@@ -99,7 +101,18 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.Prefrab?.Component?.Initialize(this.Scene);
+            if (this.Prefrab?.Component is BaseComponent component) {
+                if (MacabreGame.Instance.InstantiatePrefabs) {
+                    if (this.Parent != null) {
+                        var clone = component.Clone();
+                        this.Parent.AddChild(clone);
+                        this.Scene.DestroyComponent(this);
+                    }
+                }
+                else {
+                    component.Initialize(this.Scene);
+                }
+            }
         }
     }
 }

@@ -33,6 +33,12 @@
         GraphicsDevice GraphicsDevice { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this game should instantiate prefabs.
+        /// </summary>
+        /// <value><c>true</c> if this game should instantiate prefabs; otherwise, <c>false</c>.</value>
+        bool InstantiatePrefabs { get; }
+
+        /// <summary>
         /// Gets the game settings.
         /// </summary>
         /// <value>The game settings.</value>

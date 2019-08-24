@@ -94,6 +94,13 @@
         }
 
         /// <inheritdoc/>
+        public bool InstantiatePrefabs {
+            get {
+                return true;
+            }
+        }
+
+        /// <inheritdoc/>
         public IGameSettings Settings {
             get {
                 return this._settings;
