@@ -24,11 +24,5 @@
         /// </summary>
         /// <value>The parent.</value>
         BaseComponent Parent { get; }
-
-        /// <summary>
-        /// Clones this instance.
-        /// </summary>
-        /// <returns>The clone.</returns>
-        BaseComponent Clone();
     }
 }

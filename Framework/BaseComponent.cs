@@ -359,11 +359,6 @@
         }
 
         /// <inheritdoc/>
-        public BaseComponent Clone() {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
