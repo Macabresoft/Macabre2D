@@ -130,6 +130,10 @@
                 this.Height = decoder.Frames[0].PixelHeight;
             }
 
+            foreach (var sprite in this._children.Select(x => x.Sprite).Where(x => x != null)) {
+                sprite.AssetId = this.Id;
+            }
+
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
             base.Refresh(assetManager);
         }
