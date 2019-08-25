@@ -12,6 +12,7 @@ namespace Macabre2D.UI.Common {
         public const string GameSettingsExtension = ".m2dgs";
         public const string MetaDataExtension = ".m2dmetadata";
         public const string MonoGameFrameworkDLL = "MonoGame.Framework.dll";
+        public const string PrefabExtension = ".m2dprefab";
         public const string ProjectExtension = ".m2dproj";
         public const string SceneExtension = ".m2dscene";
         public const string SolutionExtension = ".sln";

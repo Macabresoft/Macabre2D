@@ -25,6 +25,8 @@
 
         AutoTileSet = 1 << 7,
 
+        Prefab = 1 << 8,
+
         All = ~Folder
     }
 
@@ -55,12 +57,6 @@
 
         [DataMember]
         public Guid Id { get; private set; } = Guid.NewGuid();
-
-        public virtual bool IsContent {
-            get {
-                return false;
-            }
-        }
 
         public string Name {
             get {
