@@ -16,6 +16,8 @@
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);
 
+        bool ShowSaveAssetAsDialog(AddableAsset asset);
+
         SaveDiscardCancelResult ShowSaveDiscardCancelDialog();
 
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);

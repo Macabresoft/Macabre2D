@@ -96,6 +96,11 @@
             return false;
         }
 
+        public bool ShowSaveAssetAsDialog(AddableAsset asset) {
+            throw new NotImplementedException();
+            // Show a dialog where you select an asset folder and a name, then save said asset
+        }
+
         public SaveDiscardCancelResult ShowSaveDiscardCancelDialog() {
             var projectService = this._container.Resolve<IProjectService>();
             var sceneService = this._container.Resolve<ISceneService>();
