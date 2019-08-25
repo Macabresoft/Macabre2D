@@ -68,7 +68,7 @@
             if (!this.Sprites.Contains(wrapper) && wrapper.ImageAsset == this) {
                 result = true;
                 wrapper.PropertyChanged += this.Child_PropertyChanged;
-                wrapper.Sprite.ContentId = this.Id;
+                wrapper.Sprite.AssetId = this.Id;
                 this._children.Add(wrapper);
                 this.RaisePropertyChanged(nameof(this.Sprites));
             }
@@ -79,7 +79,7 @@
         public SpriteWrapper AddNewSprite() {
             var contentPath = this.GetContentPath();
             var sprite = new Sprite {
-                ContentId = this.Id,
+                AssetId = this.Id,
                 Size = new Point(this.Width, this.Height)
             };
 
@@ -115,7 +115,7 @@
         public override void Delete() {
             foreach (var child in this._children) {
                 if (child.Sprite != null) {
-                    this.RemoveIdentifiableContentFromScenes(child.Sprite.ContentId);
+                    this.RemoveIdentifiableContentFromScenes(child.Sprite.AssetId);
                 }
             }
 

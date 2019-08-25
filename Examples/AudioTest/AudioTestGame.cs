@@ -20,7 +20,7 @@
             scene.AddComponent(audioPlayer);
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClip = new AudioClip();
-            audioPlayer.AudioClip.ContentId = lasterId;
+            audioPlayer.AudioClip.AssetId = lasterId;
             audioPlayer.AddChild(new VolumeController());
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());

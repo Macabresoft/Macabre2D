@@ -151,7 +151,7 @@
             var serializer = new Serializer();
             var assets = this.AssetFolder.GetAssetsOfType<MetadataAsset>();
             foreach (var asset in assets) {
-                asset.Save(serializer);
+                asset.Save(serializer, this.AssetManager);
             }
         }
 

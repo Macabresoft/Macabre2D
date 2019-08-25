@@ -13,10 +13,10 @@
         private readonly ObservableCollection<ComponentWrapper> _children = new ObservableCollection<ComponentWrapper>();
         private SceneAsset _sceneAsset;
 
-        public SceneWrapper(SceneAsset sceneAsset) : this() {
+        public SceneWrapper(SceneAsset sceneAsset, AssetManager assetManager) : this() {
             this.SceneAsset = sceneAsset;
             this.SceneAsset.PropertyChanged += this.SceneAsset_PropertyChanged;
-            this.SceneAsset.Refresh(null);
+            this.SceneAsset.Refresh(assetManager);
             this.Load(this.SceneAsset.SavableValue as Scene);
         }
 

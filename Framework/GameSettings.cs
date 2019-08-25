@@ -39,10 +39,10 @@
         int PixelsPerUnit { get; }
 
         /// <summary>
-        /// Gets the startup scene content identifier.
+        /// Gets the startup scene asset identifier.
         /// </summary>
-        /// <value>The startup scene content identifier.</value>
-        Guid StartupSceneContentId { get; }
+        /// <value>The startup scene asset identifier.</value>
+        Guid StartupSceneAssetId { get; }
 
         /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -135,7 +135,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Guid StartupSceneContentId { get; internal set; }
+        public Guid StartupSceneAssetId { get; internal set; }
 
         /// <summary>
         /// Adds the custom setting.

@@ -85,7 +85,7 @@
                     }
                 }
 
-                this.CurrentScene = await Task.Run(() => new SceneWrapper(asset));
+                this.CurrentScene = await Task.Run(() => new SceneWrapper(asset, project.AssetManager));
                 this.HasChanges = false;
                 return this.CurrentScene;
             }
@@ -102,7 +102,7 @@
                     await Task.Run(() => {
                         var scene = this.CurrentScene.Scene;
                         this.CurrentScene.SceneAsset.HasChanges = true;
-                        this.CurrentScene.SceneAsset.Save(this._serializer);
+                        this.CurrentScene.SceneAsset.Save(this._serializer, project.AssetManager);
                     });
 
                     result = true;
@@ -207,9 +207,11 @@
 
         private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
             if (sender is SceneAsset sceneAsset) {
+                var projectAsset = sceneAsset.GetRootFolder() as Project.ProjectAsset;
+                var assetManager = projectAsset?.Project?.AssetManager;
                 sceneAsset.OnDeleted -= this.SceneAsset_OnDeleted;
                 sceneAsset.OnRefreshed -= this.SceneAsset_OnRefreshed;
-                this.CurrentScene = new SceneWrapper(sceneAsset);
+                this.CurrentScene = new SceneWrapper(sceneAsset, assetManager);
             }
         }
     }

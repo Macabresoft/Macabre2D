@@ -3,7 +3,6 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Controls.AssetEditors;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.IO;
@@ -109,16 +108,16 @@
             if (asset is FolderAsset folder) {
                 this.MoveFolder(folder, originalPath);
             }
-            else if (!(asset is SpriteWrapper)) {
+            else {
                 var newPath = asset.GetPath();
                 if (!string.IsNullOrEmpty(originalPath) && !string.IsNullOrEmpty(newPath) && File.Exists(originalPath)) {
                     File.Move(originalPath, newPath);
                     asset.ResetContentPath();
                 }
 
-                if (asset is MetadataAsset metadataAsset) {
+                if (asset is MetadataAsset metadataAsset && asset.GetRootFolder() is Project.ProjectAsset projectAsset) {
                     this.MoveMetadata(originalPath, newPath);
-                    metadataAsset.Save(this._serializer);
+                    metadataAsset.Save(this._serializer, projectAsset.Project?.AssetManager);
                 }
             }
         }

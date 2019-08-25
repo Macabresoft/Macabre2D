@@ -80,6 +80,10 @@
 
         /// <inheritdoc/>
         [DataMember]
+        public Guid AssetId { get; set; }
+
+        /// <inheritdoc/>
+        [DataMember]
         public Color BackgroundColor { get; set; } = Color.Black;
 
         /// <inheritdoc/>

@@ -8,7 +8,7 @@
     /// <summary>
     /// Base class for easy and generic implementations of <see cref="IAutoTileSet"/>.
     /// </summary>
-    public sealed class AutoTileSet : BaseIdentifiable {
+    public sealed class AutoTileSet : BaseIdentifiable, IAsset {
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
@@ -27,9 +27,21 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AutoTileSet"/> class.
+        /// </summary>
+        /// <param name="assetId">The asset identifier.</param>
+        public AutoTileSet(Guid assetId) : this() {
+            this.AssetId = assetId;
+        }
+
+        /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
         public event EventHandler<byte> SpriteChanged;
+
+        /// <inheritdoc/>
+        [DataMember]
+        public Guid AssetId { get; set; }
 
         /// <summary>
         /// Gets the size.

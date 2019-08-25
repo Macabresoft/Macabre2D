@@ -200,7 +200,7 @@
                                 selectedAsset.Parent.AddChild(asset);
                             }
 
-                            asset.Save(this._serializer);
+                            asset.Save(this._serializer, this.ProjectService.CurrentProject.AssetManager);
                             asset.Refresh(this.ProjectService.CurrentProject.AssetManager);
                         }, () => {
                             asset.Parent.RemoveChild(asset);

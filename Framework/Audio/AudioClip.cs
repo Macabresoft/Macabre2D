@@ -7,7 +7,7 @@
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    public sealed class AudioClip : BaseIdentifiable, IDisposable {
+    public sealed class AudioClip : BaseIdentifiable, IAsset, IDisposable {
         private bool _disposedValue = false;
 
         /// <summary>
@@ -19,22 +19,19 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioClip"/> class.
         /// </summary>
-        /// <param name="contentId">The content identifier.</param>
+        /// <param name="assetId">The asset identifier.</param>
         /// <param name="contentManager">The content manager.</param>
         /// <param name="volume">The volume.</param>
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
-        public AudioClip(Guid contentId, float volume, float pan, float pitch) {
-            this.ContentId = contentId;
+        public AudioClip(Guid assetId, float volume, float pan, float pitch) {
+            this.AssetId = assetId;
             this.LoadSoundEffect(volume, pan, pitch);
         }
 
-        /// <summary>
-        /// Gets or sets the content identifier.
-        /// </summary>
-        /// <value>The content identifier.</value>
+        /// <inheritdoc/>
         [DataMember]
-        public Guid ContentId { get; set; }
+        public Guid AssetId { get; set; }
 
         internal SoundEffectInstance SoundEffectInstance { get; set; }
 
@@ -51,7 +48,7 @@
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
         public void LoadSoundEffect(float volume, float pan, float pitch) {
-            var soundEffect = AssetManager.Instance.Load<SoundEffect>(this.ContentId);
+            var soundEffect = AssetManager.Instance.Load<SoundEffect>(this.AssetId);
 
             if (soundEffect != null) {
                 this.SoundEffectInstance = soundEffect.CreateInstance();

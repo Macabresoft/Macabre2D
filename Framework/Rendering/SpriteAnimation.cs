@@ -9,7 +9,7 @@
     /// <summary>
     /// An animation that explicitly uses sprites.
     /// </summary>
-    public sealed class SpriteAnimation : BaseIdentifiable {
+    public sealed class SpriteAnimation : BaseIdentifiable, IAsset {
 
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new List<SpriteAnimationStep>();
@@ -29,6 +29,10 @@
             this._steps.AddRange(steps);
             this._shouldLoop = shouldLoop;
         }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public Guid AssetId { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this animation should loop.
@@ -107,7 +111,7 @@
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._steps.Select(x => x.Sprite).Where(x => x?.Texture != null)) {
-                        sprite.Texture = AssetManager.Instance.Load<Texture2D>(sprite.ContentId);
+                        sprite.Texture = AssetManager.Instance.Load<Texture2D>(sprite.AssetId);
                     }
                 }
                 finally {

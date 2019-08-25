@@ -79,6 +79,17 @@
         }
 
         /// <inheritdoc/>
+        public Guid AssetId {
+            get {
+                return Guid.NewGuid();
+            }
+
+            set {
+                return;
+            }
+        }
+
+        /// <inheritdoc/>
         public T AddComponent<T>() where T : BaseComponent, new() {
             return default;
         }

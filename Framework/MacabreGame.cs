@@ -141,11 +141,11 @@
 
         /// <inheritdoc/>
         protected override void LoadContent() {
-            this.AssetManager.Load<AssetManager>(Framework.AssetManager.ContentFileName);
+            this.AssetManager = this.Content.Load<AssetManager>(Framework.AssetManager.ContentFileName);
             this.AssetManager.Initialize(this.Content);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
-            this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupSceneContentId);
+            this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupSceneAssetId);
             this.CurrentScene?.LoadContent();
             this._isLoaded = true;
         }

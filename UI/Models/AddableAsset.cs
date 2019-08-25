@@ -16,7 +16,7 @@
         public bool RequiresCreation { get; set; }
     }
 
-    public abstract class AddableAsset<T> : AddableAsset where T : new() {
+    public abstract class AddableAsset<T> : AddableAsset where T : IAsset, new() {
         private ResettableLazy<T> _savableValue;
 
         public AddableAsset() : base() {
@@ -34,6 +34,9 @@
         }
 
         public override void Refresh(AssetManager assetManager) {
+            this.SavableValue.AssetId = this.Id;
+            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+
             if (this._savableValue.IsValueCreated && this.SavableValue is IDisposable disposable) {
                 disposable.Dispose();
             }

@@ -107,7 +107,7 @@
         }
 
         public override void Refresh(AssetManager assetManager) {
-            this.SavableValue.ContentId = this.Id;
+            this.SavableValue.AssetId = this.Id;
             this.SavableValue.Id = this.FontId;
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
 

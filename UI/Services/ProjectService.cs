@@ -136,7 +136,7 @@
 
             if (result) {
                 await Task.Run(async () => {
-                    this.CurrentProject.GameSettings.StartupSceneContentId = this.CurrentProject.StartUpSceneAsset?.Id ?? Guid.Empty;
+                    this.CurrentProject.GameSettings.StartupSceneAssetId = this.CurrentProject.StartUpSceneAsset?.Id ?? Guid.Empty;
 
                     var properties = new Dictionary<string, string> {
                         { "Configuration", mode.ToString() }
@@ -332,7 +332,7 @@
             var sourcePath = this.GetSourcePath();
             var dllPath = $@"{sourcePath}\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.GameSettings, this._serializer, dllPath);
+                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPath);
             }
         }
 

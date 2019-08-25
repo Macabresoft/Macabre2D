@@ -7,7 +7,7 @@
     /// <summary>
     /// A interface for defining a scene that the <see cref="MacabreGame"/> can interact with.
     /// </summary>
-    public interface IScene {
+    public interface IScene : IAsset {
 
         /// <summary>
         /// Occurs when component added.

@@ -37,12 +37,6 @@
             base.Delete();
         }
 
-        public override void Refresh(AssetManager assetManager) {
-            this.AudioClip.ContentId = this.Id;
-            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
-            base.Refresh(assetManager);
-        }
-
         private string GetImporterName() {
             var result = string.Empty;
             if (this.Name.ToUpper().EndsWith(".WAV")) {

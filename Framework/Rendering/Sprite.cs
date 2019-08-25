@@ -8,7 +8,7 @@
     /// <summary>
     /// Represents a sprite that can be loaded as content.
     /// </summary>
-    public sealed class Sprite : BaseIdentifiable, IDisposable {
+    public sealed class Sprite : BaseIdentifiable, IAsset, IDisposable {
         private bool _disposedValue = false;
 
         /// <summary>
@@ -20,9 +20,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
         /// </summary>
-        /// <param name="contentId">The content identifier.</param>
-        public Sprite(Guid contentId) {
-            this.ContentId = contentId;
+        /// <param name="assetId">The asset identifier.</param>
+        public Sprite(Guid assetId) {
+            this.AssetId = assetId;
             this.LoadTexture();
         }
 
@@ -33,7 +33,7 @@
         /// <param name="location">The location of this specific sprite on the <see cref="Texture2D"/>.</param>
         /// <param name="size">The size of this specific sprite on the <see cref="Texture2D"/>.</param>
         public Sprite(Guid id, Point location, Point size) {
-            this.ContentId = id;
+            this.AssetId = id;
             this.LoadTexture(location, size);
         }
 
@@ -58,12 +58,9 @@
             this.LoadTexture(texture, location, size);
         }
 
-        /// <summary>
-        /// Gets or sets the content identifier.
-        /// </summary>
-        /// <value>The content identifier.</value>
+        /// <inheritdoc/>
         [DataMember]
-        public Guid ContentId { get; internal set; }
+        public Guid AssetId { get; set; }
 
         /// <summary>
         /// Gets the location.
@@ -97,9 +94,9 @@
         /// Loads the content.
         /// </summary>
         public void LoadContent() {
-            if (this.ContentId != Guid.Empty) {
+            if (this.AssetId != Guid.Empty) {
                 try {
-                    this.Texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+                    this.Texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
                 }
                 catch {
                     this.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
@@ -132,12 +129,12 @@
         }
 
         private void LoadTexture() {
-            var texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+            var texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
             this.LoadTexture(texture, Point.Zero, new Point(texture.Width, texture.Height));
         }
 
         private void LoadTexture(Point location, Point size) {
-            var texture = AssetManager.Instance.Load<Texture2D>(this.ContentId);
+            var texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
             this.LoadTexture(texture, location, size);
         }
 

@@ -178,13 +178,13 @@
         }
 
         protected void RemoveIdentifiableContentFromScenes(Guid id) {
-            var projectAsset = this.GetRootFolder();
+            var projectAsset = this.GetRootFolder() as Project.ProjectAsset;
 
             if (projectAsset != null) {
                 var sceneAssets = projectAsset.GetAssetsOfType<SceneAsset>();
 
                 foreach (var sceneAsset in sceneAssets) {
-                    sceneAsset.Refresh(null);
+                    sceneAsset.Refresh(projectAsset.Project?.AssetManager);
                     var scene = sceneAsset.SavableValue;
                     var contentAssets = scene.GetAllComponentsOfType<IAssetComponent>();
 
