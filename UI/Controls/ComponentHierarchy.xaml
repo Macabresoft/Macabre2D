@@ -23,9 +23,6 @@
             <Button Content="Remove"
                     Command="{Binding RemoveComponentCommand}"
                     ToolTip="Removes the selected component from the tree, including all children." />
-            <Button Content="Clone              "
-                    Command="{Binding CloneComponentCommand}"
-                    ToolTip="Clones the selected component and all its children." />
         </StackPanel>
 
         <TreeView Grid.Row="1"
@@ -35,10 +32,24 @@
                   dragDrop:DragDrop.DropHandler="{Binding}"
                   ItemsSource="{Binding Root, Converter={StaticResource _componentParentToCollectionConverter}}"
                   SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.Resources>
+                <ContextMenu x:Key="ComponentContextMenu">
+                    <MenuItem Header="Add"
+                              Command="{Binding DataContext.AddComponentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
+                              ToolTip="Adds a component under the currently selected item." />
+                    <MenuItem Header="Remove"
+                              Command="{Binding DataContext.RemoveComponentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
+                              ToolTip="Removes the selected component from the tree, including all children." />
+                    <MenuItem Header="Clone"
+                              Command="{Binding DataContext.CloneComponentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
+                              ToolTip="Clones the selected component and all its children." />
+                </ContextMenu>
+            </TreeView.Resources>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource MetroTreeViewItem}">
                     <Setter Property="IsExpanded"
                             Value="True" />
+                    <Setter Property="ContextMenu" Value="{StaticResource ComponentContextMenu}" />
                     <EventSetter Event="MouseDoubleClick" Handler="TreeItem_MouseDoubleClick" />
                 </Style>
             </TreeView.ItemContainerStyle>
