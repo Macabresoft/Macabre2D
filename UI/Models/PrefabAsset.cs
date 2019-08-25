@@ -22,5 +22,10 @@
                 return AssetType.Prefab;
             }
         }
+
+        public override void Delete() {
+            this.RemoveIdentifiableContentFromScenes(this.SavableValue.Id);
+            base.Delete();
+        }
     }
 }
