@@ -31,7 +31,7 @@
         [DataMember]
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
-        public void CopyMonoGameFrameworkDLL(string destination) {
+        public void CopyDependencies(string destination) {
             var source = Path.Combine("Configurations", this.Platform.ToString());
             var target = Path.Combine(destination, this.Platform.ToString());
             FileHelper.CopyDirectory(source, target);

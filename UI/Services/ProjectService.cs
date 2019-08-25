@@ -96,7 +96,7 @@
             }
 
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.CopyMonoGameFrameworkDLL(referencePath);
+                configuration.CopyDependencies(referencePath);
             }
 
             var result = true;

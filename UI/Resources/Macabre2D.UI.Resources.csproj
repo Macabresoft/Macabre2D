@@ -109,6 +109,34 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="default.spritefont" />
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\libopenal.1.dylib">
+      <Link>Configurations\DesktopGL\libopenal.1.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\libSDL2-2.0.0.dylib">
+      <Link>Configurations\DesktopGL\libSDL2-2.0.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\MonoGame.Framework.dll.config">
+      <Link>Configurations\DesktopGL\MonoGame.Framework.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\libopenal.so.1">
+      <Link>Configurations\DesktopGL\x64\libopenal.so.1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\libSDL2-2.0.so.0">
+      <Link>Configurations\DesktopGL\x64\libSDL2-2.0.so.0</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\libopenal.so.1">
+      <Link>Configurations\DesktopGL\x86\libopenal.so.1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\libSDL2-2.0.so.0">
+      <Link>Configurations\DesktopGL\x86\libSDL2-2.0.so.0</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -147,13 +175,31 @@
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\MonoGame.Framework.dll">
       <Link>Configurations\DesktopGL\MonoGame.Framework.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Debug\MonoGame.Framework.dll">
       <Link>Configurations\DesktopGL\MonoGame.Framework.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\SDL2.dll">
+      <Link>Configurations\DesktopGL\x64\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x64\soft_oal.dll">
+      <Link>Configurations\DesktopGL\x64\soft_oal.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\SDL2.dll">
+      <Link>Configurations\DesktopGL\x86\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Release\x86\soft_oal.dll">
+      <Link>Configurations\DesktopGL\x86\soft_oal.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
