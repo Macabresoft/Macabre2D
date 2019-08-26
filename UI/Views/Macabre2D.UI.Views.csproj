@@ -143,6 +143,9 @@
     <Compile Include="Dialogs\EditTileSetDialog.xaml.cs">
       <DependentUpon>EditTileSetDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SaveAssetAsDialog.xaml.cs">
+      <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\SaveDiscardCancelDialog.xaml.cs">
       <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
     </Compile>
@@ -227,6 +230,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\EditTileSetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SaveAssetAsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

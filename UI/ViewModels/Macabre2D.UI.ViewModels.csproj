@@ -94,6 +94,7 @@
     <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
     <Compile Include="Dialogs\EditTileSetViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
+    <Compile Include="Dialogs\SaveAssetAsViewModel.cs" />
     <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
     <Compile Include="Dialogs\SaveSceneViewModel.cs" />
     <Compile Include="Dialogs\SelectAssetViewModel.cs" />

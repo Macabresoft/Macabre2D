@@ -96,9 +96,32 @@
             return false;
         }
 
-        public bool ShowSaveAssetAsDialog(AddableAsset asset) {
-            throw new NotImplementedException();
-            // Show a dialog where you select an asset folder and a name, then save said asset
+        public bool ShowSaveAssetAsDialog(Project project, AddableAsset asset) {
+            if (asset == null) {
+                throw new ArgumentNullException(nameof(asset));
+            }
+
+            if (project == null) {
+                throw new ArgumentNullException(nameof(project));
+            }
+
+            var window = this._container.Resolve<SaveAssetAsDialog>(new ParameterOverride("project", project));
+            window.ViewModel.Name = asset.NameWithoutExtension;
+
+            var result = window.SimpleShowDialog();
+            if (result) {
+                asset.Name = window.ViewModel.Name.EndsWith(asset.FileExtension) ? window.ViewModel.Name : $"{window.ViewModel.Name}{asset.FileExtension}";
+                if (window.ViewModel.SelectedAsset is FolderAsset folder) {
+                    asset.Parent = folder;
+                }
+                else {
+                    asset.Parent = project.AssetFolder;
+                }
+
+                asset.Save(this._serializer, project.AssetManager);
+            }
+
+            return result;
         }
 
         public SaveDiscardCancelResult ShowSaveDiscardCancelDialog() {

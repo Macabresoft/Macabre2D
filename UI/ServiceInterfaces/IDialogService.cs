@@ -16,7 +16,7 @@
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);
 
-        bool ShowSaveAssetAsDialog(AddableAsset asset);
+        bool ShowSaveAssetAsDialog(Project project, AddableAsset asset);
 
         SaveDiscardCancelResult ShowSaveDiscardCancelDialog();
 
