@@ -36,21 +36,19 @@
 
         private readonly RelayCommand _addComponentCommand;
         private readonly RelayCommand _cloneComponentCommand;
-        private readonly IComponentService _componentService;
-        private readonly IDialogService _dialogService;
-        private readonly IMonoGameService _monoGameService;
+        private readonly IComponentService _componentService = ViewContainer.Resolve<IComponentService>();
+        private readonly RelayCommand _createPrefabCommand;
+        private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
+        private readonly IMonoGameService _monoGameService = ViewContainer.Resolve<IMonoGameService>();
+        private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private readonly RelayCommand _removeComponentCommand;
-        private readonly IUndoService _undoService;
+        private readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
         public ComponentHierarchy() {
-            this._dialogService = ViewContainer.Resolve<IDialogService>();
-            this._monoGameService = ViewContainer.Resolve<IMonoGameService>();
-            this._componentService = ViewContainer.Resolve<IComponentService>();
-            this._undoService = ViewContainer.Resolve<IUndoService>();
-
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._addComponentCommand = new RelayCommand(this.AddComponent, () => this.SelectedItem != null);
             this._cloneComponentCommand = new RelayCommand(this.CloneComponent, () => this.SelectedItem is ComponentWrapper);
+            this._createPrefabCommand = new RelayCommand(this.CreatePrefab, () => this.SelectedItem is ComponentWrapper);
             this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem is ComponentWrapper);
             this.InitializeComponent();
         }
@@ -64,6 +62,12 @@
         public ICommand CloneComponentCommand {
             get {
                 return this._cloneComponentCommand;
+            }
+        }
+
+        public ICommand CreatePrefabCommand {
+            get {
+                return this._createPrefabCommand;
             }
         }
 
@@ -145,6 +149,30 @@
             }
         }
 
+        private void CreatePrefab() {
+            if (this.SelectedItem is ComponentWrapper component) {
+                var clone = component.Component.Clone();
+                clone.Parent = null;
+                var asset = new PrefabAsset(clone.Name);
+                asset.RequiresCreation = true;
+                asset.SavableValue.Component = clone;
+                if (this._dialogService.ShowSaveAssetAsDialog(this._projectService.CurrentProject, asset)) {
+                    this._undoService.Clear();
+                    var parent = component.Parent;
+                    parent.RemoveChild(component);
+
+                    var prefabComponent = new PrefabComponent() {
+                        Name = $"{clone.Name} (prefab)",
+                        Prefrab = asset.SavableValue
+                    };
+
+                    var prefabComponentWrapper = new ComponentWrapper(prefabComponent);
+                    parent.AddChild(prefabComponentWrapper);
+                    this.SelectedItem = prefabComponentWrapper;
+                }
+            }
+        }
+
         private void RemoveComponent() {
             if (this.SelectedItem is ComponentWrapper component) {
                 UndoCommand undoCommand;
@@ -177,6 +205,7 @@
             this.SelectedComponent = e.NewValue as ComponentWrapper;
             this._addComponentCommand.RaiseCanExecuteChanged();
             this._cloneComponentCommand.RaiseCanExecuteChanged();
+            this._createPrefabCommand.RaiseCanExecuteChanged();
             this._removeComponentCommand.RaiseCanExecuteChanged();
         }
     }

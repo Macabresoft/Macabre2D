@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// A component that contains a <see cref="Prefab"/>.
@@ -27,6 +28,7 @@
         /// Gets or sets the prefrab.
         /// </summary>
         /// <value>The prefrab.</value>
+        [DataMember]
         public Prefab Prefrab {
             get {
                 return this._prefab;
@@ -43,15 +45,20 @@
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var component = this.Prefrab?.Component;
-            if (component is IDrawableComponent drawable) {
+            if (component != null) {
                 var componentWorldTransform = component.WorldTransform;
+                var drawables = component.GetChildrenOfType<IDrawableComponent>();
+
                 try {
                     component.SetWorldTransform(this.WorldTransform.Position, this.WorldTransform.Scale);
-                    drawable.Draw(gameTime, viewBoundingArea);
+                    this.DrawComponent(component as IDrawableComponent, gameTime, viewBoundingArea);
+
+                    foreach (var drawable in drawables) {
+                        this.DrawComponent(drawable, gameTime, viewBoundingArea);
+                    }
                 }
                 finally {
                     component.SetWorldTransform(componentWorldTransform.Position, componentWorldTransform.Scale);
-                    component.Parent = null;
                 }
             }
         }
@@ -112,6 +119,12 @@
                 else {
                     component.Initialize(this.Scene);
                 }
+            }
+        }
+
+        private void DrawComponent(IDrawableComponent drawable, GameTime gameTime, BoundingArea viewBoundingArea) {
+            if (drawable?.IsVisible == true) {
+                drawable.Draw(gameTime, viewBoundingArea);
             }
         }
     }

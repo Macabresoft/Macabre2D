@@ -225,11 +225,11 @@
         }
 
         private async Task DeleteAsset() {
-            if (this.AssetService.SelectedAsset != null &&
-                this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.AssetService.SelectedAsset.Name}? This action cannot be undone.")) {
+            if (this.AssetService.SelectedAsset != null && this._dialogService.ShowYesNoMessageBox("Delete Asset", $"Delete {this.AssetService.SelectedAsset.Name}? This action cannot be undone.")) {
                 this.AssetService.SelectedAsset.Delete();
                 this.AssetService.SelectedAsset = this.ProjectService.CurrentProject.AssetFolder;
                 await this.ProjectService.SaveProject();
+                this._undoService.Clear();
             }
         }
 

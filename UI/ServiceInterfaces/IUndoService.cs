@@ -8,6 +8,8 @@
 
         bool CanUndo { get; }
 
+        void Clear();
+
         void Do(UndoCommand undoCommand);
 
         void Redo();

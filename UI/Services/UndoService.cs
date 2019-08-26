@@ -22,6 +22,12 @@
             }
         }
 
+        public void Clear() {
+            this._redoStack.Clear();
+            this._undoStack.Clear();
+            this.RaiseProperties();
+        }
+
         public void Do(UndoCommand undoCommand) {
             undoCommand.Do();
             this._undoStack.Push(undoCommand);

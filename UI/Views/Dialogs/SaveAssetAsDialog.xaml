@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
@@ -21,7 +22,6 @@
                                AssetTypeMask="{x:Static models:AssetType.Folder}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                AllowNull="False" />
-
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -29,26 +29,28 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
-                       FontWeight="Bold"
-                       Text="Name" />
+                       Margin="{StaticResource StandardMarginAll}"
+                       VerticalAlignment="Center"
+                       Text="Name:" />
 
             <TextBox Grid.Column="1"
+                     VerticalAlignment="Center"
                      Text="{Binding Name}" />
         </Grid>
 
         <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Grid.Row="2"
-                    Margin="{StaticResource StandardMarginAll}">
+                        HorizontalAlignment="Right"
+                        Grid.Row="2"
+                        Margin="{StaticResource StandardMarginAll}">
             <Button Content="_Save"
-                    Command="{Binding OKCommand}"
-                    HorizontalAlignment="Right"
-                    IsDefault="True"
-                    Width="65" />
+                        Command="{Binding OKCommand}"
+                        HorizontalAlignment="Right"
+                        IsDefault="True"
+                        Width="65" />
             <Button Content="_Cancel"
-                    Command="{Binding CancelCommand}"
-                    IsCancel="True"
-                    Width="65" />
+                        Command="{Binding CancelCommand}"
+                        IsCancel="True"
+                        Width="65" />
         </StackPanel>
     </Grid>
 </metro:MetroWindow>

@@ -43,6 +43,9 @@
                     <MenuItem Header="Clone"
                               Command="{Binding DataContext.CloneComponentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
                               ToolTip="Clones the selected component and all its children." />
+                    <MenuItem Header="Create Prefab"
+                              Command="{Binding DataContext.CreatePrefabCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
+                              ToolTip="Creates a prefab from the current component and converts it to a PrefabComponent." />
                 </ContextMenu>
             </TreeView.Resources>
             <TreeView.ItemContainerStyle>
