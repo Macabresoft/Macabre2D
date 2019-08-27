@@ -5,6 +5,7 @@
              xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Models.FrameworkWrappers;assembly=Macabre2D.UI.Models"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
              xmlns:dragDrop="urn:gong-wpf-dragdrop"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:ComponentParentToCollectionConverter x:Key="_componentParentToCollectionConverter" />
@@ -17,12 +18,16 @@
 
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <Button Content="Add"
-                    Command="{Binding AddComponentCommand}"
-                    ToolTip="Adds a component under the currently selected item." />
-            <Button Content="Remove"
-                    Command="{Binding RemoveComponentCommand}"
-                    ToolTip="Removes the selected component from the tree, including all children." />
+            <Button Command="{Binding AddComponentCommand}"
+                    ToolTip="Adds a component under the currently selected component.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Plus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding RemoveComponentCommand}"
+                    ToolTip="Removes the selected component from the tree, including all children.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Minus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
         </StackPanel>
 
         <TreeView Grid.Row="1"
