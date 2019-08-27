@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
@@ -99,12 +100,21 @@
 
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal">
-            <Button Content="Add"
-                    Command="{Binding AddAssetCommand}"
-                    ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item." />
-            <Button Content="Delete"
-                    Command="{Binding DeleteAssetCommand}"
-                    ToolTip="Deletes the selected asset from the project, including all children if the item is a folder. You cannot undo this action." />
+            <Button Command="{Binding NewFolderCommand}"
+                    ToolTip="Adds a folder.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FolderPlus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding AddAssetCommand}"
+                    ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FilePlus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding DeleteAssetCommand}"
+                    ToolTip="Deletes the selected asset from the project, including all children if the item is a folder. You cannot undo this action.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Delete}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
         </StackPanel>
 
         <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"
