@@ -45,6 +45,10 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+            if (this.PrimitiveDrawer == null) {
+                return;
+            }
+
             var spriteBatch = MacabreGame.Instance.SpriteBatch;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var boundingArea = this.BoundingArea;

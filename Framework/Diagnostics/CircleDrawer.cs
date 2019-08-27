@@ -46,7 +46,7 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.Radius > 0f) {
+            if (this.Radius > 0f && this.PrimitiveDrawer != null) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawCircle(MacabreGame.Instance.SpriteBatch, this.Radius, this.WorldTransform.Position, this.Complexity, this.Color, lineThickness);
             }

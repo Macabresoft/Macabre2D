@@ -187,6 +187,9 @@
             else if (filePath.ToUpper().EndsWith(FileHelper.AutoTileSetExtension.ToUpper())) {
                 result = this.CreateAssetFromMetadata<AutoTileSetAsset>(filePath, fileName, serializer);
             }
+            else if (filePath.ToUpper().EndsWith(FileHelper.PrefabExtension.ToUpper())) {
+                result = this.CreateAssetFromMetadata<PrefabAsset>(filePath, fileName, serializer);
+            }
             else if (!FileHelper.IsMetadataFile(fileName)) {
                 result = new Asset(fileName);
             }

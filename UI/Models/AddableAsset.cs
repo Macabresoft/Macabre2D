@@ -60,6 +60,7 @@
         }
 
         protected override void SaveChanges(Serializer serializer) {
+            this.SavableValue.AssetId = this.Id;
             serializer.Serialize(this.SavableValue, this.GetPath());
             this.RequiresCreation = false;
         }

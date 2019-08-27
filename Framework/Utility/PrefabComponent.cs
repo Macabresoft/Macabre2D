@@ -37,6 +37,11 @@
             internal set {
                 if (this._prefab != value) {
                     this._prefab = value;
+
+                    if (this._prefab?.Component != null && this.IsInitialized) {
+                        this._prefab.Component.Initialize(this.Scene);
+                    }
+
                     this.LoadContent();
                 }
             }

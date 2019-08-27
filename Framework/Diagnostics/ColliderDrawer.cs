@@ -31,7 +31,7 @@
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var body = this.Body ?? this.Parent as IPhysicsBody;
-            if (body != null) {
+            if (body != null && this.PrimitiveDrawer != null) {
                 var spriteBatch = MacabreGame.Instance.SpriteBatch;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 var colliders = body.GetColliders();

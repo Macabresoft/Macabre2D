@@ -16,7 +16,7 @@
 
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             var spriteBatch = MacabreGame.Instance.SpriteBatch;
-            this.PrimitiveDrawer.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
+            this.PrimitiveDrawer?.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
         }
 
         public void Update(GameTime gameTime) {

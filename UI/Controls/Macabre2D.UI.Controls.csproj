@@ -250,6 +250,9 @@
     <Compile Include="AssetEditors\SpriteAnimationAssetEditor.xaml.cs">
       <DependentUpon>SpriteAnimationAssetEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\PrefabEditor.xaml.cs">
+      <DependentUpon>PrefabEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\RectangleColliderEditor.xaml.cs">
       <DependentUpon>RectangleColliderEditor.xaml</DependentUpon>
     </Compile>
@@ -389,6 +392,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetEditors\SpriteAnimationAssetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ValueEditors\PrefabEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

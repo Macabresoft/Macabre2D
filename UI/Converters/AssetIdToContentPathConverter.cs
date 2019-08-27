@@ -5,7 +5,7 @@
     using System.Globalization;
     using System.Windows.Data;
 
-    public sealed class ContentIdToContentPathConverter : IValueConverter {
+    public sealed class AssetIdToContentPathConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             string result = null;
@@ -13,7 +13,7 @@
                 result = AssetManager.Instance.GetPath(guid);
             }
 
-            return result;
+            return string.IsNullOrWhiteSpace(result) ? null : result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

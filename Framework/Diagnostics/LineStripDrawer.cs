@@ -44,7 +44,7 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this._points.Any()) {
+            if (this.PrimitiveDrawer != null && this._points.Any()) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawLineStrip(MacabreGame.Instance.SpriteBatch, this.Color, lineThickness, this.Points.ToArray());
             }

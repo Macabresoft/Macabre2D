@@ -29,7 +29,7 @@
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
-            if (this.LineThickness <= 0f || this.Color == Color.Transparent || this.BoundingArea.Maximum == this.BoundingArea.Minimum) {
+            if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this.Color == Color.Transparent || this.BoundingArea.Maximum == this.BoundingArea.Minimum) {
                 return;
             }
 
