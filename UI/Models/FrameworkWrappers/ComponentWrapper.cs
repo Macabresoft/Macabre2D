@@ -31,7 +31,6 @@
             }
 
             this.EditingStyle = this.GetEditingStyle();
-            this.Commands = this.GetCommands();
         }
 
         public IReadOnlyCollection<ComponentWrapper> Children {
@@ -39,8 +38,6 @@
                 return this._children;
             }
         }
-
-        public IReadOnlyCollection<ComponentCommand> Commands { get; }
 
         public BaseComponent Component { get; }
 
@@ -149,21 +146,6 @@
             }
 
             this.RaisePropertyChanged(nameof(this.Children));
-        }
-
-        private IReadOnlyCollection<ComponentCommand> GetCommands() {
-            // TODO: maybe worry about the undo service?
-            var commands = new List<ComponentCommand>();
-            var component = this.Component;
-            var methodInfos = component.GetType().GetAllMethods(typeof(ComponentCommandAttribute));
-
-            foreach (var methodInfo in methodInfos) {
-                if (methodInfo.GetCustomAttributes(typeof(ComponentCommandAttribute), true).FirstOrDefault() is ComponentCommandAttribute attribute) {
-                    commands.Add(new ComponentCommand(attribute.Name, () => methodInfo.Invoke(component, null)));
-                }
-            }
-
-            return commands;
         }
 
         private ComponentEditingStyle GetEditingStyle() {

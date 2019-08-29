@@ -92,7 +92,6 @@
     <Compile Include="AudioAsset.cs" />
     <Compile Include="AutoTileSetAsset.cs" />
     <Compile Include="BuildConfiguration.cs" />
-    <Compile Include="ComponentCommand.cs" />
     <Compile Include="FileStringExtensions.cs" />
     <Compile Include="FolderAsset.cs" />
     <Compile Include="FontAsset.cs" />

@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Controls {
 
-    using Macabre2D.UI.Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
@@ -8,22 +7,23 @@
 
     public partial class CommandContextMenu : UserControl {
 
-        public static readonly DependencyProperty CommandsProperty = DependencyProperty.Register(nameof(Commands),
-            typeof(IReadOnlyCollection<ComponentCommand>),
+        public static readonly DependencyProperty MenuItemsProperty = DependencyProperty.Register(
+            nameof(MenuItems),
+            typeof(IEnumerable<MenuItem>),
             typeof(CommandContextMenu),
-            new PropertyMetadata(new List<ComponentCommand>(), new PropertyChangedCallback(OnCommandsChanged)));
+            new PropertyMetadata(Enumerable.Empty<MenuItem>(), new PropertyChangedCallback(OnMenuItemsChanged)));
 
         public CommandContextMenu() {
             this.Loaded += this.CommandContextMenu_Loaded;
             this.InitializeComponent();
         }
 
-        public IReadOnlyCollection<ComponentCommand> Commands {
-            get { return (IReadOnlyCollection<ComponentCommand>)this.GetValue(CommandsProperty); }
-            set { this.SetValue(CommandsProperty, value); }
+        public IEnumerable<MenuItem> MenuItems {
+            get { return (IEnumerable<MenuItem>)this.GetValue(MenuItemsProperty); }
+            set { this.SetValue(MenuItemsProperty, value); }
         }
 
-        private static void OnCommandsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnMenuItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is CommandContextMenu control) {
                 control.Reload();
             }
@@ -40,14 +40,11 @@
         }
 
         private void Reload() {
-            this.Visibility = this.Commands.Any() ? Visibility.Visible : Visibility.Collapsed;
+            this.Visibility = this.MenuItems?.Any() == true ? Visibility.Visible : Visibility.Collapsed;
             this._contextMenu.Items.Clear();
 
-            foreach (var command in this.Commands) {
-                this._contextMenu.Items.Add(new MenuItem() {
-                    Header = command.Name,
-                    Command = command.Command
-                });
+            foreach (var menuItem in this.MenuItems) {
+                this._contextMenu.Items.Add(menuItem);
             }
         }
     }

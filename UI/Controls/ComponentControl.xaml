@@ -8,6 +8,7 @@
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:ComponentToCommandMenuItemsConverter x:Key="_componentToMenuItems" />
     </UserControl.Resources>
     <ScrollViewer DataContext="{Binding ElementName=_componentControl}"
                   HorizontalScrollBarVisibility="Disabled"
@@ -42,7 +43,7 @@
                                                Title="Name"
                                                Value="{Binding ComponentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <local:CommandContextMenu Grid.Column="1"
-                                              Commands="{Binding Component.Commands, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                                              MenuItems="{Binding Component, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _componentToMenuItems}}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
