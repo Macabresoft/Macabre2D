@@ -162,6 +162,9 @@
     <Compile Include="AssetEditors\SpriteWrapperEditor.xaml.cs">
       <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CommandContextMenu.xaml.cs">
+      <DependentUpon>CommandContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditableTreeViewItemControl.xaml.cs">
       <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
     </Compile>
@@ -292,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetEditors\SpriteWrapperEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CommandContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

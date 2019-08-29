@@ -113,6 +113,7 @@
     <Compile Include="AssetTypeToIconConverter.cs" />
     <Compile Include="AssetTypeMaskToVisibilityConverter.cs" />
     <Compile Include="BoolToVisibilityConverter.cs" />
+    <Compile Include="ComponentCommandsToMenuItemsConverter.cs" />
     <Compile Include="ComponentParentToCollectionConverter.cs" />
     <Compile Include="ComponentWrapperEditingStyleToVisibilityConverter.cs" />
     <Compile Include="AssetIdToContentPathConverter.cs" />

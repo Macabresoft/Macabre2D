@@ -112,8 +112,9 @@
         /// <summary>
         /// Clears all active tiles.
         /// </summary>
+        [ComponentCommand("Clear Tiles")]
         public void ClearTiles() {
-            this.ClearTiles();
+            this.ClearActiveTiles();
             this.MinimumTile = Point.Zero;
             this.MaximumTile = Point.Zero;
             this.ResetBoundingArea();

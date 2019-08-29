@@ -73,6 +73,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssetManager.cs" />
+    <Compile Include="Attributes\ComponentCommandAttribute.cs" />
     <Compile Include="BaseIdentifiable.cs" />
     <Compile Include="Interfaces\IAsset.cs" />
     <Compile Include="Interfaces\IEnableableComponent.cs" />

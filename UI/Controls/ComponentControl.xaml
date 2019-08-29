@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
              xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+             xmlns:local="clr-namespace:Macabre2D.UI.Controls"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
@@ -31,9 +32,18 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <valueEditors:StringEditor Grid.Row="0"
-                                           Title="Name"
-                                           Value="{Binding ComponentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <valueEditors:StringEditor Grid.Column="0"
+                                               Title="Name"
+                                               Value="{Binding ComponentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <local:CommandContextMenu Grid.Column="1"
+                                              Commands="{Binding Component.Commands, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>

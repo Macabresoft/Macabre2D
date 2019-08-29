@@ -60,6 +60,11 @@
         bool AddTile(Point tile);
 
         /// <summary>
+        /// Clears the tiles.
+        /// </summary>
+        void ClearTiles();
+
+        /// <summary>
         /// Gets the tile that contains.
         /// </summary>
         /// <param name="worldPosition">The world position.</param>

@@ -7,6 +7,23 @@
 
     public static class TypeExtensions {
 
+        public static IEnumerable<MethodInfo> GetAllMethods(this Type owner) {
+            var result = new List<MethodInfo>();
+            var currentType = owner;
+
+            while (currentType != null) {
+                var methods = currentType.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                result.AddRange(methods.Where(x => !result.Any(y => y.MetadataToken == x.MetadataToken)));
+                currentType = currentType.BaseType;
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<MethodInfo> GetAllMethods(this Type owner, Type methodAttribute) {
+            return owner.GetAllMethods().Where(method => Attribute.IsDefined(method, methodAttribute));
+        }
+
         public static IEnumerable<MemberInfo> GetFieldsAndProperties(this Type owner, Type memberAttribute) {
             return owner.GetFieldsAndProperties().Where(prop => Attribute.IsDefined(prop, memberAttribute));
         }
