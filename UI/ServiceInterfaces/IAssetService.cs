@@ -12,5 +12,7 @@
         DependencyObject GetEditor(Asset asset);
 
         void RenameAsset(Asset asset, string newName);
+
+        void SelectAsset(Project project, string contentPath);
     }
 }

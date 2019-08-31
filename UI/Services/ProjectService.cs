@@ -12,6 +12,7 @@
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private const string AssetsLocation = @"Assets";
+        private readonly IAssetService _assetService;
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
         private readonly ISceneService _sceneService;
@@ -21,10 +22,12 @@
 
         public ProjectService(
             Serializer serializer,
+            IAssetService assetService,
             IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
             this._serializer = serializer;
+            this._assetService = assetService;
             this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
@@ -36,16 +39,18 @@
             }
 
             private set {
-                var oldProject = this.CurrentProject;
-                if (this.Set(ref this._currentProject, value) && this._currentProject != null) {
-                    this.CurrentProject.PropertyChanged += this.CurrentProject_PropertyChanged;
-                }
+                if (value != null) {
+                    var oldProject = this.CurrentProject;
+                    if (this.Set(ref this._currentProject, value) && this._currentProject != null) {
+                        this.CurrentProject.PropertyChanged += this.CurrentProject_PropertyChanged;
+                    }
 
-                if (oldProject != null) {
-                    oldProject.PropertyChanged -= this.CurrentProject_PropertyChanged;
-                }
+                    if (oldProject != null) {
+                        oldProject.PropertyChanged -= this.CurrentProject_PropertyChanged;
+                    }
 
-                this.RaisePropertyChanged(nameof(this.HasChanges));
+                    this.RaisePropertyChanged(nameof(this.HasChanges));
+                }
             }
         }
 
@@ -104,7 +109,6 @@
             project.Initialize(this._fileService.ProjectDirectoryPath);
             project.Refresh();
             this.CurrentProject = project;
-
             await this.BuildContent(BuildMode.Debug);
 
             if (this.CurrentProject?.LastSceneOpened != null) {
@@ -131,7 +135,6 @@
             await Task.Run(() => this.CurrentProject.SaveAssets());
             await this._sceneService.SaveCurrentScene(this.CurrentProject);
             await Task.Run(() => this._serializer.Serialize(this.CurrentProject, pathToProject));
-            this._currentProject.Refresh();
             this.HasChanges = false;
             this._currentProject.LastTimeSaved = DateTime.Now;
             return true;

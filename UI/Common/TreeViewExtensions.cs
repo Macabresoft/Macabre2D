@@ -13,7 +13,10 @@
                 foreach (var child in treeViewOrTreeViewItem.Items) {
                     var childTreeViewItem = treeViewOrTreeViewItem.ItemContainerGenerator.ContainerFromItem(child) as TreeViewItem;
 
-                    if (FindTreeViewItem(childTreeViewItem, item) is TreeViewItem deepTreeViewItem) {
+                    if (child == item) {
+                        return childTreeViewItem;
+                    }
+                    else if (FindTreeViewItem(childTreeViewItem, item) is TreeViewItem deepTreeViewItem) {
                         return deepTreeViewItem;
                     }
                 }

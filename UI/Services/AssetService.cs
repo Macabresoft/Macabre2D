@@ -104,6 +104,32 @@
             }
         }
 
+        public void SelectAsset(Project project, string contentPath) {
+            Asset selectedAsset = project.AssetFolder;
+            if (!string.IsNullOrEmpty(contentPath)) {
+                var currentFolder = project.AssetFolder;
+                var assetNames = contentPath.Split(Path.DirectorySeparatorChar);
+
+                for (var i = 0; i < assetNames.Length; i++) {
+                    var currentName = assetNames[i];
+
+                    if (currentFolder.Children.FirstOrDefault(x => x.Name == currentName) is Asset asset) {
+                        if (i + 1 == assetNames.Length) {
+                            selectedAsset = asset;
+                        }
+                        else if (asset is FolderAsset folderAsset) {
+                            currentFolder = folderAsset;
+                        }
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+
+            this.SelectedAsset = selectedAsset;
+        }
+
         private void MoveAsset(Asset asset, string originalPath) {
             if (asset is FolderAsset folder) {
                 this.MoveFolder(folder, originalPath);

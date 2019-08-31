@@ -4,7 +4,6 @@
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
@@ -42,7 +41,7 @@
             new PropertyMetadata(false));
 
         public static readonly DependencyProperty RootAssetProperty = DependencyProperty.Register(
-                    nameof(RootAsset),
+            nameof(RootAsset),
             typeof(IParent<Asset>),
             typeof(AssetBrowser),
             new PropertyMetadata());
@@ -53,10 +52,9 @@
             typeof(AssetBrowser),
             new PropertyMetadata());
 
-        private readonly IAssetService _assetService;
+        private readonly IAssetService _assetService = ViewContainer.Resolve<IAssetService>();
 
         public AssetBrowser() {
-            this._assetService = ViewContainer.Resolve<IAssetService>();
             this.TextChangedCommand = new RelayCommand<string>(x => this._assetService.RenameAsset(this._assetService.SelectedAsset, x));
             this.InitializeComponent();
 
@@ -90,6 +88,7 @@
         }
 
         public RelayCommand NavigateToAssetCommand { get; }
+
         public RelayCommand RefreshCommand { get; }
 
         public IParent<Asset> RootAsset {
@@ -107,7 +106,7 @@
         void IDropTarget.DragOver(IDropInfo dropInfo) {
             if (dropInfo.Data is Asset asset &&
                 dropInfo.TargetItem is Asset target) {
-                if (target is FolderAsset && !(asset is SpriteWrapper || asset is ProjectAsset)) {
+                if (target is FolderAsset && !(asset is ProjectAsset)) {
                     dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                     dropInfo.Effects = DragDropEffects.Move;
                 }
@@ -119,7 +118,7 @@
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo) {
-            if (dropInfo.Data is Asset asset && dropInfo.TargetItem is FolderAsset folder && !(asset is SpriteWrapper || asset is ProjectAsset)) {
+            if (dropInfo.Data is Asset asset && dropInfo.TargetItem is FolderAsset folder && !(asset is ProjectAsset)) {
                 this._assetService.ChangeAssetParent(asset, folder);
             }
         }
@@ -136,7 +135,9 @@
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            this.SelectedAsset = e.NewValue as Asset;
+            if (e.NewValue is Asset asset) {
+                this.SelectedAsset = asset;
+            }
         }
 
         private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
