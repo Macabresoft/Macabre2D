@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.Validation;
     using System;
     using System.Collections.Generic;
@@ -11,6 +12,7 @@
 
     [DataContract]
     public sealed class Project : ValidationModel {
+        public const string ProjectFileName = "Project" + FileHelper.ProjectExtension;
         private readonly List<BuildConfiguration> _buildConfigurations = new List<BuildConfiguration>();
 
         [DataMember]
@@ -21,6 +23,7 @@
         [DataMember]
         private string _name = "Project Name";
 
+        private string _projectDirectoryPath;
         private SceneAsset _startUpSceneAsset;
 
         public Project() {
@@ -64,12 +67,6 @@
             }
         }
 
-        public string Directory {
-            get {
-                return Path.GetDirectoryName(this.PathToProject);
-            }
-        }
-
         [DataMember]
         public GameSettings GameSettings { get; } = new GameSettings();
 
@@ -91,9 +88,6 @@
             }
         }
 
-        [DataMember]
-        public string PathToProject { get; set; }
-
         public string SafeName {
             get {
                 return this.Name?.ToSafeString();
@@ -108,7 +102,9 @@
                 return this._startUpSceneAsset;
             }
             set {
-                this.Set(ref this._startUpSceneAsset, value);
+                if (this.Set(ref this._startUpSceneAsset, value) && this._startUpSceneAsset != null) {
+                    this.GameSettings.StartupSceneAssetId = this._startUpSceneAsset.Id;
+                }
             }
         }
 
@@ -155,6 +151,10 @@
             }
         }
 
+        internal void Initialize(string projectDirectoryPath) {
+            this._projectDirectoryPath = projectDirectoryPath;
+        }
+
         private void AssetFolder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(nameof(this.AssetFolder));
         }
@@ -186,7 +186,7 @@
             }
 
             public override string GetPath() {
-                return Path.Combine(this._project.Directory, base.GetPath());
+                return Path.Combine(this._project._projectDirectoryPath, base.GetPath());
             }
         }
     }

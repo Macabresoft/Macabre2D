@@ -44,11 +44,12 @@
 
         private void LoadMainWindow() {
             this._mainWindow = this._container.Resolve<MainWindow>();
+            var busyService = this._container.Resolve<IBusyService>();
+            var projectService = this._container.Resolve<IProjectService>();
+            busyService.PerformTask(projectService.LoadProject(), true);
+
             var settingsManager = this._container.Resolve<SettingsManager>();
             settingsManager.Initialize();
-            var busyService = this._container.Resolve<IBusyService>();
-            busyService.PerformTask(settingsManager.LoadLastProjectOpened(), true);
-
             var tabName = settingsManager.GetLastOpenTabName();
             var tabs = this._mainWindow.MainTabControl.Items.Cast<TabItem>();
             var selectedTab = tabs.FirstOrDefault(x => x.Header as string == tabName);
@@ -80,6 +81,7 @@
             this._container.RegisterType<IBusyService, BusyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IComponentService, ComponentService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IDialogService, DialogService>();
+            this._container.RegisterType<IFileService, FileService>();
             this._container.RegisterType<ILoggingService, LoggingService>();
             this._container.RegisterType<IMonoGameService, MonoGameService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IProjectService, ProjectService>(new ContainerControlledLifetimeManager());

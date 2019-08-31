@@ -1,43 +1,19 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services.Content;
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.IO.Compression;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Windows;
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private const string AssetsLocation = @"Assets";
-        private const string BinariesLocation = @"Binaries";
-        private const string BinName = @"bin";
-        private const string DebugName = @"Debug";
-        private const string DependenciesLocation = @"Dependencies";
-        private const string GameplayName = @"Gameplay";
-        private const string GitIgnoreFileName = @".gitignore";
-        private const string ReferencesLocation = @"References";
-        private const string ReleaseName = @"Release";
-        private const short SecondsToAttemptDelete = 60;
-        private const string SourceLocation = @"Source";
-        private const string TemplateName = @"TotallyUniqueName123ABC";
-        private readonly IAssemblyService _assemblyService;
-        private readonly IDialogService _dialogService;
-        private readonly GitIgnoreCreator _gitIgnoreCreator = new GitIgnoreCreator();
-
+        private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
-
-        private readonly string[] _referenceFiles = new string[] {
-            @"Macabre2D.Framework.dll",
-            @"Newtonsoft.Json.dll"
-        };
-
         private readonly ISceneService _sceneService;
         private readonly Serializer _serializer;
         private Project _currentProject;
@@ -45,13 +21,11 @@
 
         public ProjectService(
             Serializer serializer,
-            IAssemblyService assemblyService,
-            IDialogService dialogService,
+            IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
             this._serializer = serializer;
-            this._assemblyService = assemblyService;
-            this._dialogService = dialogService;
+            this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
         }
@@ -86,29 +60,15 @@
         }
 
         public async Task<bool> BuildContent(BuildMode mode) {
-            var referencePath = this.GetReferencePath();
-            if (!Directory.Exists(referencePath)) {
-                Directory.CreateDirectory(referencePath);
-            }
-
-            foreach (var file in this._referenceFiles) {
-                File.Copy(file, Path.Combine(referencePath, file), true);
-            }
-
-            foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.CopyDependencies(referencePath);
-            }
-
             var result = true;
             await Task.Run(() => {
                 this.GenerateContentFile(mode);
 
-                var sourcePath = this.GetSourcePath();
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                     var currentDirectory = Directory.GetCurrentDirectory();
                     var exitCode = -1;
 
-                    var contentPath = configuration.GetContentPath(sourcePath);
+                    var contentPath = configuration.GetContentPath(this._fileService.ProjectDirectoryPath);
                     var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
                     var contentDirectory = Path.GetDirectoryName(contentFilePath);
                     var outputDirectory = Path.Combine(contentDirectory, "..", "bin", mode.ToString(), "Content");
@@ -130,197 +90,72 @@
             return result;
         }
 
-        public async Task<bool> BuildProject(BuildMode mode) {
-            var result = await this.BuildContent(mode);
-            var tempDirectoryPath = this.GetTempDirectoryPath();
-
-            if (result) {
-                await Task.Run(async () => {
-                    this.CurrentProject.GameSettings.StartupSceneAssetId = this.CurrentProject.StartUpSceneAsset?.Id ?? Guid.Empty;
-
-                    var properties = new Dictionary<string, string> {
-                        { "Configuration", mode.ToString() }
-                    };
-
-                    var solutionPath = this.GetSolutionPath();
-                    var buildParameters = new Microsoft.Build.Execution.BuildParameters();
-                    var buildRequest = new Microsoft.Build.Execution.BuildRequestData(solutionPath, properties, null, new string[] { "Build" }, null);
-                    var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
-                    result &= buildResult.OverallResult == Microsoft.Build.Execution.BuildResultCode.Success;
-
-                    if (result) {
-                        if (mode == BuildMode.Debug) {
-                            await FileHelper.DeleteDirectory(tempDirectoryPath, SecondsToAttemptDelete, true);
-                            FileHelper.CopyDirectory(this.GetBinPath(true), tempDirectoryPath);
-                        }
-                    }
-                    else if (!Directory.Exists(tempDirectoryPath)) {
-                        Directory.CreateDirectory(tempDirectoryPath);
-                        foreach (var file in this._referenceFiles) {
-                            File.Copy(file, Path.Combine(tempDirectoryPath, file), true);
-                        }
-                    }
-                });
-            }
-
-            await this._assemblyService.LoadAssemblies(tempDirectoryPath);
-            return result;
+        public string GetPathToProject() {
+            return Path.Combine(this._fileService.ProjectDirectoryPath, Project.ProjectFileName);
         }
 
-        public async Task<Project> CreateProject(string initialDirectory = null) {
-            return await this.CreateProject(string.Empty, initialDirectory);
-        }
+        public async Task<Project> LoadProject() {
+            var projectPath = this.GetPathToProject();
 
-        public async Task ExportProject() {
-            if (await this.BuildProject(BuildMode.Release)) {
-                var sourcePath = this.GetSourcePath();
+            var project = File.Exists(projectPath) ?
+                await Task.Run(() => this._serializer.Deserialize<Project>(projectPath)) :
+                await this.CreateProject();
 
-                foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    var binaryFolderPath = configuration.GetBinaryFolderPath(sourcePath, BuildMode.Release);
-                    var releaseLocation = Path.Combine(this.GetBinariesPath(), configuration.Platform.ToString());
-                    await FileHelper.DeleteDirectory(releaseLocation, 10000, true);
-                    FileHelper.CopyDirectory(binaryFolderPath, releaseLocation);
-                }
-            }
-            else {
-                this._dialogService.ShowWarningMessageBox("Build Failed", "The build failed so the project could not be exported.");
-            }
-        }
-
-        public string GetBinPath(bool debug) {
-            return Path.Combine(
-                this.GetSourcePath(),
-                GameplayName,
-                BinName,
-                debug ? DebugName : ReleaseName);
-        }
-
-        public string GetSourcePath() {
-            return Path.Combine(this.CurrentProject.Directory, SourceLocation);
-        }
-
-        public async Task<Project> LoadProject(string location) {
-            var shouldRestart = this._currentProject != null;
-            var project = await Task.Run(() => this._serializer.Deserialize<Project>(location));
-            project.PathToProject = location;
+            project.Initialize(this._fileService.ProjectDirectoryPath);
             project.Refresh();
             this.CurrentProject = project;
 
-            if (shouldRestart) {
-                var saveResult = this._dialogService.ShowSaveDiscardCancelDialog();
-                if (saveResult != SaveDiscardCancelResult.Cancel) {
-                    Process.Start(Application.ResourceAssembly.Location);
-                    Application.Current.Shutdown();
-                }
+            await this.BuildContent(BuildMode.Debug);
+
+            if (this.CurrentProject?.LastSceneOpened != null) {
+                await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
+            }
+            else if (this.CurrentProject?.SceneAssets.FirstOrDefault() is SceneAsset sceneAsset) {
+                await this._sceneService.LoadScene(this.CurrentProject, sceneAsset);
             }
             else {
-                await this.BuildProject(BuildMode.Debug);
-
-                if (this.CurrentProject?.LastSceneOpened != null) {
-                    await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
-                }
-                else if (this.CurrentProject?.SceneAssets.FirstOrDefault() is SceneAsset sceneAsset) {
-                    await this._sceneService.LoadScene(this.CurrentProject, sceneAsset);
-                }
-                else {
-                    var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
-                    this.CurrentProject.LastSceneOpened = scene.SceneAsset;
-                    this._sceneService.HasChanges = true;
-                }
+                var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
+                this.CurrentProject.LastSceneOpened = scene.SceneAsset;
+                this._sceneService.HasChanges = true;
             }
 
             return this.CurrentProject;
         }
 
         public void NavigateToProjectLocation() {
-            Process.Start(this.CurrentProject.Directory);
-        }
-
-        public void OpenProjectInCodeEditor() {
-            Process.Start(this.GetSolutionPath());
+            Process.Start(this._fileService.ProjectDirectoryPath);
         }
 
         public async Task<bool> SaveProject() {
-            if (string.IsNullOrEmpty(this.CurrentProject.PathToProject)) {
-                return false;
-            }
-
+            var pathToProject = this.GetPathToProject();
             await Task.Run(() => this.CurrentProject.SaveAssets());
             await this._sceneService.SaveCurrentScene(this.CurrentProject);
-            await Task.Run(() => this._serializer.Serialize(this.CurrentProject, this.CurrentProject.PathToProject));
+            await Task.Run(() => this._serializer.Serialize(this.CurrentProject, pathToProject));
             this._currentProject.Refresh();
             this.HasChanges = false;
             this._currentProject.LastTimeSaved = DateTime.Now;
             return true;
         }
 
-        public async Task<Project> SelectAndLoadProject(string initialDirectory = null) {
-            if (this._dialogService.ShowFileBrowser(FileHelper.ProjectFilter, out var location, initialDirectory)) {
-                await this.LoadProject(location);
-            }
+        internal async Task<Project> CreateProject() {
+            var pathToProject = this.GetPathToProject();
+            var project = new Project(BuildPlatform.DesktopGL) {
+                Name = "ProjectName"
+            };
 
-            return null;
-        }
+            project.Initialize(this._fileService.ProjectDirectoryPath);
+            await Task.Run(() => this._serializer.Serialize(project, pathToProject));
+            Directory.CreateDirectory(Path.Combine(this._fileService.ProjectDirectoryPath, AssetsLocation));
+            var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
+            project.SceneAssets.Add(scene.SceneAsset);
+            project.StartUpSceneAsset = scene.SceneAsset;
+            project.LastSceneOpened = scene.SceneAsset;
+            await this._sceneService.SaveCurrentScene(project);
 
-        internal async Task<Project> CreateProject(string copyFromDirectory, string initialDirectory = null) {
-            if (this._dialogService.ShowCreateProjectDialog(out var project, initialDirectory)) {
-                Directory.CreateDirectory(project.Directory);
+            this.CurrentProject = project;
+            this.HasChanges = true;
 
-                if (File.Exists(project.PathToProject)) {
-                    if (!this._dialogService.ShowYesNoMessageBox("Project Already Exists", "A project already exists at the selected location. Overwrite?")) {
-                        return null;
-                    }
-
-                    var backupPath = project.PathToProject + FileHelper.BackupExtension;
-                    File.Delete(backupPath);
-                    File.Copy(project.PathToProject, backupPath);
-                }
-
-                await Task.Run(() => this._serializer.Serialize(project, project.PathToProject));
-                this._gitIgnoreCreator.CreateAndSave(Path.Combine(project.Directory, GitIgnoreFileName), true);
-
-                Directory.CreateDirectory(Path.Combine(project.Directory, AssetsLocation));
-                Directory.CreateDirectory(Path.Combine(project.Directory, BinariesLocation));
-                var dependenciesDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, DependenciesLocation));
-                var sourceDirectory = Directory.CreateDirectory(Path.Combine(project.Directory, SourceLocation));
-
-                var sourceFileName = "Source.zip";
-                ZipFile.ExtractToDirectory(string.IsNullOrEmpty(copyFromDirectory) ? sourceFileName : Path.Combine(copyFromDirectory, sourceFileName), sourceDirectory.FullName);
-
-                if (!string.Equals(project.SafeName, TemplateName, StringComparison.CurrentCultureIgnoreCase)) {
-                    var files = new List<string>(Directory.GetFiles(sourceDirectory.FullName, "*.cs", SearchOption.AllDirectories));
-                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.csproj", SearchOption.AllDirectories));
-                    files.AddRange(Directory.GetFiles(sourceDirectory.FullName, "*.sln", SearchOption.AllDirectories));
-
-                    foreach (var file in files) {
-                        var text = File.ReadAllText(file);
-                        text = text.Replace(TemplateName, project.SafeName);
-                        File.WriteAllText(file, text);
-
-                        var newFile = file.Replace(TemplateName, project.SafeName);
-
-                        if (!string.Equals(file, newFile, StringComparison.CurrentCultureIgnoreCase)) {
-                            File.Delete(newFile);
-                            File.Move(file, newFile);
-                        }
-                    }
-                }
-
-                var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
-                project.SceneAssets.Add(scene.SceneAsset);
-                project.StartUpSceneAsset = scene.SceneAsset;
-                project.LastSceneOpened = scene.SceneAsset;
-                await this._sceneService.SaveCurrentScene(project);
-
-                this.CurrentProject = project;
-                await this.SaveProject();
-                await this.LoadProject(project.PathToProject);
-                this.HasChanges = true;
-
-                return this.CurrentProject;
-            }
-
-            return null;
+            return this.CurrentProject;
         }
 
         private void CurrentProject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -329,27 +164,16 @@
 
         private void GenerateContentFile(BuildMode mode) {
             var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
-            var sourcePath = this.GetSourcePath();
-            var dllPath = $@"{sourcePath}\{GameplayName}\bin\{mode.ToString()}\{this.CurrentProject.SafeName}.{GameplayName}.dll";
+
             foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                configuration.GenerateContent(sourcePath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPath);
+                var dllPaths = new[] {
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Newtonsoft.Json.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Framework.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                };
+
+                configuration.GenerateContent(this._fileService.ProjectDirectoryPath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPaths);
             }
-        }
-
-        private string GetBinariesPath() {
-            return Path.Combine(this.CurrentProject.Directory, BinariesLocation);
-        }
-
-        private string GetReferencePath() {
-            return Path.Combine(this.CurrentProject.Directory, DependenciesLocation, ReferencesLocation);
-        }
-
-        private string GetSolutionPath() {
-            return Path.Combine(this.CurrentProject.Directory, SourceLocation, $"{this.CurrentProject.SafeName}{FileHelper.SolutionExtension}");
-        }
-
-        private string GetTempDirectoryPath() {
-            return Path.Combine(this.CurrentProject.Directory, "temp", "bin");
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F652395-AB15-4EBE-B73C-8FCD8B8A9646}</ProjectGuid>
+    <ProjectGuid>{CE39DFB1-2C80-452F-A799-ABC878773B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Macabre2D.UI.ServiceInterfaces</RootNamespace>
-    <AssemblyName>Macabre2D.UI.ServiceInterfaces</AssemblyName>
+    <RootNamespace>Macabre2D.Project.Gameplay</RootNamespace>
+    <AssemblyName>Macabre2D.Project.Gameplay</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -55,35 +55,23 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationFramework" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="IAssemblyService.cs" />
-    <Compile Include="IAssetService.cs" />
-    <Compile Include="IBusyService.cs" />
-    <Compile Include="IDialogService.cs" />
-    <Compile Include="IFileService.cs" />
-    <Compile Include="ILoggingService.cs" />
-    <Compile Include="IMonoGameService.cs" />
-    <Compile Include="IComponentService.cs" />
-    <Compile Include="IStatusService.cs" />
-    <Compile Include="IValueEditorService.cs" />
-    <Compile Include="IProjectService.cs" />
-    <Compile Include="ISceneService.cs" />
-    <Compile Include="IUndoService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,21 +79,21 @@
       <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.Windows.csproj">
-      <Project>{7de47032-a904-4c29-bd22-2d235e8d91ba}</Project>
-      <Name>MonoGame.Framework.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj">
-      <Project>{4e44cdc9-54cc-41c7-abec-00eaeaab623a}</Project>
-      <Name>Macabre2D.UI.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Models\Macabre2D.UI.Models.csproj">
-      <Project>{69ca3091-f9d2-4926-b115-8a8794db9f9a}</Project>
-      <Name>Macabre2D.UI.Models</Name>
+    <ProjectReference Include="..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsGL.csproj">
+      <Project>{6d75e618-19ca-4c51-9546-f10965fbc0b8}</Project>
+      <Name>MonoGame.Framework.WindowsGL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

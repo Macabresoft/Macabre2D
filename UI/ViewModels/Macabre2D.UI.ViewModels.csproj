@@ -90,7 +90,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Dialogs\CreateProjectViewModel.cs" />
     <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
     <Compile Include="Dialogs\EditTileSetViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
@@ -105,7 +104,6 @@
     <Compile Include="ProjectViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ComponentsViewModel.cs" />
-    <Compile Include="StartupViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">

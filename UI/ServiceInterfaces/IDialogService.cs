@@ -10,8 +10,6 @@
 
         bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, out string newName);
 
-        bool ShowCreateProjectDialog(out Project project, string initialDirectory = null);
-
         bool ShowFileBrowser(string filter, out string path, string initialDirectory = null);
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);

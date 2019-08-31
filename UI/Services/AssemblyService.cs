@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Services {
 
-    using Macabre2D.Framework;
     using Macabre2D.UI.ServiceInterfaces;
     using Mono.Cecil;
     using System;
@@ -12,30 +11,6 @@
 
     public sealed class AssemblyService : IAssemblyService {
         private bool _hasLoaded = false;
-
-        public async Task LoadAssemblies(string path) {
-            if (!this._hasLoaded && Directory.Exists(path)) {
-                try {
-                    await Task.Run(() => {
-                        var assemblyPaths = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
-                        foreach (var assemblyPath in assemblyPaths) {
-                            try {
-                                if (assemblyPath.HasObjectsOfType<BaseComponent>() || assemblyPath.HasObjectsOfType<BaseModule>()) {
-                                    Assembly.LoadFile(assemblyPath);
-                                }
-                            }
-                            catch (FileLoadException) {
-                            }
-                            catch (BadImageFormatException) {
-                            }
-                        }
-                    });
-                }
-                finally {
-                    this._hasLoaded = true;
-                }
-            }
-        }
 
         public async Task<Type> LoadFirstType(Type baseType) {
             return await Task.Run(() => {

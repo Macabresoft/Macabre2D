@@ -31,14 +31,8 @@
         [DataMember]
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
-        public void CopyDependencies(string destination) {
-            var source = Path.Combine("Configurations", this.Platform.ToString());
-            var target = Path.Combine(destination, this.Platform.ToString());
-            FileHelper.CopyDirectory(source, target);
-        }
-
-        public void GenerateContent(string sourcePath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
-            var contentPath = this.GetContentPath(sourcePath);
+        public void GenerateContent(string projectDirectoryPath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
+            var contentPath = this.GetContentPath(projectDirectoryPath);
             this.EraseContent(contentPath);
             serializer.Serialize(assetManager, Path.Combine(contentPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
             serializer.Serialize(gameSettings, Path.Combine(contentPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
@@ -46,16 +40,16 @@
             this.CreateContentFile(contentPath, assets, referencePaths);
         }
 
-        public string GetBinaryFolderPath(string sourcePath, BuildMode mode) {
-            return Path.Combine(sourcePath, this.Platform.ToString(), "bin", mode.ToString());
+        public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
+            return Path.Combine(projectDirectoryPath, "bin", this.Platform.ToString(), mode.ToString());
         }
 
-        public string GetCompiledContentPath(string sourcePath, BuildMode mode) {
-            return Path.Combine(this.GetBinaryFolderPath(sourcePath, mode), "Content");
+        public string GetCompiledContentPath(string projectDirectoryPath, BuildMode mode) {
+            return Path.Combine(this.GetBinaryFolderPath(projectDirectoryPath, mode), "Content");
         }
 
-        public string GetContentPath(string sourcePath) {
-            return Path.Combine(sourcePath, this.Platform.ToString(), ContentFolderName);
+        public string GetContentPath(string projectDirectoryPath) {
+            return Path.Combine(projectDirectoryPath, this.Platform.ToString(), ContentFolderName);
         }
 
         private void CopyContent(string contentPath, IEnumerable<Asset> assets) {
@@ -81,8 +75,6 @@
             stringBuilder.AppendLine();
             stringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($@"/reference:..\..\..\Dependencies\References\Newtonsoft.Json.dll");
-            stringBuilder.AppendLine($@"/reference:..\..\..\Dependencies\References\Macabre2D.Framework.dll");
 
             foreach (var referencePath in referencePaths) {
                 stringBuilder.AppendLine($@"/reference:{referencePath}");

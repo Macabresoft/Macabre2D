@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Views {
 
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.ViewModels;
     using System.ComponentModel;
@@ -19,7 +18,7 @@
 
         internal TabControl MainTabControl {
             get {
-                return this._contentSwitcher.TrueContent.GetChildOfType<TabControl>();
+                return this._mainTabControl;
             }
         }
 

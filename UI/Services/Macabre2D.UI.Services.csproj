@@ -162,7 +162,7 @@
     <Compile Include="AssetService.cs" />
     <Compile Include="BusyService.cs" />
     <Compile Include="DialogService.cs" />
-    <Compile Include="GitIgnoreCreator.cs" />
+    <Compile Include="FileService.cs" />
     <Compile Include="Content\ContentBuilder.cs" />
     <Compile Include="StatusService.cs" />
     <Compile Include="TextCreator.cs" />

@@ -6,8 +6,6 @@
 
     public interface IAssemblyService {
 
-        Task LoadAssemblies(string path);
-
         Task<Type> LoadFirstType(Type baseType);
 
         Task<IList<Type>> LoadTypes(Type baseType);

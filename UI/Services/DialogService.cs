@@ -48,22 +48,6 @@
             return wasNameChanged;
         }
 
-        public bool ShowCreateProjectDialog(out Project project, string initialDirectory = null) {
-            var window = this._container.Resolve<CreateProjectDialog>();
-            window.ViewModel.FilePath = initialDirectory;
-
-            var result = window.SimpleShowDialog();
-            if (result) {
-                project = window.ViewModel.Project;
-                project.PathToProject = Path.Combine(window.ViewModel.FilePath, project.SafeName + FileHelper.ProjectExtension);
-            }
-            else {
-                project = null;
-            }
-
-            return result;
-        }
-
         public bool ShowFileBrowser(string filter, out string path, string initialDirectory = null) {
             var dialog = new OpenFileDialog() {
                 CheckFileExists = true,

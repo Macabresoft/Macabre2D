@@ -11,24 +11,12 @@
 
         Task<bool> BuildContent(BuildMode mode);
 
-        Task<bool> BuildProject(BuildMode mode);
+        string GetPathToProject();
 
-        Task<Project> CreateProject(string initialDirectory = null);
-
-        Task ExportProject();
-
-        string GetBinPath(bool debug);
-
-        string GetSourcePath();
-
-        Task<Project> LoadProject(string location);
+        Task<Project> LoadProject();
 
         void NavigateToProjectLocation();
 
-        void OpenProjectInCodeEditor();
-
         Task<bool> SaveProject();
-
-        Task<Project> SelectAndLoadProject(string initialDirectory = null);
     }
 }

@@ -12,9 +12,8 @@
 
     public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
         private readonly IComponentService _componentService;
-
         private readonly EditorGame _editorGame;
-
+        private readonly IFileService _fileService;
         private readonly IProjectService _projectService;
 
         private readonly ComponentEditingStyle[] _recentlyUsedEditingStyles = new[] {
@@ -30,10 +29,16 @@
         private bool _showGrid = true;
         private bool _showSelection = true;
 
-        public MonoGameService(EditorGame editorGame, IComponentService componentService, IProjectService projectService, ISceneService sceneService) {
+        public MonoGameService(
+            EditorGame editorGame,
+            IComponentService componentService,
+            IFileService fileService,
+            IProjectService projectService,
+            ISceneService sceneService) {
             this._editorGame = editorGame;
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._fileService = fileService;
             this._sceneService = sceneService;
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
             this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
@@ -140,7 +145,7 @@
         private void SetContentPath() {
             if (this._projectService.CurrentProject != null) {
                 var desktopBuildConfiguration = this._projectService.CurrentProject.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL);
-                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._projectService.GetSourcePath(), BuildMode.Debug));
+                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, BuildMode.Debug));
             }
         }
 

@@ -34,20 +34,10 @@
                               Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                               Padding="{StaticResource StandardMarginLR}"
                               PreviewMouseDoubleClick="MenuItem_PreviewMouseDoubleClick">
-                        <MenuItem Header="_New Project"
-                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
-                                  Command="{Binding DataContext.CreateProjectCommand, ElementName=_mainWindow}" />
-                        <MenuItem Header="_Open Project"
-                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
-                                  Command="{Binding DataContext.OpenProjectCommand, ElementName=_mainWindow}" />
                         <MenuItem Header="{Binding DataContext.ProjectService.CurrentProject.Name, ElementName=_mainWindow, FallbackValue='Project'}"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   HeaderStringFormat="Save {0}"
                                   Command="{Binding DataContext.SaveProjectCommand, ElementName=_mainWindow}" />
-                        <MenuItem Header="{Binding DataContext.ProjectService.CurrentProject.Name, ElementName=_mainWindow, FallbackValue='Project'}"
-                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
-                                  HeaderStringFormat="Export {0}"
-                                  Command="{Binding DataContext.ExportProjectCommand, ElementName=_mainWindow}" />
                         <Separator />
                         <MenuItem Header="_Exit"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
@@ -69,13 +59,6 @@
                               Padding="{StaticResource StandardMarginLR}"
                               PreviewMouseDoubleClick="MenuItem_PreviewMouseDoubleClick"
                               Visibility="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToVisibilityConverter}}">
-                        <MenuItem Header="_Build/Refresh Assemblies"
-                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
-                                  Command="{Binding DataContext.RefreshAssembliesCommand, ElementName=_mainWindow}"
-                                  ToolTip="Will build the project's solution and refresh the assemblies that the editor has access to. This requires a semi-restart of Macabre2D." />
-                        <MenuItem Header="Open in _Code Editor"
-                                  Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
-                                  Command="{Binding DataContext.OpenProjectInCodeEditorCommand, ElementName=_mainWindow}" />
                         <MenuItem Header="Open in _File Explorer"
                                   Background="{Binding Path=Parent.Background, RelativeSource={RelativeSource Self}}"
                                   Command="{Binding DataContext.OpenProjectInFileExplorer, ElementName=_mainWindow}" />
@@ -114,64 +97,57 @@
                     Command="{Binding RedoCommand}" />
     </metro:MetroWindow.InputBindings>
     <Grid>
-        <controls:ContentSwitcher SwitchValue="{Binding ProjectService.CurrentProject, Converter={StaticResource _nullToBoolConverter}}"
-                                  x:Name="_contentSwitcher">
-            <controls:ContentSwitcher.TrueContent>
-                <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".25*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width=".75*" />
-                    </Grid.ColumnDefinitions>
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".25*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width=".75*" />
+            </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                        <metro:MetroAnimatedSingleRowTabControl SelectionChanged="TabControl_SelectionChanged"
-                                                                Grid.Row="0"
-                                                                Margin="{StaticResource StandardMarginB}">
-                            <TabItem Header="Project"
-                                     Tag="{x:Static viewModels:TabTypes.Project}"
-                                     Style="{StaticResource HeaderTabItem}" />
-                            <TabItem Header="Components"
-                                     Tag="{x:Static viewModels:TabTypes.Components}"
-                                     Style="{StaticResource HeaderTabItem}" />
-                            <TabItem Header="Modules"
-                                     Tag="{x:Static viewModels:TabTypes.Modules}"
-                                     Style="{StaticResource HeaderTabItem}" />
-                        </metro:MetroAnimatedSingleRowTabControl>
+                <metro:MetroAnimatedSingleRowTabControl x:Name="_mainTabControl"
+                                                        SelectionChanged="TabControl_SelectionChanged"
+                                                        Grid.Row="0"
+                                                        Margin="{StaticResource StandardMarginB}">
+                    <TabItem Header="Project"
+                             Tag="{x:Static viewModels:TabTypes.Project}"
+                             Style="{StaticResource HeaderTabItem}" />
+                    <TabItem Header="Components"
+                             Tag="{x:Static viewModels:TabTypes.Components}"
+                             Style="{StaticResource HeaderTabItem}" />
+                    <TabItem Header="Modules"
+                             Tag="{x:Static viewModels:TabTypes.Modules}"
+                             Style="{StaticResource HeaderTabItem}" />
+                </metro:MetroAnimatedSingleRowTabControl>
 
-                        <local:ProjectView Grid.Row="1"
-                                           IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
-                                           Margin="{StaticResource DoubleMarginAll}"
-                                           Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
+                <local:ProjectView Grid.Row="1"
+                                   IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                   Margin="{StaticResource DoubleMarginAll}"
+                                   Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
 
-                        <local:ComponentsView Grid.Row="1"
-                                              IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
-                                              Margin="{StaticResource DoubleMarginAll}"
-                                              Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
+                <local:ComponentsView Grid.Row="1"
+                                      IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                      Margin="{StaticResource DoubleMarginAll}"
+                                      Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
 
-                        <local:ModulesView Grid.Row="1"
-                                           IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
-                                           Margin="{StaticResource DoubleMarginAll}"
-                                           Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
-                    </Grid>
+                <local:ModulesView Grid.Row="1"
+                                   IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                   Margin="{StaticResource DoubleMarginAll}"
+                                   Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
+            </Grid>
 
-                    <GridSplitter Grid.Column="1"
-                                  Margin="{StaticResource StandardMarginL}"
-                                  Style="{StaticResource VerticalGridSplitter}" />
+            <GridSplitter Grid.Column="1"
+                            Margin="{StaticResource StandardMarginL}"
+                            Style="{StaticResource VerticalGridSplitter}" />
 
-                    <sceneEditing:SceneEditorControl Grid.Column="2" />
-                </Grid>
-            </controls:ContentSwitcher.TrueContent>
-            <controls:ContentSwitcher.FalseContent>
-                <local:StartupView />
-            </controls:ContentSwitcher.FalseContent>
-        </controls:ContentSwitcher>
+            <sceneEditing:SceneEditorControl Grid.Column="2" />
+        </Grid>
 
         <Border Background="#11FFFFFF"
                 Visibility="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _boolToVisibilityConverter}}">

@@ -2,7 +2,6 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using System.Diagnostics;
@@ -38,10 +37,6 @@
             this._undoService = undoService;
 
             this.RefreshAssembliesCommand = new RelayCommand(this.RefreshAssemblies);
-            this.CreateProjectCommand = new RelayCommand(async () => await this.CreateProject());
-            this.ExportProjectCommand = new RelayCommand(async () => await this.ExportProject());
-            this.OpenProjectCommand = new RelayCommand(async () => await this.OpenProject());
-            this.OpenProjectInCodeEditorCommand = new RelayCommand(this.ProjectService.OpenProjectInCodeEditor);
             this.OpenProjectInFileExplorer = new RelayCommand(this.ProjectService.NavigateToProjectLocation);
             this.RefreshAssetsCommand = new RelayCommand(async () => await this.RefreshAssets());
             this.SaveProjectCommand = new RelayCommand(async () => await this.SaveProject(), () => this.ProjectService.HasChanges);
@@ -51,14 +46,6 @@
         }
 
         public IBusyService BusyService { get; }
-
-        public ICommand CreateProjectCommand { get; }
-
-        public ICommand ExportProjectCommand { get; }
-
-        public ICommand OpenProjectCommand { get; }
-
-        public ICommand OpenProjectInCodeEditorCommand { get; }
 
         public ICommand OpenProjectInFileExplorer { get; }
 
@@ -92,21 +79,6 @@
             get {
                 return this._undoCommand;
             }
-        }
-
-        private async Task CreateProject() {
-            var task = this.ProjectService.CreateProject(FileHelper.DefaultProjectPath);
-            await this.BusyService.PerformTask(task, true);
-        }
-
-        private async Task ExportProject() {
-            var task = this.ProjectService.ExportProject();
-            await this.BusyService.PerformTask(task, true);
-        }
-
-        private async Task OpenProject() {
-            var task = this.ProjectService.SelectAndLoadProject(FileHelper.DefaultProjectPath);
-            await this.BusyService.PerformTask(task, true);
         }
 
         private void RefreshAssemblies() {
