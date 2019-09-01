@@ -245,14 +245,16 @@
                 }
 
                 var asset = new FolderAsset(name);
-
+                var hasChanges = this.ProjectService.HasChanges;
                 var undoCommand = new UndoCommand(
                     () => {
+                        this.ProjectService.HasChanges = true;
                         parent.AddChild(asset);
                         Directory.CreateDirectory(asset.GetPath());
                     }, () => {
                         asset.Delete();
                         parent.RemoveChild(asset);
+                        this.ProjectService.HasChanges = hasChanges;
                     });
 
                 this._undoService.Do(undoCommand);
