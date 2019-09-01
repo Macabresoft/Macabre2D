@@ -109,7 +109,7 @@
             }
         }
 
-        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder, string contentPath) {
+        public virtual void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
             return;
         }
 
@@ -127,7 +127,7 @@
                 return Path.Combine(this.Parent.GetContentPath(), this.Name);
             }
 
-            return (this.Name ?? string.Empty);
+            return this.Name ?? string.Empty;
         }
 
         public virtual string GetPath() {

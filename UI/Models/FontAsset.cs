@@ -91,8 +91,8 @@
             }
         }
 
-        public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string contentPath) {
-            var path = Path.Combine(contentPath, this.GetContentPath());
+        public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
+            var path = Path.Combine(projectDirectoryPath, this.GetContentPath());
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine(@"/importer:FontDescriptionImporter");
             contentStringBuilder.AppendLine(@"/processor:FontDescriptionProcessor");

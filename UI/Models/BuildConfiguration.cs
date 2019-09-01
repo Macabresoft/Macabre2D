@@ -18,7 +18,7 @@
 
     [DataContract]
     public sealed class BuildConfiguration {
-        private const string ContentFileName = @"Content.mgcb";
+        private const string ContentFileExtension = @".mgcb";
         private const string ContentFolderName = @"Content";
 
         public BuildConfiguration(BuildPlatform platform) {
@@ -32,12 +32,9 @@
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
         public void GenerateContent(string projectDirectoryPath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
-            var contentPath = this.GetContentPath(projectDirectoryPath);
-            this.EraseContent(contentPath);
-            serializer.Serialize(assetManager, Path.Combine(contentPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
-            serializer.Serialize(gameSettings, Path.Combine(contentPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
-            this.CopyContent(contentPath, assets);
-            this.CreateContentFile(contentPath, assets, referencePaths);
+            serializer.Serialize(assetManager, Path.Combine(projectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
+            serializer.Serialize(gameSettings, Path.Combine(projectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
+            this.CreateContentFile(projectDirectoryPath, assets, referencePaths);
         }
 
         public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
@@ -52,16 +49,7 @@
             return Path.Combine(projectDirectoryPath, this.Platform.ToString(), ContentFolderName);
         }
 
-        private void CopyContent(string contentPath, IEnumerable<Asset> assets) {
-            foreach (var asset in assets) {
-                var path = Path.Combine(contentPath, asset.GetContentPath());
-                var fileInfo = new FileInfo(path);
-                fileInfo.Directory.Create();
-                File.Copy(asset.GetPath(), Path.Combine(contentPath, path));
-            }
-        }
-
-        private void CreateContentFile(string contentPath, IEnumerable<Asset> assets, params string[] referencePaths) {
+        private void CreateContentFile(string projectDirectoryPath, IEnumerable<Asset> assets, params string[] referencePaths) {
             var stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
@@ -84,14 +72,14 @@
             stringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
             stringBuilder.AppendLine();
 
-            var gameSettingsPath = $@"{contentPath}\{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
+            var gameSettingsPath = $@"{projectDirectoryPath}\{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
             stringBuilder.AppendLine($"#begin {gameSettingsPath}");
             stringBuilder.AppendLine($@"/importer:{nameof(GameSettingsImporter)}");
             stringBuilder.AppendLine($@"/processor:{nameof(GameSettingsProcessor)}");
             stringBuilder.AppendLine($@"/build:{gameSettingsPath}");
             stringBuilder.AppendLine();
 
-            var assetManagerPath = $@"{contentPath}\{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}";
+            var assetManagerPath = $@"{projectDirectoryPath}\{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}";
             stringBuilder.AppendLine($"#begin {assetManagerPath}");
             stringBuilder.AppendLine($@"/importer:{nameof(AssetManagerImporter)}");
             stringBuilder.AppendLine($@"/processor:{nameof(AssetManagerProcessor)}");
@@ -99,20 +87,12 @@
             stringBuilder.AppendLine();
 
             foreach (var asset in assets) {
-                asset.BuildProcessorCommands(stringBuilder, contentPath);
+                asset.BuildProcessorCommands(stringBuilder, projectDirectoryPath);
                 stringBuilder.AppendLine();
             }
 
-            var contentFile = Path.Combine(contentPath, ContentFileName);
+            var contentFile = Path.Combine(projectDirectoryPath, $"{this.Platform.ToString()}{ContentFileExtension}");
             File.WriteAllText(contentFile, stringBuilder.ToString());
-        }
-
-        private void EraseContent(string contentPath) {
-            if (Directory.Exists(contentPath)) {
-                Directory.Delete(contentPath, true);
-            }
-
-            Directory.CreateDirectory(contentPath);
         }
     }
 }

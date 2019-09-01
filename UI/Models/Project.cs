@@ -181,10 +181,6 @@
                 return; // You can't delete the project asset node.
             }
 
-            public override string GetContentPath() {
-                return string.Empty;
-            }
-
             public override string GetPath() {
                 return Path.Combine(this._project._projectDirectoryPath, base.GetPath());
             }

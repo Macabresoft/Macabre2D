@@ -12,7 +12,6 @@
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private const string AssetsLocation = @"Assets";
-        private readonly IAssetService _assetService;
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
         private readonly ISceneService _sceneService;
@@ -22,12 +21,10 @@
 
         public ProjectService(
             Serializer serializer,
-            IAssetService assetService,
             IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
             this._serializer = serializer;
-            this._assetService = assetService;
             this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
@@ -67,23 +64,25 @@
         public async Task<bool> BuildContent(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
-                this.GenerateContentFile(mode);
+                var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    var currentDirectory = Directory.GetCurrentDirectory();
-                    var exitCode = -1;
+                    var dllPaths = new[] {
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Newtonsoft.Json.dll",
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Framework.dll",
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                    };
 
-                    var contentPath = configuration.GetContentPath(this._fileService.ProjectDirectoryPath);
-                    var contentFilePath = Path.Combine(contentPath, "Content.mgcb");
-                    var contentDirectory = Path.GetDirectoryName(contentFilePath);
-                    var outputDirectory = Path.Combine(contentDirectory, "..", "bin", mode.ToString(), "Content");
+                    configuration.GenerateContent(this._fileService.ProjectDirectoryPath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPaths);
+                    var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{configuration.Platform.ToString()}.mgcb");
+                    var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
                     Directory.CreateDirectory(outputDirectory);
 
-                    exitCode = ContentBuilder.BuildContent(
+                    var exitCode = ContentBuilder.BuildContent(
                         out var exception,
                         $"/@:{contentFilePath}", $"/platform:{configuration.Platform.ToString()}",
                         $@"/outputDir:{outputDirectory}",
-                        $"/workingDir:{contentDirectory}");
+                        $"/workingDir:{this._fileService.ProjectDirectoryPath}");
 
                     if (exitCode != 0) {
                         result = false;
@@ -163,20 +162,6 @@
 
         private void CurrentProject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.HasChanges = true;
-        }
-
-        private void GenerateContentFile(BuildMode mode) {
-            var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
-
-            foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                var dllPaths = new[] {
-                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Newtonsoft.Json.dll",
-                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Framework.dll",
-                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
-                };
-
-                configuration.GenerateContent(this._fileService.ProjectDirectoryPath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPaths);
-            }
         }
     }
 }

@@ -127,8 +127,10 @@
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <MonoGameContentReference Include="..\DesktopGL.mgcb">
+      <Link>DesktopGL.mgcb</Link>
+    </MonoGameContentReference>
     <None Include="app.config" />
-    <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">
