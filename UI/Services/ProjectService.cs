@@ -61,7 +61,7 @@
             }
         }
 
-        public async Task<bool> BuildContent(BuildMode mode) {
+        public async Task<bool> BuildAllAssets(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
                 var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
@@ -109,7 +109,7 @@
             project.Initialize(this._fileService.ProjectDirectoryPath);
             project.Refresh();
             this.CurrentProject = project;
-            await this.BuildContent(BuildMode.Debug);
+            await this.BuildAllAssets(BuildMode.Debug);
 
             if (this.CurrentProject?.LastSceneOpened != null) {
                 await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);

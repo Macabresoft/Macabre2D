@@ -143,6 +143,10 @@
             return;
         }
 
+        public virtual void ReloadContent() {
+            return;
+        }
+
         public override string ToString() {
             return this.Name;
         }

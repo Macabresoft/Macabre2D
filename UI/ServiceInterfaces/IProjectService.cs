@@ -9,7 +9,7 @@
 
         bool HasChanges { get; set; }
 
-        Task<bool> BuildContent(BuildMode mode);
+        Task<bool> BuildAllAssets(BuildMode mode);
 
         string GetPathToProject();
 

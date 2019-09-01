@@ -18,6 +18,7 @@ namespace Macabre2D.UI.Common {
         public const string SolutionExtension = ".sln";
         public const string SpriteAnimationExtension = ".m2dspranim";
         public const string SpriteFontExtension = ".spritefont";
+        public const string TempName = "temp";
         public const string TileSetExtension = ".m2dtileset";
         public static string[] AudioExtensions = { ".mp3", ".wav", ".wma" };
         public static string[] ImageExtensions = { ".png", ".jpg", ".gif" };

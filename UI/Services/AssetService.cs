@@ -1,25 +1,34 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.AssetEditors;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
+    using Macabre2D.UI.Services.Content;
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows;
 
     public sealed class AssetService : NotifyPropertyChanged, IAssetService {
         private readonly IDialogService _dialogService;
+        private readonly IFileService _fileService;
+        private readonly ILoggingService _loggingService;
         private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
         private Asset _selectedAsset;
 
         public AssetService(
             IDialogService dialogService,
+            IFileService fileService,
+            ILoggingService loggingService,
             Serializer serializer,
             IUndoService undoService) {
             this._dialogService = dialogService;
+            this._fileService = fileService;
+            this._loggingService = loggingService;
             this._serializer = serializer;
             this._undoService = undoService;
         }
@@ -32,6 +41,37 @@
             set {
                 this.Set(ref this._selectedAsset, value);
             }
+        }
+
+        public async Task<bool> BuildAssets(BuildConfiguration configuration, BuildMode mode, params Asset[] assets) {
+            var result = true;
+            await Task.Run(() => {
+                var tempPath = Path.Combine(this._fileService.ProjectDirectoryPath, "temp");
+                var dllPaths = new[] {
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Newtonsoft.Json.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Framework.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                };
+
+                configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, true, dllPaths);
+                var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{FileHelper.TempName}{FileHelper.ContentExtension}");
+                var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
+                Directory.CreateDirectory(outputDirectory);
+
+                var exitCode = ContentBuilder.BuildContent(
+                    out var exception,
+                    $"/@:{contentFilePath}",
+                    $"/platform:{configuration.Platform.ToString()}",
+                    $@"/outputDir:{outputDirectory}",
+                    $"/workingDir:{this._fileService.ProjectDirectoryPath}");
+
+                if (exitCode != 0) {
+                    result = false;
+                    this._loggingService.LogError($"Content could not be built in '{mode.ToString()}' mode: {exception?.Message}");
+                }
+            });
+
+            return result;
         }
 
         public void ChangeAssetParent(Asset assetToMove, FolderAsset newParent) {
@@ -102,32 +142,6 @@
 
                 this._undoService.Do(undoCommand);
             }
-        }
-
-        public void SelectAsset(Project project, string contentPath) {
-            Asset selectedAsset = project.AssetFolder;
-            if (!string.IsNullOrEmpty(contentPath)) {
-                var currentFolder = project.AssetFolder;
-                var assetNames = contentPath.Split(Path.DirectorySeparatorChar);
-
-                for (var i = 0; i < assetNames.Length; i++) {
-                    var currentName = assetNames[i];
-
-                    if (currentFolder.Children.FirstOrDefault(x => x.Name == currentName) is Asset asset) {
-                        if (i + 1 == assetNames.Length) {
-                            selectedAsset = asset;
-                        }
-                        else if (asset is FolderAsset folderAsset) {
-                            currentFolder = folderAsset;
-                        }
-                    }
-                    else {
-                        break;
-                    }
-                }
-            }
-
-            this.SelectedAsset = selectedAsset;
         }
 
         private void MoveAsset(Asset asset, string originalPath) {

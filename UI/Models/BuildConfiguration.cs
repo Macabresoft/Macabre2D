@@ -18,7 +18,6 @@
 
     [DataContract]
     public sealed class BuildConfiguration {
-        private const string ContentFileExtension = @".mgcb";
         private const string ContentFolderName = @"Content";
 
         public BuildConfiguration(BuildPlatform platform) {
@@ -31,25 +30,7 @@
         [DataMember]
         public BuildPlatform Platform { get; } = BuildPlatform.DesktopGL;
 
-        public void GenerateContent(string projectDirectoryPath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
-            serializer.Serialize(assetManager, Path.Combine(projectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
-            serializer.Serialize(gameSettings, Path.Combine(projectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
-            this.CreateContentFile(projectDirectoryPath, assets, referencePaths);
-        }
-
-        public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
-            return Path.Combine(projectDirectoryPath, "bin", this.Platform.ToString(), mode.ToString());
-        }
-
-        public string GetCompiledContentPath(string projectDirectoryPath, BuildMode mode) {
-            return Path.Combine(this.GetBinaryFolderPath(projectDirectoryPath, mode), "Content");
-        }
-
-        public string GetContentPath(string projectDirectoryPath) {
-            return Path.Combine(projectDirectoryPath, this.Platform.ToString(), ContentFolderName);
-        }
-
-        private void CreateContentFile(string projectDirectoryPath, IEnumerable<Asset> assets, params string[] referencePaths) {
+        public void CreateContentFile(string projectDirectoryPath, IEnumerable<Asset> assets, bool isTemp, params string[] referencePaths) {
             var stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
@@ -91,8 +72,26 @@
                 stringBuilder.AppendLine();
             }
 
-            var contentFile = Path.Combine(projectDirectoryPath, $"{this.Platform.ToString()}{ContentFileExtension}");
+            var contentFile = Path.Combine(projectDirectoryPath, isTemp ? $"{FileHelper.TempName}{FileHelper.ContentExtension}" : $"{this.Platform.ToString()}{FileHelper.ContentExtension}");
             File.WriteAllText(contentFile, stringBuilder.ToString());
+        }
+
+        public void GenerateContent(string projectDirectoryPath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
+            serializer.Serialize(assetManager, Path.Combine(projectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
+            serializer.Serialize(gameSettings, Path.Combine(projectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
+            this.CreateContentFile(projectDirectoryPath, assets, false, referencePaths);
+        }
+
+        public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
+            return Path.Combine(projectDirectoryPath, "bin", this.Platform.ToString(), mode.ToString());
+        }
+
+        public string GetCompiledContentPath(string projectDirectoryPath, BuildMode mode) {
+            return Path.Combine(this.GetBinaryFolderPath(projectDirectoryPath, mode), "Content");
+        }
+
+        public string GetContentPath(string projectDirectoryPath) {
+            return Path.Combine(projectDirectoryPath, this.Platform.ToString(), ContentFolderName);
         }
     }
 }
