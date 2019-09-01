@@ -80,7 +80,8 @@
 
                     var exitCode = ContentBuilder.BuildContent(
                         out var exception,
-                        $"/@:{contentFilePath}", $"/platform:{configuration.Platform.ToString()}",
+                        $"/@:{contentFilePath}",
+                        $"/platform:{configuration.Platform.ToString()}",
                         $@"/outputDir:{outputDirectory}",
                         $"/workingDir:{this._fileService.ProjectDirectoryPath}");
 
