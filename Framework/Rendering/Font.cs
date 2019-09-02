@@ -2,7 +2,6 @@
 
     using Microsoft.Xna.Framework.Graphics;
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// A font to be used by the <see cref="TextRenderer"/>.
@@ -21,19 +20,26 @@
         /// <param name="assetId">The asset identifier.</param>
         public Font(Guid assetId) {
             this.AssetId = assetId;
-            this.LoadSpriteFont();
+            this.Load();
         }
 
         /// <inheritdoc/>
-        [DataMember]
-        public Guid AssetId { get; set; }
+        public Guid AssetId {
+            get {
+                return this.Id;
+            }
+
+            set {
+                this.Id = value;
+            }
+        }
 
         internal SpriteFont SpriteFont { get; private set; }
 
         /// <summary>
         /// Loads the sound effect.
         /// </summary>
-        public void LoadSpriteFont() {
+        public void Load() {
             this.SpriteFont = AssetManager.Instance.Load<SpriteFont>(this.AssetId);
         }
     }

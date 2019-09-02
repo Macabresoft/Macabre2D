@@ -67,6 +67,12 @@
             }
         }
 
+        public BuildConfiguration EditorConfiguration {
+            get {
+                return this.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL) ?? new BuildConfiguration(BuildPlatform.DesktopGL);
+            }
+        }
+
         [DataMember]
         public GameSettings GameSettings { get; } = new GameSettings();
 
@@ -116,6 +122,7 @@
             var startupId = this._startUpSceneAsset?.Id;
             var lastSceneId = this.LastSceneOpened?.Id;
             this.AssetManager.ClearMappings();
+            this.AssetManager.Unload();
             this._assetFolder.Refresh();
             var nonFolderAssets = this._assetFolder.GetAllContentAssets();
 

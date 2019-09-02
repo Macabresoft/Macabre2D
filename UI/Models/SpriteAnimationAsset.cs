@@ -63,6 +63,7 @@
             }
 
             this.Steps.CollectionChanged += this.Steps_CollectionChanged;
+            this.SavableValue.LoadContent();
         }
 
         public bool RemoveStep(SpriteAnimationStepWrapper step) {

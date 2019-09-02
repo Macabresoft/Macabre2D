@@ -14,16 +14,19 @@
 
     public sealed class ProjectViewModel : NotifyPropertyChanged {
         private readonly RelayCommand _addAssetCommand;
+        private readonly IBusyService _busyService;
         private readonly RelayCommand _deleteAssetCommand;
         private readonly IDialogService _dialogService;
         private readonly IMonoGameService _monoGameService;
         private readonly RelayCommand _newFolderCommand;
+        private readonly RelayCommand _reloadAssetCommand;
         private readonly ISceneService _sceneService;
         private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
 
         public ProjectViewModel(
             IAssetService assetService,
+            IBusyService busyService,
             IDialogService dialogService,
             IMonoGameService monoGameService,
             IProjectService projectService,
@@ -31,6 +34,7 @@
             Serializer serializer,
             IUndoService undoService) {
             this.AssetService = assetService;
+            this._busyService = busyService;
             this._dialogService = dialogService;
             this._monoGameService = monoGameService;
             this.ProjectService = projectService;
@@ -42,6 +46,7 @@
             this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.AssetService.SelectedAsset?.Parent != null);
             this._newFolderCommand = new RelayCommand(this.CreateNewFolder, () => this.AssetService.SelectedAsset is FolderAsset);
             this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => asset.Type == AssetType.Scene);
+            this._reloadAssetCommand = new RelayCommand(async () => await this.ReloadAsset(), () => this.AssetService.SelectedAsset is IReloadableAsset);
             this.AssetService.PropertyChanged += this.AssetService_PropertyChanged;
             this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
 
@@ -173,6 +178,12 @@
 
         public IProjectService ProjectService { get; }
 
+        public ICommand ReloadAssetCommand {
+            get {
+                return this._reloadAssetCommand;
+            }
+        }
+
         public SceneAsset SelectedStartUpSceneAsset {
             get {
                 return this.ProjectService.CurrentProject?.StartUpSceneAsset;
@@ -216,6 +227,7 @@
                             }
 
                             asset.Save(this._serializer, this.ProjectService.CurrentProject.AssetManager);
+                            this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, asset);
                             asset.Refresh(this.ProjectService.CurrentProject.AssetManager);
                         }, () => {
                             asset.Delete();
@@ -232,6 +244,7 @@
                 this._addAssetCommand.RaiseCanExecuteChanged();
                 this._deleteAssetCommand.RaiseCanExecuteChanged();
                 this._newFolderCommand.RaiseCanExecuteChanged();
+                this._reloadAssetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -295,6 +308,26 @@
             this.RaisePropertyChanged(nameof(this.PixelsPerUnit));
             this.RaisePropertyChanged(nameof(this.ProjectName));
             this.RaisePropertyChanged(nameof(this.SelectedStartUpSceneAsset));
+        }
+
+        private async Task ReloadAsset() {
+            if (this.AssetService.SelectedAsset is IReloadableAsset reloadable) {
+                var task = Task.Run(async () => {
+                    var assetIds = reloadable.GetOwnedAssetIds();
+                    foreach (var assetId in assetIds) {
+                        this.ProjectService.CurrentProject.AssetManager.Unload(assetId);
+                    }
+
+                    if (this.AssetService.SelectedAsset is MetadataAsset metadataAsset) {
+                        metadataAsset.Save(this._serializer, this.ProjectService.CurrentProject.AssetManager);
+                    }
+
+                    await this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, this.AssetService.SelectedAsset);
+                    reloadable.Reload();
+                });
+
+                await this._busyService.PerformTask(task, true);
+            }
         }
     }
 }

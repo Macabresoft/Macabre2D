@@ -134,7 +134,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this.Scene.IsInitialized && this.Font != null) {
-                this.Font.LoadSpriteFont();
+                this.Font.Load();
             }
 
             base.LoadContent();

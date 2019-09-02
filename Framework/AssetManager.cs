@@ -50,6 +50,24 @@
         /// <param name="id">The identifier.</param>
         /// <param name="contentPath">The content path.</param>
         void SetMapping(Guid id, string contentPath);
+
+        /// <summary>
+        /// Unloads the content manager.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        void Unload();
+
+        /// <summary>
+        /// Unloads the asset with the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        void Unload(Guid id);
+
+        /// <summary>
+        /// Unloads the asset with the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        void Unload(string path);
     }
 
     /// <summary>
@@ -60,7 +78,7 @@
         internal const string ContentFileName = "AssetManager";
 
         [DataMember]
-        private readonly Dictionary<Guid, string> _idToStringMapping = new Dictionary<Guid, string>();
+        private readonly Dictionary<Guid, string> _idToPathMapping = new Dictionary<Guid, string>();
 
         private ContentManager _contentManager;
 
@@ -74,12 +92,12 @@
 
         /// <inheritdoc/>
         public void ClearMappings() {
-            this._idToStringMapping.Clear();
+            this._idToPathMapping.Clear();
         }
 
         /// <inheritdoc/>
         public string GetPath(Guid id) {
-            this._idToStringMapping.TryGetValue(id, out var result);
+            this._idToPathMapping.TryGetValue(id, out var result);
             return result;
         }
 
@@ -107,7 +125,7 @@
         public T Load<T>(Guid id) {
             T result;
 
-            if (this._contentManager != null && _idToStringMapping.TryGetValue(id, out var path)) {
+            if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
                 result = this._contentManager.Load<T>(path);
             }
             else {
@@ -119,7 +137,26 @@
 
         /// <inheritdoc/>
         public void SetMapping(Guid id, string contentPath) {
-            this._idToStringMapping[id] = contentPath;
+            this._idToPathMapping[id] = contentPath;
+        }
+
+        /// <inheritdoc/>
+        public void Unload() {
+            this._contentManager?.Unload();
+        }
+
+        /// <inheritdoc/>
+        public void Unload(Guid id) {
+            if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
+                this._contentManager.Unload(path);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Unload(string path) {
+            if (this._contentManager != null) {
+                this._contentManager.Unload(path);
+            }
         }
     }
 }

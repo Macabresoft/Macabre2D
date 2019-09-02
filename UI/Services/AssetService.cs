@@ -63,7 +63,8 @@
                     $"/@:{contentFilePath}",
                     $"/platform:{configuration.Platform.ToString()}",
                     $@"/outputDir:{outputDirectory}",
-                    $"/workingDir:{this._fileService.ProjectDirectoryPath}");
+                    $"/workingDir:{this._fileService.ProjectDirectoryPath}",
+                    $"/incremental:{true}");
 
                 if (exitCode != 0) {
                     result = false;

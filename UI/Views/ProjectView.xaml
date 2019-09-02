@@ -115,6 +115,11 @@
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Delete}"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
+            <Button Command="{Binding ReloadAssetCommand}"
+                    ToolTip="Reloads the selected asset.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Reload}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
         </StackPanel>
 
         <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"

@@ -4,8 +4,8 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Resources.Properties;
     using System;
+    using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.Serialization;
     using System.Text;
     using System.Xml;
 
@@ -17,7 +17,7 @@
         Italic
     }
 
-    public sealed class FontAsset : AddableAsset<Font> {
+    public sealed class FontAsset : AddableAsset<Font>, IReloadableAsset {
         private string _fontName = "Arial";
         private float _size = 12;
         private float _spacing = 0;
@@ -29,9 +29,6 @@
                 return FileHelper.SpriteFontExtension;
             }
         }
-
-        [DataMember]
-        public Guid FontId { get; private set; } = new Guid();
 
         public string FontName {
             get {
@@ -106,9 +103,12 @@
             base.Delete();
         }
 
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return new[] { this.Id };
+        }
+
         public override void Refresh(AssetManager assetManager) {
             this.SavableValue.AssetId = this.Id;
-            this.SavableValue.Id = this.FontId;
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
 
             const string assetXmlPath = @"/XnaContent/Asset/";
@@ -133,6 +133,10 @@
             }
 
             this.RaiseOnRefreshed();
+        }
+
+        public void Reload() {
+            this.SavableValue?.Load();
         }
 
         protected override Font DeserializeSavableValue() {
