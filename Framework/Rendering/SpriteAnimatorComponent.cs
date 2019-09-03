@@ -11,7 +11,7 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public sealed class SpriteAnimatorComponent : BaseComponent, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation>, IAssetComponent<Sprite> {
+    public sealed class SpriteAnimatorComponent : SpriteRenderer, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation> {
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
@@ -22,13 +22,6 @@
         private int _millisecondsPassed;
         private int _millisecondsPerFrame;
         private SpriteAnimation _spriteAnimation;
-
-#pragma warning disable CS0649
-
-        [Child]
-        private SpriteRenderer _spriteRenderer;
-
-#pragma warning restore CS0649
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimatorComponent"/> class.
@@ -76,7 +69,7 @@
         }
 
         /// <inheritdoc/>
-        IEnumerable<Guid> IAssetComponent<Sprite>.GetOwnedAssetIds() {
+        public override IEnumerable<Guid> GetOwnedAssetIds() {
             var ids = new HashSet<Guid>();
             if (this._defaultAnimation != null) {
                 ids.AddRange(this._defaultAnimation.GetSpriteIds());
@@ -90,7 +83,7 @@
         }
 
         /// <inheritdoc/>
-        public bool HasAsset(Guid id) {
+        public override bool HasAsset(Guid id) {
             return this._defaultAnimation?.Id == id ||
                 this._spriteAnimation?.Id == id ||
                 this._defaultAnimation?.HasSprite(id) == true ||
@@ -134,15 +127,15 @@
                 this._spriteAnimation?.LoadContent();
             }
 
-            if (this._spriteAnimation != null && this._spriteRenderer != null) {
-                this._spriteRenderer.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
+            if (this._spriteAnimation != null) {
+                this.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
             }
 
             this.Play();
         }
 
         /// <inheritdoc/>
-        void IAssetComponent<Sprite>.RefreshAsset(Sprite newInstance) {
+        public override void RefreshAsset(Sprite newInstance) {
             if (newInstance != null) {
                 this._defaultAnimation?.RefreshSprite(newInstance);
                 this._spriteAnimation?.RefreshSprite(newInstance);
@@ -163,7 +156,7 @@
         }
 
         /// <inheritdoc/>
-        public bool RemoveAsset(Guid id) {
+        public override bool RemoveAsset(Guid id) {
             bool result;
             if (this._defaultAnimation?.Id == id) {
                 this._defaultAnimation = null;
@@ -199,7 +192,7 @@
         }
 
         /// <inheritdoc/>
-        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
+        public override bool TryGetAsset(Guid id, out Sprite asset) {
             if (this._defaultAnimation != null) {
                 this._defaultAnimation.TryGetSprite(id, out asset);
             }
@@ -235,7 +228,7 @@
         /// <returns>The task.</returns>
         public Task UpdateAsync(GameTime gameTime) {
             return Task.Run(() => {
-                if (this._spriteAnimation != null && this._spriteAnimation.Steps.Any() && this._spriteRenderer != null) {
+                if (this._spriteAnimation != null && this._spriteAnimation.Steps.Any()) {
                     this._millisecondsPassed += Convert.ToInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
 
                     if (this._millisecondsPassed >= this._millisecondsPerFrame) {
@@ -258,7 +251,7 @@
                             }
 
                             currentStep = this._spriteAnimation.Steps.ElementAt(this._currentStepIndex);
-                            this._spriteRenderer.Sprite = currentStep.Sprite;
+                            this.Sprite = currentStep.Sprite;
                         }
                     }
                 }
@@ -274,8 +267,8 @@
             this._millisecondsPerFrame = 1000 / this._frameRate;
             this._spriteAnimation = this._defaultAnimation;
 
-            if (this._spriteAnimation != null && this._spriteRenderer != null) {
-                this._spriteRenderer.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
+            if (this._spriteAnimation != null) {
+                this.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
             }
         }
     }

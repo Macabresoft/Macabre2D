@@ -10,7 +10,7 @@
     /// <summary>
     /// A component which will render a single sprite.
     /// </summary>
-    public sealed class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
+    public class SpriteRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
         private Sprite _sprite;
@@ -76,12 +76,12 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Guid> GetOwnedAssetIds() {
+        public virtual IEnumerable<Guid> GetOwnedAssetIds() {
             return this.Sprite != null ? new[] { this.Sprite.Id } : new Guid[0];
         }
 
         /// <inheritdoc/>
-        public bool HasAsset(Guid id) {
+        public virtual bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
         }
 
@@ -95,14 +95,14 @@
         }
 
         /// <inheritdoc/>
-        public void RefreshAsset(Sprite newInstance) {
+        public virtual void RefreshAsset(Sprite newInstance) {
             if (newInstance != null && this.Sprite?.Id == newInstance.Id) {
                 this.Sprite = newInstance;
             }
         }
 
         /// <inheritdoc/>
-        public bool RemoveAsset(Guid id) {
+        public virtual bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
                 this.Sprite = null;
@@ -112,7 +112,7 @@
         }
 
         /// <inheritdoc/>
-        public bool TryGetAsset(Guid id, out Sprite asset) {
+        public virtual bool TryGetAsset(Guid id, out Sprite asset) {
             var result = this.Sprite != null && this.Sprite.Id == id;
             asset = result ? this.Sprite : null;
             return result;

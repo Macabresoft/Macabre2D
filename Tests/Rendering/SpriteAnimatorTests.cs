@@ -17,30 +17,28 @@
             var numberOfSteps = 3;
             var animation = CreateAnimation(numberOfSteps, true);
             var animator = CreateAnimator(animation, 1);
-            var scene = Substitute.For<IScene>();
             animator.Initialize(Substitute.For<IScene>());
 
             var gameTime = new GameTime {
                 ElapsedGameTime = TimeSpan.FromMilliseconds(100d)
             };
 
-            var spriteRenderer = animator.GetChildOfType<SpriteRenderer>();
-            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, spriteRenderer.Sprite.Id);
+            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
 
             animator.UpdateAsync(gameTime).Wait();
-            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, spriteRenderer.Sprite.Id);
+            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
 
             for (var i = 1; i < numberOfSteps; i++) {
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
                 animator.UpdateAsync(gameTime).Wait();
-                Assert.AreEqual(animation.Steps.ElementAt(i).Sprite.Id, spriteRenderer.Sprite.Id);
+                Assert.AreEqual(animation.Steps.ElementAt(i).Sprite.Id, animator.Sprite.Id);
             }
 
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
 
             // Should loop here.
             animator.UpdateAsync(gameTime).Wait();
-            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, spriteRenderer.Sprite.Id);
+            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
         }
 
         private static SpriteAnimation CreateAnimation(int numberOfSteps, bool shouldLoop) {
@@ -60,7 +58,6 @@
                 FrameRate = frameRate
             };
 
-            animator.AddChild(new SpriteRenderer());
             return animator;
         }
     }
