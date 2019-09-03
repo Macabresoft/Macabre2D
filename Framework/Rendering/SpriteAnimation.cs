@@ -74,6 +74,10 @@
         /// <param name="step">The step.</param>
         public void AddStep(SpriteAnimationStep step) {
             this._steps.Add(step);
+
+            if (this._isLoaded) {
+                step.Sprite?.LoadContent();
+            }
         }
 
         /// <summary>
@@ -87,6 +91,10 @@
             }
             else {
                 this._steps.Insert(index, step);
+            }
+
+            if (this._isLoaded) {
+                step.Sprite?.LoadContent();
             }
         }
 
