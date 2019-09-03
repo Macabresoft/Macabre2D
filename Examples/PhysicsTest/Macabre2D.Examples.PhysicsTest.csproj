@@ -91,7 +91,6 @@
   -->
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Content\Arial.spritefont" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">
