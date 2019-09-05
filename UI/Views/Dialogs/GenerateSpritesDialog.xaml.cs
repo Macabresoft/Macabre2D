@@ -2,23 +2,21 @@
 
     using Macabre2D.UI.ViewModels.Dialogs;
 
-    public partial class EditTileSetDialog {
+    public partial class GenerateSpritesDialog {
 
-        public EditTileSetDialog(EditTileSetViewModel viewModel) {
+        public GenerateSpritesDialog(GenerateSpritesViewModel viewModel) {
             this.ViewModel = viewModel;
             viewModel.Finished += this.ViewModel_Finished;
             this.InitializeComponent();
         }
 
-        public EditTileSetViewModel ViewModel {
+        public GenerateSpritesViewModel ViewModel {
             get {
-                return this.DataContext as EditTileSetViewModel;
+                return this.DataContext as GenerateSpritesViewModel;
             }
 
             set {
-                if (this.DataContext != value) {
-                    this.DataContext = value;
-                }
+                this.DataContext = value;
             }
         }
 

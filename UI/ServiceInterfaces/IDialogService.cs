@@ -14,6 +14,8 @@
 
         bool ShowFolderBrowser(out string path, string initialDirectory = null);
 
+        bool ShowGenerateSpritesDialog(ImageAsset imageAsset, out (int Columns, int Rows, bool ReplaceExistingSprites) generateSpritesParameters);
+
         bool ShowSaveAssetAsDialog(Project project, AddableAsset asset);
 
         SaveDiscardCancelResult ShowSaveDiscardCancelDialog();

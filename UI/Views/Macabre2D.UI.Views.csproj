@@ -137,8 +137,8 @@
     <Compile Include="Dialogs\AssetNameChangeDialog.xaml.cs">
       <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\EditTileSetDialog.xaml.cs">
-      <DependentUpon>EditTileSetDialog.xaml</DependentUpon>
+    <Compile Include="Dialogs\GenerateSpritesDialog.xaml.cs">
+      <DependentUpon>GenerateSpritesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\SaveAssetAsDialog.xaml.cs">
       <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
@@ -219,7 +219,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\EditTileSetDialog.xaml">
+    <Page Include="Dialogs\GenerateSpritesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

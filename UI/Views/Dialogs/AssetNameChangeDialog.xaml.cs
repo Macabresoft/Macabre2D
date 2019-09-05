@@ -6,7 +6,7 @@
 
         public AssetNameChangeDialog(AssetNameChangeViewModel viewModel) {
             this.ViewModel = viewModel;
-            viewModel.Finished += ViewModel_Finished;
+            viewModel.Finished += this.ViewModel_Finished;
             this.InitializeComponent();
         }
 

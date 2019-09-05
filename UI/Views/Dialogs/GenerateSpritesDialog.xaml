@@ -1,0 +1,33 @@
+﻿<metro:MetroWindow x:Class="Macabre2D.UI.Views.Dialogs.GenerateSpritesDialog"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls"
+                   Style="{StaticResource StandardWindowStyle}"
+                   Title="Generate Sprites"
+                   WindowStartupLocation="CenterScreen"
+                   SizeToContent="WidthAndHeight"
+                   Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <valueEditors:IntEditor Grid.Row="0"
+                                MaxValue="{Binding ImageAsset.Width}"
+                                MinValue="1"
+                                Title="Columns"
+                                Value="{Binding NumberOfColumns}" />
+        <valueEditors:IntEditor Grid.Row="1"
+                                MaxValue="{Binding ImageAsset.Height}"
+                                MinValue="1"
+                                Title="Rows"
+                                Value="{Binding NumberOfRows}" />
+
+        <valueEditors:BoolEditor Grid.Row="2"
+                                 Title="Replace Existing Sprites"
+                                 Value="{Binding ReplaceExistingSprites}" />
+    </Grid>
+</metro:MetroWindow>

@@ -80,6 +80,25 @@
             return false;
         }
 
+        public bool ShowGenerateSpritesDialog(ImageAsset imageAsset, out (int Columns, int Rows, bool ReplaceExistingSprites) generateSpritesParameter) {
+            if (imageAsset == null) {
+                throw new ArgumentNullException(nameof(imageAsset));
+            }
+
+            var window = this._container.Resolve<GenerateSpritesDialog>(new ParameterOverride("imageAsset", imageAsset));
+            var result = window.SimpleShowDialog();
+
+            if (result) {
+                var viewModel = window.ViewModel;
+                generateSpritesParameter = (viewModel.NumberOfColumns, viewModel.NumberOfRows, viewModel.ReplaceExistingSprites);
+            }
+            else {
+                generateSpritesParameter = (0, 0, false);
+            }
+
+            return result;
+        }
+
         public bool ShowSaveAssetAsDialog(Project project, AddableAsset asset) {
             if (asset == null) {
                 throw new ArgumentNullException(nameof(asset));

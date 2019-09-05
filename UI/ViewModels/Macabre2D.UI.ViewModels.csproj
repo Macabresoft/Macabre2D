@@ -91,7 +91,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
-    <Compile Include="Dialogs\EditTileSetViewModel.cs" />
+    <Compile Include="Dialogs\GenerateSpritesViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
     <Compile Include="Dialogs\SaveAssetAsViewModel.cs" />
     <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
