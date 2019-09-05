@@ -2,8 +2,8 @@
              x:Name="_imageAssetControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls.AssetEditors"
-             xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters">
     <UserControl.Resources>
         <converters:ImageAssetToBitmapImageConverter x:Key="_imageAssetToBitmapImageConverter" />
@@ -17,15 +17,33 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0"
-                    Orientation="Horizontal">
-            <Button Content="Add Sprite"
+        <Grid Grid.Row="0"
+              Margin="{StaticResource StandardMarginLR}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
                     Command="{Binding AddSpriteCommand}"
-                    ToolTip="Adds a sprite the image asset." />
-            <Button Content="Remove"
+                    ToolTip="Adds a sprite the image asset.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Plus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Grid.Column="1"
                     Command="{Binding RemoveSpriteCommand}"
-                    ToolTip="Removes a sprite from the image asset." />
-        </StackPanel>
+                    ToolTip="Removes a sprite from the image asset.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Minus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Grid.Column="2"
+                    Command="{Binding GenerateSpritesCommand}"
+                    HorizontalAlignment="Right"
+                    ToolTip="Generates a grid of sprites based on parameters provided.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Collage}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+        </Grid>
 
         <ListBox Grid.Row="1"
                  Margin="{StaticResource DoubleMarginAll}"

@@ -6,28 +6,66 @@
                    Style="{StaticResource StandardWindowStyle}"
                    Title="Generate Sprites"
                    WindowStartupLocation="CenterScreen"
+                   ResizeMode="NoResize"
                    SizeToContent="WidthAndHeight"
-                   Width="300">
-    <Grid>
+                   Width="400">
+    <Grid Margin="{StaticResource StandardMarginAll}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <valueEditors:IntEditor Grid.Row="0"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="0"
+                   FontWeight="Bold"
+                   Text="Columns"
+                   VerticalAlignment="Center" />
+
+        <valueEditors:IntEditor Grid.Column="1"
+                                Grid.Row="0"
                                 MaxValue="{Binding ImageAsset.Width}"
                                 MinValue="1"
-                                Title="Columns"
-                                Value="{Binding NumberOfColumns}" />
-        <valueEditors:IntEditor Grid.Row="1"
+                                Value="{Binding NumberOfColumns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="1"
+                   FontWeight="Bold"
+                   Text="Rows"
+                   VerticalAlignment="Center" />
+
+        <valueEditors:IntEditor Grid.Column="1"
+                                Grid.Row="1"
                                 MaxValue="{Binding ImageAsset.Height}"
                                 MinValue="1"
-                                Title="Rows"
-                                Value="{Binding NumberOfRows}" />
+                                Value="{Binding NumberOfRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <valueEditors:BoolEditor Grid.Row="2"
+        <valueEditors:BoolEditor Grid.ColumnSpan="2"
+                                 Grid.Row="2"
+                                 HorizontalAlignment="Right"
                                  Title="Replace Existing Sprites"
-                                 Value="{Binding ReplaceExistingSprites}" />
+                                 Value="{Binding ReplaceExistingSprites, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <StackPanel Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="3"
+                    Margin="{StaticResource StandardMarginT}">
+            <Button Content="_OK"
+                    Command="{Binding OKCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True"
+                    Width="65" />
+            <Button Content="_Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True"
+                    Width="65" />
+        </StackPanel>
     </Grid>
 </metro:MetroWindow>

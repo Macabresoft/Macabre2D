@@ -112,15 +112,34 @@
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 
-        public override void Delete() {
+        public void ClearSprites() {
             foreach (var child in this._children) {
-                if (child.Sprite != null) {
-                    this.RemoveIdentifiableContentFromScenes(child.Sprite.AssetId);
-                }
+                this.HandleSpriteWrapperRemoved(child);
             }
 
             this._children.Clear();
+        }
+
+        public override void Delete() {
+            this.ClearSprites();
             base.Delete();
+        }
+
+        public void GenerateSprites(int columns, int rows, bool replaceExistingSprites) {
+            if (replaceExistingSprites) {
+                this.ClearSprites();
+            }
+
+            var columnWidth = this.Width / columns;
+            var columnHeight = this.Height / rows;
+            for (var x = 0; x < columns; x++) {
+                for (var y = 0; y < rows; y++) {
+                    var sprite = this.AddNewSprite();
+                    sprite.Size = new Point(1, 1);
+                    sprite.Location = new Point(columnWidth * x, columnHeight * y);
+                    sprite.Size = new Point(columnWidth, columnHeight);
+                }
+            }
         }
 
         public override void Refresh(AssetManager assetManager) {
@@ -138,6 +157,7 @@
             foreach (var sprite in this.Sprites) {
                 sprite.Sprite.LoadContent();
             }
+
             base.Refresh(assetManager);
         }
 

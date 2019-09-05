@@ -5,6 +5,7 @@
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Windows;
@@ -19,14 +20,16 @@
             typeof(ImageAssetEditor),
             new PropertyMetadata(null, new PropertyChangedCallback(OnAssetChanged)));
 
+        private readonly IBusyService _busyService = ViewContainer.Resolve<IBusyService>();
+        private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly RelayCommand _removeSpriteCommand;
-        private readonly IUndoService _undoService;
+        private readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
         private SpriteWrapper _selectedSprite;
 
         public ImageAssetEditor() {
-            this._undoService = ViewContainer.Resolve<IUndoService>();
             this.AddSpriteCommand = new RelayCommand(this.AddSprite, () => this.Asset != null);
             this._removeSpriteCommand = new RelayCommand(this.RemoveSprite, () => this.Asset != null && this.SelectedSprite != null);
+            this.GenerateSpritesCommand = new RelayCommand(this.GenerateSprites, () => this.Asset != null);
             this.InitializeComponent();
         }
 
@@ -38,6 +41,8 @@
             get { return (ImageAsset)this.GetValue(AssetProperty); }
             set { this.SetValue(AssetProperty, value); }
         }
+
+        public ICommand GenerateSpritesCommand { get; }
 
         public ICommand RemoveSpriteCommand {
             get {
@@ -79,6 +84,32 @@
             });
 
             this._undoService.Do(undoCommand);
+        }
+
+        private void GenerateSprites() {
+            var asset = this.Asset;
+
+            if (asset != null) {
+                var result = this._dialogService.ShowGenerateSpritesDialog(asset, out var paramters);
+
+                if (result) {
+                    var previousSprites = paramters.ReplaceExistingSprites ? asset.Sprites.ToList() : new List<SpriteWrapper>();
+
+                    var undoCommand = new UndoCommand(() => {
+                        this._busyService.PerformAction(() => asset.GenerateSprites(paramters.Columns, paramters.Rows, paramters.ReplaceExistingSprites), true);
+                    }, () => {
+                        this._busyService.PerformAction(() => {
+                            asset.ClearSprites();
+
+                            foreach (var sprite in previousSprites) {
+                                asset.AddChild(sprite);
+                            }
+                        }, true);
+                    });
+
+                    this._undoService.Do(undoCommand);
+                }
+            }
         }
 
         private void RemoveSprite() {
