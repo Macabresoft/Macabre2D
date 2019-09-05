@@ -47,6 +47,7 @@
 
         <ListBox Grid.Row="1"
                  Margin="{StaticResource DoubleMarginAll}"
+                 MaxHeight="190"
                  ItemsSource="{Binding Asset.Sprites}"
                  SelectedItem="{Binding SelectedSprite}"
                  SelectionMode="Single">
