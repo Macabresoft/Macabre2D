@@ -14,9 +14,25 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <valueEditors:StringEditor Grid.Row="0"
-                                   Title="Font Name"
-                                   Value="{Binding FontName, ElementName=_fontAssetControl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <valueEditors:StringEditor Grid.Column="0"
+                                       Title="Font"
+                                       VerticalAlignment="Center"
+                                       Value="{Binding FontName, ElementName=_fontAssetControl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+            <Button Grid.Column="1"
+                    Margin="{StaticResource StandardMarginLR}"
+                    Padding="{StaticResource StandardMarginLR}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Content=" ... "
+                    Command="{Binding SelectFontCommand, ElementName=_fontAssetControl}" />
+        </Grid>
 
         <valueEditors:FloatEditor Grid.Row="1"
                                   Title="Size"
