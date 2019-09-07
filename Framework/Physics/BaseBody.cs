@@ -6,9 +6,6 @@ namespace Macabre2D.Framework {
 
     public abstract class BaseBody : BaseComponent, IPhysicsBody {
 
-        [DataMember]
-        private PhysicsMaterial _physicsMaterial = PhysicsMaterial.Default;
-
         /// <inheritdoc/>
         public event EventHandler<CollisionEventArgs> CollisionOccured;
 
@@ -21,15 +18,12 @@ namespace Macabre2D.Framework {
         /// <inheritdoc/>
 
         /// <inheritdoc/>
-        public PhysicsMaterial PhysicsMaterial {
-            get {
-                return this._physicsMaterial;
-            }
+        [DataMember]
+        public bool IsTrigger { get; set; }
 
-            set {
-                this._physicsMaterial = value;
-            }
-        }
+        /// <inheritdoc/>
+        [DataMember]
+        public PhysicsMaterial PhysicsMaterial { get; set; } = PhysicsMaterial.Default;
 
         public abstract IEnumerable<Collider> GetColliders();
 

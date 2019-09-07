@@ -93,6 +93,14 @@
             lineDrawer.LineThickness = 1f;
             scene.AddComponent(lineBody);
 
+            var triggerBody = new SimpleBody();
+            triggerBody.Collider = PolygonCollider.CreateRectangle(2f, 2f);
+            triggerBody.LocalPosition += new Vector2(2f, 2.5f);
+            triggerBody.IsTrigger = true;
+            var triggerListener = new TriggerListener();
+            triggerBody.AddChild(triggerListener);
+            scene.AddComponent(triggerBody);
+
             scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
             this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
             this._isLoaded = true;

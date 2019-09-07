@@ -67,6 +67,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PhysicsTestGame.cs" />
+    <Compile Include="TriggerListener.cs" />
     <Compile Include="VelocityChanger.cs" />
   </ItemGroup>
   <ItemGroup>

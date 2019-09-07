@@ -20,6 +20,14 @@
         bool HasCollider { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance is trigger. If it is a trigger, instead of
+        /// reacting within the physics system, it will simply notify that a collision has occured
+        /// and do nothing else.
+        /// </summary>
+        /// <value><c>true</c> if this instance is trigger; otherwise, <c>false</c>.</value>
+        bool IsTrigger { get; }
+
+        /// <summary>
         /// Gets or sets the physics material.
         /// </summary>
         /// <value>The physics material.</value>

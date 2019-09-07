@@ -68,7 +68,9 @@
                             collisions.Contains(body.SessionId);
 
                         if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision)) {
-                            this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                            if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
+                                this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                            }
 
                             body.NotifyCollisionOccured(collision);
 
@@ -79,7 +81,6 @@
                                 -collision.MinimumTranslationVector,
                                 collision.SecondContainsFirst,
                                 collision.FirstContainsSecond);
-
                             otherCollider.Body.NotifyCollisionOccured(otherCollision);
                             collisionsOccured.Add(otherCollider.Body.SessionId);
                         }
