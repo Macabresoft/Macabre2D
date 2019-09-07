@@ -132,6 +132,7 @@
     <Compile Include="EqualityToBoolConverter.cs" />
     <Compile Include="AutoTileCardinalIndexToCanvasConverter.cs" />
     <Compile Include="InverseMultiBoolToVisibilityConverter.cs" />
+    <Compile Include="LayersToBoolConverter.cs" />
     <Compile Include="MultiBoolToVisibilityConverter.cs" />
     <Compile Include="EnumerableToVisibilityConverter.cs" />
     <Compile Include="EnumTypeToValuesConverter.cs" />
