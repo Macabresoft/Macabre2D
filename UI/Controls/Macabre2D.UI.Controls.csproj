@@ -238,6 +238,9 @@
       <DependentUpon>ModuleList.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\ISeparatedValueEditor.cs" />
+    <Compile Include="ValueEditors\LayersEditor.xaml.cs">
+      <DependentUpon>LayersEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\LineColliderEditor.xaml.cs">
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>
@@ -385,6 +388,10 @@
     <Page Include="ModuleList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ValueEditors\LayersEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ValueEditors\LineColliderEditor.xaml">
       <SubType>Designer</SubType>

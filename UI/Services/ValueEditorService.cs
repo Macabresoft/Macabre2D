@@ -48,25 +48,23 @@
         private async Task<DependencyObject> GetEditorForType(object originalObject, object value, Type memberType, string propertyPath, string memberName, Type declaringTypeToIgnore) {
             DependencyObject result = null;
 
-            if (memberType.IsEnum) {
-                var editor = new EnumEditor();
+            var editorType = await this._assemblyService.LoadFirstType(typeof(INamedValueEditor<>).MakeGenericType(memberType));
+            if (editorType != null && Activator.CreateInstance(editorType) is INamedValueEditor editor && editor is DependencyObject dependencyObject) {
                 await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                result = editor;
+                result = dependencyObject;
             }
-            else {
-                var editorType = await this._assemblyService.LoadFirstType(typeof(INamedValueEditor<>).MakeGenericType(memberType));
-                if (editorType != null && Activator.CreateInstance(editorType) is INamedValueEditor editor && editor is DependencyObject dependencyObject) {
-                    await editor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                    result = dependencyObject;
-                }
-                else if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
-                    var genericEditor = new GenericValueEditor {
-                        DeclaringType = declaringTypeToIgnore
-                    };
+            else if (memberType.IsEnum) {
+                var enumEditor = new EnumEditor();
+                await enumEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
+                result = enumEditor;
+            }
+            else if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
+                var genericEditor = new GenericValueEditor {
+                    DeclaringType = declaringTypeToIgnore
+                };
 
-                    await genericEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                    result = genericEditor;
-                }
+                await genericEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
+                result = genericEditor;
             }
 
             return result;

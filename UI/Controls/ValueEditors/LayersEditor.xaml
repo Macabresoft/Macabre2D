@@ -1,0 +1,48 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.Controls.ValueEditors.LayersEditor"
+                        x:Name="_layersEditor"
+                        x:TypeArguments="framework:Layers"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+                        xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                        xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
+    <UserControl.Resources>
+        <converters:LayersToBoolConverter x:Key="_layersToBoolConverter" />
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=_layersEditor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding Title}"
+                   VerticalAlignment="Top" />
+
+        <ItemsControl Grid.Column="1">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <CheckBox Content="1"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer01}}" />
+            <CheckBox Content="2"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer02}}" />
+            <CheckBox Content="3"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer03}}" />
+            <CheckBox Content="4"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer04}}" />
+            <CheckBox Content="5"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer05}}" />
+            <CheckBox Content="6"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer06}}" />
+            <CheckBox Content="7"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer07}}" />
+            <CheckBox Content="8"
+                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer08}}" />
+        </ItemsControl>
+    </Grid>
+</local:NamedValueEditor>

@@ -9,7 +9,6 @@
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
         <converters:ComponentToCommandMenuItemsConverter x:Key="_componentToMenuItems" />
-        <converters:LayersToBoolConverter x:Key="_layersToBoolConverter" />
     </UserControl.Resources>
     <ScrollViewer DataContext="{Binding ElementName=_componentControl}"
                   HorizontalScrollBarVisibility="Disabled"
@@ -26,7 +25,6 @@
 
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -70,42 +68,9 @@
                                            Title="Scale"
                                            Value="{Binding ComponentScale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Grid Grid.Row="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0"
-                               FontWeight="Bold"
-                               Text="Layers"
-                               VerticalAlignment="Top" />
-
-                    <ItemsControl Grid.Column="1">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <CheckBox Content="1"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer01}}" />
-                        <CheckBox Content="2"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer02}}" />
-                        <CheckBox Content="3"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer03}}" />
-                        <CheckBox Content="4"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer04}}" />
-                        <CheckBox Content="5"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer05}}" />
-                        <CheckBox Content="6"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer06}}" />
-                        <CheckBox Content="7"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer07}}" />
-                        <CheckBox Content="8"
-                                  IsChecked="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer08}}" />
-                    </ItemsControl>
-                </Grid>
+                <valueEditors:LayersEditor Grid.Row="4"
+                                           Title="Layers"
+                                           Value="{Binding ComponentLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <Separator Grid.Row="1" />
