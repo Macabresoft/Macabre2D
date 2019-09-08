@@ -15,7 +15,7 @@
 
 ## Fixes
 
-N/A
+* Fixed a bug which caused layer names to throw an exception during deserialization.
 
 ---
 
