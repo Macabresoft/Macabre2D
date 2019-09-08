@@ -45,6 +45,13 @@
         Guid StartupSceneAssetId { get; }
 
         /// <summary>
+        /// Gets the name of the layer.
+        /// </summary>
+        /// <param name="layer">The layer.</param>
+        /// <returns></returns>
+        string GetLayerName(Layers layer);
+
+        /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
         /// screen regardless of the current view size.
         /// </summary>
@@ -52,6 +59,13 @@
         /// <param name="pixelViewHeight">Height of the pixel view.</param>
         /// <returns>A pixel agnostic ratio.</returns>
         float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
+
+        /// <summary>
+        /// Sets the name of the layer.
+        /// </summary>
+        /// <param name="layer">The layer.</param>
+        /// <param name="name">The name.</param>
+        void SetLayerName(Layers layer, string name);
 
         /// <summary>
         /// Tries to get a custom setting.
@@ -73,6 +87,18 @@
 
         [DataMember]
         private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
+
+        [DataMember]
+        private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>() {
+            { Layers.Layer01, "1" },
+            { Layers.Layer02, "2" },
+            { Layers.Layer03, "3" },
+            { Layers.Layer04, "4" },
+            { Layers.Layer05, "5" },
+            { Layers.Layer06, "6" },
+            { Layers.Layer07, "7" },
+            { Layers.Layer08, "8" },
+        };
 
         private int _pixelsPerUnit = 32;
 
@@ -147,8 +173,23 @@
         }
 
         /// <inheritdoc/>
+        public string GetLayerName(Layers layer) {
+            string name;
+            if (!this._layersToName.TryGetValue(layer, out name)) {
+                name = layer.ToString();
+            }
+
+            return name;
+        }
+
+        /// <inheritdoc/>
         public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
             return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
+        }
+
+        /// <inheritdoc/>
+        public void SetLayerName(Layers layer, string name) {
+            this._layersToName[layer] = name;
         }
 
         /// <inheritdoc/>
