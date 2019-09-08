@@ -135,7 +135,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, params ICamera[] cameras) {
+        public void Draw(GameTime gameTime, params Camera[] cameras) {
             return;
         }
 

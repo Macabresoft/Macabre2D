@@ -10,7 +10,7 @@
     /// <summary>
     /// Represents a camera into the game world.
     /// </summary>
-    public sealed class Camera : BaseComponent, ICamera {
+    public sealed class Camera : BaseComponent, IBoundable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Matrix> _matrix;
         private int _renderOrder;
@@ -24,10 +24,14 @@
             this._matrix = new ResettableLazy<Matrix>(this.CreateViewMatrix);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Occurs when the render order has changed.
+        /// </summary>
         public event EventHandler RenderOrderChanged;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Occurs when the view height has changed.
+        /// </summary>
         public event EventHandler ViewHeightChanged;
 
         /// <inheritdoc/>
@@ -37,11 +41,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the layers to render.
+        /// </summary>
+        /// <value>The layers to render.</value>
         [DataMember]
         public Layers LayersToRender { get; set; } = Layers.All;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the render order. A lower number will be rendered first.
+        /// </summary>
+        /// <value>The render order.</value>
         public int RenderOrder {
             get {
                 return this._renderOrder;
@@ -55,7 +65,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets or sets the shader.
+        /// </summary>
+        /// <value>The shader.</value>
+        [DataMember]
+        public Shader Shader { get; set; }
+
+        /// <summary>
+        /// Gets the height of the view.
+        /// </summary>
+        /// <value>The height of the view.</value>
         [DataMember]
         public float ViewHeight {
             get {
@@ -79,14 +99,21 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the view matrix.
+        /// </summary>
+        /// <value>The view matrix.</value>
         public Matrix ViewMatrix {
             get {
                 return this._matrix.Value;
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Converts the point from screen space to world space.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <returns>The world space location of the point.</returns>
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
             if (MacabreGame.Instance.GraphicsDevice is GraphicsDevice graphicsDevice) {
                 var ratio = this.ViewHeight / graphicsDevice.Viewport.Height;
@@ -99,11 +126,28 @@
             return Vector2.Zero;
         }
 
+        /// <summary>
+        /// Gets the width of the view.
+        /// </summary>
+        /// <returns>The width of the view.</returns>
         public float GetViewWidth() {
             return this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport);
         }
 
         /// <inheritdoc/>
+        public override void LoadContent() {
+            if (this.Scene.IsInitialized) {
+                this.Shader?.Load();
+            }
+
+            base.LoadContent();
+        }
+
+        /// <summary>
+        /// Zooms to a world position.
+        /// </summary>
+        /// <param name="worldPosition">The world position.</param>
+        /// <param name="zoomAmount">The zoom amount.</param>
         public void ZoomTo(Vector2 worldPosition, float zoomAmount) {
             var originalCameraPosition = this.WorldTransform.Position;
             var originalDistanceFromCamera = worldPosition - originalCameraPosition;
@@ -113,13 +157,20 @@
             this.SetWorldPosition(worldPosition - (originalDistanceFromCamera * viewHeightRatio));
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Zooms to a screen position.
+        /// </summary>
+        /// <param name="screenPosition">The screen position.</param>
+        /// <param name="zoomAmount">The zoom amount.</param>
         public void ZoomTo(Point screenPosition, float zoomAmount) {
             var worldPosition = this.ConvertPointFromScreenSpaceToWorldSpace(screenPosition);
             this.ZoomTo(worldPosition, zoomAmount);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Zooms to a boundable component, fitting it into frame.
+        /// </summary>
+        /// <param name="boundable">The boundable.</param>
         public void ZoomTo(IBoundable boundable) {
             if (boundable != null) {
                 var area = boundable.BoundingArea;

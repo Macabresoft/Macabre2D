@@ -114,7 +114,7 @@
         /// </summary>
         /// <param name="gameTime">The game time.</param>
         /// <param name="cameras">The cameras.</param>
-        void Draw(GameTime gameTime, params ICamera[] cameras);
+        void Draw(GameTime gameTime, params Camera[] cameras);
 
         /// <summary>
         /// Finds a component in the scene with the specified name. If multiple components have the

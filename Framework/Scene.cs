@@ -100,7 +100,7 @@
         [DataMember]
         public string Name { get; set; }
 
-        internal FilterSortCollection<ICamera> Cameras { get; } = new FilterSortCollection<ICamera>(
+        internal FilterSortCollection<Camera> Cameras { get; } = new FilterSortCollection<Camera>(
             c => c.IsEnabled,
             (c, handler) => c.IsEnabledChanged += handler,
             (c, handler) => c.IsEnabledChanged -= handler,
@@ -206,7 +206,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, params ICamera[] cameras) {
+        public void Draw(GameTime gameTime, params Camera[] cameras) {
             this._drawTree.Clear();
             this._drawables.ForEachFilteredItem(d => this._drawTree.Insert(d));
 
@@ -460,11 +460,11 @@
             }
         }
 
-        private void DrawForCamera(GameTime gameTime, ICamera camera) {
+        private void DrawForCamera(GameTime gameTime, Camera camera) {
             var potentialDrawables = this._drawTree.RetrievePotentialCollisions(camera.BoundingArea);
 
             if (potentialDrawables.Any()) {
-                MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullNone, null, camera.ViewMatrix);
+                MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
 
                 foreach (var drawable in potentialDrawables) {
                     // As long as it doesn't equal Layers.None, at least one of the layers defined on

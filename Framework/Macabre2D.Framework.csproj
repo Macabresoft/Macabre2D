@@ -82,6 +82,7 @@
     <Compile Include="Physics\IDynamicPhysicsBody.cs" />
     <Compile Include="Physics\IPhysicsBody.cs" />
     <Compile Include="Physics\TileableBody.cs" />
+    <Compile Include="Rendering\Shader.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Tiles\AutoTileMapComponent.cs" />
     <Compile Include="Tiles\AutoTileSet.cs" />
@@ -177,7 +178,6 @@
     <Compile Include="EventArgs\CollectionChangedEventArgs.cs" />
     <Compile Include="FixedTimeStepModule.cs" />
     <Compile Include="Extensions\FuncExtensions.cs" />
-    <Compile Include="Interfaces\ICamera.cs" />
     <Compile Include="Interfaces\IDrawableComponent.cs" />
     <Compile Include="Interfaces\IUpdateableComponentAsync.cs" />
     <Compile Include="Interfaces\IUpdateableComponent.cs" />

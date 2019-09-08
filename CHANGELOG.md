@@ -6,10 +6,12 @@
     * A body marked as a trigger will simply notify when a collision occurs, but not react as if two bodies had just collided.
 * A component can now be marked with multiple layers within the editor (previously this could only be done from code)
 * Layers can now be given names that will appear in the editor instead of the basic enumeration names.
+* Cameras can have shaders applied to them via MonoGame's Effects class.
 
 ## Refactors
 
 * Project settings and asset management have been split into two separate tabs.
+* Removed ICamera interface as it was an unnecessary abstraction.
 
 ## Fixes
 
