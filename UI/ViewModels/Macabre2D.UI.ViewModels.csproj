@@ -90,6 +90,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssetsViewModel.cs" />
     <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
     <Compile Include="Dialogs\GenerateSpritesViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />

@@ -115,8 +115,11 @@
                                                         SelectionChanged="TabControl_SelectionChanged"
                                                         Grid.Row="0"
                                                         Margin="{StaticResource StandardMarginB}">
-                    <TabItem Header="Project"
-                             Tag="{x:Static viewModels:TabTypes.Project}"
+                    <TabItem Header="Settings"
+                             Tag="{x:Static viewModels:TabTypes.Settings}"
+                             Style="{StaticResource HeaderTabItem}" />
+                    <TabItem Header="Assets"
+                             Tag="{x:Static viewModels:TabTypes.Assets}"
                              Style="{StaticResource HeaderTabItem}" />
                     <TabItem Header="Components"
                              Tag="{x:Static viewModels:TabTypes.Components}"
@@ -129,7 +132,12 @@
                 <local:ProjectView Grid.Row="1"
                                    IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
                                    Margin="{StaticResource DoubleMarginAll}"
-                                   Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Project}}" />
+                                   Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Settings}}" />
+
+                <local:AssetsView Grid.Row="1"
+                                  IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Assets}}" />
 
                 <local:ComponentsView Grid.Row="1"
                                       IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"

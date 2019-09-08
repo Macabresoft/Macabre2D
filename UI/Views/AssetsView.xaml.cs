@@ -4,10 +4,10 @@
     using Macabre2D.UI.ViewModels;
     using System.Windows.Controls;
 
-    public partial class ProjectView : UserControl {
+    public partial class AssetsView : UserControl {
 
-        public ProjectView() {
-            this.DataContext = ViewContainer.Resolve<ProjectViewModel>();
+        public AssetsView() {
+            this.DataContext = ViewContainer.Resolve<AssetsViewModel>();
             this.InitializeComponent();
         }
     }

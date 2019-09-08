@@ -131,6 +131,9 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssetsView.xaml.cs">
+      <DependentUpon>AssetsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\VersionEditor.xaml.cs">
       <DependentUpon>VersionEditor.xaml</DependentUpon>
     </Compile>
@@ -211,6 +214,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AssetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Data\VersionEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

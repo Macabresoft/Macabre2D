@@ -10,7 +10,9 @@
     using System.Windows.Input;
 
     public enum TabTypes {
-        Project,
+        Settings,
+
+        Assets,
 
         Components,
 

@@ -9,133 +9,80 @@
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
         <converters:RemoveFileExtensionConverter x:Key="_removeFileExtensionConverter" />
     </UserControl.Resources>
-    <Grid Grid.Column="0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height=".4*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height=".6*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Margin="{StaticResource StandardMarginAll}"
+                   VerticalAlignment="Center"
+                   Text="Name:" />
 
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Name:" />
+        <TextBox Grid.Row="0"
+                 Grid.Column="1"
+                 VerticalAlignment="Center"
+                 Text="{Binding ProjectName, ValidatesOnDataErrors=True}" />
 
-            <TextBox Grid.Row="0"
-                     Grid.Column="1"
-                     VerticalAlignment="Center"
-                     Text="{Binding ProjectName, ValidatesOnDataErrors=True}" />
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="{StaticResource StandardMarginAll}"
+                   VerticalAlignment="Center"
+                   Text="Startup Scene:" />
 
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Startup Scene:" />
+        <ComboBox Grid.Row="1"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
+                    SelectedItem="{Binding SelectedStartUpSceneAsset}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource _removeFileExtensionConverter}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-            <ComboBox Grid.Row="1"
-                      Grid.Column="1"
-                      VerticalAlignment="Center"
-                      ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
-                      SelectedItem="{Binding SelectedStartUpSceneAsset}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=Name, Converter={StaticResource _removeFileExtensionConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+        <TextBlock Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="{StaticResource StandardMarginAll}"
+                    VerticalAlignment="Center"
+                    Text="Pixels per Unit:" />
 
-            <TextBlock Grid.Row="2"
-                       Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Pixels per Unit:" />
+        <valueEditors:IntEditor Grid.Row="2"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Value="{Binding PixelsPerUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <valueEditors:IntEditor Grid.Row="2"
+        <TextBlock Grid.Row="3"
+                    Grid.Column="0"
+                    Margin="{StaticResource StandardMarginAll}"
+                    VerticalAlignment="Center"
+                    Text="Fallback Background:" />
+
+        <valueEditors:ColorEditor Grid.Row="3"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
-                                    Value="{Binding PixelsPerUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock Grid.Row="3"
-                       Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Fallback Background:" />
+        <TextBlock Grid.Row="4"
+                    Grid.Column="0"
+                    Margin="{StaticResource StandardMarginAll}"
+                    VerticalAlignment="Center"
+                    Text="Error Sprite Color:" />
 
-            <valueEditors:ColorEditor Grid.Row="3"
-                                      Grid.Column="1"
-                                      VerticalAlignment="Center"
-                                      Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-            <TextBlock Grid.Row="4"
-                       Grid.Column="0"
-                       Margin="{StaticResource StandardMarginAll}"
-                       VerticalAlignment="Center"
-                       Text="Error Sprite Color:" />
-
-            <valueEditors:ColorEditor Grid.Row="4"
-                                      Grid.Column="1"
-                                      VerticalAlignment="Center"
-                                      Value="{Binding ErrorSpritesColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        </Grid>
-
-        <Separator Grid.Row="1" />
-
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal">
-            <Button Command="{Binding NewFolderCommand}"
-                    ToolTip="Adds a folder.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FolderPlus}"
-                                            Foreground="{StaticResource BlackBrush}" />
-            </Button>
-            <Button Command="{Binding AddAssetCommand}"
-                    ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FilePlus}"
-                                            Foreground="{StaticResource BlackBrush}" />
-            </Button>
-            <Button Command="{Binding DeleteAssetCommand}"
-                    ToolTip="Deletes the selected asset from the project, including all children if the item is a folder. You cannot undo this action.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Delete}"
-                                            Foreground="{StaticResource BlackBrush}" />
-            </Button>
-            <Button Command="{Binding ReloadAssetCommand}"
-                    ToolTip="Reloads the selected asset.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Reload}"
-                                            Foreground="{StaticResource BlackBrush}" />
-            </Button>
-        </StackPanel>
-
-        <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"
-                               Grid.Row="3"
-                               IsEditable="True"
-                               RootAsset="{Binding ProjectService.CurrentProject.AssetFolder}"
-                               AssetDoubleClickedCommand="{Binding OpenSceneCommand}"
-                               SelectedAsset="{Binding AssetService.SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
-
-        <GridSplitter Grid.Row="4"
-                      Style="{StaticResource HorizontalGridSplitter}" />
-
-        <ScrollViewer Grid.Row="5"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Visible">
-            <controls:AssetEditorControl Asset="{Binding AssetService.SelectedAsset}" />
-        </ScrollViewer>
+        <valueEditors:ColorEditor Grid.Row="4"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Value="{Binding ErrorSpritesColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </UserControl>

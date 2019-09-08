@@ -89,16 +89,7 @@
         private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
 
         [DataMember]
-        private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>() {
-            { Layers.Layer01, "1" },
-            { Layers.Layer02, "2" },
-            { Layers.Layer03, "3" },
-            { Layers.Layer04, "4" },
-            { Layers.Layer05, "5" },
-            { Layers.Layer06, "6" },
-            { Layers.Layer07, "7" },
-            { Layers.Layer08, "8" },
-        };
+        private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>();
 
         private int _pixelsPerUnit = 32;
 

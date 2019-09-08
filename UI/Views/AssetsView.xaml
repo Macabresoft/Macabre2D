@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Macabre2D.UI.Views.AssetsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".4*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".6*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding NewFolderCommand}"
+                    ToolTip="Adds a folder.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FolderPlus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding AddAssetCommand}"
+                    ToolTip="Adds an asset under the currently selected folder or at the same level as the currently selected item.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FilePlus}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding DeleteAssetCommand}"
+                    ToolTip="Deletes the selected asset from the project, including all children if the item is a folder. You cannot undo this action.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Delete}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+            <Button Command="{Binding ReloadAssetCommand}"
+                    ToolTip="Reloads the selected asset.">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Reload}"
+                                            Foreground="{StaticResource BlackBrush}" />
+            </Button>
+        </StackPanel>
+
+        <controls:AssetBrowser Margin="{StaticResource StandardMarginAll}"
+                               Grid.Row="1"
+                               IsEditable="True"
+                               RootAsset="{Binding ProjectService.CurrentProject.AssetFolder}"
+                               AssetDoubleClickedCommand="{Binding OpenSceneCommand}"
+                               SelectedAsset="{Binding AssetService.SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+
+        <GridSplitter Grid.Row="2"
+                      Style="{StaticResource HorizontalGridSplitter}" />
+
+        <ScrollViewer Grid.Row="3"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible">
+            <controls:AssetEditorControl Asset="{Binding AssetService.SelectedAsset}" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

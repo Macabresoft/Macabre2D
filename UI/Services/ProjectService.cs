@@ -146,6 +146,15 @@
                 Name = "ProjectName"
             };
 
+            project.GameSettings.SetLayerName(Layers.Layer01, "1");
+            project.GameSettings.SetLayerName(Layers.Layer02, "2");
+            project.GameSettings.SetLayerName(Layers.Layer03, "3");
+            project.GameSettings.SetLayerName(Layers.Layer04, "4");
+            project.GameSettings.SetLayerName(Layers.Layer05, "5");
+            project.GameSettings.SetLayerName(Layers.Layer06, "6");
+            project.GameSettings.SetLayerName(Layers.Layer07, "7");
+            project.GameSettings.SetLayerName(Layers.Layer08, "8");
+
             project.Initialize(this._fileService.ProjectDirectoryPath);
             await Task.Run(() => this._serializer.Serialize(project, pathToProject));
             Directory.CreateDirectory(Path.Combine(this._fileService.ProjectDirectoryPath, AssetsLocation));
