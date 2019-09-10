@@ -15,6 +15,7 @@ namespace Macabre2D.UI.Common {
         public const string PrefabExtension = ".m2dprefab";
         public const string ProjectExtension = ".m2dproj";
         public const string SceneExtension = ".m2dscene";
+        public const string ShaderExtension = ".fx";
         public const string SolutionExtension = ".sln";
         public const string SpriteAnimationExtension = ".m2dspranim";
         public const string SpriteFontExtension = ".spritefont";
