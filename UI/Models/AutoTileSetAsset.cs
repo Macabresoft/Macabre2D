@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
+    using MahApps.Metro.IconPacks;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -16,15 +17,15 @@
             }
         }
 
-        public IReadOnlyCollection<IndexedWrapper<SpriteWrapper>> IndexedSprites {
+        public override PackIconMaterialKind Icon {
             get {
-                return this._indexedSprites;
+                return PackIconMaterialKind.FileImage;
             }
         }
 
-        public override AssetType Type {
+        public IReadOnlyCollection<IndexedWrapper<SpriteWrapper>> IndexedSprites {
             get {
-                return AssetType.AutoTileSet;
+                return this._indexedSprites;
             }
         }
 

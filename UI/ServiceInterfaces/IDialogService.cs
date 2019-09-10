@@ -22,7 +22,7 @@
 
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
 
-        bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, bool allowNull, out Asset asset);
+        bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
 
         bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper);
 

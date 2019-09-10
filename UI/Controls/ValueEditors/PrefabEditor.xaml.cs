@@ -13,7 +13,7 @@
 
         public PrefabEditor() {
             this.SelectPrefabCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, AssetType.Prefab, AssetType.Prefab, true, out var asset)) {
+                if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(PrefabAsset), true, out var asset)) {
                     this.Value = asset is PrefabAsset prefabAsset ? prefabAsset.SavableValue : null;
                 }
             }, true);

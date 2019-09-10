@@ -1,34 +1,12 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using MahApps.Metro.IconPacks;
     using System;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
-
-    [Flags]
-    public enum AssetType {
-        Folder = 0,
-
-        File = 1 << 0,
-
-        Scene = 1 << 1,
-
-        Image = 1 << 2,
-
-        Audio = 1 << 3,
-
-        SpriteAnimation = 1 << 5,
-
-        Font = 1 << 6,
-
-        AutoTileSet = 1 << 7,
-
-        Prefab = 1 << 8,
-
-        All = ~Folder
-    }
 
     [DataContract]
     public class Asset : NotifyPropertyChanged {
@@ -52,6 +30,12 @@
         public string Extension {
             get {
                 return Path.GetExtension(this.Name) ?? string.Empty;
+            }
+        }
+
+        public virtual PackIconMaterialKind Icon {
+            get {
+                return PackIconMaterialKind.File;
             }
         }
 
@@ -100,12 +84,6 @@
                         this._parent.AddChild(this);
                     }
                 }
-            }
-        }
-
-        public virtual AssetType Type {
-            get {
-                return AssetType.File;
             }
         }
 

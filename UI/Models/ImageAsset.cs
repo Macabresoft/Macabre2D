@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Models.FrameworkWrappers;
+    using MahApps.Metro.IconPacks;
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -41,15 +42,15 @@
             }
         }
 
-        public IReadOnlyCollection<SpriteWrapper> Sprites {
+        public override PackIconMaterialKind Icon {
             get {
-                return this._children;
+                return PackIconMaterialKind.FileImage;
             }
         }
 
-        public override AssetType Type {
+        public IReadOnlyCollection<SpriteWrapper> Sprites {
             get {
-                return AssetType.Image;
+                return this._children;
             }
         }
 

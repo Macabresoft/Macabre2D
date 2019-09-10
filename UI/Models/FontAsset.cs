@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Resources.Properties;
+    using MahApps.Metro.IconPacks;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -40,6 +41,12 @@
             }
         }
 
+        public override PackIconMaterialKind Icon {
+            get {
+                return PackIconMaterialKind.FileDocument;
+            }
+        }
+
         public float Size {
             get {
                 return this._size;
@@ -69,12 +76,6 @@
 
             set {
                 this.Set(ref this._style, value);
-            }
-        }
-
-        public override AssetType Type {
-            get {
-                return AssetType.Font;
             }
         }
 

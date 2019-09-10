@@ -147,7 +147,7 @@
                 var fileName = window.ViewModel.FileName + FileHelper.SceneExtension;
                 FolderAsset parent;
 
-                if (window.ViewModel.SelectedAsset.Type == AssetType.Folder && window.ViewModel.SelectedAsset is FolderAsset folder) {
+                if (typeof(FolderAsset).IsAssignableFrom(window.ViewModel.SelectedAsset.GetType()) && window.ViewModel.SelectedAsset is FolderAsset folder) {
                     parent = folder;
                 }
                 else {
@@ -170,11 +170,10 @@
             return null;
         }
 
-        public bool ShowSelectAssetDialog(Project project, AssetType assetMask, AssetType selectableAssetMask, bool allowNull, out Asset asset) {
+        public bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset) {
             var window = this._container.Resolve<SelectAssetDialog>(
                 new DependencyOverride(typeof(Project), new InjectionParameter(project)),
-                new ParameterOverride("assetMask", new InjectionParameter(assetMask)),
-                new ParameterOverride("selectableAssetMask", new InjectionParameter(selectableAssetMask)),
+                new ParameterOverride("assetType", new InjectionParameter(assetType)),
                 new ParameterOverride("allowNull", new InjectionParameter(allowNull)));
 
             var result = window.SimpleShowDialog();

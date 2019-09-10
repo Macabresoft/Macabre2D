@@ -18,7 +18,7 @@
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
                                Grid.Row="0"
                                RootAsset="{Binding Project.AssetFolder}"
-                               AssetTypeMask="{x:Static models:AssetType.Scene}"
+                               AssetType="{x:Type models:SceneAsset}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid Margin="{StaticResource DoubleMarginLTR}"

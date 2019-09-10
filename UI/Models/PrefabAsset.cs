@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using MahApps.Metro.IconPacks;
 
     public sealed class PrefabAsset : AddableAsset<Prefab> {
 
@@ -17,9 +18,9 @@
             }
         }
 
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.Prefab;
+                return PackIconMaterialKind.FilePowerpoint;
             }
         }
 

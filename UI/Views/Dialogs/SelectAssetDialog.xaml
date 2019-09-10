@@ -14,7 +14,7 @@
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
                                Grid.Row="0"
                                RootAsset="{Binding Project.AssetFolder, Mode=OneWay}"
-                               AssetTypeMask="{Binding AssetMask, Mode=OneWay}"
+                               AssetType="{Binding AssetType, Mode=OneWay}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                AllowNull="{Binding AllowNull, Mode=OneWay}" />
 

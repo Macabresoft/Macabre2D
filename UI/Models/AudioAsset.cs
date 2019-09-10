@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using MahApps.Metro.IconPacks;
     using System;
     using System.IO;
     using System.Runtime.Serialization;
@@ -17,9 +18,9 @@
         [DataMember]
         public AudioClip AudioClip { get; private set; } = new AudioClip();
 
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.Audio;
+                return PackIconMaterialKind.FileMusic;
             }
         }
 

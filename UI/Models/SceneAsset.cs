@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using MahApps.Metro.IconPacks;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Text;
@@ -29,9 +30,9 @@
             }
         }
 
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.Scene;
+                return PackIconMaterialKind.FileCloud;
             }
         }
 

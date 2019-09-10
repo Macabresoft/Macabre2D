@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using MahApps.Metro.IconPacks;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -29,9 +30,9 @@
             }
         }
 
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.Folder;
+                return PackIconMaterialKind.Folder;
             }
         }
 
@@ -90,26 +91,24 @@
         }
 
         public virtual void Refresh() {
-            if (this.Type == AssetType.Folder) {
-                var serializer = new Serializer();
-                var path = this.GetPath();
-                var folders = Directory.EnumerateDirectories(path).OrderBy(x => x);
-                var folderAssetsToAdd = new List<FolderAsset>();
-                var files = Directory.EnumerateFiles(path).OrderBy(x => x);
-                var assetsToAdd = new List<Asset>();
+            var serializer = new Serializer();
+            var path = this.GetPath();
+            var folders = Directory.EnumerateDirectories(path).OrderBy(x => x);
+            var folderAssetsToAdd = new List<FolderAsset>();
+            var files = Directory.EnumerateFiles(path).OrderBy(x => x);
+            var assetsToAdd = new List<Asset>();
 
-                this._children.Clear();
+            this._children.Clear();
 
-                foreach (var folder in folders) {
-                    var folderAsset = new FolderAsset(Path.GetFileName(folder));
-                    this.AddChild(folderAsset);
-                    folderAsset.Refresh();
-                }
+            foreach (var folder in folders) {
+                var folderAsset = new FolderAsset(Path.GetFileName(folder));
+                this.AddChild(folderAsset);
+                folderAsset.Refresh();
+            }
 
-                foreach (var file in files) {
-                    var asset = this.GetAssetFromFilePath(file, serializer);
-                    this.AddChild(asset);
-                }
+            foreach (var file in files) {
+                var asset = this.GetAssetFromFilePath(file, serializer);
+                this.AddChild(asset);
             }
 
             this.RaisePropertyChanged(nameof(this.Children));
@@ -134,7 +133,7 @@
             this.RaisePropertyChanged(nameof(this.Children));
         }
 
-        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+        private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var child in e.NewItems.Cast<Asset>().Where(x => x.Parent != this)) {
                     child.Parent = this;
@@ -150,8 +149,8 @@
         }
 
         private T CreateAssetFromMetadata<T>(string filePath, string fileName, Serializer serializer) where T : MetadataAsset, new() {
-            T result = null;
             var metadataFilePath = $"{filePath}{FileHelper.MetaDataExtension}";
+            T result;
             if (File.Exists(metadataFilePath)) {
                 result = serializer.Deserialize<T>(metadataFilePath);
             }

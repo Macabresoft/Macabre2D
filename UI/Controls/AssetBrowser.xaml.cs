@@ -28,11 +28,11 @@
             typeof(AssetBrowser),
             new PropertyMetadata());
 
-        public static readonly DependencyProperty AssetTypeMaskProperty = DependencyProperty.Register(
-            nameof(AssetTypeMask),
-            typeof(AssetType),
+        public static readonly DependencyProperty AssetTypeProperty = DependencyProperty.Register(
+            nameof(AssetType),
+            typeof(Type),
             typeof(AssetBrowser),
-            new PropertyMetadata(AssetType.All));
+            new PropertyMetadata(typeof(Asset)));
 
         public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register(
             nameof(IsEditable),
@@ -71,9 +71,9 @@
             set { this.SetValue(AssetDoubleClickedCommandProperty, value); }
         }
 
-        public AssetType AssetTypeMask {
-            get { return (AssetType)this.GetValue(AssetTypeMaskProperty); }
-            set { this.SetValue(AssetTypeMaskProperty, value); }
+        public Type AssetType {
+            get { return (Type)this.GetValue(AssetTypeProperty); }
+            set { this.SetValue(AssetTypeProperty, value); }
         }
 
         public IEnumerable<Type> InvalidTypes {
@@ -130,7 +130,7 @@
         }
 
         private void OpenInFileExplorerMenuItem_Click(object sender, RoutedEventArgs e) {
-            var directory = this.SelectedAsset.Type == AssetType.Folder ? this.SelectedAsset.GetPath() : new FileInfo(this.SelectedAsset.GetPath()).Directory.FullName;
+            var directory = typeof(FolderAsset).IsAssignableFrom(this.SelectedAsset.GetType()) ? this.SelectedAsset.GetPath() : new FileInfo(this.SelectedAsset.GetPath()).Directory.FullName;
             Process.Start(directory);
         }
 

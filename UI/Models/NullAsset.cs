@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
+    using MahApps.Metro.IconPacks;
     using System.Collections.Generic;
 
     public class NullAsset : Asset, IParent<Asset> {
@@ -12,9 +13,9 @@
 
         public IReadOnlyCollection<Asset> Children { get; } = new List<Asset>();
 
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.Folder;
+                return PackIconMaterialKind.None;
             }
         }
 

@@ -19,7 +19,7 @@
         <controls:AssetBrowser Margin="{StaticResource DoubleMarginLTR}"
                                Grid.Row="0"
                                RootAsset="{Binding Project.AssetFolder, Mode=OneWay}"
-                               AssetTypeMask="{x:Static models:AssetType.Folder}"
+                               AssetType="{x:Type models:FolderAsset}"
                                SelectedAsset="{Binding SelectedAsset, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                AllowNull="False" />
         <Grid Grid.Row="1">

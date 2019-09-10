@@ -3,17 +3,15 @@
     using Macabre2D.UI.Models;
     using System;
     using System.Globalization;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Data;
 
-    public sealed class AssetTypeMaskToVisibilityConverter : IMultiValueConverter {
+    public sealed class AssetTypeToVisibilityConverter : IMultiValueConverter {
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             var result = Visibility.Collapsed;
-            var actualValues = values.OfType<AssetType>().ToList();
 
-            if (actualValues.Count == 2 && (actualValues[0] == AssetType.Folder || (actualValues[0] & actualValues[1]) == actualValues[0])) {
+            if (values.Length == 2 && values[0] is Asset asset && values[1] is Type type && (typeof(FolderAsset).IsAssignableFrom(asset.GetType()) || type.IsAssignableFrom(asset.GetType()))) {
                 result = Visibility.Visible;
             }
 

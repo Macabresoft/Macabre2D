@@ -12,6 +12,7 @@
 
 * Project settings and asset management have been split into two separate tabs.
 * Removed ICamera interface as it was an unnecessary abstraction.
+* Removed 'AssetType' from Assets.
 
 ## Fixes
 

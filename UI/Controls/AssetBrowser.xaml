@@ -9,8 +9,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
-        <converters:AssetTypeToIconConverter x:Key="_assetTypeToIconConverter" />
-        <converters:AssetTypeMaskToVisibilityConverter x:Key="_assetTypeMaskToVisibilityConverter" />
+        <converters:AssetTypeToVisibilityConverter x:Key="_assetTypeToVisibilityConverter" />
         <converters:AssetParentToCollectionConverter x:Key="_assetParentToCollectionConverter" />
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
@@ -36,10 +35,10 @@
             <Style TargetType="TreeViewItem" BasedOn="{StaticResource MetroTreeViewItem}">
                 <Setter Property="Visibility">
                     <Setter.Value>
-                        <MultiBinding Converter="{StaticResource _assetTypeMaskToVisibilityConverter}">
-                            <Binding Path="Type" />
+                        <MultiBinding Converter="{StaticResource _assetTypeToVisibilityConverter}">
+                            <Binding />
                             <Binding ElementName="_assetBrowser"
-                                     Path="AssetTypeMask" />
+                                     Path="AssetType" />
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
@@ -57,7 +56,7 @@
             <HierarchicalDataTemplate DataType="{x:Type models:Asset}"
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="{Binding Path=Type, Converter={StaticResource _assetTypeToIconConverter}}" />
+                    <iconPacks:PackIconMaterial Kind="{Binding Path=Icon}" />
                     <TextBlock Text="{Binding Path=Name}"
                                Visibility="{Binding IsEditable, ElementName=_assetBrowser, Converter={StaticResource _inverseBoolToVisibilityConverter}}"
                                VerticalAlignment="Center" />

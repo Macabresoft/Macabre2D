@@ -37,7 +37,7 @@
             set {
                 if (this.Set(ref this._selectedAsset, value) &&
                     this._selectedAsset != null &&
-                    this._selectedAsset.Type == AssetType.Scene) {
+                    typeof(SceneAsset).IsAssignableFrom(this._selectedAsset.GetType())) {
                     this.FileName = Path.GetFileNameWithoutExtension(this._selectedAsset.Name);
                 }
             }

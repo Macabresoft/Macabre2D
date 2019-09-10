@@ -41,7 +41,7 @@
             this._addAssetCommand = new RelayCommand(this.AddAsset, () => this.AssetService.SelectedAsset is FolderAsset);
             this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.AssetService.SelectedAsset?.Parent != null);
             this._newFolderCommand = new RelayCommand(this.CreateNewFolder, () => this.AssetService.SelectedAsset is FolderAsset);
-            this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => asset.Type == AssetType.Scene);
+            this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => typeof(SceneAsset).IsAssignableFrom(asset.GetType()));
             this._reloadAssetCommand = new RelayCommand(async () => await this.ReloadAsset(), () => this.AssetService.SelectedAsset is IReloadableAsset);
             this.AssetService.PropertyChanged += this.AssetService_PropertyChanged;
         }

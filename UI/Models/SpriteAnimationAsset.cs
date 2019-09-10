@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models.FrameworkWrappers;
+    using MahApps.Metro.IconPacks;
     using System.Collections.Specialized;
     using System.Linq;
 
@@ -14,13 +15,13 @@
             }
         }
 
-        public ObservableRangeCollection<SpriteAnimationStepWrapper> Steps { get; } = new ObservableRangeCollection<SpriteAnimationStepWrapper>();
-
-        public override AssetType Type {
+        public override PackIconMaterialKind Icon {
             get {
-                return AssetType.SpriteAnimation;
+                return PackIconMaterialKind.FileImage;
             }
         }
+
+        public ObservableRangeCollection<SpriteAnimationStepWrapper> Steps { get; } = new ObservableRangeCollection<SpriteAnimationStepWrapper>();
 
         public SpriteAnimationStepWrapper AddStep() {
             var step = new SpriteAnimationStepWrapper(this, new SpriteAnimationStep());

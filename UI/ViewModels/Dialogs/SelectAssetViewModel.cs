@@ -1,24 +1,22 @@
 ﻿namespace Macabre2D.UI.ViewModels.Dialogs {
 
     using Macabre2D.UI.Models;
+    using System;
 
     public sealed class SelectAssetViewModel : OKCancelDialogViewModel {
         private Asset _selectedAsset;
 
-        public SelectAssetViewModel(Project project, AssetType assetMask, AssetType selectableAssetMask, bool allowNull) {
+        public SelectAssetViewModel(Project project, Type assetType, bool allowNull) {
             this.Project = project;
-            this.AssetMask = assetMask;
-            this.SelectableAssetMask = selectableAssetMask;
+            this.AssetType = assetType;
             this.AllowNull = allowNull;
         }
 
         public bool AllowNull { get; }
 
-        public AssetType AssetMask { get; }
+        public Type AssetType { get; }
 
         public Project Project { get; }
-
-        public AssetType SelectableAssetMask { get; }
 
         public Asset SelectedAsset {
             get {
@@ -33,7 +31,7 @@
         }
 
         protected override bool CanExecuteOKCommand() {
-            return this.SelectedAsset is NullAsset || (this.SelectedAsset != null && this.SelectedAsset.Type != AssetType.Folder && (this.SelectedAsset.Type & this.SelectableAssetMask) == this.SelectedAsset.Type);
+            return this.SelectedAsset is NullAsset || (this.SelectedAsset != null && this.AssetType.IsAssignableFrom(this.SelectedAsset.GetType()));
         }
     }
 }
