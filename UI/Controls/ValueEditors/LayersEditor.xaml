@@ -21,7 +21,8 @@
                    Text="{Binding Title}"
                    VerticalAlignment="Top" />
 
-        <ItemsControl Grid.Column="1">
+        <ItemsControl x:Name="_layersItemsControl"
+                      Grid.Column="1">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
