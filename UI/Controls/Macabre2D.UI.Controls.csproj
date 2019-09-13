@@ -265,6 +265,9 @@
     <Compile Include="ValueEditors\RotationEditor.xaml.cs">
       <DependentUpon>RotationEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\ShaderEditor.xaml.cs">
+      <DependentUpon>ShaderEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\SpriteAnimationEditor.xaml.cs">
       <DependentUpon>SpriteAnimationEditor.xaml</DependentUpon>
     </Compile>
@@ -418,6 +421,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ValueEditors\RotationEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ValueEditors\ShaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

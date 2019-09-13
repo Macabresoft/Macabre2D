@@ -49,7 +49,13 @@
         /// </summary>
         public void Load() {
             if (this.AssetId != Guid.Empty) {
-                this.Effect = AssetManager.Instance.Load<Effect>(this.AssetId);
+                try {
+                    this.Effect = AssetManager.Instance.Load<Effect>(this.AssetId);
+                }
+                catch {
+                    // TODO: surface an error message or use an insane shader here.
+                    this.Effect = null;
+                }
             }
         }
     }
