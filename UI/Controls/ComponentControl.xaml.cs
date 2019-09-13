@@ -243,10 +243,7 @@
             this.RaisePropertyChanged(nameof(this.ComponentScale));
             this.RaisePropertyChanged(nameof(this.ComponentPosition));
             this.RaisePropertyChanged(nameof(this.ComponentTypeName));
-
-            var originalLayer = this.ComponentLayer;
-            this.ComponentLayer = ~this.ComponentLayer;
-            this.ComponentLayer = originalLayer;
+            this.RaisePropertyChanged(nameof(this.ComponentLayer));
         }
 
         private void RaisePropertyChanged(string propertyName) {
