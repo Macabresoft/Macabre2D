@@ -11,7 +11,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Font"/> class.
         /// </summary>
-        public Font() {
+        public Font() : this(Guid.NewGuid()) {
         }
 
         /// <summary>
@@ -20,7 +20,6 @@
         /// <param name="assetId">The asset identifier.</param>
         public Font(Guid assetId) {
             this.AssetId = assetId;
-            this.Load();
         }
 
         /// <inheritdoc/>

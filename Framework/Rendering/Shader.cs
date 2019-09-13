@@ -8,6 +8,20 @@
     /// </summary>
     public sealed class Shader : BaseIdentifiable, IAsset, IDisposable {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Shader"/> class.
+        /// </summary>
+        public Shader() : this(Guid.NewGuid()) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Shader"/> class.
+        /// </summary>
+        /// <param name="assetId">The asset identifier.</param>
+        public Shader(Guid assetId) {
+            this.AssetId = assetId;
+        }
+
         /// <inheritdoc/>
         public Guid AssetId {
             get {

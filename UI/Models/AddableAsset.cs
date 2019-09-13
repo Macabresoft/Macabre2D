@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using System;
+    using System.Runtime.Serialization;
 
     public abstract class AddableAsset : MetadataAsset {
 
@@ -13,6 +14,7 @@
 
         public abstract string FileExtension { get; }
 
+        [DataMember]
         public bool RequiresCreation { get; set; }
     }
 
@@ -45,11 +47,15 @@
             base.Refresh(assetManager);
         }
 
+        protected virtual T CreateAsset() {
+            return new T();
+        }
+
         protected virtual T DeserializeSavableValue() {
             T result;
 
             if (this.RequiresCreation) {
-                result = new T();
+                result = this.CreateAsset();
             }
             else {
                 var serializer = new Serializer();

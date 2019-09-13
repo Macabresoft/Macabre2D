@@ -19,7 +19,7 @@ namespace Macabre2D.UI.Resources.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -57,6 +57,37 @@ namespace Macabre2D.UI.Resources.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Default shader based on http://rbwhitaker.wikidot.com/post-processing-effects
+        ///// Also a fantastic source of MonoGame/XNA tutorials
+        ///
+        ///texture ScreenTexture;
+        ///
+        ///sampler TextureSampler = sampler_state
+        ///{
+        ///	Texture = &lt;ScreenTexture&gt;;
+        ///};
+        ///
+        ///float4 PixelShaderFunction(float2 TextureCoordinate : TEXCOORD0) : COLOR0
+        ///{
+        ///	float4 color = tex2D(TextureSampler, TextureCoordinate);
+        ///	return color;
+        ///}
+        ///
+        ///technique Plain
+        ///{
+        ///	pass Pass1
+        ///	{
+        ///		PixelShader = compile ps_2_0 PixelShaderFunction();
+        ///	}
+        ///}.
+        /// </summary>
+        public static string DefaultShader {
+            get {
+                return ResourceManager.GetString("DefaultShader", resourceCulture);
             }
         }
         

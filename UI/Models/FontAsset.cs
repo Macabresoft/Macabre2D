@@ -141,7 +141,7 @@
         }
 
         protected override Font DeserializeSavableValue() {
-            return new Font();
+            return new Font(this.Id);
         }
 
         protected override void SaveChanges(Serializer serializer) {
