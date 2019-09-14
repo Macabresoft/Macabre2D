@@ -20,6 +20,7 @@
         private bool _isInitialized = false;
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
+        private string _rootContentDirectory;
         private IGameSettings _settings;
 
         public EditorGame(EditorCameraWrapper cameraWrapper, SelectionEditor selectionEditor) : base() {
@@ -121,7 +122,10 @@
         }
 
         public void SetContentPath(string path) {
-            this.Content.RootDirectory = path;
+            this._rootContentDirectory = path;
+            if (this.Content != null) {
+                this.Content.RootDirectory = this._rootContentDirectory;
+            }
         }
 
         protected override void Draw(GameTime gameTime) {
@@ -152,6 +156,7 @@
         }
 
         protected override void LoadContent() {
+            this.Content.RootDirectory = this._rootContentDirectory;
             this.AssetManager.Initialize(this.Content);
             this.CurrentScene?.LoadContent();
             base.LoadContent();

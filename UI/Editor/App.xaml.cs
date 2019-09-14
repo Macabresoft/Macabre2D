@@ -7,6 +7,7 @@
     using Macabre2D.UI.Views;
     using Newtonsoft.Json;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using Unity;
@@ -33,20 +34,26 @@
             base.OnSessionEnding(e);
         }
 
-        protected override void OnStartup(StartupEventArgs e) {
+        protected override async void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
 
             ViewContainer.Instance = this._container;
 
             this.RegisterTypes();
-            this.LoadMainWindow();
+            await this.LoadMainWindow();
         }
 
-        private void LoadMainWindow() {
-            this._mainWindow = this._container.Resolve<MainWindow>();
+        private async Task LoadMainWindow() {
             var busyService = this._container.Resolve<IBusyService>();
             var projectService = this._container.Resolve<IProjectService>();
-            busyService.PerformTask(projectService.LoadProject(), true);
+            await busyService.PerformTask(projectService.LoadProject(), true); // TODO: show a splash screen while this is going
+
+            this._mainWindow = this._container.Resolve<MainWindow>();
+
+            var sceneService = this._container.Resolve<ISceneService>();
+            if (sceneService.CurrentScene?.SceneAsset?.HasChanges != true) {
+                sceneService.HasChanges = false;
+            }
 
             var settingsManager = this._container.Resolve<SettingsManager>();
             settingsManager.Initialize();

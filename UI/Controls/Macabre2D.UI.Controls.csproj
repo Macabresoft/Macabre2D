@@ -168,8 +168,11 @@
     <Compile Include="EditableTreeViewItemControl.xaml.cs">
       <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LayersEditor.xaml.cs">
-      <DependentUpon>LayersEditor.xaml</DependentUpon>
+    <Compile Include="LayerMatrixEditor.xaml.cs">
+      <DependentUpon>LayerMatrixEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LayersNameEditor.xaml.cs">
+      <DependentUpon>LayersNameEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="SceneEditing\BaseAxisGizmo.cs" />
     <Compile Include="SceneEditing\EditorAssetManager.cs" />
@@ -315,7 +318,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LayersEditor.xaml">
+    <Page Include="LayerMatrixEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LayersNameEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -95,10 +96,14 @@
         <Separator Grid.Row="5"
                    Grid.ColumnSpan="2" />
 
-        <controls:LayersEditor Grid.Row="6"
+        <controls:LayersNameEditor Grid.Row="6"
                                Grid.ColumnSpan="2" />
 
-        <Separator Grid.Row="7"
+        <controls:LayerMatrixEditor Margin="{StaticResource DoubleMarginTB}"
+                                    Grid.Row="7"
+                                    Grid.ColumnSpan="2" />
+
+        <Separator Grid.Row="8"
                    Grid.ColumnSpan="2" />
     </Grid>
 </UserControl>

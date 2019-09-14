@@ -7,12 +7,12 @@
     using System.ComponentModel;
     using System.Windows.Controls;
 
-    public partial class LayersEditor : UserControl, INotifyPropertyChanged {
+    public partial class LayersNameEditor : UserControl, INotifyPropertyChanged {
         private IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
-        public LayersEditor() {
-            this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+        public LayersNameEditor() {
+            this.Loaded += this.LayersNameEditor_Loaded;
             this.InitializeComponent();
         }
 
@@ -98,7 +98,12 @@
             }
         }
 
-        private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void LayersNameEditor_Loaded(object sender, System.Windows.RoutedEventArgs e) {
+            this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+            this.Loaded -= this.LayersNameEditor_Loaded;
+        }
+
+        private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(nameof(this.Layer01Name));
             this.RaisePropertyChanged(nameof(this.Layer02Name));
             this.RaisePropertyChanged(nameof(this.Layer03Name));

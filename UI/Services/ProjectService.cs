@@ -106,6 +106,8 @@
                 await Task.Run(() => this._serializer.Deserialize<Project>(projectPath)) :
                 await this.CreateProject();
 
+            GameSettings.Instance = project.GameSettings;
+
             project.Initialize(this._fileService.ProjectDirectoryPath);
             project.Refresh();
             this.CurrentProject = project;
@@ -113,9 +115,11 @@
 
             if (this.CurrentProject?.LastSceneOpened != null) {
                 await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
+                this._sceneService.HasChanges = false;
             }
             else if (this.CurrentProject?.SceneAssets.FirstOrDefault() is SceneAsset sceneAsset) {
                 await this._sceneService.LoadScene(this.CurrentProject, sceneAsset);
+                this._sceneService.HasChanges = false;
             }
             else {
                 var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
@@ -123,6 +127,7 @@
                 this._sceneService.HasChanges = true;
             }
 
+            this.HasChanges = false;
             return this.CurrentProject;
         }
 

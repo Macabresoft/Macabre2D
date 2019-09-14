@@ -150,7 +150,7 @@
         }
 
         private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.ProjectService.CurrentProject)) {
+            if (e.PropertyName == nameof(IProjectService.CurrentProject) && this.ProjectService.CurrentProject != null) {
                 this.RaisePropertyChangedEvents();
                 this.ProjectService.CurrentProject.PropertyChanged += this.CurrentProject_PropertyChanged;
             }
