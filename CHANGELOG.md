@@ -7,6 +7,7 @@
 * A component can now be marked with multiple layers within the editor (previously this could only be done from code)
 * Layers can now be given names that will appear in the editor instead of the basic enumeration names.
 * Cameras can have shaders applied to them via MonoGame's Effects class.
+* The Layer Collision Matrix can be edited to specify which layers collide with which layers in the physics system.
 
 ## Refactors
 
