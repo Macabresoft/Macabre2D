@@ -11,7 +11,7 @@
             var result = value?.ToString();
 
             if (value is Layers layer || Enum.TryParse(value.ToString(), out layer)) {
-                result = GameSettings.Instance.GetLayerName(layer);
+                result = GameSettings.Instance.Layers.GetLayerName(layer);
             }
 
             return result;

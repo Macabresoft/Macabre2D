@@ -33,6 +33,12 @@
         float InversePixelsPerUnit { get; }
 
         /// <summary>
+        /// Gets the layer settings.
+        /// </summary>
+        /// <value>The layer settings.</value>
+        LayerSettings Layers { get; }
+
+        /// <summary>
         /// Getsthe pixels per unit. This value is the number of pixels per abritrary Macabre2D units.
         /// </summary>
         /// <value>The pixel density.</value>
@@ -45,13 +51,6 @@
         Guid StartupSceneAssetId { get; }
 
         /// <summary>
-        /// Gets the name of the layer.
-        /// </summary>
-        /// <param name="layer">The layer.</param>
-        /// <returns></returns>
-        string GetLayerName(Layers layer);
-
-        /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
         /// screen regardless of the current view size.
         /// </summary>
@@ -59,13 +58,6 @@
         /// <param name="pixelViewHeight">Height of the pixel view.</param>
         /// <returns>A pixel agnostic ratio.</returns>
         float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
-
-        /// <summary>
-        /// Sets the name of the layer.
-        /// </summary>
-        /// <param name="layer">The layer.</param>
-        /// <param name="name">The name.</param>
-        void SetLayerName(Layers layer, string name);
 
         /// <summary>
         /// Tries to get a custom setting.
@@ -87,9 +79,6 @@
 
         [DataMember]
         private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
-
-        [DataMember]
-        private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>();
 
         private int _pixelsPerUnit = 32;
 
@@ -135,6 +124,10 @@
 
         /// <inheritdoc/>
         [DataMember]
+        public LayerSettings Layers { get; } = new LayerSettings();
+
+        /// <inheritdoc/>
+        [DataMember]
         public int PixelsPerUnit {
             get {
                 return this._pixelsPerUnit;
@@ -164,23 +157,8 @@
         }
 
         /// <inheritdoc/>
-        public string GetLayerName(Layers layer) {
-            string name;
-            if (!this._layersToName.TryGetValue(layer, out name)) {
-                name = layer.ToString();
-            }
-
-            return name;
-        }
-
-        /// <inheritdoc/>
         public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
             return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
-        }
-
-        /// <inheritdoc/>
-        public void SetLayerName(Layers layer, string name) {
-            this._layersToName[layer] = name;
         }
 
         /// <inheritdoc/>

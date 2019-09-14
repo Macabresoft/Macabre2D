@@ -76,7 +76,7 @@
 
         public string Layer01Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer01);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer01);
             }
 
             set {
@@ -86,7 +86,7 @@
 
         public string Layer02Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer02);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer02);
             }
 
             set {
@@ -96,7 +96,7 @@
 
         public string Layer03Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer03);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer03);
             }
 
             set {
@@ -106,7 +106,7 @@
 
         public string Layer04Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer04);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer04);
             }
 
             set {
@@ -116,7 +116,7 @@
 
         public string Layer05Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer05);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer05);
             }
 
             set {
@@ -126,7 +126,7 @@
 
         public string Layer06Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer06);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer06);
             }
 
             set {
@@ -136,7 +136,7 @@
 
         public string Layer07Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer07);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer07);
             }
 
             set {
@@ -146,7 +146,7 @@
 
         public string Layer08Name {
             get {
-                return GameSettings.Instance.GetLayerName(Layers.Layer08);
+                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer08);
             }
 
             set {
@@ -253,14 +253,14 @@
         }
 
         private void UpdateLayer(Layers layer, string name) {
-            var originalName = GameSettings.Instance.GetLayerName(layer);
+            var originalName = GameSettings.Instance.Layers.GetLayerName(layer);
             var originalHasChanges = this.ProjectService.HasChanges;
 
             var undoCommand = new UndoCommand(() => {
-                GameSettings.Instance.SetLayerName(layer, name);
+                GameSettings.Instance.Layers.SetLayerName(layer, name);
                 this.ProjectService.HasChanges = true;
             }, () => {
-                GameSettings.Instance.SetLayerName(layer, originalName);
+                GameSettings.Instance.Layers.SetLayerName(layer, originalName);
                 this.ProjectService.HasChanges = originalHasChanges;
             });
 

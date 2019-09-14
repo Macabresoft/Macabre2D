@@ -78,6 +78,7 @@
     <Compile Include="Interfaces\IAsset.cs" />
     <Compile Include="Interfaces\IEnableableComponent.cs" />
     <Compile Include="Interfaces\IIdentifiableComponent.cs" />
+    <Compile Include="LayerSettings.cs" />
     <Compile Include="Physics\BaseBody.cs" />
     <Compile Include="Physics\IDynamicPhysicsBody.cs" />
     <Compile Include="Physics\IPhysicsBody.cs" />
