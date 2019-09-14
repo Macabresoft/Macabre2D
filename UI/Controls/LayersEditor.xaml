@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Macabre2D.UI.Controls.LayersEditor"
+             x:Name="_layersEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors">
+    <ItemsControl>
+        <valueEditors:StringEditor Title="Layer01"
+                                   Value="{Binding Layer01Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer02"
+                                   Value="{Binding Layer02Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer03"
+                                   Value="{Binding Layer03Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer04"
+                                   Value="{Binding Layer04Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer05"
+                                   Value="{Binding Layer05Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer06"
+                                   Value="{Binding Layer06Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer07"
+                                   Value="{Binding Layer07Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:StringEditor Title="Layer08"
+                                   Value="{Binding Layer08Name, ElementName=_layersEditor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </ItemsControl>
+</UserControl>

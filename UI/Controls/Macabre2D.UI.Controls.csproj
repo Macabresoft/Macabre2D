@@ -168,6 +168,9 @@
     <Compile Include="EditableTreeViewItemControl.xaml.cs">
       <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LayersEditor.xaml.cs">
+      <DependentUpon>LayersEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SceneEditing\BaseAxisGizmo.cs" />
     <Compile Include="SceneEditing\EditorAssetManager.cs" />
     <Compile Include="SceneEditing\EditorCameraWrapper.cs" />
@@ -309,6 +312,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditableTreeViewItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LayersEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
