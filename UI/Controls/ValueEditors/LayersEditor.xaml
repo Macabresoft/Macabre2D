@@ -28,23 +28,6 @@
                     <WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer01}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer01}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer02}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer02}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer03}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer03}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer04}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer04}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer05}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer05}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer06}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer06}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer07}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer07}}" />
-            <CheckBox Content="{Binding Source={x:Static framework:Layers.Layer08}, Converter={StaticResource _layerToNameConverter}}"
-                      IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _layersToBoolConverter}, ConverterParameter={x:Static framework:Layers.Layer08}}" />
         </ItemsControl>
     </Grid>
 </local:NamedValueEditor>
