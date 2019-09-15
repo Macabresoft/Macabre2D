@@ -1,13 +1,18 @@
 ﻿namespace Macabre2D.UI.Controls {
 
+    using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
+    using Macabre2D.UI.Controls.ValueEditors;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
-    using System.ComponentModel;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows.Controls;
 
-    public partial class LayersNameEditor : UserControl, INotifyPropertyChanged {
+    public partial class LayersNameEditor : UserControl {
+        private readonly Dictionary<Layers, StringEditor> _layerToStringEditor = new Dictionary<Layers, StringEditor>();
         private IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
@@ -16,106 +21,34 @@
             this.InitializeComponent();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Layer01Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer01);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer01, value);
-            }
-        }
-
-        public string Layer02Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer02);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer02, value);
-            }
-        }
-
-        public string Layer03Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer03);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer03, value);
-            }
-        }
-
-        public string Layer04Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer04);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer04, value);
-            }
-        }
-
-        public string Layer05Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer05);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer05, value);
-            }
-        }
-
-        public string Layer06Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer06);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer06, value);
-            }
-        }
-
-        public string Layer07Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer07);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer07, value);
-            }
-        }
-
-        public string Layer08Name {
-            get {
-                return GameSettings.Instance.Layers.GetLayerName(Layers.Layer08);
-            }
-
-            set {
-                this.UpdateLayer(Layers.Layer08, value);
+        private void Layers_LayerNameChanged(object sender, LayerNameChangedEventArgs e) {
+            if (this._layerToStringEditor.TryGetValue(e.Layer, out var editor)) {
+                editor.Value = e.Name;
             }
         }
 
         private void LayersNameEditor_Loaded(object sender, System.Windows.RoutedEventArgs e) {
-            this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+            var layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().OrderBy(x => (byte)x).ToList();
+            layers.Remove(Layers.None);
+            layers.Remove(Layers.All);
+
+            foreach (var layer in layers) {
+                var stringEditor = new StringEditor {
+                    Title = layer.ToString(),
+                    Value = GameSettings.Instance.Layers.GetLayerName(layer),
+                    ValueChangedCommand = new RelayCommand<EditableValueChangedEventArgs<string>>(x => this.StringEditorValueChanged(layer, x.NewValue), true)
+                };
+
+                this._layerToStringEditor[layer] = stringEditor;
+                this._layerList.Items.Add(stringEditor);
+            }
+
+            GameSettings.Instance.Layers.LayerNameChanged += this.Layers_LayerNameChanged;
             this.Loaded -= this.LayersNameEditor_Loaded;
         }
 
-        private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            this.RaisePropertyChanged(nameof(this.Layer01Name));
-            this.RaisePropertyChanged(nameof(this.Layer02Name));
-            this.RaisePropertyChanged(nameof(this.Layer03Name));
-            this.RaisePropertyChanged(nameof(this.Layer04Name));
-            this.RaisePropertyChanged(nameof(this.Layer05Name));
-            this.RaisePropertyChanged(nameof(this.Layer06Name));
-            this.RaisePropertyChanged(nameof(this.Layer07Name));
-            this.RaisePropertyChanged(nameof(this.Layer08Name));
-        }
-
-        private void RaisePropertyChanged(string propertyName) {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void StringEditorValueChanged(Layers layer, string newName) {
+            this.UpdateLayer(layer, newName);
         }
 
         private void UpdateLayer(Layers layer, string name) {

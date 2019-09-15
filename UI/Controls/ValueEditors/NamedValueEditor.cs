@@ -63,7 +63,7 @@
             set { this.SetValue(ValueProperty, value); }
         }
 
-        public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; private set; }
+        public RelayCommand<EditableValueChangedEventArgs<T>> ValueChangedCommand { get; set; }
 
         public virtual Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
             this.Owner = owner;
