@@ -8,6 +8,7 @@
 * Layers can now be given names that will appear in the editor instead of the basic enumeration names.
 * Cameras can have shaders applied to them via MonoGame's Effects class.
 * The Layer Collision Matrix can be edited to specify which layers collide with which layers in the physics system.
+* A draggable splash screen shows when the project is loaded on startup.
 
 ## Refactors
 
