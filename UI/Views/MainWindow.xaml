@@ -2,7 +2,6 @@
                    x:Name="_mainWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
                    xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
                    xmlns:local="clr-namespace:Macabre2D.UI.Views"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"

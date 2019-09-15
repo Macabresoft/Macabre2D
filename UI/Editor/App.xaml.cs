@@ -44,17 +44,22 @@
         }
 
         private async Task LoadMainWindow() {
+            var splashScreen = new DraggableSplashScreen();
+            splashScreen.ProgressText = "Loading...";
+            splashScreen.Show();
             var busyService = this._container.Resolve<IBusyService>();
             var projectService = this._container.Resolve<IProjectService>();
+            splashScreen.ProgressText = "Loading project...";
             await busyService.PerformTask(projectService.LoadProject(), true); // TODO: show a splash screen while this is going
 
+            splashScreen.ProgressText = $"{projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();
-
             var sceneService = this._container.Resolve<ISceneService>();
             if (sceneService.CurrentScene?.SceneAsset?.HasChanges != true) {
                 sceneService.HasChanges = false;
             }
 
+            splashScreen.ProgressText = "Loading user preferences...";
             var settingsManager = this._container.Resolve<SettingsManager>();
             settingsManager.Initialize();
             var tabName = settingsManager.GetLastOpenTabName();
@@ -65,6 +70,8 @@
                 this._mainWindow.MainTabControl.SelectedItem = selectedTab;
             }
 
+            splashScreen.ProgressText = "Done!";
+            splashScreen.Close();
             this._mainWindow.Show();
         }
 

@@ -1,0 +1,32 @@
+﻿<metro:MetroWindow x:Class="Macabre2D.UI.Editor.DraggableSplashScreen"
+                   x:Name="_splashScreen"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   Background="{StaticResource AccentColorBrush}"
+                   BorderThickness="0"
+                   Height="256"
+                   Width="512"
+                   ResizeMode="NoResize"
+                   ShowCloseButton="False"
+                   ShowTitleBar="False"
+                   WindowStyle="None"
+                   WindowStartupLocation="CenterScreen">
+    <Grid Margin="{StaticResource DoubleMarginAll}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Macabre2D"
+                   FontSize="48"
+                   FontWeight="Bold" />
+
+        <TextBlock Grid.Row="2"
+                   Text="{Binding ProgressText, ElementName=_splashScreen}"
+                   HorizontalAlignment="Right" />
+    </Grid>
+</metro:MetroWindow>

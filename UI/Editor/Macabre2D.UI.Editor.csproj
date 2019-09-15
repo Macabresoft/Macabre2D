@@ -166,6 +166,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DraggableSplashScreen.xaml.cs">
+      <DependentUpon>DraggableSplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +295,11 @@
       <Name>Macabre2D.UI.Views</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="DraggableSplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
