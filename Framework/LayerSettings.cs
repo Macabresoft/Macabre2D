@@ -19,11 +19,19 @@
 
         private List<Layers> _layers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LayerSettings"/> class.
+        /// </summary>
         public LayerSettings() {
             this._layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().ToList();
             this._layers.Remove(Layers.None);
             this._layers.Remove(Layers.All);
         }
+
+        /// <summary>
+        /// Occurs when a layer's name has changed.
+        /// </summary>
+        public event EventHandler<LayerNameChangedEventArgs> LayerNameChanged;
 
         /// <summary>
         /// Gets the name of the layer.
@@ -71,6 +79,7 @@
         /// <param name="name">The name.</param>
         public void SetLayerName(Layers layer, string name) {
             this._layersToName[layer] = name;
+            this.LayerNameChanged.SafeInvoke(this, new LayerNameChangedEventArgs(layer, name));
         }
 
         internal void ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {

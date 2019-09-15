@@ -75,6 +75,7 @@
     <Compile Include="AssetManager.cs" />
     <Compile Include="Attributes\ComponentCommandAttribute.cs" />
     <Compile Include="BaseIdentifiable.cs" />
+    <Compile Include="EventArgs\LayerNameChangedEventArgs.cs" />
     <Compile Include="Interfaces\IAsset.cs" />
     <Compile Include="Interfaces\IEnableableComponent.cs" />
     <Compile Include="Interfaces\IIdentifiableComponent.cs" />

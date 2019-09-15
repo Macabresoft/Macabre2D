@@ -14,7 +14,9 @@
     using System.Windows.Media;
 
     public partial class LayerMatrixEditor : UserControl {
-        private Dictionary<Layers, CheckBox> _layersToCheckBox = new Dictionary<Layers, CheckBox>();
+        private readonly Dictionary<Layers, TextBlock> _columnLayerToTextBlock = new Dictionary<Layers, TextBlock>();
+        private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new Dictionary<Layers, CheckBox>();
+        private readonly Dictionary<Layers, TextBlock> _rowLayerToTextBlock = new Dictionary<Layers, TextBlock>();
         private IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
@@ -66,6 +68,7 @@
                             Grid.SetRow(textBlock, row + 1);
                             Grid.SetColumn(textBlock, columnCount);
                             this._layersGrid.Children.Add(textBlock);
+                            this._columnLayerToTextBlock[layers[column]] = textBlock;
                         }
                     }
                     else if (columnCount == 0) {
@@ -78,6 +81,7 @@
                         Grid.SetRow(textBlock, row + 1);
                         Grid.SetColumn(textBlock, columnCount);
                         this._layersGrid.Children.Add(textBlock);
+                        this._rowLayerToTextBlock[layers[row]] = textBlock;
                     }
                     else {
                         var rowLayer = layers[row];
@@ -99,7 +103,19 @@
                 }
             }
 
+            GameSettings.Instance.Layers.LayerNameChanged += this.Layers_LayerNameChanged;
+
             this.Loaded -= this.LayerMatrixEditor_Loaded;
+        }
+
+        private void Layers_LayerNameChanged(object sender, LayerNameChangedEventArgs e) {
+            if (this._rowLayerToTextBlock.TryGetValue(e.Layer, out var rowTextBlock) && rowTextBlock != null) {
+                rowTextBlock.Text = e.Name;
+            }
+
+            if (this._columnLayerToTextBlock.TryGetValue(e.Layer, out var columnTextBlock) && columnTextBlock != null) {
+                columnTextBlock.Text = e.Name;
+            }
         }
     }
 }

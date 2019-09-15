@@ -105,7 +105,9 @@
             }
 
             internal set {
-                GameSettings._instance = value;
+                if (value != null) {
+                    GameSettings._instance = value;
+                }
             }
         }
 
