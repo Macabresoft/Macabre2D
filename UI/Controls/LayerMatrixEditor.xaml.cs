@@ -46,7 +46,7 @@
         }
 
         private void LayerMatrixEditor_Loaded(object sender, RoutedEventArgs e) {
-            var layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().OrderBy(x => (byte)x).ToList();
+            var layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().OrderBy(x => (ushort)x).ToList();
             layers.Remove(Layers.None);
             layers.Remove(Layers.All);
             var gridChildren = this._layersGrid.Children.OfType<CheckBox>().ToList();
