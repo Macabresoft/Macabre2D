@@ -84,6 +84,7 @@
     <Compile Include="Physics\IDynamicPhysicsBody.cs" />
     <Compile Include="Physics\IPhysicsBody.cs" />
     <Compile Include="Physics\TileableBody.cs" />
+    <Compile Include="Rendering\PixelSnapSpriteRenderer.cs" />
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Tiles\AutoTileMap.cs" />
