@@ -17,6 +17,7 @@
 * Removed ICamera interface as it was an unnecessary abstraction.
 * Removed 'AssetType' from Assets.
 * Removed 'Component' from the end of classes that didn't need that distinction to be understood.
+* Module list now uses '+' and '-' buttons instead of 'Add' and 'Remove'.
 
 ## Fixes
 
