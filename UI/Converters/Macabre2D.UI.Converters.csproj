@@ -132,6 +132,7 @@
     <Compile Include="AutoTileCardinalIndexToCanvasConverter.cs" />
     <Compile Include="InverseMultiBoolToVisibilityConverter.cs" />
     <Compile Include="LayersToBoolConverter.cs" />
+    <Compile Include="LayersToMultiNameConverter.cs" />
     <Compile Include="LayerToNameConverter.cs" />
     <Compile Include="MultiBoolToVisibilityConverter.cs" />
     <Compile Include="EnumerableToVisibilityConverter.cs" />

@@ -8,15 +8,38 @@
     using System.Windows.Controls;
     using System.Windows.Data;
 
-    public partial class LayersEditor : NamedValueEditor<Layers> {
+    public partial class LayersEditor : NamedValueEditor<Layers>, ISeparatedValueEditor {
+
+        public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowBottomSeparator),
+            typeof(bool),
+            typeof(LayersEditor),
+            new PropertyMetadata(true));
+
+        public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
+            nameof(ShowTopSeparator),
+            typeof(bool),
+            typeof(LayersEditor),
+            new PropertyMetadata(true));
 
         public LayersEditor() {
             this.Loaded += this.LayersEditor_Loaded;
             this.InitializeComponent();
         }
 
+        public bool ShowBottomSeparator {
+            get { return (bool)this.GetValue(ShowBottomSeparatorProperty); }
+            set { this.SetValue(ShowBottomSeparatorProperty, value); }
+        }
+
+        public bool ShowTopSeparator {
+            get { return (bool)this.GetValue(ShowTopSeparatorProperty); }
+            set { this.SetValue(ShowTopSeparatorProperty, value); }
+        }
+
         protected override void OnValueChanged(Layers newValue, Layers oldValue, DependencyObject d) {
-            foreach (var item in this._layersItemsControl.Items.OfType<CheckBox>()) {
+            var itemsControl = this._collapsableEditor.UncollapsedContent as ItemsControl;
+            foreach (var item in itemsControl.Items.OfType<CheckBox>()) {
                 // Since we have static bindings we need to update these incase GameSettings has changed.
                 item.GetBindingExpression(CheckBox.ContentProperty).UpdateTarget();
             }
@@ -28,6 +51,7 @@
             var layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().OrderBy(x => (ushort)x).ToList();
             layers.Remove(Layers.None);
             layers.Remove(Layers.All);
+            var itemsControl = this._collapsableEditor.UncollapsedContent as ItemsControl;
 
             foreach (var layer in layers) {
                 var checkBox = new CheckBox();
@@ -42,7 +66,7 @@
                 isCheckedBinding.Converter = new LayersToBoolConverter();
                 isCheckedBinding.ConverterParameter = layer;
                 checkBox.SetBinding(CheckBox.IsCheckedProperty, isCheckedBinding);
-                this._layersItemsControl.Items.Add(checkBox);
+                itemsControl.Items.Add(checkBox);
             }
 
             this.Loaded -= this.LayersEditor_Loaded;

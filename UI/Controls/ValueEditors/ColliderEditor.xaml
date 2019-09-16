@@ -15,8 +15,7 @@
                                     ShowBottomSeparator="{Binding ShowBottomSeparator}"
                                     ShowTopSeparator="{Binding ShowTopSeparator}">
             <controls:CollapsableEditor.CollapsedContent>
-                <ComboBox Grid.Column="1"
-                          DisplayMemberPath="Name"
+                <ComboBox DisplayMemberPath="Name"
                           ItemsSource="{Binding ColliderTypes}"
                           SelectedItem="{Binding SelectedColliderType}" />
             </controls:CollapsableEditor.CollapsedContent>
