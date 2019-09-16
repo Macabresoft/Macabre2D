@@ -86,7 +86,7 @@
     <Compile Include="Physics\TileableBody.cs" />
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
-    <Compile Include="Tiles\AutoTileMapComponent.cs" />
+    <Compile Include="Tiles\AutoTileMap.cs" />
     <Compile Include="Tiles\AutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />
     <Compile Include="Utility\EmptyScene.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="Interfaces\ITranslateable.cs" />
     <Compile Include="Interfaces\IWorldTransformable.cs" />
     <Compile Include="Rendering\PixelOffset.cs" />
-    <Compile Include="Tiles\BinaryTileMapComponent.cs" />
+    <Compile Include="Tiles\BinaryTileMap.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />
     <Compile Include="Content\AssetManagerProcessor.cs" />
     <Compile Include="Content\AssetManagerReader.cs" />
@@ -172,7 +172,7 @@
     <Compile Include="Rendering\Sprite.cs" />
     <Compile Include="Rendering\SpriteAnimation.cs" />
     <Compile Include="Rendering\SpriteAnimationStep.cs" />
-    <Compile Include="Rendering\SpriteAnimatorComponent.cs" />
+    <Compile Include="Rendering\SpriteAnimator.cs" />
     <Compile Include="Rendering\SpriteRenderer.cs" />
     <Compile Include="Rendering\Font.cs" />
     <Compile Include="Rendering\TextRenderer.cs" />

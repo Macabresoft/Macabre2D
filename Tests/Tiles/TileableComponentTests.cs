@@ -11,7 +11,7 @@ namespace Macabre2D.Tests.Tiles {
         [Test]
         [Category("Unit Test")]
         public static void TileableComponent_ScaleTest() {
-            using (var component = new BinaryTileMapComponent()) {
+            using (var component = new BinaryTileMap()) {
                 component.Initialize(Substitute.For<IScene>());
                 var localPosition = component.LocalGrid.GetTilePosition(new Point(1, 1));
                 var worldPosition = component.WorldGrid.GetTilePosition(new Point(1, 1));

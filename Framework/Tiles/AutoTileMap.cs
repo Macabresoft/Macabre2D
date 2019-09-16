@@ -7,9 +7,9 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A component which maps <see cref="IAutoTileSet"/> onto a <see cref="TileGrid"/>.
+    /// A component which maps <see cref="AutoTileSet"/> onto a <see cref="TileGrid"/>.
     /// </summary>
-    public sealed class AutoTileMapComponent : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
+    public sealed class AutoTileMap : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
 
         [DataMember]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();

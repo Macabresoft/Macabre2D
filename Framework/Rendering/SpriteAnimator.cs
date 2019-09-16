@@ -11,7 +11,7 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public sealed class SpriteAnimatorComponent : SpriteRenderer, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation> {
+    public sealed class SpriteAnimator : SpriteRenderer, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation> {
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
@@ -24,16 +24,16 @@
         private SpriteAnimation _spriteAnimation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimatorComponent"/> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimator"/> class.
         /// </summary>
-        public SpriteAnimatorComponent() : base() {
+        public SpriteAnimator() : base() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimatorComponent"/> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimator"/> class.
         /// </summary>
         /// <param name="animation">The animation.</param>
-        public SpriteAnimatorComponent(SpriteAnimation animation) : this() {
+        public SpriteAnimator(SpriteAnimation animation) : this() {
             this._defaultAnimation = animation;
         }
 

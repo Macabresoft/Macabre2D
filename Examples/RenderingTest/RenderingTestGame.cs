@@ -54,7 +54,7 @@
             step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
             step.Frames = 2;
 
-            var spriteAnimator = new SpriteAnimatorComponent(spriteAnimation) {
+            var spriteAnimator = new SpriteAnimator(spriteAnimation) {
                 FrameRate = 4
             };
 
@@ -146,7 +146,7 @@
             circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
             this.CurrentScene.AddComponent(circleSpriteRenderer);
 
-            var binaryTileMap = new BinaryTileMapComponent {
+            var binaryTileMap = new BinaryTileMap {
                 DrawOrder = -300,
                 LocalPosition = new Vector2(-5f, -10f),
                 LocalScale = new Vector2(1f, 1f),

@@ -9,7 +9,7 @@
     /// <summary>
     /// A tile map component that is either "on" or "off". The on tiles will show the selected sprite.
     /// </summary>
-    public sealed class BinaryTileMapComponent : TileableComponent, IAssetComponent<Sprite>, IDrawableComponent {
+    public sealed class BinaryTileMap : TileableComponent, IAssetComponent<Sprite>, IDrawableComponent {
 
         [DataMember]
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
@@ -18,9 +18,9 @@
         private Vector2 _tileScale;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryTileMapComponent"/> class.
+        /// Initializes a new instance of the <see cref="BinaryTileMap"/> class.
         /// </summary>
-        public BinaryTileMapComponent() : base() {
+        public BinaryTileMap() : base() {
         }
 
         /// <inheritdoc/>
