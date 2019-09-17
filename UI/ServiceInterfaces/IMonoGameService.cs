@@ -5,7 +5,9 @@
 
     public interface IMonoGameService {
         ComponentEditingStyle EditingStyle { get; set; }
+
         DependencyObject EditorGame { get; }
+
         bool ShowGrid { get; set; }
 
         bool ShowSelection { get; set; }

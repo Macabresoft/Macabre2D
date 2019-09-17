@@ -14,6 +14,7 @@
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Matrix> _matrix;
         private int _renderOrder;
+        private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
         private float _viewHeight = 10f;
 
         /// <summary>
@@ -61,6 +62,33 @@
                 if (this._renderOrder != value) {
                     this._renderOrder = value;
                     this.RenderOrderChanged.SafeInvoke(this);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the state of the sampler.
+        /// </summary>
+        /// <value>The state of the sampler.</value>
+        public SamplerState SamplerState { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of the sampler state.
+        /// </summary>
+        /// <value>The type of the sampler state.</value>
+        [DataMember]
+        public SamplerStateType SamplerStateType {
+            get {
+                return this._samplerStateType;
+            }
+
+            set {
+                if (value != this._samplerStateType) {
+                    this._samplerStateType = value;
+
+                    if (this.IsInitialized) {
+                        this.SamplerState = this._samplerStateType.ToSamplerState();
+                    }
                 }
             }
         }
@@ -191,6 +219,7 @@
         protected override void Initialize() {
             this._boundingArea.Reset();
             this._matrix.Reset();
+            this.SamplerState = this._samplerStateType.ToSamplerState();
             this.TransformChanged += this.Self_TransformChanged;
         }
 

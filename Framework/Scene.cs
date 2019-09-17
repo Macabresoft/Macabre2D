@@ -464,7 +464,7 @@
             var potentialDrawables = this._drawTree.RetrievePotentialCollisions(camera.BoundingArea);
 
             if (potentialDrawables.Any()) {
-                MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
+                MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
 
                 foreach (var drawable in potentialDrawables) {
                     // As long as it doesn't equal Layers.None, at least one of the layers defined on
