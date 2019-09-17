@@ -15,6 +15,7 @@
         private readonly ResettableLazy<Matrix> _matrix;
         private int _renderOrder;
         private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
+        private bool _snapToPixels;
         private float _viewHeight = 10f;
 
         /// <summary>
@@ -99,6 +100,26 @@
         /// <value>The shader.</value>
         [DataMember]
         public Shader Shader { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this camera should snap to the pixel ratio
+        /// defined in <see cref="IGameSettings"/>.
+        /// </summary>
+        /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
+        [DataMember]
+        public bool SnapToPixels {
+            get {
+                return this._snapToPixels;
+            }
+
+            set {
+                if (value != this._snapToPixels) {
+                    this._snapToPixels = value;
+                    this._matrix.Reset();
+                    this._boundingArea.Reset();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the height of the view.
@@ -236,12 +257,21 @@
                 this.GetWorldTransform(new Vector2(halfWidth, -halfHeight)).Position
             };
 
-            var minimumX = points.Min(x => x.X);
-            var minimumY = points.Min(x => x.Y);
-            var maximumX = points.Max(x => x.X);
-            var maximumY = points.Max(x => x.Y);
+            BoundingArea result;
 
-            return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            if (this.SnapToPixels) {
+                var minimumX = points.Min(x => x.X).ToPixelSnappedValue();
+                var minimumY = points.Min(x => x.Y).ToPixelSnappedValue();
+                var maximumX = points.Max(x => x.X).ToPixelSnappedValue();
+                var maximumY = points.Max(x => x.Y).ToPixelSnappedValue();
+
+                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+            }
+            else {
+                result = new BoundingArea(new Vector2(points.Min(x => x.X), points.Min(x => x.Y)), new Vector2(points.Max(x => x.X), points.Max(x => x.Y)));
+            }
+
+            return result;
         }
 
         private Matrix CreateViewMatrix() {
@@ -252,7 +282,7 @@
             var worldTransform = this.WorldTransform;
 
             return
-                Matrix.CreateTranslation(new Vector3(-worldTransform.Position * pixelsPerUnit, 0f)) *
+                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
                 Matrix.CreateScale(zoom, -zoom, 0f) *
                 Matrix.CreateTranslation(new Vector3(origin, 0f));
         }

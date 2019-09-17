@@ -12,6 +12,7 @@
 * There are now 16 layers instead of 8.
 * The sampler state can be changed on a camera for a sprite batch.
 	* This allows for crisp pixel art.
+* Camera can be snapped to pixels for pixel art games.
 
 ## Refactors
 

@@ -142,6 +142,7 @@
     <Compile Include="Interfaces\IScene.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Interfaces\ITileable.cs" />
+    <Compile Include="Extensions\PixelSnapExtensions.cs" />
     <Compile Include="Utility\Prefab.cs" />
     <Compile Include="Utility\PrefabComponent.cs" />
     <Compile Include="Utility\ResettableLazy.cs" />
