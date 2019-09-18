@@ -26,6 +26,7 @@
 ## Fixes
 
 * Fixed a bug which caused layer names to throw an exception during deserialization.
+* Fixed a bug which caused sprite renderers to use the full spritesheet size to define pixel offset and not the singular sprite's size.
 
 ---
 

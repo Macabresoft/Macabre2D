@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -211,8 +210,8 @@
 
         private Vector2 CreateSize() {
             var result = Vector2.Zero;
-            if (this.Sprite?.Texture is Texture2D texture) {
-                return new Vector2(texture.Width, texture.Height);
+            if (this.Sprite != null) {
+                return new Vector2(this.Sprite.Size.X, this.Sprite.Size.Y);
             }
 
             return result;
