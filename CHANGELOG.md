@@ -13,6 +13,7 @@
 * The sampler state can be changed on a camera for a sprite batch.
 	* This allows for crisp pixel art.
 * Camera can be snapped to pixels for pixel art games.
+* Sprite Renderer can be snapped to pixels for pixel art games.
 
 ## Refactors
 
