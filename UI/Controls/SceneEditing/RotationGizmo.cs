@@ -12,7 +12,7 @@
     public sealed class RotationGizmo : BaseAxisGizmo {
 
         private readonly SimpleBody _circleBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly CircleDrawer _circleOutlineDrawer = new CircleDrawer();
@@ -80,6 +80,8 @@
                 this._circleOutlineDrawer.Radius = lineLength;
                 this._circleOutlineDrawer.Complexity = 128;
                 this._circleOutlineDrawer.Draw(gameTime, viewBoundingArea);
+
+                this._circleBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
             }
         }
 

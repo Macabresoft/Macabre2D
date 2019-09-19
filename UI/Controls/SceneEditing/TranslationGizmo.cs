@@ -11,13 +11,13 @@
     public sealed class TranslationGizmo : BaseAxisGizmo {
 
         private readonly SimpleBody _neutralAxisBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _xAxisArrowRenderer = new SpriteRenderer();
 
         private readonly SimpleBody _xAxisBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _xAxisTriangleRenderer = new SpriteRenderer();
@@ -25,7 +25,7 @@
         private readonly SpriteRenderer _yAxisArrowRenderer = new SpriteRenderer();
 
         private readonly SimpleBody _yAxisBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _yAxisTriangleRenderer = new SpriteRenderer();
@@ -130,6 +130,10 @@
             this._yAxisTriangleRenderer.LocalPosition = this.YAxisLineDrawer.StartPoint;
             this._yAxisTriangleRenderer.LocalScale = new Vector2(-scale);
             this._yAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
+
+            this._neutralAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
+            this._xAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
+            this._yAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
 
             if (selectedComponent is IRotatable rotatable) {
                 this._xAxisArrowRenderer.Rotation.Angle = rotatable.Rotation.Angle;

@@ -25,8 +25,9 @@
 
 ## Fixes
 
-* Fixed a bug which caused layer names to throw an exception during deserialization.
-* Fixed a bug which caused sprite renderers to use the full spritesheet size to define pixel offset and not the singular sprite's size.
+* Layers names will no longer cause an exception during deserialization.
+* Sprite Renderer now uses the sprite's size when determining offset instead of the full image file it comes from.
+* Gizmos now work the same way regardless of 'pixels per unit'.
 
 ---
 

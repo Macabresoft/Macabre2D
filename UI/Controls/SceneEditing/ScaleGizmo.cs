@@ -11,13 +11,13 @@
     public sealed class ScaleGizmo : BaseAxisGizmo {
 
         private readonly SimpleBody _xAxisBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _xAxisSquareRenderer = new SpriteRenderer();
 
         private readonly SimpleBody _yAxisBody = new SimpleBody() {
-            Collider = new CircleCollider(1f, RadiusScalingType.X)
+            Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
         private readonly SpriteRenderer _yAxisSquareRenderer = new SpriteRenderer();
@@ -123,6 +123,9 @@
             this._yAxisSquareRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisSquareRenderer.LocalScale = new Vector2(scale);
             this._yAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
+
+            this._xAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
+            this._yAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
 
             if (selectedComponent is IRotatable rotatable) {
                 this._xAxisSquareRenderer.Rotation.Angle = rotatable.Rotation.Angle;
