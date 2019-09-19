@@ -77,6 +77,8 @@
     public sealed class AssetManager : IAssetManager {
         internal const string ContentFileName = "AssetManager";
 
+        private static IAssetManager _instance = new AssetManager();
+
         [DataMember]
         private readonly Dictionary<Guid, string> _idToPathMapping = new Dictionary<Guid, string>();
 
@@ -88,7 +90,17 @@
         /// <summary>
         /// Gets the singleton instance of an asset manager.
         /// </summary>
-        public static IAssetManager Instance { get; internal set; }
+        public static IAssetManager Instance {
+            get {
+                return AssetManager._instance;
+            }
+
+            set {
+                if (value != null) {
+                    AssetManager._instance = value;
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public void ClearMappings() {
