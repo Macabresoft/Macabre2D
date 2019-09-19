@@ -29,6 +29,7 @@
 * Sprite Renderer now uses the sprite's size when determining offset instead of the full image file it comes from.
 * Gizmos now work the same way regardless of 'pixels per unit'.
 * A component's bounding area will stay up to date when changing the 'pixels per unit' in the editor.
+* Zooming the camera in the editor is a lot smoother now as the zoom amount is based on the current view height and not a flat value.
 
 ---
 

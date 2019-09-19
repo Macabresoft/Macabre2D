@@ -5,6 +5,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
+    using System;
 
     public sealed class EditorCameraWrapper : NotifyPropertyChanged {
         private readonly ISceneService _sceneService;
@@ -89,7 +90,7 @@
 
         public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
             if (mouseState.ScrollWheelValue != this._previousScrollWheelValue) {
-                var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue)) * 5f;
+                var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollWheelValue - mouseState.ScrollWheelValue) * Math.Sqrt(this._camera.ViewHeight) * 0.25f);
 
                 var isZoomIn = scrollViewChange < 0;
                 if (isZoomIn) {

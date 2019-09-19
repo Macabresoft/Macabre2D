@@ -132,11 +132,10 @@
             }
 
             set {
-                // If someone wants to view less than one unit, they need to change their pixel
-                // density. And if they want to view less than one pixel, they need to use a
-                // different engine.
-                if (value <= 1f) {
-                    value = 1f;
+                // This is kind of an arbitrary value, but imagine the chaos if we allowed the camera
+                // to reach 0.
+                if (value <= 0.1f) {
+                    value = 0.1f;
                 }
 
                 if (value != this._viewHeight) {
