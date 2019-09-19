@@ -28,6 +28,7 @@
 * Layers names will no longer cause an exception during deserialization.
 * Sprite Renderer now uses the sprite's size when determining offset instead of the full image file it comes from.
 * Gizmos now work the same way regardless of 'pixels per unit'.
+* A component's bounding area will stay up to date when changing the 'pixels per unit' in the editor.
 
 ---
 

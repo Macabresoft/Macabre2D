@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
+    using Microsoft.Xna.Framework;
     using System;
 
     public sealed class ComponentService : NotifyPropertyChanged, IComponentService {
@@ -25,7 +26,18 @@
                 var oldValue = this._selectedItem;
                 if (this.Set(ref this._selectedItem, value)) {
                     this.SelectionChanged.SafeInvoke(this, new ValueChangedEventArgs<ComponentWrapper>(oldValue, value));
+                    this.ResetSelectedItemBoundingArea();
                 }
+            }
+        }
+
+        public void ResetSelectedItemBoundingArea() {
+            // This is a bit weird, but it forces the Bounding Area to be reset in case the pixels
+            // per unit has changed.
+            if (this._selectedItem?.Component != null) {
+                var originalPosition = this._selectedItem.Component.LocalPosition;
+                this._selectedItem.Component.LocalPosition = Vector2.Zero;
+                this._selectedItem.Component.LocalPosition = originalPosition;
             }
         }
 

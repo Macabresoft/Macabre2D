@@ -11,6 +11,8 @@
 
         ComponentWrapper SelectedItem { get; set; }
 
+        void ResetSelectedItemBoundingArea();
+
         void SelectComponent(BaseComponent component);
     }
 }

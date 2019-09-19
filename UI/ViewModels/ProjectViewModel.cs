@@ -6,14 +6,16 @@
     using Microsoft.Xna.Framework;
 
     public sealed class ProjectViewModel : NotifyPropertyChanged {
+        private readonly IComponentService _componentService;
         private readonly IMonoGameService _monoGameService;
-
         private readonly IUndoService _undoService;
 
         public ProjectViewModel(
+            IComponentService componentService,
             IMonoGameService monoGameService,
             IProjectService projectService,
             IUndoService undoService) {
+            this._componentService = componentService;
             this._monoGameService = monoGameService;
             this.ProjectService = projectService;
             this._undoService = undoService;
@@ -91,11 +93,13 @@
                         () => {
                             this.ProjectService.CurrentProject.GameSettings.PixelsPerUnit = value;
                             this.ProjectService.HasChanges = true;
+                            this._componentService.ResetSelectedItemBoundingArea();
                             this._monoGameService.ResetCamera();
                         },
                         () => {
                             this.ProjectService.CurrentProject.GameSettings.PixelsPerUnit = originalValue;
                             this.ProjectService.HasChanges = originalHasChanges;
+                            this._componentService.ResetSelectedItemBoundingArea();
                             this._monoGameService.ResetCamera();
                         },
                         () => this.RaisePropertyChanged(nameof(this.PixelsPerUnit)));
