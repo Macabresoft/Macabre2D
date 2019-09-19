@@ -4,9 +4,11 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Resources.Properties;
     using MahApps.Metro.IconPacks;
+    using Microsoft.Xna.Framework.Content.Pipeline.Processors;
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Serialization;
     using System.Text;
     using System.Xml;
 
@@ -20,9 +22,11 @@
 
     public sealed class FontAsset : AddableAsset<Font>, IReloadableAsset {
         private string _fontName = "Arial";
+        private bool _premultiplyAlpha = true;
         private float _size = 12;
         private float _spacing = 0;
         private FontStyle _style = FontStyle.Regular;
+        private TextureProcessorOutputFormat _textureFormat = TextureProcessorOutputFormat.Compressed;
         private bool _useKerning = true;
 
         public override string FileExtension {
@@ -44,6 +48,17 @@
         public override PackIconMaterialKind Icon {
             get {
                 return PackIconMaterialKind.FileDocument;
+            }
+        }
+
+        [DataMember]
+        public bool PremultiplyAlpha {
+            get {
+                return this._premultiplyAlpha;
+            }
+
+            set {
+                this.Set(ref this._premultiplyAlpha, value);
             }
         }
 
@@ -79,6 +94,17 @@
             }
         }
 
+        [DataMember]
+        public TextureProcessorOutputFormat TextureFormat {
+            get {
+                return this._textureFormat;
+            }
+
+            set {
+                this.Set(ref this._textureFormat, value);
+            }
+        }
+
         public bool UseKerning {
             get {
                 return this._useKerning;
@@ -94,8 +120,8 @@
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine(@"/importer:FontDescriptionImporter");
             contentStringBuilder.AppendLine(@"/processor:FontDescriptionProcessor");
-            contentStringBuilder.AppendLine(@"/processorParam:PremultiplyAlpha = True");
-            contentStringBuilder.AppendLine(@"/processorParam:TextureFormat = Compressed");
+            contentStringBuilder.AppendLine($@"/processorParam:PremultiplyAlpha = {this.PremultiplyAlpha}");
+            contentStringBuilder.AppendLine($@"/processorParam:TextureFormat = {this.TextureFormat.ToString()}");
             contentStringBuilder.AppendLine($@"/build:{path}");
         }
 

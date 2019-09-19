@@ -14,6 +14,7 @@
 	* This allows for crisp pixel art.
 * Camera can be snapped to pixels for pixel art games.
 * Sprite Renderer can be snapped to pixels for pixel art games.
+* Can edit processor parameters 'Texture Format' and 'Premultiply Alpha' for font assets.
 
 ## Refactors
 
