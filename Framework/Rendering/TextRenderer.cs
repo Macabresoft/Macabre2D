@@ -13,9 +13,11 @@
     /// </summary>
     public sealed class TextRenderer : BaseComponent, IDrawableComponent, IAssetComponent<Font>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
+        private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
         private readonly ResettableLazy<Vector2> _size;
         private Font _font;
+        private bool _snapToPixels;
         private string _text = string.Empty;
 
         /// <summary>
@@ -24,6 +26,7 @@
         public TextRenderer() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._size = new ResettableLazy<Vector2>(this.CreateSize);
+            this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
             this._rotatableTransform = new ResettableLazy<RotatableTransform>(this.CreateRotatableTransform);
         }
 
@@ -79,6 +82,33 @@
         public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
+        /// Gets or sets a value indicating whether this text renderer should snap to the pixel ratio
+        /// defined in <see cref="IGameSettings"/>.
+        /// </summary>
+        /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
+        /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
+        [DataMember]
+        public bool SnapToPixels {
+            get {
+                return this._snapToPixels;
+            }
+
+            set {
+                if (value != this._snapToPixels) {
+                    this._snapToPixels = value;
+                    if (!this._snapToPixels) {
+                        this._rotatableTransform.Reset();
+                    }
+                    else {
+                        this._pixelTransform.Reset();
+                    }
+
+                    this._boundingArea.Reset();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the text.
         /// </summary>
         /// <value>The text.</value>
@@ -107,17 +137,32 @@
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
-                var transform = this._rotatableTransform.Value;
-                MacabreGame.Instance.SpriteBatch.DrawString(
-                    this.Font.SpriteFont,
-                    this.Text,
-                    transform.Position * GameSettings.Instance.PixelsPerUnit,
-                    this.Color,
-                    transform.Rotation.Angle,
-                    Vector2.Zero,
-                    transform.Scale,
-                    SpriteEffects.FlipVertically,
-                    0f);
+                if (this.SnapToPixels) {
+                    var transform = this._pixelTransform.Value;
+                    MacabreGame.Instance.SpriteBatch.DrawString(
+                        this.Font.SpriteFont,
+                        this.Text,
+                        transform.Position * GameSettings.Instance.PixelsPerUnit,
+                        this.Color,
+                        0f,
+                        Vector2.Zero,
+                        transform.Scale,
+                        SpriteEffects.FlipVertically,
+                        0f);
+                }
+                else {
+                    var transform = this._rotatableTransform.Value;
+                    MacabreGame.Instance.SpriteBatch.DrawString(
+                        this.Font.SpriteFont,
+                        this.Text,
+                        transform.Position * GameSettings.Instance.PixelsPerUnit,
+                        this.Color,
+                        transform.Rotation.Angle,
+                        Vector2.Zero,
+                        transform.Scale,
+                        SpriteEffects.FlipVertically,
+                        0f);
+                }
             }
         }
 
@@ -187,18 +232,32 @@
                     this.GetWorldTransform(offset + new Vector2(0f, height), rotationAngle).Position
                 };
 
-                var minimumX = points.Min(x => x.X);
-                var minimumY = points.Min(x => x.Y);
-                var maximumX = points.Max(x => x.X);
-                var maximumY = points.Max(x => x.Y);
+                if (this.SnapToPixels) {
+                    var minimumX = points.Min(x => x.X).ToPixelSnappedValue();
+                    var minimumY = points.Min(x => x.Y).ToPixelSnappedValue();
+                    var maximumX = points.Max(x => x.X).ToPixelSnappedValue();
+                    var maximumY = points.Max(x => x.Y).ToPixelSnappedValue();
 
-                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                    result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                }
+                else {
+                    result = new BoundingArea(new Vector2(points.Min(x => x.X), points.Min(x => x.Y)), new Vector2(points.Max(x => x.X), points.Max(x => x.Y)));
+                }
             }
             else {
                 result = new BoundingArea();
             }
 
             return result;
+        }
+
+        private Transform CreatePixelTransform() {
+            var worldTransform = this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit);
+            var pixelsPerUnit = GameSettings.Instance.PixelsPerUnit;
+            var inversePixelsPerUnit = GameSettings.Instance.InversePixelsPerUnit;
+            var position = new Vector2((int)Math.Round(worldTransform.Position.X * pixelsPerUnit, 0) * inversePixelsPerUnit, (int)Math.Round(worldTransform.Position.Y * pixelsPerUnit, 0) * inversePixelsPerUnit);
+            var scale = new Vector2((int)Math.Round(worldTransform.Scale.X, 0), (int)Math.Round(worldTransform.Scale.Y));
+            return new Transform(position, scale);
         }
 
         private RotatableTransform CreateRotatableTransform() {
@@ -210,6 +269,7 @@
         }
 
         private void Offset_AmountChanged(object sender, EventArgs e) {
+            this._pixelTransform.Reset();
             this._rotatableTransform.Reset();
             this._boundingArea.Reset();
         }
@@ -222,6 +282,7 @@
 
         private void Self_TransformChanged(object sender, EventArgs e) {
             this._boundingArea.Reset();
+            this._pixelTransform.Reset();
             this._rotatableTransform.Reset();
         }
     }
