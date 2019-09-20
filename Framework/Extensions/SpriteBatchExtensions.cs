@@ -88,5 +88,53 @@
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color) {
             spriteBatch.Draw(sprite, transform, 0f, color);
         }
+
+        /// <summary>
+        /// Draws the text with the provided font.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="rotationAngle">The rotation angle.</param>
+        /// <param name="color">The color.</param>
+        public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Vector2 position, Vector2 scale, float rotationAngle, Color color) {
+            if (font != null) {
+                spriteBatch.DrawString(
+                  font.SpriteFont,
+                  text,
+                  position * GameSettings.Instance.PixelsPerUnit,
+                  color,
+                  rotationAngle,
+                  Vector2.Zero,
+                  scale,
+                  SpriteEffects.FlipVertically,
+                  0f);
+            }
+        }
+
+        /// <summary>
+        /// Draws the text with the provided font.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="font">The font.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="transform">The transform.</param>
+        /// <param name="color">The color.</param>
+        public static void Draw(this SpriteBatch spriteBatch, Font font, string text, RotatableTransform rotatableTransform, Color color) {
+            spriteBatch.Draw(font, text, rotatableTransform.Position, rotatableTransform.Scale, rotatableTransform.Rotation.Angle, color);
+        }
+
+        /// <summary>
+        /// Draws the text with the provided font.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="font">The font.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="transform">The transform.</param>
+        /// <param name="color">The color.</param>
+        public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Transform transform, Color color) {
+            spriteBatch.Draw(font, text, transform.Position, transform.Scale, 0f, color);
+        }
     }
 }

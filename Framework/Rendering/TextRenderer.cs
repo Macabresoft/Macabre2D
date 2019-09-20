@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -138,30 +137,10 @@
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
-                    var transform = this._pixelTransform.Value;
-                    MacabreGame.Instance.SpriteBatch.DrawString(
-                        this.Font.SpriteFont,
-                        this.Text,
-                        transform.Position * GameSettings.Instance.PixelsPerUnit,
-                        this.Color,
-                        0f,
-                        Vector2.Zero,
-                        transform.Scale,
-                        SpriteEffects.FlipVertically,
-                        0f);
+                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color);
                 }
                 else {
-                    var transform = this._rotatableTransform.Value;
-                    MacabreGame.Instance.SpriteBatch.DrawString(
-                        this.Font.SpriteFont,
-                        this.Text,
-                        transform.Position * GameSettings.Instance.PixelsPerUnit,
-                        this.Color,
-                        transform.Rotation.Angle,
-                        Vector2.Zero,
-                        transform.Scale,
-                        SpriteEffects.FlipVertically,
-                        0f);
+                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color);
                 }
             }
         }
