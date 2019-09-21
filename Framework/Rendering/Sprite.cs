@@ -93,12 +93,14 @@
         /// <summary>
         /// Loads the content.
         /// </summary>
-        public void LoadContent() {
-            try {
-                this.Texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
-            }
-            catch {
-                this.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
+        public void Load() {
+            if (this.AssetId != Guid.Empty) {
+                try {
+                    this.Texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
+                }
+                catch {
+                    this.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
+                }
             }
         }
 

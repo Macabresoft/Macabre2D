@@ -76,7 +76,7 @@
             this._steps.Add(step);
 
             if (this._isLoaded) {
-                step.Sprite?.LoadContent();
+                step.Sprite?.Load();
             }
         }
 
@@ -94,7 +94,7 @@
             }
 
             if (this._isLoaded) {
-                step.Sprite?.LoadContent();
+                step.Sprite?.Load();
             }
         }
 

@@ -57,7 +57,7 @@
             (u, handler) => u.UpdateOrderChanged -= handler);
 
         private bool _disposedValue;
-        private int _sessionIdCounter = -1;
+        private int _sessionIdCounter = int.MinValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scene"/> class.
@@ -67,10 +67,10 @@
         }
 
         /// <inheritdoc/>
-        public event EventHandler<BaseComponent> ComponentAdded;
+        public event EventHandler<BaseComponent> ComponentCreated;
 
         /// <inheritdoc/>
-        public event EventHandler<BaseComponent> ComponentRemoved;
+        public event EventHandler<BaseComponent> ComponentDestroyed;
 
         /// <inheritdoc/>
         public event EventHandler<BaseModule> ModuleAdded;
@@ -143,13 +143,6 @@
             return true;
         }
 
-        /// <inheritdoc/>
-        public T AddModule<T>() where T : BaseModule, new() {
-            var module = new T();
-            this.AddModule(module);
-            return module;
-        }
-
         // <inheritdoc/>
         public bool AddModule(BaseModule module) {
             if (!this.IsInitialized) {
@@ -176,8 +169,15 @@
         }
 
         /// <inheritdoc/>
-        public T AddModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
-            var module = this.AddModule<T>();
+        public T CreateModule<T>() where T : BaseModule, new() {
+            var module = new T();
+            this.AddModule(module);
+            return module;
+        }
+
+        /// <inheritdoc/>
+        public T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
+            var module = this.CreateModule<T>();
             this.AddModule(module, timeStep);
             return module;
         }
@@ -185,7 +185,7 @@
         /// <inheritdoc/>
         public void DestroyComponent(BaseComponent component) {
             this.RemoveComponent(component);
-            this.ComponentRemoved.SafeInvoke(this, component);
+            this.ComponentDestroyed.SafeInvoke(this, component);
             component.Dispose();
         }
 
@@ -352,6 +352,10 @@
             else {
                 this.ModulesForSaving.Remove(module);
             }
+
+            if (module is IDisposable disposable) {
+                disposable.Dispose();
+            }
         }
 
         /// <inheritdoc/>
@@ -454,8 +458,8 @@
                     }
                 }
 
-                this.ComponentAdded = null;
-                this.ComponentRemoved = null;
+                this.ComponentCreated = null;
+                this.ComponentDestroyed = null;
                 this._disposedValue = true;
             }
         }
@@ -512,7 +516,7 @@
             component.ParentChanged += this.Component_ParentChanged;
             component.SubscribeToChildrenChanged(this._componentChildrenChangedHandler);
             component.SessionId = Interlocked.Increment(ref this._sessionIdCounter);
-            this.ComponentAdded.SafeInvoke(this, component);
+            this.ComponentCreated.SafeInvoke(this, component);
         }
     }
 }

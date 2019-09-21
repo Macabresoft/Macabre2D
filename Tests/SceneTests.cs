@@ -21,9 +21,9 @@
                 var child1HasBeenAdded = false;
                 var child2HasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => parentHasBeenAdded = parentHasBeenAdded || e == parent;
-                scene.ComponentAdded += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
-                scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
+                scene.ComponentCreated += (object sender, BaseComponent e) => parentHasBeenAdded = parentHasBeenAdded || e == parent;
+                scene.ComponentCreated += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
+                scene.ComponentCreated += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
                 scene.Initialize();
                 scene.AddComponent(parent);
@@ -51,9 +51,9 @@
                 var child1HasBeenAdded = false;
                 var child2HasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => parentHasBeenAdded = parentHasBeenAdded || e == parent;
-                scene.ComponentAdded += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
-                scene.ComponentAdded += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
+                scene.ComponentCreated += (object sender, BaseComponent e) => parentHasBeenAdded = parentHasBeenAdded || e == parent;
+                scene.ComponentCreated += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
+                scene.ComponentCreated += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
                 scene.AddComponent(parent);
 
@@ -83,7 +83,7 @@
 
                 var hasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
+                scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
@@ -103,7 +103,7 @@
 
                 var hasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
+                scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == child;
                 Assert.False(hasBeenAdded);
 
                 scene.Initialize();
@@ -121,7 +121,7 @@
             using (var component = new TestComponent()) {
                 var hasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
+                scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
 
                 scene.Initialize();
                 scene.AddComponent(component);
@@ -138,7 +138,7 @@
             using (var component = new TestComponent()) {
                 var hasBeenAdded = false;
 
-                scene.ComponentAdded += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
+                scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
                 scene.AddComponent(component);
 
                 Assert.False(hasBeenAdded);
@@ -160,7 +160,7 @@
                 Assert.Contains(component, scene.Children.ToList());
 
                 var hasBeenRemoved = false;
-                scene.ComponentRemoved += (object sender, BaseComponent e) => hasBeenRemoved = hasBeenRemoved || e == component;
+                scene.ComponentDestroyed += (object sender, BaseComponent e) => hasBeenRemoved = hasBeenRemoved || e == component;
                 scene.DestroyComponent(component);
 
                 Assert.True(hasBeenRemoved);

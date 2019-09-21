@@ -26,10 +26,10 @@
 #pragma warning disable CS0414
 
         /// <inheritdoc/>
-        public event EventHandler<BaseComponent> ComponentAdded;
+        public event EventHandler<BaseComponent> ComponentCreated;
 
         /// <inheritdoc/>
-        public event EventHandler<BaseComponent> ComponentRemoved;
+        public event EventHandler<BaseComponent> ComponentDestroyed;
 
         /// <inheritdoc/>
         public event EventHandler<BaseModule> ModuleAdded;
@@ -100,7 +100,7 @@
         }
 
         /// <inheritdoc/>
-        public T AddModule<T>() where T : BaseModule, new() {
+        public T CreateModule<T>() where T : BaseModule, new() {
             return default;
         }
 
@@ -115,7 +115,7 @@
         }
 
         /// <inheritdoc/>
-        public T AddModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
+        public T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
             return default;
         }
 
@@ -206,8 +206,8 @@
 
         private void Dispose(bool disposing) {
             if (!this._disposedValue) {
-                ComponentAdded = null;
-                ComponentRemoved = null;
+                ComponentCreated = null;
+                ComponentDestroyed = null;
                 ModuleAdded = null;
                 ModuleRemoved = null;
                 this._disposedValue = true;

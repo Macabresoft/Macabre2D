@@ -96,7 +96,7 @@
                     this.SpriteChanged.SafeInvoke(this, index);
 
                     if (this._isLoaded) {
-                        sprite?.LoadContent();
+                        sprite?.Load();
                     }
                 }
                 else {
@@ -117,7 +117,7 @@
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._indexToSprites.Values) {
-                        sprite?.LoadContent();
+                        sprite?.Load();
                     }
                 }
                 finally {

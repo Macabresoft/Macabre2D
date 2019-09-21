@@ -122,7 +122,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this.Scene.IsInitialized) {
-                this.Sprite?.LoadContent();
+                this.Sprite?.Load();
             }
 
             base.LoadContent();

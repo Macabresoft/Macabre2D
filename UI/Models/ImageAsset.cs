@@ -156,7 +156,7 @@
 
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
             foreach (var sprite in this.Sprites) {
-                sprite.Sprite.LoadContent();
+                sprite.Sprite.Load();
             }
 
             base.Refresh(assetManager);

@@ -37,8 +37,8 @@
         public override void PostInitialize() {
             this.Bodies.AddRange(this.Scene.GetAllComponentsOfType<IPhysicsBody>());
 
-            this.Scene.ComponentAdded += this.Scene_ComponentAdded;
-            this.Scene.ComponentRemoved += this.Scene_ComponentRemoved;
+            this.Scene.ComponentCreated += this.Scene_ComponentAdded;
+            this.Scene.ComponentDestroyed += this.Scene_ComponentRemoved;
         }
 
         /// <summary>

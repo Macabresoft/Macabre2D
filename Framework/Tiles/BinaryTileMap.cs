@@ -99,7 +99,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this.Scene.IsInitialized) {
-                this.Sprite?.LoadContent();
+                this.Sprite?.Load();
                 this._tileScale = this.GetTileScale(this.Sprite);
             }
 

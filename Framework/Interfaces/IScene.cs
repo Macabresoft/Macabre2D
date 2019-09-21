@@ -10,22 +10,22 @@
     public interface IScene : IAsset {
 
         /// <summary>
-        /// Occurs when component added.
+        /// Occurs when a component has been created or added to the scene for the first time.
         /// </summary>
-        event EventHandler<BaseComponent> ComponentAdded;
+        event EventHandler<BaseComponent> ComponentCreated;
 
         /// <summary>
-        /// Occurs when component removed.
+        /// Occurs when a component has been destroyed and completely removed from the scene.
         /// </summary>
-        event EventHandler<BaseComponent> ComponentRemoved;
+        event EventHandler<BaseComponent> ComponentDestroyed;
 
         /// <summary>
-        /// Occurs when [module added].
+        /// Occurs when a module is added.
         /// </summary>
         event EventHandler<BaseModule> ModuleAdded;
 
         /// <summary>
-        /// Occurs when [module removed].
+        /// Occurs when a module is removed.
         /// </summary>
         event EventHandler<BaseModule> ModuleRemoved;
 
@@ -70,13 +70,6 @@
         /// <summary>
         /// Adds the module.
         /// </summary>
-        /// <typeparam name="T">A type of module.</typeparam>
-        /// <returns>The added module.</returns>
-        T AddModule<T>() where T : BaseModule, new();
-
-        /// <summary>
-        /// Adds the module.
-        /// </summary>
         /// <param name="module">The module.</param>
         /// <returns>A value indicating whether or not the module was added.</returns>
         bool AddModule(BaseModule module);
@@ -90,12 +83,19 @@
         bool AddModule(FixedTimeStepModule module, float timeStep);
 
         /// <summary>
-        /// Adds the fixed time step module.
+        /// Creates a module of the specified type.
+        /// </summary>
+        /// <typeparam name="T">A type of module.</typeparam>
+        /// <returns>The added module.</returns>
+        T CreateModule<T>() where T : BaseModule, new();
+
+        /// <summary>
+        /// Creates a fixed time step module of the specified type.
         /// </summary>
         /// <typeparam name="T">A type of module with a fixed time step.</typeparam>
         /// <param name="timeStep">The time step.</param>
         /// <returns>The added module.</returns>
-        T AddModule<T>(float timeStep) where T : FixedTimeStepModule, new();
+        T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new();
 
         /// <summary>
         /// Destroys the component.

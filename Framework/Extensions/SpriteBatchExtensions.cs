@@ -17,7 +17,7 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, float rotationAngle, Color color) {
-            if (sprite != null && transform != null) {
+            if (sprite?.Texture != null && transform != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     transform.Position * GameSettings.Instance.PixelsPerUnit,
@@ -41,7 +41,7 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, float rotationAngle, Color color) {
-            if (sprite != null) {
+            if (sprite?.Texture != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     position * GameSettings.Instance.PixelsPerUnit,
@@ -99,7 +99,7 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Vector2 position, Vector2 scale, float rotationAngle, Color color) {
-            if (font != null) {
+            if (font?.SpriteFont != null) {
                 spriteBatch.DrawString(
                   font.SpriteFont,
                   text,
