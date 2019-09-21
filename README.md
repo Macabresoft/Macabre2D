@@ -16,3 +16,7 @@ The full source code is available here from GitHub:
  * Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
  * Restore NuGet packages for Macabre2D.sln.
  * Open Macabre2D.sln. From here you can run the editor or example projects.
+
+ ## Using Fonts
+ 
+ When using custom fonts (non-system fonts) make sure to install the font for all users before using it within Macabre2D. This is a limitation of the MonoGame Content Pipeline.
