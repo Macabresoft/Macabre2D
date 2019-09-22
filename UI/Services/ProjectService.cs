@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Services {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services.Content;
@@ -64,16 +65,20 @@
         public async Task<bool> BuildAllAssets(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
+                this._serializer.Serialize(this.CurrentProject.AssetManager, Path.Combine(this._fileService.ProjectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
+                this._serializer.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
+
                 var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
+                var dllPaths = new[] {
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Newtonsoft.Json.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Framework.dll",
+                    $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                };
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    var dllPaths = new[] {
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Newtonsoft.Json.dll",
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Framework.dll",
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
-                    };
 
-                    configuration.GenerateContent(this._fileService.ProjectDirectoryPath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPaths);
+
+                    configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, false, dllPaths);
                     var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{configuration.Platform.ToString()}.mgcb");
                     var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
                     Directory.CreateDirectory(outputDirectory);
