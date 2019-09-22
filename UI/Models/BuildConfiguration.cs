@@ -53,14 +53,14 @@
             stringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
             stringBuilder.AppendLine();
 
-            var gameSettingsPath = $@"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
+            var gameSettingsPath = $@"{projectDirectoryPath}\{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}";
             stringBuilder.AppendLine($"#begin {gameSettingsPath}");
             stringBuilder.AppendLine($@"/importer:{nameof(GameSettingsImporter)}");
             stringBuilder.AppendLine($@"/processor:{nameof(GameSettingsProcessor)}");
             stringBuilder.AppendLine($@"/build:{gameSettingsPath}");
             stringBuilder.AppendLine();
 
-            var assetManagerPath = $@"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}";
+            var assetManagerPath = $@"{projectDirectoryPath}\{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}";
             stringBuilder.AppendLine($"#begin {assetManagerPath}");
             stringBuilder.AppendLine($@"/importer:{nameof(AssetManagerImporter)}");
             stringBuilder.AppendLine($@"/processor:{nameof(AssetManagerProcessor)}");

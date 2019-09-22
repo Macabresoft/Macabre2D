@@ -76,8 +76,6 @@
                 };
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-
-
                     configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, false, dllPaths);
                     var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{configuration.Platform.ToString()}.mgcb");
                     var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
