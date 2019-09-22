@@ -140,14 +140,8 @@
                 this.SceneAssets.Add(asset);
             }
 
-            this.StartUpSceneAsset = this.SceneAssets.FirstOrDefault(x => x.Id == startupId.Value);
-
-            if (lastSceneId.HasValue) {
-                this.LastSceneOpened = this.SceneAssets.FirstOrDefault(x => x.Id == lastSceneId.Value);
-            }
-            else {
-                this.LastSceneOpened = this.SceneAssets.FirstOrDefault();
-            }
+            this.StartUpSceneAsset = startupId.HasValue ? this.SceneAssets.FirstOrDefault(x => x.Id == startupId.Value) : this.SceneAssets.FirstOrDefault();
+            this.LastSceneOpened = lastSceneId.HasValue ? this.SceneAssets.FirstOrDefault(x => x.Id == lastSceneId.Value) : this.SceneAssets.FirstOrDefault();
         }
 
         public void SaveAssets() {
