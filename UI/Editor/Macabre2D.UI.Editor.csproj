@@ -262,6 +262,10 @@
       <Project>{e2d9e2ae-b875-d3d6-92b1-ecdc6c642e54}</Project>
       <Name>MonoGame.Build.Tasks.Windows</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj">
+      <Project>{ce39dfb1-2c80-452f-a799-abc878773b1d}</Project>
+      <Name>Macabre2D.Project.Gameplay</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj">
       <Project>{4e44cdc9-54cc-41c7-abec-00eaeaab623a}</Project>
       <Name>Macabre2D.UI.Common</Name>

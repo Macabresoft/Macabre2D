@@ -34,6 +34,7 @@
 * Zooming the camera in the editor is a lot smoother now as the zoom amount is based on the current view height and not a flat value.
 * Fixed a crash that occurred when loading assets (mostly fonts) before the AssetManager had an instance.
 * Fixed a crash that occurred when the start up scene identifier is null in a project during loading.
+* Content building now works without magical DLL copying hacks (it was always broken, my bad).
 
 ---
 

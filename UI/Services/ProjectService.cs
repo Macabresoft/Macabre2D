@@ -68,9 +68,9 @@
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
                     var dllPaths = new[] {
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Newtonsoft.Json.dll",
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Framework.dll",
-                        $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Newtonsoft.Json.dll",
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Framework.dll",
+                        $@"{this._fileService.ProjectDirectoryPath}\bin\Editor\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
                     };
 
                     configuration.GenerateContent(this._fileService.ProjectDirectoryPath, assets, this.CurrentProject.AssetManager, this.CurrentProject.GameSettings, this._serializer, dllPaths);
