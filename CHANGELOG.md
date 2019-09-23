@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* First time assets now load properly instead of resetting to their default state (whoops).
 
 
 # 0.2.0.0

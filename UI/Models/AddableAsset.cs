@@ -56,6 +56,7 @@
 
             if (this.RequiresCreation) {
                 result = this.CreateAsset();
+                this.RequiresCreation = false;
             }
             else {
                 var serializer = new Serializer();
