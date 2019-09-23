@@ -18,11 +18,11 @@ namespace Macabre2D.Framework {
         /// <inheritdoc/>
 
         /// <inheritdoc/>
-        [DataMember]
+        [DataMember(Order = -1)]
         public bool IsTrigger { get; set; }
 
         /// <inheritdoc/>
-        [DataMember]
+        [DataMember(Order = -100)]
         public PhysicsMaterial PhysicsMaterial { get; set; } = PhysicsMaterial.Default;
 
         public abstract IEnumerable<Collider> GetColliders();

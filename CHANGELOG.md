@@ -2,15 +2,19 @@
 
 ## Features
 
-N/A
+* Can change the way a property appears in the editor by altering its name in the [DataMember] attribute.
 
 ## Refactors
 
-N/A
+* Now uses the [DataMember] attribute's order and name instead of the [Display] attribute, which will clean up both the UI and serialized objects.
 
 ## Fixes
 
 * First time assets now load properly instead of resetting to their default state (whoops).
+
+## Compatibility Breaks
+
+* The handling of [DataMember] attribute's name can cause objects created in previous versions to not deserialize properly going forward.
 
 
 # 0.2.0.0

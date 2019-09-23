@@ -112,6 +112,7 @@
     <Compile Include="IndexedWrapper.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="IReloadableAsset.cs" />
+    <Compile Include="MemberInfoAttribute.cs" />
     <Compile Include="MetadataAsset.cs" />
     <Compile Include="NullAsset.cs" />
     <Compile Include="ObservableVersion.cs" />

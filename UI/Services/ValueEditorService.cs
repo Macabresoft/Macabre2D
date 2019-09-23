@@ -2,10 +2,10 @@
 
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Controls.ValueEditors;
+    using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
@@ -32,13 +32,16 @@
                 editableObject.GetType().GetFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => x.DeclaringType != declaringTypeToIgnore) :
                 editableObject.GetType().GetFieldsAndProperties(typeof(DataMemberAttribute));
 
-            members = members.OrderBy(x => x.GetCustomAttributes(typeof(DisplayAttribute), false).OfType<DisplayAttribute>().FirstOrDefault()?.Order ?? 1000);
+            var membersWithAttributes = members
+                .Select(x => new MemberInfoAttribute<DataMemberAttribute>(x, x.GetCustomAttributes(typeof(DataMemberAttribute), false).OfType<DataMemberAttribute>().FirstOrDefault()))
+                .OrderBy(x => x.Attribute.Order);
 
-            foreach (var member in members) {
-                var propertyPath = currentPath == string.Empty ? member.Name : $"{currentPath}.{member.Name}";
-                var memberType = member.GetMemberReturnType();
-                var value = member.GetValue(editableObject);
-                var editor = await this.GetEditorForType(originalObject, value, memberType, propertyPath, member.Name, declaringTypeToIgnore);
+            foreach (var member in membersWithAttributes) {
+                var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
+                var memberType = member.MemberInfo.GetMemberReturnType();
+                var value = member.MemberInfo.GetValue(editableObject);
+                var name = string.IsNullOrEmpty(member.Attribute.Name) ? member.MemberInfo.Name : member.Attribute.Name;
+                var editor = await this.GetEditorForType(originalObject, value, memberType, propertyPath, name, declaringTypeToIgnore);
                 editors.Add(editor);
             }
 

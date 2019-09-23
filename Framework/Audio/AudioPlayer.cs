@@ -11,19 +11,19 @@
     /// </summary>
     public sealed class AudioPlayer : BaseComponent, IAssetComponent<AudioClip> {
 
-        [DataMember]
+        [DataMember(Order = 0)]
         private AudioClip _audioClip;
 
-        [DataMember]
+        [DataMember(Order = 3)]
         private float _pan;
 
-        [DataMember]
+        [DataMember(Order = 4)]
         private float _pitch;
 
-        [DataMember]
+        [DataMember(Order = 1)]
         private bool _shouldLoop;
 
-        [DataMember]
+        [DataMember(Order = 2)]
         private float _volume;
 
         /// <summary>

@@ -3,7 +3,6 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -40,16 +39,14 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember]
-        [Display(Order = -4)]
+        [DataMember(Order = 1)]
         public Color Color { get; set; } = Color.Black;
 
         /// <summary>
         /// Gets or sets the font.
         /// </summary>
         /// <value>The font.</value>
-        [DataMember]
-        [Display(Order = -5)]
+        [DataMember(Order = 0)]
         public Font Font {
             get {
                 return this._font;
@@ -71,13 +68,11 @@
         /// Gets the offset.
         /// </summary>
         /// <value>The offset.</value>
-        [DataMember]
-        [Display(Order = -2)]
+        [DataMember(Order = 4)]
         public PixelOffset Offset { get; private set; } = new PixelOffset();
 
         /// <inheritdoc/>
-        [DataMember]
-        [Display(Order = -1)]
+        [DataMember(Order = 5)]
         public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
@@ -86,7 +81,7 @@
         /// </summary>
         /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-        [DataMember]
+        [DataMember(Order = 3)]
         public bool SnapToPixels {
             get {
                 return this._snapToPixels;
@@ -111,8 +106,7 @@
         /// Gets or sets the text.
         /// </summary>
         /// <value>The text.</value>
-        [DataMember]
-        [Display(Order = -3)]
+        [DataMember(Order = 2)]
         public string Text {
             get {
                 return this._text;

@@ -17,14 +17,14 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember]
+        [DataMember(Order = 0)]
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
         /// Gets or sets the line thickness.
         /// </summary>
         /// <value>The line thickness.</value>
-        [DataMember]
+        [DataMember(Order = 1)]
         public float LineThickness { get; set; } = 1f;
 
         /// <summary>

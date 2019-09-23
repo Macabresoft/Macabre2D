@@ -36,18 +36,18 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember]
+        [DataMember(Order = 0)]
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
         /// Gets or sets the offset.
         /// </summary>
         /// <value>The offset.</value>
-        [DataMember]
+        [DataMember(Order = 1)]
         public PixelOffset Offset { get; private set; } = new PixelOffset();
 
         /// <inheritdoc/>
-        [DataMember]
+        [DataMember(Order = 3)]
         public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
@@ -56,7 +56,7 @@
         /// </summary>
         /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-        [DataMember]
+        [DataMember(Order = 2, Name = "Snap to Pixels")]
         public bool SnapToPixels {
             get {
                 return this._snapToPixels;
@@ -81,7 +81,7 @@
         /// Gets or sets the sprite.
         /// </summary>
         /// <value>The sprite.</value>
-        [DataMember]
+        [DataMember(Order = 4)]
         public Sprite Sprite {
             get {
                 return this._sprite;

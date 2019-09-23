@@ -22,7 +22,7 @@
         /// Gets the colliders.
         /// </summary>
         /// <value>The colliders.</value>
-        [DataMember]
+        [DataMember(Order = -1000)]
         public Collider Collider {
             get {
                 return this._collider;

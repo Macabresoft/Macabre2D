@@ -2,7 +2,6 @@
 
     using Microsoft.Xna.Framework;
     using System;
-    using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -62,8 +61,7 @@
         /// provides greater accuracy when converting it to engine units.
         /// </remarks>
         /// <value>The amount.</value>
-        [DataMember]
-        [Display(Order = 1)]
+        [DataMember(Order = 1)]
         public Vector2 Amount {
             get {
                 return this._amount;
@@ -82,8 +80,7 @@
         /// Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
-        [DataMember]
-        [Display(Order = 0)]
+        [DataMember(Order = 0)]
         public PixelOffsetType Type {
             get {
                 return this._type;
