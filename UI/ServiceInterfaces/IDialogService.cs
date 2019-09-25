@@ -24,7 +24,7 @@
 
         bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
 
-        bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper);
+        bool ShowSelectSpriteDialog(SpriteWrapper currentlySelected, out SpriteWrapper spriteWrapper);
 
         (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title);
 

@@ -3,10 +3,12 @@
 ## Features
 
 * Can change the way a property appears in the editor by altering its name in the [DataMember] attribute.
+* When selecting a sprite, the dialog will automatically select the previously selected sprite when first opened.
 
 ## Refactors
 
 * Now uses the [DataMember] attribute's order and name instead of the [Display] attribute, which will clean up both the UI and serialized objects.
+* The value editor for sprites has been cleaned up to match other asset selections. No longer gives a preview of the sprite, but the editor window is literally right there showing it.
 
 ## Fixes
 

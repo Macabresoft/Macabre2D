@@ -46,7 +46,7 @@
 
         private void SelectSprite(IndexedWrapper<SpriteWrapper> indexedWrapper) {
             if (indexedWrapper != null) {
-                if (this._dialogService.ShowSelectSpriteDialog(out var spriteWrapper)) {
+                if (this._dialogService.ShowSelectSpriteDialog(indexedWrapper.WrappedObject, out var spriteWrapper)) {
                     this.SetSprite(indexedWrapper, spriteWrapper);
                 }
             }

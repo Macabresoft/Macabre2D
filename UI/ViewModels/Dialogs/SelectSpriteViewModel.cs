@@ -7,11 +7,12 @@
     using System.Linq;
 
     public sealed class SelectSpriteViewModel : OKCancelDialogViewModel {
+        private readonly NullSpriteWrapper _nullSpriteWrapper = new NullSpriteWrapper();
         private SpriteWrapper _selectedSprite;
 
         public SelectSpriteViewModel(IProjectService projectService) {
             var spriteWrappers = projectService.CurrentProject.AssetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).ToList();
-            spriteWrappers.Insert(0, new NullSpriteWrapper());
+            spriteWrappers.Insert(0, this._nullSpriteWrapper);
             this.SpriteWrappers = spriteWrappers;
         }
 
@@ -21,7 +22,12 @@
             }
 
             set {
-                this.Set(ref this._selectedSprite, value);
+                if (value == null) {
+                    this.Set(ref this._selectedSprite, this._nullSpriteWrapper);
+                }
+                else if (this.SpriteWrappers.Contains(value)) {
+                    this.Set(ref this._selectedSprite, value);
+                }
             }
         }
 

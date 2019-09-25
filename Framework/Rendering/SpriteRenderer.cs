@@ -36,14 +36,14 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember(Order = 0)]
+        [DataMember(Order = 1)]
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
         /// Gets or sets the offset.
         /// </summary>
         /// <value>The offset.</value>
-        [DataMember(Order = 1)]
+        [DataMember(Order = 4)]
         public PixelOffset Offset { get; private set; } = new PixelOffset();
 
         /// <inheritdoc/>
@@ -81,7 +81,7 @@
         /// Gets or sets the sprite.
         /// </summary>
         /// <value>The sprite.</value>
-        [DataMember(Order = 4)]
+        [DataMember(Order = 0)]
         public Sprite Sprite {
             get {
                 return this._sprite;

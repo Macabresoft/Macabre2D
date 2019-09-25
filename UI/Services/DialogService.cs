@@ -187,8 +187,9 @@
             return result;
         }
 
-        public bool ShowSelectSpriteDialog(out SpriteWrapper spriteWrapper) {
+        public bool ShowSelectSpriteDialog(SpriteWrapper currentlySelected, out SpriteWrapper spriteWrapper) {
             var window = this._container.Resolve<SelectSpriteDialog>();
+            window.ViewModel.SelectedSprite = currentlySelected;
             var result = window.SimpleShowDialog();
             if (result && !(window.ViewModel.SelectedSprite is NullSpriteWrapper)) {
                 spriteWrapper = window.ViewModel.SelectedSprite;

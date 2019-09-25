@@ -10,20 +10,7 @@
     using System.Windows;
     using System.Windows.Input;
 
-    public partial class SpriteEditor : NamedValueEditor<Sprite>, ISeparatedValueEditor {
-
-        public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
-            nameof(ShowBottomSeparator),
-            typeof(bool),
-            typeof(SpriteEditor),
-            new PropertyMetadata(true));
-
-        public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
-            nameof(ShowTopSeparator),
-            typeof(bool),
-            typeof(SpriteEditor),
-            new PropertyMetadata(true));
-
+    public partial class SpriteEditor : NamedValueEditor<Sprite> {
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private string _absolutePathToImage;
@@ -31,7 +18,7 @@
 
         public SpriteEditor() {
             this.SelectSpriteCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectSpriteDialog(out var spriteWrapper)) {
+                if (this._dialogService.ShowSelectSpriteDialog(this.SpriteWrapper, out var spriteWrapper)) {
                     this.SpriteWrapper = spriteWrapper;
                 }
             }, true);
@@ -41,16 +28,6 @@
         }
 
         public ICommand SelectSpriteCommand { get; }
-
-        public bool ShowBottomSeparator {
-            get { return (bool)this.GetValue(ShowBottomSeparatorProperty); }
-            set { this.SetValue(ShowBottomSeparatorProperty, value); }
-        }
-
-        public bool ShowTopSeparator {
-            get { return (bool)this.GetValue(ShowTopSeparatorProperty); }
-            set { this.SetValue(ShowTopSeparatorProperty, value); }
-        }
 
         public SpriteWrapper SpriteWrapper {
             get {

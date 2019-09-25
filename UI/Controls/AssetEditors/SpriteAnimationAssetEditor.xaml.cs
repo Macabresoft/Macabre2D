@@ -191,7 +191,7 @@
         }
 
         private void SelectSprite(SpriteAnimationStepWrapper step) {
-            if (this._dialogService.ShowSelectSpriteDialog(out var spriteWrapper)) {
+            if (this._dialogService.ShowSelectSpriteDialog(step.Sprite, out var spriteWrapper)) {
                 step.Sprite = spriteWrapper;
             }
         }

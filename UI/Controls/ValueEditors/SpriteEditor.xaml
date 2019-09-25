@@ -7,53 +7,30 @@
                         xmlns:controls="clr-namespace:Macabre2D.UI.Controls"
                         xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_spriteEditor}">
-        <controls:CollapsableEditor Title="{Binding Title}"
-                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
-                                    ShowTopSeparator="{Binding ShowTopSeparator}">
-            <controls:CollapsableEditor.CollapsedContent>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Margin="{StaticResource StandardMarginAll}"
-                               Text="{Binding SpriteWrapper.Name}"
-                               ToolTip="{Binding SpriteWrapper.Name}"
-                               TextWrapping="WrapWithOverflow" />
 
-                    <TextBlock Grid.Row="1"
-                               Grid.Column="1"
-                               Margin="{StaticResource StandardMarginAll}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}({0} x {1})">
-                                <Binding Path="SpriteWrapper.Width" />
-                                <Binding Path="SpriteWrapper.Height" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </Grid>
-            </controls:CollapsableEditor.CollapsedContent>
-            <controls:CollapsableEditor.UncollapsedContent>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-                    <controls:SpriteViewer Grid.Column="0"
-                                        Margin="{StaticResource StandardMarginAll}"
-                                        Size="128"
-                                        Sprite="{Binding SpriteWrapper, Mode=OneWay}" />
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding Title}"
+                   VerticalAlignment="Center" />
 
-                    <Button Grid.Column="1"
-                            Margin="{StaticResource StandardMarginAll}"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Content="Browse"
-                            Command="{Binding SelectSpriteCommand}" />
-                </Grid>
-            </controls:CollapsableEditor.UncollapsedContent>
-        </controls:CollapsableEditor>
+        <TextBox Grid.Column="1"
+                 IsReadOnly="True"
+                 Margin="{StaticResource StandardMarginAll}"
+                 Text="{Binding SpriteWrapper.Name, FallbackValue='(None)'}"
+                 ToolTip="{Binding SpriteWrapper.Name, FallbackValue='(None)'}"
+                 VerticalAlignment="Center" />
+
+        <Button Grid.Column="2"
+                Margin="{StaticResource StandardMarginAll}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Content="Browse"
+                Command="{Binding SelectSpriteCommand}" />
     </Grid>
 </local:NamedValueEditor>
