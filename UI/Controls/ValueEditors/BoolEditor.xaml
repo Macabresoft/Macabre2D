@@ -6,16 +6,8 @@
                         xmlns:local="clr-namespace:Macabre2D.UI.Controls.ValueEditors"
                         xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Grid DataContext="{Binding ElementName=_boolEditor}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Grid.Column="0"
-                   FontWeight="Bold"
-                   Text="{Binding Title}"
-                   VerticalAlignment="Center" />
-        <CheckBox Grid.Column="1"
+        <CheckBox Content="{Binding Title}"
+                  FontWeight="Bold"
                   IsChecked="{Binding Value}" />
     </Grid>
 </local:NamedValueEditor>

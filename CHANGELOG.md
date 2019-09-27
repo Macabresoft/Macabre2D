@@ -10,6 +10,7 @@
 
 * Now uses the [DataMember] attribute's order and name instead of the [Display] attribute, which will clean up both the UI and serialized objects.
 * The value editor for sprites has been cleaned up to match other asset selections. No longer gives a preview of the sprite, but the editor window is literally right there showing it.
+* The title of bool editors is now part of the check box, allowing users to click the text to toggle the bool.
 
 ## Fixes
 
