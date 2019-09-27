@@ -58,7 +58,7 @@
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<BaseComponent> Children {
+        public IReadOnlyCollection<BaseComponent> Components {
             get {
                 return new List<BaseComponent>();
             }

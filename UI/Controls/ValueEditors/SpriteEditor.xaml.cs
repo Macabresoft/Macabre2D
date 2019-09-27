@@ -34,7 +34,7 @@
                 return this._spriteWrapper;
             }
 
-            set {
+            private set {
                 this._spriteWrapper = value;
                 this.Value = this._spriteWrapper?.Sprite;
                 this.RaisePropertyChanged(nameof(this.SpriteWrapper));
@@ -64,7 +64,8 @@
         private void SpriteEditor_Loaded(object sender, RoutedEventArgs e) {
             if (this.Value != null && (this.SpriteWrapper == null || this.SpriteWrapper.Sprite?.Id != this.Value.Id)) {
                 var spriteWrappers = this._projectService.CurrentProject.AssetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites);
-                this.SpriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite?.Id == this.Value.Id);
+                this._spriteWrapper = spriteWrappers.FirstOrDefault(x => x.Sprite?.Id == this.Value.Id);
+                this.RaisePropertyChanged(nameof(this.SpriteWrapper));
             }
 
             this.Loaded -= this.SpriteEditor_Loaded;

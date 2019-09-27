@@ -87,7 +87,7 @@
         public Color BackgroundColor { get; set; } = Color.Black;
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<BaseComponent> Children {
+        public IReadOnlyCollection<BaseComponent> Components {
             get {
                 return this._components;
             }
@@ -217,7 +217,7 @@
 
         /// <inheritdoc/>
         public BaseComponent FindComponent(string name) {
-            foreach (var component in this.Children) {
+            foreach (var component in this.Components) {
                 if (string.Equals(name, component.Name)) {
                     return component;
                 }
@@ -233,7 +233,7 @@
 
         /// <inheritdoc/>
         public T FindComponentOfType<T>() where T : BaseComponent {
-            foreach (var component in this.Children) {
+            foreach (var component in this.Components) {
                 if (component is T componentOfType) {
                     return componentOfType;
                 }
@@ -257,7 +257,7 @@
         public IEnumerable<BaseComponent> GetAllComponents(bool includeComponentsForSaving) {
             var components = new List<BaseComponent>();
 
-            foreach (var component in this.Children) {
+            foreach (var component in this.Components) {
                 components.Add(component);
                 components.AddRange(component.GetAllChildren());
             }
@@ -277,6 +277,14 @@
             var components = new List<T>();
 
             foreach (var component in this._components) {
+                if (component is T specifiedComponent) {
+                    components.Add(specifiedComponent);
+                }
+
+                components.AddRange(component.GetComponentsInChildren<T>());
+            }
+
+            foreach (var component in this.ComponentsForSaving) {
                 if (component is T specifiedComponent) {
                     components.Add(specifiedComponent);
                 }
@@ -334,7 +342,7 @@
 
         /// <inheritdoc/>
         public void LoadContent() {
-            foreach (var child in this.Children) {
+            foreach (var child in this.Components) {
                 child.LoadContent();
             }
         }

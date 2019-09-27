@@ -39,7 +39,7 @@
         /// Gets the children.
         /// </summary>
         /// <value>The children.</value>
-        IReadOnlyCollection<BaseComponent> Children { get; }
+        IReadOnlyCollection<BaseComponent> Components { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is initialized.
