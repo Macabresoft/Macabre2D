@@ -65,11 +65,11 @@
         }
 
         /// <summary>
-        /// Gets the offset.
+        /// Gets the render settings.
         /// </summary>
-        /// <value>The offset.</value>
+        /// <value>The render settings.</value>
         [DataMember(Order = 4)]
-        public PixelOffset Offset { get; private set; } = new PixelOffset();
+        public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
 
         /// <inheritdoc/>
         [DataMember(Order = 5)]
@@ -131,10 +131,10 @@
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
-                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color);
+                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
                 }
                 else {
-                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color);
+                    MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
                 }
             }
         }
@@ -186,8 +186,8 @@
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
             this.Rotation.AngleChanged += this.Self_TransformChanged;
-            this.Offset.AmountChanged += this.Offset_AmountChanged;
-            this.Offset.Initialize(new Func<Vector2>(() => this._size.Value));
+            this.RenderSettings.OffsetChanged += this.Offset_AmountChanged;
+            this.RenderSettings.Initialize(new Func<Vector2>(() => this._size.Value));
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -196,7 +196,7 @@
                 var size = this._size.Value;
                 var width = size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var height = size.Y * GameSettings.Instance.InversePixelsPerUnit;
-                var offset = this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit;
+                var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
                 var rotationAngle = this.Rotation.Angle;
                 var points = new List<Vector2> {
                     this.GetWorldTransform(offset, rotationAngle).Position,
@@ -225,7 +225,7 @@
         }
 
         private Transform CreatePixelTransform() {
-            var worldTransform = this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit);
+            var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit);
             var pixelsPerUnit = GameSettings.Instance.PixelsPerUnit;
             var inversePixelsPerUnit = GameSettings.Instance.InversePixelsPerUnit;
             var position = new Vector2((int)Math.Round(worldTransform.Position.X * pixelsPerUnit, 0) * inversePixelsPerUnit, (int)Math.Round(worldTransform.Position.Y * pixelsPerUnit, 0) * inversePixelsPerUnit);
@@ -234,7 +234,7 @@
         }
 
         private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
+            return this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
         }
 
         private Vector2 CreateSize() {
@@ -249,7 +249,7 @@
 
         private void ResetOffset() {
             if (this.IsInitialized && this.Font != null && !string.IsNullOrEmpty(this.Text)) {
-                this.Offset.Reset();
+                this.RenderSettings.ResetOffset();
             }
         }
 

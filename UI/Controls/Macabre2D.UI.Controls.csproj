@@ -251,8 +251,8 @@
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\NamedValueEditor.cs" />
-    <Compile Include="ValueEditors\PixelOffsetEditor.xaml.cs">
-      <DependentUpon>PixelOffsetEditor.xaml</DependentUpon>
+    <Compile Include="ValueEditors\RenderSettingsEditor.xaml.cs">
+      <DependentUpon>RenderSettingsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\PointEditor.xaml.cs">
       <DependentUpon>PointEditor.xaml</DependentUpon>
@@ -414,7 +414,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ValueEditors\PixelOffsetEditor.xaml">
+    <Page Include="ValueEditors\RenderSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

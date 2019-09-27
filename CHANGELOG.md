@@ -4,6 +4,7 @@
 
 * Can change the way a property appears in the editor by altering its name in the [DataMember] attribute.
 * When selecting a sprite, the dialog will automatically select the previously selected sprite when first opened.
+* Can flip sprites and text vertically and horizontally.
 
 ## Refactors
 

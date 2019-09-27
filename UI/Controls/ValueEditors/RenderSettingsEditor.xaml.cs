@@ -7,28 +7,52 @@
     using System.Linq;
     using System.Windows;
 
-    public partial class PixelOffsetEditor : NamedValueEditor<PixelOffset>, ISeparatedValueEditor {
+    public partial class RenderSettingsEditor : NamedValueEditor<RenderSettings>, ISeparatedValueEditor {
 
         public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
             nameof(ShowBottomSeparator),
             typeof(bool),
-            typeof(PixelOffsetEditor),
+            typeof(RenderSettingsEditor),
             new PropertyMetadata(true));
 
         public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
             nameof(ShowTopSeparator),
             typeof(bool),
-            typeof(PixelOffsetEditor),
+            typeof(RenderSettingsEditor),
             new PropertyMetadata(true));
 
-        public PixelOffsetEditor() {
+        public RenderSettingsEditor() {
             this.InitializeComponent();
         }
 
-        public Vector2 Amount {
+        public bool FlipHorizontal {
+            get {
+                return this.Value != null ? this.Value.FlipHorizontal : false;
+            }
+
+            set {
+                if (this.Value != null) {
+                    this.UpdateProperty(nameof(RenderSettings.FlipHorizontal), this.FlipHorizontal, value, nameof(this.FlipHorizontal));
+                }
+            }
+        }
+
+        public bool FlipVertical {
+            get {
+                return this.Value != null ? this.Value.FlipVertical : false;
+            }
+
+            set {
+                if (this.Value != null) {
+                    this.UpdateProperty(nameof(RenderSettings.FlipVertical), this.FlipVertical, value, nameof(this.FlipVertical));
+                }
+            }
+        }
+
+        public Vector2 Offset {
             get {
                 if (this.Value != null) {
-                    return this.Value.Amount;
+                    return this.Value.Offset;
                 }
 
                 return Vector2.Zero;
@@ -36,7 +60,7 @@
 
             set {
                 if (this.Value != null) {
-                    this.UpdateProperty(nameof(PixelOffset.Amount), this.Amount, value, nameof(this.Amount), nameof(this.OffsetType));
+                    this.UpdateProperty(nameof(RenderSettings.Offset), this.Offset, value, nameof(this.Offset), nameof(this.OffsetType));
                 }
             }
         }
@@ -52,7 +76,7 @@
 
             set {
                 if (this.Value != null) {
-                    this.UpdateProperty(nameof(PixelOffset.Type), this.OffsetType, value, nameof(this.Amount), nameof(this.OffsetType));
+                    this.UpdateProperty(nameof(RenderSettings.Type), this.OffsetType, value, nameof(this.Offset), nameof(this.OffsetType));
                 }
             }
         }
@@ -73,10 +97,12 @@
             set { this.SetValue(ShowTopSeparatorProperty, value); }
         }
 
-        protected override void OnValueChanged(PixelOffset newValue, PixelOffset oldValue, DependencyObject d) {
+        protected override void OnValueChanged(RenderSettings newValue, RenderSettings oldValue, DependencyObject d) {
             base.OnValueChanged(newValue, oldValue, d);
-            this.RaisePropertyChanged(nameof(this.Amount));
+            this.RaisePropertyChanged(nameof(this.Offset));
             this.RaisePropertyChanged(nameof(this.OffsetType));
+            this.RaisePropertyChanged(nameof(this.FlipHorizontal));
+            this.RaisePropertyChanged(nameof(this.FlipVertical));
         }
     }
 }

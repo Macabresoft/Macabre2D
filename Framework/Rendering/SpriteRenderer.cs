@@ -40,11 +40,11 @@
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
-        /// Gets or sets the offset.
+        /// Gets or sets the render settings.
         /// </summary>
-        /// <value>The offset.</value>
+        /// <value>The render settings.</value>
         [DataMember(Order = 4)]
-        public PixelOffset Offset { get; private set; } = new PixelOffset();
+        public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
 
         /// <inheritdoc/>
         [DataMember(Order = 3)]
@@ -102,10 +102,10 @@
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
             if (this._snapToPixels) {
-                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color);
+                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
             }
             else {
-                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color);
+                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
             }
         }
 
@@ -156,8 +156,8 @@
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
             this.Rotation.AngleChanged += this.Self_TransformChanged;
-            this.Offset.AmountChanged += this.Offset_AmountChanged;
-            this.Offset.Initialize(this.CreateSize);
+            this.RenderSettings.OffsetChanged += this.Offset_AmountChanged;
+            this.RenderSettings.Initialize(this.CreateSize);
             this.ResetOffset();
         }
 
@@ -166,7 +166,7 @@
             if (this.Sprite != null) {
                 var width = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var height = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
-                var offset = this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit;
+                var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
                 var rotationAngle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
@@ -196,7 +196,7 @@
         }
 
         private Transform CreatePixelTransform() {
-            var worldTransform = this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit);
+            var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit);
             var pixelsPerUnit = GameSettings.Instance.PixelsPerUnit;
             var inversePixelsPerUnit = GameSettings.Instance.InversePixelsPerUnit;
             var position = new Vector2((int)Math.Round(worldTransform.Position.X * pixelsPerUnit, 0) * inversePixelsPerUnit, (int)Math.Round(worldTransform.Position.Y * pixelsPerUnit, 0) * inversePixelsPerUnit);
@@ -205,7 +205,7 @@
         }
 
         private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.Offset.Amount * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
+            return this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
         }
 
         private Vector2 CreateSize() {
@@ -225,7 +225,7 @@
 
         private void ResetOffset() {
             if (this.IsInitialized && this.Sprite?.Texture != null) {
-                this.Offset.Reset();
+                this.RenderSettings.ResetOffset();
             }
         }
 

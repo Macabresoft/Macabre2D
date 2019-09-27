@@ -95,7 +95,7 @@
     <Compile Include="Interfaces\IScaleable.cs" />
     <Compile Include="Interfaces\ITranslateable.cs" />
     <Compile Include="Interfaces\IWorldTransformable.cs" />
-    <Compile Include="Rendering\PixelOffset.cs" />
+    <Compile Include="Rendering\RenderSettings.cs" />
     <Compile Include="Tiles\BinaryTileMap.cs" />
     <Compile Include="Content\AssetManagerImporter.cs" />
     <Compile Include="Content\AssetManagerProcessor.cs" />

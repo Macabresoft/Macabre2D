@@ -37,7 +37,7 @@
             camera.AddChild(movingDot);
             var spriteRenderer = new SpriteRenderer();
             spriteRenderer.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
-            spriteRenderer.Offset.Type = PixelOffsetType.Center;
+            spriteRenderer.RenderSettings.Type = PixelOffsetType.Center;
             movingDot.AddChild(spriteRenderer);
 
             var spriteAnimation = new SpriteAnimation();
@@ -60,7 +60,7 @@
 
             var spriteRenderer2 = spriteAnimator.AddChild<SpriteRenderer>();
             spriteRenderer2.DrawOrder = -100;
-            spriteRenderer2.Offset.Type = PixelOffsetType.Center;
+            spriteRenderer2.RenderSettings.Type = PixelOffsetType.Center;
             scene.AddComponent(spriteAnimator);
 
             var spinner = new Scaler();
@@ -70,7 +70,7 @@
             spinner.AddChild(spriteRenderer3);
             spriteRenderer3.DrawOrder = -200;
             spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
-            spriteRenderer3.Offset.Type = PixelOffsetType.Center;
+            spriteRenderer3.RenderSettings.Type = PixelOffsetType.Center;
 
             var middleSpinningDotBoundingArea = new BoundingAreaDrawer();
             spriteRenderer3.AddChild(middleSpinningDotBoundingArea);
@@ -84,7 +84,7 @@
             spinner2.AddChild(spriteRenderer4);
             spriteRenderer4.DrawOrder = 100;
             spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
-            spriteRenderer4.Offset.Type = PixelOffsetType.Center;
+            spriteRenderer4.RenderSettings.Type = PixelOffsetType.Center;
             var outwardSpinningDotBoundingArea = new BoundingAreaDrawer();
             spriteRenderer4.AddChild(outwardSpinningDotBoundingArea);
             outwardSpinningDotBoundingArea.Color = Color.Red;
