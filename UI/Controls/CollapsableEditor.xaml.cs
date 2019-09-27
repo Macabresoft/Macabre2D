@@ -31,7 +31,7 @@
             new PropertyMetadata(true));
 
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
-                            nameof(Title),
+            nameof(Title),
             typeof(string),
             typeof(CollapsableEditor),
             new PropertyMetadata());

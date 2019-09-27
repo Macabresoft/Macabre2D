@@ -7,19 +7,7 @@
     using System.Linq;
     using System.Windows;
 
-    public partial class RenderSettingsEditor : NamedValueEditor<RenderSettings>, ISeparatedValueEditor {
-
-        public static readonly DependencyProperty ShowBottomSeparatorProperty = DependencyProperty.Register(
-            nameof(ShowBottomSeparator),
-            typeof(bool),
-            typeof(RenderSettingsEditor),
-            new PropertyMetadata(true));
-
-        public static readonly DependencyProperty ShowTopSeparatorProperty = DependencyProperty.Register(
-            nameof(ShowTopSeparator),
-            typeof(bool),
-            typeof(RenderSettingsEditor),
-            new PropertyMetadata(true));
+    public partial class RenderSettingsEditor : NamedValueEditor<RenderSettings> {
 
         public RenderSettingsEditor() {
             this.InitializeComponent();
@@ -85,16 +73,6 @@
             get {
                 return Enum.GetValues(typeof(PixelOffsetType)).Cast<PixelOffsetType>().ToList();
             }
-        }
-
-        public bool ShowBottomSeparator {
-            get { return (bool)this.GetValue(ShowBottomSeparatorProperty); }
-            set { this.SetValue(ShowBottomSeparatorProperty, value); }
-        }
-
-        public bool ShowTopSeparator {
-            get { return (bool)this.GetValue(ShowTopSeparatorProperty); }
-            set { this.SetValue(ShowTopSeparatorProperty, value); }
         }
 
         protected override void OnValueChanged(RenderSettings newValue, RenderSettings oldValue, DependencyObject d) {
