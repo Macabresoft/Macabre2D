@@ -17,7 +17,7 @@
         private readonly IBusyService _busyService;
         private readonly IValueEditorService _valueEditorService;
 
-        public GenericValueEditor() {
+        public GenericValueEditor() : base() {
             this._busyService = ViewContainer.Resolve<IBusyService>();
             this._valueEditorService = ViewContainer.Resolve<IValueEditorService>();
             this.InitializeComponent();

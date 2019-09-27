@@ -20,7 +20,7 @@
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public SpriteAnimationEditor() {
+        public SpriteAnimationEditor() : base() {
             this.SelectSpriteAnimationCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(SpriteAnimation), true, out var asset)) {
                     this.Asset = asset as SpriteAnimationAsset;

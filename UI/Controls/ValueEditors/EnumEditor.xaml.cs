@@ -12,7 +12,7 @@
             typeof(EnumEditor),
             new PropertyMetadata());
 
-        public EnumEditor() {
+        public EnumEditor() : base() {
             this.InitializeComponent();
         }
 

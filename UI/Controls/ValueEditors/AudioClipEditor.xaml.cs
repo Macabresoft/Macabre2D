@@ -11,7 +11,7 @@
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public AudioClipEditor() {
+        public AudioClipEditor() : base() {
             this.SelectAudioClipCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(AudioAsset), true, out var asset)) {
                     this.Value = asset is AudioAsset audioAsset ? audioAsset.AudioClip : null;

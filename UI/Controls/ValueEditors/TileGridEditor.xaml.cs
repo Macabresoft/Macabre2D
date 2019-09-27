@@ -18,7 +18,7 @@
             typeof(TileGridEditor),
             new PropertyMetadata(true));
 
-        public TileGridEditor() {
+        public TileGridEditor() : base() {
             this.InitializeComponent();
         }
 

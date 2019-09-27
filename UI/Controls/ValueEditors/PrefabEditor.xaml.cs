@@ -11,7 +11,7 @@
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public PrefabEditor() {
+        public PrefabEditor() : base() {
             this.SelectPrefabCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(PrefabAsset), true, out var asset)) {
                     this.Value = asset is PrefabAsset prefabAsset ? prefabAsset.SavableValue : null;

@@ -18,7 +18,7 @@
             typeof(IntEditor),
             new PropertyMetadata(int.MinValue));
 
-        public IntEditor() {
+        public IntEditor() : base() {
             this.InitializeComponent();
         }
 

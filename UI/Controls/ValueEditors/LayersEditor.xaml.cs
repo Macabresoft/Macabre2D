@@ -22,7 +22,7 @@
             typeof(LayersEditor),
             new PropertyMetadata(true));
 
-        public LayersEditor() {
+        public LayersEditor() : base() {
             this.Loaded += this.LayersEditor_Loaded;
             this.InitializeComponent();
         }

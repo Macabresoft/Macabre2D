@@ -5,7 +5,7 @@
 
     public partial class RotationEditor : NamedValueEditor<Rotation> {
 
-        public RotationEditor() {
+        public RotationEditor() : base() {
             this.InitializeComponent();
         }
 

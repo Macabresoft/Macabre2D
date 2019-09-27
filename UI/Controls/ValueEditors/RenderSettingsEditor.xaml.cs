@@ -9,7 +9,7 @@
 
     public partial class RenderSettingsEditor : NamedValueEditor<RenderSettings> {
 
-        public RenderSettingsEditor() {
+        public RenderSettingsEditor() : base() {
             this.InitializeComponent();
         }
 

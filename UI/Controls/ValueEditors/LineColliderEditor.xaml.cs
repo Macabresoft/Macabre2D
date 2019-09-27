@@ -8,7 +8,7 @@
     public partial class LineColliderEditor : NamedValueEditor<LineCollider> {
         private const string OffsetFieldName = "_offset";
 
-        public LineColliderEditor() {
+        public LineColliderEditor() : base() {
             this.InitializeComponent();
         }
 

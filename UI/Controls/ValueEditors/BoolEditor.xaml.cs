@@ -2,7 +2,7 @@
 
     public partial class BoolEditor : NamedValueEditor<bool> {
 
-        public BoolEditor() {
+        public BoolEditor() : base() {
             this.InitializeComponent();
         }
     }

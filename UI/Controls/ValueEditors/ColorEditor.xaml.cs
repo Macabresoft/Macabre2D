@@ -6,7 +6,7 @@
     public partial class ColorEditor : NamedValueEditor<Color> {
         private System.Windows.Media.Color _selectedColor;
 
-        public ColorEditor() {
+        public ColorEditor() : base() {
             this.InitializeComponent();
         }
 

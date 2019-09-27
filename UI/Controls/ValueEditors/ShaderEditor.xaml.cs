@@ -1,13 +1,13 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using Macabre2D.Framework;
-using Macabre2D.UI.Common;
-using Macabre2D.UI.Models;
-using Macabre2D.UI.ServiceInterfaces;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
+﻿namespace Macabre2D.UI.Controls.ValueEditors {
 
-namespace Macabre2D.UI.Controls.ValueEditors {
+    using GalaSoft.MvvmLight.CommandWpf;
+    using Macabre2D.Framework;
+    using Macabre2D.UI.Common;
+    using Macabre2D.UI.Models;
+    using Macabre2D.UI.ServiceInterfaces;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Input;
 
     public partial class ShaderEditor : NamedValueEditor<Shader> {
 
@@ -20,7 +20,7 @@ namespace Macabre2D.UI.Controls.ValueEditors {
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
-        public ShaderEditor() {
+        public ShaderEditor() : base() {
             this.SelectShaderCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(ShaderAsset), true, out var asset)) {
                     this.Asset = asset as ShaderAsset;

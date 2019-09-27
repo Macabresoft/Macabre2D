@@ -41,6 +41,9 @@
         protected readonly ISceneService _sceneService = ViewContainer.Resolve<ISceneService>();
         protected readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
+        public NamedValueEditor() {
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public object Owner {
@@ -85,11 +88,9 @@
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
         protected virtual async Task OnValueChangedAsync(T newValue, T oldValue, DependencyObject d) {
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-            return;
+            await Task.CompletedTask;
         }
 
         protected void RaisePropertyChanged(string propertyName) {
@@ -159,6 +160,8 @@
                 await editor.OnValueChangedAsync(newValue, oldValue, d);
             }
         }
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
         private void UpdateProperty(string propertyPath, T originalValue, T newValue, object objectToUpdate) {
             if (objectToUpdate != null && ((originalValue == null && newValue != null) || !originalValue.Equals(newValue))) {

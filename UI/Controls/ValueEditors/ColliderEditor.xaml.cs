@@ -39,7 +39,7 @@
 
         private Type _selectedColliderType;
 
-        public ColliderEditor() {
+        public ColliderEditor() : base() {
             this.InitializeComponent();
         }
 

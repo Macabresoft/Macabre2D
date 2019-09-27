@@ -13,34 +13,20 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Grid.Row="0"
-                   Grid.Column="0"
-                   FontWeight="Bold"
-                   Text="Offset Type"
-                   VerticalAlignment="Center" />
-
-        <ComboBox Grid.Row="0"
-                  Grid.Column="1"
-                  ItemsSource="{Binding OffsetTypes}"
-                  SelectedItem="{Binding OffsetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <local:EnumEditor Grid.Row="0"
+                          Title="Offset Type"
+                          EnumType="{x:Type framework:PixelOffsetType}"
+                          Value="{Binding OffsetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <local:VectorEditor Grid.Row="1"
-                            Grid.ColumnSpan="2"
                             Title="Offset"
                             Value="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <local:BoolEditor Grid.Row="2"
-                          Grid.ColumnSpan="2"
                           Title="Flip Horizontal"
                           Value="{Binding FlipHorizontal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <local:BoolEditor Grid.Row="3"
-                          Grid.ColumnSpan="2"
                           Title="Flip Vertical"
                           Value="{Binding FlipVertical, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>

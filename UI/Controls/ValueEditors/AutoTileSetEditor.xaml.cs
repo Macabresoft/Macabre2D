@@ -14,7 +14,7 @@
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
         private AutoTileSetAsset _asset;
 
-        public AutoTileSetEditor() {
+        public AutoTileSetEditor() : base() {
             this.SelectAutoTileSetCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(AutoTileSetAsset), true, out var asset)) {
                     this.Asset = asset as AutoTileSetAsset;
