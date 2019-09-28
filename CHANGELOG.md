@@ -21,6 +21,7 @@
 * Assets now get synchronized properly with components when loading a scene.
     * Previously, if the scene wasn't initialized, no components would get updated.
 * Selecting a sprite renderer in the component hierarchy will no longer result in the scene having changes to save.
+* Audio player component no longer causes a crash in the editor.
 
 ## Compatibility Breaks
 
