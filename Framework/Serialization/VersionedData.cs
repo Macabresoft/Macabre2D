@@ -4,10 +4,30 @@
     using System.Runtime.Serialization;
 
     /// <summary>
+    /// Interface for data that can be versioned.
+    /// </summary>
+    public interface IVersionedData {
+
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        /// <value>The name of the type.</value>
+        [DataMember]
+        string TypeName { get; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        [DataMember]
+        Version Version { get; set; }
+    }
+
+    /// <summary>
     /// Data that can be versioned.
     /// </summary>
     [DataContract]
-    public class VersionedData {
+    public class VersionedData : IVersionedData {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VersionedData"/> class.
@@ -24,17 +44,11 @@
             this.TypeName = this.GetType().Name;
         }
 
-        /// <summary>
-        /// Gets the name of the type.
-        /// </summary>
-        /// <value>The name of the type.</value>
+        /// <inheritdoc/>
         [DataMember]
         public string TypeName { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the version.
-        /// </summary>
-        /// <value>The version.</value>
+        /// <inheritdoc/>
         [DataMember]
         public Version Version { get; set; }
     }

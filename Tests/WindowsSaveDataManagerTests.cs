@@ -7,14 +7,14 @@
     using System.Runtime.Serialization;
 
     [TestFixture]
-    public static class SaveDataManagerTests {
+    public static class WindowsSaveDataManagerTests {
         private const string ProjectName = "Macabre2DTestProject";
         private const string SaveDataFileName = "Test.m2dsave";
 
         [Test]
         [Category("Integration Test")]
-        public static void SaveDataManager_DeleteTest() {
-            var saveDataManager = new SaveDataManager();
+        public static void WindowsSaveDataManager_DeleteTest() {
+            var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
             saveDataManager.Save(SaveDataFileName, new TestSaveData());
 
@@ -34,8 +34,8 @@
 
         [Test]
         [Category("Integration Test")]
-        public static void SaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
-            var saveDataManager = new SaveDataManager();
+        public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
+            var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
             saveDataManager.Delete(SaveDataFileName);
 
@@ -52,8 +52,8 @@
 
         [Test]
         [Category("Integration Test")]
-        public static void SaveDataManager_OverwriteSaveTest() {
-            var saveDataManager = new SaveDataManager();
+        public static void WindowsSaveDataManager_OverwriteSaveTest() {
+            var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();
@@ -77,8 +77,8 @@
 
         [Test]
         [Category("Integration Test")]
-        public static void SaveDataManager_SuccessfulSaveAndLoadTest() {
-            var saveDataManager = new SaveDataManager();
+        public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
+            var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();
