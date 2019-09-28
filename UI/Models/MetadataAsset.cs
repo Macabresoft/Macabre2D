@@ -38,12 +38,12 @@
             return MetadataAsset.GetMetadataPath(this.GetPath());
         }
 
-        public void Save(Serializer serializer, AssetManager assetManager) {
+        public void Save(AssetManager assetManager) {
             if (this.HasChanges) {
                 try {
                     assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
-                    this.SaveChanges(serializer);
-                    serializer.Serialize(this, this.GetMetadataPath());
+                    this.SaveChanges();
+                    Serializer.Instance.Serialize(this, this.GetMetadataPath());
                 }
                 finally {
                     this.HasChanges = false;
@@ -57,7 +57,7 @@
             }
         }
 
-        protected virtual void SaveChanges(Serializer serializer) {
+        protected virtual void SaveChanges() {
             return;
         }
 

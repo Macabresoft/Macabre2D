@@ -104,8 +104,8 @@
 
             scene.AddComponent(new MouseClickDebugger());
 
-            scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
-            this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
+            scene.SaveToFile(@"TestGame - CurrentLevel.json");
+            this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
 
             var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
             var arrowSpriteRenderer1 = new SpriteRenderer();

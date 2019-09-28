@@ -76,10 +76,6 @@
             File.WriteAllText(contentFile, stringBuilder.ToString());
         }
 
-        public void GenerateContent(string projectDirectoryPath, IEnumerable<Asset> assets, AssetManager assetManager, GameSettings gameSettings, Serializer serializer, params string[] referencePaths) {
-            this.CreateContentFile(projectDirectoryPath, assets, false, referencePaths);
-        }
-
         public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
             return Path.Combine(projectDirectoryPath, "bin", this.Platform.ToString(), mode.ToString());
         }

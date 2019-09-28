@@ -11,12 +11,10 @@
 
     public sealed class SceneService : NotifyPropertyChanged, ISceneService {
         private readonly IDialogService _dialogService;
-        private readonly Serializer _serializer;
         private SceneWrapper _currentScene;
         private bool _hasChanges;
 
-        public SceneService(IDialogService dialogService, Serializer serializer) {
-            this._serializer = serializer;
+        public SceneService(IDialogService dialogService) {
             this._dialogService = dialogService;
         }
 
@@ -102,7 +100,7 @@
                     await Task.Run(() => {
                         var scene = this.CurrentScene.Scene;
                         this.CurrentScene.SceneAsset.HasChanges = true;
-                        this.CurrentScene.SceneAsset.Save(this._serializer, project.AssetManager);
+                        this.CurrentScene.SceneAsset.Save(project.AssetManager);
                     });
 
                     result = true;

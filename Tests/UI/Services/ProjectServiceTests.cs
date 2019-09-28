@@ -20,7 +20,7 @@
             var fileService = Substitute.For<IFileService>();
             var loggingService = Substitute.For<ILoggingService>();
             var sceneService = Substitute.For<ISceneService>();
-            var projectService = new ProjectService(new Serializer(), fileService, loggingService, sceneService);
+            var projectService = new ProjectService(fileService, loggingService, sceneService);
 
             var projectDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestProject");
             fileService.ProjectDirectoryPath.Returns(projectDirectory);

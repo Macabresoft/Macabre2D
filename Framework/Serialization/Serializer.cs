@@ -54,6 +54,7 @@
     /// </summary>
     /// <seealso cref="ISerializationService"/>
     public sealed class Serializer : ISerializer {
+        private static ISerializer _instance = new Serializer();
         private readonly JsonSerializer _jsonSerializer;
 
         /// <summary>
@@ -76,6 +77,21 @@
             this._jsonSerializer.TypeNameHandling = TypeNameHandling.Auto;
             this._jsonSerializer.ContractResolver = new CustomContractResolver();
             this._jsonSerializer.Converters.Add(new JsonColorConverter());
+        }
+
+        /// <summary>
+        /// Gets the singleton instance of <see cref="ISerializer"/>.
+        /// </summary>
+        public static ISerializer Instance {
+            get {
+                return Serializer._instance;
+            }
+
+            internal set {
+                if (value != null) {
+                    Serializer._instance = value;
+                }
+            }
         }
 
         /// <inheritdoc/>

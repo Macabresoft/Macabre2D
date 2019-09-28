@@ -101,8 +101,8 @@
             triggerBody.AddChild(triggerListener);
             scene.AddComponent(triggerBody);
 
-            scene.SaveToFile(@"TestGame - CurrentLevel.json", new Serializer());
-            this.CurrentScene = new Serializer().Deserialize<Scene>(@"TestGame - CurrentLevel.json");
+            scene.SaveToFile(@"TestGame - CurrentLevel.json");
+            this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
             this._isLoaded = true;
         }
     }

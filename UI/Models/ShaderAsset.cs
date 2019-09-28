@@ -72,7 +72,7 @@
             return this.CreateAsset();
         }
 
-        protected override void SaveChanges(Serializer serializer) {
+        protected override void SaveChanges() {
             this.SavableValue.AssetId = this.Id;
         }
     }

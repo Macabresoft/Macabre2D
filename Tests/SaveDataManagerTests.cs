@@ -14,7 +14,7 @@
         [Test]
         [Category("Integration Test")]
         public static void SaveDataManager_DeleteTest() {
-            var saveDataManager = new SaveDataManager(new Serializer());
+            var saveDataManager = new SaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
             saveDataManager.Save(SaveDataFileName, new TestSaveData());
 
@@ -35,7 +35,7 @@
         [Test]
         [Category("Integration Test")]
         public static void SaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
-            var saveDataManager = new SaveDataManager(new Serializer());
+            var saveDataManager = new SaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
             saveDataManager.Delete(SaveDataFileName);
 
@@ -53,7 +53,7 @@
         [Test]
         [Category("Integration Test")]
         public static void SaveDataManager_OverwriteSaveTest() {
-            var saveDataManager = new SaveDataManager(new Serializer());
+            var saveDataManager = new SaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();
@@ -78,7 +78,7 @@
         [Test]
         [Category("Integration Test")]
         public static void SaveDataManager_SuccessfulSaveAndLoadTest() {
-            var saveDataManager = new SaveDataManager(new Serializer());
+            var saveDataManager = new SaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();

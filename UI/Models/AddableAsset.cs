@@ -59,16 +59,15 @@
                 this.RequiresCreation = false;
             }
             else {
-                var serializer = new Serializer();
-                result = serializer.Deserialize<T>(this.GetPath());
+                result = Serializer.Instance.Deserialize<T>(this.GetPath());
             }
 
             return result;
         }
 
-        protected override void SaveChanges(Serializer serializer) {
+        protected override void SaveChanges() {
             this.SavableValue.AssetId = this.Id;
-            serializer.Serialize(this.SavableValue, this.GetPath());
+            Serializer.Instance.Serialize(this.SavableValue, this.GetPath());
             this.RequiresCreation = false;
         }
     }

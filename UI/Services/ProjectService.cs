@@ -16,16 +16,13 @@
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
         private readonly ISceneService _sceneService;
-        private readonly Serializer _serializer;
         private Project _currentProject;
         private bool _hasChanges;
 
         public ProjectService(
-            Serializer serializer,
             IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
-            this._serializer = serializer;
             this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
@@ -65,8 +62,8 @@
         public async Task<bool> BuildAllAssets(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
-                this._serializer.Serialize(this.CurrentProject.AssetManager, Path.Combine(this._fileService.ProjectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
-                this._serializer.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
+                Serializer.Instance.Serialize(this.CurrentProject.AssetManager, Path.Combine(this._fileService.ProjectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
+                Serializer.Instance.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
 
                 var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
                 var dllPaths = new[] {
@@ -106,7 +103,7 @@
             var projectPath = this.GetPathToProject();
 
             var project = File.Exists(projectPath) ?
-                await Task.Run(() => this._serializer.Deserialize<Project>(projectPath)) :
+                await Task.Run(() => Serializer.Instance.Deserialize<Project>(projectPath)) :
                 await this.CreateProject();
 
             GameSettings.Instance = project.GameSettings;
@@ -142,7 +139,7 @@
             var pathToProject = this.GetPathToProject();
             await Task.Run(() => this.CurrentProject.SaveAssets());
             await this._sceneService.SaveCurrentScene(this.CurrentProject);
-            await Task.Run(() => this._serializer.Serialize(this.CurrentProject, pathToProject));
+            await Task.Run(() => Serializer.Instance.Serialize(this.CurrentProject, pathToProject));
             this.HasChanges = false;
             this._currentProject.LastTimeSaved = DateTime.Now;
             return true;
@@ -155,7 +152,7 @@
             };
 
             project.Initialize(this._fileService.ProjectDirectoryPath);
-            await Task.Run(() => this._serializer.Serialize(project, pathToProject));
+            await Task.Run(() => Serializer.Instance.Serialize(project, pathToProject));
             Directory.CreateDirectory(Path.Combine(this._fileService.ProjectDirectoryPath, AssetsLocation));
             var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
             project.SceneAssets.Add(scene.SceneAsset);

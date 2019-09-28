@@ -56,8 +56,8 @@
             }
         }
 
-        protected override void SaveChanges(Serializer serializer) {
-            this.SavableValue.SaveToFile(this.GetPath(), serializer);
+        protected override void SaveChanges() {
+            this.SavableValue.SaveToFile(this.GetPath());
         }
     }
 }

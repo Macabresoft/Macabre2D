@@ -19,7 +19,6 @@
         private readonly RelayCommand _newFolderCommand;
         private readonly RelayCommand _reloadAssetCommand;
         private readonly ISceneService _sceneService;
-        private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
 
         public AssetsViewModel(
@@ -28,14 +27,12 @@
             IDialogService dialogService,
             IProjectService projectService,
             ISceneService sceneService,
-            Serializer serializer,
             IUndoService undoService) {
             this.AssetService = assetService;
             this._busyService = busyService;
             this._dialogService = dialogService;
             this.ProjectService = projectService;
             this._sceneService = sceneService;
-            this._serializer = serializer;
             this._undoService = undoService;
 
             this._addAssetCommand = new RelayCommand(this.AddAsset, () => this.AssetService.SelectedAsset is FolderAsset);
@@ -100,7 +97,7 @@
                                 selectedAsset.Parent.AddChild(asset);
                             }
 
-                            asset.Save(this._serializer, this.ProjectService.CurrentProject.AssetManager);
+                            asset.Save(this.ProjectService.CurrentProject.AssetManager);
                             this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, asset);
                             asset.Refresh(this.ProjectService.CurrentProject.AssetManager);
                         }, () => {
@@ -172,7 +169,7 @@
                     }
 
                     if (this.AssetService.SelectedAsset is MetadataAsset metadataAsset) {
-                        metadataAsset.Save(this._serializer, this.ProjectService.CurrentProject.AssetManager);
+                        metadataAsset.Save(this.ProjectService.CurrentProject.AssetManager);
                     }
 
                     await this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, this.AssetService.SelectedAsset);

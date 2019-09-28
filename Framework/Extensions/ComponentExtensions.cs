@@ -6,7 +6,6 @@
     /// Clones objects using <see cref="ISerializer"/>.
     /// </summary>
     public static class ComponentExtensions {
-        private static ISerializer _serializer = new Serializer();
 
         /// <summary>
         /// Clones a base component.
@@ -22,8 +21,8 @@
                 var parent = component.Parent;
                 try {
                     component.Parent = null;
-                    var json = ComponentExtensions._serializer.SerializeToString(component);
-                    clone = ComponentExtensions._serializer.DeserializeFromString(json, cloneToType) as T;
+                    var json = Serializer.Instance.SerializeToString(component);
+                    clone = Serializer.Instance.DeserializeFromString(json, cloneToType) as T;
                     var cloneParent = clone.Parent;
                     clone.SetNewComponentIds();
                     clone.Parent = parent;

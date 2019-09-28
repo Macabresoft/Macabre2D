@@ -5,7 +5,6 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services;
     using Macabre2D.UI.Views;
-    using Newtonsoft.Json;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
@@ -76,19 +75,7 @@
         }
 
         private void RegisterTypes() {
-            var serializer = new JsonSerializer {
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                Formatting = Formatting.Indented,
-                PreserveReferencesHandling = PreserveReferencesHandling.All,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.All
-            };
-
-            //XmlConfigurator.Configure(new FileInfo("log4net.config"));
             var log = LogManager.GetLogger(typeof(App));
-
-            this._container.RegisterInstance(typeof(JsonSerializer), serializer, new ContainerControlledLifetimeManager());
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
             this._container.RegisterType<IAssemblyService, AssemblyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IAssetService, AssetService>(new ContainerControlledLifetimeManager());

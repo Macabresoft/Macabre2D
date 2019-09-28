@@ -16,7 +16,6 @@
         private readonly IDialogService _dialogService;
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
-        private readonly Serializer _serializer;
         private readonly IUndoService _undoService;
         private Asset _selectedAsset;
 
@@ -24,12 +23,10 @@
             IDialogService dialogService,
             IFileService fileService,
             ILoggingService loggingService,
-            Serializer serializer,
             IUndoService undoService) {
             this._dialogService = dialogService;
             this._fileService = fileService;
             this._loggingService = loggingService;
-            this._serializer = serializer;
             this._undoService = undoService;
         }
 
@@ -158,7 +155,7 @@
 
                 if (asset is MetadataAsset metadataAsset && asset.GetRootFolder() is Project.ProjectAsset projectAsset) {
                     this.MoveMetadata(originalPath, newPath);
-                    metadataAsset.Save(this._serializer, projectAsset.Project?.AssetManager);
+                    metadataAsset.Save(projectAsset.Project?.AssetManager);
                 }
             }
         }

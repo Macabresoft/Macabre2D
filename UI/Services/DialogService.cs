@@ -17,11 +17,9 @@
 
     public sealed class DialogService : IDialogService {
         private readonly IUnityContainer _container;
-        private readonly Serializer _serializer;
 
-        public DialogService(IUnityContainer container, Serializer serializer) {
+        public DialogService(IUnityContainer container) {
             this._container = container;
-            this._serializer = serializer;
         }
 
         public bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, out string newName) {
@@ -121,7 +119,7 @@
                     asset.Parent = project.AssetFolder;
                 }
 
-                asset.Save(this._serializer, project.AssetManager);
+                asset.Save(project.AssetManager);
             }
 
             return result;
@@ -158,7 +156,7 @@
                     Parent = parent
                 };
 
-                scene.SaveToFile(sceneAsset.GetPath(), this._serializer);
+                scene.SaveToFile(sceneAsset.GetPath());
 
                 if (project.StartUpSceneAsset == null) {
                     project.StartUpSceneAsset = sceneAsset;

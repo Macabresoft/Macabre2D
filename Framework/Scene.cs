@@ -392,14 +392,13 @@
         /// Saves this scene to a file with the specified file name using the specified <see cref="ISerializer"/>
         /// </summary>
         /// <param name="filePath">Path of the file.</param>
-        /// <param name="serializer">The serializer.</param>
-        public void SaveToFile(string filePath, ISerializer serializer) {
+        public void SaveToFile(string filePath) {
             try {
                 this._modules.RebuildCache();
                 this.ModulesForSaving.AddRange(this._modules);
                 this.ComponentsForSaving.AddRange(this._components);
                 this.Name = Path.GetFileNameWithoutExtension(filePath);
-                serializer.Serialize(this, filePath);
+                Serializer.Instance.Serialize(this, filePath);
             }
             finally {
                 // We never want to get to a state where this collection has anything after
