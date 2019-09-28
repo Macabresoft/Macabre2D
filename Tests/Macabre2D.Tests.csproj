@@ -75,6 +75,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -88,6 +89,7 @@
     <Compile Include="Physics\PolygonColliderTests.cs" />
     <Compile Include="Physics\RectangleColliderTests.cs" />
     <Compile Include="Rendering\SpriteAnimatorTests.cs" />
+    <Compile Include="SaveDataManagerTests.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="TestComponent.cs" />
     <Compile Include="TestUpdateableComponent.cs" />

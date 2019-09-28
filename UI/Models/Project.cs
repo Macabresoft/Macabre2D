@@ -85,11 +85,16 @@
         [RequiredValidation(FieldName = "Name")]
         public string Name {
             get {
-                return this._name;
+                return this.GameSettings.ProjectName;
             }
             set {
-                if (this.Set(ref this._name, value)) {
+                if (!string.IsNullOrEmpty(value)) {
+                    this.GameSettings.ProjectName = value;
+                    this.RaisePropertyChanged(nameof(this.Name));
                     this.RaisePropertyChanged(nameof(this.SafeName));
+                }
+                else {
+                    throw new ArgumentNullException(nameof(this.Name), "Project name cannot be null.");
                 }
             }
         }

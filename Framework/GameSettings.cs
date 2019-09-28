@@ -45,6 +45,12 @@
         int PixelsPerUnit { get; }
 
         /// <summary>
+        /// Gets the name of the project.
+        /// </summary>
+        /// <value>The name of the project.</value>
+        string ProjectName { get; }
+
+        /// <summary>
         /// Gets the startup scene asset identifier.
         /// </summary>
         /// <value>The startup scene asset identifier.</value>
@@ -142,6 +148,10 @@
                 this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
             }
         }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public string ProjectName { get; set; } = "Project Name";
 
         /// <inheritdoc/>
         [DataMember]
