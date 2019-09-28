@@ -15,7 +15,7 @@
         private int _currentFrameIndex;
         private int _currentStepIndex;
 
-        [DataMember]
+        [DataMember(Order = 0, Name = "Default Animation")]
         private SpriteAnimation _defaultAnimation;
 
         private int _frameRate = 30;
@@ -41,7 +41,7 @@
         /// Gets or sets the frame rate. This is represented in frames per second.
         /// </summary>
         /// <value>The frame rate.</value>
-        [DataMember]
+        [DataMember(Order = 1, Name = "Frame Rate")]
         public int FrameRate {
             get {
                 return this._frameRate;

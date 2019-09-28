@@ -39,8 +39,8 @@
             var squareSprite = PrimitiveDrawer.CreateQuadSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisSquareRenderer.Sprite = squareSprite;
             this._yAxisSquareRenderer.Sprite = squareSprite;
-            this._xAxisSquareRenderer.RenderSettings.Type = PixelOffsetType.Center;
-            this._yAxisSquareRenderer.RenderSettings.Type = PixelOffsetType.Center;
+            this._xAxisSquareRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            this._yAxisSquareRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             this._xAxisSquareRenderer.AddChild(this._xAxisBody);
             this._yAxisSquareRenderer.AddChild(this._yAxisBody);
             this._xAxisSquareRenderer.Initialize(this.Game.CurrentScene);

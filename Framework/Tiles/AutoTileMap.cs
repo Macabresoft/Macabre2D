@@ -55,14 +55,14 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember]
+        [DataMember(Order = 1)]
         public Color Color { get; set; } = Color.White;
 
         /// <summary>
         /// Gets or sets the tile set.
         /// </summary>
         /// <value>The tile set.</value>
-        [DataMember]
+        [DataMember(Order = 0, Name = "Tile Set")]
         public AutoTileSet TileSet {
             get {
                 return this._tileSet;

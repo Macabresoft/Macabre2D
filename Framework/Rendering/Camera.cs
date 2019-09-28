@@ -47,7 +47,7 @@
         /// Gets the layers to render.
         /// </summary>
         /// <value>The layers to render.</value>
-        [DataMember]
+        [DataMember(Name = "Layers to Render")]
         public Layers LayersToRender { get; set; } = Layers.All;
 
         /// <summary>
@@ -77,7 +77,7 @@
         /// Gets or sets the type of the sampler state.
         /// </summary>
         /// <value>The type of the sampler state.</value>
-        [DataMember]
+        [DataMember(Name = "Sampler State")]
         public SamplerStateType SamplerStateType {
             get {
                 return this._samplerStateType;
@@ -106,7 +106,7 @@
         /// defined in <see cref="IGameSettings"/>.
         /// </summary>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-        [DataMember]
+        [DataMember(Name = "Snap to Pixels")]
         public bool SnapToPixels {
             get {
                 return this._snapToPixels;
@@ -125,7 +125,7 @@
         /// Gets the height of the view.
         /// </summary>
         /// <value>The height of the view.</value>
-        [DataMember]
+        [DataMember(Name = "View Height")]
         public float ViewHeight {
             get {
                 return this._viewHeight;

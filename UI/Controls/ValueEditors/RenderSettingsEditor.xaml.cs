@@ -56,7 +56,7 @@
         public PixelOffsetType OffsetType {
             get {
                 if (this.Value != null) {
-                    return this.Value.Type;
+                    return this.Value.OffsetType;
                 }
 
                 return PixelOffsetType.Custom;
@@ -64,7 +64,7 @@
 
             set {
                 if (this.Value != null) {
-                    this.UpdateProperty(nameof(RenderSettings.Type), this.OffsetType, value, nameof(this.Offset), nameof(this.OffsetType));
+                    this.UpdateProperty(nameof(RenderSettings.OffsetType), this.OffsetType, value, nameof(this.Offset), nameof(this.OffsetType));
                 }
             }
         }

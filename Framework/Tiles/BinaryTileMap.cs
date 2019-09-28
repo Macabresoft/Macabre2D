@@ -41,7 +41,7 @@
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
-        [DataMember]
+        [DataMember(Order = 1)]
         public Color Color { get; set; } = Color.White;
 
         /// <inheritdoc/>
@@ -55,7 +55,7 @@
         /// Gets or sets the sprite.
         /// </summary>
         /// <value>The sprite.</value>
-        [DataMember]
+        [DataMember(Order = 0)]
         public Sprite Sprite {
             get {
                 return this._sprite;

@@ -57,7 +57,7 @@
         }
 
         /// <inheritdoc/>
-        [DataMember]
+        [DataMember(Order = 0, Name = "Local Grid")]
         public TileGrid LocalGrid {
             get {
                 return this._grid;

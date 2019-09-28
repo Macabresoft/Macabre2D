@@ -104,7 +104,7 @@
         /// Gets or sets the type of the radius scaling.
         /// </summary>
         /// <value>The type of the radius scaling.</value>
-        [DataMember]
+        [DataMember(Name = "Radius Scaling")]
         public RadiusScalingType RadiusScalingType {
             get {
                 return this._radiusScalingType;

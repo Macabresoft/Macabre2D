@@ -68,7 +68,7 @@
         /// Gets the render settings.
         /// </summary>
         /// <value>The render settings.</value>
-        [DataMember(Order = 4)]
+        [DataMember(Order = 4, Name = "Render Settings")]
         public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
 
         /// <inheritdoc/>

@@ -34,7 +34,7 @@
             base.Initialize(game);
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(game.GraphicsDevice, 64);
             this._circleRenderer.Sprite = circleSprite;
-            this._circleRenderer.RenderSettings.Type = PixelOffsetType.Center;
+            this._circleRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             this._circleRenderer.AddChild(this._circleBody);
             this._circleRenderer.Initialize(game.CurrentScene);
 

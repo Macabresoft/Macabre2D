@@ -9,7 +9,7 @@
     public sealed class DynamicBody : SimpleBody, IDynamicPhysicsBody {
 
         /// <inheritdoc/>
-        [DataMember]
+        [DataMember(Name = "Kinematic")]
         public bool IsKinematic { get; set; }
 
         /// <inheritdoc/>

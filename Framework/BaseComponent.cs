@@ -25,15 +25,15 @@
 
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
-        [DataMember]
+        [DataMember(Name = "Draw Order")]
         private int _drawOrder;
 
-        [DataMember]
+        [DataMember(Name = "Enable")]
         private bool _isEnabled = true;
 
         private bool _isTransformUpToDate;
 
-        [DataMember]
+        [DataMember(Name = "Visible")]
         private bool _isVisible = true;
 
         private Vector2 _localPosition;
@@ -43,7 +43,7 @@
         [DataMember]
         private BaseComponent _parent;
 
-        [DataMember]
+        [DataMember(Name = "Update Order")]
         private int _updateOrder;
 
         /// <summary>
@@ -177,7 +177,7 @@
         /// Gets or sets the local position.
         /// </summary>
         /// <value>The local position.</value>
-        [DataMember]
+        [DataMember(Name = "Local Position")]
         public Vector2 LocalPosition {
             get {
                 return this._localPosition;
@@ -194,7 +194,7 @@
         /// Gets or sets the local scale.
         /// </summary>
         /// <value>The local scale.</value>
-        [DataMember]
+        [DataMember(Name = "Local Scale")]
         public Vector2 LocalScale {
             get {
                 return this._localScale;

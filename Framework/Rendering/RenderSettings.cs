@@ -57,7 +57,7 @@
         /// Gets or sets a value indicating whether the render should be flipped horizontally.
         /// </summary>
         /// <value><c>true</c> if the render should be flipped horizontally; otherwise, <c>false</c>.</value>
-        [DataMember]
+        [DataMember(Name = "Flip Horizontal")]
         public bool FlipHorizontal {
             get {
                 return this._flipHorizontal;
@@ -79,7 +79,7 @@
         /// Gets or sets a value indicating whether the render should be flipped vertically.
         /// </summary>
         /// <value><c>true</c> if the render should be flipped vertically; otherwise, <c>false</c>.</value>
-        [DataMember]
+        [DataMember(Name = "Flip Vertical")]
         public bool FlipVertical {
             get {
                 return this._flipVertical;
@@ -126,17 +126,11 @@
         }
 
         /// <summary>
-        /// Gets or sets the orientation.
-        /// </summary>
-        /// <value>The orientation.</value>
-        public SpriteEffects Orientation { get; private set; } = SpriteEffects.FlipVertically;
-
-        /// <summary>
         /// Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
-        [DataMember(Order = 0)]
-        public PixelOffsetType Type {
+        [DataMember(Order = 0, Name = "Offset Type")]
+        public PixelOffsetType OffsetType {
             get {
                 return this._type;
             }
@@ -150,6 +144,12 @@
         }
 
         /// <summary>
+        /// Gets or sets the orientation.
+        /// </summary>
+        /// <value>The orientation.</value>
+        public SpriteEffects Orientation { get; private set; } = SpriteEffects.FlipVertically;
+
+        /// <summary>
         /// Initializes the specified size factory.
         /// </summary>
         /// <param name="sizeFactory">The size factory.</param>
@@ -161,11 +161,11 @@
         }
 
         /// <summary>
-        /// Resets the <see cref="Offset"/> property according to the <see cref="Type"/> property.
+        /// Resets the <see cref="Offset"/> property according to the <see cref="OffsetType"/> property.
         /// </summary>
         /// <remarks>
         /// Should be called manually when the size factory will produce a new value. Will be called
-        /// automatically when <see cref="Type"/> changes.
+        /// automatically when <see cref="OffsetType"/> changes.
         /// </remarks>
         public void ResetOffset() {
             if (this._size != null && this._type != PixelOffsetType.Custom) {
@@ -175,7 +175,7 @@
                     this._offset = size;
                 }
                 else {
-                    switch (this.Type) {
+                    switch (this.OffsetType) {
                         case PixelOffsetType.Bottom:
                             this._offset = new Vector2(-size.X * 0.5f, 0f);
                             break;

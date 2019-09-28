@@ -13,14 +13,14 @@
         /// <summary>
         /// The offset
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 1)]
         public readonly Vector2 Offset;
 
         /// <summary>
         /// Gets the size of the tiles.
         /// </summary>
         /// <value>The size of the tiles.</value>
-        [DataMember]
+        [DataMember(Order = 0, Name = "Tile Size")]
         public readonly Vector2 TileSize;
 
         /// <summary>
