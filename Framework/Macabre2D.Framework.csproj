@@ -89,6 +89,7 @@
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="Serialization\CustomContractResolver.cs" />
     <Compile Include="Serialization\SaveDataManager.cs" />
+    <Compile Include="Serialization\VersionedData.cs" />
     <Compile Include="Tiles\AutoTileMap.cs" />
     <Compile Include="Tiles\AutoTileSet.cs" />
     <Compile Include="Utility\EmptyGame.cs" />

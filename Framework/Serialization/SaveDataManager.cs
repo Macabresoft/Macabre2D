@@ -35,7 +35,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>The save data.</returns>
-        public T Load<T>(string fileName) {
+        public T Load<T>(string fileName) where T : VersionedData {
             var filePath = this.GetFilePath(fileName);
             if (!File.Exists(filePath)) {
                 throw new FileNotFoundException(filePath);
@@ -50,7 +50,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="fileName">Name of the file.</param>
         /// <param name="saveData">The save data.</param>
-        public void Save<T>(string fileName, T saveData) {
+        public void Save<T>(string fileName, T saveData) where T : VersionedData {
             this._serializer.Serialize(saveData, this.GetFilePath(fileName));
         }
 

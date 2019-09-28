@@ -88,13 +88,17 @@
             Assert.AreEqual(saveData1.Id, loadedData.Id);
             Assert.AreEqual(saveData1.RandomNumber, loadedData.RandomNumber);
 
+            var versionedLoadedData = saveDataManager.Load<VersionedData>(SaveDataFileName);
+            Assert.AreEqual(loadedData.TypeName, versionedLoadedData.TypeName);
+            Assert.AreNotEqual(loadedData.GetType(), versionedLoadedData.GetType());
+
             saveDataManager.Delete(SaveDataFileName);
         }
 
         [DataContract]
-        private sealed class TestSaveData {
+        private sealed class TestSaveData : VersionedData {
 
-            public TestSaveData() {
+            public TestSaveData() : base() {
                 var rand = new Random();
                 this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);
             }
