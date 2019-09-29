@@ -20,9 +20,6 @@
 
         private ProjectAsset _assetFolder;
 
-        [DataMember]
-        private string _name = "Project Name";
-
         private string _projectDirectoryPath;
         private SceneAsset _startUpSceneAsset;
 
