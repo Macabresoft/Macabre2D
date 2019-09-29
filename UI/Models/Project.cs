@@ -40,18 +40,6 @@
             get {
                 return this._assetFolder;
             }
-
-            private set {
-                var oldValue = this._assetFolder;
-                if (value is ProjectAsset projectAsset && !projectAsset.Equals(oldValue)) {
-                    this._assetFolder = projectAsset;
-                    this._assetFolder.PropertyChanged += this.AssetFolder_PropertyChanged;
-
-                    if (oldValue != null) {
-                        oldValue.PropertyChanged -= this.AssetFolder_PropertyChanged;
-                    }
-                }
-            }
         }
 
         [DataMember]
