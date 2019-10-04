@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Common;
 
     public class MetadataAsset : Asset {
 
@@ -15,16 +14,6 @@
         public bool HasChanges {
             get;
             internal set;
-        }
-
-        public string MetadataFileName {
-            get {
-                return $"{this.Name}{FileHelper.MetaDataExtension}";
-            }
-        }
-
-        public static string GetMetadataPath(string assetPath) {
-            return $"{assetPath}{FileHelper.MetaDataExtension}";
         }
 
         public void Save(AssetManager assetManager) {

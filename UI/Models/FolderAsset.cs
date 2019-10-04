@@ -120,17 +120,15 @@
             foreach (var file in files) {
                 var fileName = Path.GetFileName(file);
 
-                if (!FileHelper.IsMetadataFile(fileName)) {
-                    var asset = children.FirstOrDefault(x => string.Equals(x.Name, fileName));
-                    if (asset != null) {
-                        children.Remove(asset);
-                    }
-                    else {
-                        this.GetAssetFromFilePath(file);
-                    }
-
-                    this.AddChild(asset);
+                var asset = children.FirstOrDefault(x => string.Equals(x.Name, fileName));
+                if (asset != null) {
+                    children.Remove(asset);
                 }
+                else {
+                    this.GetAssetFromFilePath(file);
+                }
+
+                this.AddChild(asset);
             }
 
             // TODO: consider children that don't need to be loaded from a file
@@ -181,51 +179,42 @@
             }
         }
 
-        private T CreateAssetFromMetadata<T>(string filePath, string fileName) where T : MetadataAsset, new() {
-            var metadataFilePath = $"{filePath}{FileHelper.MetaDataExtension}";
-            T result;
-            if (File.Exists(metadataFilePath)) {
-                result = Serializer.Instance.Deserialize<T>(metadataFilePath);
-            }
-            else {
-                result = new T {
-                    Name = fileName
-                };
-
-                Serializer.Instance.Serialize(result, metadataFilePath);
-            }
+        private T CreateAssetFromMetadata<T>(string fileName) where T : MetadataAsset, new() {
+            var result = new T {
+                Name = fileName
+            };
 
             return result;
         }
 
         private Asset GetAssetFromFilePath(string filePath) {
-            Asset result = null;
+            Asset result;
             var fileName = Path.GetFileName(filePath);
             if (filePath.ToUpper().EndsWith(FileHelper.SceneExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<SceneAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<SceneAsset>(fileName);
             }
             else if (FileHelper.IsImageFile(fileName)) {
-                result = this.CreateAssetFromMetadata<ImageAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<ImageAsset>(fileName);
             }
             else if (FileHelper.IsAudioFile(fileName)) {
-                result = this.CreateAssetFromMetadata<AudioAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<AudioAsset>(fileName);
             }
             else if (filePath.ToUpper().EndsWith(FileHelper.SpriteAnimationExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<SpriteAnimationAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<SpriteAnimationAsset>(fileName);
             }
             else if (filePath.ToUpper().EndsWith(FileHelper.SpriteFontExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<FontAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<FontAsset>(fileName);
             }
             else if (filePath.ToUpper().EndsWith(FileHelper.AutoTileSetExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<AutoTileSetAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<AutoTileSetAsset>(fileName);
             }
             else if (filePath.ToUpper().EndsWith(FileHelper.PrefabExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<PrefabAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<PrefabAsset>(fileName);
             }
             else if (filePath.ToUpper().EndsWith(FileHelper.ShaderExtension.ToUpper())) {
-                result = this.CreateAssetFromMetadata<ShaderAsset>(filePath, fileName);
+                result = this.CreateAssetFromMetadata<ShaderAsset>(fileName);
             }
-            else if (!FileHelper.IsMetadataFile(fileName)) {
+            else {
                 result = new Asset(fileName);
             }
 

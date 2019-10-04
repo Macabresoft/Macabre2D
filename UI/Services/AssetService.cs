@@ -152,11 +152,6 @@
                     File.Move(originalPath, newPath);
                     asset.ResetContentPath();
                 }
-
-                if (asset is MetadataAsset metadataAsset && asset.GetRootFolder() is Project.ProjectAsset projectAsset) {
-                    this.MoveMetadata(originalPath, newPath);
-                    metadataAsset.Save(projectAsset.Project?.AssetManager);
-                }
             }
         }
 
@@ -170,15 +165,6 @@
                 }
 
                 Directory.Delete(originalPath, true);
-            }
-        }
-
-        private void MoveMetadata(string originalPath, string newPath) {
-            var originalMetadataPath = MetadataAsset.GetMetadataPath(originalPath);
-            var newMetadataPath = MetadataAsset.GetMetadataPath(newPath);
-
-            if (File.Exists(originalMetadataPath)) {
-                File.Move(originalMetadataPath, newMetadataPath);
             }
         }
 

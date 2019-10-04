@@ -16,6 +16,7 @@
 * Serializer can now be accessed through a singleton instance, similar to game settings and asset manager.
 * Provided components all have an order and name to their serializable properties where necessary.
 * 'SceneWrapper' class has been merged with 'SceneAsset'.
+* Metadata assets no longer require a metadata file (it is stored in the project file).
 
 ## Fixes
 

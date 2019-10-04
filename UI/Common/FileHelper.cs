@@ -9,7 +9,6 @@ namespace Macabre2D.UI.Common {
         public const string BackupExtension = ".backup";
         public const string ContentExtension = ".mgcb";
         public const string GameSettingsExtension = ".m2dgs";
-        public const string MetaDataExtension = ".m2dmetadata";
         public const string MonoGameFrameworkDLL = "MonoGame.Framework.dll";
         public const string NewFolderDefaultName = "New Folder";
         public const string PrefabExtension = ".m2dprefab";
@@ -86,10 +85,6 @@ namespace Macabre2D.UI.Common {
             }
 
             return false;
-        }
-
-        public static bool IsMetadataFile(string fileName) {
-            return fileName.ToUpper().EndsWith(FileHelper.MetaDataExtension.ToUpper());
         }
 
         public static bool IsValidFileName(string fileName) {
