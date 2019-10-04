@@ -123,7 +123,7 @@
             }
             else {
                 var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
-                this.CurrentProject.LastSceneOpened = scene.SceneAsset;
+                this.CurrentProject.LastSceneOpened = scene;
                 this._sceneService.HasChanges = true;
             }
 
@@ -155,9 +155,9 @@
             await Task.Run(() => Serializer.Instance.Serialize(project, pathToProject));
             Directory.CreateDirectory(Path.Combine(this._fileService.ProjectDirectoryPath, AssetsLocation));
             var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
-            project.SceneAssets.Add(scene.SceneAsset);
-            project.StartUpSceneAsset = scene.SceneAsset;
-            project.LastSceneOpened = scene.SceneAsset;
+            project.SceneAssets.Add(scene);
+            project.StartUpSceneAsset = scene;
+            project.LastSceneOpened = scene;
             await this._sceneService.SaveCurrentScene(project);
 
             this.CurrentProject = project;

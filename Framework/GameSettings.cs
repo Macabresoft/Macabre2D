@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
@@ -83,7 +84,7 @@
 
         private static IGameSettings _instance = new GameSettings();
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
 
         private int _pixelsPerUnit = 32;

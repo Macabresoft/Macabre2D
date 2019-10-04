@@ -125,7 +125,7 @@
         /// <inheritdoc/>
         public override void LoadContent() {
             if (this.Scene.IsInitialized) {
-                this.TileSet?.LoadContent();
+                this.TileSet?.Load();
                 this.ReevaluateIndexes();
                 this.ResetSpriteScales();
             }

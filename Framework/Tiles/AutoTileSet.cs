@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -12,7 +13,7 @@
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
 
         private bool _isLoaded = false;
@@ -106,23 +107,21 @@
         }
 
         internal IEnumerable<Guid> GetSpriteIds() {
-            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id);
+            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id).ToList();
         }
 
         internal bool HasSprite(Guid spriteId) {
             return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
         }
 
-        internal void LoadContent() {
-            if (!this._isLoaded) {
-                try {
-                    foreach (var sprite in this._indexToSprites.Values) {
-                        sprite?.Load();
-                    }
+        internal void Load() {
+            try {
+                foreach (var sprite in this._indexToSprites.Values) {
+                    sprite?.Load();
                 }
-                finally {
-                    this._isLoaded = true;
-                }
+            }
+            finally {
+                this._isLoaded = true;
             }
         }
 

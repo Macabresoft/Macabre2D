@@ -54,7 +54,7 @@
             splashScreen.ProgressText = $"{projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();
             var sceneService = this._container.Resolve<ISceneService>();
-            if (sceneService.CurrentScene?.SceneAsset?.HasChanges != true) {
+            if (sceneService?.CurrentScene?.HasChanges != true) {
                 sceneService.HasChanges = false;
             }
 

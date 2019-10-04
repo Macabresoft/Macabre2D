@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework.Content;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
@@ -79,7 +80,7 @@
 
         private static IAssetManager _instance = new AssetManager();
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Guid, string> _idToPathMapping = new Dictionary<Guid, string>();
 
         private ContentManager _contentManager;

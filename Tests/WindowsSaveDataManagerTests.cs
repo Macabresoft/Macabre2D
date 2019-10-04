@@ -5,6 +5,7 @@
     using System;
     using System.IO;
     using System.Runtime.Serialization;
+    using System.Threading;
 
     [TestFixture]
     public static class WindowsSaveDataManagerTests {
@@ -62,6 +63,8 @@
             var loadedData1 = saveDataManager.Load<TestSaveData>(SaveDataFileName);
             Assert.AreEqual(saveData1.Id, loadedData1.Id);
             Assert.AreEqual(saveData1.RandomNumber, loadedData1.RandomNumber);
+
+            Thread.Sleep(100);
 
             var saveData2 = new TestSaveData();
             Assert.AreNotEqual(saveData1.Id, saveData2.Id);

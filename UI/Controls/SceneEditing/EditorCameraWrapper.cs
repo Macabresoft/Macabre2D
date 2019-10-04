@@ -61,7 +61,7 @@
 
         public void Initialize(EditorGame game) {
             this._game = game;
-            this.Camera = this._sceneService.CurrentScene?.SceneAsset?.Camera;
+            this.Camera = this._sceneService.CurrentScene?.Camera;
             this.Camera.Initialize(this._game.CurrentScene);
 
             var gridSize = this.GetGridSize();

@@ -72,6 +72,7 @@
             this._jsonSerializer.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;
             this._jsonSerializer.MissingMemberHandling = MissingMemberHandling.Ignore;
             this._jsonSerializer.Formatting = Formatting.Indented;
+            this._jsonSerializer.ObjectCreationHandling = ObjectCreationHandling.Auto;
             this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
             this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             this._jsonSerializer.TypeNameHandling = TypeNameHandling.Auto;

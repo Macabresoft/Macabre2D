@@ -1,8 +1,6 @@
 ﻿namespace Macabre2D.Tests.UI.Services {
 
-    using Macabre2D.Framework;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services;
     using NSubstitute;
@@ -28,15 +26,10 @@
                 Directory.Delete(projectDirectory, true);
             }
 
-            var scene = new Scene() {
-                Name = Guid.NewGuid().ToString()
-            };
-
-            var sceneWrapper = new SceneWrapper(scene);
-
-            sceneService.CreateScene(Arg.Any<FolderAsset>(), Arg.Any<string>()).Returns(sceneWrapper);
+            var sceneAsset = new SceneAsset(Guid.NewGuid().ToString());
+            sceneService.CreateScene(Arg.Any<FolderAsset>(), Arg.Any<string>()).Returns(sceneAsset);
             sceneService.SaveCurrentScene(Arg.Any<Project>()).Returns(true);
-            sceneService.LoadScene(Arg.Any<Project>(), Arg.Any<SceneAsset>()).Returns(sceneWrapper);
+            sceneService.LoadScene(Arg.Any<Project>(), Arg.Any<SceneAsset>()).Returns(sceneAsset);
 
             try {
                 Directory.CreateDirectory(projectDirectory);

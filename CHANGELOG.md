@@ -15,6 +15,7 @@
 * The title of bool editors is now part of the check box, allowing users to click the text to toggle the bool.
 * Serializer can now be accessed through a singleton instance, similar to game settings and asset manager.
 * Provided components all have an order and name to their serializable properties where necessary.
+* 'SceneWrapper' class has been merged with 'SceneAsset'.
 
 ## Fixes
 

@@ -254,18 +254,24 @@
         /// if set to <c>true</c> [include components for saving].
         /// </param>
         /// <returns>All components in this scene.</returns>
-        public IEnumerable<BaseComponent> GetAllComponents(bool includeComponentsForSaving) {
+        public IEnumerable<BaseComponent> GetAllComponents(bool includeComponentsForSaving, bool includeNestedComponents) {
             var components = new List<BaseComponent>();
 
             foreach (var component in this.Components) {
                 components.Add(component);
-                components.AddRange(component.GetAllChildren());
+
+                if (includeNestedComponents) {
+                    components.AddRange(component.GetAllChildren());
+                }
             }
 
             if (includeComponentsForSaving) {
                 foreach (var component in this.ComponentsForSaving) {
                     components.Add(component);
-                    components.AddRange(component.GetAllChildren());
+
+                    if (includeNestedComponents) {
+                        components.AddRange(component.GetAllChildren());
+                    }
                 }
             }
 
@@ -293,6 +299,27 @@
             }
 
             return components;
+        }
+
+        /// <summary>
+        /// Gets all modules in this scene.
+        /// </summary>
+        /// <param name="includeModulesForSaving">if set to <c>true</c> [include modules for saving].</param>
+        /// <returns>All modules in this scene.</returns>
+        public IEnumerable<BaseModule> GetAllModules(bool includeModulesForSaving) {
+            var modules = new List<BaseModule>();
+
+            foreach (var module in this._modules) {
+                modules.Add(module);
+            }
+
+            if (includeModulesForSaving) {
+                foreach (var module in this.ModulesForSaving) {
+                    modules.Add(module);
+                }
+            }
+
+            return modules;
         }
 
         /// <inheritdoc/>
@@ -422,6 +449,22 @@
             this._modules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
         }
 
+        internal bool RemoveChild(BaseComponent component) {
+            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
+        }
+
+        internal void RemoveComponent(BaseComponent component) {
+            this.RemoveChild(component);
+            this._updateables.Remove(component);
+            this._updateableAsyncs.Remove(component);
+            this._drawables.Remove(component);
+            this.Cameras.Remove(component);
+
+            foreach (var child in component.Children) {
+                this.RemoveComponent(child);
+            }
+        }
+
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var component in e.NewItems.OfType<BaseComponent>()) {
@@ -486,22 +529,6 @@
                 }
 
                 MacabreGame.Instance.SpriteBatch.End();
-            }
-        }
-
-        private bool RemoveChild(BaseComponent component) {
-            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
-        }
-
-        private void RemoveComponent(BaseComponent component) {
-            this.RemoveChild(component);
-            this._updateables.Remove(component);
-            this._updateableAsyncs.Remove(component);
-            this._drawables.Remove(component);
-            this.Cameras.Remove(component);
-
-            foreach (var child in component.Children) {
-                this.RemoveComponent(child);
             }
         }
 

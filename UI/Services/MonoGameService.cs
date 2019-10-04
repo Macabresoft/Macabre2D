@@ -42,7 +42,7 @@
             this._fileService = fileService;
             this._sceneService = sceneService;
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
-            this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
+            this._editorGame.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
             this._projectService = projectService;
             this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
             this._editorGame.AssetManager = this._projectService.CurrentProject?.AssetManager;
@@ -139,7 +139,7 @@
 
         private void SceneService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this._sceneService.CurrentScene)) {
-                this._editorGame.CurrentScene = this._sceneService.CurrentScene?.Scene;
+                this._editorGame.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
             }
         }
 

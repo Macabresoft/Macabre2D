@@ -90,9 +90,9 @@
                         if (this._parent is ComponentWrapper componentWrapper) {
                             this.Component.Parent = componentWrapper.Component;
                         }
-                        else if (this._parent is SceneWrapper sceneWrapper) {
+                        else if (this._parent is SceneAsset sceneAsset) {
                             this.Component.Parent = null;
-                            sceneWrapper.Scene.AddComponent(this.Component);
+                            sceneAsset.SavableValue.AddComponent(this.Component);
                         }
                     }
 

@@ -39,7 +39,7 @@
         }
 
         private string GetImporterName() {
-            var result = string.Empty;
+            string result;
             if (this.Name.ToUpper().EndsWith(".WAV")) {
                 result = "WavImporter";
             }

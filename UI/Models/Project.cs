@@ -13,12 +13,14 @@
     [DataContract]
     public sealed class Project : ValidationModel {
         public const string ProjectFileName = "Project" + FileHelper.ProjectExtension;
+
+        [DataMember]
+        private readonly ProjectAsset _assetFolder;
+
         private readonly List<BuildConfiguration> _buildConfigurations = new List<BuildConfiguration>();
 
         [DataMember]
         private readonly Version _version = new Version();
-
-        private ProjectAsset _assetFolder;
 
         private string _projectDirectoryPath;
         private SceneAsset _startUpSceneAsset;
@@ -26,6 +28,7 @@
         public Project() {
             this._assetFolder = new ProjectAsset(this);
             this._assetFolder.PropertyChanged += this.AssetFolder_PropertyChanged;
+            this._assetFolder.OnAssetAdded += this.AssetFolder_OnAssetAdded;
         }
 
         public Project(params BuildPlatform[] platforms) : this() {
@@ -43,7 +46,7 @@
         }
 
         [DataMember]
-        public AssetManager AssetManager { get; } = new AssetManager();
+        public AssetManager AssetManager { get; private set; } = new AssetManager();
 
         [DataMember]
         public IReadOnlyCollection<BuildConfiguration> BuildConfigurations {
@@ -143,6 +146,12 @@
 
         internal void Initialize(string projectDirectoryPath) {
             this._projectDirectoryPath = projectDirectoryPath;
+        }
+
+        private void AssetFolder_OnAssetAdded(object sender, Asset asset) {
+            if (asset is SceneAsset sceneAsset && !this.SceneAssets.Any(x => x.Id == sceneAsset.Id)) {
+                this.SceneAssets.Add(sceneAsset);
+            }
         }
 
         private void AssetFolder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

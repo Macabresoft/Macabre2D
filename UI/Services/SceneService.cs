@@ -3,22 +3,22 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
-    using Macabre2D.UI.Models.FrameworkWrappers;
     using Macabre2D.UI.ServiceInterfaces;
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
 
     public sealed class SceneService : NotifyPropertyChanged, ISceneService {
         private readonly IDialogService _dialogService;
-        private SceneWrapper _currentScene;
+        private SceneAsset _currentScene;
         private bool _hasChanges;
 
         public SceneService(IDialogService dialogService) {
             this._dialogService = dialogService;
         }
 
-        public SceneWrapper CurrentScene {
+        public SceneAsset CurrentScene {
             get {
                 return this._currentScene;
             }
@@ -30,23 +30,18 @@
 
                     if (originalScene != null) {
                         originalScene.PropertyChanged -= this.CurrentScene_PropertyChanged;
-
-                        if (originalScene.SceneAsset != null) {
-                            originalScene.SceneAsset.OnDeleted -= this.SceneAsset_OnDeleted;
-                            originalScene.SceneAsset.OnRefreshed -= this.SceneAsset_OnRefreshed;
-                        }
+                        originalScene.OnDeleted -= this.SceneAsset_OnDeleted;
+                        originalScene.OnRefreshed -= this.SceneAsset_OnRefreshed;
+                        originalScene.Unload();
                     }
 
                     if (this._currentScene != null) {
                         this.CurrentScene.PropertyChanged += this.CurrentScene_PropertyChanged;
 
-                        if (this._currentScene.SceneAsset != null) {
-                            var assetFolder = this._currentScene.SceneAsset.GetRootFolder();
-                            this.RefreshAssets(assetFolder);
-
-                            this._currentScene.SceneAsset.OnDeleted += this.SceneAsset_OnDeleted;
-                            this._currentScene.SceneAsset.OnRefreshed += this.SceneAsset_OnRefreshed;
-                        }
+                        var assetFolder = this._currentScene.GetRootFolder();
+                        this.RefreshAssets(assetFolder);
+                        this._currentScene.OnDeleted += this.SceneAsset_OnDeleted;
+                        this._currentScene.OnRefreshed += this.SceneAsset_OnRefreshed;
                     }
                 }
             }
@@ -54,7 +49,7 @@
 
         public bool HasChanges {
             get {
-                return this._hasChanges || (this.CurrentScene != null && this.CurrentScene.SceneAsset == null);
+                return this._hasChanges;
             }
 
             set {
@@ -62,28 +57,30 @@
             }
         }
 
-        public async Task<SceneWrapper> CreateScene(FolderAsset parentAsset, string name) {
-            this.CurrentScene = await Task.Run(() => new SceneWrapper(new Scene()));
-            this.CurrentScene.SceneAsset = new SceneAsset($"{name}{FileHelper.SceneExtension}") {
+        public async Task<SceneAsset> CreateScene(FolderAsset parentAsset, string name) {
+            this.CurrentScene = await Task.Run(() =>
+            new SceneAsset($"{name}{FileHelper.SceneExtension}") {
                 Parent = parentAsset,
                 RequiresCreation = true
-            };
+            });
 
+            this.CurrentScene.Load();
             this.HasChanges = true;
             return this.CurrentScene;
         }
 
-        public async Task<SceneWrapper> LoadScene(Project project, SceneAsset asset) {
+        public async Task<SceneAsset> LoadScene(Project project, SceneAsset asset) {
             if (asset != null) {
                 if (this.CurrentScene != null && this.HasChanges) {
-                    var message = this.CurrentScene.SceneAsset != null ? $"Would you like to save {this.CurrentScene.SceneAsset.Name}?" : "Would you like to save the current scene?";
+                    var message = this.CurrentScene != null ? $"Would you like to save {this.CurrentScene.Name}?" : "Would you like to save the current scene?";
                     var result = this._dialogService.ShowYesNoCancelMessageBox($"Save Scene", message);
                     if (result == MessageBoxResult.Cancel || (result == MessageBoxResult.Yes && !await this.SaveCurrentScene(project))) {
                         return null;
                     }
                 }
 
-                this.CurrentScene = await Task.Run(() => new SceneWrapper(asset, project.AssetManager));
+                asset.Load();
+                this.CurrentScene = asset;
                 this.HasChanges = false;
                 return this.CurrentScene;
             }
@@ -95,18 +92,18 @@
             var result = false;
 
             if (project != null) {
-                var sceneExists = await Task.Run(() => this.CurrentScene.SceneAsset != null && SceneService.SceneAssetExistsInProject(project, this.CurrentScene.SceneAsset));
+                var sceneExists = await Task.Run(() => this.CurrentScene != null && SceneService.SceneAssetExistsInProject(project, this.CurrentScene));
                 if (sceneExists) {
                     await Task.Run(() => {
-                        var scene = this.CurrentScene.Scene;
-                        this.CurrentScene.SceneAsset.HasChanges = true;
-                        this.CurrentScene.SceneAsset.Save(project.AssetManager);
+                        var scene = this.CurrentScene.SavableValue;
+                        this.CurrentScene.HasChanges = true;
+                        this.CurrentScene.Save(project.AssetManager);
                     });
 
                     result = true;
                 }
                 else {
-                    var sceneAsset = this._dialogService.ShowSaveSceneWindow(project, this.CurrentScene.Scene);
+                    var sceneAsset = this._dialogService.ShowSaveSceneWindow(project, this.CurrentScene.SavableValue);
                     result = sceneAsset != null;
                     this.CurrentScene = null;
                     await this.LoadScene(project, sceneAsset);
@@ -115,14 +112,14 @@
 
             if (result) {
                 this.HasChanges = false;
-                project.LastSceneOpened = this.CurrentScene.SceneAsset;
+                project.LastSceneOpened = this.CurrentScene;
             }
 
             return result;
         }
 
         private static bool SceneAssetExistsInProject(Project project, SceneAsset sceneAsset) {
-            return project.SceneAssets.Any(x => x.Name == sceneAsset.Name && x.GetPath() == sceneAsset.GetPath());
+            return project.SceneAssets.Any(x => x.Id == sceneAsset.Id);
         }
 
         private void CurrentScene_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -138,7 +135,7 @@
         }
 
         private void RefreshAudioClipsFromAssets(FolderAsset assetFolder) {
-            var audioClipComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<AudioClip>>();
+            var audioClipComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<AudioClip>>();
             if (audioClipComponents.Any()) {
                 var audioAssets = assetFolder.GetAssetsOfType<AudioAsset>().Select(x => x.AudioClip).ToDictionary(x => x.Id);
 
@@ -158,7 +155,7 @@
         }
 
         private void RefreshFontsFromAssets(FolderAsset assetFolder) {
-            var fontComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Font>>();
+            var fontComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<Font>>();
             if (fontComponents.Any()) {
                 var fonts = assetFolder.GetAssetsOfType<FontAsset>().Select(x => x.SavableValue).ToDictionary(x => x.Id);
 
@@ -180,20 +177,26 @@
         private void RefreshSpritesFromAssets(FolderAsset assetFolder) {
             // Note: this allows us to edit sprites freely and have all of the changes reflect up
             // into the objects. This is exactly what we should do with prefabs.
-            var spriteComponents = this.CurrentScene.Scene.GetAllComponentsOfType<IAssetComponent<Sprite>>();
+
+            var spriteComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<Sprite>>();
             if (spriteComponents.Any()) {
                 var sprites = assetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).Select(x => x.Sprite).ToDictionary(x => x.Id);
 
                 foreach (var spriteComponent in spriteComponents) {
-                    var ids = spriteComponent.GetOwnedAssetIds();
+                    try {
+                        var ids = spriteComponent.GetOwnedAssetIds();
 
-                    foreach (var id in ids) {
-                        if (sprites.TryGetValue(id, out var sprite)) {
-                            spriteComponent.RefreshAsset(sprite);
+                        foreach (var id in ids) {
+                            if (sprites.TryGetValue(id, out var sprite)) {
+                                spriteComponent.RefreshAsset(sprite);
+                            }
+                            else {
+                                spriteComponent.RemoveAsset(id);
+                            }
                         }
-                        else {
-                            spriteComponent.RemoveAsset(id);
-                        }
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine(e.Message);
                     }
                 }
             }
@@ -205,11 +208,7 @@
 
         private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
             if (sender is SceneAsset sceneAsset) {
-                var projectAsset = sceneAsset.GetRootFolder() as Project.ProjectAsset;
-                var assetManager = projectAsset?.Project?.AssetManager;
-                sceneAsset.OnDeleted -= this.SceneAsset_OnDeleted;
-                sceneAsset.OnRefreshed -= this.SceneAsset_OnRefreshed;
-                this.CurrentScene = new SceneWrapper(sceneAsset, assetManager);
+                sceneAsset.Load();
             }
         }
     }

@@ -24,6 +24,8 @@
             this._children.CollectionChanged += this.Children_CollectionChanged;
         }
 
+        public event EventHandler<Asset> OnAssetAdded;
+
         public IReadOnlyCollection<Asset> Children {
             get {
                 return this._children;
@@ -41,6 +43,7 @@
                 this._children.Add(child);
                 child.OnDeleted += this.Child_OnDeleted;
                 this.RaisePropertyChanged(nameof(this.Children));
+                this.OnAssetAdded.SafeInvoke(this, child);
                 return true;
             }
 
@@ -97,18 +100,49 @@
             var files = Directory.EnumerateFiles(path).OrderBy(x => x);
             var assetsToAdd = new List<Asset>();
 
+            var children = this._children.ToList();
             this._children.Clear();
 
             foreach (var folder in folders) {
-                var folderAsset = new FolderAsset(Path.GetFileName(folder));
+                var folderName = Path.GetFileName(folder);
+
+                if (children.FirstOrDefault(x => string.Equals(x.Name, folderName)) is FolderAsset folderAsset) {
+                    children.Remove(folderAsset);
+                }
+                else {
+                    folderAsset = new FolderAsset(folderName);
+                }
+
                 this.AddChild(folderAsset);
                 folderAsset.Refresh();
             }
 
             foreach (var file in files) {
-                var asset = this.GetAssetFromFilePath(file);
-                this.AddChild(asset);
+                var fileName = Path.GetFileName(file);
+
+                if (!FileHelper.IsMetadataFile(fileName)) {
+                    var asset = children.FirstOrDefault(x => string.Equals(x.Name, fileName));
+                    if (asset != null) {
+                        children.Remove(asset);
+                    }
+                    else {
+                        this.GetAssetFromFilePath(file);
+                    }
+
+                    this.AddChild(asset);
+                }
             }
+
+            // TODO: consider children that don't need to be loaded from a file
+            //foreach (var child in children) {
+            //    if (!child.HasContentFile) {
+            //        this._children.Add(child);
+
+            //        if (child is FolderAsset folderAsset) {
+            //            Directory.CreateDirectory(folderAsset.GetPath());
+            //        }
+            //    }
+            //}
 
             this.RaisePropertyChanged(nameof(this.Children));
         }

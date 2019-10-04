@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Common;
-    using System.IO;
 
     public class MetadataAsset : Asset {
 
@@ -28,22 +27,11 @@
             return $"{assetPath}{FileHelper.MetaDataExtension}";
         }
 
-        public override void Delete() {
-            File.Delete(this.GetPath());
-            File.Delete(this.GetMetadataPath());
-            this.RaiseOnDeleted();
-        }
-
-        public string GetMetadataPath() {
-            return MetadataAsset.GetMetadataPath(this.GetPath());
-        }
-
         public void Save(AssetManager assetManager) {
             if (this.HasChanges) {
                 try {
                     assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
                     this.SaveChanges();
-                    Serializer.Instance.Serialize(this, this.GetMetadataPath());
                 }
                 finally {
                     this.HasChanges = false;

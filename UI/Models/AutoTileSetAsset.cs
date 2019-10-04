@@ -66,7 +66,7 @@
             }
 
             this._indexedSprites.Reset(spritesToAdd);
-            this.SavableValue.LoadContent();
+            this.SavableValue.Load();
         }
 
         private void IndexedWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
