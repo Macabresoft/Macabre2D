@@ -3,11 +3,12 @@
     using Macabre2D.Framework;
     using MahApps.Metro.IconPacks;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Text;
 
-    public sealed class AudioAsset : MetadataAsset {
+    public sealed class AudioAsset : MetadataAsset, ISyncAsset<AudioClip> {
 
         public AudioAsset(string name) : base(name) {
         }
@@ -42,6 +43,10 @@
         public override void Delete() {
             this.RemoveIdentifiableContentFromScenes(this.AudioClip.Id);
             base.Delete();
+        }
+
+        public IEnumerable<AudioClip> GetAssetsToSync() {
+            return new[] { this.AudioClip };
         }
 
         private string GetImporterName() {

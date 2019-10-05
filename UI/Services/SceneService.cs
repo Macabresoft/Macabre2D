@@ -4,7 +4,6 @@
     using Macabre2D.UI.Common;
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
@@ -39,7 +38,7 @@
                         this.CurrentScene.PropertyChanged += this.CurrentScene_PropertyChanged;
 
                         var assetFolder = this._currentScene.GetRootFolder();
-                        this.RefreshAssets(assetFolder);
+                        this.SyncAssets(assetFolder);
                         this._currentScene.OnDeleted += this.SceneAsset_OnDeleted;
                         this._currentScene.OnRefreshed += this.SceneAsset_OnRefreshed;
                     }
@@ -125,82 +124,6 @@
             this.HasChanges = true;
         }
 
-        private void RefreshAssets(FolderAsset rootFolderAsset) {
-            // TODO: Generesize this by looping through all assets, getting their asset type, and refreshing from there.
-            // IIdentifiableAsset<T> where T must be IIdentifiable.
-            this.RefreshSpritesFromAssets(rootFolderAsset);
-            this.RefreshAudioClipsFromAssets(rootFolderAsset);
-            this.RefreshFontsFromAssets(rootFolderAsset);
-        }
-
-        private void RefreshAudioClipsFromAssets(FolderAsset assetFolder) {
-            var audioClipComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<AudioClip>>();
-            if (audioClipComponents.Any()) {
-                var audioAssets = assetFolder.GetAssetsOfType<AudioAsset>().Select(x => x.AudioClip).ToDictionary(x => x.Id);
-
-                foreach (var audioClipComponent in audioClipComponents) {
-                    var ids = audioClipComponent.GetOwnedAssetIds();
-
-                    foreach (var id in ids) {
-                        if (audioAssets.TryGetValue(id, out var sprite)) {
-                            audioClipComponent.RefreshAsset(sprite);
-                        }
-                        else {
-                            audioClipComponent.RemoveAsset(id);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void RefreshFontsFromAssets(FolderAsset assetFolder) {
-            var fontComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<Font>>();
-            if (fontComponents.Any()) {
-                var fonts = assetFolder.GetAssetsOfType<FontAsset>().Select(x => x.SavableValue).ToDictionary(x => x.Id);
-
-                foreach (var fontComponent in fontComponents) {
-                    var ids = fontComponent.GetOwnedAssetIds();
-
-                    foreach (var id in ids) {
-                        if (fonts.TryGetValue(id, out var sprite)) {
-                            fontComponent.RefreshAsset(sprite);
-                        }
-                        else {
-                            fontComponent.RemoveAsset(id);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void RefreshSpritesFromAssets(FolderAsset assetFolder) {
-            // Note: this allows us to edit sprites freely and have all of the changes reflect up
-            // into the objects. This is exactly what we should do with prefabs.
-
-            var spriteComponents = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<Sprite>>();
-            if (spriteComponents.Any()) {
-                var sprites = assetFolder.GetAssetsOfType<ImageAsset>().SelectMany(x => x.Sprites).Select(x => x.Sprite).ToDictionary(x => x.Id);
-
-                foreach (var spriteComponent in spriteComponents) {
-                    try {
-                        var ids = spriteComponent.GetOwnedAssetIds();
-
-                        foreach (var id in ids) {
-                            if (sprites.TryGetValue(id, out var sprite)) {
-                                spriteComponent.RefreshAsset(sprite);
-                            }
-                            else {
-                                spriteComponent.RemoveAsset(id);
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-            }
-        }
-
         private void SceneAsset_OnDeleted(object sender, System.EventArgs e) {
             this.CurrentScene = null;
         }
@@ -208,6 +131,36 @@
         private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
             if (sender is SceneAsset sceneAsset) {
                 sceneAsset.Load();
+            }
+        }
+
+        private void SyncAssets(FolderAsset rootFolderAsset) {
+            // TODO: it'd be cool if this could be generic so we don't have to remember to update with each new asset type.
+            this.SyncAssetsInScene<Prefab>(rootFolderAsset);
+            this.SyncAssetsInScene<AutoTileSet>(rootFolderAsset);
+            this.SyncAssetsInScene<SpriteAnimation>(rootFolderAsset);
+            this.SyncAssetsInScene<AudioClip>(rootFolderAsset);
+            this.SyncAssetsInScene<Font>(rootFolderAsset);
+            this.SyncAssetsInScene<Shader>(rootFolderAsset);
+            this.SyncAssetsInScene<Sprite>(rootFolderAsset);
+        }
+
+        private void SyncAssetsInScene<TAsset>(FolderAsset assetFolder) where TAsset : IIdentifiable {
+            var components = this.CurrentScene.SavableValue.GetAllComponentsOfType<IAssetComponent<TAsset>>();
+            if (components.Any()) {
+                var idToAssets = assetFolder.GetAssetsOfType<ISyncAsset<TAsset>>().SelectMany(x => x.GetAssetsToSync()).ToDictionary(x => x.Id);
+
+                foreach (var component in components) {
+                    var ids = component.GetOwnedAssetIds();
+                    foreach (var id in ids) {
+                        if (idToAssets.TryGetValue(id, out var asset)) {
+                            component.RefreshAsset(asset);
+                        }
+                        else {
+                            component.RemoveAsset(id);
+                        }
+                    }
+                }
             }
         }
     }

@@ -75,7 +75,7 @@
             return children;
         }
 
-        public IEnumerable<TAsset> GetAssetsOfType<TAsset>() where TAsset : Asset {
+        public IEnumerable<TAsset> GetAssetsOfType<TAsset>() {
             var assets = new List<TAsset>();
 
             foreach (var child in this._children) {

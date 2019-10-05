@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
 
@@ -15,7 +16,7 @@
         public abstract string FileExtension { get; }
     }
 
-    public abstract class AddableAsset<T> : AddableAsset where T : IAsset, new() {
+    public abstract class AddableAsset<T> : AddableAsset, ISyncAsset<T> where T : IAsset, new() {
 
         [DataMember]
         private T _savableValue;
@@ -34,6 +35,10 @@
 
                 return this._savableValue;
             }
+        }
+
+        public IEnumerable<T> GetAssetsToSync() {
+            return new[] { this.SavableValue };
         }
 
         public override void Refresh(AssetManager assetManager) {

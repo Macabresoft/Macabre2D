@@ -14,7 +14,7 @@
     using System.Text;
     using System.Windows.Media.Imaging;
 
-    public sealed class ImageAsset : MetadataAsset {
+    public sealed class ImageAsset : MetadataAsset, ISyncAsset<Sprite> {
 
         [DataMember]
         private readonly ObservableCollection<SpriteWrapper> _children = new ObservableCollection<SpriteWrapper>();
@@ -147,6 +147,10 @@
                     sprite.Size = new Point(columnWidth, columnHeight);
                 }
             }
+        }
+
+        public IEnumerable<Sprite> GetAssetsToSync() {
+            return this.Sprites.Select(x => x.Sprite).ToList();
         }
 
         public override void Refresh(AssetManager assetManager) {

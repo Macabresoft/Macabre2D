@@ -124,8 +124,12 @@
         public void Unload() {
             try {
                 this._isLoading = true;
+                this._children.CollectionChanged -= this.Children_CollectionChanged;
+                this.Modules.CollectionChanged -= this.Modules_CollectionChanged;
                 this._children.Clear();
                 this.Modules.Clear();
+                this._children.CollectionChanged += this.Children_CollectionChanged;
+                this.Modules.CollectionChanged += this.Modules_CollectionChanged;
             }
             finally {
                 this._isLoading = false;

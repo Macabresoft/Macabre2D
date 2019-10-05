@@ -26,6 +26,8 @@
 * Selecting a sprite renderer in the component hierarchy will no longer result in the scene having changes to save.
 * Audio player component no longer causes a crash in the editor.
 * Assets not loaded through the content pipeline no longer require physical files.
+* All asset types are properly synced.
+    * This means that when editing auto tile sets and sprite animations, auto tile maps and sprite animators will be updated appropriately.
 
 ## Compatibility Breaks
 
