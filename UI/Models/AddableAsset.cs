@@ -1,12 +1,11 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
-    using System;
     using System.Runtime.Serialization;
 
     public abstract class AddableAsset : MetadataAsset {
 
-        public AddableAsset() : base() {
+        public AddableAsset() : this(string.Empty) {
         }
 
         public AddableAsset(string name) : base(name) {
@@ -19,31 +18,30 @@
     }
 
     public abstract class AddableAsset<T> : AddableAsset where T : IAsset, new() {
-        private ResettableLazy<T> _savableValue;
 
-        public AddableAsset() : base() {
-            this._savableValue = new ResettableLazy<T>(this.DeserializeSavableValue);
+        [DataMember]
+        private T _savableValue;
+
+        public AddableAsset() : this(string.Empty) {
         }
 
         public AddableAsset(string name) : base(name) {
-            this._savableValue = new ResettableLazy<T>(this.DeserializeSavableValue);
         }
 
         public T SavableValue {
             get {
-                return this._savableValue.Value;
+                if (this._savableValue == null) {
+                    this._savableValue = this.GetInitialSavableValue();
+                }
+
+                return this._savableValue;
             }
         }
 
         public override void Refresh(AssetManager assetManager) {
             this.SavableValue.AssetId = this.Id;
             assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
-
-            if (this._savableValue.IsValueCreated && this.SavableValue is IDisposable disposable) {
-                disposable.Dispose();
-            }
-
-            this._savableValue.Reset();
+            this._savableValue = this.GetInitialSavableValue();
             base.Refresh(assetManager);
         }
 
@@ -51,14 +49,14 @@
             return new T();
         }
 
-        protected virtual T DeserializeSavableValue() {
-            T result;
+        protected virtual T GetInitialSavableValue() {
+            var result = this._savableValue;
 
             if (this.RequiresCreation) {
                 result = this.CreateAsset();
                 this.RequiresCreation = false;
             }
-            else {
+            else if (result == null) {
                 result = Serializer.Instance.Deserialize<T>(this.GetPath());
             }
 

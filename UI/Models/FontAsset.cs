@@ -166,7 +166,7 @@
             this.SavableValue?.Load();
         }
 
-        protected override Font DeserializeSavableValue() {
+        protected override Font GetInitialSavableValue() {
             return new Font(this.Id);
         }
 

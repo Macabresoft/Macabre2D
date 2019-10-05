@@ -68,7 +68,7 @@
             return new Shader(this.Id);
         }
 
-        protected override Shader DeserializeSavableValue() {
+        protected override Shader GetInitialSavableValue() {
             return this.CreateAsset();
         }
 
