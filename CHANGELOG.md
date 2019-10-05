@@ -28,6 +28,7 @@
 * Assets not loaded through the content pipeline no longer require physical files.
 * All asset types are properly synced.
     * This means that when editing auto tile sets and sprite animations, auto tile maps and sprite animators will be updated appropriately.
+* Auto tile sets now sync properly with their sprites in the editor.
 
 ## Compatibility Breaks
 

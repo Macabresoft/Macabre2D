@@ -129,7 +129,7 @@
             if (sprite != null) {
                 var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => (x.Key, x.Value)).ToList();
                 foreach (var indexToSprite in indexToSpritesForRefresh) {
-                    this._indexToSprites[indexToSprite.Key] = indexToSprite.Value;
+                    this._indexToSprites[indexToSprite.Key] = sprite;
                 }
             }
         }
