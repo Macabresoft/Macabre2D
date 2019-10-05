@@ -25,6 +25,7 @@
     * Previously, if the scene wasn't initialized, no components would get updated.
 * Selecting a sprite renderer in the component hierarchy will no longer result in the scene having changes to save.
 * Audio player component no longer causes a crash in the editor.
+* Assets not loaded through the content pipeline no longer require physical files.
 
 ## Compatibility Breaks
 

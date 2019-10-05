@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.Models {
 
     using Macabre2D.Framework;
+    using System.IO;
     using System.Runtime.Serialization;
 
     public abstract class AddableAsset : MetadataAsset {
@@ -12,9 +13,6 @@
         }
 
         public abstract string FileExtension { get; }
-
-        [DataMember]
-        public bool RequiresCreation { get; set; }
     }
 
     public abstract class AddableAsset<T> : AddableAsset where T : IAsset, new() {
@@ -40,7 +38,11 @@
 
         public override void Refresh(AssetManager assetManager) {
             this.SavableValue.AssetId = this.Id;
-            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+
+            if (this.IsContent) {
+                assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+            }
+
             this._savableValue = this.GetInitialSavableValue();
             base.Refresh(assetManager);
         }
@@ -52,12 +54,16 @@
         protected virtual T GetInitialSavableValue() {
             var result = this._savableValue;
 
-            if (this.RequiresCreation) {
-                result = this.CreateAsset();
-                this.RequiresCreation = false;
+            if (result == null && this.IsContent) {
+                var path = this.GetPath();
+
+                if (File.Exists(path)) {
+                    result = Serializer.Instance.Deserialize<T>(this.GetPath());
+                }
             }
-            else if (result == null) {
-                result = Serializer.Instance.Deserialize<T>(this.GetPath());
+
+            if (result == null) {
+                result = this.CreateAsset();
             }
 
             return result;
@@ -65,8 +71,10 @@
 
         protected override void SaveChanges() {
             this.SavableValue.AssetId = this.Id;
-            Serializer.Instance.Serialize(this.SavableValue, this.GetPath());
-            this.RequiresCreation = false;
+
+            if (this.IsContent) {
+                Serializer.Instance.Serialize(this.SavableValue, this.GetPath());
+            }
         }
     }
 }

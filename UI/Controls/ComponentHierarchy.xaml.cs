@@ -154,7 +154,6 @@
                 var clone = component.Component.Clone();
                 clone.Parent = null;
                 var asset = new PrefabAsset(clone.Name);
-                asset.RequiresCreation = true;
                 asset.SavableValue.Component = clone;
                 if (this._dialogService.ShowSaveAssetAsDialog(this._projectService.CurrentProject, asset)) {
                     this._undoService.Clear();

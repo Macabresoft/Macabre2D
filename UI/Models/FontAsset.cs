@@ -51,6 +51,12 @@
             }
         }
 
+        public override bool IsContent {
+            get {
+                return true;
+            }
+        }
+
         [DataMember]
         public bool PremultiplyAlpha {
             get {

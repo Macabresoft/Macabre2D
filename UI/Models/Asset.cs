@@ -42,6 +42,12 @@
         [DataMember]
         public Guid Id { get; private set; } = Guid.NewGuid();
 
+        public virtual bool IsContent {
+            get {
+                return false;
+            }
+        }
+
         public string Name {
             get {
                 return this._name;

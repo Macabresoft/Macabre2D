@@ -67,6 +67,12 @@
             }
         }
 
+        public override bool IsContent {
+            get {
+                return true;
+            }
+        }
+
         public ObservableCollection<ModuleWrapper> Modules { get; } = new ObservableCollection<ModuleWrapper>();
 
         public bool AddChild(ComponentWrapper child) {

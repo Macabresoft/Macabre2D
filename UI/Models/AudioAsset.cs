@@ -24,6 +24,12 @@
             }
         }
 
+        public override bool IsContent {
+            get {
+                return true;
+            }
+        }
+
         public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
             var path = Path.Combine(projectDirectoryPath, this.GetContentPath());
             contentStringBuilder.AppendLine($"#begin {path}");

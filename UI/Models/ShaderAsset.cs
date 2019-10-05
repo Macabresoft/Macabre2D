@@ -30,6 +30,12 @@
             }
         }
 
+        public override bool IsContent {
+            get {
+                return true;
+            }
+        }
+
         public Shader Shader { get; private set; } = new Shader();
 
         public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
@@ -64,7 +70,6 @@
                 File.WriteAllText(this.GetPath(), Resources.DefaultShader);
             }
 
-            this.RequiresCreation = false;
             return new Shader(this.Id);
         }
 

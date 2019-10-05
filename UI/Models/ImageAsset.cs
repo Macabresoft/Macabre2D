@@ -48,6 +48,12 @@
             }
         }
 
+        public override bool IsContent {
+            get {
+                return true;
+            }
+        }
+
         public IReadOnlyCollection<SpriteWrapper> Sprites {
             get {
                 return this._children;

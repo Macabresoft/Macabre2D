@@ -132,15 +132,15 @@
             }
 
             // TODO: consider children that don't need to be loaded from a file
-            //foreach (var child in children) {
-            //    if (!child.HasContentFile) {
-            //        this._children.Add(child);
+            foreach (var child in children) {
+                if (!child.IsContent) {
+                    this._children.Add(child);
 
-            //        if (child is FolderAsset folderAsset) {
-            //            Directory.CreateDirectory(folderAsset.GetPath());
-            //        }
-            //    }
-            //}
+                    if (child is FolderAsset folderAsset) {
+                        Directory.CreateDirectory(folderAsset.GetPath());
+                    }
+                }
+            }
 
             this.RaisePropertyChanged(nameof(this.Children));
         }

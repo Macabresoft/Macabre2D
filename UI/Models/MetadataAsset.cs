@@ -19,7 +19,10 @@
         public void Save(AssetManager assetManager) {
             if (this.HasChanges) {
                 try {
-                    assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+                    if (this.IsContent) {
+                        assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+                    }
+
                     this.SaveChanges();
                 }
                 finally {

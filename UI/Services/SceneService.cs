@@ -61,7 +61,6 @@
             this.CurrentScene = await Task.Run(() =>
             new SceneAsset($"{name}{FileHelper.SceneExtension}") {
                 Parent = parentAsset,
-                RequiresCreation = true
             });
 
             this.CurrentScene.Load();
