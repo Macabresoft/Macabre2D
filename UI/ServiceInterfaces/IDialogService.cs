@@ -4,6 +4,7 @@
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Models.FrameworkWrappers;
     using System;
+    using System.IO;
     using System.Windows;
 
     public interface IDialogService {
@@ -23,6 +24,8 @@
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
 
         bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
+
+        bool ShowSelectProjectDialog(out FileInfo projectFileInfo);
 
         bool ShowSelectSpriteDialog(SpriteWrapper currentlySelected, out SpriteWrapper spriteWrapper);
 

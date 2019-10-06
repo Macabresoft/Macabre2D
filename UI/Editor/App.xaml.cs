@@ -57,7 +57,22 @@
 
             var busyService = this._container.Resolve<IBusyService>();
             this._projectService = this._container.Resolve<IProjectService>();
-            await busyService.PerformTask(this._projectService.LoadProject(), true);
+
+            if (!Settings.Default.ClosedSuccessfully && this._projectService.GetAutoSaveFiles().Any()) {
+                var dialogService = this._container.Resolve<IDialogService>();
+                if (dialogService.ShowSelectProjectDialog(out var fileInfo)) {
+                    await busyService.PerformTask(this._projectService.LoadProject(fileInfo.FullName), true);
+
+                    if (FileHelper.IsAutoSave(fileInfo.Name)) {
+                        this._projectService.HasChanges = true;
+                    }
+                }
+            }
+
+            // If last shutdown was fine or a project wasn't selected above, we just load this normally.
+            if (this._projectService.CurrentProject == null) {
+                await busyService.PerformTask(this._projectService.LoadProject(), true);
+            }
 
             splashScreen.ProgressText = $"{this._projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();

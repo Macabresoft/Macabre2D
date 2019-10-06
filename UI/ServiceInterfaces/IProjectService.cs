@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.ServiceInterfaces {
 
     using Macabre2D.UI.Models;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Threading.Tasks;
 
@@ -13,7 +14,11 @@
 
         Task<bool> BuildAllAssets(BuildMode mode);
 
+        IEnumerable<string> GetAutoSaveFiles();
+
         string GetPathToProject();
+
+        Task<Project> LoadProject(string pathToProject);
 
         Task<Project> LoadProject();
 

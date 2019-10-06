@@ -185,6 +185,21 @@
             return result;
         }
 
+        public bool ShowSelectProjectDialog(out FileInfo projectFileInfo) {
+            var window = this._container.Resolve<SelectProjectDialog>();
+
+            var result = window.SimpleShowDialog();
+
+            if (result) {
+                projectFileInfo = window.ViewModel.SelectedProjectFile;
+            }
+            else {
+                projectFileInfo = null;
+            }
+
+            return result;
+        }
+
         public bool ShowSelectSpriteDialog(SpriteWrapper currentlySelected, out SpriteWrapper spriteWrapper) {
             var window = this._container.Resolve<SelectSpriteDialog>();
             window.ViewModel.SelectedSprite = currentlySelected;

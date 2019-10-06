@@ -68,9 +68,9 @@ namespace Macabre2D.UI.Common {
         }
 
         public static bool IsAudioFile(string fileName) {
-            var upperFileName = fileName.ToLower();
+            var lowerFileName = fileName.ToLower();
             foreach (var imageExtension in FileHelper.AudioExtensions) {
-                if (upperFileName.EndsWith(imageExtension)) {
+                if (lowerFileName.EndsWith(imageExtension)) {
                     return true;
                 }
             }
@@ -78,10 +78,14 @@ namespace Macabre2D.UI.Common {
             return false;
         }
 
+        public static bool IsAutoSave(string fileName) {
+            return fileName.ToLower().EndsWith(FileHelper.ProjectAutoSaveExtension.ToLower());
+        }
+
         public static bool IsImageFile(string fileName) {
-            var upperFileName = fileName.ToLower();
+            var lowerFileName = fileName.ToLower();
             foreach (var imageExtension in FileHelper.ImageExtensions) {
-                if (upperFileName.EndsWith(imageExtension)) {
+                if (lowerFileName.EndsWith(imageExtension)) {
                     return true;
                 }
             }

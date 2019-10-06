@@ -6,6 +6,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services.Content;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -13,6 +14,7 @@
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private const string AssetsLocation = @"Assets";
+        private readonly IDialogService _dialogService;
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
         private readonly ISceneService _sceneService;
@@ -20,9 +22,11 @@
         private bool _hasChanges;
 
         public ProjectService(
+            IDialogService dialogService,
             IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
+            this._dialogService = dialogService;
             this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
@@ -61,7 +65,7 @@
 
         public async Task<bool> AutoSaveProject(int maxAutoSaves, bool purgeExcessAutoSaves) {
             if (purgeExcessAutoSaves) {
-                var autoSaves = Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
+                var autoSaves = this.GetAutoSaveFiles().ToList();
 
                 while (autoSaves.Count >= maxAutoSaves && autoSaves.Count > 0) {
                     var filePath = autoSaves.ElementAt(0);
@@ -110,15 +114,17 @@
             return result;
         }
 
+        public IEnumerable<string> GetAutoSaveFiles() {
+            return Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
+        }
+
         public string GetPathToProject() {
             return Path.Combine(this._fileService.ProjectDirectoryPath, Project.ProjectFileName);
         }
 
-        public async Task<Project> LoadProject() {
-            var projectPath = this.GetPathToProject();
-
-            var project = File.Exists(projectPath) ?
-                await Task.Run(() => Serializer.Instance.Deserialize<Project>(projectPath)) :
+        public async Task<Project> LoadProject(string pathToProject) {
+            var project = File.Exists(pathToProject) ?
+                await Task.Run(() => Serializer.Instance.Deserialize<Project>(pathToProject)) :
                 await this.CreateProject();
 
             GameSettings.Instance = project.GameSettings;
@@ -142,6 +148,13 @@
                 this._sceneService.HasChanges = true;
             }
 
+            this.HasChanges = false;
+            return this.CurrentProject;
+        }
+
+        public async Task<Project> LoadProject() {
+            var projectPath = this.GetPathToProject();
+            await this.LoadProject(projectPath);
             this.HasChanges = false;
             return this.CurrentProject;
         }

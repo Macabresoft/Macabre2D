@@ -98,6 +98,7 @@
     <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
     <Compile Include="Dialogs\SaveSceneViewModel.cs" />
     <Compile Include="Dialogs\SelectAssetViewModel.cs" />
+    <Compile Include="Dialogs\SelectProjectViewModel.cs" />
     <Compile Include="Dialogs\SelectSpriteViewModel.cs" />
     <Compile Include="Dialogs\SelectTypeViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />

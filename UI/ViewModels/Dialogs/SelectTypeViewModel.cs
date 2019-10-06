@@ -11,13 +11,11 @@
     public sealed class SelectTypeViewModel : OKCancelDialogViewModel {
         private readonly IAssemblyService _assemblyService;
         private readonly Type _baseType;
-        private readonly IProjectService _projectService;
         private string _name;
         private Type _selectedType;
 
-        public SelectTypeViewModel(IAssemblyService assemblyService, IProjectService projectService, Type baseType) {
+        public SelectTypeViewModel(IAssemblyService assemblyService, Type baseType) {
             this._assemblyService = assemblyService;
-            this._projectService = projectService;
             this._baseType = baseType;
             this.LoadedCommand = new RelayCommand(async () => await this.OnLoaded());
         }
