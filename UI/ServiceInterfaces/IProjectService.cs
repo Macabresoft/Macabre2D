@@ -9,6 +9,8 @@
 
         bool HasChanges { get; set; }
 
+        Task<bool> AutoSaveProject(int maxAutoSaves);
+
         Task<bool> BuildAllAssets(BuildMode mode);
 
         string GetPathToProject();

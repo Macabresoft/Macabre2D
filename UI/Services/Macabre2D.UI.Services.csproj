@@ -160,6 +160,7 @@
     </Compile>
     <Compile Include="AssemblyService.cs" />
     <Compile Include="AssetService.cs" />
+    <Compile Include="AutoSaveService.cs" />
     <Compile Include="BusyService.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="FileService.cs" />

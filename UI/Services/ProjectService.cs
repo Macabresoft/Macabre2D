@@ -59,6 +59,18 @@
             }
         }
 
+        public async Task<bool> AutoSaveProject(int maxAutoSaves) {
+            var autoSaves = Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
+            while (autoSaves.Count >= maxAutoSaves && autoSaves.Count > 0) {
+                var filePath = autoSaves.ElementAt(0);
+                File.Delete(filePath);
+                autoSaves.RemoveAt(0);
+            }
+
+            var newAutoSaveName = $"{nameof(Project)}-{DateTime.Now.ToString(FileHelper.FileDateTimeFormat)}{FileHelper.ProjectAutoSaveExtension}";
+            return await this.SaveProject(Path.Combine(this._fileService.ProjectDirectoryPath, newAutoSaveName));
+        }
+
         public async Task<bool> BuildAllAssets(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
@@ -138,11 +150,11 @@
         public async Task<bool> SaveProject() {
             var pathToProject = this.GetPathToProject();
             await Task.Run(() => this.CurrentProject.SaveAssets());
-            await this._sceneService.SaveCurrentScene(this.CurrentProject);
-            await Task.Run(() => Serializer.Instance.Serialize(this.CurrentProject, pathToProject));
+            var result = await this._sceneService.SaveCurrentScene(this.CurrentProject);
+            result = result && await this.SaveProject(pathToProject);
             this.HasChanges = false;
             this._currentProject.LastTimeSaved = DateTime.Now;
-            return true;
+            return result;
         }
 
         internal async Task<Project> CreateProject() {
@@ -168,6 +180,19 @@
 
         private void CurrentProject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             this.HasChanges = true;
+        }
+
+        private async Task<bool> SaveProject(string pathToProject) {
+            var result = true;
+            try {
+                await Task.Run(() => Serializer.Instance.Serialize(this.CurrentProject, pathToProject));
+            }
+            catch (Exception e) {
+                this._loggingService.LogError($"Failed to save project at '{pathToProject}' with exception: {Environment.NewLine}{e.Message}");
+                result = false;
+            }
+
+            return result;
         }
     }
 }

@@ -58,5 +58,29 @@ namespace Macabre2D.UI.Editor.Properties {
                 this["ShowSelection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public byte AutoSaveIntervalInMinutes {
+            get {
+                return ((byte)(this["AutoSaveIntervalInMinutes"]));
+            }
+            set {
+                this["AutoSaveIntervalInMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public byte NumberOfAutoSaves {
+            get {
+                return ((byte)(this["NumberOfAutoSaves"]));
+            }
+            set {
+                this["NumberOfAutoSaves"] = value;
+            }
+        }
     }
 }

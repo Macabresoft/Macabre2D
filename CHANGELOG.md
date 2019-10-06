@@ -1,4 +1,4 @@
-# 0.2.1.0
+# 0.3.0.0
 
 ## Features
 
@@ -7,6 +7,7 @@
 * Can flip sprites and text vertically and horizontally.
 * Save data manager added to handle saving and loading saves.
     * Currenty only works on Windows.
+* Projects are now autosaved at a regular interval.
 
 ## Refactors
 

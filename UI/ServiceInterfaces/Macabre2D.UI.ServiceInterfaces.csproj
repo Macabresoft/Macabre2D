@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="IAssemblyService.cs" />
     <Compile Include="IAssetService.cs" />
+    <Compile Include="IAutoSaveService.cs" />
     <Compile Include="IBusyService.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="IFileService.cs" />

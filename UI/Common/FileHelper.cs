@@ -8,10 +8,12 @@ namespace Macabre2D.UI.Common {
         public const string AutoTileSetExtension = ".m2dautotile";
         public const string BackupExtension = ".backup";
         public const string ContentExtension = ".mgcb";
+        public const string FileDateTimeFormat = "yyyy-MM-dd-HH-mm";
         public const string GameSettingsExtension = ".m2dgs";
         public const string MonoGameFrameworkDLL = "MonoGame.Framework.dll";
         public const string NewFolderDefaultName = "New Folder";
         public const string PrefabExtension = ".m2dprefab";
+        public const string ProjectAutoSaveExtension = ProjectExtension + ".autosave";
         public const string ProjectExtension = ".m2dproj";
         public const string SceneExtension = ".m2dscene";
         public const string ShaderExtension = ".fx";

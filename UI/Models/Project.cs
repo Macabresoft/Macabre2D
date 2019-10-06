@@ -12,7 +12,7 @@
 
     [DataContract]
     public sealed class Project : ValidationModel {
-        public const string ProjectFileName = "Project" + FileHelper.ProjectExtension;
+        public const string ProjectFileName = nameof(Project) + FileHelper.ProjectExtension;
 
         [DataMember]
         private readonly ProjectAsset _assetFolder;

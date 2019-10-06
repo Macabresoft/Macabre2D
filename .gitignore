@@ -4,6 +4,7 @@
 # For Macabre2D Development
 /Project/AssetManager.m2dam
 /Project/Project.m2dproj
+/Project/*.m2dproj.autosave
 /Project/Settings.m2dgs
 /Project/*.mgcb
 /Project/bin/*

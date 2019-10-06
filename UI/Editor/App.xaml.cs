@@ -2,6 +2,7 @@
 
     using log4net;
     using Macabre2D.UI.Common;
+    using Macabre2D.UI.Editor.Properties;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services;
     using Macabre2D.UI.Views;
@@ -17,7 +18,6 @@
         private MainWindow _mainWindow;
 
         protected override void OnExit(ExitEventArgs e) {
-            var dialogService = this._container.Resolve<IDialogService>();
             var settingsManager = this._container.Resolve<SettingsManager>();
 
             var lastOpenTabName = string.Empty;
@@ -39,6 +39,7 @@
             ViewContainer.Instance = this._container;
 
             this.RegisterTypes();
+            this.RegisterInstances();
             await this.LoadMainWindow();
         }
 
@@ -46,10 +47,12 @@
             var splashScreen = new DraggableSplashScreen();
             splashScreen.ProgressText = "Loading...";
             splashScreen.Show();
+
+            splashScreen.ProgressText = "Loading project...";
+
             var busyService = this._container.Resolve<IBusyService>();
             var projectService = this._container.Resolve<IProjectService>();
-            splashScreen.ProgressText = "Loading project...";
-            await busyService.PerformTask(projectService.LoadProject(), true); // TODO: show a splash screen while this is going
+            await busyService.PerformTask(projectService.LoadProject(), true);
 
             splashScreen.ProgressText = $"{projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();
@@ -59,11 +62,14 @@
             }
 
             splashScreen.ProgressText = "Loading user preferences...";
+
             var settingsManager = this._container.Resolve<SettingsManager>();
             settingsManager.Initialize();
             var tabName = settingsManager.GetLastOpenTabName();
             var tabs = this._mainWindow.MainTabControl.Items.Cast<TabItem>();
             var selectedTab = tabs.FirstOrDefault(x => x.Header as string == tabName);
+            var autoSaveService = this._container.Resolve<IAutoSaveService>();
+            autoSaveService.Initialize(Settings.Default.NumberOfAutoSaves, Settings.Default.AutoSaveIntervalInMinutes);
 
             if (selectedTab != null) {
                 this._mainWindow.MainTabControl.SelectedItem = selectedTab;
@@ -74,11 +80,16 @@
             this._mainWindow.Show();
         }
 
-        private void RegisterTypes() {
+        private void RegisterInstances() {
             var log = LogManager.GetLogger(typeof(App));
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
+            this._container.RegisterInstance(typeof(SettingsManager), this._container.Resolve<SettingsManager>(), new ContainerControlledLifetimeManager());
+        }
+
+        private void RegisterTypes() {
             this._container.RegisterType<IAssemblyService, AssemblyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IAssetService, AssetService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<IAutoSaveService, AutoSaveService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IBusyService, BusyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IComponentService, ComponentService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IDialogService, DialogService>();
