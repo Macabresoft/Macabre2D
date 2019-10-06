@@ -67,7 +67,7 @@
 
         private async void AutoSaveTimer_Tick(object sender, EventArgs e) {
             if (this._projectService.CurrentProject != null) {
-                await this._projectService.AutoSaveProject(this._numberOfAutoSaves);
+                await this._projectService.AutoSaveProject(this._numberOfAutoSaves, true);
             }
         }
     }

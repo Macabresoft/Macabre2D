@@ -59,12 +59,15 @@
             }
         }
 
-        public async Task<bool> AutoSaveProject(int maxAutoSaves) {
-            var autoSaves = Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
-            while (autoSaves.Count >= maxAutoSaves && autoSaves.Count > 0) {
-                var filePath = autoSaves.ElementAt(0);
-                File.Delete(filePath);
-                autoSaves.RemoveAt(0);
+        public async Task<bool> AutoSaveProject(int maxAutoSaves, bool purgeExcessAutoSaves) {
+            if (purgeExcessAutoSaves) {
+                var autoSaves = Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
+
+                while (autoSaves.Count >= maxAutoSaves && autoSaves.Count > 0) {
+                    var filePath = autoSaves.ElementAt(0);
+                    File.Delete(filePath);
+                    autoSaves.RemoveAt(0);
+                }
             }
 
             var newAutoSaveName = $"{nameof(Project)}-{DateTime.Now.ToString(FileHelper.FileDateTimeFormat)}{FileHelper.ProjectAutoSaveExtension}";

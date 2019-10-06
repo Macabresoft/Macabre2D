@@ -82,5 +82,17 @@ namespace Macabre2D.UI.Editor.Properties {
                 this["NumberOfAutoSaves"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ClosedSuccessfully {
+            get {
+                return ((bool)(this["ClosedSuccessfully"]));
+            }
+            set {
+                this["ClosedSuccessfully"] = value;
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services;
     using Macabre2D.UI.Views;
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
@@ -15,27 +16,19 @@
 
     public partial class App : Application {
         private readonly IUnityContainer _container = new UnityContainer();
+        private ILoggingService _loggingService;
         private MainWindow _mainWindow;
+        private IProjectService _projectService;
+        private SettingsManager _settingsManager;
 
         protected override void OnExit(ExitEventArgs e) {
-            var settingsManager = this._container.Resolve<SettingsManager>();
-
-            var lastOpenTabName = string.Empty;
-            if (this._mainWindow.MainTabControl.SelectedItem is TabItem tabItem) {
-                lastOpenTabName = tabItem.Header as string;
-            }
-
-            settingsManager.Save(lastOpenTabName);
+            Settings.Default.ClosedSuccessfully = e.ApplicationExitCode == 0;
+            this.SaveSettings();
             base.OnExit(e);
-        }
-
-        protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {
-            base.OnSessionEnding(e);
         }
 
         protected override async void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
-
             ViewContainer.Instance = this._container;
 
             this.RegisterTypes();
@@ -43,18 +36,30 @@
             await this.LoadMainWindow();
         }
 
+        private async void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
+            this._loggingService.LogError(e.Exception?.Message ?? $"Macabre2D crashed for unknown reasons, but here's the stack trace: {Environment.NewLine}{Environment.StackTrace}");
+            Settings.Default.ClosedSuccessfully = false;
+            this.SaveSettings();
+            await this._projectService.AutoSaveProject(Settings.Default.NumberOfAutoSaves, false);
+        }
+
         private async Task LoadMainWindow() {
             var splashScreen = new DraggableSplashScreen();
             splashScreen.ProgressText = "Loading...";
             splashScreen.Show();
 
+            this._loggingService = this._container.Resolve<ILoggingService>();
+            this._settingsManager = this._container.Resolve<SettingsManager>();
+
+            this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
+
             splashScreen.ProgressText = "Loading project...";
 
             var busyService = this._container.Resolve<IBusyService>();
-            var projectService = this._container.Resolve<IProjectService>();
-            await busyService.PerformTask(projectService.LoadProject(), true);
+            this._projectService = this._container.Resolve<IProjectService>();
+            await busyService.PerformTask(this._projectService.LoadProject(), true);
 
-            splashScreen.ProgressText = $"{projectService.CurrentProject.Name} loaded!";
+            splashScreen.ProgressText = $"{this._projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();
             var sceneService = this._container.Resolve<ISceneService>();
             if (sceneService?.CurrentScene?.HasChanges != true) {
@@ -63,9 +68,8 @@
 
             splashScreen.ProgressText = "Loading user preferences...";
 
-            var settingsManager = this._container.Resolve<SettingsManager>();
-            settingsManager.Initialize();
-            var tabName = settingsManager.GetLastOpenTabName();
+            this._settingsManager.Initialize();
+            var tabName = this._settingsManager.GetLastOpenTabName();
             var tabs = this._mainWindow.MainTabControl.Items.Cast<TabItem>();
             var selectedTab = tabs.FirstOrDefault(x => x.Header as string == tabName);
             var autoSaveService = this._container.Resolve<IAutoSaveService>();
@@ -77,6 +81,11 @@
 
             splashScreen.ProgressText = "Done!";
             splashScreen.Close();
+
+            // If the application closes successfully, this will get set to true before settings are
+            // saved again.
+            Settings.Default.ClosedSuccessfully = false;
+            this._settingsManager.Save(this._settingsManager.GetLastOpenTabName());
             this._mainWindow.Show();
         }
 
@@ -101,6 +110,15 @@
             this._container.RegisterType<IStatusService, StatusService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IUndoService, UndoService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IValueEditorService, ValueEditorService>(new ContainerControlledLifetimeManager());
+        }
+
+        private void SaveSettings() {
+            var lastOpenTabName = string.Empty;
+            if (this._mainWindow.MainTabControl.SelectedItem is TabItem tabItem) {
+                lastOpenTabName = tabItem.Header as string;
+            }
+
+            this._settingsManager.Save(lastOpenTabName);
         }
     }
 }

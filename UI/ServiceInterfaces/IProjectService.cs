@@ -9,7 +9,7 @@
 
         bool HasChanges { get; set; }
 
-        Task<bool> AutoSaveProject(int maxAutoSaves);
+        Task<bool> AutoSaveProject(int maxAutoSaves, bool purgeExcessAutoSaves);
 
         Task<bool> BuildAllAssets(BuildMode mode);
 
