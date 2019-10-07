@@ -11,8 +11,6 @@
 * Crashes are handled more gracefully.
     * If there is an error, it will be logged.
 	* Settings will be saved, if possible.
-	* The current project will be auto-saved if possible.
-	    * This will not overwrite any existing auto-saves.
 * Can select an auto-save if the editor was shutdown incorrectly last session.
 
 ## Refactors

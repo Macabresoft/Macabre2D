@@ -208,6 +208,7 @@
                 result = false;
             }
 
+            this.CurrentProject.LastSceneOpened = this._sceneService.CurrentScene;
             return result;
         }
     }

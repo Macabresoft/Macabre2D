@@ -36,11 +36,10 @@
             await this.LoadMainWindow();
         }
 
-        private async void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
             this._loggingService.LogError(e.Exception?.Message ?? $"Macabre2D crashed for unknown reasons, but here's the stack trace: {Environment.NewLine}{Environment.StackTrace}");
             Settings.Default.ClosedSuccessfully = false;
             this.SaveSettings();
-            await this._projectService.AutoSaveProject(Settings.Default.NumberOfAutoSaves, false);
         }
 
         private async Task LoadMainWindow() {
