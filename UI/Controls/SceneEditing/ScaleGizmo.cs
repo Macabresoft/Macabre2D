@@ -72,7 +72,7 @@
                     }
                     else if (this.CurrentAxis == GizmoAxis.Y) {
                         var newPosition = this.MoveAlongAxis(this.YAxisLineDrawer.StartPoint, this.YAxisLineDrawer.EndPoint, mousePosition);
-                        var newLineLength = Vector2.Distance(this.YAxisLineDrawer.StartPoint, newPosition); // TODO Allow negative by checking for actual distance
+                        var newLineLength = Vector2.Distance(this.YAxisLineDrawer.StartPoint, newPosition);
                         this.YAxisLineDrawer.EndPoint = newPosition;
 
                         var multiplier = this.GetScaleSign(newPosition, selectedComponent.Component) * newLineLength / this._defaultLineLength;

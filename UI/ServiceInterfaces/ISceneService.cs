@@ -12,7 +12,5 @@
         Task<SceneAsset> CreateScene(FolderAsset parentAsset, string name);
 
         Task<SceneAsset> LoadScene(Project project, SceneAsset asset);
-
-        Task<bool> SaveCurrentScene(Project project);
     }
 }

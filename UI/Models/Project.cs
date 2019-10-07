@@ -140,7 +140,7 @@
         public void SaveAssets() {
             var assets = this.AssetFolder.GetAssetsOfType<MetadataAsset>();
             foreach (var asset in assets) {
-                asset.Save(this.AssetManager);
+                asset.Save();
             }
         }
 

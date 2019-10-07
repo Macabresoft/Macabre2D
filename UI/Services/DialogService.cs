@@ -119,7 +119,7 @@
                     asset.Parent = project.AssetFolder;
                 }
 
-                asset.Save(project.AssetManager);
+                asset.Save();
             }
 
             return result;

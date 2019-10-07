@@ -72,8 +72,11 @@
                 if (this.CurrentScene != null && this.HasChanges) {
                     var message = this.CurrentScene != null ? $"Would you like to save {this.CurrentScene.Name}?" : "Would you like to save the current scene?";
                     var result = this._dialogService.ShowYesNoCancelMessageBox($"Save Scene", message);
-                    if (result == MessageBoxResult.Cancel || (result == MessageBoxResult.Yes && !await this.SaveCurrentScene(project))) {
+                    if (result == MessageBoxResult.Cancel) {
                         return null;
+                    }
+                    else if (result == MessageBoxResult.Yes) {
+                        await Task.Run(() => this.CurrentScene.ForceSave());
                     }
                 }
 
@@ -84,40 +87,6 @@
             }
 
             return null;
-        }
-
-        public async Task<bool> SaveCurrentScene(Project project) {
-            var result = false;
-
-            if (project != null) {
-                var sceneExists = await Task.Run(() => this.CurrentScene != null && SceneService.SceneAssetExistsInProject(project, this.CurrentScene));
-                if (sceneExists) {
-                    await Task.Run(() => {
-                        var scene = this.CurrentScene.SavableValue;
-                        this.CurrentScene.HasChanges = true;
-                        this.CurrentScene.Save(project.AssetManager);
-                    });
-
-                    result = true;
-                }
-                else {
-                    var sceneAsset = this._dialogService.ShowSaveSceneWindow(project, this.CurrentScene.SavableValue);
-                    result = sceneAsset != null;
-                    this.CurrentScene = null;
-                    await this.LoadScene(project, sceneAsset);
-                }
-            }
-
-            if (result) {
-                this.HasChanges = false;
-                project.LastSceneOpened = this.CurrentScene;
-            }
-
-            return result;
-        }
-
-        private static bool SceneAssetExistsInProject(Project project, SceneAsset sceneAsset) {
-            return project.SceneAssets.Any(x => x.Id == sceneAsset.Id);
         }
 
         private void CurrentScene_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

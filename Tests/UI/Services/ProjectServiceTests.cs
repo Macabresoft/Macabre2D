@@ -15,10 +15,11 @@
         [Test]
         [Category("Integration Test")]
         public static async Task ProjectService_CreateProjectTest() {
+            var dialogService = Substitute.For<IDialogService>();
             var fileService = Substitute.For<IFileService>();
             var loggingService = Substitute.For<ILoggingService>();
             var sceneService = Substitute.For<ISceneService>();
-            var projectService = new ProjectService(fileService, loggingService, sceneService);
+            var projectService = new ProjectService(dialogService, fileService, loggingService, sceneService);
 
             var projectDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestProject");
             fileService.ProjectDirectoryPath.Returns(projectDirectory);
@@ -28,7 +29,6 @@
 
             var sceneAsset = new SceneAsset(Guid.NewGuid().ToString());
             sceneService.CreateScene(Arg.Any<FolderAsset>(), Arg.Any<string>()).Returns(sceneAsset);
-            sceneService.SaveCurrentScene(Arg.Any<Project>()).Returns(true);
             sceneService.LoadScene(Arg.Any<Project>(), Arg.Any<SceneAsset>()).Returns(sceneAsset);
 
             try {

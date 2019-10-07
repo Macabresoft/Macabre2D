@@ -96,7 +96,7 @@
                                 selectedAsset.Parent.AddChild(asset);
                             }
 
-                            asset.Save(this.ProjectService.CurrentProject.AssetManager);
+                            asset.Save();
                             this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, asset);
                             asset.Refresh(this.ProjectService.CurrentProject.AssetManager);
                         }, () => {
@@ -168,7 +168,7 @@
                     }
 
                     if (this.AssetService.SelectedAsset is MetadataAsset metadataAsset) {
-                        metadataAsset.Save(this.ProjectService.CurrentProject.AssetManager);
+                        metadataAsset.Save();
                     }
 
                     await this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, this.AssetService.SelectedAsset);

@@ -16,11 +16,16 @@
             internal set;
         }
 
-        public void Save(AssetManager assetManager) {
+        public void ForceSave() {
+            this.HasChanges = true;
+            this.Save();
+        }
+
+        public void Save() {
             if (this.HasChanges) {
                 try {
                     if (this.IsContent) {
-                        assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+                        AssetManager.Instance.SetMapping(this.Id, this.GetContentPathWithoutExtension());
                     }
 
                     this.SaveChanges();

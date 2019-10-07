@@ -165,9 +165,10 @@
 
         public async Task<bool> SaveProject() {
             var pathToProject = this.GetPathToProject();
+            this._sceneService.CurrentScene.HasChanges = true;
+            this.CurrentProject.LastSceneOpened = this._sceneService.CurrentScene;
             await Task.Run(() => this.CurrentProject.SaveAssets());
-            var result = await this._sceneService.SaveCurrentScene(this.CurrentProject);
-            result = result && await this.SaveProject(pathToProject);
+            var result = await this.SaveProject(pathToProject);
             this.HasChanges = false;
             this._currentProject.LastTimeSaved = DateTime.Now;
             return result;
@@ -186,8 +187,7 @@
             project.SceneAssets.Add(scene);
             project.StartUpSceneAsset = scene;
             project.LastSceneOpened = scene;
-            await this._sceneService.SaveCurrentScene(project);
-
+            scene.ForceSave();
             this.CurrentProject = project;
             this.HasChanges = true;
 
