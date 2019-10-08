@@ -109,10 +109,10 @@
             (c, handler) => c.RenderOrderChanged -= handler);
 
         [DataMember]
-        internal List<BaseComponent> ComponentsForSaving { get; } = new List<BaseComponent>();
+        internal HashSet<BaseComponent> ComponentsForSaving { get; } = new HashSet<BaseComponent>();
 
         [DataMember]
-        internal List<BaseModule> ModulesForSaving { get; } = new List<BaseModule>();
+        internal HashSet<BaseModule> ModulesForSaving { get; } = new HashSet<BaseModule>();
 
         /// <inheritdoc/>
         public T AddComponent<T>() where T : BaseComponent, new() {
@@ -309,6 +309,7 @@
         public IEnumerable<BaseModule> GetAllModules(bool includeModulesForSaving) {
             var modules = new List<BaseModule>();
 
+            this._modules.RebuildCache();
             foreach (var module in this._modules) {
                 modules.Add(module);
             }
@@ -346,7 +347,6 @@
                 this._modules.AddRange(this.ModulesForSaving);
                 this.ModulesForSaving.Clear();
 
-                this._modules.RebuildCache();
                 foreach (var module in this._modules) {
                     module.Initialize(this);
                     module.PreInitialize();
@@ -429,8 +429,7 @@
             }
             finally {
                 // We never want to get to a state where this collection has anything after
-                // attempting to save.
-                this.ModulesForSaving.Clear();
+                // attempting to save. this.ModulesForSaving.Clear();
             }
         }
 
