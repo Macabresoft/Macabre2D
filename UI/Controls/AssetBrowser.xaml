@@ -9,6 +9,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Controls">
     <UserControl.Resources>
+        <converters:AssetItemSourceConverter x:Key="_assetItemSourceConverter" />
         <converters:AssetTypeToVisibilityConverter x:Key="_assetTypeToVisibilityConverter" />
         <converters:AssetParentToCollectionConverter x:Key="_assetParentToCollectionConverter" />
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
@@ -42,6 +43,8 @@
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="ItemsSource"
+                        Value="{Binding Converter={StaticResource _assetItemSourceConverter}}" />
                 <Setter Property="IsExpanded"
                         Value="True" />
                 <Setter Property="behaviors:MouseDoubleClickBehavior.Command"
