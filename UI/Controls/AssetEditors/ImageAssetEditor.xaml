@@ -13,12 +13,26 @@
     <Grid DataContext="{Binding ElementName=_imageAssetControl}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0"
-              Margin="{StaticResource StandardMarginLR}">
+
+        <Image Grid.Row="0"
+               Height="108"
+               Stretch="Uniform"
+               Source="{Binding Asset, Converter={StaticResource _imageAssetToBitmapImageConverter}}"
+               Visibility="{Binding SelectedSprite, Converter={StaticResource _inverseNullToVisibilityConverter}}" />
+
+        <local:SpriteWrapperEditor Grid.Row="0"
+                                   Height="108"
+                                   SpriteWrapper="{Binding SelectedSprite}"
+                                   Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}" />
+
+        <Separator Grid.Row="1"
+                   Margin="{StaticResource DoubleMarginTB}" />
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -45,9 +59,8 @@
             </Button>
         </Grid>
 
-        <ListBox Grid.Row="1"
-                 Margin="{StaticResource DoubleMarginAll}"
-                 MaxHeight="190"
+        <ListBox Grid.Row="3"
+                 Margin="{StaticResource DoubleMarginTB}"
                  ItemsSource="{Binding Asset.Sprites}"
                  SelectedItem="{Binding SelectedSprite}"
                  SelectionMode="Single">
@@ -58,17 +71,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <GridSplitter Grid.Row="2"
-                      Style="{StaticResource HorizontalGridSplitter}" />
-
-        <Image Grid.Row="3"
-               Stretch="Uniform"
-               Source="{Binding Asset, Converter={StaticResource _imageAssetToBitmapImageConverter}}"
-               Visibility="{Binding SelectedSprite, Converter={StaticResource _inverseNullToVisibilityConverter}}" />
-
-        <local:SpriteWrapperEditor Grid.Row="3"
-                                   SpriteWrapper="{Binding SelectedSprite}"
-                                   Visibility="{Binding SelectedSprite, Converter={StaticResource _nullToVisibilityConverter}}" />
     </Grid>
 </UserControl>

@@ -24,7 +24,7 @@
         </StackPanel>
 
         <ListBox Grid.Row="1"
-                 Margin="{StaticResource DoubleMarginAll}"
+                 Margin="{StaticResource StandardMarginAll}"
                  ItemsSource="{Binding Modules}"
                  SelectedItem="{Binding SelectedModule}"
                  SelectionMode="Single">

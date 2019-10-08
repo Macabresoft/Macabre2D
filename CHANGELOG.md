@@ -22,6 +22,7 @@
 * Provided components all have an order and name to their serializable properties where necessary.
 * 'SceneWrapper' class has been merged with 'SceneAsset'.
 * Metadata assets no longer require a metadata file (it is stored in the project file).
+* Cleaned up image asset editor, margins on assets, and margins on modules.
 
 ## Fixes
 

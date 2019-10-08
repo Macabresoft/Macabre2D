@@ -19,7 +19,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
@@ -84,10 +83,12 @@
             </valueEditors:PointEditor.MaxYValue>
         </valueEditors:PointEditor>
 
-        <controls:SpriteViewer Grid.RowSpan="4"
+        <controls:SpriteViewer Grid.RowSpan="3"
                                Grid.Column="2"
+                               Size="96"
+                               ShowSpriteInfo="False"
                                HorizontalAlignment="Center"
-                               VerticalAlignment="Top"
+                               VerticalAlignment="Center"
                                Margin="{StaticResource StandardMarginAll}"
                                Sprite="{Binding SpriteWrapper}" />
     </Grid>
