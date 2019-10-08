@@ -7,9 +7,12 @@
     public sealed class ModulesViewModel : NotifyPropertyChanged {
         private ModuleWrapper _selectedModule;
 
-        public ModulesViewModel(ISceneService sceneService) {
+        public ModulesViewModel(IBusyService busyService, ISceneService sceneService) {
+            this.BusyService = busyService;
             this.SceneService = sceneService;
         }
+
+        public IBusyService BusyService { get; }
 
         public ISceneService SceneService { get; }
 

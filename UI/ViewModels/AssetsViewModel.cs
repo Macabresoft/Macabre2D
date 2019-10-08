@@ -13,7 +13,6 @@
 
     public sealed class AssetsViewModel : NotifyPropertyChanged {
         private readonly RelayCommand _addAssetCommand;
-        private readonly IBusyService _busyService;
         private readonly RelayCommand _deleteAssetCommand;
         private readonly IDialogService _dialogService;
         private readonly RelayCommand _newFolderCommand;
@@ -29,7 +28,7 @@
             ISceneService sceneService,
             IUndoService undoService) {
             this.AssetService = assetService;
-            this._busyService = busyService;
+            this.BusyService = busyService;
             this._dialogService = dialogService;
             this.ProjectService = projectService;
             this._sceneService = sceneService;
@@ -50,6 +49,7 @@
         }
 
         public IAssetService AssetService { get; }
+        public IBusyService BusyService { get; }
 
         public ICommand DeleteAssetCommand {
             get {
@@ -175,7 +175,7 @@
                     reloadable.Reload();
                 });
 
-                await this._busyService.PerformTask(task, true);
+                await this.BusyService.PerformTask(task, true);
             }
         }
     }

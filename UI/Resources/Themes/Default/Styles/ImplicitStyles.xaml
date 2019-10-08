@@ -53,10 +53,10 @@
 
     <Style TargetType="metro:ProgressRing">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsActive}" Value="True">
+            <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource Self}}" Value="True">
                 <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding IsActive}" Value="False">
+            <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource Self}}" Value="False">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
         </Style.Triggers>

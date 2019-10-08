@@ -11,10 +11,12 @@
         private readonly IUndoService _undoService;
 
         public ProjectViewModel(
+            IBusyService busyService,
             IComponentService componentService,
             IMonoGameService monoGameService,
             IProjectService projectService,
             IUndoService undoService) {
+            this.BusyService = busyService;
             this._componentService = componentService;
             this._monoGameService = monoGameService;
             this.ProjectService = projectService;
@@ -25,6 +27,8 @@
                 this.ProjectService.CurrentProject.PropertyChanged += this.CurrentProject_PropertyChanged;
             }
         }
+
+        public IBusyService BusyService { get; }
 
         public Color ErrorSpritesColor {
             get {
