@@ -88,20 +88,20 @@
         }
 
         private void CommitAdd(ITileable tileable) {
-            var hasChanges = this._sceneService.HasChanges;
+            var hasChanges = this._sceneService.CurrentScene.HasChanges;
             var tiles = this._addedTiles.ToList();
             var undoCommand = new UndoCommand(() => {
                 foreach (var tile in tiles) {
                     tileable.AddTile(tile);
                 }
 
-                this._sceneService.HasChanges = true;
+                this._sceneService.CurrentScene.HasChanges = true;
             }, () => {
                 foreach (var tile in tiles) {
                     tileable.RemoveTile(tile);
                 }
 
-                this._sceneService.HasChanges = hasChanges;
+                this._sceneService.CurrentScene.HasChanges = hasChanges;
             });
 
             this._undoService.Do(undoCommand);
@@ -111,20 +111,20 @@
         }
 
         private void CommitRemove(ITileable tileable) {
-            var hasChanges = this._sceneService.HasChanges;
+            var hasChanges = this._sceneService.CurrentScene.HasChanges;
             var tiles = this._removedTiles.ToList();
             var undoCommand = new UndoCommand(() => {
                 foreach (var tile in tiles) {
                     tileable.RemoveTile(tile);
                 }
 
-                this._sceneService.HasChanges = true;
+                this._sceneService.CurrentScene.HasChanges = true;
             }, () => {
                 foreach (var tile in tiles) {
                     tileable.AddTile(tile);
                 }
 
-                this._sceneService.HasChanges = hasChanges;
+                this._sceneService.CurrentScene.HasChanges = hasChanges;
             });
 
             this._undoService.Do(undoCommand);

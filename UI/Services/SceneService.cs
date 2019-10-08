@@ -11,7 +11,6 @@
     public sealed class SceneService : NotifyPropertyChanged, ISceneService {
         private readonly IDialogService _dialogService;
         private SceneAsset _currentScene;
-        private bool _hasChanges;
 
         public SceneService(IDialogService dialogService) {
             this._dialogService = dialogService;
@@ -25,34 +24,19 @@
             private set {
                 var originalScene = this._currentScene;
                 if (this.Set(ref this._currentScene, value)) {
-                    this.RaisePropertyChanged(nameof(this.HasChanges));
-
                     if (originalScene != null) {
-                        originalScene.PropertyChanged -= this.CurrentScene_PropertyChanged;
                         originalScene.OnDeleted -= this.SceneAsset_OnDeleted;
                         originalScene.OnRefreshed -= this.SceneAsset_OnRefreshed;
                         originalScene.Unload();
                     }
 
                     if (this._currentScene != null) {
-                        this.CurrentScene.PropertyChanged += this.CurrentScene_PropertyChanged;
-
                         var assetFolder = this._currentScene.GetRootFolder();
                         this.SyncAssets(assetFolder);
                         this._currentScene.OnDeleted += this.SceneAsset_OnDeleted;
                         this._currentScene.OnRefreshed += this.SceneAsset_OnRefreshed;
                     }
                 }
-            }
-        }
-
-        public bool HasChanges {
-            get {
-                return this._hasChanges;
-            }
-
-            set {
-                this.Set(ref this._hasChanges, value);
             }
         }
 
@@ -63,13 +47,13 @@
             });
 
             this.CurrentScene.Load();
-            this.HasChanges = true;
+            this.CurrentScene.HasChanges = true;
             return this.CurrentScene;
         }
 
         public async Task<SceneAsset> LoadScene(Project project, SceneAsset asset) {
             if (asset != null) {
-                if (this.CurrentScene != null && this.HasChanges) {
+                if (this.CurrentScene != null && this.CurrentScene.HasChanges) {
                     var message = this.CurrentScene != null ? $"Would you like to save {this.CurrentScene.Name}?" : "Would you like to save the current scene?";
                     var result = this._dialogService.ShowYesNoCancelMessageBox($"Save Scene", message);
                     if (result == MessageBoxResult.Cancel) {
@@ -82,15 +66,11 @@
 
                 asset.Load();
                 this.CurrentScene = asset;
-                this.HasChanges = false;
+                this.CurrentScene.HasChanges = false;
                 return this.CurrentScene;
             }
 
             return null;
-        }
-
-        private void CurrentScene_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            this.HasChanges = true;
         }
 
         private void SceneAsset_OnDeleted(object sender, System.EventArgs e) {

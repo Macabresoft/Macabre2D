@@ -98,24 +98,24 @@
         }
 
         protected void UpdateProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
-            var hasChanges = this._sceneService.HasChanges;
+            var hasChanges = this._sceneService.CurrentScene.HasChanges;
             var undoCommand = new UndoCommand(
                 () => {
                     this.Value.SetProperty(propertyPath, newValue);
                     this.RaisePropertyChanged(localPropertyName);
-                    this._sceneService.HasChanges = true;
+                    this._sceneService.CurrentScene.HasChanges = true;
                 },
                 () => {
                     this.Value.SetProperty(propertyPath, originalValue);
                     this.RaisePropertyChanged(localPropertyName);
-                    this._sceneService.HasChanges = hasChanges;
+                    this._sceneService.CurrentScene.HasChanges = hasChanges;
                 });
 
             this._undoService.Do(undoCommand);
         }
 
         protected void UpdateProperty(string propertyPath, object originalValue, object newValue, params string[] propertiesToRaiseChanged) {
-            var hasChanges = this._sceneService.HasChanges;
+            var hasChanges = this._sceneService.CurrentScene.HasChanges;
             var undoCommand = new UndoCommand(
                 () => {
                     this.Value.SetProperty(propertyPath, newValue);
@@ -123,7 +123,7 @@
                         this.RaisePropertyChanged(propertyName);
                     }
 
-                    this._sceneService.HasChanges = true;
+                    this._sceneService.CurrentScene.HasChanges = true;
                 },
                 () => {
                     this.Value.SetProperty(propertyPath, originalValue);
@@ -131,7 +131,7 @@
                         this.RaisePropertyChanged(propertyName);
                     }
 
-                    this._sceneService.HasChanges = hasChanges;
+                    this._sceneService.CurrentScene.HasChanges = hasChanges;
                 });
 
             this._undoService.Do(undoCommand);
@@ -181,7 +181,7 @@
 
         private void UpdatePropertyWithNotification(string propertyPath, object value, object objectToUpdate) {
             objectToUpdate.SetProperty(propertyPath, value);
-            this._sceneService.HasChanges = true;
+            this._sceneService.CurrentScene.HasChanges = true;
             if (objectToUpdate is NotifyPropertyChanged notifyPropertyChanged) {
                 notifyPropertyChanged.RaisePropertyChanged(propertyPath);
             }

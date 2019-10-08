@@ -3,6 +3,7 @@
     using Macabre2D.Framework;
 
     public class MetadataAsset : Asset {
+        private bool _hasChanges;
 
         public MetadataAsset(string name) : base(name) {
             this.PropertyChanged += this.Self_PropertyChanged;
@@ -12,8 +13,8 @@
         }
 
         public bool HasChanges {
-            get;
-            internal set;
+            get { return this._hasChanges; }
+            set { this.Set(ref this._hasChanges, value); }
         }
 
         public void ForceSave() {
@@ -47,11 +48,13 @@
         }
 
         private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.Name)) {
-                this.ResetContentPath();
-            }
+            if (e.PropertyName != nameof(this.HasChanges)) {
+                if (e.PropertyName == nameof(this.Name)) {
+                    this.ResetContentPath();
+                }
 
-            this.HasChanges = true;
+                this.HasChanges = true;
+            }
         }
     }
 }

@@ -77,7 +77,7 @@
             this._mainWindow = this._container.Resolve<MainWindow>();
             var sceneService = this._container.Resolve<ISceneService>();
             if (sceneService?.CurrentScene?.HasChanges != true) {
-                sceneService.HasChanges = false;
+                sceneService.CurrentScene.HasChanges = false;
             }
 
             splashScreen.ProgressText = "Loading user preferences...";

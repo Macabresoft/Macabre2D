@@ -130,7 +130,7 @@
             var sceneService = this._container.Resolve<ISceneService>();
             var result = SaveDiscardCancelResult.Save;
 
-            if (projectService.HasChanges || sceneService.HasChanges) {
+            if (projectService.HasChanges || sceneService.CurrentScene.HasChanges) {
                 var window = this._container.Resolve<SaveDiscardCancelDialog>();
                 window.ShowDialog();
                 result = window.Result;

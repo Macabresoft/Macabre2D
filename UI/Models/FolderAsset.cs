@@ -161,7 +161,9 @@
         }
 
         private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            this.RaisePropertyChanged(nameof(this.Children));
+            if (e.PropertyName != nameof(MetadataAsset.HasChanges) || (sender is MetadataAsset metadataAsset && metadataAsset.HasChanges)) {
+                this.RaisePropertyChanged(nameof(this.Children));
+            }
         }
 
         private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

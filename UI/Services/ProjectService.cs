@@ -55,7 +55,7 @@
 
         public bool HasChanges {
             get {
-                return this._currentProject != null && (this._hasChanges || this._sceneService.HasChanges);
+                return this._currentProject != null && (this._hasChanges || this._sceneService.CurrentScene.HasChanges);
             }
 
             set {
@@ -136,16 +136,13 @@
 
             if (this.CurrentProject?.LastSceneOpened != null) {
                 await this._sceneService.LoadScene(this.CurrentProject, this.CurrentProject.LastSceneOpened);
-                this._sceneService.HasChanges = false;
             }
             else if (this.CurrentProject?.SceneAssets.FirstOrDefault() is SceneAsset sceneAsset) {
                 await this._sceneService.LoadScene(this.CurrentProject, sceneAsset);
-                this._sceneService.HasChanges = false;
             }
             else {
                 var scene = await this._sceneService.CreateScene(this.CurrentProject.AssetFolder, "Default");
                 this.CurrentProject.LastSceneOpened = scene;
-                this._sceneService.HasChanges = true;
             }
 
             this.HasChanges = false;
