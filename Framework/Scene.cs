@@ -345,6 +345,7 @@
             if (!this.IsInitialized) {
                 this.IsInitialized = true;
                 this._modules.AddRange(this.ModulesForSaving);
+                this._modules.RebuildCache();
                 this.ModulesForSaving.Clear();
 
                 foreach (var module in this._modules) {
