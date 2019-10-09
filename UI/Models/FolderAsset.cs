@@ -125,13 +125,12 @@
                     children.Remove(asset);
                 }
                 else {
-                    this.GetAssetFromFilePath(file);
+                    asset = this.GetAssetFromFilePath(file);
                 }
 
                 this.AddChild(asset);
             }
 
-            // TODO: consider children that don't need to be loaded from a file
             foreach (var child in children) {
                 if (!child.IsContent) {
                     this._children.Add(child);
