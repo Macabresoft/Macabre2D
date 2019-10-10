@@ -44,15 +44,12 @@
 
         private async Task LoadMainWindow() {
             var splashScreen = new DraggableSplashScreen();
-            splashScreen.ProgressText = "Loading...";
             splashScreen.Show();
 
             this._loggingService = this._container.Resolve<ILoggingService>();
             this._settingsManager = this._container.Resolve<SettingsManager>();
 
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
-
-            splashScreen.ProgressText = "Loading project...";
 
             var busyService = this._container.Resolve<IBusyService>();
             this._projectService = this._container.Resolve<IProjectService>();
@@ -73,14 +70,11 @@
                 await busyService.PerformTask(this._projectService.LoadProject(), true);
             }
 
-            splashScreen.ProgressText = $"{this._projectService.CurrentProject.Name} loaded!";
             this._mainWindow = this._container.Resolve<MainWindow>();
             var sceneService = this._container.Resolve<ISceneService>();
             if (sceneService?.CurrentScene?.HasChanges != true) {
                 sceneService.CurrentScene.HasChanges = false;
             }
-
-            splashScreen.ProgressText = "Loading user preferences...";
 
             this._settingsManager.Initialize();
             var tabName = this._settingsManager.GetLastOpenTabName();
@@ -93,7 +87,6 @@
                 this._mainWindow.MainTabControl.SelectedItem = selectedTab;
             }
 
-            splashScreen.ProgressText = "Done!";
             splashScreen.Close();
 
             // If the application closes successfully, this will get set to true before settings are

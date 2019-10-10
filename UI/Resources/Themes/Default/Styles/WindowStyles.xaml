@@ -9,8 +9,11 @@
         <Setter Property="IconTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <iconPacks:PackIconMaterial Kind="Skull"
-                                                Foreground="{StaticResource BlackBrush}" />
+                    <Image Source="pack://application:,,,/;component/logo16.png"
+                           Height="16"
+                           Width="16"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

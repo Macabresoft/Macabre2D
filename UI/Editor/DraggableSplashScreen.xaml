@@ -6,8 +6,7 @@
                    MouseDown="SplashScreen_MouseDown"
                    Background="{StaticResource AccentColorBrush}"
                    BorderThickness="0"
-                   Height="256"
-                   Width="512"
+                   SizeToContent="WidthAndHeight"
                    ResizeMode="NoResize"
                    ShowCloseButton="False"
                    ShowTitleBar="False"
@@ -16,17 +15,37 @@
     <Grid Margin="{StaticResource DoubleMarginAll}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Image Source="pack://application:,,,/;component/logo64.png"
+               Grid.Row="0"
+               Grid.Column="0"
+               Height="64"
+               Width="64"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Left"
+               Margin="{StaticResource DoubleMarginAll}" />
+
         <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   Margin="{StaticResource DoubleMarginLTR}"
                    Text="Macabre2D"
                    FontSize="48"
-                   FontWeight="Bold" />
-
-        <TextBlock Grid.Row="2"
-                   Text="{Binding ProgressText, ElementName=_splashScreen}"
+                   FontWeight="Bold"
                    HorizontalAlignment="Right" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="1"
+                   Margin="{StaticResource DoubleMarginRB}"
+                   Text="{Binding Version, ElementName=_splashScreen, Mode=OneTime}"
+                   HorizontalAlignment="Right"
+                   TextWrapping="NoWrap"
+                   TextTrimming="CharacterEllipsis" />
     </Grid>
 </metro:MetroWindow>

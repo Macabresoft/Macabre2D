@@ -188,9 +188,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="..\..\Icon.ico">
+    <Resource Include="..\..\Icon.ico">
       <Link>Icon.ico</Link>
-    </EmbeddedResource>
+    </Resource>
+    <Resource Include="..\..\Art\logo16.png">
+      <Link>logo16.png</Link>
+    </Resource>
+    <Resource Include="..\..\Art\logo64.png">
+      <Link>logo64.png</Link>
+    </Resource>
     <Content Include="..\..\monogame\monogame.framework\bin\windowsgl\anycpu\release\x64\SDL2.dll">
       <Link>x64\SDL2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
