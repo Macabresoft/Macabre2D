@@ -12,6 +12,12 @@
     public interface IGameSettings {
 
         /// <summary>
+        /// Gets the default resolution.
+        /// </summary>
+        /// <value>The default resolution.</value>
+        Point DefaultResolution { get; }
+
+        /// <summary>
         /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
         /// </summary>
         Color ErrorSpritesColor { get; }
@@ -117,6 +123,10 @@
                 }
             }
         }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public Point DefaultResolution { get; internal set; }
 
         /// <inheritdoc/>
         [DataMember]

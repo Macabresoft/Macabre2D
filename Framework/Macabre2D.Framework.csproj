@@ -80,7 +80,8 @@
     <Compile Include="Interfaces\IAsset.cs" />
     <Compile Include="Interfaces\IEnableableComponent.cs" />
     <Compile Include="Interfaces\IIdentifiableComponent.cs" />
-    <Compile Include="LayerSettings.cs" />
+    <Compile Include="Settings\GraphicsSettings.cs" />
+    <Compile Include="Settings\LayerSettings.cs" />
     <Compile Include="Physics\BaseBody.cs" />
     <Compile Include="Physics\IDynamicPhysicsBody.cs" />
     <Compile Include="Physics\IPhysicsBody.cs" />
@@ -136,7 +137,7 @@
     <Compile Include="Utility\EmptyComponent.cs" />
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Extensions\KeyboardStateExtensions.cs" />
-    <Compile Include="GameSettings.cs" />
+    <Compile Include="Settings\GameSettings.cs" />
     <Compile Include="Interfaces\IBaseComponent.cs" />
     <Compile Include="Interfaces\IAssetComponent.cs" />
     <Compile Include="Interfaces\IGame.cs" />
