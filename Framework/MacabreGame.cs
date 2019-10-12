@@ -15,6 +15,7 @@
         private static IGame _instance = new EmptyGame();
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
+        private GraphicsSettings _graphicsSettings = new GraphicsSettings();
         private bool _isInitialized;
         private IGameSettings _settings;
 
@@ -94,7 +95,16 @@
         }
 
         /// <inheritdoc/>
-        public GraphicsSettings GraphicsSettings { get; private set; } = new GraphicsSettings();
+        public GraphicsSettings GraphicsSettings {
+            get {
+                return this._graphicsSettings;
+            }
+
+            set {
+                this._graphicsSettings = value;
+                this.ApplyGraphicsSettings();
+            }
+        }
 
         /// <inheritdoc/>
         public bool InstantiatePrefabs {
@@ -130,6 +140,10 @@
         public void SaveAndApplyGraphicsSettings() {
             this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
             this.ApplyGraphicsSettings();
+        }
+
+        public void SaveGraphicsSettings() {
+            this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
         }
 
         protected virtual void ApplyGraphicsSettings() {
@@ -173,10 +187,9 @@
                 this.GraphicsSettings = graphicsSettings;
             }
             else {
-                this.GraphicsSettings = this.Settings.DefaultGraphicsSettings;
+                this.GraphicsSettings = this.Settings.DefaultGraphicsSettings.Clone();
             }
 
-            this.ApplyGraphicsSettings();
             this._isInitialized = true;
         }
 

@@ -27,6 +27,22 @@
         private Point _resolution = new Point(1920, 1080);
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="GraphicsSettings"/> class.
+        /// </summary>
+        public GraphicsSettings() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphicsSettings"/> class.
+        /// </summary>
+        /// <param name="displayMode">The display mode.</param>
+        /// <param name="resolution">The resolution.</param>
+        public GraphicsSettings(DisplayModes displayMode, Point resolution) {
+            this._displayMode = displayMode;
+            this._resolution = resolution;
+        }
+
+        /// <summary>
         /// Occurs when either <see cref="DisplayMode"/> or <see cref="Resolution"/> has changed.
         /// </summary>
         public event EventHandler SettingsChanged;
@@ -63,6 +79,10 @@
                     this.SettingsChanged.SafeInvoke(this);
                 }
             }
+        }
+
+        public GraphicsSettings Clone() {
+            return new GraphicsSettings(this.DisplayMode, this.Resolution);
         }
     }
 }
