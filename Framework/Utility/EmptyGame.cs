@@ -38,11 +38,17 @@
         }
 
         /// <inheritdoc/>
+        public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
+
+        /// <inheritdoc/>
         public bool InstantiatePrefabs {
             get {
                 return false;
             }
         }
+
+        /// <inheritdoc/>
+        public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
         /// <inheritdoc/>
         public IGameSettings Settings {
@@ -56,6 +62,11 @@
             get {
                 return default;
             }
+        }
+
+        /// <inheritdoc/>
+        public void SaveAndApplyGraphicsSettings() {
+            return;
         }
     }
 }

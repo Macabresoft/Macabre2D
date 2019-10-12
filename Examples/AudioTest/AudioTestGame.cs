@@ -3,10 +3,12 @@
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class AudioTestGame : MacabreGame {
 
         protected override void LoadContent() {

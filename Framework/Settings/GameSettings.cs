@@ -12,6 +12,12 @@
     public interface IGameSettings {
 
         /// <summary>
+        /// Gets the default graphics settings.
+        /// </summary>
+        /// <value>The default graphics settings.</value>
+        GraphicsSettings DefaultGraphicsSettings { get; }
+
+        /// <summary>
         /// Gets the default resolution.
         /// </summary>
         /// <value>The default resolution.</value>
@@ -123,6 +129,10 @@
                 }
             }
         }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public GraphicsSettings DefaultGraphicsSettings { get; } = new GraphicsSettings();
 
         /// <inheritdoc/>
         [DataMember]

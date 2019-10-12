@@ -13,6 +13,7 @@
 	* Settings will be saved, if possible.
 * Can select an auto-save if the editor was shutdown incorrectly last session.
 * Custom skull icon now used.
+* Graphics settings can be saved, loaded, and applied.
 
 ## Refactors
 

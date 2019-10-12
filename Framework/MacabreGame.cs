@@ -94,11 +94,17 @@
         }
 
         /// <inheritdoc/>
+        public GraphicsSettings GraphicsSettings { get; private set; } = new GraphicsSettings();
+
+        /// <inheritdoc/>
         public bool InstantiatePrefabs {
             get {
                 return true;
             }
         }
+
+        /// <inheritdoc/>
+        public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager(); // TODO: allow other platforms
 
         /// <inheritdoc/>
         public IGameSettings Settings {
@@ -121,6 +127,32 @@
             }
         }
 
+        public void SaveAndApplyGraphicsSettings() {
+            this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
+            this.ApplyGraphicsSettings();
+        }
+
+        protected virtual void ApplyGraphicsSettings() {
+            this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
+            this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
+
+            if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
+                // TODO: consider in this mode setting the back buffer width and height to the resolution of the current screen no matter what
+                this.Window.IsBorderless = true;
+                this._graphics.IsFullScreen = false;
+            }
+            else if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
+                this.Window.IsBorderless = false;
+                this._graphics.IsFullScreen = true;
+            }
+            else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
+                this.Window.IsBorderless = false;
+                this._graphics.IsFullScreen = false;
+            }
+
+            this._graphics.ApplyChanges();
+        }
+
         /// <inheritdoc/>
         protected override void Draw(GameTime gameTime) {
             if (this.CurrentScene != null) {
@@ -136,6 +168,15 @@
         protected override void Initialize() {
             base.Initialize();
             this.CurrentScene?.Initialize();
+
+            if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, out var graphicsSettings)) {
+                this.GraphicsSettings = graphicsSettings;
+            }
+            else {
+                this.GraphicsSettings = this.Settings.DefaultGraphicsSettings;
+            }
+
+            this.ApplyGraphicsSettings();
             this._isInitialized = true;
         }
 
@@ -143,8 +184,8 @@
         protected override void LoadContent() {
             this.AssetManager = this.Content.Load<AssetManager>(Framework.AssetManager.ContentFileName);
             this.AssetManager.Initialize(this.Content);
-            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.CurrentScene = this.AssetManager.Load<Scene>(this.Settings.StartupSceneAssetId);
             this.CurrentScene?.LoadContent();
             this._isLoaded = true;

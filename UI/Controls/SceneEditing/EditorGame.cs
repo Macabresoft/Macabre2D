@@ -79,11 +79,15 @@
 
         public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
 
+        public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
+
         public bool InstantiatePrefabs {
             get {
                 return false;
             }
         }
+
+        public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
         public IGameSettings Settings {
             get {
@@ -119,6 +123,10 @@
             // and bounding area to be reevaluated.
             this._cameraWrapper.Camera.ViewHeight += 1;
             this._cameraWrapper.Camera.ViewHeight -= 1;
+        }
+
+        public void SaveAndApplyGraphicsSettings() {
+            return;
         }
 
         public void SetContentPath(string path) {

@@ -6,48 +6,53 @@
     /// <summary>
     /// Manages the loading and saving of save data.
     /// </summary>
-    public sealed class WindowsSaveDataManager {
+    public sealed class WindowsSaveDataManager : ISaveDataManager {
 
-        /// <summary>
-        /// Deletes the specified save data.
-        /// </summary>
-        /// <param name="fileName">Name of the file.</param>
+        /// <inheritdoc/>
         public void Delete(string fileName) {
-            var filePath = WindowsSaveDataManager.GetFilePath(fileName);
+            var filePath = this.GetFilePath(fileName);
             if (File.Exists(filePath)) {
                 File.Delete(filePath);
             }
         }
 
-        /// <summary>
-        /// Loads the specified save data.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="fileName">Name of the file.</param>
-        /// <returns>The save data.</returns>
+        /// <inheritdoc/>
+        public string GetPathToDataDirectory() {
+            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        }
+
+        /// <inheritdoc/>
         public T Load<T>(string fileName) where T : IVersionedData {
-            var filePath = WindowsSaveDataManager.GetFilePath(fileName);
+            var filePath = this.GetFilePath(fileName);
             if (!File.Exists(filePath)) {
                 throw new FileNotFoundException(filePath);
             }
 
-            return Serializer.Instance.Deserialize<T>(WindowsSaveDataManager.GetFilePath(fileName));
+            return Serializer.Instance.Deserialize<T>(filePath);
         }
 
-        /// <summary>
-        /// Saves the specified save data.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="saveData">The save data.</param>
+        /// <inheritdoc/>
         public void Save<T>(string fileName, T saveData) where T : IVersionedData {
-            Serializer.Instance.Serialize(saveData, WindowsSaveDataManager.GetFilePath(fileName));
+            Serializer.Instance.Serialize(saveData, this.GetFilePath(fileName));
         }
 
-        private static string GetFilePath(string fileName) {
-            // TODO: platforms other than windows
-            var appDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(appDataDirectory, GameSettings.Instance.ProjectName.ToSafeString(), fileName);
+        /// <inheritdoc/>
+        public bool TryLoad<T>(string fileName, out T loadedData) where T : IVersionedData {
+            var filePath = this.GetFilePath(fileName);
+            var result = true;
+            try {
+                loadedData = Serializer.Instance.Deserialize<T>(filePath);
+            }
+            catch {
+                result = false;
+                loadedData = default;
+            }
+
+            return result;
+        }
+
+        private string GetFilePath(string fileName) {
+            return Path.Combine(this.GetPathToDataDirectory(), GameSettings.Instance.ProjectName.ToSafeString(), fileName);
         }
     }
 }
