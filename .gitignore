@@ -8,7 +8,7 @@
 /Project/Settings.m2dgs
 /Project/*.mgcb
 /Project/bin/*
-/Project/Assets/*
+/Project/Content/*
 
 # User-specific files
 *.suo

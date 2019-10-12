@@ -38,8 +38,8 @@
 
         public Shader Shader { get; private set; } = new Shader();
 
-        public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
-            var path = Path.Combine(projectDirectoryPath, this.GetContentPath());
+        public override void BuildProcessorCommands(StringBuilder contentStringBuilder) {
+            var path = this.GetContentPath();
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine(@"/importer:EffectImporter");
             contentStringBuilder.AppendLine(@"/processor:EffectProcessor");

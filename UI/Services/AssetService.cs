@@ -42,6 +42,8 @@
 
         public async Task<bool> BuildAssets(BuildConfiguration configuration, BuildMode mode, params Asset[] assets) {
             var result = true;
+
+            // TODO: this is probably broken because of output directory.
             await Task.Run(() => {
                 var tempPath = Path.Combine(this._fileService.ProjectDirectoryPath, "temp");
                 var dllPaths = new[] {
@@ -50,18 +52,18 @@
                     $@"{this._fileService.ProjectDirectoryPath}\bin\{configuration.Platform.ToString()}\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
                 };
 
+                var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
                 configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, true, dllPaths);
                 var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{FileHelper.TempName}{FileHelper.ContentExtension}");
-                var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
                 Directory.CreateDirectory(outputDirectory);
 
                 var exitCode = ContentBuilder.BuildContent(
                     out var exception,
-                    $"/@:{contentFilePath}",
                     $"/platform:{configuration.Platform.ToString()}",
                     $@"/outputDir:{outputDirectory}",
                     $"/workingDir:{this._fileService.ProjectDirectoryPath}",
-                    $"/incremental:{true}");
+                    $"/incremental:{true}",
+                    $"/@:{contentFilePath}");
 
                 if (exitCode != 0) {
                     result = false;

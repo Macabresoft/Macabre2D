@@ -181,7 +181,7 @@
             }
 
             public override string GetPath() {
-                return Path.Combine(this._project._projectDirectoryPath, base.GetPath());
+                return Path.Combine(this._project._projectDirectoryPath, "Content", base.GetPath());
             }
         }
     }

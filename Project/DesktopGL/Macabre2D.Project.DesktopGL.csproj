@@ -127,8 +127,8 @@
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <MonoGameContentReference Include="..\DesktopGL.mgcb">
-      <Link>DesktopGL.mgcb</Link>
+    <MonoGameContentReference Include="..\Content\DesktopGL.mgcb">
+      <Link>Content\DesktopGL.mgcb</Link>
     </MonoGameContentReference>
     <None Include="app.config" />
   </ItemGroup>

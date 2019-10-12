@@ -81,8 +81,8 @@
         public async Task<bool> BuildAllAssets(BuildMode mode) {
             var result = true;
             await Task.Run(() => {
-                Serializer.Instance.Serialize(this.CurrentProject.AssetManager, Path.Combine(this._fileService.ProjectDirectoryPath, $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
-                Serializer.Instance.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
+                Serializer.Instance.Serialize(this.CurrentProject.AssetManager, Path.Combine(this._fileService.ProjectDirectoryPath, "Content", $"{AssetManager.ContentFileName}{FileHelper.AssetManagerExtension}"));
+                Serializer.Instance.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, "Content", $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
 
                 var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
                 var dllPaths = new[] {
@@ -92,21 +92,33 @@
                 };
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
-                    configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, false, dllPaths);
-                    var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{configuration.Platform.ToString()}.mgcb");
                     var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
+                    configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, false, dllPaths);
+                    var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, "Content", $"{configuration.Platform.ToString()}.mgcb");
                     Directory.CreateDirectory(outputDirectory);
+
+                    var contentBinDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "Content", "bin", configuration.Platform.ToString());
+                    if (Directory.Exists(contentBinDirectory)) {
+                        Directory.Delete(contentBinDirectory, true);
+                    }
 
                     var exitCode = ContentBuilder.BuildContent(
                         out var exception,
-                        $"/@:{contentFilePath}",
                         $"/platform:{configuration.Platform.ToString()}",
-                        $@"/outputDir:{outputDirectory}",
-                        $"/workingDir:{this._fileService.ProjectDirectoryPath}");
+                        @"/outputDir:bin/$(Platform)",
+                        $"/workingDir:{Path.Combine(this._fileService.ProjectDirectoryPath, "Content")}",
+                        $"/@:{contentFilePath}");
 
                     if (exitCode != 0) {
                         result = false;
                         this._loggingService.LogError($"Content could not be built for '{this.CurrentProject.Name}' in '{mode.ToString()}' mode: {exception?.Message}");
+                    }
+                    else {
+                        if (Directory.Exists(outputDirectory)) {
+                            Directory.Delete(outputDirectory, true);
+                        }
+
+                        FileHelper.CopyDirectory(contentBinDirectory, outputDirectory);
                     }
                 }
             });

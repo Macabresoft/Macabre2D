@@ -4,7 +4,6 @@
     using MahApps.Metro.IconPacks;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Runtime.Serialization;
     using System.Text;
 
@@ -31,8 +30,8 @@
             }
         }
 
-        public override void BuildProcessorCommands(StringBuilder contentStringBuilder, string projectDirectoryPath) {
-            var path = Path.Combine(projectDirectoryPath, this.GetContentPath());
+        public override void BuildProcessorCommands(StringBuilder contentStringBuilder) {
+            var path = this.GetContentPath();
             contentStringBuilder.AppendLine($"#begin {path}");
             contentStringBuilder.AppendLine($@"/importer:{this.GetImporterName()}");
             contentStringBuilder.AppendLine(@"/processor:SoundEffectProcessor");
