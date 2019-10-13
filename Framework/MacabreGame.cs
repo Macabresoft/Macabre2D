@@ -147,21 +147,24 @@
         }
 
         protected virtual void ApplyGraphicsSettings() {
-            this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
-            this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
-
             if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
-                // TODO: consider in this mode setting the back buffer width and height to the resolution of the current screen no matter what
+                this._graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                this._graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                 this.Window.IsBorderless = true;
                 this._graphics.IsFullScreen = false;
             }
-            else if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
-                this.Window.IsBorderless = false;
-                this._graphics.IsFullScreen = true;
-            }
-            else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
-                this.Window.IsBorderless = false;
-                this._graphics.IsFullScreen = false;
+            else {
+                this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
+                this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
+
+                if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
+                    this.Window.IsBorderless = false;
+                    this._graphics.IsFullScreen = true;
+                }
+                else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
+                    this.Window.IsBorderless = false;
+                    this._graphics.IsFullScreen = false;
+                }
             }
 
             this._graphics.ApplyChanges();
@@ -211,9 +214,12 @@
 
         /// <inheritdoc/>
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
-                //this.Exit();
+#if DEBUG
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Escape) && keyboardState.IsKeyDown(Keys.LeftAlt)) {
+                this.Exit();
             }
+#endif
 
             this.CurrentScene?.Update(gameTime);
         }
