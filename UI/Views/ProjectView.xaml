@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
              xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
+             xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls">
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
@@ -10,6 +11,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -33,10 +36,16 @@
                    VerticalAlignment="Center"
                    Text="Name" />
 
-        <TextBox Grid.Row="0"
-                 Grid.Column="1"
-                 VerticalAlignment="Center"
+        <Border Grid.Row="0"
+                Grid.Column="1"
+                Background="{x:Null}"
+                BorderThickness="0"
+                VerticalAlignment="Center"
+                Margin="{StaticResource DoubleMarginL}">
+            <TextBox VerticalAlignment="Center"
+                 Margin="{StaticResource StandardMarginAll}"
                  Text="{Binding ProjectName, ValidatesOnDataErrors=True}" />
+        </Border>
 
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
@@ -45,17 +54,23 @@
                    VerticalAlignment="Center"
                    Text="Startup Scene" />
 
-        <ComboBox Grid.Row="1"
-                  Grid.Column="1"
-                  VerticalAlignment="Center"
-                  ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
-                  SelectedItem="{Binding SelectedStartUpSceneAsset}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource _removeFileExtensionConverter}}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Background="{x:Null}"
+                BorderThickness="0"
+                VerticalAlignment="Center"
+                Margin="{StaticResource DoubleMarginL}">
+            <ComboBox VerticalAlignment="Center"
+                      Margin="{StaticResource StandardMarginAll}"
+                      ItemsSource="{Binding ProjectService.CurrentProject.SceneAssets}"
+                      SelectedItem="{Binding SelectedStartUpSceneAsset}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Name, Converter={StaticResource _removeFileExtensionConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Border>
 
         <TextBlock Grid.Row="2"
                    Grid.Column="0"
@@ -74,36 +89,63 @@
                    FontWeight="Bold"
                    Margin="{StaticResource StandardMarginAll}"
                    VerticalAlignment="Center"
-                   Text="Fallback Background" />
+                   Text="Default Display Mode" />
 
-        <valueEditors:ColorEditor Grid.Row="3"
-                                  Grid.Column="1"
-                                  VerticalAlignment="Center"
-                                  Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <valueEditors:EnumEditor Grid.Row="3"
+                                 Grid.Column="1"
+                                 VerticalAlignment="Center"
+                                 EnumType="{x:Type framework:DisplayModes}"
+                                 Value="{Binding DefaultDisplayMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Grid.Row="4"
                    Grid.Column="0"
                    FontWeight="Bold"
                    Margin="{StaticResource StandardMarginAll}"
                    VerticalAlignment="Center"
+                   Text="Default Resolution" />
+
+        <valueEditors:PointEditor Grid.Row="4"
+                                  Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  MinXValue="1"
+                                  MinYValue="1"
+                                  Value="{Binding DefaultResolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Row="5"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Margin="{StaticResource StandardMarginAll}"
+                   VerticalAlignment="Center"
+                   Text="Fallback Background" />
+
+        <valueEditors:ColorEditor Grid.Row="5"
+                                  Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  Value="{Binding FallbackBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Row="6"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Margin="{StaticResource StandardMarginAll}"
+                   VerticalAlignment="Center"
                    Text="Error Sprite Color" />
 
-        <valueEditors:ColorEditor Grid.Row="4"
+        <valueEditors:ColorEditor Grid.Row="6"
                                   Grid.Column="1"
                                   VerticalAlignment="Center"
                                   Value="{Binding ErrorSpritesColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Separator Grid.Row="5"
+        <Separator Grid.Row="7"
                    Grid.ColumnSpan="2" />
 
-        <controls:LayersNameEditor Grid.Row="6"
-                               Grid.ColumnSpan="2" />
+        <controls:LayersNameEditor Grid.Row="8"
+                                   Grid.ColumnSpan="2" />
 
         <controls:LayerMatrixEditor Margin="{StaticResource DoubleMarginTB}"
-                                    Grid.Row="7"
+                                    Grid.Row="9"
                                     Grid.ColumnSpan="2" />
 
-        <Separator Grid.Row="8"
+        <Separator Grid.Row="10"
                    Grid.ColumnSpan="2" />
     </Grid>
 </UserControl>

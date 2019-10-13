@@ -30,6 +30,58 @@
 
         public IBusyService BusyService { get; }
 
+        public DisplayModes DefaultDisplayMode {
+            get {
+                return this.ProjectService.CurrentProject?.GameSettings.DefaultGraphicsSettings.DisplayMode ?? DisplayModes.Windowed;
+            }
+
+            set {
+                var originalValue = this.DefaultDisplayMode;
+
+                if (value != originalValue) {
+                    var originalHasChanges = this.ProjectService.HasChanges;
+                    var undoCommand = new UndoCommand(
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.DefaultGraphicsSettings.DisplayMode = value;
+                            this.ProjectService.HasChanges = true;
+                        },
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.DefaultGraphicsSettings.DisplayMode = originalValue;
+                            this.ProjectService.HasChanges = originalHasChanges;
+                        },
+                        () => this.RaisePropertyChanged(nameof(this.ErrorSpritesColor)));
+
+                    this._undoService.Do(undoCommand);
+                }
+            }
+        }
+
+        public Point DefaultResolution {
+            get {
+                return this.ProjectService.CurrentProject?.GameSettings.DefaultGraphicsSettings.Resolution ?? new Point(1920, 1080);
+            }
+
+            set {
+                var originalValue = this.DefaultResolution;
+
+                if (value != originalValue) {
+                    var originalHasChanges = this.ProjectService.HasChanges;
+                    var undoCommand = new UndoCommand(
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.DefaultGraphicsSettings.Resolution = value;
+                            this.ProjectService.HasChanges = true;
+                        },
+                        () => {
+                            this.ProjectService.CurrentProject.GameSettings.DefaultGraphicsSettings.Resolution = originalValue;
+                            this.ProjectService.HasChanges = originalHasChanges;
+                        },
+                        () => this.RaisePropertyChanged(nameof(this.ErrorSpritesColor)));
+
+                    this._undoService.Do(undoCommand);
+                }
+            }
+        }
+
         public Color ErrorSpritesColor {
             get {
                 return this.ProjectService.CurrentProject?.GameSettings.ErrorSpritesColor ?? Color.HotPink;
@@ -165,6 +217,8 @@
         }
 
         private void RaisePropertyChangedEvents() {
+            this.RaisePropertyChanged(nameof(this.DefaultDisplayMode));
+            this.RaisePropertyChanged(nameof(this.DefaultResolution));
             this.RaisePropertyChanged(nameof(this.ErrorSpritesColor));
             this.RaisePropertyChanged(nameof(this.FallbackBackgroundColor));
             this.RaisePropertyChanged(nameof(this.PixelsPerUnit));
