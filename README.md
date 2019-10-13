@@ -6,6 +6,10 @@ A 2D game engine built on top of the MonoGame framework. This project was starte
 
 Currently, the Macabre2D editor only supports Windows. The framework itself is technically setup to work with any platform; however, only Windows has been tested.
 
+## Git LFS
+
+You must install Git LFS (Large File Storage) to use this repository. [This article](https://help.github.com/en/articles/installing-git-large-file-storage) should assist you.
+
 ## Source Code
 
 The full source code is available here from GitHub:
@@ -14,7 +18,7 @@ The full source code is available here from GitHub:
  * Set up the root submodules by calling the following at the base of the repository: `git submodule update --init --recursive`
  * Set up the MonoGame submodules by running `git submodule update --init` in the MonoGame folder.
  * Run MonoGame/Protobuild.exe to generate MonoGame project files and solutions.
- * Open MonoGame/MonoGame.Framework.WindowsGL.sln and build it in *Release*.
+ * Open MonoGame/MonoGame.Framework.WindowsGL.sln, restore NuGet packages, and build it in *Release*.
  * Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
  * Restore NuGet packages for Macabre2D.sln.
  * Open Macabre2D.sln. From here you can run the editor or example projects.
