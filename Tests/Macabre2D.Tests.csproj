@@ -95,8 +95,6 @@
     <Compile Include="TestUpdateableComponent.cs" />
     <Compile Include="SceneTests.cs" />
     <Compile Include="Tiles\TileableComponentTests.cs" />
-    <Compile Include="UI\Services\ProjectServiceTests.cs" />
-    <Compile Include="UI\Services\UndoServiceTests.cs" />
     <Compile Include="VectorExtensionsTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -115,26 +113,6 @@
     <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsGL.csproj">
       <Project>{6d75e618-19ca-4c51-9546-f10965fbc0b8}</Project>
       <Name>MonoGame.Framework.WindowsGL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Common\Macabre2D.UI.Common.csproj">
-      <Project>{4e44cdc9-54cc-41c7-abec-00eaeaab623a}</Project>
-      <Name>Macabre2D.UI.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Models\Macabre2D.UI.Models.csproj">
-      <Project>{69ca3091-f9d2-4926-b115-8a8794db9f9a}</Project>
-      <Name>Macabre2D.UI.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Resources\Macabre2D.UI.Resources.csproj">
-      <Project>{310d54cb-e336-4f67-b39e-0d4ea4e9d2fa}</Project>
-      <Name>Macabre2D.UI.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\ServiceInterfaces\Macabre2D.UI.ServiceInterfaces.csproj">
-      <Project>{8f652395-ab15-4ebe-b73c-8fcd8b8a9646}</Project>
-      <Name>Macabre2D.UI.ServiceInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Services\Macabre2D.UI.Services.csproj">
-      <Project>{1571ed27-bbde-4b17-b80b-0da350770ac7}</Project>
-      <Name>Macabre2D.UI.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

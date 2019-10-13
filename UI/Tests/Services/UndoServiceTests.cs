@@ -1,12 +1,10 @@
-﻿namespace Macabre2D.Tests.UI.Services {
-
+﻿namespace Macabre2D.UI.Tests.Services {
     using Macabre2D.UI.Models;
     using Macabre2D.UI.Services;
     using NUnit.Framework;
 
     [TestFixture]
     public static class UndoServiceTests {
-
         [Test]
         [Category("Unit Test")]
         public static void UndoService_DoUndoRedoTest() {

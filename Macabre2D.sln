@@ -68,6 +68,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Project.Gameplay"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Project.DesktopGL", "Project\DesktopGL\Macabre2D.Project.DesktopGL.csproj", "{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Tests\Macabre2D.UI.Tests.csproj", "{B4EB0056-BF94-4017-BD15-1A02C7319923}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -248,6 +250,14 @@ Global
 		{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B}.Release|x64.ActiveCfg = Release|x64
 		{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B}.Release|x64.Build.0 = Release|x64
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Debug|x64.ActiveCfg = Debug|x64
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Debug|x64.Build.0 = Debug|x64
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Release|x64.ActiveCfg = Release|x64
+		{B4EB0056-BF94-4017-BD15-1A02C7319923}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -274,6 +284,7 @@ Global
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6} = {4EFE9D07-00FF-4974-A582-BF8CD8DD74A1}
 		{CE39DFB1-2C80-452F-A799-ABC878773B1D} = {B727E6A0-4AEF-42D9-9DAA-81A7AB782ED0}
 		{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B} = {B727E6A0-4AEF-42D9-9DAA-81A7AB782ED0}
+		{B4EB0056-BF94-4017-BD15-1A02C7319923} = {99C697D2-CC6C-4232-8AB9-5059BFBC7579}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}

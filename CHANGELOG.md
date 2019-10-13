@@ -6,7 +6,7 @@ N/A
 
 ## Refactors
 
-N/A
+* UI tests separated out into their own project.
 
 ## Fixes
 

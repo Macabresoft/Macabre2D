@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Tests.UI.Services {
+﻿namespace Macabre2D.UI.Tests.Services {
 
     using Macabre2D.UI.Models;
     using Macabre2D.UI.ServiceInterfaces;
@@ -27,7 +27,7 @@
                 Directory.Delete(projectDirectory, true);
             }
 
-            var sceneAsset = new SceneAsset(Guid.NewGuid().ToString());
+            var sceneAsset = new SceneAsset(Path.Combine(projectDirectory, Guid.NewGuid().ToString()));
             sceneService.CreateScene(Arg.Any<FolderAsset>(), Arg.Any<string>()).Returns(sceneAsset);
             sceneService.LoadScene(Arg.Any<Project>(), Arg.Any<SceneAsset>()).Returns(sceneAsset);
 
