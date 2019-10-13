@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* Changing project name and startup scene trigger the project as having changes.
 
 # 0.3.0.0
 

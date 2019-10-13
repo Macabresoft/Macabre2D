@@ -173,9 +173,16 @@
             set {
                 var originalValue = this.ProjectName;
                 if (value != originalValue) {
+                    var originalHasChanges = this.ProjectService.HasChanges;
                     var undoCommand = new UndoCommand(
-                        () => this.ProjectService.CurrentProject.Name = value,
-                        () => this.ProjectService.CurrentProject.Name = originalValue,
+                        () => {
+                            this.ProjectService.CurrentProject.Name = value;
+                            this.ProjectService.HasChanges = true;
+                        },
+                        () => {
+                            this.ProjectService.CurrentProject.Name = originalValue;
+                            this.ProjectService.HasChanges = originalHasChanges;
+                        },
                         () => this.RaisePropertyChanged(nameof(this.ProjectName)));
 
                     this._undoService.Do(undoCommand);
@@ -193,9 +200,16 @@
             set {
                 var originalValue = this.SelectedStartUpSceneAsset;
                 if (value != originalValue) {
+                    var originalHasChanges = this.ProjectService.HasChanges;
                     var undoCommand = new UndoCommand(
-                        () => this.ProjectService.CurrentProject.StartUpSceneAsset = value,
-                        () => this.ProjectService.CurrentProject.StartUpSceneAsset = originalValue,
+                        () => {
+                            this.ProjectService.CurrentProject.StartUpSceneAsset = value;
+                            this.ProjectService.HasChanges = true;
+                        },
+                        () => {
+                            this.ProjectService.CurrentProject.StartUpSceneAsset = originalValue;
+                            this.ProjectService.HasChanges = originalHasChanges;
+                        },
                         () => this.RaisePropertyChanged(nameof(this.SelectedStartUpSceneAsset)));
 
                     this._undoService.Do(undoCommand);
