@@ -1,8 +1,9 @@
 ﻿namespace Macabre2D.UI.Services.Content {
 
-    using MGCB;
     using System;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
 
     public static class ContentBuilder {
 
@@ -12,7 +13,19 @@
             var result = 0;
 
             try {
-                result = Program.Main(args);
+                var mgcbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"MSBuild\MonoGame\v3.0\Tools", "MGCB.exe");
+                var startInfo = new ProcessStartInfo {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    FileName = mgcbPath,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    Arguments = string.Join(" ", args.Select(x => $"\"{x}\""))
+                };
+
+                using (var process = Process.Start(startInfo)) {
+                    process.WaitForExit();
+                    result = process.ExitCode;
+                }
             }
             catch (Exception e) {
                 exception = e;

@@ -2,11 +2,12 @@
 
 ## Features
 
-N/A
+* Framework now uses a MonoGame PCL that can be used across multiple platforms.
 
 ## Refactors
 
 * UI tests separated out into their own project.
+* Submodules removed in favor of NuGet packages for both MonoGame and WpfInterop.
 
 ## Fixes
 

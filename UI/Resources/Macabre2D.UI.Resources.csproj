@@ -141,12 +141,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <Content Include="..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\AnyCPU\Debug\MonoGame.Framework.dll">
-      <Link>Configurations\DesktopGL\MonoGame.Framework.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="defaultshader.fx" />
   </ItemGroup>

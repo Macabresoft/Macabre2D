@@ -161,14 +161,14 @@
         /// <inheritdoc/>
         public void Unload(Guid id) {
             if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
-                this._contentManager.Unload(path);
+                // TODO: address the fact that this isn't possible this._contentManager.Unload(path);
             }
         }
 
         /// <inheritdoc/>
         public void Unload(string path) {
             if (this._contentManager != null) {
-                this._contentManager.Unload(path);
+                // TODO: address the fact that this isn't possible this._contentManager.Unload(path);
             }
         }
     }
