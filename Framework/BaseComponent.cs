@@ -20,9 +20,7 @@
         private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
 
         private readonly List<Func<BaseComponent, bool>> _resolveChildActions = new List<Func<BaseComponent, bool>>();
-
         private readonly Transform _transform = new Transform();
-
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
         [DataMember(Name = "Draw Order")]
