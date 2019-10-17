@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">
-      <Project>{D5B27B29-00A8-40A7-9911-46C84EBC7F37}</Project>
+      <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj">
