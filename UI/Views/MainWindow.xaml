@@ -129,22 +129,22 @@
                 </metro:MetroAnimatedSingleRowTabControl>
 
                 <local:ProjectView Grid.Row="1"
-                                   IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                   IsEnabled="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _inverseBoolConverter}}"
                                    Margin="{StaticResource DoubleMarginAll}"
                                    Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Settings}}" />
 
                 <local:AssetsView Grid.Row="1"
-                                  IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                  IsEnabled="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _inverseBoolConverter}}"
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Assets}}" />
 
                 <local:ComponentsView Grid.Row="1"
-                                      IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                      IsEnabled="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _inverseBoolConverter}}"
                                       Margin="{StaticResource DoubleMarginAll}"
                                       Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Components}}" />
 
                 <local:ModulesView Grid.Row="1"
-                                   IsEnabled="{Binding BusyService.IsBusy, Converter={StaticResource _inverseBoolConverter}}"
+                                   IsEnabled="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _inverseBoolConverter}}"
                                    Margin="{StaticResource DoubleMarginAll}"
                                    Visibility="{Binding DataContext.SelectedTabType, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToVisibilityConverter}, ConverterParameter={x:Static viewModels:TabTypes.Modules}}" />
             </Grid>
