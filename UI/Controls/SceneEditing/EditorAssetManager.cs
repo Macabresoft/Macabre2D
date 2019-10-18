@@ -56,13 +56,5 @@
         public void Unload() {
             this._assetManager.Unload();
         }
-
-        public void Unload(Guid id) {
-            this._assetManager.Unload(id);
-        }
-
-        public void Unload(string path) {
-            this._assetManager.Unload(path);
-        }
     }
 }

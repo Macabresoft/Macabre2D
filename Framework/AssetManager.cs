@@ -55,20 +55,7 @@
         /// <summary>
         /// Unloads the content manager.
         /// </summary>
-        /// <param name="id">The identifier.</param>
         void Unload();
-
-        /// <summary>
-        /// Unloads the asset with the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        void Unload(Guid id);
-
-        /// <summary>
-        /// Unloads the asset with the specified path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        void Unload(string path);
     }
 
     /// <summary>
@@ -156,20 +143,6 @@
         /// <inheritdoc/>
         public void Unload() {
             this._contentManager?.Unload();
-        }
-
-        /// <inheritdoc/>
-        public void Unload(Guid id) {
-            if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
-                // TODO: address the fact that this isn't possible this._contentManager.Unload(path);
-            }
-        }
-
-        /// <inheritdoc/>
-        public void Unload(string path) {
-            if (this._contentManager != null) {
-                // TODO: address the fact that this isn't possible this._contentManager.Unload(path);
-            }
         }
     }
 }

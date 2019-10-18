@@ -9,6 +9,8 @@
 
 * UI tests separated out into their own project.
 * Submodules removed in favor of NuGet packages for both MonoGame and WpfInterop.
+* Ability to reload assets has been removed as it did not work and a solution may be too complicated.
+    * Simply reload the editor if you need to reload assets.
 
 ## Fixes
 

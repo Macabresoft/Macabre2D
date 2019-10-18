@@ -16,7 +16,6 @@
         private readonly RelayCommand _deleteAssetCommand;
         private readonly IDialogService _dialogService;
         private readonly RelayCommand _newFolderCommand;
-        private readonly RelayCommand _reloadAssetCommand;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
 
@@ -38,7 +37,6 @@
             this._deleteAssetCommand = new RelayCommand(async () => await this.DeleteAsset(), () => this.AssetService.SelectedAsset?.Parent != null);
             this._newFolderCommand = new RelayCommand(this.CreateNewFolder, () => this.AssetService.SelectedAsset is FolderAsset);
             this.OpenSceneCommand = new RelayCommand<Asset>(this.OpenScene, asset => typeof(SceneAsset).IsAssignableFrom(asset.GetType()));
-            this._reloadAssetCommand = new RelayCommand(async () => await this.ReloadAsset(), () => this.AssetService.SelectedAsset is IReloadableAsset);
             this.AssetService.PropertyChanged += this.AssetService_PropertyChanged;
         }
 
@@ -66,12 +64,6 @@
         public ICommand OpenSceneCommand { get; }
 
         public IProjectService ProjectService { get; }
-
-        public ICommand ReloadAssetCommand {
-            get {
-                return this._reloadAssetCommand;
-            }
-        }
 
         private void AddAsset() {
             var result = this._dialogService.ShowSelectTypeAndNameDialog(typeof(AddableAsset), "Select an Asset");
@@ -114,7 +106,6 @@
                 this._addAssetCommand.RaiseCanExecuteChanged();
                 this._deleteAssetCommand.RaiseCanExecuteChanged();
                 this._newFolderCommand.RaiseCanExecuteChanged();
-                this._reloadAssetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -156,26 +147,6 @@
         private void OpenScene(Asset asset) {
             if (asset is SceneAsset scene) {
                 this._sceneService.LoadScene(this.ProjectService.CurrentProject, scene);
-            }
-        }
-
-        private async Task ReloadAsset() {
-            if (this.AssetService.SelectedAsset is IReloadableAsset reloadable) {
-                var task = Task.Run(async () => {
-                    var assetIds = reloadable.GetOwnedAssetIds();
-                    foreach (var assetId in assetIds) {
-                        this.ProjectService.CurrentProject.AssetManager.Unload(assetId);
-                    }
-
-                    if (this.AssetService.SelectedAsset is MetadataAsset metadataAsset) {
-                        metadataAsset.Save();
-                    }
-
-                    await this.AssetService.BuildAssets(this.ProjectService.CurrentProject.EditorConfiguration, BuildMode.Debug, this.AssetService.SelectedAsset);
-                    reloadable.Reload();
-                });
-
-                await this.BusyService.PerformTask(task, true);
             }
         }
     }
