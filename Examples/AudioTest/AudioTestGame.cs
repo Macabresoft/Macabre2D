@@ -25,6 +25,9 @@
             audioPlayer.AudioClip.AssetId = lasterId;
             audioPlayer.AddChild(new VolumeController());
 
+            var synth = new SynthTestComponent();
+            scene.AddComponent(synth);
+
             scene.SaveToFile(@"TestGame - CurrentLevel.json");
             this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
             this._isLoaded = true;
