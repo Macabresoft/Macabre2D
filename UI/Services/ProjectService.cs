@@ -13,8 +13,6 @@
     using System.Threading.Tasks;
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
-        private const string AssetsLocation = @"Assets";
-        private readonly IDialogService _dialogService;
         private readonly IFileService _fileService;
         private readonly ILoggingService _loggingService;
         private readonly ISceneService _sceneService;
@@ -22,11 +20,9 @@
         private bool _hasChanges;
 
         public ProjectService(
-            IDialogService dialogService,
             IFileService fileService,
             ILoggingService loggingService,
             ISceneService sceneService) {
-            this._dialogService = dialogService;
             this._fileService = fileService;
             this._loggingService = loggingService;
             this._sceneService = sceneService;
@@ -191,7 +187,6 @@
 
             project.Initialize(this._fileService.ProjectDirectoryPath);
             await Task.Run(() => Serializer.Instance.Serialize(project, pathToProject));
-            Directory.CreateDirectory(Path.Combine(this._fileService.ProjectDirectoryPath, AssetsLocation));
             var scene = await this._sceneService.CreateScene(project.AssetFolder, "Default");
             project.SceneAssets.Add(scene);
             project.StartUpSceneAsset = scene;
