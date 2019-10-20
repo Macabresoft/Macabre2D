@@ -1,6 +1,6 @@
-﻿namespace Macabre2D.UI.Editor {
+﻿namespace Macabre2D.UI.ProjectEditor {
 
-    using Macabre2D.UI.Editor.Properties;
+    using Macabre2D.UI.ProjectEditor.Properties;
     using Macabre2D.UI.ServiceInterfaces;
 
     public sealed class SettingsManager {

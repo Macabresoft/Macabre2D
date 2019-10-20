@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.Editor {
+﻿namespace Macabre2D.UI.ProjectEditor {
 
     using System.Reflection;
     using System.Windows.Input;

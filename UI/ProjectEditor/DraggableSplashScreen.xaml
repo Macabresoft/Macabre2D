@@ -1,4 +1,4 @@
-﻿<metro:MetroWindow x:Class="Macabre2D.UI.Editor.DraggableSplashScreen"
+﻿<metro:MetroWindow x:Class="Macabre2D.UI.ProjectEditor.DraggableSplashScreen"
                    x:Name="_splashScreen"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

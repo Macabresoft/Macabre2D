@@ -1,8 +1,8 @@
-﻿namespace Macabre2D.UI.Editor {
+﻿namespace Macabre2D.UI.ProjectEditor {
 
     using log4net;
     using Macabre2D.UI.Common;
-    using Macabre2D.UI.Editor.Properties;
+    using Macabre2D.UI.ProjectEditor.Properties;
     using Macabre2D.UI.ServiceInterfaces;
     using Macabre2D.UI.Services;
     using Macabre2D.UI.Views;

@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F532F9FC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{99C697D2-CC6C-4232-8AB9-5059BFBC7579}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Editor", "UI\Editor\Macabre2D.UI.Editor.csproj", "{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.ProjectEditor", "UI\ProjectEditor\Macabre2D.UI.ProjectEditor.csproj", "{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Models", "UI\Models\Macabre2D.UI.Models.csproj", "{69CA3091-F9D2-4926-B115-8A8794DB9F9A}"
 EndProject
