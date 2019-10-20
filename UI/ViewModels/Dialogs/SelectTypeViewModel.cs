@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.ViewModels.Dialogs {
 
     using GalaSoft.MvvmLight.CommandWpf;
+    using Macabre2D.Framework;
     using Macabre2D.UI.Models.Validation;
     using Macabre2D.UI.ServiceInterfaces;
     using System;
@@ -17,8 +18,11 @@
         public SelectTypeViewModel(IAssemblyService assemblyService, Type baseType) {
             this._assemblyService = assemblyService;
             this._baseType = baseType;
+            this.FilterFunc = new Func<object, string, bool>(this.CheckValueMatchesFilter);
             this.LoadedCommand = new RelayCommand(async () => await this.OnLoaded());
         }
+
+        public Func<object, string, bool> FilterFunc { get; }
 
         public RelayCommand LoadedCommand { get; }
 
@@ -47,6 +51,15 @@
         }
 
         public ObservableCollection<Type> Types { get; } = new ObservableCollection<Type>();
+
+        private bool CheckValueMatchesFilter(object value, string filterText) {
+            var result = false;
+            if (value is Type type) {
+                result = type.FullName.Contains(filterText, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return result;
+        }
 
         private async Task OnLoaded() {
             if (this._baseType != null) {

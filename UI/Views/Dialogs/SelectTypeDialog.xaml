@@ -4,7 +4,9 @@
                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:controls="clr-namespace:Macabre2D.UI.Controls;assembly=Macabre2D.UI.Controls"
                    xmlns:converters="clr-namespace:Macabre2D.UI.Converters;assembly=Macabre2D.UI.Converters"
+                   xmlns:valueEditors="clr-namespace:Macabre2D.UI.Controls.ValueEditors;assembly=Macabre2D.UI.Controls"
                    Style="{StaticResource StandardWindowStyle}"
                    Width="600"
                    Height="600"
@@ -19,15 +21,22 @@
     <metro:MetroWindow.Resources>
         <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
     </metro:MetroWindow.Resources>
-    <Grid>
+    <Grid Margin="{StaticResource DoubleMarginAll}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0"
-                 Margin="{StaticResource DoubleMarginAll}"
-                 ItemsSource="{Binding Types}"
+
+        <controls:CollectionFilterBox Grid.Row="0"
+                                      x:Name="_filterBox"
+                                      ItemsSource="{Binding Types, Mode=OneWay}"
+                                      FilterFunc="{Binding FilterFunc, Mode=OneTime}" />
+
+        <ListBox Grid.Row="1"
+                 Margin="{StaticResource DoubleMarginTB}"
+                 ItemsSource="{Binding FilteredItems, ElementName=_filterBox, Mode=OneWay}"
                  SelectedItem="{Binding SelectedType}"
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
@@ -44,24 +53,14 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Grid Grid.Row="1"
-              Visibility="{Binding ShowNameTextBox, ElementName=_selectTypeDialog, Converter={StaticResource _boolToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       FontWeight="Bold"
-                       Text="Name" />
-
-            <TextBox Grid.Column="1"
-                     Text="{Binding Name}" />
-        </Grid>
+        <valueEditors:StringEditor Grid.Row="2"
+                                   Visibility="{Binding ShowNameTextBox, ElementName=_selectTypeDialog, Converter={StaticResource _boolToVisibilityConverter}}"
+                                   Title="Name"
+                                   Value="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Margin="{StaticResource StandardMarginAll}">
             <Button Content="_OK"
                     Command="{Binding OKCommand}"

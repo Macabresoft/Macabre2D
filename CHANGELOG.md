@@ -3,7 +3,8 @@
 ## Features
 
 * Framework now uses a MonoGame PCL that can be used across multiple platforms.
-* Frame work is now a .NET Standard project that should be portable across platforms.
+* Framework is now a .NET Standard project that should be portable across platforms.
+* Dialog for selecting an asset type or a component type now allows you to filter the available types by name.
 
 ## Refactors
 
