@@ -9,7 +9,7 @@
     public sealed class SynthTestComponent : BaseComponent, IUpdateableComponent {
         private const int ChannelsCount = 2;
         private const int SampleRate = 44100;
-        private const int SamplesPerBuffer = 3000;
+        private const int SamplesPerBuffer = 1000;
 
         private readonly byte[] _audioBuffer = new byte[ChannelsCount * SamplesPerBuffer * 2];
         private readonly float[,] _workiingBuffer = new float[ChannelsCount, SamplesPerBuffer];
@@ -22,16 +22,16 @@
         }
 
         public void Update(GameTime gameTime) {
-            var frequency = 0;
+            var frequency = 0f;
             var keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyDown(Keys.D1)) {
-                frequency = 261630;
+                frequency = 261.63f;
             }
             else if (keyboardState.IsKeyDown(Keys.D2)) {
-                frequency = 349228;
+                frequency = 349.228f;
             }
             else if (keyboardState.IsKeyDown(Keys.D3)) {
-                frequency = 391995;
+                frequency = 391.995f;
             }
 
             if (frequency > 0) {
@@ -67,7 +67,7 @@
             return (float)Math.Sin(time * 2 * Math.PI * frequency);
         }
 
-        private void FillWorkingBuffer(int frequency) {
+        private void FillWorkingBuffer(float frequency) {
             var time = 0f;
             for (var i = 0; i < SamplesPerBuffer; i++) {
                 this._workiingBuffer[0, i] = this.CreateSineWave(time, frequency);
@@ -77,7 +77,7 @@
             }
         }
 
-        private void SubmitBuffer(int frequency) {
+        private void SubmitBuffer(float frequency) {
             this.FillWorkingBuffer(frequency);
             this.ConvertBuffer();
             this._instance.SubmitBuffer(this._audioBuffer);
