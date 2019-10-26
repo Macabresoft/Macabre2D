@@ -11,6 +11,6 @@
         /// <value>The oscillator.</value>
         public IOscillator Oscillator { get; set; }
 
-        // Attack, Sustain, Release, etc
+        // Attack, Decay Sustain, Release, etc
     }
 }

@@ -5,7 +5,7 @@
     /// <summary>
     /// Notes on the musical scale.
     /// </summary>
-    public enum MusicalNotes : byte {
+    public enum MusicalScale : byte {
         C = 0,
         CSharp = 1,
         DFlat = CSharp,
@@ -26,9 +26,9 @@
     }
 
     /// <summary>
-    /// Extensions for <see cref="MusicalNotes"/>.
+    /// Extensions for <see cref="MusicalScale"/>.
     /// </summary>
-    public static class MusicalNotesExtensions {
+    public static class MusicalScaleExtensions {
 
         private static readonly float[] _notesToFrequency = {
             16.35f,
@@ -51,7 +51,7 @@
         /// <param name="note">The note.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns>The frequency at the suggested pitch.</returns>
-        public static float ToFrequency(this MusicalNotes note, MusicalPitch pitch) {
+        public static float ToFrequency(this MusicalScale note, MusicalPitch pitch) {
             return (float)Math.Pow(2D, (int)pitch) * _notesToFrequency[(int)note];
         }
     }
