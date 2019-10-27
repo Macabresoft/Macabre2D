@@ -18,6 +18,8 @@ The full source code is available here from GitHub:
 * Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
     * Macabre2D is built with MonoGame 3.7 in mind.
 * Restore NuGet packages for Macabre2D.sln.
+* If working on Macabre2D and not a game, tell git to ignore your MGCB files so updates are not checked into the repository
+    * For example, the command `git update-index --skip-worktree Project\Content\DesktopGL.mgcb` will perform this action for the DesktopGL MGCB file.
 * Open Macabre2D.sln. From here you can run the editor or example projects.
 
 ## Using Fonts
