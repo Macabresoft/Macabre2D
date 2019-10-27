@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Macabre2D.Framework.Audio.Synthesizer;
     using System.Runtime.Serialization;
 
     /// <summary>

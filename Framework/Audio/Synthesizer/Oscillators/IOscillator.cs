@@ -12,6 +12,6 @@
         /// <param name="frequency">The frequency.</param>
         /// <param name="volume">The volume. This is a value between -1 and 1.</param>
         /// <returns>The audio signal.</returns>
-        double GetSignal(double time, double frequency, double volume);
+        float GetSignal(float time, float frequency, float volume);
     }
 }

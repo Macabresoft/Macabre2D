@@ -7,18 +7,16 @@
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using System.Threading.Tasks;
 
-    public sealed class SynthTestComponent : BaseComponent, IUpdateableComponentAsync {
-        private const int SampleRate = 44100;
-        private const int SamplesPerBuffer = 1000;
-
+    public sealed class SynthTestComponent : BaseComponent, IUpdateableComponent {
+        private const int SampleRate = 44100 / 4;
+        private const int SamplesPerBuffer = 500;
         private readonly byte[] _audioBuffer = new byte[SamplesPerBuffer * 2];
-        private readonly double[] _workiingBuffer = new double[SamplesPerBuffer];
+        private readonly float[] _workiingBuffer = new float[SamplesPerBuffer];
         private DynamicSoundEffectInstance _instance;
-
         private Queue<IOscillator> _oscillators = new Queue<IOscillator>();
         private IOscillator _selectedOscillator;
+        private float _time = 0f;
 
         public override void LoadContent() {
             var pulseWaveOscillator = new PulseWaveOscillator() {
@@ -33,47 +31,54 @@
             this._oscillators.Enqueue(new WhiteNoiseOscillator());
 
             this._instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Mono);
+            this._instance.BufferNeeded += this._instance_BufferNeeded;
             this._instance.Play();
             base.LoadContent();
         }
 
-        public Task UpdateAsync(GameTime gameTime) {
+        public void Update(GameTime gameTime) {
             var frequency = 0f;
             var keyboardState = Keyboard.GetState();
 
-            return Task.Run(() => {
-                if (keyboardState.IsKeyDown(Keys.Right)) {
-                    this._oscillators.Enqueue(this._selectedOscillator);
-                    this._selectedOscillator = this._oscillators.Dequeue();
-                    Thread.Sleep(200);
-                }
+            if (keyboardState.IsKeyDown(Keys.Right)) {
+                this._oscillators.Enqueue(this._selectedOscillator);
+                this._selectedOscillator = this._oscillators.Dequeue();
+                Thread.Sleep(200);
+            }
 
-                if (keyboardState.IsKeyDown(Keys.D1)) {
-                    frequency = MusicalScale.C.ToFrequency(MusicalPitch.Middle);
-                }
-                else if (keyboardState.IsKeyDown(Keys.D2)) {
-                    frequency = MusicalScale.G.ToFrequency(MusicalPitch.Middle);
-                }
-                else if (keyboardState.IsKeyDown(Keys.D3)) {
-                    frequency = MusicalScale.F.ToFrequency(MusicalPitch.Middle);
-                }
+            if (keyboardState.IsKeyDown(Keys.D1)) {
+                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Low);
+            }
+            else if (keyboardState.IsKeyDown(Keys.D2)) {
+                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Low);
+            }
+            else if (keyboardState.IsKeyDown(Keys.D3)) {
+                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Low);
+            }
+            else {
+                this._time = 0f;
+            }
 
-                if (frequency > 0) {
-                    while (this._instance.PendingBufferCount < 2) {
-                        this.SubmitBuffer(frequency);
-                    }
+            if (frequency > 0) {
+                while (this._instance.PendingBufferCount < 2) {
+                    Console.WriteLine(frequency);
+                    this.SubmitBuffer(frequency);
                 }
-            });
+            }
         }
 
         protected override void Initialize() {
         }
 
+        private void _instance_BufferNeeded(object sender, EventArgs e) {
+        }
+
         private void ConvertBuffer() {
             for (int sampleIndex = 0; sampleIndex < SamplesPerBuffer; sampleIndex++) {
-                var workingSample = Math.Max(0D, Math.Min(this._workiingBuffer[sampleIndex], 0.9D));
-                var shortSample = (short)(workingSample >= 0f ? workingSample * short.MaxValue : workingSample * -short.MinValue);
+                var workingSample = MathHelper.Clamp(this._workiingBuffer[sampleIndex], -1f, 1f);
+                var shortSample = (short)Math.Round(workingSample >= 0f ? workingSample * short.MaxValue : workingSample * short.MinValue * -1);
                 var index = sampleIndex * 2;
+                //Console.WriteLine($"{this._workiingBuffer[sampleIndex]} - {workingSample} - {shortSample}");
 
                 if (!BitConverter.IsLittleEndian) {
                     this._audioBuffer[index] = (byte)(shortSample >> 8);
@@ -87,11 +92,10 @@
         }
 
         private void FillWorkingBuffer(float frequency) {
-            var time = 0f;
             for (var i = 0; i < SamplesPerBuffer; i++) {
-                this._workiingBuffer[i] = this._selectedOscillator.GetSignal(time, frequency, 0.8f);
+                this._workiingBuffer[i] = this._selectedOscillator.GetSignal(this._time, frequency, 0.8f);
 
-                time += 1.0f / SampleRate;
+                this._time += 1.0f / SampleRate;
             }
         }
 
