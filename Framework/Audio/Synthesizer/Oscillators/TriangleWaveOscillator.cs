@@ -9,8 +9,8 @@
     public sealed class TriangleWaveOscillator : IOscillator {
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            return (float)(2f * volume * Math.Abs(2f * (time * frequency - Math.Floor(time * frequency + 0.5f))) - volume);
+        public double GetSignal(double time, double frequency, double volume) {
+            return 2D * volume * Math.Abs(2f * (time * frequency - Math.Floor(time * frequency + 0.5D))) - volume;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;
 
@@ -10,27 +9,27 @@
     /// <seealso cref="Macabre2D.Framework.IOscillator"/>
     [DataContract]
     public sealed class PulseWaveOscillator : IOscillator {
-        private float _dutyCycle;
+        private double _dutyCycle;
 
         /// <summary>
         /// Gets or sets the duty cycle. This value must be between 0 and 0.5.
         /// </summary>
         /// <value>The duty cycle.</value>
         [DataMember]
-        public float DutyCycle {
+        public double DutyCycle {
             get {
                 return this._dutyCycle;
             }
 
             set {
-                this._dutyCycle = MathHelper.Clamp(value, 0f, 0.5f);
+                this._dutyCycle = Math.Max(0D, Math.Min(value, 0.5D));
             }
         }
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            var period = 1f / frequency; // frequency should be clamped to above 0 somewhere else
-            var phase = (time - (float)Math.Floor(time / period) * period) / period;
+        public double GetSignal(double time, double frequency, double volume) {
+            var period = 1D / frequency; // frequency should be clamped to above 0 somewhere else
+            var phase = (time - Math.Floor(time / period) * period) / period;
             return phase <= this.DutyCycle ? volume : -volume;
         }
     }
