@@ -47,13 +47,13 @@
             }
 
             if (keyboardState.IsKeyDown(Keys.D1)) {
-                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Low);
+                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Middle);
             }
             else if (keyboardState.IsKeyDown(Keys.D2)) {
-                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Low);
+                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Middle);
             }
             else if (keyboardState.IsKeyDown(Keys.D3)) {
-                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Low);
+                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Middle);
             }
             else {
                 this._time = 0f;
@@ -70,15 +70,11 @@
         protected override void Initialize() {
         }
 
-        private void _instance_BufferNeeded(object sender, EventArgs e) {
-        }
-
         private void ConvertBuffer() {
-            for (int sampleIndex = 0; sampleIndex < SamplesPerBuffer; sampleIndex++) {
+            for (var sampleIndex = 0; sampleIndex < SamplesPerBuffer; sampleIndex++) {
                 var workingSample = MathHelper.Clamp(this._workiingBuffer[sampleIndex], -1f, 1f);
                 var shortSample = (short)Math.Round(workingSample >= 0f ? workingSample * short.MaxValue : workingSample * short.MinValue * -1);
                 var index = sampleIndex * 2;
-                //Console.WriteLine($"{this._workiingBuffer[sampleIndex]} - {workingSample} - {shortSample}");
 
                 if (!BitConverter.IsLittleEndian) {
                     this._audioBuffer[index] = (byte)(shortSample >> 8);
@@ -93,7 +89,7 @@
 
         private void FillWorkingBuffer(float frequency) {
             for (var i = 0; i < SamplesPerBuffer; i++) {
-                this._workiingBuffer[i] = this._selectedOscillator.GetSignal(this._time, frequency, 0.8f);
+                this._workiingBuffer[i] = this._selectedOscillator.GetSignal(this._time, frequency, 1f);
 
                 this._time += 1.0f / SampleRate;
             }
