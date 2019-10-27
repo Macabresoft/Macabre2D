@@ -31,7 +31,6 @@
             this._oscillators.Enqueue(new WhiteNoiseOscillator());
 
             this._instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Mono);
-            this._instance.BufferNeeded += this._instance_BufferNeeded;
             this._instance.Play();
             base.LoadContent();
         }
