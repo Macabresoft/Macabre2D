@@ -9,8 +9,8 @@
     public sealed class SineWaveOscillator : IOscillator {
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            return (float)Math.Sin(frequency * time * 2 * Math.PI) * volume;
+        public float GetSignal(float time, float frequency, float amplitude) {
+            return (float)Math.Sin(frequency * time * 2 * Math.PI) * amplitude;
         }
     }
 }

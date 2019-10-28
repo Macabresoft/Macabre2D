@@ -9,8 +9,8 @@
     public sealed class SawToothOscillator : IOscillator {
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            return 2f * (time * frequency - (float)Math.Floor(time * frequency + 0.5f)) * volume;
+        public float GetSignal(float time, float frequency, float amplitude) {
+            return 2f * (time * frequency - (float)Math.Floor(time * frequency + 0.5f)) * amplitude;
         }
     }
 }

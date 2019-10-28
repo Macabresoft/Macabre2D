@@ -28,10 +28,10 @@
         }
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
+        public float GetSignal(float time, float frequency, float amplitude) {
             var period = 1D / frequency; // frequency should be clamped to above 0 somewhere else
             var phase = (time - Math.Floor(time / period) * period) / period;
-            return phase <= this.DutyCycle ? volume : -volume;
+            return phase <= this.DutyCycle ? amplitude : -amplitude;
         }
     }
 }

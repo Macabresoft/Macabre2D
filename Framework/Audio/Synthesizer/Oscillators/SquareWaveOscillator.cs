@@ -9,8 +9,8 @@
     public sealed class SquareWaveOscillator : IOscillator {
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            return Math.Sin(frequency * time * 2D * Math.PI) >= 0D ? volume : -volume;
+        public float GetSignal(float time, float frequency, float amplitude) {
+            return Math.Sin(frequency * time * 2D * Math.PI) >= 0D ? amplitude : -amplitude;
         }
     }
 }

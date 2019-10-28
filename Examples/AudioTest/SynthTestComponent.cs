@@ -9,7 +9,7 @@
     using System.Threading;
 
     public sealed class SynthTestComponent : BaseComponent, IUpdateableComponent {
-        private const int SampleRate = 44100 / 4;
+        private const int SampleRate = 44100 / 2;
         private const int SamplesPerBuffer = 500;
         private readonly byte[] _audioBuffer = new byte[SamplesPerBuffer * 2];
         private readonly float[] _workiingBuffer = new float[SamplesPerBuffer];
@@ -46,13 +46,13 @@
             }
 
             if (keyboardState.IsKeyDown(Keys.D1)) {
-                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Middle);
+                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Lower);
             }
             else if (keyboardState.IsKeyDown(Keys.D2)) {
-                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Middle);
+                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Lower);
             }
             else if (keyboardState.IsKeyDown(Keys.D3)) {
-                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Middle);
+                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Lower);
             }
             else {
                 this._time = 0f;

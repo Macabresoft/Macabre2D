@@ -10,8 +10,8 @@
         private Random _random = new Random();
 
         /// <inheritdoc/>
-        public float GetSignal(float time, float frequency, float volume) {
-            return (float)(this._random.NextDouble() - this._random.NextDouble()) * volume;
+        public float GetSignal(float time, float frequency, float amplitude) {
+            return (float)(this._random.NextDouble() - this._random.NextDouble()) * amplitude;
         }
     }
 }

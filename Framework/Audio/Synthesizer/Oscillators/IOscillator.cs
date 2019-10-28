@@ -10,8 +10,8 @@
         /// </summary>
         /// <param name="time">The time.</param>
         /// <param name="frequency">The frequency.</param>
-        /// <param name="volume">The volume. This is a value between -1 and 1.</param>
+        /// <param name="amplitude">The amplitude. This is a value between -1 and 1.</param>
         /// <returns>The audio signal.</returns>
-        float GetSignal(float time, float frequency, float volume);
+        float GetSignal(float time, float frequency, float amplitude);
     }
 }
