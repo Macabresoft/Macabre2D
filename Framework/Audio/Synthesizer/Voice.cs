@@ -78,6 +78,7 @@
             this._frequency = new Frequency(note.Note, track.Instrument.Pitch);
             this._beatsPlayed = 0;
             this._noteLengthInSamples = this._note.Length * this._song.SamplesPerBeat;
+            this._preReleaseVolume = 0f;
             this._peakVolume = this.Envelope.Decay > 0 ? 1f : this.Envelope.SustainVolume;
             this._inverseSampleRate = 1f / this._song.SampleRate;
         }

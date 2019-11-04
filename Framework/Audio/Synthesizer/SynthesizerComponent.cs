@@ -9,7 +9,7 @@
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
     /// <seealso cref="Macabre2D.Framework.IUpdateableComponentAsync"/>
-    public sealed class SynthesizerComponent : BaseComponent, IUpdateableComponentAsync {
+    public sealed class SynthesizerComponent : BaseComponent, IUpdateableComponent, IUpdateableComponentAsync {
         private Song _song;
         private SongPlayer _songPlayer;
         private IObjectPool<Voice> _voicePool;
@@ -56,9 +56,15 @@
             }
         }
 
+        public void Update(GameTime gameTime) {
+            if (this._songPlayer != null) {
+                this._songPlayer.Buffer(this.Volume);
+            }
+        }
+
         /// <inheritdoc/>
         public Task UpdateAsync(GameTime gameTime) {
-            return this._songPlayer != null ? Task.Run(() => this._songPlayer.Buffer(this.Volume)) : Task.CompletedTask;
+            return /*this._songPlayer != null ? Task.Run(() => this._songPlayer.Buffer(this.Volume)) :*/ Task.CompletedTask;
         }
 
         /// <inheritdoc/>

@@ -37,6 +37,7 @@
 
         private SynthesizerComponent CreateSynthesizer() {
             var song = new Song {
+                SampleRate = 8000,
                 BeatsPerMinute = 220D
             };
 
@@ -91,9 +92,23 @@
             track3.AddNote(14, 1, MusicalNote.C);
             track3.AddNote(15, 1, MusicalNote.G);
 
-            var synth = new SynthesizerComponent();
-            synth.Song = song;
-            synth.Volume = 1f;
+            var track4 = song.AddTrack();
+            track4.Instrument.Oscillator = new WhiteNoiseOscillator();
+            track4.Instrument.Pitch = MusicalPitch.Lower;
+            track4.AddNote(1, 1, MusicalNote.G);
+            track4.AddNote(3, 1, MusicalNote.G);
+            track4.AddNote(5, 1, MusicalNote.C);
+            track4.AddNote(7, 1, MusicalNote.C);
+            track4.AddNote(9, 1, MusicalNote.D);
+            track4.AddNote(11, 1, MusicalNote.D);
+            track4.AddNote(13, 1, MusicalNote.G);
+            track4.AddNote(15, 1, MusicalNote.G);
+
+            var synth = new SynthesizerComponent {
+                Song = song,
+                Volume = 1f
+            };
+
             return synth;
         }
     }

@@ -55,6 +55,8 @@
                 this._voicePool.ReturnObject(voice);
             }
 
+            this._inactiveVoices.Clear();
+
             if (this._soundEffectInstance.PendingBufferCount < 3) {
                 foreach (var track in this.Song.Tracks) {
                     var notes = track.GetNotes(this._currentBeat);
