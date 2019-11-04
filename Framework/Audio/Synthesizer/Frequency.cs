@@ -13,7 +13,7 @@
         /// The note.
         /// </summary>
         [DataMember]
-        public readonly MusicalScale Note;
+        public readonly MusicalNote Note;
 
         /// <summary>
         /// The pitch.
@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="note">The note.</param>
         /// <param name="pitch">The pitch.</param>
-        public Frequency(MusicalScale note, MusicalPitch pitch) {
+        public Frequency(MusicalNote note, MusicalPitch pitch) {
             this.Note = note;
             this.Pitch = pitch;
             this.Value = this.Note.ToFrequency(this.Pitch);

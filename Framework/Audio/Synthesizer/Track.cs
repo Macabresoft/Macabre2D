@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -10,21 +9,59 @@
     /// </summary>
     [DataContract]
     public sealed class Track {
-        private readonly List<SynthNote> _activeNotes = new List<SynthNote>();
-        private readonly List<SynthNote> _notes = new List<SynthNote>();
+
+        [DataMember]
+        private readonly List<PlayedNote> _notes = new List<PlayedNote>();
+
+        private float _leftChannelVolume = 0.5f;
+        private float _rightChannelVolume = 0.5f;
 
         /// <summary>
         /// Gets the instrument.
         /// </summary>
         /// <value>The instrument.</value>
         [DataMember]
-        public Instrument Instrument { get; }
+        public Instrument Instrument { get; set; } = new Instrument();
+
+        /// <summary>
+        /// Gets or sets the left channel volume.
+        /// </summary>
+        /// <value>The left channel volume.</value>
+        [DataMember]
+        public float LeftChannelVolume {
+            get {
+                return this._leftChannelVolume;
+            }
+
+            set {
+                this._leftChannelVolume = value.Clamp(0f, 1f);
+            }
+        }
 
         /// <summary>
         /// Gets the length.
         /// </summary>
         /// <value>The length.</value>
-        public ushort Length { get; private set; }
+        public int Length {
+            get {
+                return this._notes.Any() ? this._notes.Max(x => x.Beat + x.Length) : 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the right channel volume.
+        /// </summary>
+        /// <value>The right channel volume.</value>
+        [DataMember]
+        public float RightChannelVolume {
+            get {
+                return this._rightChannelVolume;
+            }
+
+            set {
+                this._rightChannelVolume = value.Clamp(0f, 1f);
+            }
+        }
 
         /// <summary>
         /// Adds the note.
@@ -32,32 +69,19 @@
         /// <param name="beat">The beat.</param>
         /// <param name="frequency">The frequency.</param>
         /// <returns>The added note.</returns>
-        public SynthNote AddNote(ushort beat, Frequency frequency) {
-            var note = new SynthNote(beat, frequency);
-            this._notes.Add(note);
-            return note;
+        public PlayedNote AddNote(ushort beat, ushort length, MusicalNote note) {
+            var newNote = new PlayedNote(beat, length, note);
+            this._notes.Add(newNote);
+            return newNote;
         }
 
-        public float[] GetSignals(ushort beat) {
-            this._activeNotes.AddRange(this._notes.Where(x => x.Beat == beat));
-
-            if (this._activeNotes.Any()) {
-                var notesToRemove = new List<SynthNote>();
-                foreach (var note in this._activeNotes) {
-                    if (beat - note.Beat >= note.Length) {
-                        notesToRemove.Add(note);
-                    }
-                }
-
-                foreach (var note in notesToRemove) {
-                    this._activeNotes.Remove(note);
-                }
-            }
-
-            return Array.Empty<float>();
+        /// <summary>
+        /// Gets the notes.
+        /// </summary>
+        /// <param name="beat">The beat.</param>
+        /// <returns>The notes for the specified beat.</returns>
+        public IEnumerable<PlayedNote> GetNotes(ushort beat) {
+            return this._notes.Where(x => x.Beat == beat);
         }
-
-        // some sort of chain of notes. Maybe it's just a queue? Get frequency from current note and
-        // then pass it into the instrument to do its thing.
     }
 }

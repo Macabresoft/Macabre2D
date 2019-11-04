@@ -46,13 +46,13 @@
             }
 
             if (keyboardState.IsKeyDown(Keys.D1)) {
-                frequency = MusicalScale.C.ToFrequency(MusicalPitch.Lower);
+                frequency = MusicalNote.C.ToFrequency(MusicalPitch.Normal);
             }
             else if (keyboardState.IsKeyDown(Keys.D2)) {
-                frequency = MusicalScale.F.ToFrequency(MusicalPitch.Lower);
+                frequency = MusicalNote.F.ToFrequency(MusicalPitch.Normal);
             }
             else if (keyboardState.IsKeyDown(Keys.D3)) {
-                frequency = MusicalScale.G.ToFrequency(MusicalPitch.Lower);
+                frequency = MusicalNote.G.ToFrequency(MusicalPitch.Normal);
             }
             else {
                 this._time = 0f;

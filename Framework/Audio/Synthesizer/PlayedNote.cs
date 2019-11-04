@@ -6,23 +6,25 @@
     /// A standard note.
     /// </summary>
     [DataContract]
-    public sealed class SynthNote {
+    public sealed class PlayedNote {
         private ushort _length = 1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SynthNote"/> class.
+        /// Initializes a new instance of the <see cref="PlayedNote"/> class.
         /// </summary>
         /// <param name="beat">The beat.</param>
-        /// <param name="frequency">The frequency.</param>
-        public SynthNote(ushort beat, Frequency frequency) {
+        /// <param name="length">The length.</param>
+        /// <param name="note">The note.</param>
+        public PlayedNote(ushort beat, ushort length, MusicalNote note) {
             this.Beat = beat;
-            this.Frequency = frequency;
+            this.Length = length;
+            this.Note = note;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SynthNote"/> class.
+        /// Initializes a new instance of the <see cref="PlayedNote"/> class.
         /// </summary>
-        internal SynthNote() {
+        internal PlayedNote() {
         }
 
         /// <summary>
@@ -31,13 +33,6 @@
         /// <value>The beat.</value>
         [DataMember]
         public ushort Beat { get; set; }
-
-        /// <summary>
-        /// Gets or sets the frequency.
-        /// </summary>
-        /// <value>The frequency.</value>
-        [DataMember]
-        public Frequency Frequency { get; set; }
 
         // <inheritdoc/>
         [DataMember]
@@ -54,5 +49,12 @@
                 this._length = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the note.
+        /// </summary>
+        /// <value>The note.</value>
+        [DataMember]
+        public MusicalNote Note { get; set; }
     }
 }

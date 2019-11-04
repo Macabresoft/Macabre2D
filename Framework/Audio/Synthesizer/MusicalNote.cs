@@ -3,9 +3,9 @@
     using System;
 
     /// <summary>
-    /// Notes on the musical scale.
+    /// Notes as letters on the musical scale.
     /// </summary>
-    public enum MusicalScale : byte {
+    public enum MusicalNote : byte {
         C = 0,
         CSharp = 1,
         DFlat = CSharp,
@@ -26,9 +26,9 @@
     }
 
     /// <summary>
-    /// Extensions for <see cref="MusicalScale"/>.
+    /// Extensions for <see cref="MusicalNote"/>.
     /// </summary>
-    public static class MusicalScaleExtensions {
+    public static class MusicalNoteExtensions {
 
         private static readonly float[] _notesToFrequency = {
             16.35f,
@@ -51,7 +51,7 @@
         /// <param name="note">The note.</param>
         /// <param name="pitch">The pitch.</param>
         /// <returns>The frequency at the suggested pitch.</returns>
-        public static float ToFrequency(this MusicalScale note, MusicalPitch pitch) {
+        public static float ToFrequency(this MusicalNote note, MusicalPitch pitch) {
             return (float)Math.Pow(2D, (int)pitch) * _notesToFrequency[(int)note];
         }
     }
