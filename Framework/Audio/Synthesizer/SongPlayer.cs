@@ -13,6 +13,7 @@
         private const ushort NumberOfChannels = 2;
         private readonly HashSet<Voice> _activeVoices = new HashSet<Voice>();
         private readonly IAudioEffect _clipper = new SoftClipper();
+        private readonly HashSet<Voice> _inactiveVoices = new HashSet<Voice>();
         private readonly DynamicSoundEffectInstance _soundEffectInstance;
         private readonly IObjectPool<Voice> _voicePool;
         private ushort _currentBeat = 0;
@@ -47,6 +48,11 @@
         public void Buffer(float volume) {
             if (this._currentBeat >= this.Song.Length) {
                 this._currentBeat = 0;
+            }
+
+            foreach (var voice in this._inactiveVoices) {
+                this._activeVoices.Remove(voice);
+                this._voicePool.ReturnObject(voice);
             }
 
             if (this._soundEffectInstance.PendingBufferCount < 3) {
@@ -116,8 +122,7 @@
         private void Voice_OnFinished(object sender, EventArgs e) {
             if (sender is Voice voice) {
                 voice.OnFinished -= this.Voice_OnFinished;
-                this._activeVoices.Remove(voice);
-                this._voicePool.ReturnObject(voice);
+                this._inactiveVoices.Add(voice);
             }
         }
     }

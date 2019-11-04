@@ -112,6 +112,9 @@
             else if ((sampleNumber - this._noteLengthInSamples) < this.Envelope.Release) {
                 result = this.GetReleaseAmplitude(sampleNumber);
             }
+            else {
+                this._isActive = false;
+            }
 
             return result;
         }

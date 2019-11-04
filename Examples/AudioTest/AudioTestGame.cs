@@ -37,10 +37,12 @@
 
         private SynthesizerComponent CreateSynthesizer() {
             var song = new Song {
-                BeatsPerMinute = 140D
+                BeatsPerMinute = 220D
             };
 
             var track1 = song.AddTrack();
+            track1.LeftChannelVolume = 0.75f;
+            track1.RightChannelVolume = 0.25f;
             track1.AddNote(0, 4, MusicalNote.C);
             track1.AddNote(4, 4, MusicalNote.F);
             track1.AddNote(8, 4, MusicalNote.G);
@@ -49,6 +51,9 @@
             var track2 = song.AddTrack();
             track2.Instrument.Oscillator = new SawToothOscillator();
             track2.Instrument.Pitch = MusicalPitch.High;
+            track2.LeftChannelVolume = 0.25f;
+            track2.RightChannelVolume = 0.75f;
+
             track2.AddNote(0, 1, MusicalNote.C);
             track2.AddNote(2, 1, MusicalNote.C);
             track2.AddNote(4, 1, MusicalNote.F);
