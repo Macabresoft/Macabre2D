@@ -36,14 +36,17 @@
         }
 
         private SynthesizerComponent CreateSynthesizer() {
-            var song = new Song {
-                SampleRate = 8000,
-                BeatsPerMinute = 220D
-            };
+            var song = new Song();
+            song.SampleRate = 16000;
+            song.BeatsPerMinute = 220D;
+
+            var fourthNote = (ushort)(song.SamplesPerBeat / 4);
 
             var track1 = song.AddTrack();
             track1.LeftChannelVolume = 0.75f;
             track1.RightChannelVolume = 0.25f;
+            track1.Instrument.NoteEnvelope.Attack = (ushort)(song.SamplesPerBeat * 2);
+            track1.Instrument.NoteEnvelope.Release = song.SamplesPerBeat;
             track1.AddNote(0, 4, MusicalNote.C);
             track1.AddNote(4, 4, MusicalNote.F);
             track1.AddNote(8, 4, MusicalNote.G);
@@ -52,6 +55,11 @@
             var track2 = song.AddTrack();
             track2.Instrument.Oscillator = new SawToothOscillator();
             track2.Instrument.Pitch = MusicalPitch.High;
+            track2.Instrument.NoteEnvelope.Attack = fourthNote;
+            track2.Instrument.NoteEnvelope.Decay = fourthNote;
+            track2.Instrument.NoteEnvelope.Release = fourthNote;
+            track2.Instrument.NoteEnvelope.SustainAmplitude = 0.25f;
+            track2.Instrument.NoteEnvelope.PeakAmplitude = 1f;
             track2.LeftChannelVolume = 0.25f;
             track2.RightChannelVolume = 0.75f;
 
@@ -71,6 +79,9 @@
             var track3 = song.AddTrack();
             track3.Instrument.Oscillator = new SquareWaveOscillator();
             track3.Instrument.Pitch = MusicalPitch.Lower;
+            track3.Instrument.NoteEnvelope.Attack = fourthNote;
+            track3.Instrument.NoteEnvelope.Decay = fourthNote;
+            track3.Instrument.NoteEnvelope.Release = fourthNote;
 
             track3.AddNote(0, 1, MusicalNote.C);
             track3.AddNote(1, 1, MusicalNote.G);
@@ -94,7 +105,9 @@
 
             var track4 = song.AddTrack();
             track4.Instrument.Oscillator = new WhiteNoiseOscillator();
-            track4.Instrument.Pitch = MusicalPitch.Lower;
+            track4.Instrument.NoteEnvelope.Attack = (ushort)(fourthNote / 2);
+            track4.Instrument.NoteEnvelope.Decay = (ushort)(fourthNote / 2);
+            track4.Instrument.NoteEnvelope.SustainAmplitude = 0f;
             track4.AddNote(1, 1, MusicalNote.G);
             track4.AddNote(3, 1, MusicalNote.G);
             track4.AddNote(5, 1, MusicalNote.C);

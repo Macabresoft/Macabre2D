@@ -8,7 +8,8 @@
     /// </summary>
     [DataContract]
     public sealed class Envelope {
-        private float _sustainVolume = 0.5f;
+        private float _peakAmplitude = 0.8f;
+        private float _sustainAmplitude = 0.5f;
 
         /// <summary>
         /// Gets or sets attack length in samples.
@@ -25,6 +26,22 @@
         public ushort Decay { get; set; }
 
         /// <summary>
+        /// Gets or sets the peak amplitude. This value is only relevant if <see cref="Decay"/> is
+        /// present. Cannot be less than <see cref="SustainAmplitude"/> and cannot be more than 1.0.
+        /// </summary>
+        /// <value>The sustain level.</value>
+        [DataMember(Name = "Peak Amplitude")]
+        public float PeakAmplitude {
+            get {
+                return this._peakAmplitude;
+            }
+
+            set {
+                this._peakAmplitude = MathHelper.Clamp(value, this.SustainAmplitude, 1f);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets release length in samples.
         /// </summary>
         /// <value>The release time.</value>
@@ -32,18 +49,19 @@
         public ushort Release { get; set; }
 
         /// <summary>
-        /// Gets or sets the sustain level. This is a value between 0.0 and 1.0 representing the
+        /// Gets or sets the sustain amplitude. This is a value between 0.0 and 1.0 representing the
         /// volume, with 1.0 being max volume.
         /// </summary>
         /// <value>The sustain level.</value>
-        [DataMember(Name = "Sustain Volume")]
-        public float SustainVolume {
+        [DataMember(Name = "Sustain Amplitude")]
+        public float SustainAmplitude {
             get {
-                return this._sustainVolume;
+                return this._sustainAmplitude;
             }
 
             set {
-                this._sustainVolume = MathHelper.Clamp(value, 0f, 1f);
+                this._sustainAmplitude = MathHelper.Clamp(value, 0f, 1f);
+                this.PeakAmplitude = this._peakAmplitude;
             }
         }
     }

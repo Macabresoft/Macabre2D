@@ -12,7 +12,7 @@
         private bool _isActive;
         private PlayedNote _note;
         private int _noteLengthInSamples;
-        private float _peakVolume;
+        private float _peakAmplitude;
         private float _preReleaseVolume = 0f;
         private Song _song;
         private Track _track;
@@ -79,16 +79,16 @@
             this._beatsPlayed = 0;
             this._noteLengthInSamples = this._note.Length * this._song.SamplesPerBeat;
             this._preReleaseVolume = 0f;
-            this._peakVolume = this.Envelope.Decay > 0 ? 1f : this.Envelope.SustainVolume;
+            this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;
             this._inverseSampleRate = 1f / this._song.SampleRate;
         }
 
         private float GetAttackAmplitude(int sampleNumber) {
-            return this._peakVolume * (sampleNumber / (float)this.Envelope.Attack);
+            return this._peakAmplitude * (sampleNumber / (float)this.Envelope.Attack);
         }
 
         private float GetDecayAmplitude(int sampleNumber) {
-            return this._peakVolume * (1f - ((sampleNumber - this.Envelope.Attack) / this.Envelope.Decay));
+            return this._peakAmplitude * (1f - ((sampleNumber - this.Envelope.Attack) / this.Envelope.Decay));
         }
 
         private float GetReleaseAmplitude(int sampleNumber) {
@@ -105,7 +105,7 @@
                     result = this.GetDecayAmplitude(sampleNumber);
                 }
                 else {
-                    result = this._track.Instrument.NoteEnvelope.SustainVolume;
+                    result = this._track.Instrument.NoteEnvelope.SustainAmplitude;
                 }
 
                 this._preReleaseVolume = result;
