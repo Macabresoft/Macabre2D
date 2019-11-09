@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using CosmicSynth.Framework;
     using Microsoft.Xna.Framework;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
@@ -12,7 +13,6 @@
     public sealed class SynthesizerComponent : BaseComponent, IUpdateableComponent, IUpdateableComponentAsync {
         private Song _song;
         private SongPlayer _songPlayer;
-        private IObjectPool<Voice> _voicePool;
         private float _volume = 1f;
 
         /// <summary>
@@ -31,7 +31,7 @@
                 if (this.IsInitialized) {
                     this._songPlayer?.Stop();
                     if (this._song != null) {
-                        this._songPlayer = new SongPlayer(this._song, this._voicePool);
+                        this._songPlayer = new SongPlayer(this._song);
                         this._songPlayer.Play();
                     }
                     else {
@@ -70,10 +70,8 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             if (this.Scene != null) {
-                this._voicePool = this.Scene.ResolveDependency<IObjectPool<Voice>>(() => new VoicePool());
-
                 if (this._song != null) {
-                    this._songPlayer = new SongPlayer(this._song, this._voicePool);
+                    this._songPlayer = new SongPlayer(this._song);
                     this._songPlayer.Play();
                 }
             }

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Examples.AudioTest {
 
+    using CosmicSynth.Framework;
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
@@ -46,13 +47,13 @@
             }
 
             if (keyboardState.IsKeyDown(Keys.D1)) {
-                frequency = MusicalNote.C.ToFrequency(MusicalPitch.Normal);
+                frequency = Note.C.ToFrequency(Pitch.Normal);
             }
             else if (keyboardState.IsKeyDown(Keys.D2)) {
-                frequency = MusicalNote.F.ToFrequency(MusicalPitch.Normal);
+                frequency = Note.F.ToFrequency(Pitch.Normal);
             }
             else if (keyboardState.IsKeyDown(Keys.D3)) {
-                frequency = MusicalNote.G.ToFrequency(MusicalPitch.Normal);
+                frequency = Note.G.ToFrequency(Pitch.Normal);
             }
             else {
                 this._time = 0f;
