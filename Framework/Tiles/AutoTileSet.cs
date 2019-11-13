@@ -127,9 +127,9 @@
 
         internal void RefreshSprite(Sprite sprite) {
             if (sprite != null) {
-                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => (x.Key, x.Value)).ToList();
+                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => new Tuple<byte, Sprite>(x.Key, x.Value)).ToList();
                 foreach (var indexToSprite in indexToSpritesForRefresh) {
-                    this._indexToSprites[indexToSprite.Key] = sprite;
+                    this._indexToSprites[indexToSprite.Item1] = sprite;
                 }
             }
         }

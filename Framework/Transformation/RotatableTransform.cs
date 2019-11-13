@@ -25,7 +25,7 @@
         public RotatableTransform(Matrix matrix) {
             var decomposedMatrix = matrix.DecomposeWithRotation2D();
             this.SetPositionAndScale(decomposedMatrix.Position, decomposedMatrix.Scale);
-            this._rotation = new Rotation(decomposedMatrix.RotationAngle);
+            this._rotation = decomposedMatrix.Rotation;
             this._rotation.AngleChanged += this.Rotation_AngleChanged;
         }
 
@@ -58,7 +58,7 @@
         public override void UpdateTransform(Matrix matrix) {
             var decomposedMatrix = matrix.DecomposeWithRotation2D();
             this.SetPositionAndScale(decomposedMatrix.Position, decomposedMatrix.Scale);
-            this.Rotation.Angle = decomposedMatrix.RotationAngle;
+            this.Rotation.Angle = decomposedMatrix.Rotation.Angle;
         }
 
         private void Rotation_AngleChanged(object sender, System.EventArgs e) {

@@ -75,13 +75,9 @@
     <Compile Include="AudioTestGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SynthTestComponent.cs" />
     <Compile Include="VolumeController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CosmicSynth.Framework, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CosmicSynth.Framework.0.1.1\lib\netstandard2.0\CosmicSynth.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MonoGame.Framework.DesktopGL.3.7.1.189\lib\net45\MonoGame.Framework.dll</HintPath>
     </Reference>

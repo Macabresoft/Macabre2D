@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>The position and scale.</returns>
-        public static (Vector2 Position, Vector2 Scale) Decompose2D(this Matrix matrix) {
+        public static Transform Decompose2D(this Matrix matrix) {
             var position = new Vector2(matrix.M41, matrix.M42);
 
             var xSign = (Math.Sign(matrix.M11) < 0) ? -1 : 1;
@@ -24,7 +24,7 @@
                 xSign * (float)Math.Sqrt(matrix.M11 * matrix.M11 + matrix.M12 * matrix.M12 + matrix.M13 * matrix.M13),
                 ySign * (float)Math.Sqrt(matrix.M21 * matrix.M21 + matrix.M22 * matrix.M22 + matrix.M23 * matrix.M23));
 
-            return (position, scale);
+            return new Transform(position, scale);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>The position, scale, and rotation angle.</returns>
-        public static (Vector2 Position, Vector2 Scale, float RotationAngle) DecomposeWithRotation2D(this Matrix matrix) {
+        public static RotatableTransform DecomposeWithRotation2D(this Matrix matrix) {
             var originalDecomposedMatrix = matrix.Decompose2D();
 
             Quaternion quaternion;
@@ -52,7 +52,7 @@
             var direction = Vector2.Transform(Vector2.UnitX, quaternion);
             var rotationAngle = (float)Math.Atan2(direction.Y, direction.X);
 
-            return (originalDecomposedMatrix.Position, originalDecomposedMatrix.Scale, rotationAngle);
+            return new RotatableTransform(originalDecomposedMatrix.Position, originalDecomposedMatrix.Scale, rotationAngle);
         }
 
         /// <summary>
