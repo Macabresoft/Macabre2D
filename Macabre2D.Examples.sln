@@ -19,8 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F532F9FC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0EE4DB8-990E-4017-A424-E1C0EB560BEB}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		CHANGELOG.md = CHANGELOG.md
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
