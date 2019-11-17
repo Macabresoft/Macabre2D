@@ -72,7 +72,7 @@
             spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
             spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
 
-            var middleSpinningDotBoundingArea = new BoundingAreaDrawer();
+            var middleSpinningDotBoundingArea = new BoundingAreaDrawerComponent();
             spriteRenderer3.AddChild(middleSpinningDotBoundingArea);
             middleSpinningDotBoundingArea.Color = Color.Red;
             middleSpinningDotBoundingArea.LineThickness = 3f;
@@ -85,7 +85,7 @@
             spriteRenderer4.DrawOrder = 100;
             spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
             spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
-            var outwardSpinningDotBoundingArea = new BoundingAreaDrawer();
+            var outwardSpinningDotBoundingArea = new BoundingAreaDrawerComponent();
             spriteRenderer4.AddChild(outwardSpinningDotBoundingArea);
             outwardSpinningDotBoundingArea.Color = Color.Red;
             outwardSpinningDotBoundingArea.LineThickness = 3f;
@@ -97,7 +97,7 @@
             textRenderer.Color = Color.Pink;
             textRenderer.LocalScale = new Vector2(2f, 2f);
             textRenderer.LocalPosition -= new Vector2(5f, 5f);
-            var textRendererBoundingArea = new BoundingAreaDrawer();
+            var textRendererBoundingArea = new BoundingAreaDrawerComponent();
             textRendererBoundingArea.Color = Color.Red;
             textRendererBoundingArea.LineThickness = 3f;
             textRenderer.AddChild(textRendererBoundingArea);
@@ -163,7 +163,7 @@
                 }
             }
 
-            var binaryTileMapBoundingArea = new BoundingAreaDrawer();
+            var binaryTileMapBoundingArea = new BoundingAreaDrawerComponent();
             binaryTileMap.AddChild(binaryTileMapBoundingArea);
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;

@@ -6,7 +6,7 @@
     /// <summary>
     /// Draws a collider.
     /// </summary>
-    public sealed class ColliderDrawer : BaseDrawer {
+    public sealed class ColliderDrawerComponent : BaseDrawerComponent {
 
         /// <summary>
         /// Gets or sets the body.

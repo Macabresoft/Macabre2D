@@ -7,21 +7,21 @@
     /// <summary>
     /// Draws a line strip.
     /// </summary>
-    public sealed class LineStripDrawer : BaseDrawer {
+    public sealed class LineStripDrawerComponent : BaseDrawerComponent {
         private readonly List<Vector2> _points = new List<Vector2>();
         private BoundingArea _boundingArea;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineStripDrawer"/> class.
+        /// Initializes a new instance of the <see cref="LineStripDrawerComponent"/> class.
         /// </summary>
-        public LineStripDrawer() {
+        public LineStripDrawerComponent() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineStripDrawer"/> class.
+        /// Initializes a new instance of the <see cref="LineStripDrawerComponent"/> class.
         /// </summary>
         /// <param name="points">The points.</param>
-        public LineStripDrawer(IEnumerable<Vector2> points) {
+        public LineStripDrawerComponent(IEnumerable<Vector2> points) {
             this.ResetPoints(points);
         }
 

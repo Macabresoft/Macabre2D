@@ -15,7 +15,7 @@
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
         private EditorGame _game;
-        private GridDrawer _gridDrawer;
+        private GridDrawerComponent _gridDrawer;
         private ButtonState _previousLeftButtonState = ButtonState.Released;
         private ButtonState _previousRightButtonState = ButtonState.Released;
 
@@ -50,7 +50,7 @@
         public void Initialize(EditorGame game) {
             this._game = game;
 
-            this._gridDrawer = new GridDrawer() {
+            this._gridDrawer = new GridDrawerComponent() {
                 Camera = this._game.CurrentCamera,
                 UseDynamicLineThickness = true,
                 LineThickness = 1f

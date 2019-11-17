@@ -5,7 +5,7 @@
     /// <summary>
     /// Draws bounding areas from colliders for debugging purposes.
     /// </summary>
-    public sealed class BoundingAreaDrawer : BaseDrawer {
+    public sealed class BoundingAreaDrawerComponent : BaseDrawerComponent {
 
         /// <summary>
         /// Gets or sets the boundable.

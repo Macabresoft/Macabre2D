@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Input;
     using System.Linq;
 
-    public sealed class MouseClickDebugger : BaseDrawer, IUpdateableComponent {
+    public sealed class MouseClickDebugger : BaseDrawerComponent, IUpdateableComponent {
         private Camera _camera;
 
         public override BoundingArea BoundingArea {

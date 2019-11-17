@@ -8,7 +8,7 @@
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
     /// <seealso cref="Macabre2D.Framework.IDrawableComponent"/>
-    public abstract class BaseDrawer : BaseComponent, IDrawableComponent {
+    public abstract class BaseDrawerComponent : BaseComponent, IDrawableComponent {
 
         /// <inheritdoc/>
         public abstract BoundingArea BoundingArea { get; }

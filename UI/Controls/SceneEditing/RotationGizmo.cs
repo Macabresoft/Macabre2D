@@ -15,7 +15,7 @@
             Collider = new CircleCollider(64f, RadiusScalingType.X)
         };
 
-        private readonly CircleDrawer _circleOutlineDrawer = new CircleDrawer();
+        private readonly CircleDrawerComponent _circleOutlineDrawer = new CircleDrawerComponent();
         private readonly SpriteRenderer _circleRenderer = new SpriteRenderer();
         private ButtonState _previousButtonState = ButtonState.Released;
         private float _unmovedWorldRotationAngle;

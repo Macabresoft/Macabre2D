@@ -37,7 +37,7 @@
             circleBody.Mass = 3f;
             var circleCollider = new CircleCollider(0.75f);
             circleBody.Collider = circleCollider;
-            var circleDrawer = new ColliderDrawer();
+            var circleDrawer = new ColliderDrawerComponent();
             circleBody.AddChild(circleDrawer);
             circleDrawer.Color = Color.Green;
             circleDrawer.LineThickness = 2f;
@@ -53,7 +53,7 @@
                     var smallCircleCollider = new CircleCollider(0.3f);
                     smallCircleBody.Collider = smallCircleCollider;
                     smallCircleBody.PhysicsMaterial = new PhysicsMaterial(1f, 0f);
-                    var smallCircleDrawer = new ColliderDrawer();
+                    var smallCircleDrawer = new ColliderDrawerComponent();
                     smallCircleBody.AddChild(smallCircleDrawer);
                     smallCircleDrawer.Color = Color.OrangeRed;
                     smallCircleDrawer.LineThickness = 1f;
@@ -65,7 +65,7 @@
             rectangleBody.Collider = PolygonCollider.CreateRectangle(10f, 1f);
             rectangleBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             rectangleBody.LocalPosition -= new Vector2(0f, 4f);
-            var rectangleDrawer = new ColliderDrawer();
+            var rectangleDrawer = new ColliderDrawerComponent();
             rectangleBody.AddChild(rectangleDrawer);
             rectangleDrawer.Color = Color.White;
             rectangleDrawer.LineThickness = 1f;
@@ -74,7 +74,7 @@
             var angleBody1 = new SimpleBody();
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
             angleBody1.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
-            var angleDrawer1 = new ColliderDrawer();
+            var angleDrawer1 = new ColliderDrawerComponent();
             angleBody1.AddChild(angleDrawer1);
             angleDrawer1.Color = Color.White;
             angleDrawer1.LineThickness = 1f;
@@ -83,7 +83,7 @@
             var angleBody2 = new SimpleBody();
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
             angleBody2.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
-            var angleDrawer2 = new ColliderDrawer();
+            var angleDrawer2 = new ColliderDrawerComponent();
             angleBody2.AddChild(angleDrawer2);
             angleDrawer2.Color = Color.White;
             angleDrawer2.LineThickness = 1f;
@@ -92,7 +92,7 @@
             var lineBody = new SimpleBody();
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
             lineBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
-            var lineDrawer = new ColliderDrawer();
+            var lineDrawer = new ColliderDrawerComponent();
             lineBody.AddChild(lineDrawer);
             lineDrawer.Color = Color.White;
             lineDrawer.LineThickness = 1f;

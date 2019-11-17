@@ -6,7 +6,7 @@
     /// <summary>
     /// Draws a line.
     /// </summary>
-    public sealed class LineDrawer : BaseDrawer {
+    public sealed class LineDrawerComponent : BaseDrawerComponent {
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {

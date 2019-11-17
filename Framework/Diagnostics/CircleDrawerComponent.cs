@@ -5,7 +5,7 @@
     /// <summary>
     /// Draws a circle.
     /// </summary>
-    public sealed class CircleDrawer : BaseDrawer {
+    public sealed class CircleDrawerComponent : BaseDrawerComponent {
         private int _complexity;
 
         /// <inheritdoc/>
@@ -20,8 +20,8 @@
         /// A larger value will look better, but perform worse.
         /// </summary>
         /// <remarks>
-        /// Complexity is code for 'number of edges'. In reality, we can't make a perfect circle with
-        /// pixels or polygons, so this is us faking it as usual. This value must be at least 3.
+        /// Complexity is code for 'number of edges'. In reality, we can't make a perfect circle
+        /// with pixels or polygons, so this is us faking it as usual. This value must be at least 3.
         /// </remarks>
         /// <value>The complexity.</value>
         public int Complexity {

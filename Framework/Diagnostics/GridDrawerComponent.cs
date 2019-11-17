@@ -7,7 +7,7 @@
     /// Draws a grid for the specified camera.
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.Diagnostics.BaseDrawer"/>
-    public sealed class GridDrawer : BaseDrawer {
+    public sealed class GridDrawerComponent : BaseDrawerComponent {
         private Camera _camera;
         private float _columnWidth = 1f;
         private float _rowHeight = 1f;
@@ -53,7 +53,7 @@
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var boundingArea = this.BoundingArea;
 
-            var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.Grid.TileSize.X, this.Grid.Offset.X);
+            var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, this.Grid.TileSize.X, this.Grid.Offset.X);
             foreach (var column in columns) {
                 this.PrimitiveDrawer.DrawLine(
                     spriteBatch,
@@ -63,7 +63,7 @@
                     lineThickness);
             }
 
-            var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.Grid.TileSize.Y, this.Grid.Offset.Y);
+            var rows = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, this.Grid.TileSize.Y, this.Grid.Offset.Y);
             foreach (var row in rows) {
                 this.PrimitiveDrawer.DrawLine(
                     spriteBatch,

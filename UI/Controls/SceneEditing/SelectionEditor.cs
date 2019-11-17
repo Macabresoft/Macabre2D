@@ -11,13 +11,13 @@
         private readonly IComponentService _componentService;
         private readonly Dictionary<ComponentEditingStyle, IGizmo> _editingStyleToGizmo = new Dictionary<ComponentEditingStyle, IGizmo>();
 
-        private BoundingAreaDrawer _boundingAreaDrawer = new BoundingAreaDrawer() {
+        private BoundingAreaDrawerComponent _boundingAreaDrawer = new BoundingAreaDrawerComponent() {
             Color = new Color(255, 255, 255, 150),
             LineThickness = 1f,
             UseDynamicLineThickness = true
         };
 
-        private ColliderDrawer _colliderDrawer = new ColliderDrawer() {
+        private ColliderDrawerComponent _colliderDrawer = new ColliderDrawerComponent() {
             Color = new Color(255, 255, 255, 150),
             LineThickness = 1f,
             UseDynamicLineThickness = true
@@ -63,13 +63,13 @@
         public void Initialize(EditorGame game) {
             this._game = game;
 
-            this._boundingAreaDrawer = new BoundingAreaDrawer() {
+            this._boundingAreaDrawer = new BoundingAreaDrawerComponent() {
                 Color = new Color(255, 255, 255, 150),
                 LineThickness = 1f,
                 UseDynamicLineThickness = true
             };
 
-            this._colliderDrawer = new ColliderDrawer() {
+            this._colliderDrawer = new ColliderDrawerComponent() {
                 Color = new Color(255, 255, 255, 150),
                 LineThickness = 1f,
                 UseDynamicLineThickness = true

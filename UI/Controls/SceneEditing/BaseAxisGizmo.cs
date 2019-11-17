@@ -38,9 +38,9 @@
 
         protected IUndoService UndoService { get; }
 
-        protected LineDrawer XAxisLineDrawer { get; } = new LineDrawer();
+        protected LineDrawerComponent XAxisLineDrawer { get; } = new LineDrawerComponent();
 
-        protected LineDrawer YAxisLineDrawer { get; } = new LineDrawer();
+        protected LineDrawerComponent YAxisLineDrawer { get; } = new LineDrawerComponent();
 
         public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
             if (selectedComponent != null) {

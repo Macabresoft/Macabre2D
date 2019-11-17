@@ -13,8 +13,8 @@
         private Camera _camera = new Camera();
         private EditorGame _game;
         private int _previousScrollWheelValue = 0;
-        private GridDrawer _primaryGridDrawer;
-        private GridDrawer _secondaryGridDrawer;
+        private GridDrawerComponent _primaryGridDrawer;
+        private GridDrawerComponent _secondaryGridDrawer;
 
         public EditorCameraWrapper(ISceneService sceneService, IStatusService statusService) {
             this._sceneService = sceneService;
@@ -65,7 +65,7 @@
             this.Camera.Initialize(this._game.CurrentScene);
 
             var gridSize = this.GetGridSize();
-            this._primaryGridDrawer = new GridDrawer() {
+            this._primaryGridDrawer = new GridDrawerComponent() {
                 Camera = this._camera,
                 Color = new Color(255, 255, 255, 100),
                 Grid = new TileGrid(new Vector2(gridSize)),
@@ -76,7 +76,7 @@
             this._primaryGridDrawer.Initialize(this._game.CurrentScene);
 
             var smallGridSize = gridSize / 2f;
-            this._secondaryGridDrawer = new GridDrawer() {
+            this._secondaryGridDrawer = new GridDrawerComponent() {
                 Camera = this._camera,
                 Color = new Color(255, 255, 255, 75),
                 Grid = new TileGrid(new Vector2(smallGridSize)),
