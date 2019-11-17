@@ -12,6 +12,10 @@ N/A
 
 N/A
 
+## Compatibility Breaks
+
+* You now must install the League Mono font as described in the updated README file.
+
 # 0.3.1.0
 
 ## Features

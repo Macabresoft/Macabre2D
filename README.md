@@ -20,8 +20,12 @@ The full source code is available here from GitHub:
 * Restore NuGet packages for Macabre2D.sln.
 * If working on Macabre2D and not a game, tell git to ignore your MGCB files so updates are not checked into the repository
     * For example, the command `git update-index --skip-worktree Project\Content\DesktopGL.mgcb` will perform this action for the DesktopGL MGCB file.
+* If using example projects, make sure to install the front League Mono to your system, heeding the warnings below for installing fonts.
+    * [Mirror 1](https://www.theleagueofmoveabletype.com/league-mono)
+    * [Mirror 2](https://github.com/theleagueof/league-mono)
+    * [Mirror 3](https://github.com/BrettStory/league-mono)
 * Open Macabre2D.sln. From here you can run the editor or example projects.
 
 ## Using Fonts
  
-When using custom fonts (non-system fonts) make sure to install the font for all users before using it within Macabre2D. This is a limitation of the MonoGame Content Pipeline.
+When using custom fonts (non-system fonts) make sure to *install the font for all users* before using it within Macabre2D. This cannot be done from inside an archive folder (.zip, .rar, etc), so be sure to extract the font to your system, right click, and select 'Install for All Users'.  This is a limitation of the MonoGame Content Pipeline.

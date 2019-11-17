@@ -97,7 +97,7 @@
   -->
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Content\Arial.spritefont" />
+    <None Include="Content\LeagueMono.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

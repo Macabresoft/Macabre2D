@@ -17,8 +17,8 @@
 
         protected override void LoadContent() {
             this.AssetManager.Initialize(this.Content);
-            var arialId = Guid.NewGuid();
-            this.AssetManager.SetMapping(arialId, "Arial");
+            var fontId = Guid.NewGuid();
+            this.AssetManager.SetMapping(fontId, "LeagueMono");
             var coloredSquaresId = Guid.NewGuid();
             this.AssetManager.SetMapping(coloredSquaresId, "ColoredSquares");
             var whiteSquareId = Guid.NewGuid();
@@ -93,9 +93,9 @@
             var textRenderer = new TextRenderer();
             scene.AddComponent(textRenderer);
             textRenderer.Text = "Hello, World";
-            textRenderer.Font = new Font(arialId);
-            textRenderer.Color = Color.Pink;
-            textRenderer.LocalScale = new Vector2(2f, 2f);
+            textRenderer.Font = new Font(fontId);
+            textRenderer.Color = Color.DarkMagenta;
+            textRenderer.LocalScale = new Vector2(0.5f, 0.5f);
             textRenderer.LocalPosition -= new Vector2(5f, 5f);
             var textRendererBoundingArea = new BoundingAreaDrawerComponent();
             textRendererBoundingArea.Color = Color.Red;
