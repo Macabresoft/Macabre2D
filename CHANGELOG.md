@@ -6,7 +6,7 @@ N/A
 
 ## Refactors
 
-N/A
+* Engine and Framework have been separated into different repositories.
 
 ## Fixes
 
