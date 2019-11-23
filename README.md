@@ -1,10 +1,10 @@
 # Macabre2D
 
-A 2D game engine built on top of the MonoGame framework. This project was started on April 23, 2016.
+A 2D game engine built on top of the MonoGame framework. This project was started on April 23, 2016 (some early repository history was lost).
 
 ## Supported Platforms
 
-Currently, the Macabre2D editor only supports Windows. The framework itself is technically setup to work with any platform; however, only Windows has been tested.
+Macabre2D.Framework and its example projects have been confirmed to run on modern Windows and MacOS as of 2019.
 
 ## Git LFS
 
@@ -14,17 +14,14 @@ You must install Git LFS (Large File Storage) to use this repository. [This arti
 
 The full source code is available here from GitHub:
 
-* Clone the source: `git clone https://github.com/BrettStory/Macabre2D`
+* Clone the source: `git clone https://github.com/BrettStory/Macabre2D.Framework`
 * Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
     * Macabre2D is built with MonoGame 3.7 in mind.
-* Restore NuGet packages for Macabre2D.sln.
-* If working on Macabre2D and not a game, tell git to ignore your MGCB files so updates are not checked into the repository
-    * For example, the command `git update-index --skip-worktree Project\Content\DesktopGL.mgcb` will perform this action for the DesktopGL MGCB file.
+* Restore NuGet packages for Macabre2D.Framework.sln.
 * If using example projects, make sure to install the front League Mono to your system, heeding the warnings below for installing fonts.
     * [Mirror 1](https://www.theleagueofmoveabletype.com/league-mono)
     * [Mirror 2](https://github.com/theleagueof/league-mono)
     * [Mirror 3](https://github.com/BrettStory/league-mono)
-* Open Macabre2D.sln. From here you can run the editor or example projects.
 
 ## Using Fonts
  
