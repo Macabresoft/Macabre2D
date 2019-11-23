@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* Hiding inherited 'Components' property on 'MacabreGame' class as it is a MonoGame functionality not used by Macabre2D.
 
 ## Compatibility Breaks
 

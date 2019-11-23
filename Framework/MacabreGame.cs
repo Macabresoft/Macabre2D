@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// This is the main type for your game.
@@ -33,6 +34,18 @@
             this.Content.RootDirectory = "Content";
             this.Settings = new GameSettings();
             MacabreGame.Instance = this;
+        }
+
+        /// <summary>
+        /// Gets the components.
+        /// </summary>
+        /// <value>The components.</value>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("This is a function of MonoGame not used by Macabre2D.", true)]
+        public new GameComponentCollection Components {
+            get {
+                return base.Components;
+            }
         }
 
         /// <summary>
