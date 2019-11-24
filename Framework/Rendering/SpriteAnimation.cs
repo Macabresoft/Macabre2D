@@ -139,22 +139,22 @@
         }
 
         /// <summary>
-        /// Removes the step.
+        /// Refreshes the sprite.
         /// </summary>
-        /// <param name="step">The step.</param>
-        /// <returns>A value indicating whether or not the step was removed.</returns>
-        public bool RemoveStep(SpriteAnimationStep step) {
-            return this._steps.Remove(step);
-        }
-
-        internal void RefreshSprite(Sprite sprite) {
+        /// <param name="sprite">The sprite.</param>
+        public void RefreshSprite(Sprite sprite) {
             var staps = this._steps.Where(x => x.Sprite != null && x.Sprite.Id == sprite.Id);
             foreach (var step in staps) {
                 step.Sprite = sprite;
             }
         }
 
-        internal bool RemoveSprite(Guid id) {
+        /// <summary>
+        /// Removes the sprite.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>A value indicating whether or not the sprite was removed.</returns>
+        public bool RemoveSprite(Guid id) {
             var result = false;
             var staps = this._steps.Where(x => x.Sprite?.Id == id);
             foreach (var step in staps) {
@@ -165,7 +165,22 @@
             return result;
         }
 
-        internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        /// <summary>
+        /// Removes the step.
+        /// </summary>
+        /// <param name="step">The step.</param>
+        /// <returns>A value indicating whether or not the step was removed.</returns>
+        public bool RemoveStep(SpriteAnimationStep step) {
+            return this._steps.Remove(step);
+        }
+
+        /// <summary>
+        /// Tries the get sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <param name="sprite">The sprite.</param>
+        /// <returns>A value indicating whether or not the sprite was found.</returns>
+        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
             sprite = this._steps.FirstOrDefault(x => x.Sprite?.Id == spriteId)?.Sprite;
             return sprite != null;
         }

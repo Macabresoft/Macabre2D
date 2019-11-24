@@ -1,3 +1,18 @@
+# 0.3.3.0
+
+## Features
+
+N/A
+
+## Refactors
+
+* More internally accessed things have been made public.
+* Repository link updated in NuGet package.
+
+## Fixes
+
+N/A
+
 # 0.3.2.0
 
 ## Features

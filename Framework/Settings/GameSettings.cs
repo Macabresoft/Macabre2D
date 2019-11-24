@@ -128,7 +128,7 @@
                 return GameSettings._instance;
             }
 
-            internal set {
+            set {
                 if (value != null) {
                     GameSettings._instance = value;
                 }
@@ -141,7 +141,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Point DefaultResolution { get; internal set; }
+        public Point DefaultResolution { get; set; }
 
         /// <inheritdoc/>
         [DataMember]

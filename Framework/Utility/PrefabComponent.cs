@@ -34,7 +34,7 @@
                 return this._prefab;
             }
 
-            internal set {
+            set {
                 if (this._prefab != value) {
                     this._prefab = value;
 

@@ -127,7 +127,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Guid Id { get; internal set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <inheritdoc/>
         public bool IsEnabled {

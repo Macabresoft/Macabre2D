@@ -88,7 +88,7 @@
                 return Serializer._instance;
             }
 
-            internal set {
+            set {
                 if (value != null) {
                     Serializer._instance = value;
                 }

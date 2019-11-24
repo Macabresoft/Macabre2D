@@ -82,7 +82,12 @@
             this.LayerNameChanged.SafeInvoke(this, new LayerNameChangedEventArgs(layer, name));
         }
 
-        internal void ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {
+        /// <summary>
+        /// Toggles collisions.
+        /// </summary>
+        /// <param name="rootLayer">The root layer.</param>
+        /// <param name="collisionBit">The collision bit.</param>
+        public void ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {
             if (this._layerToCollisionMask.TryGetValue(rootLayer, out var collisionMask)) {
                 if ((collisionMask & collisionBit) == collisionBit) {
                     this._layerToCollisionMask[rootLayer] = collisionMask & (~collisionBit);
@@ -96,7 +101,11 @@
             }
         }
 
-        internal void ToggleShouldCollide(Layers twoLayers) {
+        /// <summary>
+        /// Toggles collisions.
+        /// </summary>
+        /// <param name="twoLayers">The two layers.</param>
+        public void ToggleShouldCollide(Layers twoLayers) {
             var rootLayer = Layers.None;
             var collisionBit = Layers.None;
 

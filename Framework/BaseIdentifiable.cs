@@ -18,7 +18,7 @@
                 return this._id;
             }
 
-            internal set {
+            set {
                 this._id = value;
             }
         }

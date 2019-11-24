@@ -18,7 +18,11 @@
     /// </summary>
     [DataContract]
     public sealed class GraphicsSettings : VersionedData {
-        internal const string SettingsFileName = "Graphics.m2d";
+
+        /// <summary>
+        /// The settings file name.
+        /// </summary>
+        public const string SettingsFileName = "Graphics.m2d";
 
         [DataMember]
         private DisplayModes _displayMode = DisplayModes.Windowed;
