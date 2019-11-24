@@ -8,8 +8,3 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Macabre2D.Examples.PhysicsTest")]
 [assembly: InternalsVisibleTo("Macabre2D.Examples.RenderingTest")]
 [assembly: InternalsVisibleTo("Macabre2D.Tests")]
-[assembly: InternalsVisibleTo("Macabre2D.UI.Tests")]
-[assembly: InternalsVisibleTo("Macabre2D.UI.Controls")]
-[assembly: InternalsVisibleTo("Macabre2D.UI.Models")]
-[assembly: InternalsVisibleTo("Macabre2D.UI.ViewModels")]
-[assembly: InternalsVisibleTo("Macabre2D.UI.Services")]

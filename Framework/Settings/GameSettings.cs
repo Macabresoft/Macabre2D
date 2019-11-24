@@ -40,8 +40,8 @@
         /// <value>
         /// <remarks>This will be calculated when <see cref="PixelsPerUnit"/> is set. Multiplication
         /// is a quicker operation than division, so if you find yourself dividing by <see
-        /// cref="PixelsPerUnit"/> regularly, consider multiplying by this instead as it will produce
-        /// the same value, but quicker.</remarks> The inverse pixels per unit.
+        /// cref="PixelsPerUnit"/> regularly, consider multiplying by this instead as it will
+        /// produce the same value, but quicker.</remarks> The inverse pixels per unit.
         /// </value>
         float InversePixelsPerUnit { get; }
 
@@ -92,7 +92,11 @@
     /// </summary>
     [DataContract]
     public sealed class GameSettings : IGameSettings {
-        internal const string ContentFileName = "Settings";
+
+        /// <summary>
+        /// The content file name for <see cref="GameSettings"/>.
+        /// </summary>
+        public const string ContentFileName = "Settings";
 
         private static IGameSettings _instance = new GameSettings();
 
@@ -112,11 +116,12 @@
         /// </summary>
         /// <remarks>
         /// Honestly, I'm not a huge fan of singletons. They feel like bad design to me. But there
-        /// are objects in a tight loop, like <see cref="Sprite"/> that need access to some settings,
-        /// but <see cref="Sprite"/> was written to not know a whole lot about anything else. I think
-        /// it should stay that way. I created a readonly interface of <see cref="GameSettings"/>
-        /// called <see cref="IGameSettings"/> to alleviate some of the grossness of this. The setter
-        /// is internal, so only <see cref="MacabreGame"/> should ever set it.
+        /// are objects in a tight loop, like <see cref="Sprite"/> that need access to some
+        /// settings, but <see cref="Sprite"/> was written to not know a whole lot about anything
+        /// else. I think it should stay that way. I created a readonly interface of <see
+        /// cref="GameSettings"/> called <see cref="IGameSettings"/> to alleviate some of the
+        /// grossness of this. The setter is internal, so only <see cref="MacabreGame"/> should ever
+        /// set it.
         /// </remarks>
         public static IGameSettings Instance {
             get {
@@ -160,7 +165,7 @@
                 return this._pixelsPerUnit;
             }
 
-            internal set {
+            set {
                 if (value < 1) {
                     throw new ArgumentOutOfRangeException($"{nameof(this.PixelsPerUnit)} must be greater than 0!");
                 }
@@ -176,7 +181,7 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Guid StartupSceneAssetId { get; internal set; }
+        public Guid StartupSceneAssetId { get; set; }
 
         /// <summary>
         /// Adds the custom setting.

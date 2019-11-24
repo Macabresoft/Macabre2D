@@ -9,7 +9,7 @@
     /// </summary>
     /// <seealso cref="IModule"/>
     [DataContract]
-    public class BaseModule : IIdentifiable {
+    public class BaseModule : BaseIdentifiable {
 
         [DataMember]
         private bool _isEnabled = true;
@@ -26,10 +26,6 @@
         /// Occurs when [update order changed].
         /// </summary>
         public event EventHandler UpdateOrderChanged;
-
-        /// <inheritdoc/>
-        [DataMember]
-        public Guid Id { get; internal set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is enabled.
@@ -94,8 +90,8 @@
         }
 
         /// <summary>
-        /// Initializes the module before a scene is initialized. It is recommended that you use this
-        /// to store a reference to the scene if required.
+        /// Initializes the module before a scene is initialized. It is recommended that you use
+        /// this to store a reference to the scene if required.
         /// </summary>
         public virtual void PreInitialize() {
             return;

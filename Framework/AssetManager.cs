@@ -63,7 +63,11 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-        internal const string ContentFileName = "AssetManager";
+
+        /// <summary>
+        /// The content file name for <see cref="AssetManager"/>.
+        /// </summary>
+        public const string ContentFileName = "AssetManager";
 
         private static IAssetManager _instance = new AssetManager();
 
@@ -71,9 +75,6 @@
         private readonly Dictionary<Guid, string> _idToPathMapping = new Dictionary<Guid, string>();
 
         private ContentManager _contentManager;
-
-        internal AssetManager() {
-        }
 
         /// <summary>
         /// Gets the singleton instance of an asset manager.

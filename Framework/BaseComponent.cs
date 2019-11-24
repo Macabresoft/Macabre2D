@@ -587,6 +587,32 @@
         }
 
         /// <summary>
+        /// Initialize this instance.
+        /// </summary>
+        public void Initialize(IScene scene) {
+            if (!this.IsInitialized || this.Scene == null || this.Scene != scene) {
+                this.Scene = scene;
+                this.ResolveChildren();
+
+                try {
+                    this.Initialize();
+                }
+                finally {
+                    this.IsInitialized = true;
+                }
+
+                if (this._parent != null) {
+                    this._parent.IsEnabledChanged += this.Parent_EnabledChanged;
+                    this._parent.TransformChanged += this.Parent_TransformChanged;
+                }
+
+                foreach (var child in this._children) {
+                    child.Initialize(scene);
+                }
+            }
+        }
+
+        /// <summary>
         /// Determines whether this instance is an ancestor of the specified component.
         /// </summary>
         /// <param name="component">The component.</param>
@@ -689,37 +715,11 @@
         }
 
         /// <summary>
-        /// Initialize this instance.
-        /// </summary>
-        internal void Initialize(IScene scene) {
-            if (!this.IsInitialized || this.Scene == null || this.Scene != scene) {
-                this.Scene = scene;
-                this.ResolveChildren();
-
-                try {
-                    this.Initialize();
-                }
-                finally {
-                    this.IsInitialized = true;
-                }
-
-                if (this._parent != null) {
-                    this._parent.IsEnabledChanged += this.Parent_EnabledChanged;
-                    this._parent.TransformChanged += this.Parent_TransformChanged;
-                }
-
-                foreach (var child in this._children) {
-                    child.Initialize(scene);
-                }
-            }
-        }
-
-        /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
-        /// unmanaged resources.
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release
+        /// only unmanaged resources.
         /// </param>
         protected virtual void Dispose(bool disposing) {
             if (!this._disposedValue) {

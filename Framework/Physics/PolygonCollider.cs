@@ -69,7 +69,11 @@
             }
         }
 
-        internal IReadOnlyCollection<Vector2> WorldPoints {
+        /// <summary>
+        /// Gets the world points.
+        /// </summary>
+        /// <value>The world points.</value>
+        public IReadOnlyCollection<Vector2> WorldPoints {
             get {
                 return this._worldPoints.Value;
             }
@@ -159,8 +163,8 @@
                         continue;
                     }
 
-                    // For each edge of the polygon, we want to find the closest point on the edge to
-                    // the center of the circle. If the distance between this new point and the
+                    // For each edge of the polygon, we want to find the closest point on the edge
+                    // to the center of the circle. If the distance between this new point and the
                     // center of the circle is less than the circle's radius, we know the circle is
                     // not inside this collider.
                     var edge = next - current;
@@ -204,7 +208,10 @@
             return Projection.CreatePolygonProjection(axis, this.WorldPoints);
         }
 
-        internal override void Reset() {
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
+        public override void Reset() {
             this.ForceClockwise();
             base.Reset();
         }

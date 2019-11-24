@@ -380,6 +380,31 @@
             this._endOfFrameActions.Add(action);
         }
 
+        /// <summary>
+        /// Removes the child.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <returns>A value indicating whether or not the child was removed.</returns>
+        public bool RemoveChild(BaseComponent component) {
+            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
+        }
+
+        /// <summary>
+        /// Removes the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        public void RemoveComponent(BaseComponent component) {
+            this.RemoveChild(component);
+            this._updateables.Remove(component);
+            this._updateableAsyncs.Remove(component);
+            this._drawables.Remove(component);
+            this.Cameras.Remove(component);
+
+            foreach (var child in component.Children) {
+                this.RemoveComponent(child);
+            }
+        }
+
         /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
             if (this._modules.Remove(module)) {
@@ -449,22 +474,6 @@
             this._modules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
         }
 
-        internal bool RemoveChild(BaseComponent component) {
-            return this._components.Remove(component) || this.ComponentsForSaving.Remove(component);
-        }
-
-        internal void RemoveComponent(BaseComponent component) {
-            this.RemoveChild(component);
-            this._updateables.Remove(component);
-            this._updateableAsyncs.Remove(component);
-            this._drawables.Remove(component);
-            this.Cameras.Remove(component);
-
-            foreach (var child in component.Children) {
-                this.RemoveComponent(child);
-            }
-        }
-
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 foreach (var component in e.NewItems.OfType<BaseComponent>()) {
@@ -521,8 +530,8 @@
                 MacabreGame.Instance.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
 
                 foreach (var drawable in potentialDrawables) {
-                    // As long as it doesn't equal Layers.None, at least one of the layers defined on
-                    // the component are also to be rendered by LayersToRender.
+                    // As long as it doesn't equal Layers.None, at least one of the layers defined
+                    // on the component are also to be rendered by LayersToRender.
                     if ((drawable.Layers & camera.LayersToRender) != Layers.None) {
                         drawable.Draw(gameTime, camera.BoundingArea);
                     }

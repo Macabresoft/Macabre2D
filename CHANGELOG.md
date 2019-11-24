@@ -7,6 +7,8 @@ N/A
 ## Refactors
 
 * Engine and Framework have been separated into different repositories.
+* 'Component' appended to the end of drawer components.
+* Several internally accessed things have been made public.
 
 ## Fixes
 

@@ -86,6 +86,20 @@
         }
 
         /// <summary>
+        /// Loads this instance.
+        /// </summary>
+        public void Load() {
+            try {
+                foreach (var sprite in this._indexToSprites.Values) {
+                    sprite?.Load();
+                }
+            }
+            finally {
+                this._isLoaded = true;
+            }
+        }
+
+        /// <summary>
         /// Sets the sprite at the specified index.
         /// </summary>
         /// <param name="sprite">The sprite.</param>
@@ -112,17 +126,6 @@
 
         internal bool HasSprite(Guid spriteId) {
             return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
-        }
-
-        internal void Load() {
-            try {
-                foreach (var sprite in this._indexToSprites.Values) {
-                    sprite?.Load();
-                }
-            }
-            finally {
-                this._isLoaded = true;
-            }
         }
 
         internal void RefreshSprite(Sprite sprite) {

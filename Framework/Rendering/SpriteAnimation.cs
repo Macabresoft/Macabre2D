@@ -25,7 +25,12 @@
         public SpriteAnimation() {
         }
 
-        internal SpriteAnimation(IEnumerable<SpriteAnimationStep> steps, bool shouldLoop) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpriteAnimation"/> class.
+        /// </summary>
+        /// <param name="steps">The steps.</param>
+        /// <param name="shouldLoop">if set to <c>true</c> [should loop].</param>
+        public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps, bool shouldLoop) {
             this._steps.AddRange(steps);
             this._shouldLoop = shouldLoop;
         }
@@ -99,23 +104,28 @@
         }
 
         /// <summary>
-        /// Removes the step.
+        /// Gets the sprite ids.
         /// </summary>
-        /// <param name="step">The step.</param>
-        /// <returns>A value indicating whether or not the step was removed.</returns>
-        public bool RemoveStep(SpriteAnimationStep step) {
-            return this._steps.Remove(step);
-        }
-
-        internal IEnumerable<Guid> GetSpriteIds() {
+        /// <returns></returns>
+        public IEnumerable<Guid> GetSpriteIds() {
             return this._steps.Where(x => x.Sprite != null).Select(x => x.Sprite.Id);
         }
 
-        internal bool HasSprite(Guid id) {
+        /// <summary>
+        /// Determines whether this instance has a sprite with the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>
+        /// <c>true</c> if this instance has a sprite with the specified identifier; otherwise, <c>false</c>.
+        /// </returns>
+        public bool HasSprite(Guid id) {
             return this._steps.Any(x => x.Sprite?.Id == id);
         }
 
-        internal void LoadContent() {
+        /// <summary>
+        /// Loads the content.
+        /// </summary>
+        public void LoadContent() {
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._steps.Select(x => x.Sprite).Where(x => x?.Texture != null)) {
@@ -126,6 +136,15 @@
                     this._isLoaded = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes the step.
+        /// </summary>
+        /// <param name="step">The step.</param>
+        /// <returns>A value indicating whether or not the step was removed.</returns>
+        public bool RemoveStep(SpriteAnimationStep step) {
+            return this._steps.Remove(step);
         }
 
         internal void RefreshSprite(Sprite sprite) {

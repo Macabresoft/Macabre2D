@@ -38,7 +38,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Collider"/> class.
         /// </summary>
-        public Collider() {
+        protected Collider() {
             this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
@@ -80,7 +80,11 @@
             }
         }
 
-        internal Transform Transform {
+        /// <summary>
+        /// Gets the transform.
+        /// </summary>
+        /// <value>The transform.</value>
+        public Transform Transform {
             get {
                 return this._transform.Value;
             }
@@ -196,6 +200,15 @@
         public abstract Projection GetProjection(Vector2 axis);
 
         /// <summary>
+        /// Initializes the specified body.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        public void Initialize(IPhysicsBody body) {
+            this.Body = body;
+            this.Reset();
+        }
+
+        /// <summary>
         /// Determines whether [is candidate for collision] [the specified other].
         /// </summary>
         /// <param name="other">The other collider.</param>
@@ -219,12 +232,10 @@
             return this.TryHit(ray, out hit);
         }
 
-        internal void Initialize(IPhysicsBody body) {
-            this.Body = body;
-            this.Reset();
-        }
-
-        internal virtual void Reset() {
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
+        public virtual void Reset() {
             this.ResetLazyFields();
         }
 

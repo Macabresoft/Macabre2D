@@ -33,7 +33,11 @@
             }
         }
 
-        internal SpriteFont SpriteFont { get; private set; }
+        /// <summary>
+        /// Gets the sprite font.
+        /// </summary>
+        /// <value>The sprite font.</value>
+        public SpriteFont SpriteFont { get; private set; }
 
         /// <summary>
         /// Loads the sound effect.

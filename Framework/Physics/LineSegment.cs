@@ -47,7 +47,13 @@
             this._valueC = new Lazy<float>(() => this.ValueA * this.Start.X + this.ValueB * this.Start.Y);
         }
 
-        internal LineSegment(Vector2 start, Vector2 direction, float distance) : this(start, start + direction * distance) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LineSegment"/> class.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="direction">The direction.</param>
+        /// <param name="distance">The distance.</param>
+        public LineSegment(Vector2 start, Vector2 direction, float distance) : this(start, start + direction * distance) {
             this.Direction = direction;
             this.Distance = distance;
         }

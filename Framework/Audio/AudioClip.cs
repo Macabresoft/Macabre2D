@@ -33,7 +33,11 @@
         [DataMember]
         public Guid AssetId { get; set; }
 
-        internal SoundEffectInstance SoundEffectInstance { get; set; }
+        /// <summary>
+        /// Gets or sets the sound effect instance.
+        /// </summary>
+        /// <value>The sound effect instance.</value>
+        public SoundEffectInstance SoundEffectInstance { get; set; }
 
         /// <inheritdoc/>
         public void Dispose() {

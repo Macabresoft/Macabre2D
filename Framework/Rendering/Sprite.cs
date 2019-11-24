@@ -83,7 +83,11 @@
         [DataMember]
         public Point Size { get; set; }
 
-        internal Texture2D Texture { get; set; }
+        /// <summary>
+        /// Gets the texture.
+        /// </summary>
+        /// <value>The texture.</value>
+        public Texture2D Texture { get; set; }
 
         /// <inheritdoc/>
         public void Dispose() {
@@ -104,7 +108,11 @@
             }
         }
 
-        internal void SetErrorTexture(SpriteBatch spriteBatch) {
+        /// <summary>
+        /// Sets the error texture.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        public void SetErrorTexture(SpriteBatch spriteBatch) {
             if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
                 var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);
                 var pixels = new Color[this.Size.X * this.Size.Y];
