@@ -104,10 +104,10 @@
         /// </summary>
         /// <remarks>
         /// The reason this is in pixels is because if <see cref="GameSettings.PixelsPerUnit"/>
-        /// changes, a pixel value for offset will still be valid. Otherwise this would need to reset
-        /// every time <see cref="GameSettings.PixelsPerUnit"/> changes, which is not something the
-        /// engine really handles. We allow this pixel value to be a <see cref="float"/> because it
-        /// provides greater accuracy when converting it to engine units.
+        /// changes, a pixel value for offset will still be valid. Otherwise this would need to
+        /// reset every time <see cref="GameSettings.PixelsPerUnit"/> changes, which is not
+        /// something the engine really handles. We allow this pixel value to be a <see
+        /// cref="float"/> because it provides greater accuracy when converting it to engine units.
         /// </remarks>
         /// <value>The amount.</value>
         [DataMember(Order = 1)]

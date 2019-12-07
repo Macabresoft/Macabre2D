@@ -55,12 +55,9 @@
             set {
                 this._font = value;
                 this.LoadContent();
-
-                if (this.IsInitialized) {
-                    this._boundingArea.Reset();
-                    this._size.Reset();
-                    this.ResetOffset();
-                }
+                this._boundingArea.Reset();
+                this._size.Reset();
+                this.RenderSettings.ResetOffset();
             }
         }
 
@@ -76,8 +73,8 @@
         public Rotation Rotation { get; private set; } = new Rotation();
 
         /// <summary>
-        /// Gets or sets a value indicating whether this text renderer should snap to the pixel ratio
-        /// defined in <see cref="IGameSettings"/>.
+        /// Gets or sets a value indicating whether this text renderer should snap to the pixel
+        /// ratio defined in <see cref="IGameSettings"/>.
         /// </summary>
         /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
@@ -118,12 +115,9 @@
                 }
 
                 this._text = value;
-
-                if (this.IsInitialized) {
-                    this._boundingArea.Reset();
-                    this._size.Reset();
-                    this.ResetOffset();
-                }
+                this._boundingArea.Reset();
+                this._size.Reset();
+                this.RenderSettings.ResetOffset();
             }
         }
 
@@ -245,12 +239,6 @@
             this._pixelTransform.Reset();
             this._rotatableTransform.Reset();
             this._boundingArea.Reset();
-        }
-
-        private void ResetOffset() {
-            if (this.IsInitialized && this.Font != null && !string.IsNullOrEmpty(this.Text)) {
-                this.RenderSettings.ResetOffset();
-            }
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {

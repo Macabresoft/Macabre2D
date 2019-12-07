@@ -30,10 +30,7 @@
 
             set {
                 this._collider = value;
-
-                if (this.IsInitialized && this._collider != null) {
-                    this._collider.Initialize(this);
-                }
+                this._collider?.Initialize(this);
             }
         }
 

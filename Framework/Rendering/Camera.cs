@@ -86,11 +86,9 @@
             set {
                 if (value != this._samplerStateType) {
                     this._samplerStateType = value;
-
-                    if (this.IsInitialized) {
-                        this.SamplerState = this._samplerStateType.ToSamplerState();
-                    }
                 }
+
+                this.SamplerState = this._samplerStateType.ToSamplerState();
             }
         }
 
@@ -132,8 +130,8 @@
             }
 
             set {
-                // This is kind of an arbitrary value, but imagine the chaos if we allowed the camera
-                // to reach 0.
+                // This is kind of an arbitrary value, but imagine the chaos if we allowed the
+                // camera to reach 0.
                 if (value <= 0.1f) {
                     value = 0.1f;
                 }

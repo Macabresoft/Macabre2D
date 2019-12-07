@@ -91,10 +91,7 @@
                     this._sprite = value;
                     this.LoadContent();
                     this._boundingArea.Reset();
-
-                    if (this.IsInitialized) {
-                        this.ResetOffset();
-                    }
+                    this.RenderSettings.ResetOffset();
                 }
             }
         }
@@ -158,7 +155,6 @@
             this.Rotation.AngleChanged += this.Self_TransformChanged;
             this.RenderSettings.OffsetChanged += this.Offset_AmountChanged;
             this.RenderSettings.Initialize(this.CreateSize);
-            this.ResetOffset();
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -221,12 +217,6 @@
             this._pixelTransform.Reset();
             this._rotatableTransform.Reset();
             this._boundingArea.Reset();
-        }
-
-        private void ResetOffset() {
-            if (this.IsInitialized && this.Sprite?.Texture != null) {
-                this.RenderSettings.ResetOffset();
-            }
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {
