@@ -2,8 +2,6 @@
 
     using Macabre2D.Framework;
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using System.Linq;
 
     [TestFixture]
     public static class IdentifiableContentComponentTests {
@@ -18,44 +16,6 @@
             Assert.True(audioPlayer.HasAsset(audioClip.Id));
             audioPlayer.RemoveAsset(audioClip.Id);
             Assert.False(audioPlayer.HasAsset(audioClip.Id));
-        }
-
-        [Test]
-        [Category("Unit Test")]
-        public static void IdentifiableContentComponent_SpriteAnimationTest() {
-            var spriteAnimation = new SpriteAnimation();
-            var spriteAnimator = new SpriteAnimationComponent(spriteAnimation);
-
-            var spriteAnimationId = spriteAnimation.Id;
-
-            var steps = new List<SpriteAnimationStep>();
-
-            for (var i = 0; i < 10; i++) {
-                var step = new SpriteAnimationStep();
-                step.Sprite = new Sprite();
-                steps.Add(step);
-                spriteAnimation.AddStep(step);
-            };
-
-            var firstStep = steps.First();
-            var firstSpriteId = firstStep.Sprite.Id;
-            Assert.True(spriteAnimator.HasAsset(firstSpriteId));
-
-            spriteAnimator.RemoveAsset(firstSpriteId);
-            Assert.False(spriteAnimator.HasAsset(firstSpriteId));
-            Assert.Null(firstStep.Sprite);
-
-            var lastStep = steps.Last();
-            var lastSpriteId = lastStep.Sprite.Id;
-            Assert.True(spriteAnimator.HasAsset(lastSpriteId));
-
-            spriteAnimator.RemoveAsset(lastSpriteId);
-            Assert.False(spriteAnimator.HasAsset(lastSpriteId));
-            Assert.Null(lastStep.Sprite);
-            Assert.True(spriteAnimator.HasAsset(spriteAnimationId));
-
-            spriteAnimator.RemoveAsset(spriteAnimationId);
-            Assert.False(spriteAnimator.HasAsset(spriteAnimationId));
         }
 
         [Test]

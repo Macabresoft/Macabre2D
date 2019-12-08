@@ -3,11 +3,13 @@
 ## Features
 
 * 'SpriteAnimationComponent' can be inherited.
+* 'SpriteAnimationComponent' can now have animations queued on it.
 
 ## Refactors
 
 * Use of 'IsInitialized' on 'BaseComponent' has been reduced as it can cause confusion during inheritance.
 * More components are appended with 'Component' at the end of their class name.
+* 'SpriteAnimationComponent' no longer has a default animation on it and instead must have animations queued onto it.
 
 ## Fixes
 

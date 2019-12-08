@@ -5,6 +5,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     [ExcludeFromCodeCoverage]
     public class RenderingTestGame : MacabreGame {
@@ -54,13 +55,12 @@
             step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
             step.Frames = 2;
 
-            var spriteAnimator = new SpriteAnimationComponent(spriteAnimation) {
+            var spriteAnimator = new SpriteAnimationComponent() {
                 FrameRate = 4
             };
 
-            var spriteRenderer2 = spriteAnimator.AddChild<SpriteRenderComponent>();
-            spriteRenderer2.DrawOrder = -100;
-            spriteRenderer2.RenderSettings.OffsetType = PixelOffsetType.Center;
+            spriteAnimator.DrawOrder = -100;
+            spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
             scene.AddComponent(spriteAnimator);
 
             var spinner = new Scaler();
@@ -170,6 +170,8 @@
 
             this.CurrentScene.AddComponent(binaryTileMap);
 
+            spriteAnimator = this.CurrentScene.GetAllComponentsOfType<SpriteAnimationComponent>().First();
+            spriteAnimator.Enqueue(spriteAnimation, true);
             this._isLoaded = true;
         }
     }

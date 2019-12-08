@@ -30,28 +30,13 @@
         /// </summary>
         /// <param name="steps">The steps.</param>
         /// <param name="shouldLoop">if set to <c>true</c> [should loop].</param>
-        public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps, bool shouldLoop) {
+        public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps) {
             this._steps.AddRange(steps);
-            this._shouldLoop = shouldLoop;
         }
 
         /// <inheritdoc/>
         [DataMember]
         public Guid AssetId { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this animation should loop.
-        /// </summary>
-        /// <value><c>true</c> if [should loop]; otherwise, <c>false</c>.</value>
-        public bool ShouldLoop {
-            get {
-                return this._shouldLoop;
-            }
-
-            set {
-                this._shouldLoop = value;
-            }
-        }
 
         /// <summary>
         /// Gets the steps.

@@ -11,17 +11,14 @@
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public class SpriteAnimationComponent : SpriteRenderComponent, IUpdateableComponentAsync, IAssetComponent<SpriteAnimation> {
-        private int _currentFrameIndex;
-        private int _currentStepIndex;
-
-        [DataMember(Order = 0, Name = "Default Animation")]
-        private SpriteAnimation _defaultAnimation;
-
-        private int _frameRate = 30;
-        private int _millisecondsPassed;
-        private int _millisecondsPerFrame;
-        private SpriteAnimation _spriteAnimation;
+    public class SpriteAnimationComponent : SpriteRenderComponent, IUpdateableComponentAsync {
+        private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
+        private QueueableSpriteAnimation _currentAnimation;
+        private uint _currentFrameIndex;
+        private uint _currentStepIndex;
+        private byte _frameRate = 30;
+        private uint _millisecondsPassed;
+        private uint _millisecondsPerFrame;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimationComponent"/> class.
@@ -30,19 +27,11 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimationComponent"/> class.
-        /// </summary>
-        /// <param name="animation">The animation.</param>
-        public SpriteAnimationComponent(SpriteAnimation animation) : this() {
-            this._defaultAnimation = animation;
-        }
-
-        /// <summary>
         /// Gets or sets the frame rate. This is represented in frames per second.
         /// </summary>
         /// <value>The frame rate.</value>
         [DataMember(Order = 1, Name = "Frame Rate")]
-        public int FrameRate {
+        public byte FrameRate {
             get {
                 return this._frameRate;
             }
@@ -54,50 +43,37 @@
             }
         }
 
-        /// <inheritdoc/>
-        IEnumerable<Guid> IAssetComponent<SpriteAnimation>.GetOwnedAssetIds() {
-            var ids = new HashSet<Guid>();
-            if (this._defaultAnimation != null) {
-                ids.Add(this._defaultAnimation.Id);
-            }
-
-            if (this._spriteAnimation != null) {
-                ids.Add(this._spriteAnimation.Id);
-            }
-
-            return ids;
+        /// <summary>
+        /// Enqueues the specified animation.
+        /// </summary>
+        /// <param name="animation">The animation.</param>
+        /// <param name="shouldLoopIndefinitely">
+        /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
+        /// animation has been queued.
+        /// </param>
+        public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
+            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
         }
 
-        /// <inheritdoc/>
-        public override IEnumerable<Guid> GetOwnedAssetIds() {
-            var ids = new HashSet<Guid>();
-            if (this._defaultAnimation != null) {
-                ids.AddRange(this._defaultAnimation.GetSpriteIds());
-            }
-
-            if (this._spriteAnimation != null) {
-                ids.AddRange(this._defaultAnimation.GetSpriteIds());
-            }
-
-            return ids;
+        /// <summary>
+        /// Enqueues the specified queueable sprite animation.
+        /// </summary>
+        /// <param name="queueableSpriteAnimation">The queueable sprite animation.</param>
+        public void Enqueue(QueueableSpriteAnimation queueableSpriteAnimation) {
+            this._queuedSpriteAnimations.Enqueue(queueableSpriteAnimation);
         }
 
-        /// <inheritdoc/>
-        public override bool HasAsset(Guid id) {
-            return this._defaultAnimation?.Id == id ||
-                this._spriteAnimation?.Id == id ||
-                this._defaultAnimation?.HasSprite(id) == true ||
-                this._spriteAnimation?.HasSprite(id) == true;
-        }
-
-        /// <inheritdoc/>
-        public override void LoadContent() {
-            if (this.Scene.IsInitialized) {
-                this._defaultAnimation?.LoadContent();
-                this._spriteAnimation?.LoadContent();
-            }
-
-            base.LoadContent();
+        /// <summary>
+        /// Enqueues the specified animation.
+        /// </summary>
+        /// <param name="animation">The animation.</param>
+        /// <param name="shouldLoopIndefinitely">
+        /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
+        /// animation has been queued.
+        /// </param>
+        /// <param name="numberOfLoops">The number of loops.</param>
+        public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
+            this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
         }
 
         /// <summary>
@@ -115,110 +91,33 @@
         }
 
         /// <summary>
-        /// Plays the specified animation. IF the animation is a looping animation, it will continue
-        /// to play. If the animation is not a looping animation, it will return to the default animation.
+        /// Plays the specified animation, which clears out the current queue and replaces the
+        /// previous animation. If the animation is a looping animation, it will continue to play
+        /// until a new animation is queued. If the animation is not a looping animation, it will
+        /// pause on the final frame.
         /// </summary>
         /// <param name="animation">The animation.</param>
-        public void Play(SpriteAnimation animation) {
-            this.Stop();
-            this._spriteAnimation = animation;
-
-            if (this.Scene.IsInitialized) {
-                this._spriteAnimation?.LoadContent();
-            }
-
-            if (this._spriteAnimation != null) {
-                this.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
-            }
-
+        public void Play(SpriteAnimation animation, bool shouldLoop) {
+            this.Stop(true);
+            this._queuedSpriteAnimations.Clear();
+            this._queuedSpriteAnimations.Enqueue(new QueueableSpriteAnimation(animation, shouldLoop));
             this.Play();
-        }
-
-        /// <inheritdoc/>
-        public override void RefreshAsset(Sprite newInstance) {
-            if (newInstance != null) {
-                this._defaultAnimation?.RefreshSprite(newInstance);
-                this._spriteAnimation?.RefreshSprite(newInstance);
-            }
-        }
-
-        /// <inheritdoc/>
-        void IAssetComponent<SpriteAnimation>.RefreshAsset(SpriteAnimation newInstance) {
-            if (newInstance != null) {
-                if (this._defaultAnimation?.Id == newInstance.Id) {
-                    this._defaultAnimation = newInstance;
-                }
-
-                if (this._spriteAnimation?.Id == newInstance.Id) {
-                    this._spriteAnimation = newInstance;
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override bool RemoveAsset(Guid id) {
-            bool result;
-            if (this._defaultAnimation?.Id == id) {
-                this._defaultAnimation = null;
-                result = true;
-            }
-            else {
-                result = this._defaultAnimation?.RemoveSprite(id) ?? false;
-            }
-
-            if (this._spriteAnimation?.Id == id) {
-                if (this.IsEnabled) {
-                    this.Stop();
-                }
-
-                this._spriteAnimation = null;
-                result = true;
-            }
-            else {
-                result = result || (this._spriteAnimation?.RemoveSprite(id) ?? false);
-            }
-
-            return result;
         }
 
         /// <summary>
         /// Stops this instance.
         /// </summary>
-        public void Stop() {
+        public void Stop(bool eraseQueue) {
             this.Pause();
             this._millisecondsPassed = 0;
             this._currentFrameIndex = 0;
             this._currentStepIndex = 0;
-        }
 
-        /// <inheritdoc/>
-        public override bool TryGetAsset(Guid id, out Sprite asset) {
-            if (this._defaultAnimation != null) {
-                this._defaultAnimation.TryGetSprite(id, out asset);
+            if (eraseQueue) {
+                this._currentAnimation = null;
+                this._queuedSpriteAnimations.Clear();
+                this.Sprite = null;
             }
-            else if (this._spriteAnimation != null) {
-                this._spriteAnimation.TryGetSprite(id, out asset);
-            }
-            else {
-                asset = null;
-            }
-
-            return asset != null;
-        }
-
-        /// <inheritdoc/>
-        bool IAssetComponent<SpriteAnimation>.TryGetAsset(Guid id, out SpriteAnimation asset) {
-            if (this._defaultAnimation?.Id == id) {
-                asset = this._defaultAnimation;
-            }
-            else if (this._spriteAnimation?.Id == id) {
-                asset = this._spriteAnimation;
-            }
-            else {
-                asset = null;
-            }
-
-            return asset != null;
         }
 
         /// <summary>
@@ -228,8 +127,14 @@
         /// <returns>The task.</returns>
         public Task UpdateAsync(GameTime gameTime) {
             return Task.Run(() => {
-                if (this._spriteAnimation != null && this._spriteAnimation.Steps.Any()) {
-                    this._millisecondsPassed += Convert.ToInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
+                if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
+                    this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
+                    this._currentAnimation.Animation.LoadContent();
+                    this.Sprite = this._currentAnimation.Animation.Steps.FirstOrDefault()?.Sprite;
+                }
+
+                if (this._currentAnimation != null) {
+                    this._millisecondsPassed += Convert.ToUInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
 
                     if (this._millisecondsPassed >= this._millisecondsPerFrame) {
                         while (this._millisecondsPassed >= this._millisecondsPerFrame) {
@@ -237,21 +142,27 @@
                             this._currentFrameIndex++;
                         }
 
-                        var currentStep = this._spriteAnimation.Steps.ElementAt(this._currentStepIndex);
+                        var currentStep = this._currentAnimation.Animation.Steps.ElementAt((int)this._currentStepIndex);
                         if (this._currentFrameIndex >= currentStep.Frames) {
                             this._currentFrameIndex = 0;
                             this._currentStepIndex++;
 
-                            if (this._currentStepIndex >= this._spriteAnimation.Steps.Count) {
+                            if (this._currentStepIndex >= this._currentAnimation.Animation.Steps.Count) {
                                 this._currentStepIndex = 0;
-                                if (this._spriteAnimation.Id != this._defaultAnimation.Id && !this._spriteAnimation.ShouldLoop) {
-                                    this._spriteAnimation = this._defaultAnimation;
+                                if (this._queuedSpriteAnimations.Any()) {
+                                    this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
                                     this._millisecondsPassed = 0;
+                                }
+                                else if (!this._currentAnimation.ShouldLoopIndefinitely) {
+                                    this._currentAnimation = null;
                                 }
                             }
 
-                            currentStep = this._spriteAnimation.Steps.ElementAt(this._currentStepIndex);
-                            this.Sprite = currentStep.Sprite;
+                            currentStep = this._currentAnimation?.Animation.Steps.ElementAt((int)this._currentStepIndex);
+
+                            if (currentStep != null) {
+                                this.Sprite = currentStep?.Sprite;
+                            }
                         }
                     }
                 }
@@ -260,16 +171,8 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            if (this._frameRate <= 0) {
-                throw new NotSupportedException("Hey, framerates gotta be positive. Stay positive. Don't be a zero. Don't be negative.");
-            }
-
-            this._millisecondsPerFrame = 1000 / this._frameRate;
-            this._spriteAnimation = this._defaultAnimation;
-
-            if (this._spriteAnimation != null) {
-                this.Sprite = this._spriteAnimation.Steps.FirstOrDefault()?.Sprite;
-            }
+            base.Initialize();
+            this._millisecondsPerFrame = 1000u / this._frameRate;
         }
     }
 }
