@@ -53,8 +53,8 @@
             return new SpriteAnimation(steps, shouldLoop);
         }
 
-        private static SpriteAnimator CreateAnimator(SpriteAnimation animation, int frameRate) {
-            var animator = new SpriteAnimator(animation) {
+        private static SpriteAnimationComponent CreateAnimator(SpriteAnimation animation, int frameRate) {
+            var animator = new SpriteAnimationComponent(animation) {
                 FrameRate = frameRate
             };
 

@@ -6,7 +6,7 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
-    public sealed class DynamicBody : SimpleBody, IDynamicPhysicsBody {
+    public sealed class DynamicBodyComponent : SimpleBodyComponent, IDynamicPhysicsBody {
 
         /// <inheritdoc/>
         [DataMember(Name = "Kinematic")]

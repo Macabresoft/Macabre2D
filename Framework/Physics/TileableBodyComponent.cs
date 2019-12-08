@@ -9,7 +9,7 @@
     /// A <see cref="BaseBody"/> which reacts to a <see cref="ITileable"/> parent and creates
     /// colliders based on the available grid.
     /// </summary>
-    public sealed class TileableBody : BaseBody {
+    public sealed class TileableBodyComponent : BaseBody {
         private readonly List<Collider> _colliders = new List<Collider>();
         private ITileable _tileable;
 

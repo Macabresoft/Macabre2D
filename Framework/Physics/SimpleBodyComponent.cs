@@ -8,7 +8,7 @@
     /// A body to be used by the physics engine.
     /// </summary>
     /// <seealso cref="BaseComponent"/>
-    public class SimpleBody : BaseBody, IPhysicsBody {
+    public class SimpleBodyComponent : BaseBody, IPhysicsBody {
         private Collider _collider;
 
         /// <inheritdoc/>

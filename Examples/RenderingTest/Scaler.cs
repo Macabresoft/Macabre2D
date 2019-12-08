@@ -9,7 +9,7 @@
 #pragma warning disable CS0649
 
         [Child]
-        private SpriteRenderer _spriteRenderer;
+        private SpriteRenderComponent _spriteRenderer;
 
 #pragma warning disable CS0649
 

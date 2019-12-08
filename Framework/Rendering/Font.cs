@@ -4,7 +4,7 @@
     using System;
 
     /// <summary>
-    /// A font to be used by the <see cref="TextRenderer"/>.
+    /// A font to be used by the <see cref="TextRenderComponent"/>.
     /// </summary>
     public sealed class Font : BaseIdentifiable, IAsset {
 

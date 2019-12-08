@@ -15,8 +15,8 @@
         [TestCase(3f, 3f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Rectangle to Circle Collision - No Collision")]
         [TestCase(0f, -130f, 50f, 0f, -200f, 500f, 50f, true, TestName = "Rectangle to Circle Collision - Physics Test Failure")]
         public static void RectangleCollider_CollidesWithCircleTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool collisionOccured) {
-            using (var circleBody = new DynamicBody())
-            using (var rectangleBody = new DynamicBody()) {
+            using (var circleBody = new DynamicBodyComponent())
+            using (var rectangleBody = new DynamicBodyComponent()) {
                 circleBody.SetWorldPosition(new Vector2(x1, y1));
                 circleBody.Collider = new CircleCollider(r1);
                 circleBody.Initialize(null);
@@ -59,8 +59,8 @@
         [TestCase(3f, 3f, 1f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Rectangle to Rectangle Collision - No Collision")]
         [TestCase(0f, -130f, 100f, 100f, 0f, -200f, 500f, 100f, true, TestName = "Rectangle to Rectangle Collision - Physics Test Failure")]
         public static void RectangleCollider_RectangleCollidesWithRectangleTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool collisionOccured) {
-            using (var rectangleBody1 = new DynamicBody())
-            using (var rectangleBody2 = new DynamicBody()) {
+            using (var rectangleBody1 = new DynamicBodyComponent())
+            using (var rectangleBody2 = new DynamicBodyComponent()) {
                 rectangleBody1.SetWorldPosition(new Vector2(x1, y1));
                 rectangleBody1.Collider = new RectangleCollider(w1, h2);
                 rectangleBody1.Initialize(null);

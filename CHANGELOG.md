@@ -7,6 +7,7 @@ N/A
 ## Refactors
 
 * Use of 'IsInitialized' on 'BaseComponent' has been reduced as it can cause confusion during inheritance.
+* More components are appended with 'Component' at the end of their class name.
 
 ## Fixes
 

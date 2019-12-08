@@ -16,8 +16,8 @@
         [TestCase(0f, 0f, 1f, 1f, 3f, -2f, 0.5f, false, TestName = "Quad Contains Circle - Outside")]
         [TestCase(0f, 0f, 1f, 1f, 1, 1f, 0.5f, false, TestName = "Quad Contains Circle - Edges Touch")]
         public static void PolygonCollider_ContainsCircle(float x1, float y1, float w1, float h1, float x2, float y2, float r2, bool shouldContain) {
-            using (var quadBody = new DynamicBody())
-            using (var circleBody = new DynamicBody()) {
+            using (var quadBody = new DynamicBodyComponent())
+            using (var circleBody = new DynamicBodyComponent()) {
                 quadBody.SetWorldPosition(new Vector2(x1, y1));
                 quadBody.Collider = PolygonCollider.CreateRectangle(w1, w1);
                 quadBody.Initialize(null);
@@ -38,7 +38,7 @@
         [TestCase(0f, 0f, 1f, 1f, 1f, 1f, false, TestName = "Quad Contains Point - Point is Outside")]
         [TestCase(0f, 0f, 1f, 1f, 100f, 100f, false, TestName = "Quad Contains Point - Point is Way Outside")]
         public static void PolygonCollider_ContainsPoint(float x1, float y1, float w, float h, float x2, float y2, bool shouldContain) {
-            using (var quadBody = new DynamicBody()) {
+            using (var quadBody = new DynamicBodyComponent()) {
                 quadBody.SetWorldPosition(new Vector2(x1, y1));
                 quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
                 quadBody.Initialize(null);
@@ -56,8 +56,8 @@
         [TestCase(0f, 0f, 1f, 1f, 3f, -2f, 1f, 1f, false, TestName = "Quad Contains Quad - Outside")]
         [TestCase(0f, 0f, 1f, 1f, 1, 1f, 1f, 1f, false, TestName = "Quad Contains Quad - Edges Touch")]
         public static void PolygonCollider_ContainsPolygon(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool shouldContain) {
-            using (var quadBody1 = new DynamicBody())
-            using (var quadBody2 = new DynamicBody()) {
+            using (var quadBody1 = new DynamicBodyComponent())
+            using (var quadBody2 = new DynamicBodyComponent()) {
                 quadBody1.SetWorldPosition(new Vector2(x1, y1));
                 quadBody1.Collider = PolygonCollider.CreateRectangle(w1, w1);
                 quadBody1.Initialize(null);
@@ -79,8 +79,8 @@
         [TestCase(3f, 3f, 1f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Quad to Quad Collision - No Collision")]
         [TestCase(0f, -130f, 100f, 100f, 0f, -200f, 500f, 50f, true, TestName = "Quad to Quad Collision - Physics Test Failure")] // I think this should be failing?
         public static void PolygonCollider_QuadCollidesWithQuadTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool collisionOccured) {
-            using (var quadBody1 = new DynamicBody())
-            using (var quadBody2 = new DynamicBody()) {
+            using (var quadBody1 = new DynamicBodyComponent())
+            using (var quadBody2 = new DynamicBodyComponent()) {
                 quadBody1.SetWorldPosition(new Vector2(x1, y1));
                 quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
                 quadBody1.Initialize(null);
@@ -123,7 +123,7 @@
         [TestCase(0f, 0f, 2f, 2f, 2f, 2f, -1f, 0f, 5f, false, TestName = "Raycast on Quad - Ray Misses")]
         [TestCase(0f, 0f, 2f, 2f, -2f, 1f, 1f, 0f, 5f, true, -1f, 1f, -1f, 0f, TestName = "Raycast on Quad - Ray Hits Top Most Point")]
         public static void PolyGonCollider_QuadIsHitByTest(float qx, float qy, float qw, float qh, float rx, float ry, float directionX, float directionY, float distance, bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using (var quadBody = new DynamicBody()) {
+            using (var quadBody = new DynamicBodyComponent()) {
                 quadBody.SetWorldPosition(new Vector2(qx, qy));
                 quadBody.Collider = PolygonCollider.CreateRectangle(qw, qh);
                 quadBody.Initialize(null);

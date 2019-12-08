@@ -35,7 +35,7 @@
 
             var movingDot = new MovingDot();
             camera.AddChild(movingDot);
-            var spriteRenderer = new SpriteRenderer();
+            var spriteRenderer = new SpriteRenderComponent();
             spriteRenderer.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             movingDot.AddChild(spriteRenderer);
@@ -54,11 +54,11 @@
             step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
             step.Frames = 2;
 
-            var spriteAnimator = new SpriteAnimator(spriteAnimation) {
+            var spriteAnimator = new SpriteAnimationComponent(spriteAnimation) {
                 FrameRate = 4
             };
 
-            var spriteRenderer2 = spriteAnimator.AddChild<SpriteRenderer>();
+            var spriteRenderer2 = spriteAnimator.AddChild<SpriteRenderComponent>();
             spriteRenderer2.DrawOrder = -100;
             spriteRenderer2.RenderSettings.OffsetType = PixelOffsetType.Center;
             scene.AddComponent(spriteAnimator);
@@ -66,7 +66,7 @@
             var spinner = new Scaler();
             spinner.LocalPosition -= new Vector2(2f, 0);
             scene.AddComponent(spinner);
-            var spriteRenderer3 = new SpriteRenderer();
+            var spriteRenderer3 = new SpriteRenderComponent();
             spinner.AddChild(spriteRenderer3);
             spriteRenderer3.DrawOrder = -200;
             spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
@@ -80,7 +80,7 @@
             var spinner2 = new Scaler();
             spinner.AddChild(spinner2);
             spinner2.LocalPosition -= new Vector2(2f, 0f);
-            var spriteRenderer4 = new SpriteRenderer();
+            var spriteRenderer4 = new SpriteRenderComponent();
             spinner2.AddChild(spriteRenderer4);
             spriteRenderer4.DrawOrder = 100;
             spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
@@ -90,7 +90,7 @@
             outwardSpinningDotBoundingArea.Color = Color.Red;
             outwardSpinningDotBoundingArea.LineThickness = 3f;
 
-            var textRenderer = new TextRenderer();
+            var textRenderer = new TextRenderComponent();
             scene.AddComponent(textRenderer);
             textRenderer.Text = "Hello, World";
             textRenderer.Font = new Font(fontId);
@@ -108,13 +108,13 @@
             this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
 
             var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
-            var arrowSpriteRenderer1 = new SpriteRenderer();
+            var arrowSpriteRenderer1 = new SpriteRenderComponent();
             arrowSpriteRenderer1.Sprite = arrowSprite1;
             arrowSpriteRenderer1.LocalPosition += new Vector2(2f, -2f);
             this.CurrentScene.AddComponent(arrowSpriteRenderer1);
 
             var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
-            var arrowSpriteRenderer2 = new SpriteRenderer();
+            var arrowSpriteRenderer2 = new SpriteRenderComponent();
             arrowSpriteRenderer2.Color = Color.LawnGreen;
             arrowSpriteRenderer2.Sprite = arrowSprite2;
             arrowSpriteRenderer2.LocalPosition += new Vector2(3f, -1f);
@@ -122,26 +122,26 @@
             this.CurrentScene.AddComponent(arrowSpriteRenderer2);
 
             var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
-            var quadSpriteRenderer1 = new SpriteRenderer();
+            var quadSpriteRenderer1 = new SpriteRenderComponent();
             quadSpriteRenderer1.Sprite = quadSprite1;
             quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
             this.CurrentScene.AddComponent(quadSpriteRenderer1);
 
             var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
-            var quadSpriteRenderer2 = new SpriteRenderer();
+            var quadSpriteRenderer2 = new SpriteRenderComponent();
             quadSpriteRenderer2.Color = Color.Khaki;
             quadSpriteRenderer2.Sprite = quadSprite2;
             quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
             this.CurrentScene.AddComponent(quadSpriteRenderer2);
 
             var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
-            var rightTriangleSpriteRenderer1 = new SpriteRenderer();
+            var rightTriangleSpriteRenderer1 = new SpriteRenderComponent();
             rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
             rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
             this.CurrentScene.AddComponent(rightTriangleSpriteRenderer1);
 
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
-            var circleSpriteRenderer = new SpriteRenderer();
+            var circleSpriteRenderer = new SpriteRenderComponent();
             circleSpriteRenderer.Sprite = circleSprite;
             circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
             this.CurrentScene.AddComponent(circleSpriteRenderer);

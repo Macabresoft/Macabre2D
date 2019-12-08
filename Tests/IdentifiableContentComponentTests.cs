@@ -24,7 +24,7 @@
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_SpriteAnimationTest() {
             var spriteAnimation = new SpriteAnimation();
-            var spriteAnimator = new SpriteAnimator(spriteAnimation);
+            var spriteAnimator = new SpriteAnimationComponent(spriteAnimation);
 
             var spriteAnimationId = spriteAnimation.Id;
 
@@ -61,7 +61,7 @@
         [Test]
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_SpriteRendererTest() {
-            var spriteRenderer = new SpriteRenderer();
+            var spriteRenderer = new SpriteRenderComponent();
             var sprite = new Sprite();
             spriteRenderer.Sprite = sprite;
 
@@ -73,7 +73,7 @@
         [Test]
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_TextRendererTest() {
-            var textRenderer = new TextRenderer();
+            var textRenderer = new TextRenderComponent();
             var font = new Font();
             textRenderer.Font = font;
 

@@ -235,9 +235,9 @@
 
                 var testComponent = new TestUpdateableComponent();
                 component4.AddChild(testComponent);
-                component2.AddChild(new SpriteAnimator());
-                component3.AddChild(new SimpleBody());
-                component4.AddChild(new SpriteAnimator());
+                component2.AddChild(new SpriteAnimationComponent());
+                component3.AddChild(new SimpleBodyComponent());
+                component4.AddChild(new SpriteAnimationComponent());
 
                 Assert.AreEqual(testComponent, component1.GetComponentInChildren<TestUpdateableComponent>(false));
                 Assert.IsNull(component1.GetComponentInChildren<TestUpdateableComponent>(true));
@@ -256,24 +256,24 @@
                 component4.Parent = component2;
 
                 var testComponents = new TestUpdateableComponent[10];
-                var sequencers = new SpriteAnimator[10];
+                var sequencers = new SpriteAnimationComponent[10];
 
                 for (var i = 0; i < 10; i++) {
                     if (i % 4 == 0) {
                         testComponents[i] = component1.AddChild<TestUpdateableComponent>();
-                        sequencers[i] = component1.AddChild<SpriteAnimator>();
+                        sequencers[i] = component1.AddChild<SpriteAnimationComponent>();
                     }
                     else if (i % 3 == 0) {
                         testComponents[i] = component2.AddChild<TestUpdateableComponent>();
-                        sequencers[i] = component2.AddChild<SpriteAnimator>();
+                        sequencers[i] = component2.AddChild<SpriteAnimationComponent>();
                     }
                     else if (i % 2 == 0) {
                         testComponents[i] = component3.AddChild<TestUpdateableComponent>();
-                        sequencers[i] = component3.AddChild<SpriteAnimator>();
+                        sequencers[i] = component3.AddChild<SpriteAnimationComponent>();
                     }
                     else {
                         testComponents[i] = component4.AddChild<TestUpdateableComponent>();
-                        sequencers[i] = component4.AddChild<SpriteAnimator>();
+                        sequencers[i] = component4.AddChild<SpriteAnimationComponent>();
                     }
                 }
 
@@ -283,7 +283,7 @@
                     Assert.Contains(component, result1);
                 }
 
-                var result2 = component1.GetComponentsInChildren<SpriteAnimator>();
+                var result2 = component1.GetComponentsInChildren<SpriteAnimationComponent>();
                 Assert.AreEqual(result2.Count, sequencers.Length);
                 foreach (var component in sequencers) {
                     Assert.Contains(component, result2);

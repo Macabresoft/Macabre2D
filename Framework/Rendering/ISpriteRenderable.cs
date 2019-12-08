@@ -9,6 +9,6 @@
         /// Gets the sprite renderer.
         /// </summary>
         /// <value>The sprite renderer.</value>
-        SpriteRenderer SpriteRenderer { get; }
+        SpriteRenderComponent SpriteRenderer { get; }
     }
 }
