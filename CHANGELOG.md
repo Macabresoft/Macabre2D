@@ -2,7 +2,7 @@
 
 ## Features
 
-N/A
+* 'SpriteAnimationComponent' can be inherited.
 
 ## Refactors
 
