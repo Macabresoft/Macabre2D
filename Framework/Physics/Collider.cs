@@ -63,6 +63,16 @@
         public abstract ColliderType ColliderType { get; }
 
         /// <summary>
+        /// Gets the layers.
+        /// </summary>
+        /// <value>The layers.</value>
+        public Layers Layers {
+            get {
+                return this.Body?.Layers ?? Layers.None;
+            }
+        }
+
+        /// <summary>
         /// Gets the offset.
         /// </summary>
         /// <value>The offset.</value>

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,14 +11,13 @@
     /// </summary>
     [DataContract]
     public sealed class LayerSettings {
+        private readonly List<Layers> _layers;
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>();
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new Dictionary<Layers, Layers>();
-
-        private List<Layers> _layers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LayerSettings"/> class.
@@ -26,6 +26,10 @@
             this._layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().ToList();
             this._layers.Remove(Layers.None);
             this._layers.Remove(Layers.All);
+
+            foreach (var layer in this._layers) {
+                this._layerToCollisionMask[layer] = Layers.All;
+            }
         }
 
         /// <summary>

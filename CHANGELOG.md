@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* Raycasting from a 'SimplePhysicsModule' will now respect layers.
 
 # 0.3.4.0
 

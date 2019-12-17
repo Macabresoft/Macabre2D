@@ -2,6 +2,7 @@
 
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A module which allows simple raycasting through colliders, which are sorted into a quad tree.
@@ -36,7 +37,7 @@
         /// <inheritdoc/>
         public override void PostInitialize() {
             this.Bodies.AddRange(this.Scene.GetAllComponentsOfType<IPhysicsBody>());
-
+            this.Bodies.ForEachFilteredItem(r => this.ColliderTree.InsertMany(r.GetColliders()));
             this.Scene.ComponentCreated += this.Scene_ComponentAdded;
             this.Scene.ComponentDestroyed += this.Scene_ComponentRemoved;
         }
@@ -54,7 +55,7 @@
             var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
             var hits = new List<RaycastHit>();
 
-            foreach (var collider in potentialColliders) {
+            foreach (var collider in potentialColliders.Where(x => GameSettings.Instance.Layers.GetShouldCollide(x.Layers, layers))) {
                 if (collider.IsHitBy(ray, out var hit)) {
                     hits.Add(hit);
                 }
