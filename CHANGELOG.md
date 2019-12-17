@@ -1,4 +1,4 @@
-# 0.3.5.0
+# 0.3.6.0
 
 ## Features
 
@@ -7,6 +7,12 @@ N/A
 ## Refactors
 
 N/A
+
+## Fixes
+
+N/A
+
+# 0.3.5.0
 
 ## Fixes
 
@@ -25,30 +31,14 @@ N/A
 * More components are appended with 'Component' at the end of their class name.
 * 'SpriteAnimationComponent' no longer has a default animation on it and instead must have animations queued onto it.
 
-## Fixes
-
-N/A
-
 # 0.3.3.0
-
-## Features
-
-N/A
 
 ## Refactors
 
 * More internally accessed things have been made public.
 * Repository link updated in NuGet package.
 
-## Fixes
-
-N/A
-
 # 0.3.2.0
-
-## Features
-
-N/A
 
 ## Refactors
 
