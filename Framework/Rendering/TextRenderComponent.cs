@@ -220,10 +220,8 @@
 
         private Transform CreatePixelTransform() {
             var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit);
-            var pixelsPerUnit = GameSettings.Instance.PixelsPerUnit;
-            var inversePixelsPerUnit = GameSettings.Instance.InversePixelsPerUnit;
-            var position = new Vector2((int)Math.Round(worldTransform.Position.X * pixelsPerUnit, 0) * inversePixelsPerUnit, (int)Math.Round(worldTransform.Position.Y * pixelsPerUnit, 0) * inversePixelsPerUnit);
-            var scale = new Vector2((int)Math.Round(worldTransform.Scale.X, 0), (int)Math.Round(worldTransform.Scale.Y));
+            var position = worldTransform.Position.ToPixelSnappedValue();
+            var scale = new Vector2((int)Math.Round(worldTransform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(worldTransform.Scale.Y, 0, MidpointRounding.AwayFromZero));
             return new Transform(position, scale);
         }
 

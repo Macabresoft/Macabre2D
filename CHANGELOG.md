@@ -6,7 +6,7 @@ N/A
 
 ## Refactors
 
-N/A
+* Pixel snapping now uses 'away from zero' rounding.
 
 ## Fixes
 

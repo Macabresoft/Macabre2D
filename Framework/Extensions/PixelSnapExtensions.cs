@@ -14,7 +14,7 @@
         /// <param name="value">The value.</param>
         /// <returns>A pixel snapped value</returns>
         public static float ToPixelSnappedValue(this float value) {
-            return (int)Math.Round(value * GameSettings.Instance.PixelsPerUnit) * GameSettings.Instance.InversePixelsPerUnit;
+            return (int)Math.Round(value * GameSettings.Instance.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * GameSettings.Instance.InversePixelsPerUnit;
         }
 
         /// <summary>
@@ -23,7 +23,9 @@
         /// <param name="value">The value.</param>
         /// <returns>A pixel snapped value</returns>
         public static Vector2 ToPixelSnappedValue(this Vector2 value) {
-            return new Vector2((int)Math.Round(value.X * GameSettings.Instance.PixelsPerUnit) * GameSettings.Instance.InversePixelsPerUnit, (int)Math.Round(value.Y * GameSettings.Instance.PixelsPerUnit) * GameSettings.Instance.InversePixelsPerUnit);
+            return new Vector2(
+                (int)Math.Round(value.X * GameSettings.Instance.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * GameSettings.Instance.InversePixelsPerUnit,
+                (int)Math.Round(value.Y * GameSettings.Instance.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * GameSettings.Instance.InversePixelsPerUnit);
         }
     }
 }
