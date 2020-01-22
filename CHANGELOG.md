@@ -7,6 +7,7 @@ N/A
 ## Refactors
 
 * Pixel snapping now uses 'away from zero' rounding.
+* Removing ISpriteRenderable as it was unused.
 
 ## Fixes
 
