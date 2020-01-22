@@ -199,17 +199,19 @@
                     this.GetWorldTransform(offset + new Vector2(0f, height), rotationAngle).Position
                 };
 
-                if (this.SnapToPixels) {
-                    var minimumX = points.Min(x => x.X).ToPixelSnappedValue();
-                    var minimumY = points.Min(x => x.Y).ToPixelSnappedValue();
-                    var maximumX = points.Max(x => x.X).ToPixelSnappedValue();
-                    var maximumY = points.Max(x => x.Y).ToPixelSnappedValue();
+                var minimumX = points.Min(x => x.X);
+                var minimumY = points.Min(x => x.Y);
+                var maximumX = points.Max(x => x.X);
+                var maximumY = points.Max(x => x.Y);
 
-                    result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
+                if (this.SnapToPixels) {
+                    minimumX = minimumX.ToPixelSnappedValue();
+                    minimumY = minimumY.ToPixelSnappedValue();
+                    maximumX = maximumX.ToPixelSnappedValue();
+                    maximumY = maximumY.ToPixelSnappedValue();
                 }
-                else {
-                    result = new BoundingArea(new Vector2(points.Min(x => x.X), points.Min(x => x.Y)), new Vector2(points.Max(x => x.X), points.Max(x => x.Y)));
-                }
+
+                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
             }
             else {
                 result = new BoundingArea();
@@ -220,9 +222,7 @@
 
         private Transform CreatePixelTransform() {
             var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit);
-            var position = worldTransform.Position.ToPixelSnappedValue();
-            var scale = new Vector2((int)Math.Round(worldTransform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(worldTransform.Scale.Y, 0, MidpointRounding.AwayFromZero));
-            return new Transform(position, scale);
+            return worldTransform.ToPixelSnappedValue();
         }
 
         private RotatableTransform CreateRotatableTransform() {

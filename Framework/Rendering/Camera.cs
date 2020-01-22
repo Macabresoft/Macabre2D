@@ -254,21 +254,19 @@
                 this.GetWorldTransform(new Vector2(halfWidth, -halfHeight)).Position
             };
 
-            BoundingArea result;
+            var minimumX = points.Min(x => x.X);
+            var minimumY = points.Min(x => x.Y);
+            var maximumX = points.Max(x => x.X);
+            var maximumY = points.Max(x => x.Y);
 
             if (this.SnapToPixels) {
-                var minimumX = points.Min(x => x.X).ToPixelSnappedValue();
-                var minimumY = points.Min(x => x.Y).ToPixelSnappedValue();
-                var maximumX = points.Max(x => x.X).ToPixelSnappedValue();
-                var maximumY = points.Max(x => x.Y).ToPixelSnappedValue();
-
-                result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
-            }
-            else {
-                result = new BoundingArea(new Vector2(points.Min(x => x.X), points.Min(x => x.Y)), new Vector2(points.Max(x => x.X), points.Max(x => x.Y)));
+                minimumX = minimumX.ToPixelSnappedValue();
+                minimumY = minimumY.ToPixelSnappedValue();
+                maximumX = maximumX.ToPixelSnappedValue();
+                maximumY = maximumY.ToPixelSnappedValue();
             }
 
-            return result;
+            return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
         }
 
         private Matrix CreateViewMatrix() {

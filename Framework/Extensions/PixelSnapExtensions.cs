@@ -27,5 +27,16 @@
                 (int)Math.Round(value.X * GameSettings.Instance.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * GameSettings.Instance.InversePixelsPerUnit,
                 (int)Math.Round(value.Y * GameSettings.Instance.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * GameSettings.Instance.InversePixelsPerUnit);
         }
+
+        /// <summary>
+        /// Converts a <see cref="Transform"/> to a pixel snapped value.
+        /// </summary>
+        /// <param name="transform">The transform.</param>
+        /// <returns>A pixel snapped value.</returns>
+        public static Transform ToPixelSnappedValue(this Transform transform) {
+            var position = transform.Position.ToPixelSnappedValue();
+            var scale = new Vector2((int)Math.Round(transform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.Scale.Y, 0, MidpointRounding.AwayFromZero));
+            return new Transform(position, scale);
+        }
     }
 }
