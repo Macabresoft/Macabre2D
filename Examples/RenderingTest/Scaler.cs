@@ -19,7 +19,7 @@
             }
 
             this.LocalScale += Vector2.One * gameTime.ElapsedGameTime.Milliseconds * 0.001f * this._currentSign;
-            this._spriteRenderer.Rotation.Angle += gameTime.ElapsedGameTime.Milliseconds * 0.003f;
+            this._spriteRenderer.Rotation += gameTime.ElapsedGameTime.Milliseconds * 0.003f;
         }
 
         protected override void Initialize() {

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Microsoft.Xna.Framework;
     using System;
 
     /// <summary>
@@ -36,6 +37,23 @@
         /// <returns><c>true</c> if the value is a power of two; otherwise, <c>false</c>.</returns>
         public static bool IsPowerOfTwo(this int value) {
             return (value != 0) && ((value & (value - 1)) == 0);
+        }
+
+        /// <summary>
+        /// Normalizes an angle to the radian unit circle.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The normalized angle.</returns>
+        public static float NormalizeAngle(this float value) {
+            while (value >= MathHelper.TwoPi) {
+                value -= MathHelper.TwoPi;
+            }
+
+            while (value < 0) {
+                value += MathHelper.TwoPi;
+            }
+
+            return value;
         }
 
         /// <summary>

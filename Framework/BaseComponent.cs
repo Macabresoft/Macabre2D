@@ -20,7 +20,6 @@
         private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
 
         private readonly List<Func<BaseComponent, bool>> _resolveChildActions = new List<Func<BaseComponent, bool>>();
-        private readonly Transform _transform = new Transform();
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
         [DataMember(Name = "Draw Order")]
@@ -35,11 +34,12 @@
         private bool _isVisible = true;
 
         private Vector2 _localPosition;
-
         private Vector2 _localScale = Vector2.One;
 
         [DataMember]
         private BaseComponent _parent;
+
+        private Transform _transform = new Transform();
 
         [DataMember(Name = "Update Order")]
         private int _updateOrder;
@@ -291,7 +291,7 @@
         public Transform WorldTransform {
             get {
                 if (!this._isTransformUpToDate) {
-                    this._transform.UpdateTransform(this.TransformMatrix);
+                    this._transform = this is IRotatable ? this.TransformMatrix.Decompose2D() : this.TransformMatrix.DecomposeWithoutRotation2D();
                     this._isTransformUpToDate = true;
                 }
 
@@ -514,14 +514,14 @@
         }
 
         /// <inheritdoc/>
-        public RotatableTransform GetWorldTransform(float rotationAngle) {
+        public Transform GetWorldTransform(float rotationAngle) {
             var worldTransform = this.WorldTransform;
             var matrix =
                 Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
                 Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
-            return matrix.ToRotatableTransform();
+            return matrix.ToTransform();
         }
 
         /// <inheritdoc/>
@@ -531,7 +531,7 @@
         }
 
         /// <inheritdoc/>
-        public RotatableTransform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
+        public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
             var worldTransform = this.WorldTransform;
 
             var matrix =
@@ -540,11 +540,11 @@
                 Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
-            return matrix.ToRotatableTransform();
+            return matrix.ToTransform();
         }
 
         /// <inheritdoc/>
-        public RotatableTransform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
+        public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
             var worldTransform = this.WorldTransform;
 
             var matrix =
@@ -553,7 +553,7 @@
                 Matrix.CreateRotationZ(rotationAngle) *
                 Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
-            return matrix.ToRotatableTransform();
+            return matrix.ToTransform();
         }
 
         /// <inheritdoc/>
@@ -581,7 +581,7 @@
         }
 
         /// <inheritdoc/>
-        public RotatableTransform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
             var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
             return this.GetWorldTransform(position, rotationAngle);
         }

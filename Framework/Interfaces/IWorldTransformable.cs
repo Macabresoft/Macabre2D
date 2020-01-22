@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
-        RotatableTransform GetWorldTransform(float rotationAngle);
+        Transform GetWorldTransform(float rotationAngle);
 
         /// <summary>
         /// Gets the world transform.
@@ -39,7 +39,7 @@
         /// <param name="originOffset">The origin offset.</param>
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
-        RotatableTransform GetWorldTransform(Vector2 originOffset, float rotationAngle);
+        Transform GetWorldTransform(Vector2 originOffset, float rotationAngle);
 
         /// <summary>
         /// Gets the world transform.
@@ -48,7 +48,7 @@
         /// <param name="overrideScale">An override value for scale.</param>
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
-        RotatableTransform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle);
+        Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle);
 
         /// <summary>
         /// Gets the world transform.
@@ -95,7 +95,7 @@
         /// <param name="offset">The offset.</param>
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
-        RotatableTransform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle);
+        Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle);
 
         /// <summary>
         /// Sets the world transform.

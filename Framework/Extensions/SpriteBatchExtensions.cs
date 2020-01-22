@@ -14,17 +14,17 @@
         /// <param name="spriteBatch">The sprite batch.</param>
         /// <param name="sprite">The sprite.</param>
         /// <param name="transform">The transform.</param>
-        /// <param name="rotationAngle">The rotation angle.</param>
+        /// <param name="rotation">The rotation.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, float rotationAngle, Color color, SpriteEffects orientation) {
+        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, float rotation, Color color, SpriteEffects orientation) {
             if (sprite?.Texture != null && transform != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     transform.Position * GameSettings.Instance.PixelsPerUnit,
                     new Rectangle(sprite.Location, sprite.Size),
                     color,
-                    rotationAngle,
+                    rotation,
                     Vector2.Zero,
                     transform.Scale,
                     orientation,
@@ -39,17 +39,17 @@
         /// <param name="sprite">The sprite.</param>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
-        /// <param name="rotationAngle">The rotation angle.</param>
+        /// <param name="rotation">The rotation.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, float rotationAngle, Color color, SpriteEffects orientation) {
+        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, float rotation, Color color, SpriteEffects orientation) {
             if (sprite?.Texture != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     position * GameSettings.Instance.PixelsPerUnit,
                     new Rectangle(sprite.Location, sprite.Size),
                     color,
-                    rotationAngle,
+                    rotation,
                     Vector2.Zero,
                     scale,
                     orientation,
@@ -76,31 +76,8 @@
         /// <param name="sprite">The sprite.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, RotatableTransform transform, Color color) {
-            spriteBatch.Draw(sprite, transform, transform.Rotation.Angle, color, SpriteEffects.FlipVertically);
-        }
-
-        /// <summary>
-        /// Draws the specified sprite.
-        /// </summary>
-        /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
-        /// <param name="transform">The transform.</param>
-        /// <param name="color">The color.</param>
-        /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, RotatableTransform transform, Color color, SpriteEffects orientation) {
-            spriteBatch.Draw(sprite, transform, transform.Rotation.Angle, color, orientation);
-        }
-
-        /// <summary>
-        /// Draws the specified sprite.
-        /// </summary>
-        /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
-        /// <param name="transform">The transform.</param>
-        /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color) {
-            spriteBatch.Draw(sprite, transform, 0f, color, SpriteEffects.FlipVertically);
+            spriteBatch.Draw(sprite, transform, transform.Rotation, color, SpriteEffects.FlipVertically);
         }
 
         /// <summary>
@@ -112,7 +89,7 @@
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color, SpriteEffects orientation) {
-            spriteBatch.Draw(sprite, transform, 0f, color, orientation);
+            spriteBatch.Draw(sprite, transform, transform.Rotation, color, orientation);
         }
 
         /// <summary>
@@ -145,36 +122,11 @@
         /// <param name="spriteBatch">The sprite batch.</param>
         /// <param name="font">The font.</param>
         /// <param name="text">The text.</param>
-        /// <param name="rotatableTransform">The rotatable transform.</param>
-        /// <param name="color">The color.</param>
-        /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Font font, string text, RotatableTransform rotatableTransform, Color color, SpriteEffects orientation) {
-            spriteBatch.Draw(font, text, rotatableTransform.Position, rotatableTransform.Scale, rotatableTransform.Rotation.Angle, color, orientation);
-        }
-
-        /// <summary>
-        /// Draws the text with the provided font.
-        /// </summary>
-        /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="font">The font.</param>
-        /// <param name="text">The text.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Transform transform, Color color, SpriteEffects orientation) {
-            spriteBatch.Draw(font, text, transform.Position, transform.Scale, 0f, color, orientation);
-        }
-
-        /// <summary>
-        /// Draws the text with the provided font.
-        /// </summary>
-        /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="font">The font.</param>
-        /// <param name="text">The text.</param>
-        /// <param name="transform">The transform.</param>
-        /// <param name="color">The color.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Font font, string text, RotatableTransform rotatableTransform, Color color) {
-            spriteBatch.Draw(font, text, rotatableTransform.Position, rotatableTransform.Scale, rotatableTransform.Rotation.Angle, color, SpriteEffects.FlipVertically);
+            spriteBatch.Draw(font, text, transform.Position, transform.Scale, transform.Rotation, color, orientation);
         }
 
         /// <summary>
@@ -186,7 +138,7 @@
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Transform transform, Color color) {
-            spriteBatch.Draw(font, text, transform.Position, transform.Scale, 0f, color, SpriteEffects.FlipVertically);
+            spriteBatch.Draw(font, text, transform.Position, transform.Scale, transform.Rotation, color, SpriteEffects.FlipVertically);
         }
     }
 }

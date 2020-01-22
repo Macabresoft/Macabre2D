@@ -12,7 +12,8 @@
     public class SpriteRenderComponent : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
-        private readonly ResettableLazy<RotatableTransform> _rotatableTransform;
+        private readonly ResettableLazy<Transform> _rotatableTransform;
+        private float _rotation;
         private bool _snapToPixels;
         private Sprite _sprite;
 
@@ -22,7 +23,7 @@
         public SpriteRenderComponent() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
-            this._rotatableTransform = new ResettableLazy<RotatableTransform>(this.CreateRotatableTransform);
+            this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
         }
 
         /// <inheritdoc/>
@@ -48,7 +49,22 @@
 
         /// <inheritdoc/>
         [DataMember(Order = 3)]
-        public Rotation Rotation { get; private set; } = new Rotation();
+        public float Rotation {
+            get {
+                return this._snapToPixels ? 0f : this._rotation;
+            }
+
+            set {
+                if (value != this._rotation) {
+                    this._rotation = value.NormalizeAngle();
+
+                    if (!this._snapToPixels) {
+                        this._boundingArea.Reset();
+                        this._rotatableTransform.Reset();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this sprite renderer should snap to the pixel
@@ -152,7 +168,6 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
-            this.Rotation.AngleChanged += this.Self_TransformChanged;
             this.RenderSettings.OffsetChanged += this.Offset_AmountChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
@@ -163,13 +178,12 @@
                 var width = this.Sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var height = this.Sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
                 var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
-                var rotationAngle = this.Rotation.Angle;
 
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(offset, rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, 0f), rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, height), rotationAngle).Position,
-                    this.GetWorldTransform(offset + new Vector2(0f, height), rotationAngle).Position
+                    this.GetWorldTransform(offset, this.Rotation).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height), this.Rotation).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
@@ -198,8 +212,8 @@
             return worldTransform;
         }
 
-        private RotatableTransform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation.Angle);
+        private Transform CreateRotatableTransform() {
+            return this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation);
         }
 
         private Vector2 CreateSize() {

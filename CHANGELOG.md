@@ -2,13 +2,14 @@
 
 ## Features
 
-N/A
+* Transform is now a struct.
 
 ## Refactors
 
 * Pixel snapping now uses 'away from zero' rounding.
 * Removing ISpriteRenderable as it was unused.
 * Cleaned up some pixel snap code.
+* Cleaned up transform code and reduced duplication.
 
 ## Fixes
 
