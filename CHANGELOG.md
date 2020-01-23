@@ -1,3 +1,17 @@
+# 0.3.7.0
+
+## Features
+
+N/A
+
+## Refactors
+
+N/A
+
+## Fixes
+
+N/A
+
 # 0.3.6.0
 
 ## Features
@@ -10,10 +24,6 @@
 * Removing ISpriteRenderable as it was unused.
 * Cleaned up some pixel snap code.
 * Cleaned up transform code and reduced duplication.
-
-## Fixes
-
-N/A
 
 # 0.3.5.0
 
