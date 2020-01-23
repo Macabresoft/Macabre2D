@@ -74,30 +74,10 @@
         /// </summary>
         public event EventHandler UpdateOrderChanged;
 
-        /// <summary>
-        /// Gets the backward vector. This is the same as (-1, 0) when no rotation is applied.
-        /// </summary>
-        /// <value>The backward vector.</value>
-        public Vector2 Backward {
-            get {
-                return this.TransformMatrix.Backward.ToVector2();
-            }
-        }
-
         /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return this._children;
-            }
-        }
-
-        /// <summary>
-        /// Gets the down vector. This is equal to (0, -1) when no rotation is applied.
-        /// </summary>
-        /// <value>The down vector.</value>
-        public Vector2 Down {
-            get {
-                return this.TransformMatrix.Down.ToVector2();
             }
         }
 
@@ -112,16 +92,6 @@
                     this._drawOrder = value;
                     this.DrawOrderChanged.SafeInvoke(this);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the forward vector. This the same as (1, 0) when no rotation is applied.
-        /// </summary>
-        /// <value>The forward vector.</value>
-        public Vector2 Forward {
-            get {
-                return this.TransformMatrix.Forward.ToVector2();
             }
         }
 
@@ -263,16 +233,6 @@
             }
         }
 
-        /// <summary>
-        /// Gets the up vector. This is equal to (0, 1) when no rotation is applied.
-        /// </summary>
-        /// <value>The up vector.</value>
-        public Vector2 Up {
-            get {
-                return this.TransformMatrix.Up.ToVector2();
-            }
-        }
-
         /// <inheritdoc/>
         public int UpdateOrder {
             get {
@@ -291,7 +251,7 @@
         public Transform WorldTransform {
             get {
                 if (!this._isTransformUpToDate) {
-                    this._transform = this is IRotatable ? this.TransformMatrix.Decompose2D() : this.TransformMatrix.DecomposeWithoutRotation2D();
+                    this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
                     this._isTransformUpToDate = true;
                 }
 
