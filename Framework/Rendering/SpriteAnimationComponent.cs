@@ -26,6 +26,16 @@
         }
 
         /// <summary>
+        /// Gets the current animation.
+        /// </summary>
+        /// <value>The current animation.</value>
+        public SpriteAnimation CurrentAnimation {
+            get {
+                return this._currentAnimation?.Animation;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the frame rate. This is represented in frames per second.
         /// </summary>
         /// <value>The frame rate.</value>

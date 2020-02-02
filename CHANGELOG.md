@@ -6,7 +6,7 @@ N/A
 
 ## Refactors
 
-N/A
+* Currently playing animation now exposed on SpriteAnimationComponents.
 
 ## Fixes
 
