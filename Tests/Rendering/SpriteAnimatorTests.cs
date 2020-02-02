@@ -25,19 +25,19 @@
 
             animator.Play(animation, true);
             Assert.IsNull(animator.Sprite);
-            animator.UpdateAsync(gameTime).Wait();
+            animator.Update(gameTime);
             Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
 
             for (var i = 1; i < numberOfSteps; i++) {
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
-                animator.UpdateAsync(gameTime).Wait();
+                animator.Update(gameTime);
                 Assert.AreEqual(animation.Steps.ElementAt(i).Sprite.Id, animator.Sprite.Id);
             }
 
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
 
             // Should loop here.
-            animator.UpdateAsync(gameTime).Wait();
+            animator.Update(gameTime);
             Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
         }
 

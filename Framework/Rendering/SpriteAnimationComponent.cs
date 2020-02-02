@@ -5,13 +5,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Animates sprites at the specified framerate;
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
-    public class SpriteAnimationComponent : SpriteRenderComponent, IUpdateableComponentAsync {
+    public class SpriteAnimationComponent : SpriteRenderComponent, IUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
         private QueueableSpriteAnimation _currentAnimation;
         private uint _currentFrameIndex;
@@ -120,53 +119,47 @@
             }
         }
 
-        /// <summary>
-        /// Updates this instance asynchronously.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        /// <returns>The task.</returns>
-        public Task UpdateAsync(GameTime gameTime) {
-            return Task.Run(() => {
-                if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
-                    this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
-                    this._currentAnimation.Animation.LoadContent();
-                    this.Sprite = this._currentAnimation.Animation.Steps.FirstOrDefault()?.Sprite;
-                }
+        /// <inheritdoc/>
+        public void Update(GameTime gameTime) {
+            if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
+                this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
+                this._currentAnimation.Animation.LoadContent();
+                this.Sprite = this._currentAnimation.Animation.Steps.FirstOrDefault()?.Sprite;
+            }
 
-                if (this._currentAnimation != null) {
-                    this._millisecondsPassed += Convert.ToUInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
+            if (this._currentAnimation != null) {
+                this._millisecondsPassed += Convert.ToUInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                    if (this._millisecondsPassed >= this._millisecondsPerFrame) {
-                        while (this._millisecondsPassed >= this._millisecondsPerFrame) {
-                            this._millisecondsPassed -= this._millisecondsPerFrame;
-                            this._currentFrameIndex++;
+                if (this._millisecondsPassed >= this._millisecondsPerFrame) {
+                    while (this._millisecondsPassed >= this._millisecondsPerFrame) {
+                        this._millisecondsPassed -= this._millisecondsPerFrame;
+                        this._currentFrameIndex++;
+                    }
+
+                    var currentStep = this._currentAnimation.Animation.Steps.ElementAt((int)this._currentStepIndex);
+                    if (this._currentFrameIndex >= currentStep.Frames) {
+                        this._currentFrameIndex = 0;
+                        this._currentStepIndex++;
+
+                        if (this._currentStepIndex >= this._currentAnimation.Animation.Steps.Count) {
+                            this._currentStepIndex = 0;
+                            if (this._queuedSpriteAnimations.Any()) {
+                                this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
+                                this._millisecondsPassed = 0;
+                            }
+                            else if (!this._currentAnimation.ShouldLoopIndefinitely) {
+                                this._currentAnimation = null;
+                            }
                         }
 
-                        var currentStep = this._currentAnimation.Animation.Steps.ElementAt((int)this._currentStepIndex);
-                        if (this._currentFrameIndex >= currentStep.Frames) {
-                            this._currentFrameIndex = 0;
-                            this._currentStepIndex++;
+                        currentStep = this._currentAnimation?.Animation.Steps.ElementAt((int)this._currentStepIndex);
 
-                            if (this._currentStepIndex >= this._currentAnimation.Animation.Steps.Count) {
-                                this._currentStepIndex = 0;
-                                if (this._queuedSpriteAnimations.Any()) {
-                                    this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
-                                    this._millisecondsPassed = 0;
-                                }
-                                else if (!this._currentAnimation.ShouldLoopIndefinitely) {
-                                    this._currentAnimation = null;
-                                }
-                            }
-
-                            currentStep = this._currentAnimation?.Animation.Steps.ElementAt((int)this._currentStepIndex);
-
-                            if (currentStep != null) {
-                                this.Sprite = currentStep?.Sprite;
-                            }
+                        if (currentStep != null) {
+                            this.Sprite = currentStep?.Sprite;
                         }
                     }
                 }
-            });
+            }
         }
 
         /// <inheritdoc/>

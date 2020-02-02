@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* SpriteAnimationComponent now runs its update synchronously so it does not have issues being altered in the middle of an update.
 
 # 0.3.6.0
 
