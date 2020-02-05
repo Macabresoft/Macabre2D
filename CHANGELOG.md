@@ -2,7 +2,7 @@
 
 ## Features
 
-N/A
+* Added a component which draws every collider in the scene for diagnostic purposes.
 
 ## Refactors
 
