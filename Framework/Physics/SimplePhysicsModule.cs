@@ -55,7 +55,7 @@
             var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
             var hits = new List<RaycastHit>();
 
-            foreach (var collider in potentialColliders.Where(x => GameSettings.Instance.Layers.GetShouldCollide(x.Layers, layers))) {
+            foreach (var collider in potentialColliders.Where(x => (x.Layers & layers) != Layers.None)) {
                 if (collider.IsHitBy(ray, out var hit)) {
                     hits.Add(hit);
                 }

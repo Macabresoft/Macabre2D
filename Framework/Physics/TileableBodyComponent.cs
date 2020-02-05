@@ -39,25 +39,25 @@
         }
 
         private CardinalDirections GetEdgeDirections(Point tile) {
-            var directionss = CardinalDirections.None;
+            var directions = CardinalDirections.None;
 
             if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
-                directionss |= CardinalDirections.West;
+                directions |= CardinalDirections.West;
             }
 
             if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
-                directionss |= CardinalDirections.North;
+                directions |= CardinalDirections.North;
             }
 
             if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
-                directionss |= CardinalDirections.East;
+                directions |= CardinalDirections.East;
             }
 
             if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
-                directionss |= CardinalDirections.South;
+                directions |= CardinalDirections.South;
             }
 
-            return directionss;
+            return directions;
         }
 
         private void OnRequestReset(object sender, EventArgs e) {

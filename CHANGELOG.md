@@ -6,7 +6,7 @@ N/A
 
 ## Refactors
 
-N/A
+* Raycast now directly uses layers provided as the layers it expects to hit.
 
 ## Fixes
 
