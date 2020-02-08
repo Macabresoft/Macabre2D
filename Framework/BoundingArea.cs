@@ -4,8 +4,8 @@
     using System.Linq;
 
     /// <summary>
-    /// Represents the area around a collider in which a potential collision could be happening. This
-    /// is an axis aligned bounding box.
+    /// Represents the area around a collider in which a potential collision could be happening.
+    /// This is an axis aligned bounding box.
     /// </summary>
     public struct BoundingArea {
 
@@ -96,7 +96,10 @@
         /// <param name="point">The point.</param>
         /// <returns><c>true</c>, if the bounding area contains the point, <c>false</c> otherwise.</returns>
         public bool Contains(Vector2 point) {
-            return this.Minimum.X <= point.X && this.Minimum.Y <= point.Y && this.Maximum.X >= point.X && this.Maximum.Y >= point.Y;
+            return (this.Minimum.X <= point.X || this.Minimum.X.HasMinimalDifference(point.X)) &&
+                (this.Minimum.Y <= point.Y || this.Minimum.Y.HasMinimalDifference(point.Y)) &&
+                (this.Maximum.X >= point.X || this.Maximum.X.HasMinimalDifference(point.X)) &&
+                (this.Maximum.Y >= point.Y || this.Maximum.Y.HasMinimalDifference(point.Y));
         }
 
         /// <summary>

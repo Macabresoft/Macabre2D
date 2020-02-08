@@ -10,7 +10,7 @@
 
 ## Fixes
 
-N/A
+* BoundingAreas now check for minimal difference between two floating point numbers instead of exact values. This fixes various physics interactions.
 
 # 0.3.7.0
 

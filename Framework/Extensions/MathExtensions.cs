@@ -31,6 +31,17 @@
         }
 
         /// <summary>
+        /// Determines whether two floating point values have minimum difference.
+        /// </summary>
+        /// <param name="value1">The value1.</param>
+        /// <param name="value2">The value2.</param>
+        /// <param name="difference">The acceptable difference to be considered equal.</param>
+        /// <returns><c>true</c> if there is minimal difference; otherwise, <c>false</c>.</returns>
+        public static bool HasMinimalDifference(this float value1, float value2, float difference = 0.00001f) {
+            return Math.Abs(value1 - value2) <= difference;
+        }
+
+        /// <summary>
         /// Determines whether the value is a power of two.
         /// </summary>
         /// <param name="value">The value.</param>

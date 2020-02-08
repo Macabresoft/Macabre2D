@@ -90,6 +90,7 @@
     <Compile Include="Physics\CircleColliderTests.cs" />
     <Compile Include="Physics\LineColliderTests.cs" />
     <Compile Include="Physics\PolygonColliderTests.cs" />
+    <Compile Include="Physics\RaycastTests.cs" />
     <Compile Include="Physics\RectangleColliderTests.cs" />
     <Compile Include="Physics\SimplePhysicsModuleTests.cs" />
     <Compile Include="Rendering\SpriteAnimatorTests.cs" />
