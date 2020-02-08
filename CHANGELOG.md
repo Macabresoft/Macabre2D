@@ -1,3 +1,17 @@
+# 0.3.9.0
+
+## Features
+
+N/A
+
+## Refactors
+
+N/A
+
+## Fixes
+
+N/A
+
 # 0.3.8.0
 
 ## Features
