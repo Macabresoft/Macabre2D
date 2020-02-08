@@ -72,6 +72,18 @@
         }
 
         /// <summary>
+        /// Determines whether two floating point values have minimum difference.
+        /// </summary>
+        /// <param name="value1">The value1.</param>
+        /// <param name="value2">The value2.</param>
+        /// <param name="difference">The acceptable difference to be considered equal.</param>
+        /// <returns><c>true</c> if there is minimal difference; otherwise, <c>false</c>.</returns>
+        public static bool HasMinimalDifference(this Vector2 value1, Vector2 value2, float difference = 0.00001f) {
+            var VectorDifference = value1 - value2;
+            return Math.Abs(VectorDifference.X) <= difference && Math.Abs(VectorDifference.Y) <= difference;
+        }
+
+        /// <summary>
         /// Rotates a vector by the specified number of degrees.
         /// </summary>
         /// <param name="vector">The vector.</param>
