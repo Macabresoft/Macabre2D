@@ -10,7 +10,7 @@ N/A
 
 ## Fixes
 
-N/A
+* When a component is removed, it will now be both removed from the main collection of components and the collection for saving uninitialized components (just in case, this was causing issues in the editor).
 
 # 0.3.8.0
 
