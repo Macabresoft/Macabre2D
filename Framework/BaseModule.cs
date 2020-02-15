@@ -7,9 +7,8 @@
     /// <summary>
     /// Represents the most basic functionality of a module.
     /// </summary>
-    /// <seealso cref="IModule"/>
     [DataContract]
-    public class BaseModule : BaseIdentifiable {
+    public abstract class BaseModule : BaseIdentifiable {
 
         [DataMember]
         private bool _isEnabled = true;
@@ -44,6 +43,12 @@
         }
 
         /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        public bool IsInitialized { get; private set; }
+
+        /// <summary>
         /// Gets or sets the update order.
         /// </summary>
         /// <value>The update order.</value>
@@ -72,6 +77,7 @@
         /// <param name="scene">The scene.</param>
         public void Initialize(IScene scene) {
             this.Scene = scene;
+            this.IsInitialized = true;
         }
 
         /// <summary>

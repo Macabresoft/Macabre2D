@@ -36,6 +36,7 @@
 
         /// <inheritdoc/>
         public override void PostInitialize() {
+            this.Bodies.Clear();
             this.Bodies.AddRange(this.Scene.GetAllComponentsOfType<IPhysicsBody>());
             this.Bodies.ForEachFilteredItem(r => this.ColliderTree.InsertMany(r.GetColliders()));
             this.Scene.ComponentCreated += this.Scene_ComponentAdded;

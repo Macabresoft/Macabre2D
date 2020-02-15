@@ -9,6 +9,18 @@
 
         [Test]
         [Category("Unit Test")]
+        public static void Scene_AddComponent_AddsModuleDuringInitializeTest() {
+            using (var scene = new Scene())
+            using (var component = new ModuleOwningTestComponent()) {
+                scene.AddComponent(component);
+                scene.Initialize();
+                Assert.True(component.IsInitialized);
+                Assert.True(component.Module.IsInitialized);
+            }
+        }
+
+        [Test]
+        [Category("Unit Test")]
         public static void Scene_AddComponent_HasChildren_PostInitializeTest() {
             using (var scene = new Scene())
             using (var child1 = new TestComponent())
