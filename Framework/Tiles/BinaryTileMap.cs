@@ -44,13 +44,6 @@
         [DataMember(Order = 1)]
         public Color Color { get; set; } = Color.White;
 
-        /// <inheritdoc/>
-        public Sprite DefaultTile {
-            get {
-                return this.Sprite;
-            }
-        }
-
         /// <summary>
         /// Gets or sets the sprite.
         /// </summary>

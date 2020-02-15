@@ -8,41 +8,21 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A component which maps <see cref="AutoTileSet"/> onto a <see cref="TileGrid"/>.
+    /// A tile map that chooses a random tile from the provided collection to display in each active location.
     /// </summary>
-    public sealed class AutoTileMap : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
+    public sealed class RandomTileMap : TileableComponent, IAssetComponent<RandomTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
+        private readonly Dictionary<Point, ushort> _activeTileToIndex = new Dictionary<Point, ushort>();
 
         private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
-        private AutoTileSet _tileSet;
+        private RandomTileSet _tileSet;
 
         /// <summary>
-        /// Represents four directions from a single tile.
+        /// Initializes a new instance of the <see cref="RandomTileMap"/> class.
         /// </summary>
-        [Flags]
-        private enum IntermediateDirections : byte {
-            None = 0,
-
-            NorthWest = 1 << 0,
-
-            North = 1 << 1,
-
-            NorthEast = 1 << 2,
-
-            West = 1 << 3,
-
-            East = 1 << 4,
-
-            SouthWest = 1 << 5,
-
-            South = 1 << 6,
-
-            SouthEast = 1 << 7,
-
-            All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
+        public RandomTileMap() : base() {
         }
 
         /// <inheritdoc/>
@@ -64,7 +44,7 @@
         /// </summary>
         /// <value>The tile set.</value>
         [DataMember(Order = 0, Name = "Tile Set")]
-        public AutoTileSet TileSet {
+        public RandomTileSet TileSet {
             get {
                 return this._tileSet;
             }
@@ -104,7 +84,7 @@
         }
 
         /// <inheritdoc/>
-        IEnumerable<Guid> IAssetComponent<AutoTileSet>.GetOwnedAssetIds() {
+        IEnumerable<Guid> IAssetComponent<RandomTileSet>.GetOwnedAssetIds() {
             return this.TileSet == null ? new Guid[0] : new[] { this.TileSet.Id };
         }
 
@@ -118,7 +98,6 @@
             return this._activeTileToIndex.ContainsKey(tilePosition);
         }
 
-        /// <inheritdoc/>
         public bool HasAsset(Guid id) {
             return this.TileSet?.Id == id || this.TileSet?.HasSprite(id) == true;
         }
@@ -135,7 +114,7 @@
         }
 
         /// <inheritdoc/>
-        void IAssetComponent<AutoTileSet>.RefreshAsset(AutoTileSet newInstance) {
+        void IAssetComponent<RandomTileSet>.RefreshAsset(RandomTileSet newInstance) {
             if (newInstance != null && this.TileSet?.Id == newInstance.Id) {
                 this.TileSet = newInstance;
             }
@@ -163,7 +142,7 @@
         }
 
         /// <inheritdoc/>
-        bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet asset) {
+        bool IAssetComponent<RandomTileSet>.TryGetAsset(Guid id, out RandomTileSet asset) {
             var result = false;
             if (this.TileSet?.Id == id) {
                 asset = this.TileSet;
@@ -213,7 +192,7 @@
             base.Initialize();
 
             this._previousWorldScale = this.WorldTransform.Scale;
-            this.TransformChanged += this.AutoTileMapComponent_TransformChanged;
+            this.TransformChanged += this.RandomTileMapComponent_TransformChanged;
 
             if (this.TileSet != null) {
                 this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
@@ -221,19 +200,11 @@
         }
 
         /// <inheritdoc/>
-        protected override void OnGridChanged() {
-            base.OnGridChanged();
-            this.ResetSpriteScales();
-        }
-
-        /// <inheritdoc/>
         protected override bool TryAddTile(Point tile) {
             var result = false;
             if (!this._activeTileToIndex.ContainsKey(tile)) {
                 result = true;
-
                 this._activeTileToIndex[tile] = this.GetIndex(tile);
-                this.ReevaluateSurroundingIndexes(tile);
             }
 
             return result;
@@ -242,80 +213,25 @@
         /// <inheritdoc/>
         protected override bool TryRemoveTile(Point tile) {
             var result = this._activeTileToIndex.Remove(tile);
-            if (result) {
-                this.ReevaluateSurroundingIndexes(tile);
-            }
-
             return result;
         }
 
-        private void AutoTileMapComponent_TransformChanged(object sender, EventArgs e) {
+        private ushort GetIndex(Point tile) {
+            var index = (ushort)0;
+            if (this.TileSet != null && this._activeTileToIndex.TryGetValue(tile, out index)) {
+                if (index > this.TileSet.Tiles.Count) {
+                    index = this.TileSet.GetRandomIndex();
+                }
+            }
+
+            return index;
+        }
+
+        private void RandomTileMapComponent_TransformChanged(object sender, EventArgs e) {
             if (this.WorldTransform.Scale != this._previousWorldScale) {
                 this._previousWorldScale = this.WorldTransform.Scale;
                 this.ResetSpriteScales();
             }
-        }
-
-        private byte GetIndex(Point tile) {
-            byte index;
-            if (this.TileSet?.UseIntermediateDirections == true) {
-                var direction = IntermediateDirections.None;
-                if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-                    direction |= IntermediateDirections.North;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-                    direction |= IntermediateDirections.East;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-                    direction |= IntermediateDirections.South;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-                    direction |= IntermediateDirections.West;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 1))) {
-                    direction |= IntermediateDirections.NorthEast;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(-1, 1))) {
-                    direction |= IntermediateDirections.NorthWest;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 1))) {
-                    direction |= IntermediateDirections.SouthWest;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(-1, 1))) {
-                    direction |= IntermediateDirections.SouthEast;
-                }
-
-                index = (byte)direction;
-            }
-            else {
-                var direction = CardinalDirections.None;
-                if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-                    direction |= CardinalDirections.North;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-                    direction |= CardinalDirections.East;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-                    direction |= CardinalDirections.South;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-                    direction |= CardinalDirections.West;
-                }
-
-                index = (byte)direction;
-            }
-
-            return index;
         }
 
         private void ReevaluateIndex(Point tile) {
@@ -331,17 +247,9 @@
             }
         }
 
-        private void ReevaluateSurroundingIndexes(Point tile) {
-            for (var x = -1; x <= 1; x++) {
-                for (var y = -1; y <= 1; y++) {
-                    this.ReevaluateIndex(tile + new Point(x, y));
-                }
-            }
-        }
-
         private void ResetSpriteScales() {
             if (this.TileSet != null) {
-                this._spriteScales = new Vector2[this.TileSet.Size];
+                this._spriteScales = new Vector2[this.TileSet.Tiles.Count];
 
                 for (byte i = 0; i < this._spriteScales.Length; i++) {
                     var sprite = this.TileSet.GetSprite(i);
@@ -350,7 +258,7 @@
             }
         }
 
-        private void TileSet_SpriteChanged(object sender, byte e) {
+        private void TileSet_SpriteChanged(object sender, ushort e) {
             var sprite = this.TileSet.GetSprite(e);
             this._spriteScales[e] = this.GetTileScale(sprite);
         }

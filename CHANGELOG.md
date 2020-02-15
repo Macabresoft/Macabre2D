@@ -2,7 +2,7 @@
 
 ## Features
 
-N/A
+* Added 'RandomTileMap' and 'RandomTileSet' to allow a binary tile map that chooses a random sprite from a weighted list.
 
 ## Refactors
 
