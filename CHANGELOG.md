@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.3.10.0
+## 0.3.11.0
 
 ### Features
 
@@ -8,11 +8,17 @@ N/A
 
 ### Refactors
 
-* Removed dependency on .NET Framework in favor of using only .NET Standard 2.0.
+N/A
 
 ### Fixes
 
 N/A
+
+## 0.3.10.0
+
+### Refactors
+
+* Removed dependency on .NET Framework in favor of using only .NET Standard 2.0.
 
 ## 0.3.9.0
 
