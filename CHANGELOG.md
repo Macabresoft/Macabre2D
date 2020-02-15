@@ -1,119 +1,131 @@
-# 0.3.9.0
+# Change Log
 
-## Features
+## 0.3.10.0
 
-* Added 'RandomTileMap' and 'RandomTileSet' to allow a binary tile map that chooses a random sprite from a weighted list.
-
-## Refactors
+### Features
 
 N/A
 
-## Fixes
+### Refactors
+
+N/A
+
+### Fixes
+
+N/A
+
+## 0.3.9.0
+
+### Features
+
+* Added 'RandomTileMap' and 'RandomTileSet' to allow a binary tile map that chooses a random sprite from a weighted list.
+
+### Fixes
 
 * When a component is removed, it will now be both removed from the main collection of components and the collection for saving uninitialized components (just in case, this was causing issues in the editor).
 
-# 0.3.8.0
+## 0.3.8.0
 
-## Features
+### Features
 
 * Added a component which draws every collider in the scene for diagnostic purposes.
 
-## Refactors
+### Refactors
 
 * Raycast now directly uses layers provided as the layers it expects to hit.
 
-## Fixes
+### Fixes
 
 * BoundingAreas now check for minimal difference between two floating point numbers instead of exact values. This fixes various physics interactions.
 
-# 0.3.7.0
+## 0.3.7.0
 
-## Refactors
+### Refactors
 
 * Currently playing animation now exposed on SpriteAnimationComponents.
 
-## Fixes
+### Fixes
 
 * SpriteAnimationComponent now runs its update synchronously so it does not have issues being altered in the middle of an update.
 
-# 0.3.6.0
+## 0.3.6.0
 
-## Features
+### Features
 
 * Transform is now a struct.
 
-## Refactors
+### Refactors
 
 * Pixel snapping now uses 'away from zero' rounding.
 * Removing ISpriteRenderable as it was unused.
 * Cleaned up some pixel snap code.
 * Cleaned up transform code and reduced duplication.
 
-# 0.3.5.0
+## 0.3.5.0
 
-## Fixes
+### Fixes
 
 * Raycasting from a 'SimplePhysicsModule' will now respect layers.
 
-# 0.3.4.0
+## 0.3.4.0
 
-## Features
+### Features
 
 * 'SpriteAnimationComponent' can be inherited.
 * 'SpriteAnimationComponent' can now have animations queued on it.
 
-## Refactors
+### Refactors
 
 * Use of 'IsInitialized' on 'BaseComponent' has been reduced as it can cause confusion during inheritance.
 * More components are appended with 'Component' at the end of their class name.
 * 'SpriteAnimationComponent' no longer has a default animation on it and instead must have animations queued onto it.
 
-# 0.3.3.0
+## 0.3.3.0
 
-## Refactors
+### Refactors
 
 * More internally accessed things have been made public.
 * Repository link updated in NuGet package.
 
-# 0.3.2.0
+## 0.3.2.0
 
-## Refactors
+### Refactors
 
 * Engine and Framework have been separated into different repositories.
 * 'Component' appended to the end of drawer components.
 * Several internally accessed things have been made public.
 
-## Fixes
+### Fixes
 
 * Hiding inherited 'Components' property on 'MacabreGame' class as it is a MonoGame functionality not used by Macabre2D.
 
-## Compatibility Breaks
+### Compatibility Breaks
 
 * You now must install the League Mono font as described in the updated README file.
 
-# 0.3.1.0
+## 0.3.1.0
 
-## Features
+### Features
 
 * Framework now uses a MonoGame PCL that can be used across multiple platforms.
 * Framework is now a .NET Standard project that should be portable across platforms.
 * Dialog for selecting an asset type or a component type now allows you to filter the available types by name.
 * NuGet package created.
 
-## Refactors
+### Refactors
 
 * UI tests separated out into their own project.
 * Submodules removed in favor of NuGet packages for both MonoGame and WpfInterop.
 * Ability to reload assets has been removed as it did not work and a solution may be too complicated.
     * Simply reload the editor if you need to reload assets.
 
-## Fixes
+### Fixes
 
 * Changing project name and startup scene trigger the project as having changes.
 
-# 0.3.0.0
+## 0.3.0.0
 
-## Features
+### Features
 
 * Can change the way a property appears in the editor by altering its name in the [DataMember] attribute.
 * When selecting a sprite, the dialog will automatically select the previously selected sprite when first opened.
@@ -128,7 +140,7 @@ N/A
 * Custom skull icon now used.
 * Graphics settings can be saved, loaded, and applied.
 
-## Refactors
+### Refactors
 
 * Now uses the [DataMember] attribute's order and name instead of the [Display] attribute, which will clean up both the UI and serialized objects.
 * The value editor for sprites has been cleaned up to match other asset selections. No longer gives a preview of the sprite, but the editor window is literally right there showing it.
@@ -139,7 +151,7 @@ N/A
 * Metadata assets no longer require a metadata file (it is stored in the project file).
 * Cleaned up image asset editor, margins on assets, and margins on modules.
 
-## Fixes
+### Fixes
 
 * First time assets now load properly instead of resetting to their default state (whoops).
 * Assets now get synchronized properly with components when loading a scene.
@@ -152,14 +164,14 @@ N/A
 * Auto tile sets now sync properly with their sprites in the editor.
 * Content should build in both the editor and the game project.
 
-## Compatibility Breaks
+### Compatibility Breaks
 
 * The handling of [DataMember] attribute's name can cause objects created in previous versions to not deserialize properly going forward.
 
 
-# 0.2.0.0
+## 0.2.0.0
 
-## Features
+### Features
 
 * Physics bodies can be marked as triggers.
     * A body marked as a trigger will simply notify when a collision occurs, but not react as if two bodies had just collided.
@@ -176,7 +188,7 @@ N/A
 * Can edit processor parameters 'Texture Format' and 'Premultiply Alpha' for font assets.
 * Text Renderer can be snapped to pixels for pixel art games.
 
-## Refactors
+### Refactors
 
 * Project settings and asset management have been split into two separate tabs.
 * Removed ICamera interface as it was an unnecessary abstraction.
@@ -184,7 +196,7 @@ N/A
 * Removed 'Component' from the end of classes that didn't need that distinction to be understood.
 * Module list now uses '+' and '-' buttons instead of 'Add' and 'Remove'.
 
-## Fixes
+### Fixes
 
 * Layers names will no longer cause an exception during deserialization.
 * Sprite Renderer now uses the sprite's size when determining offset instead of the full image file it comes from.
@@ -197,6 +209,6 @@ N/A
 
 ---
 
-# 0.1.2.0 and Earlier
+## 0.1.2.0 and Earlier
 
 I apologize, but changes were not well tracked prior to 0.2.0.0. Luckily for you, there's a 0% chance you were using Macabre2D at this time. It was barely functional and changed a lot!
