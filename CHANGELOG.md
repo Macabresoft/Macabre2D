@@ -8,7 +8,7 @@ N/A
 
 ### Refactors
 
-N/A
+* Removed dependency on .NET Framework in favor of using only .NET Standard 2.0.
 
 ### Fixes
 
