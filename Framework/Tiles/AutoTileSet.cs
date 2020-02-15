@@ -86,6 +86,23 @@
         }
 
         /// <summary>
+        /// Gets the sprite ids.
+        /// </summary>
+        /// <returns>The sprite identifiers.</returns>
+        public IEnumerable<Guid> GetSpriteIds() {
+            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id).ToList();
+        }
+
+        /// <summary>
+        /// Determines whether the specified sprite identifier has sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <returns><c>true</c> if the specified sprite identifier has sprite; otherwise, <c>false</c>.</returns>
+        public bool HasSprite(Guid spriteId) {
+            return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
+        }
+
+        /// <summary>
         /// Loads this instance.
         /// </summary>
         public void Load() {
@@ -97,6 +114,36 @@
             finally {
                 this._isLoaded = true;
             }
+        }
+
+        /// <summary>
+        /// Refreshes the sprite.
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        public void RefreshSprite(Sprite sprite) {
+            if (sprite != null) {
+                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => new Tuple<byte, Sprite>(x.Key, x.Value)).ToList();
+                foreach (var indexToSprite in indexToSpritesForRefresh) {
+                    this._indexToSprites[indexToSprite.Item1] = sprite;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <returns>A value indicating whether or not the sprite was removed.</returns>
+        public bool RemoveSprite(Guid spriteId) {
+            var result = false;
+            var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
+
+            foreach (var index in indexes) {
+                this.SetSprite(null, index);
+                result = true;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -120,36 +167,13 @@
             }
         }
 
-        internal IEnumerable<Guid> GetSpriteIds() {
-            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id).ToList();
-        }
-
-        internal bool HasSprite(Guid spriteId) {
-            return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
-        }
-
-        internal void RefreshSprite(Sprite sprite) {
-            if (sprite != null) {
-                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => new Tuple<byte, Sprite>(x.Key, x.Value)).ToList();
-                foreach (var indexToSprite in indexToSpritesForRefresh) {
-                    this._indexToSprites[indexToSprite.Item1] = sprite;
-                }
-            }
-        }
-
-        internal bool RemoveSprite(Guid spriteId) {
-            var result = false;
-            var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
-
-            foreach (var index in indexes) {
-                this.SetSprite(null, index);
-                result = true;
-            }
-
-            return result;
-        }
-
-        internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        /// <summary>
+        /// Tries the get sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <param name="sprite">The sprite.</param>
+        /// <returns>A vaue indicating whether or not the sprite was found.</returns>
+        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
             sprite = this._indexToSprites.Values.FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
         }

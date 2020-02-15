@@ -83,6 +83,23 @@
         }
 
         /// <summary>
+        /// Gets the sprite ids.
+        /// </summary>
+        /// <returns>The sprite identifiers.</returns>
+        public IEnumerable<Guid> GetSpriteIds() {
+            return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.Id).ToList();
+        }
+
+        /// <summary>
+        /// Determines whether the specified sprite identifier has sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <returns><c>true</c> if the specified sprite identifier has sprite; otherwise, <c>false</c>.</returns>
+        public bool HasSprite(Guid spriteId) {
+            return this._tiles.Any(x => x?.Sprite?.Id == spriteId);
+        }
+
+        /// <summary>
         /// Loads this instance.
         /// </summary>
         public void Load() {
@@ -97,24 +114,10 @@
         }
 
         /// <summary>
-        /// Removes the tile.
+        /// Refreshes the sprite.
         /// </summary>
-        /// <param name="tile">The tile.</param>
-        /// <returns>A value indicating whether or not the tile was removed.</returns>
-        public bool RemoveTile(WeightedTile tile) {
-            tile.SpriteChanged -= Tile_SpriteChanged;
-            return this._tiles.Remove(tile);
-        }
-
-        internal IEnumerable<Guid> GetSpriteIds() {
-            return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.Id).ToList();
-        }
-
-        internal bool HasSprite(Guid spriteId) {
-            return this._tiles.Any(x => x?.Sprite?.Id == spriteId);
-        }
-
-        internal void RefreshSprite(Sprite sprite) {
+        /// <param name="sprite">The sprite.</param>
+        public void RefreshSprite(Sprite sprite) {
             if (sprite != null) {
                 var tilesForRefresh = this._tiles.Where(x => x.Sprite?.Id == sprite.Id).ToList();
                 foreach (var tile in tilesForRefresh) {
@@ -123,7 +126,12 @@
             }
         }
 
-        internal bool RemoveSprite(Guid spriteId) {
+        /// <summary>
+        /// Removes the sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <returns>A value indicating whether or not the sprite was successfully removed.</returns>
+        public bool RemoveSprite(Guid spriteId) {
             var result = false;
             var tiles = this._tiles.Where(x => x.Sprite?.Id == spriteId).ToList();
 
@@ -134,7 +142,23 @@
             return result;
         }
 
-        internal bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        /// <summary>
+        /// Removes the tile.
+        /// </summary>
+        /// <param name="tile">The tile.</param>
+        /// <returns>A value indicating whether or not the tile was removed.</returns>
+        public bool RemoveTile(WeightedTile tile) {
+            tile.SpriteChanged -= Tile_SpriteChanged;
+            return this._tiles.Remove(tile);
+        }
+
+        /// <summary>
+        /// Tries the get sprite.
+        /// </summary>
+        /// <param name="spriteId">The sprite identifier.</param>
+        /// <param name="sprite">The sprite.</param>
+        /// <returns>A value indicating whether or not the value was found.</returns>
+        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
             sprite = this.Tiles.Select(x => x.Sprite).FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
         }
