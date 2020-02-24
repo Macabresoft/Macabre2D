@@ -8,7 +8,8 @@ N/A
 
 ### Refactors
 
-N/A
+* Removed unused fields.
+* Made 'BaseComponent' constructor protected.
 
 ### Fixes
 

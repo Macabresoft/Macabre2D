@@ -16,9 +16,6 @@
 
         private bool _isLoaded = false;
 
-        [DataMember]
-        private bool _shouldLoop = true;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimation"/> class.
         /// </summary>

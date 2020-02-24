@@ -9,8 +9,6 @@
     /// <seealso cref="Macabre2D.Framework.Diagnostics.BaseDrawer"/>
     public sealed class GridDrawerComponent : BaseDrawerComponent {
         private Camera _camera;
-        private float _columnWidth = 1f;
-        private float _rowHeight = 1f;
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {

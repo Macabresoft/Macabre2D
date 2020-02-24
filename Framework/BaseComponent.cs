@@ -47,7 +47,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseComponent"/> class.
         /// </summary>
-        public BaseComponent() {
+        protected BaseComponent() {
             this.IsEnabledChanged += this.Self_EnabledChanged;
             this.ParentChanged += this.BaseComponent_ParentChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
