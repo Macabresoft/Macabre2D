@@ -16,15 +16,15 @@
     /// </summary>
     [DataContract]
     public sealed class Scene : IScene, IDisposable {
-        private static readonly Action<BaseModule, GameTime> ModulePostUpdateAction = (module, gameTime) => module.PostUpdate(gameTime);
-        private static readonly Action<BaseModule, GameTime> ModulePreUpdateAction = (module, gameTime) => module.PreUpdate(gameTime);
+        private static readonly Action<IUpdateableModule, GameTime> ModulePostUpdateAction = (module, gameTime) => module.PostUpdate(gameTime);
+        private static readonly Action<IUpdateableModule, GameTime> ModulePreUpdateAction = (module, gameTime) => module.PreUpdate(gameTime);
         private static readonly Action<IUpdateableComponent, GameTime> UpdateAction = (updateable, gameTime) => updateable.Update(gameTime);
         private static readonly Func<IUpdateableComponentAsync, GameTime, Task> UpdateAsyncAction = (updateableAsync, gameTime) => updateableAsync.UpdateAsync(gameTime);
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
         private readonly List<BaseComponent> _components = new List<BaseComponent>();
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
 
-        private readonly FilterSortCollection<IDrawableComponent> _drawables = new FilterSortCollection<IDrawableComponent>(
+        private readonly FilterSortCollection<IDrawableComponent> _drawableComponents = new FilterSortCollection<IDrawableComponent>(
             d => d.IsVisible,
             (d, handler) => d.IsVisibleChanged += handler,
             (d, handler) => d.IsVisibleChanged -= handler,
@@ -35,26 +35,29 @@
         private readonly QuadTree<IDrawableComponent> _drawTree = new QuadTree<IDrawableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
         private readonly List<Action<GameTime>> _endOfFrameActions = new List<Action<GameTime>>();
 
-        private readonly FilterSortCollection<BaseModule> _modules = new FilterSortCollection<BaseModule>(
-            m => m.IsEnabled,
-            (m, handler) => m.IsEnabledChanged += handler,
-            (m, handler) => m.IsEnabledChanged -= handler,
-            (m1, m2) => Comparer<int>.Default.Compare(m1.UpdateOrder, m2.UpdateOrder),
-            (m, handler) => m.UpdateOrderChanged += handler,
-            (m, handler) => m.UpdateOrderChanged -= handler);
+        [DataMember]
+        private readonly HashSet<BaseModule> _modules = new HashSet<BaseModule>();
 
-        private readonly FilterCollection<IUpdateableComponentAsync> _updateableAsyncs = new FilterCollection<IUpdateableComponentAsync>(
+        private readonly FilterCollection<IUpdateableComponentAsync> _updateableAsyncComponents = new FilterCollection<IUpdateableComponentAsync>(
             u => u.IsEnabled,
             (u, handler) => u.IsEnabledChanged += handler,
             (u, handler) => u.IsEnabledChanged -= handler);
 
-        private readonly FilterSortCollection<IUpdateableComponent> _updateables = new FilterSortCollection<IUpdateableComponent>(
+        private readonly FilterSortCollection<IUpdateableComponent> _updateableComponents = new FilterSortCollection<IUpdateableComponent>(
             u => u.IsEnabled,
             (u, handler) => u.IsEnabledChanged += handler,
             (u, handler) => u.IsEnabledChanged -= handler,
             (u1, u2) => Comparer<int>.Default.Compare(u1.UpdateOrder, u2.UpdateOrder),
             (u, handler) => u.UpdateOrderChanged += handler,
             (u, handler) => u.UpdateOrderChanged -= handler);
+
+        private readonly FilterSortCollection<IUpdateableModule> _updateableModules = new FilterSortCollection<IUpdateableModule>(
+            m => m.IsEnabled,
+            (m, handler) => m.IsEnabledChanged += handler,
+            (m, handler) => m.IsEnabledChanged -= handler,
+            (m1, m2) => Comparer<int>.Default.Compare(m1.UpdateOrder, m2.UpdateOrder),
+            (m, handler) => m.UpdateOrderChanged += handler,
+            (m, handler) => m.UpdateOrderChanged -= handler);
 
         private bool _disposedValue;
         private int _sessionIdCounter = int.MinValue;
@@ -111,9 +114,6 @@
         [DataMember]
         internal HashSet<BaseComponent> ComponentsForSaving { get; } = new HashSet<BaseComponent>();
 
-        [DataMember]
-        internal HashSet<BaseModule> ModulesForSaving { get; } = new HashSet<BaseModule>();
-
         /// <inheritdoc/>
         public T AddComponent<T>() where T : BaseComponent, new() {
             var component = new T { IsEnabled = true };
@@ -145,15 +145,15 @@
 
         // <inheritdoc/>
         public bool AddModule(BaseModule module) {
-            if (!this.IsInitialized) {
-                if (!this.ModulesForSaving.Any(x => x.Id == module.Id)) {
-                    this.ModulesForSaving.Add(module);
-                }
+            if (!this._modules.Any(x => x.Id == module.Id)) {
+                this._modules.Add(module);
+            }
 
+            if (!this.IsInitialized) {
                 return false;
             }
 
-            this._modules.Add(module);
+            this._updateableModules.Add(module);
 
             module.Initialize(this);
             module.PreInitialize();
@@ -198,7 +198,7 @@
         /// <inheritdoc/>
         public void Draw(GameTime gameTime) {
             this._drawTree.Clear();
-            this._drawables.ForEachFilteredItem(d => this._drawTree.Insert(d));
+            this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
 
             this.Cameras.ForEachFilteredItem(camera => {
                 this.DrawForCamera(gameTime, camera);
@@ -208,7 +208,7 @@
         /// <inheritdoc/>
         public void Draw(GameTime gameTime, params Camera[] cameras) {
             this._drawTree.Clear();
-            this._drawables.ForEachFilteredItem(d => this._drawTree.Insert(d));
+            this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
 
             foreach (var camera in cameras) {
                 this.DrawForCamera(gameTime, camera);
@@ -304,49 +304,33 @@
         /// <summary>
         /// Gets all modules in this scene.
         /// </summary>
-        /// <param name="includeModulesForSaving">if set to <c>true</c> [include modules for saving].</param>
         /// <returns>All modules in this scene.</returns>
-        public IEnumerable<BaseModule> GetAllModules(bool includeModulesForSaving) {
-            var modules = new List<BaseModule>();
-
-            this._modules.RebuildCache();
-            foreach (var module in this._modules) {
-                modules.Add(module);
-            }
-
-            if (includeModulesForSaving) {
-                foreach (var module in this.ModulesForSaving) {
-                    modules.Add(module);
-                }
-            }
-
-            return modules;
+        public IEnumerable<BaseModule> GetAllModules() {
+            return this._modules.ToList();
         }
 
         /// <inheritdoc/>
         public T GetModule<T>() where T : BaseModule {
-            this._modules.RebuildCache();
-            return (T)this._modules.FirstOrDefault(x => x.GetType() == typeof(T));
+            this._updateableModules.RebuildCache();
+            return (T)this._updateableModules.FirstOrDefault(x => x.GetType() == typeof(T));
         }
 
         /// <inheritdoc/>
         public IEnumerable<T> GetModules<T>() where T : BaseModule {
-            this._modules.RebuildCache();
-            return this._modules.OfType<T>();
+            this._updateableModules.RebuildCache();
+            return this._updateableModules.OfType<T>();
         }
 
         /// <inheritdoc/>
         public IEnumerable<IDrawableComponent> GetVisibleDrawableComponents() {
-            return this._drawables;
+            return this._drawableComponents;
         }
 
         /// <inheritdoc/>
         public void Initialize() {
             if (!this.IsInitialized) {
                 this.IsInitialized = true;
-                this._modules.AddRange(this.ModulesForSaving);
-                this._modules.RebuildCache();
-                this.ModulesForSaving.Clear();
+                this._updateableModules.AddRange(this._modules);
 
                 foreach (var module in this._modules) {
                     module.Initialize(this);
@@ -359,9 +343,6 @@
 
                 this.ComponentsForSaving.Clear();
 
-                // Rebuild, just in case a component's initialize or another module's preinitialize
-                // changed the collection.
-                this._modules.RebuildCache();
                 foreach (var module in this._modules) {
                     module.PostInitialize();
                 }
@@ -397,9 +378,9 @@
         /// <param name="component">The component.</param>
         public void RemoveComponent(BaseComponent component) {
             this.RemoveChild(component);
-            this._updateables.Remove(component);
-            this._updateableAsyncs.Remove(component);
-            this._drawables.Remove(component);
+            this._updateableComponents.Remove(component);
+            this._updateableAsyncComponents.Remove(component);
+            this._drawableComponents.Remove(component);
             this.Cameras.Remove(component);
 
             foreach (var child in component.Children) {
@@ -409,12 +390,11 @@
 
         /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
-            if (this._modules.Remove(module)) {
+            if (this._modules.Remove(module) && this.IsInitialized) {
                 this.ModuleRemoved.SafeInvoke(this, module);
             }
-            else {
-                this.ModulesForSaving.Remove(module);
-            }
+
+            this._updateableModules.Remove(module);
 
             if (module is IDisposable disposable) {
                 disposable.Dispose();
@@ -448,32 +428,24 @@
         /// </summary>
         /// <param name="filePath">Path of the file.</param>
         public void SaveToFile(string filePath) {
-            try {
-                this._modules.RebuildCache();
-                this.ModulesForSaving.AddRange(this._modules);
-                this.ComponentsForSaving.AddRange(this._components);
-                this.Name = Path.GetFileNameWithoutExtension(filePath);
-                Serializer.Instance.Serialize(this, filePath);
-            }
-            finally {
-                // We never want to get to a state where this collection has anything after
-                // attempting to save. this.ModulesForSaving.Clear();
-            }
+            this.ComponentsForSaving.AddRange(this._components);
+            this.Name = Path.GetFileNameWithoutExtension(filePath);
+            Serializer.Instance.Serialize(this, filePath);
         }
 
         /// <inheritdoc/>
         public void Update(GameTime gameTime) {
-            this._modules.ForEachFilteredItem(Scene.ModulePreUpdateAction, gameTime);
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, gameTime);
 
-            var task = this._updateableAsyncs.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, gameTime);
-            this._updateables.ForEachFilteredItem(Scene.UpdateAction, gameTime);
+            var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, gameTime);
+            this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, gameTime);
             task.Wait();
 
             foreach (var action in this._endOfFrameActions) {
                 action.SafeInvoke(gameTime);
             }
 
-            this._modules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
         }
 
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -512,7 +484,7 @@
                     }
 
                     // If any modules are disposable, dispose them
-                    foreach (var module in this._modules) {
+                    foreach (var module in this._updateableModules) {
                         if (module is IDisposable disposable) {
                             disposable.Dispose();
                         }
@@ -544,9 +516,9 @@
         }
 
         private void TrackComponent(BaseComponent component) {
-            this._updateables.Add(component);
-            this._updateableAsyncs.Add(component);
-            this._drawables.Add(component);
+            this._updateableComponents.Add(component);
+            this._updateableAsyncComponents.Add(component);
+            this._drawableComponents.Add(component);
             this.Cameras.Add(component);
 
             if (component.Parent == null) {

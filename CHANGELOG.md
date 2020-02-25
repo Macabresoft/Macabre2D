@@ -4,7 +4,7 @@
 
 ### Features
 
-N/A
+* Modules are no longer required to be updateable.
 
 ### Refactors
 

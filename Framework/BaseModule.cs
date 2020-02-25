@@ -1,7 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -10,60 +8,11 @@
     [DataContract]
     public abstract class BaseModule : BaseIdentifiable {
 
-        [DataMember]
-        private bool _isEnabled = true;
-
-        [DataMember]
-        private int _updateOrder;
-
-        /// <summary>
-        /// Occurs when this instance becomes enabled or disabled.
-        /// </summary>
-        public event EventHandler IsEnabledChanged;
-
-        /// <summary>
-        /// Occurs when [update order changed].
-        /// </summary>
-        public event EventHandler UpdateOrderChanged;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is enabled.
-        /// </summary>
-        /// <value><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</value>
-        public bool IsEnabled {
-            get {
-                return this._isEnabled;
-            }
-            set {
-                if (this._isEnabled != value) {
-                    this._isEnabled = value;
-                    this.IsEnabledChanged.SafeInvoke(this);
-                }
-            }
-        }
-
         /// <summary>
         /// Gets a value indicating whether this instance is initialized.
         /// </summary>
         /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
         public bool IsInitialized { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the update order.
-        /// </summary>
-        /// <value>The update order.</value>
-        public int UpdateOrder {
-            get {
-                return this._updateOrder;
-            }
-
-            set {
-                if (value != this._updateOrder) {
-                    this._updateOrder = value;
-                    this.UpdateOrderChanged.SafeInvoke(this);
-                }
-            }
-        }
 
         /// <summary>
         /// Gets the scene.
@@ -88,26 +37,10 @@
         }
 
         /// <summary>
-        /// Updates after the normal update occurs for a scene.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        public virtual void PostUpdate(GameTime gameTime) {
-            return;
-        }
-
-        /// <summary>
         /// Initializes the module before a scene is initialized. It is recommended that you use
         /// this to store a reference to the scene if required.
         /// </summary>
         public virtual void PreInitialize() {
-            return;
-        }
-
-        /// <summary>
-        /// Updates before the normal update for a scene.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        public virtual void PreUpdate(GameTime gameTime) {
             return;
         }
     }

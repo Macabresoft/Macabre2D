@@ -2,14 +2,13 @@
 
     using Microsoft.Xna.Framework;
     using System;
-    using System.Diagnostics;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A module which updates at a fixed time step.
     /// </summary>
     /// <seealso cref="BaseModule"/>
-    public class FixedTimeStepModule : BaseModule {
+    public class FixedTimeStepModule : BaseUpdateableModule, IUpdateableModule {
         private readonly bool _hasPostUpdate;
         private readonly bool _hasPreUpdate;
         private float _postTimePassed;
@@ -29,7 +28,9 @@
             var preMethodInfo = currentType.GetMethod(nameof(FixedPreUpdate));
             this._hasPreUpdate = preMethodInfo.DeclaringType == currentType;
 
-            Debug.Assert(this._hasPostUpdate || this._hasPreUpdate, $"A fixed time step module is useless without overriding '{nameof(FixedPreUpdate)}' or '{nameof(FixedPostUpdate)}'");
+            if (!this._hasPreUpdate && !this._hasPostUpdate) {
+                throw new NotImplementedException($"{this.GetType().Name} must override either a {nameof(FixedPreUpdate)} or a a {nameof(FixedPostUpdate)}. You've made a useless class otherwise.");
+            }
         }
 
         /// <summary>

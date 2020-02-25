@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// The FilterSortCollection class provides efficient, reusable sorting and filtering based on a
@@ -97,7 +98,7 @@
         }
 
         /// <summary>
-        /// Adds the range.
+        /// Adds the items.
         /// </summary>
         /// <param name="items">The items.</param>
         public void AddRange(IEnumerable<T> items) {
@@ -108,6 +109,18 @@
 
                 this.InvalidateCache();
                 this.CollectionChanged.SafeInvoke(this, new CollectionChangedEventArgs<T>(true, items));
+            }
+        }
+
+        /// <summary>
+        /// Adds the items.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        public void AddRange(IEnumerable<object> items) {
+            var castedItems = items.OfType<T>().ToList();
+
+            if (castedItems.Any()) {
+                this.AddRange(castedItems);
             }
         }
 
@@ -144,8 +157,8 @@
         }
 
         /// <summary>
-        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to an
-        /// <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to
+        /// an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
         /// </summary>
         /// <param name="array">
         /// The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements
