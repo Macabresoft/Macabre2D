@@ -35,6 +35,9 @@
         private readonly ResettableLazy<Transform> _transform;
         private Vector2 _offset;
 
+        [DataMember]
+        private Layers _overrideLayers;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Collider"/> class.
         /// </summary>
@@ -68,7 +71,7 @@
         /// <value>The layers.</value>
         public Layers Layers {
             get {
-                return this.Body?.Layers ?? Layers.None;
+                return this._overrideLayers != Layers.None ? this._overrideLayers : (this.Body?.Layers ?? Layers.None);
             }
         }
 

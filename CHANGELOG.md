@@ -5,6 +5,7 @@
 ### Features
 
 * Modules are no longer required to be updateable.
+* Colliders can now override the layer of their parent.
 
 ### Refactors
 
