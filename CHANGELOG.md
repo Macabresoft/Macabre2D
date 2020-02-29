@@ -1,5 +1,19 @@
 # Change Log
 
+## 0.3.12.0
+
+### Features
+
+N/A
+
+### Refactors
+
+N/A
+
+### Fixes
+
+N/A
+
 ## 0.3.11.0
 
 ### Features
@@ -12,10 +26,6 @@
 
 * Removed unused fields.
 * Made 'BaseComponent' constructor protected.
-
-### Fixes
-
-N/A
 
 ## 0.3.10.0
 
