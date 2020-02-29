@@ -6,6 +6,7 @@
 
 * Modules are no longer required to be updateable.
 * Colliders can now override the layer of their parent.
+* 'TileableBodyComponent' can override the layers of a collider based on which direction has the edge of a tile.
 
 ### Refactors
 

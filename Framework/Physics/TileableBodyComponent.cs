@@ -4,6 +4,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// A <see cref="BaseBody"/> which reacts to a <see cref="ITileable"/> parent and creates
@@ -11,6 +12,19 @@
     /// </summary>
     public sealed class TileableBodyComponent : BaseBody {
         private readonly List<Collider> _colliders = new List<Collider>();
+
+        [DataMember(Name = "Bottom Layers", Order = 103)]
+        private Layers _overrideLayersBottomEdge = Layers.None;
+
+        [DataMember(Name = "Left Layers", Order = 100)]
+        private Layers _overrideLayersLeftEdge = Layers.None;
+
+        [DataMember(Name = "Right Layers", Order = 102)]
+        private Layers _overrideLayersRightEdge = Layers.None;
+
+        [DataMember(Name = "Top Layers", Order = 101)]
+        private Layers _overrideLayersTopEdge = Layers.None;
+
         private ITileable _tileable;
 
         /// <inheritdoc/>
@@ -76,19 +90,19 @@
                         if (this._tileable.HasActiveTileAt(currentTile)) {
                             var directions = this.GetEdgeDirections(currentTile);
                             if (directions.HasFlag(CardinalDirections.West)) {
-                                allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(0, 1)));
+                                allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(0, 1), this._overrideLayersLeftEdge));
                             }
 
                             if (directions.HasFlag(CardinalDirections.North)) {
-                                allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 1)));
+                                allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 1), this._overrideLayersTopEdge));
                             }
 
                             if (directions.HasFlag(CardinalDirections.East)) {
-                                allSegments.Add(new TileLineSegment(currentTile + new Point(1, 0), currentTile + new Point(1, 1)));
+                                allSegments.Add(new TileLineSegment(currentTile + new Point(1, 0), currentTile + new Point(1, 1), this._overrideLayersRightEdge));
                             }
 
                             if (directions.HasFlag(CardinalDirections.South)) {
-                                allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 0)));
+                                allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
                             }
                         }
                     }
@@ -127,6 +141,7 @@
 
                 foreach (var segment in allSegments) {
                     var collider = new LineCollider(this._tileable.LocalGrid.GetTilePosition(segment.StartPoint), this._tileable.LocalGrid.GetTilePosition(segment.EndPoint));
+                    collider.Layers = segment.Layers;
                     collider.Initialize(this);
                     this._colliders.Add(collider);
                 }
@@ -157,7 +172,9 @@
 
         private class TileLineSegment {
 
-            public TileLineSegment(Point firstPoint, Point secondPoint) {
+            public TileLineSegment(Point firstPoint, Point secondPoint, Layers layers) {
+                this.Layers = layers;
+
                 if (firstPoint.X == secondPoint.X) {
                     this.StartPoint = new Point(firstPoint.X, Math.Min(firstPoint.Y, secondPoint.Y));
                     this.EndPoint = new Point(firstPoint.X, Math.Max(firstPoint.Y, secondPoint.Y));
@@ -178,6 +195,8 @@
                     return this.StartPoint.Y == this.EndPoint.Y;
                 }
             }
+
+            public Layers Layers { get; }
 
             public Point StartPoint { get; private set; }
 
