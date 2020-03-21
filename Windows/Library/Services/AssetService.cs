@@ -52,7 +52,7 @@
                     $@"..\Gameplay\bin\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
                 };
 
-                var outputDirectory = Path.Combine(this._fileService.ProjectDirectoryPath, "bin", configuration.Platform.ToString(), mode.ToString(), "Content");
+                var outputDirectory = configuration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, mode);
                 configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, true, dllPaths);
                 var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, $"{FileHelper.TempName}{FileHelper.ContentExtension}");
                 Directory.CreateDirectory(outputDirectory);

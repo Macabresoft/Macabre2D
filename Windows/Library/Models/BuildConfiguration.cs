@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.Engine.Windows.Models {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Common;
+    using Macabre2D.Framework;
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
@@ -77,7 +77,7 @@
         }
 
         public string GetBinaryFolderPath(string projectDirectoryPath, BuildMode mode) {
-            return Path.Combine(projectDirectoryPath, "bin", this.Platform.ToString(), mode.ToString());
+            return Path.Combine(projectDirectoryPath, this.Platform.ToString(), "bin", mode.ToString());
         }
 
         public string GetCompiledContentPath(string projectDirectoryPath, BuildMode mode) {
