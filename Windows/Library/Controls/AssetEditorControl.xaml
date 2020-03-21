@@ -1,0 +1,6 @@
+﻿<UserControl x:Class="Macabre2D.Engine.Windows.Controls.AssetEditorControl"
+             x:Name="_assetEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ContentControl Content="{Binding Editor, ElementName=_assetEditorControl}" />
+</UserControl>

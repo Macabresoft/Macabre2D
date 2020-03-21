@@ -1,0 +1,76 @@
+﻿<metro:MetroWindow x:Class="Macabre2D.Engine.Windows.Views.Dialogs.SelectTypeDialog"
+                   x:Name="_selectTypeDialog"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:controls="clr-namespace:Macabre2D.Engine.Windows.Controls"
+                   xmlns:converters="clr-namespace:Macabre2D.Engine.Windows.Converters"
+                   xmlns:valueEditors="clr-namespace:Macabre2D.Engine.Windows.Controls.ValueEditors"
+                   Style="{StaticResource StandardWindowStyle}"
+                   Width="600"
+                   Height="600"
+                   ResizeMode="NoResize"
+                   Title="Select a Type"
+                   WindowStartupLocation="CenterScreen">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <metro:MetroWindow.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+    </metro:MetroWindow.Resources>
+    <Grid Margin="{StaticResource DoubleMarginAll}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:CollectionFilterBox Grid.Row="0"
+                                      x:Name="_filterBox"
+                                      ItemsSource="{Binding Types, Mode=OneWay}"
+                                      FilterFunc="{Binding FilterFunc, Mode=OneTime}" />
+
+        <ListBox Grid.Row="1"
+                 Margin="{StaticResource DoubleMarginTB}"
+                 ItemsSource="{Binding FilteredItems, ElementName=_filterBox, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedType}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name, Mode=OneTime}" />
+                        <TextBlock>
+                        <Run Text=" (" />
+                        <Run Text="{Binding FullName, Mode=OneTime}" />
+                        <Run Text=") " />
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <valueEditors:StringEditor Grid.Row="2"
+                                   Visibility="{Binding ShowNameTextBox, ElementName=_selectTypeDialog, Converter={StaticResource _boolToVisibilityConverter}}"
+                                   Title="Name"
+                                   Value="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="3"
+                    Margin="{StaticResource StandardMarginAll}">
+            <Button Content="_OK"
+                    Command="{Binding OKCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True"
+                    Width="65" />
+            <Button Content="_Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True"
+                    Width="65" />
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>

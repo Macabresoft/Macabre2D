@@ -1,0 +1,47 @@
+{
+  "$id": "3",
+  "_customSettings": {
+    "$id": "4",
+    "$values": []
+  },
+  "DefaultGraphicsSettings": {
+    "_displayMode": 2,
+    "_resolution": {
+      "$id": "5",
+      "X": 1920,
+      "Y": 1080
+    },
+    "TypeName": "GraphicsSettings",
+    "Version": null
+  },
+  "DefaultResolution": {
+    "$id": "6",
+    "X": 0,
+    "Y": 0
+  },
+  "ErrorSpritesColor": {
+    "R": 255,
+    "G": 105,
+    "B": 180,
+    "A": 255
+  },
+  "FallbackBackgroundColor": {
+    "R": 0,
+    "G": 0,
+    "B": 0,
+    "A": 255
+  },
+  "Layers": {
+    "_layersToName": {
+      "$id": "7",
+      "$values": []
+    },
+    "_layerToCollisionMask": {
+      "$id": "8",
+      "$values": []
+    }
+  },
+  "PixelsPerUnit": 32,
+  "ProjectName": "ProjectName",
+  "StartupSceneAssetId": "16050f5c-ccd7-43ca-ab67-8dde865a1586"
+}

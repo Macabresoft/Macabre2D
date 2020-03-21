@@ -1,0 +1,33 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.Engine.Windows.Controls.ValueEditors.RenderSettingsEditor"
+                        x:Name="_pixelOffsetEditor"
+                        x:TypeArguments="framework:RenderSettings"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                        xmlns:local="clr-namespace:Macabre2D.Engine.Windows.Controls.ValueEditors">
+    <Grid DataContext="{Binding ElementName=_pixelOffsetEditor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <local:EnumEditor Grid.Row="0"
+                          Title="Offset Type"
+                          EnumType="{x:Type framework:PixelOffsetType}"
+                          Value="{Binding OffsetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <local:VectorEditor Grid.Row="1"
+                            Title="Offset"
+                            Value="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <local:BoolEditor Grid.Row="2"
+                          Title="Flip Horizontal"
+                          Value="{Binding FlipHorizontal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <local:BoolEditor Grid.Row="3"
+                          Title="Flip Vertical"
+                          Value="{Binding FlipVertical, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</local:NamedValueEditor>

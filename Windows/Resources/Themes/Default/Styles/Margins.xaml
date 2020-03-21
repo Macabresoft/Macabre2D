@@ -1,0 +1,99 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:Double x:Key="StandardMarginSize">4</system:Double>
+    <system:Double x:Key="DoubleMarginSize">8</system:Double>
+
+    <Thickness x:Key="StandardMarginAll"
+               Left="{StaticResource StandardMarginSize}"
+               Top="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginL" Left="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLT"
+               Left="{StaticResource StandardMarginSize}"
+               Top="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLR"
+               Left="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLB"
+               Left="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLTR"
+               Left="{StaticResource StandardMarginSize}"
+               Top="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLTB"
+               Left="{StaticResource StandardMarginSize}"
+               Top="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginLRB"
+               Left="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginT" Top="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginTR"
+               Top="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginTB"
+               Top="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginTRB"
+               Top="{StaticResource StandardMarginSize}"
+               Right="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginR" Right="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginRB"
+               Right="{StaticResource StandardMarginSize}"
+               Bottom="{StaticResource StandardMarginSize}" />
+    <Thickness x:Key="StandardMarginB" Bottom="{StaticResource StandardMarginSize}" />
+
+    <Thickness x:Key="DoubleMarginAll"
+               Left="{StaticResource DoubleMarginSize}"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginL" Left="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLT"
+               Left="{StaticResource DoubleMarginSize}"
+               Top="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLR"
+               Left="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLB"
+               Left="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLTR"
+               Left="{StaticResource DoubleMarginSize}"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLTB"
+               Left="{StaticResource DoubleMarginSize}"
+               Top="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLRB"
+               Left="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginT" Top="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginTR"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginTB"
+               Top="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginTRB"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginLTRB"
+               Left="{StaticResource DoubleMarginSize}"
+               Top="{StaticResource DoubleMarginSize}"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginR" Right="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginRB"
+               Right="{StaticResource DoubleMarginSize}"
+               Bottom="{StaticResource DoubleMarginSize}" />
+    <Thickness x:Key="DoubleMarginB" Bottom="{StaticResource DoubleMarginSize}" />
+</ResourceDictionary>

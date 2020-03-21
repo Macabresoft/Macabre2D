@@ -1,0 +1,16 @@
+{
+  "$id": "1",
+  "_idToPathMapping": {
+    "$id": "2",
+    "$values": [
+      {
+        "Key": "16050f5c-ccd7-43ca-ab67-8dde865a1586",
+        "Value": "Assets\\Default"
+      },
+      {
+        "Key": "7b6d6e0c-d71a-409e-b2c6-c58855a6afc2",
+        "Value": "Assets\\SceneAsset"
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "$id": "11",
+  "_assetFolder": {
+    "$id": "12",
+    "_project": {
+      "$ref": "11"
+    },
+    "_children": {
+      "$id": "13",
+      "$values": [
+        {
+          "$id": "14",
+          "$type": "Macabre2D.Engine.Windows.Models.SceneAsset, Macabre2D.Engine.Windows.Library",
+          "_camera": {
+            "$id": "15",
+            "_children": {
+              "$id": "16",
+              "$values": []
+            },
+            "Draw Order": 0,
+            "Enable": true,
+            "Visible": true,
+            "_parent": null,
+            "Update Order": 0,
+            "Layers to Render": 65535,
+            "Sampler State": 5,
+            "Shader": null,
+            "Snap to Pixels": false,
+            "View Height": 10.0,
+            "Id": "aeae35d7-ae79-4ccb-aaa6-e4c21a36b92c",
+            "Layers": 1,
+            "Local Position": "0, 0",
+            "Local Scale": "1, 1",
+            "Name": null
+          },
+          "_savableValue": {
+            "$id": "17",
+            "AssetId": "16050f5c-ccd7-43ca-ab67-8dde865a1586",
+            "BackgroundColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255
+            },
+            "Name": "Default.m2dscene",
+            "ComponentsForSaving": [],
+            "ModulesForSaving": []
+          },
+          "_name": "Default.m2dscene",
+          "Id": "16050f5c-ccd7-43ca-ab67-8dde865a1586"
+        },
+        {
+          "$id": "18",
+          "$type": "Macabre2D.Engine.Windows.Models.SceneAsset, Macabre2D.Engine.Windows.Library",
+          "_camera": {
+            "$id": "19",
+            "_children": {
+              "$id": "20",
+              "$values": []
+            },
+            "Draw Order": 0,
+            "Enable": true,
+            "Visible": true,
+            "_parent": null,
+            "Update Order": 0,
+            "Layers to Render": 65535,
+            "Sampler State": 5,
+            "Shader": null,
+            "Snap to Pixels": false,
+            "View Height": 10.0,
+            "Id": "5f5ed580-61e0-4178-99b2-07f538466e14",
+            "Layers": 1,
+            "Local Position": "0, 0",
+            "Local Scale": "1, 1",
+            "Name": null
+          },
+          "_savableValue": {
+            "$id": "21",
+            "AssetId": "7b6d6e0c-d71a-409e-b2c6-c58855a6afc2",
+            "BackgroundColor": {
+              "R": 127,
+              "G": 255,
+              "B": 0,
+              "A": 255
+            },
+            "Name": "SceneAsset",
+            "ComponentsForSaving": [],
+            "ModulesForSaving": []
+          },
+          "_name": "SceneAsset.m2dscene",
+          "Id": "7b6d6e0c-d71a-409e-b2c6-c58855a6afc2"
+        }
+      ]
+    },
+    "_name": "Assets",
+    "Id": "4faa9361-351f-45c3-9f52-df3864755017"
+  },
+  "_version": {
+    "$id": "22",
+    "Major": 0,
+    "Minor": 0,
+    "Build": -1,
+    "Revision": -1,
+    "MajorRevision": -1,
+    "MinorRevision": -1
+  },
+  "AssetManager": {
+    "$id": "23",
+    "_idToPathMapping": {
+      "$id": "24",
+      "$values": [
+        {
+          "Key": "16050f5c-ccd7-43ca-ab67-8dde865a1586",
+          "Value": "Assets\\Default"
+        },
+        {
+          "Key": "7b6d6e0c-d71a-409e-b2c6-c58855a6afc2",
+          "Value": "Assets\\SceneAsset"
+        }
+      ]
+    }
+  },
+  "BuildConfigurations": {
+    "$type": "System.Collections.Generic.List`1[[Macabre2D.Engine.Windows.Models.BuildConfiguration, Macabre2D.Engine.Windows.Library]], mscorlib",
+    "$values": [
+      {
+        "$id": "25",
+        "Platform": 0
+      }
+    ]
+  },
+  "GameSettings": {
+    "_customSettings": {
+      "$id": "26",
+      "$values": []
+    },
+    "DefaultGraphicsSettings": {
+      "_displayMode": 2,
+      "_resolution": {
+        "$id": "27",
+        "X": 1920,
+        "Y": 1080
+      },
+      "TypeName": "GraphicsSettings",
+      "Version": null
+    },
+    "DefaultResolution": {
+      "$id": "28",
+      "X": 0,
+      "Y": 0
+    },
+    "ErrorSpritesColor": {
+      "R": 255,
+      "G": 105,
+      "B": 180,
+      "A": 255
+    },
+    "FallbackBackgroundColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "Layers": {
+      "_layersToName": {
+        "$id": "29",
+        "$values": []
+      },
+      "_layerToCollisionMask": {
+        "$id": "30",
+        "$values": []
+      }
+    },
+    "PixelsPerUnit": 32,
+    "ProjectName": "ProjectName",
+    "StartupSceneAssetId": "16050f5c-ccd7-43ca-ab67-8dde865a1586"
+  },
+  "LastSceneOpened": {
+    "$ref": "18"
+  },
+  "LastTimeSaved": "2019-12-05T17:33:04.8378835-06:00",
+  "StartUpSceneAsset": {
+    "$ref": "14"
+  }
+}

@@ -8,7 +8,7 @@ N/A
 
 ### Refactors
 
-N/A
+* Merged editor and framework back into a combined repository.
 
 ### Fixes
 

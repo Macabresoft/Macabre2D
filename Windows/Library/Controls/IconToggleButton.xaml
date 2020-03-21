@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Macabre2D.Engine.Windows.Controls.IconToggleButton"
+             x:Name="_iconToggleButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.Engine.Windows.Converters"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             Margin="{StaticResource StandardMarginAll}">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
+    </UserControl.Resources>
+    <ToggleButton IsChecked="{Binding IsToggled, ElementName=_iconToggleButton}"
+                  Width="24"
+                  Height="24"
+                  Margin="0">
+        <Grid>
+            <iconPacks:PackIconMaterial Kind="{Binding IsToggledKind, ElementName=_iconToggleButton}"
+                                        Foreground="{StaticResource BlackBrush}"
+                                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _boolToVisibilityConverter}}" />
+            <iconPacks:PackIconMaterial Kind="{Binding IsNotToggledKind, ElementName=_iconToggleButton}"
+                                        Foreground="{StaticResource BlackBrush}"
+                                        Visibility="{Binding IsToggled, ElementName=_iconToggleButton, Converter={StaticResource _inverseBoolToVisibilityConverter}}" />
+        </Grid>
+    </ToggleButton>
+</UserControl>
