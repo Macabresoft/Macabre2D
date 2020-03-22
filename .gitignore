@@ -3,6 +3,7 @@
 
 # For Macabre2D Development
 Project/*
+Project/
 
 # User-specific files
 *.suo

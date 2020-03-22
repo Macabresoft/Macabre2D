@@ -9,6 +9,7 @@ N/A
 ### Refactors
 
 * Merged editor and framework back into a combined repository.
+* Project autosaves now go into a special hidden folder.
 
 ### Fixes
 

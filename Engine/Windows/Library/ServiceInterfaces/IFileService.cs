@@ -2,5 +2,7 @@
 
     public interface IFileService {
         string ProjectDirectoryPath { get; }
+
+        string GetAutoSaveDirectory();
     }
 }

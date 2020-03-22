@@ -71,7 +71,7 @@
             }
 
             var newAutoSaveName = $"{nameof(Project)}-{DateTime.Now.ToString(FileHelper.FileDateTimeFormat)}{FileHelper.ProjectAutoSaveExtension}";
-            return await this.SaveProject(Path.Combine(this._fileService.ProjectDirectoryPath, newAutoSaveName));
+            return await this.SaveProject(Path.Combine(this._fileService.GetAutoSaveDirectory(), newAutoSaveName));
         }
 
         public async Task<bool> BuildAllAssets(BuildMode mode) {
@@ -123,7 +123,7 @@
         }
 
         public IEnumerable<string> GetAutoSaveFiles() {
-            return Directory.EnumerateFiles(this._fileService.ProjectDirectoryPath, $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
+            return Directory.EnumerateFiles(this._fileService.GetAutoSaveDirectory(), $"*{FileHelper.ProjectAutoSaveExtension}").OrderBy(x => x).ToList();
         }
 
         public string GetPathToProject() {

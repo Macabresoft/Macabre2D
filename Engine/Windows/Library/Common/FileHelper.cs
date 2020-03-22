@@ -14,6 +14,7 @@ namespace Macabre2D.Engine.Windows.Common {
         public const string NewFolderDefaultName = "New Folder";
         public const string PrefabExtension = ".m2dprefab";
         public const string ProjectAutoSaveExtension = ProjectExtension + ".autosave";
+        public const string ProjectAutoSaveFolder = ".autosave";
         public const string ProjectExtension = ".m2dproj";
         public const string SceneExtension = ".m2dscene";
         public const string ShaderExtension = ".fx";
