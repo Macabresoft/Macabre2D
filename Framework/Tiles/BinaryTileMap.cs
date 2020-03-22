@@ -63,7 +63,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Sprite?.Texture != null && this._activeTiles.Any()) {
                 foreach (var tile in this._activeTiles) {
                     var boundingArea = this.GetTileBoundingArea(tile);

@@ -68,7 +68,7 @@
             this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
-        public override bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
@@ -111,29 +111,29 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(FrameTime frameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             this.ResetEndPoint(selectedComponent, lineLength);
 
             var scale = viewRatio * 0.25f;
             this._xAxisArrowRenderer.Color = this.XAxisColor;
             this._xAxisArrowRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._xAxisArrowRenderer.Draw(gameTime, viewBoundingArea);
+            this._xAxisArrowRenderer.Draw(frameTime, viewBoundingArea);
 
             this._yAxisArrowRenderer.Color = this.YAxisColor;
             this._yAxisArrowRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisArrowRenderer.LocalScale = new Vector2(scale);
-            this._yAxisArrowRenderer.Draw(gameTime, viewBoundingArea);
+            this._yAxisArrowRenderer.Draw(frameTime, viewBoundingArea);
 
             this._xAxisTriangleRenderer.Color = this.XAxisColor;
             this._xAxisTriangleRenderer.LocalPosition = this.XAxisLineDrawer.StartPoint;
             this._xAxisTriangleRenderer.LocalScale = new Vector2(scale);
-            this._xAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
+            this._xAxisTriangleRenderer.Draw(frameTime, viewBoundingArea);
 
             this._yAxisTriangleRenderer.Color = this.YAxisColor;
             this._yAxisTriangleRenderer.LocalPosition = this.YAxisLineDrawer.StartPoint;
             this._yAxisTriangleRenderer.LocalScale = new Vector2(-scale);
-            this._yAxisTriangleRenderer.Draw(gameTime, viewBoundingArea);
+            this._yAxisTriangleRenderer.Draw(frameTime, viewBoundingArea);
 
             this._neutralAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
             this._xAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);

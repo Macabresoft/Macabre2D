@@ -14,12 +14,12 @@
             }
         }
 
-        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             var spriteBatch = MacabreGame.Instance.SpriteBatch;
             this.PrimitiveDrawer?.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
         }
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             var mouseState = Mouse.GetState();
             this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position));
         }

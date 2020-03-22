@@ -47,6 +47,17 @@
         }
 
         /// <inheritdoc/>
+        public Guid AssetId {
+            get {
+                return Guid.NewGuid();
+            }
+
+            set {
+                return;
+            }
+        }
+
+        /// <inheritdoc/>
         public Color BackgroundColor {
             get {
                 return default;
@@ -79,17 +90,6 @@
         }
 
         /// <inheritdoc/>
-        public Guid AssetId {
-            get {
-                return Guid.NewGuid();
-            }
-
-            set {
-                return;
-            }
-        }
-
-        /// <inheritdoc/>
         public T AddComponent<T>() where T : BaseComponent, new() {
             return default;
         }
@@ -100,17 +100,17 @@
         }
 
         /// <inheritdoc/>
-        public T CreateModule<T>() where T : BaseModule, new() {
-            return default;
-        }
-
-        /// <inheritdoc/>
         public bool AddModule(BaseModule module) {
             return default;
         }
 
         /// <inheritdoc/>
         public bool AddModule(FixedTimeStepModule module, float timeStep) {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public T CreateModule<T>() where T : BaseModule, new() {
             return default;
         }
 
@@ -130,12 +130,12 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime) {
+        public void Draw(FrameTime frameTime) {
             return;
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, params Camera[] cameras) {
+        public void Draw(FrameTime frameTime, params Camera[] cameras) {
             return;
         }
 
@@ -180,7 +180,7 @@
         }
 
         /// <inheritdoc/>
-        public void QueueEndOfFrameAction(Action<GameTime> action) {
+        public void QueueEndOfFrameAction(Action<FrameTime> action) {
             return;
         }
 
@@ -200,7 +200,7 @@
         }
 
         /// <inheritdoc/>
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             return;
         }
 

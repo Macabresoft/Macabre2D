@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Threading.Tasks;
 
@@ -23,8 +22,8 @@
         /// <summary>
         /// Updates this instance asynchronously.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
+        /// <param name="frameTime">The frame time.</param>
         /// <returns>The task.</returns>
-        Task UpdateAsync(GameTime gameTime);
+        Task UpdateAsync(FrameTime frameTime);
     }
 }

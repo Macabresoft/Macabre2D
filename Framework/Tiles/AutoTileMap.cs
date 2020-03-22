@@ -90,7 +90,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.TileSet != null) {
                 foreach (var activeTileToIndex in this._activeTileToIndex) {
                     var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);

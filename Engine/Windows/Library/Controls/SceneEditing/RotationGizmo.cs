@@ -44,7 +44,7 @@
             this._circleOutlineDrawer.Initialize(game.CurrentScene);
         }
 
-        public override bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             var hadInteractions = false;
 
             if (mouseState.LeftButton == ButtonState.Pressed) {
@@ -64,7 +64,7 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(FrameTime frameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             this.ResetEndPoint(selectedComponent, lineLength);
 
             if (selectedComponent is IRotatable rotatable) {
@@ -73,13 +73,13 @@
                 this._circleRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
                 this._circleRenderer.LocalScale = new Vector2(scale);
                 this._circleRenderer.Rotation = rotatable.Rotation;
-                this._circleRenderer.Draw(gameTime, viewBoundingArea);
+                this._circleRenderer.Draw(frameTime, viewBoundingArea);
 
                 this._circleOutlineDrawer.Color = this.XAxisColor;
                 this._circleOutlineDrawer.LocalPosition = selectedComponent.WorldTransform.Position;
                 this._circleOutlineDrawer.Radius = lineLength;
                 this._circleOutlineDrawer.Complexity = 128;
-                this._circleOutlineDrawer.Draw(gameTime, viewBoundingArea);
+                this._circleOutlineDrawer.Draw(frameTime, viewBoundingArea);
 
                 this._circleBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
             }

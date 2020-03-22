@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;
 
@@ -49,9 +48,9 @@
         }
 
         /// <inheritdoc/>
-        public abstract void PostUpdate(GameTime gameTime);
+        public abstract void PostUpdate(FrameTime frameTime);
 
         /// <inheritdoc/>
-        public abstract void PreUpdate(GameTime gameTime);
+        public abstract void PreUpdate(FrameTime frameTime);
     }
 }

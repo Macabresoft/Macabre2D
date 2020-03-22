@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.Tests {
 
     using Macabre2D.Framework;
-    using Microsoft.Xna.Framework;
     using System.Threading;
 
     internal class TestUpdateableComponent : TestComponent, IUpdateableComponent {
@@ -11,7 +10,7 @@
             private set;
         }
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             this.UpdateCount++;
             Thread.Sleep(10);
         }

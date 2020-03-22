@@ -49,7 +49,7 @@
             }
         }
 
-        public void Draw(GameTime gameTime) {
+        public void Draw(FrameTime frameTime) {
             if (this._game.ShowGrid && this._game.EditingStyle != ComponentEditingStyle.Tile && this._primaryGridDrawer != null && this._secondaryGridDrawer != null) {
                 if (this._game.CurrentScene != null) {
                     var contrastingColor = this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
@@ -57,10 +57,10 @@
                     this._secondaryGridDrawer.Color = new Color(contrastingColor, 30);
                 }
 
-                this._primaryGridDrawer.Draw(gameTime, this._camera.BoundingArea);
-                this._secondaryGridDrawer.Draw(gameTime, this._camera.BoundingArea);
-                this._xAxisDrawer.Draw(gameTime, this._camera.BoundingArea);
-                this._yAxisDrawer.Draw(gameTime, this._camera.BoundingArea);
+                this._primaryGridDrawer.Draw(frameTime, this._camera.BoundingArea);
+                this._secondaryGridDrawer.Draw(frameTime, this._camera.BoundingArea);
+                this._xAxisDrawer.Draw(frameTime, this._camera.BoundingArea);
+                this._yAxisDrawer.Draw(frameTime, this._camera.BoundingArea);
             }
         }
 
@@ -110,9 +110,9 @@
             this.ResetStatusProperties();
         }
 
-        public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
+        public void Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState) {
             if (mouseState.ScrollWheelValue != this._previousMouseState.ScrollWheelValue) {
-                var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * Math.Sqrt(this._camera.ViewHeight) * 0.25f);
+                var scrollViewChange = (float)(frameTime.SecondsPassed * (this._previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * Math.Sqrt(this._camera.ViewHeight) * 0.25f);
 
                 var isZoomIn = scrollViewChange < 0;
                 if (isZoomIn) {
@@ -142,7 +142,7 @@
                 }
 
                 if (!keyboardState.IsModifierKeyDown()) {
-                    var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this.Camera.ViewHeight;
+                    var movementMultiplier = (float)frameTime.SecondsPassed * this.Camera.ViewHeight;
                     if (keyboardState.IsKeyDown(Keys.W)) {
                         this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
                     }

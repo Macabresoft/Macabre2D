@@ -16,6 +16,7 @@
         private static IGame _instance = new EmptyGame();
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
+        private FrameTime _frameTime;
         private GraphicsSettings _graphicsSettings = new GraphicsSettings();
         private bool _isInitialized;
         private IGameSettings _settings;
@@ -34,18 +35,6 @@
             this.Content.RootDirectory = "Content";
             this.Settings = new GameSettings();
             MacabreGame.Instance = this;
-        }
-
-        /// <summary>
-        /// Gets the components.
-        /// </summary>
-        /// <value>The components.</value>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("This is a function of MonoGame not used by Macabre2D.", true)]
-        public new GameComponentCollection Components {
-            get {
-                return base.Components;
-            }
         }
 
         /// <summary>
@@ -78,6 +67,18 @@
                         this._assetManager.Initialize(this.Content);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the components.
+        /// </summary>
+        /// <value>The components.</value>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("This is a function of MonoGame not used by Macabre2D.", true)]
+        public new GameComponentCollection Components {
+            get {
+                return base.Components;
             }
         }
 
@@ -186,7 +187,7 @@
         protected override void Draw(GameTime gameTime) {
             if (this.CurrentScene != null) {
                 this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                this.CurrentScene.Draw(gameTime);
+                this.CurrentScene.Draw(this._frameTime);
             }
             else {
                 this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
@@ -232,8 +233,8 @@
                 this.Exit();
             }
 #endif
-
-            this.CurrentScene?.Update(gameTime);
+            this._frameTime = new FrameTime(gameTime, 1f); // TODO: use game speed module
+            this.CurrentScene?.Update(this._frameTime);
         }
     }
 }

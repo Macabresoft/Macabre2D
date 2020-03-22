@@ -7,7 +7,7 @@
     public class MovingDot : BaseComponent, IUpdateableComponent {
         private readonly float _speed = 1f;
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             if (this.Parent == null) {
                 var keyboardState = Keyboard.GetState();
 

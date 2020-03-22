@@ -47,7 +47,7 @@
             this._yAxisSquareRenderer.Initialize(this.Game.CurrentScene);
         }
 
-        public override bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
@@ -106,7 +106,7 @@
             return hadInteractions;
         }
 
-        protected override void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
+        protected override void DrawGizmo(FrameTime frameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength) {
             if (this._previousButtonState == ButtonState.Released) {
                 this.ResetEndPoint(selectedComponent, lineLength);
             }
@@ -117,12 +117,12 @@
             this._xAxisSquareRenderer.Color = this.XAxisColor;
             this._xAxisSquareRenderer.LocalPosition = this.XAxisLineDrawer.EndPoint;
             this._xAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._xAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
+            this._xAxisSquareRenderer.Draw(frameTime, viewBoundingArea);
 
             this._yAxisSquareRenderer.Color = this.YAxisColor;
             this._yAxisSquareRenderer.LocalPosition = this.YAxisLineDrawer.EndPoint;
             this._yAxisSquareRenderer.LocalScale = new Vector2(scale);
-            this._yAxisSquareRenderer.Draw(gameTime, viewBoundingArea);
+            this._yAxisSquareRenderer.Draw(frameTime, viewBoundingArea);
 
             this._xAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);
             this._yAxisBody.LocalScale = new Vector2(GameSettings.Instance.InversePixelsPerUnit);

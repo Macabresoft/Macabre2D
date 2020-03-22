@@ -8,7 +8,7 @@
         private IDynamicPhysicsBody _body;
         private float _speed = 0.5f;
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             var keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.W)) {

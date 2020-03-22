@@ -28,7 +28,7 @@
         public Vector2 StartPoint { get; set; }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && MacabreGame.Instance.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);

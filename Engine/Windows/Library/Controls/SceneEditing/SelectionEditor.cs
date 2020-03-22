@@ -1,8 +1,8 @@
 ﻿namespace Macabre2D.Engine.Windows.Controls.SceneEditing {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Models.FrameworkWrappers;
     using Macabre2D.Engine.Windows.ServiceInterfaces;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;
@@ -41,7 +41,7 @@
             this._editingStyleToGizmo.Add(ComponentEditingStyle.Translation, translationGizmo);
         }
 
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo);
 
             if (gizmo?.OverrideSelectionDisplay != true) {
@@ -52,12 +52,12 @@
                 }
 
                 if (this._game.ShowSelection) {
-                    this._boundingAreaDrawer.Draw(gameTime, viewBoundingArea);
-                    this._colliderDrawer.Draw(gameTime, viewBoundingArea);
+                    this._boundingAreaDrawer.Draw(frameTime, viewBoundingArea);
+                    this._colliderDrawer.Draw(frameTime, viewBoundingArea);
                 }
             }
 
-            gizmo?.Draw(gameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
+            gizmo?.Draw(frameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
         }
 
         public void Initialize(EditorGame game) {
@@ -84,13 +84,13 @@
             }
         }
 
-        public void Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState) {
+        public void Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState) {
             if (this._game?.CurrentScene != null && this._game.CurrentCamera != null) {
                 var hadInteractions = false;
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                 if (this._componentService.SelectedItem?.Component != null) {
-                    if (this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo) && gizmo.Update(gameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
+                    if (this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo) && gizmo.Update(frameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                         if (!string.IsNullOrWhiteSpace(gizmo.EditingPropertyName)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(gizmo.EditingPropertyName);
                         }

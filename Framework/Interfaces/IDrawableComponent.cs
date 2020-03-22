@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
 
     /// <summary>
@@ -33,8 +32,8 @@
         /// <summary>
         /// Draws this instance.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
+        /// <param name="frameTime">The frame time.</param>
         /// <param name="viewBoundingArea">The view bounding area.</param>
-        void Draw(GameTime gameTime, BoundingArea viewBoundingArea);
+        void Draw(FrameTime frameTime, BoundingArea viewBoundingArea);
     }
 }

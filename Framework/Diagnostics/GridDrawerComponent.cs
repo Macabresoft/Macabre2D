@@ -42,7 +42,7 @@
         public TileGrid Grid { get; set; }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer == null) {
                 return;
             }

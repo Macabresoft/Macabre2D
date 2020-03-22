@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.Engine.Windows.Controls.SceneEditing {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Models;
     using Macabre2D.Engine.Windows.Models.FrameworkWrappers;
     using Macabre2D.Engine.Windows.ServiceInterfaces;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;
@@ -36,14 +36,14 @@
             }
         }
 
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
             if (selectedComponent is ITileable tileable) {
                 if (this._game.CurrentScene != null) {
                     this._gridDrawer.Color = new Color(this._game.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite(), 75);
                 }
 
                 this._gridDrawer.Grid = tileable.WorldGrid;
-                this._gridDrawer.Draw(gameTime, viewBoundingArea);
+                this._gridDrawer.Draw(frameTime, viewBoundingArea);
             }
         }
 
@@ -59,7 +59,7 @@
             this._gridDrawer.Initialize(this._game.CurrentScene);
         }
 
-        public bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
             if (selectedComponent.Component is ITileable tileable) {
                 if (this.ShouldAdd(mouseState)) {
                     this.AddTile(tileable, mousePosition);

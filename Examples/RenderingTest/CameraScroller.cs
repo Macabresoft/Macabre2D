@@ -13,11 +13,11 @@
 #pragma warning restore CS0649
         private int _previousScrollValue;
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             if (this._camera != null) {
                 var mouseState = Mouse.GetState();
                 if (mouseState.ScrollWheelValue != this._previousScrollValue) {
-                    var scrollViewChange = (float)(gameTime.ElapsedGameTime.TotalSeconds * (this._previousScrollValue - mouseState.ScrollWheelValue)) * 2f;
+                    var scrollViewChange = (float)(frameTime.SecondsPassed * (this._previousScrollValue - mouseState.ScrollWheelValue)) * 2f;
                     var isZoomIn = scrollViewChange < 0;
                     if (isZoomIn) {
                         this._camera.ZoomTo(mouseState.Position, scrollViewChange * -1f);
@@ -29,7 +29,7 @@
                 }
 
                 var keyboardState = Keyboard.GetState();
-                var movementMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * this._camera.ViewHeight;
+                var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
 
                 if (keyboardState.IsKeyDown(Keys.W)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier);

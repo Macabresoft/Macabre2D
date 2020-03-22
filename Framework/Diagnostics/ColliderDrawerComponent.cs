@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System.Linq;
 
     /// <summary>
@@ -29,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             var body = this.Body ?? this.Parent as IPhysicsBody;
             if (body != null && this.PrimitiveDrawer != null) {
                 var spriteBatch = MacabreGame.Instance.SpriteBatch;

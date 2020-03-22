@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
@@ -48,7 +47,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             var component = this.Prefrab?.Component;
             if (component != null) {
                 var componentWorldTransform = component.WorldTransform;
@@ -56,10 +55,10 @@
 
                 try {
                     component.SetWorldTransform(this.WorldTransform.Position, this.WorldTransform.Scale);
-                    this.DrawComponent(component as IDrawableComponent, gameTime, viewBoundingArea);
+                    this.DrawComponent(component as IDrawableComponent, frameTime, viewBoundingArea);
 
                     foreach (var drawable in drawables) {
-                        this.DrawComponent(drawable, gameTime, viewBoundingArea);
+                        this.DrawComponent(drawable, frameTime, viewBoundingArea);
                     }
                 }
                 finally {
@@ -127,9 +126,9 @@
             }
         }
 
-        private void DrawComponent(IDrawableComponent drawable, GameTime gameTime, BoundingArea viewBoundingArea) {
+        private void DrawComponent(IDrawableComponent drawable, FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (drawable?.IsVisible == true) {
-                drawable.Draw(gameTime, viewBoundingArea);
+                drawable.Draw(frameTime, viewBoundingArea);
             }
         }
     }

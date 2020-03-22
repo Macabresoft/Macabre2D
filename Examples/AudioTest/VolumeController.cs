@@ -1,5 +1,4 @@
 ﻿using Macabre2D.Framework;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Macabre2D.Examples.AudioTest {
@@ -7,7 +6,7 @@ namespace Macabre2D.Examples.AudioTest {
     public sealed class VolumeController : BaseComponent, IUpdateableComponent {
         private AudioPlayer _audioClip;
 
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             var keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.W)) {

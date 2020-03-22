@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;
 
@@ -67,9 +66,9 @@
         }
 
         /// <inheritdoc/>
-        public override void PostUpdate(GameTime gameTime) {
+        public override void PostUpdate(FrameTime frameTime) {
             if (this._hasPostUpdate) {
-                this._postTimePassed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._postTimePassed += (float)frameTime.SecondsPassed;
 
                 while (this._postTimePassed >= this._timeStep) {
                     this.FixedPostUpdate();
@@ -86,9 +85,9 @@
         }
 
         /// <inheritdoc/>
-        public override void PreUpdate(GameTime gameTime) {
+        public override void PreUpdate(FrameTime frameTime) {
             if (this._hasPreUpdate) {
-                this._preTimePassed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._preTimePassed += (float)frameTime.SecondsPassed;
 
                 while (this._preTimePassed >= this._timeStep) {
                     this.FixedPreUpdate();

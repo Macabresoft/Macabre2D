@@ -42,7 +42,7 @@
 
         protected LineDrawerComponent YAxisLineDrawer { get; } = new LineDrawerComponent();
 
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea, BaseComponent selectedComponent) {
             if (selectedComponent != null) {
                 var ratio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.GraphicsDevice.Viewport.Height);
                 var lineLength = this.GetDefaultLineLength(viewBoundingArea.Height);
@@ -50,10 +50,10 @@
                 this.XAxisLineDrawer.Color = this.XAxisColor;
                 this.YAxisLineDrawer.Color = this.YAxisColor;
 
-                this.XAxisLineDrawer.Draw(gameTime, viewBoundingArea);
-                this.YAxisLineDrawer.Draw(gameTime, viewBoundingArea);
+                this.XAxisLineDrawer.Draw(frameTime, viewBoundingArea);
+                this.YAxisLineDrawer.Draw(frameTime, viewBoundingArea);
 
-                this.DrawGizmo(gameTime, selectedComponent, viewBoundingArea, ratio, lineLength);
+                this.DrawGizmo(frameTime, selectedComponent, viewBoundingArea, ratio, lineLength);
             }
         }
 
@@ -72,9 +72,9 @@
             this.YAxisLineDrawer.Initialize(this.Game.CurrentScene);
         }
 
-        public abstract bool Update(GameTime gameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
+        public abstract bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
 
-        protected abstract void DrawGizmo(GameTime gameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
+        protected abstract void DrawGizmo(FrameTime frameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
 
         protected float GetDefaultLineLength(float viewHeight) {
             return viewHeight * 0.1f;

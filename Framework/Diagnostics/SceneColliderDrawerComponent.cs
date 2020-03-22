@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -16,7 +15,7 @@
 
         public override BoundingArea BoundingArea { get; } = new BoundingArea(0.5f * float.MinValue, 0.5f * float.MaxValue);
 
-        public override void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             this._bodies.ForEachFilteredItem(body => {
                 if (body.BoundingArea.Overlaps(viewBoundingArea)) {
                     var spriteBatch = MacabreGame.Instance.SpriteBatch;

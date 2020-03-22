@@ -138,7 +138,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
                     MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);

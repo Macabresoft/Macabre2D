@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.Engine.Windows.Controls.SceneEditing {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Models.FrameworkWrappers;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using MonoGame.Framework.WpfInterop;
@@ -14,6 +14,7 @@
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
 #pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
+        private FrameTime _frameTime;
         private IGraphicsDeviceService _graphicsDeviceManager;
 #pragma warning restore IDE0052 // Remove unread private members
         private bool _isContentLoaded = false;
@@ -140,10 +141,10 @@
             if (this._isInitialized && this._isContentLoaded) {
                 if (this.CurrentScene != null) {
                     this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                    this.CurrentScene.Draw(gameTime, this._cameraWrapper.Camera);
+                    this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
                     this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
-                    this._cameraWrapper.Draw(gameTime);
-                    this._selectionEditor.Draw(gameTime, this._cameraWrapper.Camera.BoundingArea);
+                    this._cameraWrapper.Draw(this._frameTime);
+                    this._selectionEditor.Draw(this._frameTime, this._cameraWrapper.Camera.BoundingArea);
                     this.SpriteBatch.End();
                 }
                 else if (this.Settings != null) {
@@ -176,8 +177,9 @@
                 var mouseState = this._mouse.GetState();
                 var keyboardState = this._keyboard.GetState();
 
-                this._selectionEditor.Update(gameTime, mouseState, keyboardState);
-                this._cameraWrapper.Update(gameTime, mouseState, keyboardState);
+                this._frameTime = new FrameTime(gameTime, 1f);
+                this._selectionEditor.Update(this._frameTime, mouseState, keyboardState);
+                this._cameraWrapper.Update(this._frameTime, mouseState, keyboardState);
             }
         }
 

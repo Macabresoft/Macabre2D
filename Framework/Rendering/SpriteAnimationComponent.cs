@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -130,7 +129,7 @@
         }
 
         /// <inheritdoc/>
-        public void Update(GameTime gameTime) {
+        public void Update(FrameTime frameTime) {
             if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
                 this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
                 this._currentAnimation.Animation.LoadContent();
@@ -138,7 +137,7 @@
             }
 
             if (this._currentAnimation != null) {
-                this._millisecondsPassed += Convert.ToUInt32(gameTime.ElapsedGameTime.TotalMilliseconds);
+                this._millisecondsPassed += Convert.ToUInt32(frameTime.MillisecondsPassed);
 
                 if (this._millisecondsPassed >= this._millisecondsPerFrame) {
                     while (this._millisecondsPassed >= this._millisecondsPerFrame) {

@@ -23,21 +23,25 @@
                 ElapsedGameTime = TimeSpan.FromMilliseconds(100d)
             };
 
+            var frameTime = new FrameTime(gameTime, 1f);
+
             animator.Play(animation, true);
             Assert.IsNull(animator.Sprite);
-            animator.Update(gameTime);
+            animator.Update(frameTime);
             Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
 
             for (var i = 1; i < numberOfSteps; i++) {
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
-                animator.Update(gameTime);
+                frameTime = new FrameTime(gameTime, 1f);
+                animator.Update(frameTime);
                 Assert.AreEqual(animation.Steps.ElementAt(i).Sprite.Id, animator.Sprite.Id);
             }
 
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
+            frameTime = new FrameTime(gameTime, 1f);
 
             // Should loop here.
-            animator.Update(gameTime);
+            animator.Update(frameTime);
             Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
         }
 

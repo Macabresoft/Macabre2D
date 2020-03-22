@@ -1,7 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
-
     /// <summary>
     /// An updateable component.
     /// </summary>
@@ -10,7 +8,7 @@
         /// <summary>
         /// Updates this instance.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void Update(GameTime gameTime);
+        /// <param name="frameTime">The frame time.</param>
+        void Update(FrameTime frameTime);
     }
 }

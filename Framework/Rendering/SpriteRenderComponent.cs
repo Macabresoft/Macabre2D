@@ -113,7 +113,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, BoundingArea viewBoundingArea) {
+        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this._snapToPixels) {
                 MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
             }

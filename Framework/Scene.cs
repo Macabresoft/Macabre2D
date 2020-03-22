@@ -16,10 +16,10 @@
     /// </summary>
     [DataContract]
     public sealed class Scene : IScene, IDisposable {
-        private static readonly Action<IUpdateableModule, GameTime> ModulePostUpdateAction = (module, gameTime) => module.PostUpdate(gameTime);
-        private static readonly Action<IUpdateableModule, GameTime> ModulePreUpdateAction = (module, gameTime) => module.PreUpdate(gameTime);
-        private static readonly Action<IUpdateableComponent, GameTime> UpdateAction = (updateable, gameTime) => updateable.Update(gameTime);
-        private static readonly Func<IUpdateableComponentAsync, GameTime, Task> UpdateAsyncAction = (updateableAsync, gameTime) => updateableAsync.UpdateAsync(gameTime);
+        private static readonly Action<IUpdateableModule, FrameTime> ModulePostUpdateAction = (module, frameTime) => module.PostUpdate(frameTime);
+        private static readonly Action<IUpdateableModule, FrameTime> ModulePreUpdateAction = (module, frameTime) => module.PreUpdate(frameTime);
+        private static readonly Action<IUpdateableComponent, FrameTime> UpdateAction = (updateable, frameTime) => updateable.Update(frameTime);
+        private static readonly Func<IUpdateableComponentAsync, FrameTime, Task> UpdateAsyncAction = (updateableAsync, frameTime) => updateableAsync.UpdateAsync(frameTime);
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
         private readonly List<BaseComponent> _components = new List<BaseComponent>();
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
@@ -33,7 +33,7 @@
             (d, handler) => d.DrawOrderChanged -= handler);
 
         private readonly QuadTree<IDrawableComponent> _drawTree = new QuadTree<IDrawableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
-        private readonly List<Action<GameTime>> _endOfFrameActions = new List<Action<GameTime>>();
+        private readonly List<Action<FrameTime>> _endOfFrameActions = new List<Action<FrameTime>>();
 
         [DataMember]
         private readonly HashSet<BaseModule> _modules = new HashSet<BaseModule>();
@@ -196,22 +196,22 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime) {
+        public void Draw(FrameTime frameTime) {
             this._drawTree.Clear();
             this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
 
             this.Cameras.ForEachFilteredItem(camera => {
-                this.DrawForCamera(gameTime, camera);
+                this.DrawForCamera(frameTime, camera);
             });
         }
 
         /// <inheritdoc/>
-        public void Draw(GameTime gameTime, params Camera[] cameras) {
+        public void Draw(FrameTime frameTime, params Camera[] cameras) {
             this._drawTree.Clear();
             this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
 
             foreach (var camera in cameras) {
-                this.DrawForCamera(gameTime, camera);
+                this.DrawForCamera(frameTime, camera);
             }
         }
 
@@ -357,7 +357,7 @@
         }
 
         /// <inheritdoc/>
-        public void QueueEndOfFrameAction(Action<GameTime> action) {
+        public void QueueEndOfFrameAction(Action<FrameTime> action) {
             this._endOfFrameActions.Add(action);
         }
 
@@ -434,18 +434,18 @@
         }
 
         /// <inheritdoc/>
-        public void Update(GameTime gameTime) {
-            this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, gameTime);
+        public void Update(FrameTime frameTime) {
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, frameTime);
 
-            var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, gameTime);
-            this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, gameTime);
+            var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, frameTime);
+            this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, frameTime);
             task.Wait();
 
             foreach (var action in this._endOfFrameActions) {
-                action.SafeInvoke(gameTime);
+                action.SafeInvoke(frameTime);
             }
 
-            this._updateableModules.ForEachFilteredItem(Scene.ModulePostUpdateAction, gameTime);
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePostUpdateAction, frameTime);
         }
 
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -497,7 +497,7 @@
             }
         }
 
-        private void DrawForCamera(GameTime gameTime, Camera camera) {
+        private void DrawForCamera(FrameTime frameTime, Camera camera) {
             var potentialDrawables = this._drawTree.RetrievePotentialCollisions(camera.BoundingArea);
 
             if (potentialDrawables.Any()) {
@@ -507,7 +507,7 @@
                     // As long as it doesn't equal Layers.None, at least one of the layers defined
                     // on the component are also to be rendered by LayersToRender.
                     if ((drawable.Layers & camera.LayersToRender) != Layers.None) {
-                        drawable.Draw(gameTime, camera.BoundingArea);
+                        drawable.Draw(frameTime, camera.BoundingArea);
                     }
                 }
 

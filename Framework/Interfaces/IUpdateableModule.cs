@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using Microsoft.Xna.Framework;
     using System;
 
     /// <summary>
@@ -33,13 +32,13 @@
         /// <summary>
         /// Updates after the normal update occurs for a scene.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void PostUpdate(GameTime gameTime);
+        /// <param name="frameTime">The frame time.</param>
+        void PostUpdate(FrameTime frameTime);
 
         /// <summary>
         /// Updates before the normal update for a scene.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void PreUpdate(GameTime gameTime);
+        /// <param name="frameTime">The frame time.</param>
+        void PreUpdate(FrameTime frameTime);
     }
 }

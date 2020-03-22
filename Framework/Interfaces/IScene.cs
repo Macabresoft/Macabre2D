@@ -106,15 +106,15 @@
         /// <summary>
         /// Draws this scene.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void Draw(GameTime gameTime);
+        /// <param name="frameTime">The frame time.</param>
+        void Draw(FrameTime frameTime);
 
         /// <summary>
         /// Draws all <see cref="IDrawableComponent"/> game components in the provided cameras.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
+        /// <param name="frameTime">The frame time.</param>
         /// <param name="cameras">The cameras.</param>
-        void Draw(GameTime gameTime, params Camera[] cameras);
+        void Draw(FrameTime frameTime, params Camera[] cameras);
 
         /// <summary>
         /// Finds a component in the scene with the specified name. If multiple components have the
@@ -175,7 +175,7 @@
         /// Queues an action to be executed at the end of the next frame.
         /// </summary>
         /// <param name="action">The action.</param>
-        void QueueEndOfFrameAction(Action<GameTime> action);
+        void QueueEndOfFrameAction(Action<FrameTime> action);
 
         /// <summary>
         /// Removes the module.
@@ -204,6 +204,6 @@
         /// Updates this scene.
         /// </summary>
         /// <param name="gameTime">The game time.</param>
-        void Update(GameTime gameTime);
+        void Update(FrameTime frameTime);
     }
 }
