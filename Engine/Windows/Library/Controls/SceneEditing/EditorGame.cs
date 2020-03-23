@@ -6,6 +6,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using MonoGame.Framework.WpfInterop;
     using MonoGame.Framework.WpfInterop.Input;
+    using System;
     using System.ComponentModel;
 
     public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
@@ -31,6 +32,8 @@
             this.SizeChanged += this.EditorGame_SizeChanged;
             MacabreGame.Instance = this;
         }
+
+        public event EventHandler<double> GameSpeedChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -79,6 +82,16 @@
         }
 
         public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
+
+        public double GameSpeed {
+            get {
+                return 1f;
+            }
+
+            set {
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
+        }
 
         public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
 
@@ -177,7 +190,7 @@
                 var mouseState = this._mouse.GetState();
                 var keyboardState = this._keyboard.GetState();
 
-                this._frameTime = new FrameTime(gameTime, 1f);
+                this._frameTime = new FrameTime(gameTime, this.GameSpeed);
                 this._selectionEditor.Update(this._frameTime, mouseState, keyboardState);
                 this._cameraWrapper.Update(this._frameTime, mouseState, keyboardState);
             }

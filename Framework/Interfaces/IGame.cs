@@ -2,11 +2,17 @@
 
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
+    using System;
 
     /// <summary>
     /// Interface for games. Honestly, this was only made so testing could work. Destroy this when possible.
     /// </summary>
     public interface IGame {
+
+        /// <summary>
+        /// Occurs when the game speed has changed.
+        /// </summary>
+        event EventHandler<double> GameSpeedChanged;
 
         /// <summary>
         /// Gets the asset manager.
@@ -25,6 +31,12 @@
         /// </summary>
         /// <value>The current scene.</value>
         IScene CurrentScene { get; }
+
+        /// <summary>
+        /// Gets or sets the game speed.
+        /// </summary>
+        /// <value>The game speed.</value>
+        double GameSpeed { get; set; }
 
         /// <summary>
         /// Gets the graphics device.

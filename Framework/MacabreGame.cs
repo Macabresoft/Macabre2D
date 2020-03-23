@@ -17,6 +17,7 @@
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
         private FrameTime _frameTime;
+        private double _gameSpeed = 1d;
         private GraphicsSettings _graphicsSettings = new GraphicsSettings();
         private bool _isInitialized;
         private IGameSettings _settings;
@@ -36,6 +37,9 @@
             this.Settings = new GameSettings();
             MacabreGame.Instance = this;
         }
+
+        /// <inheritdoc/>
+        public event EventHandler<double> GameSpeedChanged;
 
         /// <summary>
         /// Gets the singleton instance of <see cref="IGame"/> for the current session.
@@ -103,6 +107,20 @@
                     if (this._isLoaded) {
                         this._currentScene.LoadContent();
                     }
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public double GameSpeed {
+            get {
+                return this._gameSpeed;
+            }
+
+            set {
+                if (value >= 0f && this._gameSpeed != value) {
+                    this._gameSpeed = value;
+                    this.GameSpeedChanged.SafeInvoke(this, this._gameSpeed);
                 }
             }
         }
@@ -233,7 +251,7 @@
                 this.Exit();
             }
 #endif
-            this._frameTime = new FrameTime(gameTime, 1f); // TODO: use game speed module
+            this._frameTime = new FrameTime(gameTime, this.GameSpeed);
             this.CurrentScene?.Update(this._frameTime);
         }
     }

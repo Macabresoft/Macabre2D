@@ -4,7 +4,7 @@
 
 ### Features
 
-N/A
+* MacabreGame object now has GameSpeed property which can dictate how fast time dependent components and modules are running.
 
 ### Refactors
 

@@ -1,10 +1,10 @@
 ﻿namespace Macabre2D.Engine.Windows.Services {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Controls.SceneEditing;
     using Macabre2D.Engine.Windows.Models;
     using Macabre2D.Engine.Windows.Models.FrameworkWrappers;
     using Macabre2D.Engine.Windows.ServiceInterfaces;
+    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
     using System.Linq;
@@ -26,7 +26,6 @@
         private readonly ISceneService _sceneService;
         private ComponentEditingStyle _editingStyle = ComponentEditingStyle.Translation;
         private bool _hasSelectedGizmoBeenManuallyChanged = false;
-        private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
         private bool _showGrid = true;
         private bool _showSelection = true;
 

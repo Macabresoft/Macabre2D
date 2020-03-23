@@ -10,7 +10,6 @@
     using System.Threading.Tasks;
 
     public sealed class AssemblyService : IAssemblyService {
-        private bool _isLoaded = false;
 
         public async Task<Type> LoadFirstType(Type baseType) {
             return await Task.Run(() => {

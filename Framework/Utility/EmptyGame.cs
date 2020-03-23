@@ -2,12 +2,16 @@
 
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
+    using System;
 
     /// <summary>
     /// An empty game that is referenced if no <see cref="MacabreGame"/> haas been created.
     /// </summary>
     /// <seealso cref="Macabre2D.Framework.IGame"/>
     internal class EmptyGame : IGame {
+
+        /// <inheritdoc/>
+        public event EventHandler<double> GameSpeedChanged;
 
         /// <inheritdoc/>
         public IAssetManager AssetManager {
@@ -27,6 +31,17 @@
         public IScene CurrentScene {
             get {
                 return EmptyScene.Instance;
+            }
+        }
+
+        /// <inheritdoc/>
+        public double GameSpeed {
+            get {
+                return 1f;
+            }
+
+            set {
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
             }
         }
 
