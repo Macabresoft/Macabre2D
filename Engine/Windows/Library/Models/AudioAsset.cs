@@ -7,7 +7,7 @@
     using System.Runtime.Serialization;
     using System.Text;
 
-    public sealed class AudioAsset : MetadataAsset, ISyncAsset<AudioClip> {
+    public sealed class AudioAsset : MetadataAsset, ISyncAsset<AudioClip>, IIdentifiableAsset {
 
         public AudioAsset(string name) : base(name) {
         }
@@ -46,6 +46,10 @@
 
         public IEnumerable<AudioClip> GetAssetsToSync() {
             return new[] { this.AudioClip };
+        }
+
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return new[] { this.AudioClip.Id };
         }
 
         private string GetImporterName() {

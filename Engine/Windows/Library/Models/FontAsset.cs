@@ -20,7 +20,7 @@
         Italic
     }
 
-    public sealed class FontAsset : AddableAsset<Font>, IReloadableAsset {
+    public sealed class FontAsset : AddableAsset<Font>, IReloadableAsset, IIdentifiableAsset {
         private string _fontName = "Arial";
         private bool _premultiplyAlpha = true;
         private float _size = 12;

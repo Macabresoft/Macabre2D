@@ -9,7 +9,7 @@
     using System.IO;
     using System.Text;
 
-    public sealed class ShaderAsset : AddableAsset<Shader>, IReloadableAsset {
+    public sealed class ShaderAsset : AddableAsset<Shader>, IReloadableAsset, IIdentifiableAsset {
 
         public ShaderAsset(string name) : base(name) {
         }
@@ -35,8 +35,6 @@
             }
         }
 
-        public Shader Shader { get; private set; } = new Shader();
-
         public override void BuildProcessorCommands(StringBuilder contentStringBuilder) {
             var path = this.GetContentPath();
             contentStringBuilder.AppendLine($"#begin {path}");
@@ -47,7 +45,7 @@
         }
 
         public override void Delete() {
-            this.RemoveIdentifiableContentFromScenes(this.Shader.Id);
+            this.RemoveIdentifiableContentFromScenes(this.SavableValue.Id);
             base.Delete();
         }
 

@@ -146,6 +146,11 @@
                         Directory.CreateDirectory(folderAsset.GetPath());
                     }
                 }
+                else if (child is IIdentifiableAsset identifiable) {
+                    foreach (var indentifier in identifiable.GetOwnedAssetIds()) {
+                        this.RemoveIdentifiableContentFromScenes(indentifier);
+                    }
+                }
             }
 
             this.RaisePropertyChanged(nameof(this.Children));

@@ -14,7 +14,7 @@
 
 ### Fixes
 
-N/A
+* Deleting assets outside the editor no longer causes a crash.
 
 ## 0.3.11.0
 

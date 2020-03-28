@@ -378,6 +378,7 @@
     <Compile Include="Models\FrameworkWrappers\SpriteAnimationStepWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\SpriteWrapper.cs" />
     <Compile Include="Models\IHierarchical.cs" />
+    <Compile Include="Models\IIdentifiableAsset.cs" />
     <Compile Include="Models\ImageAsset.cs" />
     <Compile Include="Models\IndexedWrapper.cs" />
     <Compile Include="Models\IParent.cs" />

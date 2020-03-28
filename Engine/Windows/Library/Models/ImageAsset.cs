@@ -4,6 +4,7 @@
     using Macabre2D.Framework;
     using MahApps.Metro.IconPacks;
     using Microsoft.Xna.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
@@ -14,7 +15,7 @@
     using System.Text;
     using System.Windows.Media.Imaging;
 
-    public sealed class ImageAsset : MetadataAsset, ISyncAsset<Sprite> {
+    public sealed class ImageAsset : MetadataAsset, ISyncAsset<Sprite>, IIdentifiableAsset {
 
         [DataMember]
         private readonly ObservableCollection<SpriteWrapper> _children = new ObservableCollection<SpriteWrapper>();
@@ -162,6 +163,10 @@
 
         public IEnumerable<Sprite> GetAssetsToSync() {
             return this.Sprites.Select(x => x.Sprite).ToList();
+        }
+
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return this._children.Where(x => x.Sprite != null).Select(x => x.Sprite.Id);
         }
 
         public override void Refresh(AssetManager assetManager) {

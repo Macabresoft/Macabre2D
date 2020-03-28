@@ -1,10 +1,12 @@
 ﻿namespace Macabre2D.Engine.Windows.Models {
 
-    using Macabre2D.Framework;
     using Macabre2D.Engine.Windows.Common;
+    using Macabre2D.Framework;
     using MahApps.Metro.IconPacks;
+    using System;
+    using System.Collections.Generic;
 
-    public sealed class PrefabAsset : AddableAsset<Prefab> {
+    public sealed class PrefabAsset : AddableAsset<Prefab>, IIdentifiableAsset {
 
         public PrefabAsset() : this(string.Empty) {
         }
@@ -27,6 +29,10 @@
         public override void Delete() {
             this.RemoveIdentifiableContentFromScenes(this.SavableValue.Id);
             base.Delete();
+        }
+
+        public IEnumerable<Guid> GetOwnedAssetIds() {
+            return new[] { this.SavableValue.Id };
         }
     }
 }
