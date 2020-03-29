@@ -33,4 +33,8 @@
     <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Audio\Synthesizer\" />
+  </ItemGroup>
 </Project>

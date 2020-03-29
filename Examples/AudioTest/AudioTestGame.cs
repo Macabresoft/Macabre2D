@@ -27,6 +27,7 @@
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json");
             this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
+            this.CurrentScene.AddComponent<PianoComponent>();
             this._isLoaded = true;
         }
     }
