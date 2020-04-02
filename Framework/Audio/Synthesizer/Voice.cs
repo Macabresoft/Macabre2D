@@ -123,7 +123,7 @@
                 this._isActive = false;
             }
 
-            return result * this._note.Velocity;
+            return result;
         }
     }
 }

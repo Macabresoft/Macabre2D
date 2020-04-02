@@ -15,9 +15,8 @@
         /// </summary>
         /// <param name="beat">The beat.</param>
         /// <param name="length">The length.</param>
-        /// <param name="velocity">The velocity.</param>
         /// <param name="frequency">The frequency.</param>
-        public NoteInstance(ushort beat, ushort length, float velocity, Frequency frequency) : this(beat, length, velocity, frequency, frequency) {
+        public NoteInstance(ushort beat, ushort length, Frequency frequency) : this(beat, length, frequency, frequency) {
         }
 
         /// <summary>
@@ -25,13 +24,11 @@
         /// </summary>
         /// <param name="beat">The beat.</param>
         /// <param name="length">The length.</param>
-        /// <param name="velocity">The velocity.</param>
         /// <param name="startFrequency">The start frequency.</param>
         /// <param name="endFrequency">The end frequency.</param>
-        public NoteInstance(ushort beat, ushort length, float velocity, Frequency startFrequency, Frequency endFrequency) {
+        public NoteInstance(ushort beat, ushort length, Frequency startFrequency, Frequency endFrequency) {
             this.Beat = beat;
             this.Length = length;
-            this.Velocity = velocity;
             this.StartFrequency = startFrequency;
             this.EndFrequency = endFrequency;
         }
@@ -81,21 +78,6 @@
         /// <value>The frequency.</value>
         [DataMember]
         public Frequency StartFrequency { get; set; }
-
-        /// <summary>
-        /// Gets or sets the velocity.
-        /// </summary>
-        /// <value>The velocity.</value>
-        [DataMember]
-        public float Velocity {
-            get {
-                return this._velocity;
-            }
-
-            set {
-                this._velocity = value.Clamp(0f, 1f);
-            }
-        }
 
         /// <summary>
         /// Gets the frequency.
