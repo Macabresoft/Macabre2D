@@ -13,6 +13,8 @@
     public sealed class TileableBodyComponent : BaseBody {
         private readonly List<Collider> _colliders = new List<Collider>();
 
+#pragma warning disable IDE0044 // Add readonly modifier
+
         [DataMember(Name = "Bottom Layers", Order = 103)]
         private Layers _overrideLayersBottomEdge = Layers.None;
 
@@ -24,6 +26,8 @@
 
         [DataMember(Name = "Top Layers", Order = 101)]
         private Layers _overrideLayersTopEdge = Layers.None;
+
+#pragma warning restore IDE0044 // Add readonly modifier
 
         private ITileable _tileable;
 
@@ -140,7 +144,7 @@
                 }
 
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(this._tileable.LocalGrid.GetTilePosition(segment.StartPoint), this._tileable.LocalGrid.GetTilePosition(segment.EndPoint));
+                    var collider = new LineCollider(this._tileable.GridConfiguration.Grid.GetTilePosition(segment.StartPoint), this._tileable.GridConfiguration.Grid.GetTilePosition(segment.EndPoint));
                     collider.Layers = segment.Layers;
                     collider.Initialize(this);
                     this._colliders.Add(collider);
@@ -150,7 +154,7 @@
 
         private void SetTileable(ITileable tileable) {
             if (this._tileable != null) {
-                this._tileable.GridChanged -= this.OnRequestReset;
+                this._tileable.GridConfiguration.GridChanged -= this.OnRequestReset;
                 this._tileable.TilesChanged -= this.OnRequestReset;
                 this._tileable.TransformChanged -= this.OnRequestReset;
             }
@@ -158,7 +162,7 @@
             this._tileable = tileable;
 
             if (this._tileable != null) {
-                this._tileable.GridChanged += this.OnRequestReset;
+                this._tileable.GridConfiguration.GridChanged += this.OnRequestReset;
                 this._tileable.TilesChanged += this.OnRequestReset;
                 this._tileable.TransformChanged += this.OnRequestReset;
             }

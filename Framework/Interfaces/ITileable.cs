@@ -11,11 +11,6 @@
     public interface ITileable : IBoundable, IWorldTransformable {
 
         /// <summary>
-        /// Occurs when the grid is changed.
-        /// </summary>
-        event EventHandler GridChanged;
-
-        /// <summary>
         /// Occurs when a tile is added or removed.
         /// </summary>
         event EventHandler TilesChanged;
@@ -27,21 +22,21 @@
         IReadOnlyCollection<Point> ActiveTiles { get; }
 
         /// <summary>
-        /// Gets the grid.
+        /// Gets the grid configuration.
         /// </summary>
-        /// <value>The grid.</value>
-        TileGrid LocalGrid { get; }
+        /// <value>The grid configuration.</value>
+        GridConfiguration GridConfiguration { get; }
 
         /// <summary>
-        /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid, which
-        /// may or may not be from the same tile.
+        /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid,
+        /// which may or may not be from the same tile.
         /// </summary>
         /// <value>The maximum tile.</value>
         Point MaximumTile { get; }
 
         /// <summary>
-        /// Gets the minimum tile. This represents the minimum X and Y coordinates of the grid, which
-        /// may or may not be from the same tile.
+        /// Gets the minimum tile. This represents the minimum X and Y coordinates of the grid,
+        /// which may or may not be from the same tile.
         /// </summary>
         /// <value>The minimum tile.</value>
         Point MinimumTile { get; }

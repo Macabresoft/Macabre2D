@@ -6,6 +6,7 @@
 
 * MacabreGame object now has GameSpeed property which can dictate how fast time dependent components and modules are running.
 * CosmicSynth has been folded into the Macabre2D.Framework project.
+* TileableComponents now use a GridConfiguration that allows them to link up to a GridModule instead of a local grid.
 
 ### Refactors
 

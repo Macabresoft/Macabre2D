@@ -13,13 +13,13 @@ namespace Macabre2D.Tests.Tiles {
         public static void TileableComponent_ScaleTest() {
             using (var component = new BinaryTileMap()) {
                 component.Initialize(Substitute.For<IScene>());
-                var localPosition = component.LocalGrid.GetTilePosition(new Point(1, 1));
+                var localPosition = component.GridConfiguration.Grid.GetTilePosition(new Point(1, 1));
                 var worldPosition = component.WorldGrid.GetTilePosition(new Point(1, 1));
 
                 Assert.AreEqual(localPosition, worldPosition);
 
                 component.LocalScale = new Vector2(2f, 1f);
-                localPosition = component.LocalGrid.GetTilePosition(new Point(1, 1));
+                localPosition = component.GridConfiguration.Grid.GetTilePosition(new Point(1, 1));
                 worldPosition = component.WorldGrid.GetTilePosition(new Point(1, 1));
 
                 Assert.AreNotEqual(localPosition, worldPosition);

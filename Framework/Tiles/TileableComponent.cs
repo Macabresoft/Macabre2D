@@ -30,12 +30,12 @@
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
         private readonly ResettableLazy<TileGrid> _worldGrid;
-        private TileGrid _grid = new TileGrid(Vector2.One);
+        private GridConfiguration _gridConfiguration = new GridConfiguration();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent"/> class.
         /// </summary>
-        public TileableComponent() : base() {
+        protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
         }
@@ -57,19 +57,8 @@
         }
 
         /// <inheritdoc/>
-        [DataMember(Order = 0, Name = "Local Grid")]
-        public TileGrid LocalGrid {
-            get {
-                return this._grid;
-            }
-
-            set {
-                if (this._grid != value) {
-                    this._grid = value;
-                    this.OnGridChanged();
-                }
-            }
-        }
+        [DataMember]
+        public GridConfiguration GridConfiguration { get; private set; } = new GridConfiguration();
 
         /// <inheritdoc/>
         public Point MaximumTile { get; private set; }
@@ -286,16 +275,21 @@
         }
 
         private TileGrid CreateWorldGrid() {
-            var worldTransform = this.WorldTransform;
+            var tileGrid = this.GridConfiguration.Grid;
+            if (this.GridConfiguration.UseLocalGrid) {
+                var worldTransform = this.WorldTransform;
 
-            var matrix =
-                Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
-                Matrix.CreateScale(this.LocalGrid.TileSize.X, this.LocalGrid.TileSize.Y, 1f) *
-                Matrix.CreateTranslation(this.LocalGrid.Offset.X, this.LocalGrid.Offset.Y, 0f) *
-                Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+                var matrix =
+                    Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
+                    Matrix.CreateScale(tileGrid.TileSize.X, tileGrid.TileSize.Y, 1f) *
+                    Matrix.CreateTranslation(tileGrid.Offset.X, tileGrid.Offset.Y, 0f) *
+                    Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
 
-            var transform = matrix.ToTransform();
-            return new TileGrid(transform.Scale, transform.Position);
+                var transform = matrix.ToTransform();
+                tileGrid = new TileGrid(transform.Scale, transform.Position);
+            }
+
+            return tileGrid;
         }
 
         private void ResetMaximumTile() {
