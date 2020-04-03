@@ -73,19 +73,7 @@
         /// <returns>The added note.</returns>
         public NoteInstance AddNote(ushort beat, ushort length, Note note, Pitch pitch = Pitch.Normal) {
             var frequency = new Frequency(note, pitch);
-            return this.AddSlideNote(beat, length, frequency, frequency);
-        }
-
-        /// <summary>
-        /// Adds the slide note.
-        /// </summary>
-        /// <param name="beat">The beat.</param>
-        /// <param name="length">The length.</param>
-        /// <param name="startFrequency">The start frequency.</param>
-        /// <param name="endFrequency">The end frequency.</param>
-        /// <returns>The slide note.</returns>
-        public NoteInstance AddSlideNote(ushort beat, ushort length, Frequency startFrequency, Frequency endFrequency) {
-            var newNote = new NoteInstance(beat, length, startFrequency, endFrequency);
+            var newNote = new NoteInstance(beat, length, frequency);
             this._notes.Add(newNote);
             return newNote;
         }

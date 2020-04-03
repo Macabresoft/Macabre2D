@@ -44,7 +44,7 @@
             for (var i = 0; i < samples.Length; i++) {
                 if (this._isActive) {
                     var sampleNumber = sampleModifier + i;
-                    var frequency = this._note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
+                    var frequency = this._note.Frequency.Value;
                     var volume = this.GetSampleAmplitude(sampleNumber);
                     var time = sampleNumber * this._inverseSampleRate;
                     var leftSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.LeftChannelVolume);
