@@ -33,15 +33,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Project.Gameplay"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Project.DesktopGL", "Project\DesktopGL\Macabre2D.Project.DesktopGL.csproj", "{08D56345-4689-4DB3-9BCD-33D7F7AEDA1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Engine.Windows.Resources", "Engine\Windows\Resources\Macabre2D.Engine.Windows.Resources.csproj", "{310D54CB-E336-4F67-B39E-0D4EA4E9D2FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Resources", "UI\Resources\Macabre2D.UI.Resources.csproj", "{310D54CB-E336-4F67-B39E-0D4EA4E9D2FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Engine.Windows.Library", "Engine\Windows\Library\Macabre2D.Engine.Windows.Library.csproj", "{07B8E881-70A6-4AA2-B342-6E0B80326F6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Library", "UI\Library\Macabre2D.UI.Library.csproj", "{07B8E881-70A6-4AA2-B342-6E0B80326F6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Engine.Windows.Editor", "Engine\Windows\Editor\Macabre2D.Engine.Windows.Editor.csproj", "{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Editor", "UI\Editor\Macabre2D.UI.Editor.csproj", "{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Engine.Windows.Tests", "Engine\Windows\Tests\Macabre2D.Engine.Windows.Tests.csproj", "{B4EB0056-BF94-4017-BD15-1A02C7319923}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Tests\Macabre2D.UI.Tests.csproj", "{B4EB0056-BF94-4017-BD15-1A02C7319923}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{357EBB18-5593-43D0-9FA2-DC1933CEE8BD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{357EBB18-5593-43D0-9FA2-DC1933CEE8BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
