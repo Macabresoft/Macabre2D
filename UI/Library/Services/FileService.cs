@@ -8,7 +8,7 @@
     public sealed class FileService : IFileService {
 
         public FileService() {
-            this.ProjectDirectoryPath = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)), "..", "..", "..", "..", "..", @"Project\");
+            this.ProjectDirectoryPath = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)), "..", "..", "..", "..", @"Project\");
         }
 
         public string ProjectDirectoryPath { get; }

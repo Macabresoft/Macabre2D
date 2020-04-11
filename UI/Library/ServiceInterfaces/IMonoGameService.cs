@@ -1,12 +1,12 @@
 ﻿namespace Macabre2D.UI.Library.ServiceInterfaces {
 
+    using Macabre2D.UI.Library.Controls.SceneEditing;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using System.Windows;
 
     public interface IMonoGameService {
         ComponentEditingStyle EditingStyle { get; set; }
 
-        DependencyObject EditorGame { get; }
+        SceneEditor SceneEditor { get; }
 
         bool ShowGrid { get; set; }
 

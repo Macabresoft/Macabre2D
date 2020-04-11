@@ -1,8 +1,8 @@
 ﻿namespace Macabre2D.UI.Editor {
 
     using log4net;
-    using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Editor.Properties;
+    using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.ServiceInterfaces;
     using Macabre2D.UI.Library.Services;
     using Macabre2D.UI.Library.Views;
@@ -112,6 +112,7 @@
             // saved again.
             Settings.Default.ClosedSuccessfully = false;
             this._settingsManager.Save(this._settingsManager.GetLastOpenTabName());
+            Application.Current.MainWindow = this._mainWindow;
             this._mainWindow.Show();
         }
 

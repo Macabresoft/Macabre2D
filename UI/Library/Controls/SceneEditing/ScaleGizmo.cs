@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Windows.Input;
@@ -34,7 +34,7 @@
             }
         }
 
-        public override void Initialize(EditorGame game) {
+        public override void Initialize(SceneEditor game) {
             base.Initialize(game);
             var squareSprite = PrimitiveDrawer.CreateQuadSprite(this.Game.GraphicsDevice, new Point(64));
             this._xAxisSquareRenderer.Sprite = squareSprite;

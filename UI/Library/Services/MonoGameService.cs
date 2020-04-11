@@ -1,18 +1,16 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Controls.SceneEditing;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
     using System.Linq;
-    using System.Windows;
 
     public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
         private readonly IComponentService _componentService;
-        private readonly EditorGame _editorGame;
         private readonly IFileService _fileService;
         private readonly IProjectService _projectService;
 
@@ -23,6 +21,7 @@
             ComponentEditingStyle.Tile
         };
 
+        private readonly SceneEditor _sceneEditor;
         private readonly ISceneService _sceneService;
         private ComponentEditingStyle _editingStyle = ComponentEditingStyle.Translation;
         private bool _hasSelectedGizmoBeenManuallyChanged = false;
@@ -30,22 +29,22 @@
         private bool _showSelection = true;
 
         public MonoGameService(
-            EditorGame editorGame,
+            SceneEditor sceneEditor,
             IComponentService componentService,
             IFileService fileService,
             IProjectService projectService,
             ISceneService sceneService) {
-            this._editorGame = editorGame;
+            this._sceneEditor = sceneEditor;
             this._componentService = componentService;
             this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
             this._fileService = fileService;
             this._sceneService = sceneService;
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
-            this._editorGame.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
+            this._sceneEditor.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
             this._projectService = projectService;
             this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
-            this._editorGame.AssetManager = this._projectService.CurrentProject?.AssetManager;
-            this._editorGame.Settings = this._projectService.CurrentProject?.GameSettings;
+            this._sceneEditor.AssetManager = this._projectService.CurrentProject?.AssetManager;
+            this._sceneEditor.Settings = this._projectService.CurrentProject?.GameSettings;
             this.SetContentPath();
         }
 
@@ -61,9 +60,9 @@
             }
         }
 
-        public DependencyObject EditorGame {
+        public SceneEditor SceneEditor {
             get {
-                return this._editorGame;
+                return this._sceneEditor;
             }
         }
 
@@ -74,7 +73,7 @@
 
             set {
                 this.Set(ref this._showGrid, value);
-                this._editorGame.ShowGrid = this._showGrid;
+                this._sceneEditor.ShowGrid = this._showGrid;
             }
         }
 
@@ -85,18 +84,18 @@
 
             set {
                 this.Set(ref this._showSelection, value);
-                this._editorGame.ShowSelection = this._showSelection;
+                this._sceneEditor.ShowSelection = this._showSelection;
             }
         }
 
         public void CenterCamera() {
-            if (this._editorGame.CurrentCamera != null) {
-                this._editorGame.CurrentCamera.LocalPosition = Vector2.Zero;
+            if (this._sceneEditor.CurrentCamera != null) {
+                this._sceneEditor.CurrentCamera.LocalPosition = Vector2.Zero;
             }
         }
 
         public void ResetCamera() {
-            this._editorGame.ResetCamera();
+            this._sceneEditor.ResetCamera();
         }
 
         private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
@@ -130,22 +129,22 @@
 
         private void ProjectService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IProjectService.CurrentProject)) {
-                this._editorGame.AssetManager = this._projectService.CurrentProject?.AssetManager;
-                this._editorGame.Settings = this._projectService.CurrentProject?.GameSettings;
+                this._sceneEditor.AssetManager = this._projectService.CurrentProject?.AssetManager;
+                this._sceneEditor.Settings = this._projectService.CurrentProject?.GameSettings;
                 this.SetContentPath();
             }
         }
 
         private void SceneService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this._sceneService.CurrentScene)) {
-                this._editorGame.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
+                this._sceneEditor.CurrentScene = this._sceneService.CurrentScene?.SavableValue;
             }
         }
 
         private void SetContentPath() {
             if (this._projectService.CurrentProject != null) {
                 var desktopBuildConfiguration = this._projectService.CurrentProject.BuildConfigurations.FirstOrDefault(x => x.Platform == BuildPlatform.DesktopGL);
-                this._editorGame.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, BuildMode.Debug));
+                this._sceneEditor.SetContentPath(desktopBuildConfiguration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, BuildMode.Debug));
             }
         }
 
@@ -158,7 +157,7 @@
 
             var result = this.Set(ref this._editingStyle, newEditingStyle, nameof(this.EditingStyle));
             if (result) {
-                this._editorGame.EditingStyle = this.EditingStyle;
+                this._sceneEditor.EditingStyle = this.EditingStyle;
             }
 
             var positionOfCurrent = -1;

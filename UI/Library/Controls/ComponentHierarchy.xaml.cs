@@ -4,7 +4,6 @@
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.Controls.SceneEditing;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
@@ -194,8 +193,8 @@
 
         private void TreeItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-            if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.EditorGame is EditorGame editorGame) {
-                editorGame.FocusComponent(componentWrapper.Component);
+            if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.SceneEditor != null) {
+                this._monoGameService.SceneEditor.FocusComponent(componentWrapper.Component);
             }
         }
 

@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -30,7 +30,7 @@
             }
         }
 
-        public override void Initialize(EditorGame game) {
+        public override void Initialize(SceneEditor game) {
             base.Initialize(game);
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(game.GraphicsDevice, 64);
             this._circleRenderer.Sprite = circleSprite;

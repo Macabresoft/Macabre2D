@@ -1,41 +1,36 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
-    using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.Framework;
+    using Macabre2D.UI.Library.Models.FrameworkWrappers;
+    using Macabre2D.UI.MonoGameIntegration;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using MonoGame.Framework.WpfInterop;
-    using MonoGame.Framework.WpfInterop.Input;
     using System;
-    using System.ComponentModel;
+    using System.Windows;
 
-    public class EditorGame : WpfGame, IGame, INotifyPropertyChanged {
+    public class SceneEditor : MonoGameViewModel, IGame {
         private readonly EditorCameraWrapper _cameraWrapper;
         private readonly SelectionEditor _selectionEditor;
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
 #pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
         private FrameTime _frameTime;
-        private IGraphicsDeviceService _graphicsDeviceManager;
 #pragma warning restore IDE0052 // Remove unread private members
+
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;
-        private WpfKeyboard _keyboard;
-        private WpfMouse _mouse;
         private string _rootContentDirectory;
         private IGameSettings _settings;
 
-        public EditorGame(EditorCameraWrapper cameraWrapper, SelectionEditor selectionEditor) : base() {
+        public SceneEditor(EditorCameraWrapper cameraWrapper, SelectionEditor selectionEditor) : base() {
             this._cameraWrapper = cameraWrapper;
             this._selectionEditor = selectionEditor;
             this.Settings = new GameSettings();
-            this.SizeChanged += this.EditorGame_SizeChanged;
+            ////this.SizeChanged += this.EditorGame_SizeChanged;
             MacabreGame.Instance = this;
         }
 
         public event EventHandler<double> GameSpeedChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public IAssetManager AssetManager {
             get {
@@ -50,7 +45,7 @@
                         this._assetManager.Initialize(this.Content);
                     }
 
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AssetManager)));
+                    this.RaisePropertyChanged(nameof(this.AssetManager));
                 }
             }
         }
@@ -77,7 +72,7 @@
                     this._currentScene.LoadContent();
                 }
 
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentScene)));
+                this.RaisePropertyChanged(nameof(this.CurrentScene));
             }
         }
 
@@ -112,7 +107,7 @@
                 if (value != null) {
                     this._settings = value;
                     GameSettings.Instance = this._settings;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Settings)));
+                    this.RaisePropertyChanged(nameof(this.Settings));
                 }
             }
         }
@@ -123,6 +118,22 @@
 
         public SpriteBatch SpriteBatch { get; private set; }
 
+        public override void Draw(GameTime gameTime) {
+            if (this._isInitialized && this._isContentLoaded) {
+                if (this.CurrentScene != null) {
+                    this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+                    this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
+                    this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
+                    this._cameraWrapper.Draw(this._frameTime);
+                    this._selectionEditor.Draw(this._frameTime, this._cameraWrapper.Camera.BoundingArea);
+                    this.SpriteBatch.End();
+                }
+                else if (this.Settings != null) {
+                    this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
+                }
+            }
+        }
+
         public void FocusComponent(BaseComponent component) {
             if (component is IBoundable boundable) {
                 this._cameraWrapper.Camera.ZoomTo(boundable);
@@ -130,6 +141,21 @@
             else if (component != null) {
                 this._cameraWrapper.Camera.SetWorldPosition(component.WorldTransform.Position);
             }
+        }
+
+        public override void Initialize(MonoGameKeyboard keyboard, MonoGameMouse mouse) {
+            base.Initialize(keyboard, mouse);
+            this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
+
+            this.InitializeComponents();
+            this._isInitialized = true;
+        }
+
+        public override void LoadContent() {
+            this.Content.RootDirectory = this._rootContentDirectory;
+            this.AssetManager.Initialize(this.Content);
+            this.CurrentScene?.LoadContent();
+            this._isContentLoaded = true;
         }
 
         public void ResetCamera() {
@@ -150,55 +176,20 @@
             }
         }
 
-        protected override void Draw(GameTime gameTime) {
-            if (this._isInitialized && this._isContentLoaded) {
-                if (this.CurrentScene != null) {
-                    this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                    this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
-                    this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
-                    this._cameraWrapper.Draw(this._frameTime);
-                    this._selectionEditor.Draw(this._frameTime, this._cameraWrapper.Camera.BoundingArea);
-                    this.SpriteBatch.End();
-                }
-                else if (this.Settings != null) {
-                    this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
-                }
+        public override void SizeChanged(object sender, SizeChangedEventArgs e) {
+            if (e.NewSize.Width > e.PreviousSize.Width || e.NewSize.Height > e.PreviousSize.Height) {
+                this.ResetCamera();
             }
         }
 
-        protected override void Initialize() {
-            this._graphicsDeviceManager = new WpfGraphicsDeviceService(this);
-            this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this._keyboard = new WpfKeyboard(this);
-            this._mouse = new WpfMouse(this);
-
-            this.InitializeComponents();
-            base.Initialize();
-            this._isInitialized = true;
-        }
-
-        protected override void LoadContent() {
-            this.Content.RootDirectory = this._rootContentDirectory;
-            this.AssetManager.Initialize(this.Content);
-            this.CurrentScene?.LoadContent();
-            base.LoadContent();
-            this._isContentLoaded = true;
-        }
-
-        protected override void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime) {
             if (this.CurrentScene != null) {
-                var mouseState = this._mouse.GetState();
-                var keyboardState = this._keyboard.GetState();
+                var mouseState = this.Mouse.GetState();
+                var keyboardState = this.Keyboard.GetState();
 
                 this._frameTime = new FrameTime(gameTime, this.GameSpeed);
                 this._selectionEditor.Update(this._frameTime, mouseState, keyboardState);
                 this._cameraWrapper.Update(this._frameTime, mouseState, keyboardState);
-            }
-        }
-
-        private void EditorGame_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e) {
-            if (this.IsInitialized && (e.NewSize.Width > e.PreviousSize.Width || e.NewSize.Height > e.PreviousSize.Height)) {
-                this.ResetCamera();
             }
         }
 

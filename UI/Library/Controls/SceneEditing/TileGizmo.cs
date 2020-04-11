@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@
         private readonly HashSet<Point> _removedTiles = new HashSet<Point>();
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
-        private EditorGame _game;
+        private SceneEditor _game;
         private GridDrawerComponent _gridDrawer;
         private ButtonState _previousLeftButtonState = ButtonState.Released;
         private ButtonState _previousRightButtonState = ButtonState.Released;
@@ -47,7 +47,7 @@
             }
         }
 
-        public void Initialize(EditorGame game) {
+        public void Initialize(SceneEditor game) {
             this._game = game;
 
             this._gridDrawer = new GridDrawerComponent() {

@@ -1,8 +1,8 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;
@@ -23,7 +23,7 @@
             UseDynamicLineThickness = true
         };
 
-        private EditorGame _game;
+        private SceneEditor _game;
         private ButtonState _previousLeftMouseButtonState = ButtonState.Released;
 
         public SelectionEditor(
@@ -60,7 +60,7 @@
             gizmo?.Draw(frameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
         }
 
-        public void Initialize(EditorGame game) {
+        public void Initialize(SceneEditor game) {
             this._game = game;
 
             this._boundingAreaDrawer = new BoundingAreaDrawerComponent() {

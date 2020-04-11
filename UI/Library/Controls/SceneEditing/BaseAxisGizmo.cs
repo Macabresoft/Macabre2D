@@ -1,8 +1,8 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -34,7 +34,7 @@
 
         protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
 
-        protected EditorGame Game { get; private set; }
+        protected SceneEditor Game { get; private set; }
 
         protected IUndoService UndoService { get; }
 
@@ -57,7 +57,7 @@
             }
         }
 
-        public virtual void Initialize(EditorGame game) {
+        public virtual void Initialize(SceneEditor game) {
             this.Game = game;
 
             this.XAxisLineDrawer.Color = this.XAxisColor;

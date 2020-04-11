@@ -1,8 +1,8 @@
 ﻿namespace Macabre2D.UI.Library.Controls.SceneEditing {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -12,7 +12,7 @@
         private readonly ISceneService _sceneService;
         private readonly IStatusService _statusService;
         private Camera _camera = new Camera();
-        private EditorGame _game;
+        private SceneEditor _game;
         private MouseState _previousMouseState = new MouseState();
         private GridDrawerComponent _primaryGridDrawer;
         private GridDrawerComponent _secondaryGridDrawer;
@@ -64,7 +64,7 @@
             }
         }
 
-        public void Initialize(EditorGame game) {
+        public void Initialize(SceneEditor game) {
             this._game = game;
             this.Camera = this._sceneService.CurrentScene?.Camera;
             this.Camera.Initialize(this._game.CurrentScene);
@@ -123,46 +123,46 @@
                 }
             }
 
-            if (this._game.IsMouseOver) {
-                if (mouseState.MiddleButton == ButtonState.Pressed && this._previousMouseState.MiddleButton == ButtonState.Pressed) {
-                    if (mouseState.Position != this._previousMouseState.Position) {
-                        var oldPosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(this._previousMouseState.Position);
-                        var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
+            ////if (this._game.IsMouseOver) {
+            if (mouseState.MiddleButton == ButtonState.Pressed && this._previousMouseState.MiddleButton == ButtonState.Pressed) {
+                if (mouseState.Position != this._previousMouseState.Position) {
+                    var oldPosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(this._previousMouseState.Position);
+                    var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
-                        var distance = oldPosition - mousePosition;
-                        this.Camera.LocalPosition += distance;
-                    }
-
-                    if (System.Windows.Input.Mouse.OverrideCursor == null) {
-                        System.Windows.Input.Mouse.OverrideCursor = Cursors.Hand;
-                    }
-                }
-                else if (System.Windows.Input.Mouse.OverrideCursor == Cursors.Hand) {
-                    System.Windows.Input.Mouse.OverrideCursor = null;
+                    var distance = oldPosition - mousePosition;
+                    this.Camera.LocalPosition += distance;
                 }
 
-                if (!keyboardState.IsModifierKeyDown()) {
-                    var movementMultiplier = (float)frameTime.SecondsPassed * this.Camera.ViewHeight;
-                    if (keyboardState.IsKeyDown(Keys.W)) {
-                        this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
-                    }
-
-                    if (keyboardState.IsKeyDown(Keys.A)) {
-                        this.Camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
-                    }
-
-                    if (keyboardState.IsKeyDown(Keys.S)) {
-                        this.Camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
-                    }
-
-                    if (keyboardState.IsKeyDown(Keys.D)) {
-                        this.Camera.LocalPosition += new Vector2(movementMultiplier, 0f);
-                    }
+                if (System.Windows.Input.Mouse.OverrideCursor == null) {
+                    System.Windows.Input.Mouse.OverrideCursor = Cursors.Hand;
                 }
             }
-            else {
+            else if (System.Windows.Input.Mouse.OverrideCursor == Cursors.Hand) {
                 System.Windows.Input.Mouse.OverrideCursor = null;
             }
+
+            if (!keyboardState.IsModifierKeyDown()) {
+                var movementMultiplier = (float)frameTime.SecondsPassed * this.Camera.ViewHeight;
+                if (keyboardState.IsKeyDown(Keys.W)) {
+                    this.Camera.LocalPosition += new Vector2(0f, movementMultiplier);
+                }
+
+                if (keyboardState.IsKeyDown(Keys.A)) {
+                    this.Camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
+                }
+
+                if (keyboardState.IsKeyDown(Keys.S)) {
+                    this.Camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
+                }
+
+                if (keyboardState.IsKeyDown(Keys.D)) {
+                    this.Camera.LocalPosition += new Vector2(movementMultiplier, 0f);
+                }
+            }
+            ////}
+            ////else {
+            ////    System.Windows.Input.Mouse.OverrideCursor = null;
+            ////}
 
             this._previousMouseState = mouseState;
         }

@@ -7,6 +7,7 @@
              xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.Library.Models.FrameworkWrappers"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:monoGameControls="clr-namespace:Macabre2D.UI.MonoGameIntegration;assembly=Macabre2D.UI.MonoGameIntegration"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.Library.Controls.ValueEditors">
     <UserControl.Resources>
@@ -125,7 +126,7 @@
             </TextBlock>
         </StackPanel>
 
-        <ContentControl Grid.Row="1"
-                        Content="{Binding MonoGameService.EditorGame}" />
+        <monoGameControls:MonoGameContentControl Grid.Row="1"
+                                                 DataContext="{Binding MonoGameService.SceneEditor}" />
     </Grid>
 </UserControl>
