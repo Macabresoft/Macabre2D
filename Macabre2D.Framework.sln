@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Tests", "Tests\Macabre2D.Tests.csproj", "{B9BACBD8-E99B-431C-8596-591F54385D9C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Examples.RenderingTest", "Examples\RenderingTest\Macabre2D.Examples.RenderingTest.csproj", "{9C406901-AF7F-4E65-8C24-231ED29FBF1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{217190B4-0A19-4B85-8131-2EF3984BA669}"
@@ -14,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Examples.PhysicsTest", "Examples\PhysicsTest\Macabre2D.Examples.PhysicsTest.csproj", "{7DA350E5-5713-443F-A9D6-61A45600D8A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Framework", "Framework\Macabre2D.Framework.csproj", "{D5B27B29-00A8-40A7-9911-46C84EBC7F37}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F532F9FC-653B-4C76-A74B-0C6980A24635}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0EE4DB8-990E-4017-A424-E1C0EB560BEB}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,13 +31,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Debug|x64.ActiveCfg = Debug|x64
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Debug|x64.Build.0 = Debug|x64
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Release|x64.ActiveCfg = Release|x64
-		{B9BACBD8-E99B-431C-8596-591F54385D9C}.Release|x64.Build.0 = Release|x64
 		{9C406901-AF7F-4E65-8C24-231ED29FBF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C406901-AF7F-4E65-8C24-231ED29FBF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C406901-AF7F-4E65-8C24-231ED29FBF1E}.Debug|x64.ActiveCfg = Debug|x64
@@ -76,7 +65,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B9BACBD8-E99B-431C-8596-591F54385D9C} = {F532F9FC-653B-4C76-A74B-0C6980A24635}
 		{9C406901-AF7F-4E65-8C24-231ED29FBF1E} = {217190B4-0A19-4B85-8131-2EF3984BA669}
 		{C4FCBD59-517D-4CB1-8260-D1587D13AC3D} = {217190B4-0A19-4B85-8131-2EF3984BA669}
 		{7DA350E5-5713-443F-A9D6-61A45600D8A5} = {217190B4-0A19-4B85-8131-2EF3984BA669}

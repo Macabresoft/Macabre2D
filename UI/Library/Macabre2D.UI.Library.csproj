@@ -752,7 +752,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Resources\Macabre2D.UI.Resources.csproj">
       <Project>{310d54cb-e336-4f67-b39e-0d4ea4e9d2fa}</Project>
-      <Name>Macabre2D.Engine.Windows.Resources</Name>
+      <Name>Macabre2D.UI.Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

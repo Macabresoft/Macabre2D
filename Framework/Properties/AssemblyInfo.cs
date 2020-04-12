@@ -7,4 +7,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Macabre2D.Examples.AudioTest")]
 [assembly: InternalsVisibleTo("Macabre2D.Examples.PhysicsTest")]
 [assembly: InternalsVisibleTo("Macabre2D.Examples.RenderingTest")]
-[assembly: InternalsVisibleTo("Macabre2D.Tests")]
+[assembly: InternalsVisibleTo("Macabre2D.Tests.Framework")]
