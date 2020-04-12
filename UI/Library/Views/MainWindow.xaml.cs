@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Library.Views {
 
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using Macabre2D.UI.Library.ViewModels;
     using System.ComponentModel;
     using System.Linq;

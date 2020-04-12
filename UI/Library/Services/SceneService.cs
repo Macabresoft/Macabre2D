@@ -3,10 +3,18 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using System.ComponentModel;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+
+    public interface ISceneService : INotifyPropertyChanged {
+        SceneAsset CurrentScene { get; }
+
+        Task<SceneAsset> CreateScene(FolderAsset parentAsset, string name);
+
+        Task<SceneAsset> LoadScene(Project project, SceneAsset asset);
+    }
 
     public sealed class SceneService : NotifyPropertyChanged, ISceneService {
         private readonly IDialogService _dialogService;

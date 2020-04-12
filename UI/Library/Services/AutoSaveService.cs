@@ -1,9 +1,16 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using System;
     using System.Windows.Threading;
+
+    public interface IAutoSaveService {
+        byte AutoSaveIntervalInMinutes { get; set; }
+
+        byte NumberOfAutoSaves { get; set; }
+
+        void Initialize(byte numberOfAutoSaves, byte autoSaveIntervalInMinutes);
+    }
 
     public sealed class AutoSaveService : NotifyPropertyChanged, IAutoSaveService {
         private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer();

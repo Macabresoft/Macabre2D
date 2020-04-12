@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.GameEditor {
 
     using Macabre2D.UI.GameEditor.Properties;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
 
     public sealed class SettingsManager {
         private readonly IAutoSaveService _autoSaveService;

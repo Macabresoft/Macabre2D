@@ -403,20 +403,6 @@
     <Compile Include="Controls\ValueEditors\VectorEditor.xaml.cs">
       <DependentUpon>VectorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ServiceInterfaces\IAssemblyService.cs" />
-    <Compile Include="ServiceInterfaces\IAssetService.cs" />
-    <Compile Include="ServiceInterfaces\IAutoSaveService.cs" />
-    <Compile Include="ServiceInterfaces\IBusyService.cs" />
-    <Compile Include="ServiceInterfaces\IComponentService.cs" />
-    <Compile Include="ServiceInterfaces\IDialogService.cs" />
-    <Compile Include="ServiceInterfaces\IFileService.cs" />
-    <Compile Include="ServiceInterfaces\ILoggingService.cs" />
-    <Compile Include="ServiceInterfaces\IMonoGameService.cs" />
-    <Compile Include="ServiceInterfaces\IProjectService.cs" />
-    <Compile Include="ServiceInterfaces\ISceneService.cs" />
-    <Compile Include="ServiceInterfaces\IStatusService.cs" />
-    <Compile Include="ServiceInterfaces\IUndoService.cs" />
-    <Compile Include="ServiceInterfaces\IValueEditorService.cs" />
     <Compile Include="Services\AssemblyService.cs" />
     <Compile Include="Services\AssetService.cs" />
     <Compile Include="Services\AutoSaveService.cs" />

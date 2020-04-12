@@ -4,7 +4,7 @@
     using GongSolutions.Wpf.DragDrop;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

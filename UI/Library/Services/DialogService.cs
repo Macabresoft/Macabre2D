@@ -5,7 +5,6 @@
     using Macabre2D.UI.Library.Common.Extensions;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Macabre2D.UI.Library.Views.Dialogs;
     using Microsoft.Win32;
     using System;
@@ -14,6 +13,39 @@
     using Unity;
     using Unity.Injection;
     using Unity.Resolution;
+
+    public interface IDialogService {
+
+        bool ShowAssetNameChangeDialog(string name, Asset asset, FolderAsset parent, out string newName);
+
+        bool ShowFileBrowser(string filter, out string path, string initialDirectory = null);
+
+        bool ShowFolderBrowser(out string path, string initialDirectory = null);
+
+        bool ShowGenerateSpritesDialog(ImageAsset imageAsset, out (int Columns, int Rows, bool ReplaceExistingSprites) generateSpritesParameters);
+
+        bool ShowSaveAssetAsDialog(Project project, AddableAsset asset);
+
+        SaveDiscardCancelResult ShowSaveDiscardCancelDialog();
+
+        SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
+
+        bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
+
+        bool ShowSelectProjectDialog(out FileInfo projectFileInfo);
+
+        bool ShowSelectSpriteDialog(SpriteWrapper currentlySelected, out SpriteWrapper spriteWrapper);
+
+        (Type Type, string Name) ShowSelectTypeAndNameDialog(Type type, string title);
+
+        Type ShowSelectTypeDialog(Type type, string title);
+
+        void ShowWarningMessageBox(string title, string message);
+
+        MessageBoxResult ShowYesNoCancelMessageBox(string title, string message);
+
+        bool ShowYesNoMessageBox(string title, string message);
+    }
 
     public sealed class DialogService : IDialogService {
         private readonly IUnityContainer _container;

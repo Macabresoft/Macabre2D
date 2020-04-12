@@ -2,9 +2,23 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
+
+    public interface IUndoService : INotifyPropertyChanged {
+        bool CanRedo { get; }
+
+        bool CanUndo { get; }
+
+        void Clear();
+
+        void Do(UndoCommand undoCommand);
+
+        void Redo();
+
+        void Undo();
+    }
 
     public sealed class UndoService : NotifyPropertyChanged, IUndoService {
         private readonly Stack<UndoCommand> _redoStack = new Stack<UndoCommand>();

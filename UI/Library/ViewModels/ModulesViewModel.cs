@@ -2,7 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
 
     public sealed class ModulesViewModel : NotifyPropertyChanged {
         private ModuleWrapper _selectedModule;

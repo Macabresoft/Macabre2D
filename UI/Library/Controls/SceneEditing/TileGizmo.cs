@@ -3,7 +3,7 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;

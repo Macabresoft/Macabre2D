@@ -2,7 +2,7 @@
 
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;

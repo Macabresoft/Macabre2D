@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Mono.Cecil;
     using System;
     using System.Collections.Generic;
@@ -8,6 +7,13 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+
+    public interface IAssemblyService {
+
+        Task<Type> LoadFirstType(Type baseType);
+
+        Task<IList<Type>> LoadTypes(Type baseType);
+    }
 
     public sealed class AssemblyService : IAssemblyService {
 

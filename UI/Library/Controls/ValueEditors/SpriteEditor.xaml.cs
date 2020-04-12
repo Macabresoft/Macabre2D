@@ -5,7 +5,7 @@
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;

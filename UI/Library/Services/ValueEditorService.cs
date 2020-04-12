@@ -3,13 +3,19 @@
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Controls.ValueEditors;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Windows;
+
+    public interface IValueEditorService {
+
+        Task<DependencyObject> CreateEditor(object editableObject, string name, Type declaringType);
+
+        Task<IList<DependencyObject>> CreateEditors(object editableObject, Type declaringType, params Type[] typesToIgnore);
+    }
 
     public sealed class ValueEditorService : IValueEditorService {
         private readonly IAssemblyService _assemblyService;

@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.Library.ViewModels.Dialogs {
 
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;

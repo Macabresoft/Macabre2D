@@ -1,10 +1,10 @@
 ﻿namespace Macabre2D.UI.Library.Controls {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
+    using Macabre2D.UI.Library.Services;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;

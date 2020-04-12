@@ -1,7 +1,17 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using System.ComponentModel;
+
+    public interface IStatusService : INotifyPropertyChanged {
+        float PrimaryGridSize { get; set; }
+
+        float SecondaryGridSize { get; set; }
+
+        float ViewHeight { get; set; }
+
+        float ViewWidth { get; set; }
+    }
 
     public sealed class StatusService : NotifyPropertyChanged, IStatusService {
         private float _primaryGridSize;

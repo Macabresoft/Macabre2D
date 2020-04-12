@@ -1,16 +1,38 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Macabre2D.UI.Library.Services.Content;
-    using Macabre2D.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
+    public interface IProjectService : INotifyPropertyChanged {
+        Project CurrentProject { get; }
+
+        bool HasChanges { get; set; }
+
+        Task<bool> AutoSaveProject(int maxAutoSaves, bool purgeExcessAutoSaves);
+
+        Task<bool> BuildAllAssets(BuildMode mode);
+
+        IEnumerable<string> GetAutoSaveFiles();
+
+        string GetPathToProject();
+
+        Task<Project> LoadProject(string pathToProject);
+
+        Task<Project> LoadProject();
+
+        void NavigateToProjectLocation();
+
+        Task<bool> SaveProject();
+    }
 
     public sealed class ProjectService : NotifyPropertyChanged, IProjectService {
         private readonly IFileService _fileService;

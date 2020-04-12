@@ -2,7 +2,7 @@
 
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -57,9 +57,7 @@
             new PropertyMetadata(new List<Type>()));
 
         private readonly IDialogService _dialogService;
-
         private readonly IUndoService _undoService;
-
         private bool _isEditing;
 
         public EditableTreeViewItemControl() {

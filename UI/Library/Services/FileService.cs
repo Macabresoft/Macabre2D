@@ -1,9 +1,14 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
     using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using System.IO;
     using System.Reflection;
+
+    public interface IFileService {
+        string ProjectDirectoryPath { get; }
+
+        string GetAutoSaveDirectory();
+    }
 
     public sealed class FileService : IFileService {
 

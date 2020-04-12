@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.UI.Library.ViewModels.Dialogs {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
+    using Macabre2D.UI.Library.Services;
     using System;
     using System.Collections.Generic;
     using System.Linq;

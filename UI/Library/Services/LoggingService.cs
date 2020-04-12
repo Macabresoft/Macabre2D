@@ -1,8 +1,20 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
     using log4net;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using System.Text;
+
+    public interface ILoggingService {
+
+        void LogDebug(string debugStatement);
+
+        void LogError(string error);
+
+        void LogInfo(string header, string info);
+
+        void LogInfo(string info);
+
+        void LogWarning(string warning);
+    }
 
     public sealed class LoggingService : ILoggingService {
         private static readonly string _headerDivider = $"#{new string('-', 78)}#";

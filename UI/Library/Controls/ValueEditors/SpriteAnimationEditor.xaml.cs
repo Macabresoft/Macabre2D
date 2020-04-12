@@ -1,10 +1,10 @@
 ﻿namespace Macabre2D.UI.Library.Controls.ValueEditors {
 
     using GalaSoft.MvvmLight.CommandWpf;
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
-    using Macabre2D.Framework;
+    using Macabre2D.UI.Library.Services;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;

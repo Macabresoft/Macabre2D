@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.Library.ViewModels {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
 
     public sealed class ComponentsViewModel : NotifyPropertyChanged {
 

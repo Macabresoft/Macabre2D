@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.Library.Controls.ValueEditors {
 
     using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System;
     using System.Threading.Tasks;
     using System.Windows;

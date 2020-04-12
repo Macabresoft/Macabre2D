@@ -1,9 +1,9 @@
 ﻿namespace Macabre2D.UI.Library.ViewModels.Dialogs {
 
     using GalaSoft.MvvmLight.CommandWpf;
-    using Macabre2D.UI.Library.Models.Validation;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Macabre2D.Framework;
+    using Macabre2D.UI.Library.Models.Validation;
+    using Macabre2D.UI.Library.Services;
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;

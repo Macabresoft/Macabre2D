@@ -2,7 +2,7 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using System.Windows.Controls;
     using System.Windows.Input;
 

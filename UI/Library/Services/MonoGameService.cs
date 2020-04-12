@@ -4,10 +4,23 @@
     using Macabre2D.UI.Library.Controls.SceneEditing;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Microsoft.Xna.Framework;
     using System;
     using System.Linq;
+
+    public interface IMonoGameService {
+        ComponentEditingStyle EditingStyle { get; set; }
+
+        SceneEditor SceneEditor { get; }
+
+        bool ShowGrid { get; set; }
+
+        bool ShowSelection { get; set; }
+
+        void CenterCamera();
+
+        void ResetCamera();
+    }
 
     public sealed class MonoGameService : NotifyPropertyChanged, IMonoGameService {
         private readonly IComponentService _componentService;

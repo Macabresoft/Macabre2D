@@ -1,16 +1,28 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Controls.AssetEditors;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
     using Macabre2D.UI.Library.Services.Content;
-    using Macabre2D.Framework;
     using System;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+
+    public interface IAssetService : INotifyPropertyChanged {
+        Asset SelectedAsset { get; set; }
+
+        Task<bool> BuildAssets(BuildConfiguration configuration, BuildMode mode, params Asset[] assets);
+
+        void ChangeAssetParent(Asset assetToMove, FolderAsset newParent);
+
+        DependencyObject GetEditor(Asset asset);
+
+        void RenameAsset(Asset asset, string newName);
+    }
 
     public sealed class AssetService : NotifyPropertyChanged, IAssetService {
         private readonly IDialogService _dialogService;

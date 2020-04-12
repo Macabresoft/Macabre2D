@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.ServiceInterfaces;
+    using Macabre2D.UI.Library.Services;
     using Microsoft.Xna.Framework.Content.Pipeline.Processors;
     using System.ComponentModel;
     using System.Windows;
