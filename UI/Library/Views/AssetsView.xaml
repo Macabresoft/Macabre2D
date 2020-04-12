@@ -16,25 +16,25 @@
             <Button Command="{Binding NewFolderCommand}"
                     CommandParameter="{Binding AssetService.SelectedAsset}"
                     ToolTip="Adds a folder.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FolderPlus}"
+                <iconPacks:PackIconMaterial Kind="FolderPlus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Command="{Binding AddAssetCommand}"
                     CommandParameter="{Binding AssetService.SelectedAsset}"
                     ToolTip="Adds an asset under the currently selected folder.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FilePlus}"
+                <iconPacks:PackIconMaterial Kind="FilePlus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Command="{Binding ImportAssetCommand}"
                     CommandParameter="{Binding AssetService.SelectedAsset}"
                     ToolTip="Imports an asset under the currently selected folder.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.FileImport}"
+                <iconPacks:PackIconMaterial Kind="FileImport"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Command="{Binding DeleteAssetCommand}"
                     CommandParameter="{Binding AssetService.SelectedAsset}"
                     ToolTip="Deletes the selected asset from the project, including all children if the item is a folder. You cannot undo this action.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Delete}"
+                <iconPacks:PackIconMaterial Kind="Delete"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
         </StackPanel>

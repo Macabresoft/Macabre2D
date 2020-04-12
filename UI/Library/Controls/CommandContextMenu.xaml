@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
     <Border BorderBrush="Transparent">
-        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.DotsVertical}"
+        <iconPacks:PackIconMaterial Kind="DotsVertical"
                                     MouseDown="OnMouseDown"
                                     Background="Transparent"
                                     Foreground="{StaticResource BlackBrush}"

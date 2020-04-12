@@ -20,12 +20,12 @@
                     Orientation="Horizontal">
             <Button Command="{Binding AddComponentCommand}"
                     ToolTip="Adds a component under the currently selected component.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Plus}"
+                <iconPacks:PackIconMaterial Kind="Plus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Command="{Binding RemoveComponentCommand}"
                     ToolTip="Removes the selected component from the tree, including all children.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Minus}"
+                <iconPacks:PackIconMaterial Kind="Minus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
         </StackPanel>

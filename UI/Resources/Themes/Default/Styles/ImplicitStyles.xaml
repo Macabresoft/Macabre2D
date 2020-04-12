@@ -43,7 +43,7 @@
         <Setter Property="metro:ControlsHelper.ContentCharacterCasing" Value="Normal" />
     </Style>
 
-    <Style TargetType="iconPacks:PackIconMaterial" BasedOn="{StaticResource MahApps.Metro.Styles.PackIconMaterial}">
+    <Style TargetType="iconPacks:PackIconMaterial" BasedOn="{StaticResource MahApps.Styles.PackIconMaterial}">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
         <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}" />

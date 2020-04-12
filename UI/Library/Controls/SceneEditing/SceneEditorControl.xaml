@@ -25,20 +25,20 @@
                     Orientation="Horizontal"
                     Margin="{StaticResource StandardMarginLTB}">
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Grid}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.GridOff}"
+                                       IsToggledKind="Grid"
+                                       IsNotToggledKind="GridOff"
                                        Margin="{StaticResource StandardMarginTRB}"
                                        ToolTip="Toggle the grid within the scene editor." />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.ShowSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Selection}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.SelectionOff}"
+                                       IsToggledKind="Selection"
+                                       IsNotToggledKind="SelectionOff"
                                        Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Toggle highlighting the current selected component's collider and bounding area in the scene editor." />
 
             <Button Command="{Binding CenterCameraCommand, ElementName=_sceneEditorControl}"
                     ToolTip="Center the current camera to (0, 0)">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ImageFilterCenterFocus}"
+                <iconPacks:PackIconMaterial Kind="ImageFilterCenterFocus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
 
@@ -46,40 +46,40 @@
                        VerticalAlignment="Stretch" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Translation}}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Triangle}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.TriangleOutline}"
+                                       IsToggledKind="Triangle"
+                                       IsNotToggledKind="TriangleOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Translation}}"
                                        ToolTip="Translation Gizmo" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Scale}}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Square}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.SquareOutline}"
+                                       IsToggledKind="Square"
+                                       IsNotToggledKind="SquareOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Scale}}"
                                        ToolTip="Scale Gizmo" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.Circle}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.CircleOutline}"
+                                       IsToggledKind="Circle"
+                                       IsNotToggledKind="CircleOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
                                        ToolTip="Rotation Gizmo" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.ViewGrid}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.GridLarge}"
+                                       IsToggledKind="ViewGrid"
+                                       IsNotToggledKind="GridLarge"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
                                        ToolTip="Tile Gizmo" />
 
             <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.None}}"
-                                       IsToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOff}"
-                                       IsNotToggledKind="{x:Static iconPacks:PackIconMaterialKind.EyeOffOutline}"
+                                       IsToggledKind="EyeOff"
+                                       IsNotToggledKind="EyeOffOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
                                        ToolTip="Hides all gizmos." />

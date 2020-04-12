@@ -13,12 +13,12 @@
                     Orientation="Horizontal">
             <Button Command="{Binding AddModuleCommand}"
                     ToolTip="Adds a module to the scene.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Plus}"
+                <iconPacks:PackIconMaterial Kind="Plus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Command="{Binding RemoveModuleCommand}"
                     ToolTip="Removes the module from the scene.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Minus}"
+                <iconPacks:PackIconMaterial Kind="Minus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
         </StackPanel>

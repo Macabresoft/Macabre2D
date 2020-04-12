@@ -22,7 +22,7 @@
                     HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     Margin="{StaticResource DoubleMarginAll}">
-            <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Alert}"
+            <iconPacks:PackIconMaterial Kind="Alert"
                                         Foreground="{StaticResource BlackBrush}"
                                         Height="32"
                                         Width="32"

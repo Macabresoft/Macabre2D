@@ -26,25 +26,25 @@
             <Button Grid.Column="0"
                     Command="{Binding AddStepCommand}"
                     ToolTip="Adds a sprite the image asset.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Plus}"
+                <iconPacks:PackIconMaterial Kind="Plus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Grid.Column="1"
                     Command="{Binding RemoveStepCommand}"
                     ToolTip="Removes a sprite from the image asset.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Minus}"
+                <iconPacks:PackIconMaterial Kind="Minus"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Grid.Column="3"
                     Command="{Binding MoveUpCommand}"
                     ToolTip="Moves a step upwards in the list.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ArrowUp}"
+                <iconPacks:PackIconMaterial Kind="ArrowUp"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
             <Button Grid.Column="4"
                     Command="{Binding MoveDownCommand}"
                     ToolTip="Moves a step downwards in the list.">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ArrowDown}"
+                <iconPacks:PackIconMaterial Kind="ArrowDown"
                                             Foreground="{StaticResource BlackBrush}" />
             </Button>
         </Grid>
