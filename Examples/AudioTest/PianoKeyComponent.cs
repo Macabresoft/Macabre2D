@@ -37,6 +37,8 @@ namespace Macabre2D.Examples.AudioTest {
             this.Collider = new RectangleCollider(2f, 1f) {
                 Offset = this._spriteRenderer.RenderSettings.Offset
             };
+
+            this.IsEnabledChanged += this.Self_IsEnabledChanged;
         }
 
         public event EventHandler ClickabilityChanged;
@@ -45,7 +47,7 @@ namespace Macabre2D.Examples.AudioTest {
 
         public bool IsClickable {
             get {
-                return true;
+                return this.IsEnabled;
             }
         }
 
@@ -119,6 +121,10 @@ namespace Macabre2D.Examples.AudioTest {
 
                 this._soundEffectInstance.SubmitBuffer(samples);
             }
+        }
+
+        private void Self_IsEnabledChanged(object sender, EventArgs e) {
+            this.ClickabilityChanged.SafeInvoke(this);
         }
     }
 }
