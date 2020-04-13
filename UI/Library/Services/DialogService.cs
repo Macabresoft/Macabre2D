@@ -5,7 +5,7 @@
     using Macabre2D.UI.Library.Common.Extensions;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
-    using Macabre2D.UI.Library.Views.Dialogs;
+    using Macabre2D.UI.Library.Dialogs;
     using Microsoft.Win32;
     using System;
     using System.IO;

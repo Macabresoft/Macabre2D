@@ -338,6 +338,43 @@
     <Compile Include="Converters\RemoveFileExtensionConverter.cs" />
     <Compile Include="Converters\SpriteMaxSizeConverter.cs" />
     <Compile Include="Converters\SpriteWrapperToCroppedBitmapConverter.cs" />
+    <Compile Include="Dialogs\AssetNameChangeDialog.xaml.cs">
+      <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
+    <Compile Include="Dialogs\GenerateSpritesDialog.xaml.cs">
+      <DependentUpon>GenerateSpritesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GenerateSpritesViewModel.cs" />
+    <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
+    <Compile Include="Dialogs\SaveAssetAsDialog.xaml.cs">
+      <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveAssetAsViewModel.cs" />
+    <Compile Include="Dialogs\SaveDiscardCancelDialog.xaml.cs">
+      <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
+    <Compile Include="Dialogs\SaveSceneDialog.xaml.cs">
+      <DependentUpon>SaveSceneDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveSceneViewModel.cs" />
+    <Compile Include="Dialogs\SelectAssetDialog.xaml.cs">
+      <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectAssetViewModel.cs" />
+    <Compile Include="Dialogs\SelectProjectDialog.xaml.cs">
+      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectProjectViewModel.cs" />
+    <Compile Include="Dialogs\SelectSpriteDialog.xaml.cs">
+      <DependentUpon>SelectSpriteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectSpriteViewModel.cs" />
+    <Compile Include="Dialogs\SelectTypeDialog.xaml.cs">
+      <DependentUpon>SelectTypeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectTypeViewModel.cs" />
     <Compile Include="Models\AddableAsset.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\AudioAsset.cs" />
@@ -422,67 +459,7 @@
     <Compile Include="Services\TextCreator.cs" />
     <Compile Include="Services\UndoService.cs" />
     <Compile Include="Services\ValueEditorService.cs" />
-    <Compile Include="ViewModels\AssetsViewModel.cs" />
-    <Compile Include="ViewModels\ComponentsViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\AssetNameChangeViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\GenerateSpritesViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\OKCancelDialogViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SaveAssetAsViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SaveDiscardCancelViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SaveSceneViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SelectAssetViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SelectProjectViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SelectSpriteViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\SelectTypeViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\ModulesViewModel.cs" />
-    <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="Controls\SceneEditing\SceneEditor.cs" />
-    <Compile Include="Views\AssetsView.xaml.cs">
-      <DependentUpon>AssetsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ComponentsView.xaml.cs">
-      <DependentUpon>ComponentsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Data\VersionEditor.xaml.cs">
-      <DependentUpon>VersionEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\AssetNameChangeDialog.xaml.cs">
-      <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\GenerateSpritesDialog.xaml.cs">
-      <DependentUpon>GenerateSpritesDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SaveAssetAsDialog.xaml.cs">
-      <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SaveDiscardCancelDialog.xaml.cs">
-      <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SaveSceneDialog.xaml.cs">
-      <DependentUpon>SaveSceneDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SelectAssetDialog.xaml.cs">
-      <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SelectProjectDialog.xaml.cs">
-      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SelectSpriteDialog.xaml.cs">
-      <DependentUpon>SelectSpriteDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\SelectTypeDialog.xaml.cs">
-      <DependentUpon>SelectTypeDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ModulesView.xaml.cs">
-      <DependentUpon>ModulesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProjectView.xaml.cs">
-      <DependentUpon>ProjectView.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\AssetBrowser.xaml">
@@ -661,63 +638,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\AssetsView.xaml">
+    <Page Include="Dialogs\AssetNameChangeDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ComponentsView.xaml">
+    <Page Include="Dialogs\GenerateSpritesDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Data\VersionEditor.xaml">
+    <Page Include="Dialogs\SaveAssetAsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\AssetNameChangeDialog.xaml">
+    <Page Include="Dialogs\SaveDiscardCancelDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\GenerateSpritesDialog.xaml">
+    <Page Include="Dialogs\SaveSceneDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\SaveAssetAsDialog.xaml">
+    <Page Include="Dialogs\SelectAssetDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\SaveDiscardCancelDialog.xaml">
+    <Page Include="Dialogs\SelectProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\SaveSceneDialog.xaml">
+    <Page Include="Dialogs\SelectSpriteDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\SelectAssetDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\SelectProjectDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\SelectSpriteDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\SelectTypeDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ModulesView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ProjectView.xaml">
+    <Page Include="Dialogs\SelectTypeDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
