@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{357EBB18-5593-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.MonoGameIntegration", "UI\MonoGameIntegration\Macabre2D.UI.MonoGameIntegration.csproj", "{E3E80D77-F56C-4AA3-9124-7F6211E4F952}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.SongEditor", "UI\SongEditor\Macabre2D.UI.SongEditor.csproj", "{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,14 @@ Global
 		{E3E80D77-F56C-4AA3-9124-7F6211E4F952}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3E80D77-F56C-4AA3-9124-7F6211E4F952}.Release|x64.ActiveCfg = Release|Any CPU
 		{E3E80D77-F56C-4AA3-9124-7F6211E4F952}.Release|x64.Build.0 = Release|Any CPU
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Debug|Any CPU.Build.0 = Debug|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Debug|x64.ActiveCfg = Debug|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Debug|x64.Build.0 = Debug|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Release|Any CPU.ActiveCfg = Release|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Release|Any CPU.Build.0 = Release|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Release|x64.ActiveCfg = Release|x64
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,6 +157,7 @@ Global
 		{07B8E881-70A6-4AA2-B342-6E0B80326F6A} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
 		{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
 		{E3E80D77-F56C-4AA3-9124-7F6211E4F952} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
+		{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}
