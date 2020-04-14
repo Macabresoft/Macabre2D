@@ -16,7 +16,7 @@
         <converters:NullToVisibilityConverter x:Key="_nullToVisibilityConverter" />
         <converters:HyphenateTextConverter x:Key="_hyphenateTextConverter" />
         <converters:EqualityToVisibilityConverter x:Key="_equalityToVisibilityConverter" />
-        <system:String x:Key="_macabre2D">Macabre2D Song Editor</system:String>
+        <system:String x:Key="_cosmicSynth">Cosmic Synth</system:String>
     </metro:MetroWindow.Resources>
     <metro:MetroWindow.TitleTemplate>
         <DataTemplate>
