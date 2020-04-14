@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.SongEditor {
+﻿namespace Macabre2D.UI.CosmicSynth {
 
     using System.Reflection;
     using System.Windows.Input;

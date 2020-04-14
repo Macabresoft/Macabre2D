@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.SongEditor.ViewModels {
+﻿namespace Macabre2D.UI.CosmicSynth.ViewModels {
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;

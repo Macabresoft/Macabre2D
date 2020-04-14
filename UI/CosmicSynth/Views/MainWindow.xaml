@@ -1,12 +1,12 @@
-﻿<metro:MetroWindow x:Class="Macabre2D.UI.SongEditor.Views.MainWindow"
+﻿<metro:MetroWindow x:Class="Macabre2D.UI.CosmicSynth.Views.MainWindow"
                    x:Name="_mainWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:converters="clr-namespace:Macabre2D.UI.Library.Converters;assembly=Macabre2D.UI.Library"
-                   xmlns:local="clr-namespace:Macabre2D.UI.SongEditor.Views"
+                   xmlns:local="clr-namespace:Macabre2D.UI.CosmicSynth.Views"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:system="clr-namespace:System;assembly=mscorlib"
-                   xmlns:viewModels="clr-namespace:Macabre2D.UI.SongEditor.ViewModels"
+                   xmlns:viewModels="clr-namespace:Macabre2D.UI.CosmicSynth.ViewModels"
                    Style="{StaticResource StandardWindowStyle}"
                    WindowState="Maximized">
     <metro:MetroWindow.Resources>

@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{357EBB18-5593-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.MonoGameIntegration", "UI\MonoGameIntegration\Macabre2D.UI.MonoGameIntegration.csproj", "{E3E80D77-F56C-4AA3-9124-7F6211E4F952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.SongEditor", "UI\SongEditor\Macabre2D.UI.SongEditor.csproj", "{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.CosmicSynth", "UI\CosmicSynth\Macabre2D.UI.CosmicSynth.csproj", "{ABC7F524-FA15-4CC2-A4CD-8FA91BF984F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

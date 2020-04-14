@@ -1,6 +1,6 @@
-﻿namespace Macabre2D.UI.SongEditor.Views {
+﻿namespace Macabre2D.UI.CosmicSynth.Views {
 
-    using Macabre2D.UI.SongEditor.ViewModels;
+    using Macabre2D.UI.CosmicSynth.ViewModels;
     using System.Windows;
 
     public partial class MainWindow {

@@ -1,6 +1,6 @@
-﻿namespace Macabre2D.UI.SongEditor {
+﻿namespace Macabre2D.UI.CosmicSynth {
 
-    using Macabre2D.UI.SongEditor.Properties;
+    using Macabre2D.UI.CosmicSynth.Properties;
     using Macabre2D.UI.Library.Services;
 
     public sealed class SettingsManager {

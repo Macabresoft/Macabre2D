@@ -4,7 +4,7 @@ using System.Windows;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
-[assembly: AssemblyTitle("Macabre2D.SongEditor")]
+[assembly: AssemblyTitle("CosmicSynth")]
 [assembly: AssemblyDescription("User interface for editing Macabre2D synthesizer songs.")]
 
 //In order to begin building localizable applications, set
