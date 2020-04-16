@@ -67,6 +67,7 @@
 
             if (type != null) {
                 var baseModule = Activator.CreateInstance(type) as BaseModule;
+                baseModule.Name = type.Name;
                 var moduleWrapper = new ModuleWrapper(baseModule);
 
                 var undoCommand = new UndoCommand(

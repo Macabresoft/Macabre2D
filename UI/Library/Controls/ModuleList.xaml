@@ -30,8 +30,7 @@
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name, Mode=OneTime}"
-                               ToolTip="{Binding FullName, Mode=OneTime}" />
+                    <TextBlock Text="{Binding Name, Mode=OneWay}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

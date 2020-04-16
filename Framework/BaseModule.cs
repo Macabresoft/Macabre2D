@@ -15,6 +15,13 @@
         public bool IsInitialized { get; private set; }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        [DataMember]
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>

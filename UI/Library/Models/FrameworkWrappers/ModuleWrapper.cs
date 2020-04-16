@@ -9,17 +9,11 @@
             this.Module = module;
         }
 
-        public string FullName {
-            get {
-                return this.Module.GetType().FullName;
-            }
-        }
-
         public BaseModule Module { get; }
 
         public string Name {
             get {
-                return this.Module.GetType().Name;
+                return this.Module.Name;
             }
         }
 

@@ -150,6 +150,11 @@
         }
 
         /// <inheritdoc/>
+        public BaseModule FindModule(string name) {
+            return default;
+        }
+
+        /// <inheritdoc/>
         public List<T> GetAllComponentsOfType<T>() {
             return new List<T>();
         }

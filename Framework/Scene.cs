@@ -247,6 +247,11 @@
             return default(T);
         }
 
+        /// <inheritdoc/>
+        public BaseModule FindModule(string name) {
+            return this._modules.FirstOrDefault(x => x.Name == name);
+        }
+
         /// <summary>
         /// Gets all components in this scene.
         /// </summary>

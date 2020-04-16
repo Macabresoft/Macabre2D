@@ -57,8 +57,22 @@
         }
 
         public ModuleWrapper Module {
-            get { return (ModuleWrapper)GetValue(ModuleProperty); }
-            set { SetValue(ModuleProperty, value); }
+            get { return (ModuleWrapper)this.GetValue(ModuleProperty); }
+            set { this.SetValue(ModuleProperty, value); }
+        }
+
+        public string ModuleName {
+            get {
+                if (this?.Module?.Module != null) {
+                    return this.Module.Module.Name;
+                }
+
+                return string.Empty;
+            }
+
+            set {
+                this.UpdateModuleProperty(nameof(this.Module.Module.Name), this.ModuleName, value);
+            }
         }
 
         public string ModuleTypeFullName {
@@ -123,6 +137,7 @@
         private void RaisePropertyChanged() {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsModuleEnabled)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ModuleUpdateOrder)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ModuleName)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ModuleTypeName)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ModuleTypeFullName)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsModuleUpdateable)));

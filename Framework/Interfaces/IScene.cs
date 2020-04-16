@@ -135,6 +135,13 @@
         T FindComponentOfType<T>() where T : BaseComponent;
 
         /// <summary>
+        /// Finds the module.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>The module.</returns>
+        BaseModule FindModule(string name);
+
+        /// <summary>
         /// Gets all components of the specified type that are tracked by this scene.
         /// </summary>
         /// <typeparam name="T">A component.</typeparam>
