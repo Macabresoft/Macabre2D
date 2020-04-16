@@ -2,10 +2,12 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
+    using Macabre2D.UI.Library.Controls.ValueEditors;
     using Macabre2D.UI.Library.Models;
     using Macabre2D.UI.Library.Models.FrameworkWrappers;
     using Macabre2D.UI.Library.Services;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows;
@@ -124,14 +126,26 @@
         }
 
         private async Task PopulateEditors() {
-            if (this.IsModuleUpdateable) {
-                var editors = await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseUpdateableModule), typeof(BaseModule), typeof(BaseUpdateableModule));
-                this.Editors.Reset(editors);
+            var editors = this.IsModuleUpdateable ?
+                await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseUpdateableModule), typeof(BaseModule), typeof(BaseUpdateableModule)) :
+                await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseModule), typeof(BaseModule));
+
+            var count = editors.Count;
+            for (var i = 0; i < count; i++) {
+                if (editors.ElementAtOrDefault(i) is ISeparatedValueEditor currentSeparated) {
+                    var previousEditor = editors.ElementAtOrDefault(i);
+                    if (previousEditor == null || previousEditor is ISeparatedValueEditor) {
+                        currentSeparated.ShowTopSeparator = false;
+                    }
+
+                    var nextEditor = editors.ElementAtOrDefault(i + 1);
+                    if (nextEditor == null) {
+                        currentSeparated.ShowBottomSeparator = false;
+                    }
+                }
             }
-            else {
-                var editors = await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseModule), typeof(BaseModule));
-                this.Editors.Reset(editors);
-            }
+
+            this.Editors.Reset(editors);
         }
 
         private void RaisePropertyChanged() {

@@ -220,7 +220,7 @@
             for (var i = 0; i < count; i++) {
                 if (editors.ElementAtOrDefault(i) is ISeparatedValueEditor currentSeparated) {
                     var previousEditor = editors.ElementAtOrDefault(i);
-                    if (previousEditor == null || previousEditor is ISeparatedValueEditor previousSeparated) {
+                    if (previousEditor == null || previousEditor is ISeparatedValueEditor) {
                         currentSeparated.ShowTopSeparator = false;
                     }
 
