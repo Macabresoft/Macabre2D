@@ -15,6 +15,12 @@
             get {
                 return this.Module.Name;
             }
+
+            set {
+                // TODO: this is bad, undo service not being called
+                this.Module.Name = value;
+                this.RaisePropertyChanged();
+            }
         }
 
         public void UpdateProperty(string pathToProperty, object newValue) {

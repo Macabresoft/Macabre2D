@@ -20,7 +20,7 @@
             nameof(Module),
             typeof(ModuleWrapper),
             typeof(ModuleControl),
-            new PropertyMetadata(null, new PropertyChangedCallback(OnComponentChanged)));
+            new PropertyMetadata(null, new PropertyChangedCallback(OnModuleChanged)));
 
         private readonly IUndoService _undoService;
         private readonly IValueEditorService _valueEditorService;
@@ -107,17 +107,22 @@
             }
 
             set {
-                if (this.Module?.Module is IUpdateableModule updateableModule) {
+                if (this.Module?.Module is IUpdateableModule) {
                     this.UpdateModuleProperty(nameof(IUpdateableModule.UpdateOrder), this.ModuleUpdateOrder, value);
                 }
             }
         }
 
-        private static async void OnComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static async void OnModuleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is ModuleControl control) {
-                if (control != null && e.NewValue != null) {
+                if (e.OldValue is ModuleWrapper oldWrapper) {
+                    oldWrapper.PropertyChanged -= control.Wrapper_PropertyChanged;
+                }
+
+                if (e.NewValue is ModuleWrapper wrapper) {
                     await control.PopulateEditors();
                     control.RaisePropertyChanged();
+                    wrapper.PropertyChanged += control.Wrapper_PropertyChanged;
                 }
                 else {
                     control.Editors.Clear();
@@ -157,6 +162,10 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsModuleUpdateable)));
         }
 
+        private void RaisePropertyChanged(string propertyName) {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void UpdateModuleProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
             var undoCommand = new UndoCommand(
                 () => {
@@ -169,6 +178,14 @@
                 });
 
             this._undoService.Do(undoCommand);
+        }
+
+        private void Wrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (sender is ModuleWrapper) {
+                if (e.PropertyName == nameof(ModuleWrapper.Name)) {
+                    this.RaisePropertyChanged(nameof(this.ModuleName));
+                }
+            }
         }
     }
 }

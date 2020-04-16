@@ -2,7 +2,8 @@
              x:Name="_moduleList"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:Macabre2D.UI.Library.Controls">
     <Grid DataContext="{Binding ElementName=_moduleList}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -30,7 +31,9 @@
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name, Mode=OneWay}" />
+                    <local:EditableListBoxItemControl AllowUndo="True"
+                                                      Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      ValidTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
