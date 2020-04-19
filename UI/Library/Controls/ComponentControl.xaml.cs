@@ -181,14 +181,14 @@
                     var task = control.PopulateEditors();
                     await control._busyService.PerformTask(task, false);
 
-                    control._drawableGrid.Visibility = Visibility.Collapsed;
+                    control._drawOrderEditor.Visibility = Visibility.Collapsed;
                     control._updateableGrid.Visibility = Visibility.Collapsed;
                     control._enableableGrid.Visibility = Visibility.Collapsed;
                     control._baseComponentSeparator.Visibility = Visibility.Collapsed;
                     var showSeparator = false;
 
                     if (wrapper.Component is IDrawableComponent) {
-                        control._drawableGrid.Visibility = Visibility.Visible;
+                        control._drawOrderEditor.Visibility = Visibility.Visible;
                         showSeparator = true;
                     }
 
@@ -196,7 +196,7 @@
                         control._updateableGrid.Visibility = Visibility.Visible;
                         showSeparator = true;
                     }
-                    else if (wrapper.Component is IEnableableComponent) {
+                    else {
                         control._enableableGrid.Visibility = Visibility.Visible;
                         showSeparator = true;
                     }
