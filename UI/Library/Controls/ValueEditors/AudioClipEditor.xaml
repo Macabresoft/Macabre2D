@@ -24,8 +24,8 @@
         <TextBox Grid.Column="1"
                  IsReadOnly="True"
                  Margin="{StaticResource StandardMarginAll}"
-                 Text="{Binding Value.AssetId, Converter={StaticResource _assetIdToContentPathConverter}, FallbackValue='(None)'}"
-                 ToolTip="{Binding Value.AssetId, Converter={StaticResource _assetIdToContentPathConverter}, FallbackValue='(None)'}"
+                 Text="{Binding Value.Id, Converter={StaticResource _assetIdToContentPathConverter}, FallbackValue='(None)'}"
+                 ToolTip="{Binding Value.Id, Converter={StaticResource _assetIdToContentPathConverter}, FallbackValue='(None)'}"
                  VerticalAlignment="Center" />
 
         <Button Grid.Column="2"

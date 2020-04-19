@@ -101,7 +101,7 @@
         /// <value>The state.</value>
         public SoundState State {
             get {
-                return this._audioClip.SoundEffectInstance?.State ?? SoundState.Stopped;
+                return this._audioClip?.SoundEffectInstance?.State ?? SoundState.Stopped;
             }
         }
 
@@ -136,6 +136,11 @@
         public override void LoadContent() {
             if (this._audioClip != null && this.Scene.IsInitialized) {
                 this._audioClip.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+
+                if (this._shouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+                    this._audioClip.SoundEffectInstance.IsLooped = true;
+                    this.Play();
+                }
             }
 
             base.LoadContent();
@@ -155,19 +160,16 @@
         /// </summary>
         public void Play() {
             if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Playing) {
+                this._audioClip.SoundEffectInstance.Volume = this.Volume;
+                this._audioClip.SoundEffectInstance.Pan = this.Pan;
+                this._audioClip.SoundEffectInstance.Pitch = this.Pitch;
                 this._audioClip.SoundEffectInstance.Play();
             }
         }
 
         /// <inheritdoc/>
-        public void RefreshAsset(Guid currentId, AudioClip newAsset) {
-            if (this.AudioClip == null || this.AudioClip.Id == currentId) {
-                this.AudioClip = newAsset;
-            }
-        }
-
         public void RefreshAsset(AudioClip newInstance) {
-            throw new NotImplementedException();
+            this.AudioClip = newInstance;
         }
 
         /// <inheritdoc/>
@@ -185,7 +187,7 @@
         /// </summary>
         public void Stop() {
             if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Stopped) {
-                this._audioClip.SoundEffectInstance.Stop();
+                this._audioClip.SoundEffectInstance.Stop(true);
             }
         }
 
@@ -208,7 +210,17 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            return;
+            this.IsEnabledChanged += this.AudioPlayer_IsEnabledChanged;
+        }
+
+        private void AudioPlayer_IsEnabledChanged(object sender, EventArgs e) {
+            if (this.ShouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+                this._audioClip.SoundEffectInstance.IsLooped = true;
+                this.Play();
+            }
+            else if (!this.IsEnabled) {
+                this.Stop();
+            }
         }
     }
 }

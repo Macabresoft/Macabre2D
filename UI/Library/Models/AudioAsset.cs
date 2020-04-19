@@ -52,6 +52,12 @@
             return new[] { this.AudioClip.Id };
         }
 
+        public override void Refresh(AssetManager assetManager) {
+            this.AudioClip.Id = this.Id;
+            base.Refresh(assetManager);
+            assetManager.SetMapping(this.Id, this.GetContentPathWithoutExtension());
+        }
+
         private string GetImporterName() {
             string result;
             if (this.Name.ToUpper().EndsWith(".WAV")) {

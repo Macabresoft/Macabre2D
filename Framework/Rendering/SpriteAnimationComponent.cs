@@ -14,6 +14,10 @@
         private QueueableSpriteAnimation _currentAnimation;
         private uint _currentFrameIndex;
         private uint _currentStepIndex;
+
+        [DataMember(Order = 10, Name = "Default Animation")]
+        private SpriteAnimation _defaultAnimation;
+
         private byte _frameRate = 30;
         private uint _millisecondsPassed;
         private uint _millisecondsPerFrame;
@@ -38,7 +42,7 @@
         /// Gets or sets the frame rate. This is represented in frames per second.
         /// </summary>
         /// <value>The frame rate.</value>
-        [DataMember(Order = 1, Name = "Frame Rate")]
+        [DataMember(Order = 11, Name = "Frame Rate")]
         public byte FrameRate {
             get {
                 return this._frameRate;
@@ -175,6 +179,9 @@
         protected override void Initialize() {
             base.Initialize();
             this._millisecondsPerFrame = 1000u / this._frameRate;
+            if (this._defaultAnimation != null) {
+                this.Play(this._defaultAnimation, true);
+            }
         }
     }
 }

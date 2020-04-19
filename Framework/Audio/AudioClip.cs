@@ -2,12 +2,11 @@
 
     using Microsoft.Xna.Framework.Audio;
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    public sealed class AudioClip : BaseIdentifiable, IAsset, IDisposable {
+    public sealed class AudioClip : BaseIdentifiable, IDisposable {
         private bool _disposedValue = false;
 
         /// <summary>
@@ -25,13 +24,9 @@
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
         public AudioClip(Guid assetId, float volume, float pan, float pitch) {
-            this.AssetId = assetId;
+            this.Id = assetId;
             this.LoadSoundEffect(volume, pan, pitch);
         }
-
-        /// <inheritdoc/>
-        [DataMember]
-        public Guid AssetId { get; set; }
 
         /// <summary>
         /// Gets or sets the sound effect instance.
@@ -52,7 +47,7 @@
         /// <param name="pan">The pan.</param>
         /// <param name="pitch">The pitch.</param>
         public void LoadSoundEffect(float volume, float pan, float pitch) {
-            var soundEffect = AssetManager.Instance.Load<SoundEffect>(this.AssetId);
+            var soundEffect = AssetManager.Instance.Load<SoundEffect>(this.Id);
 
             if (soundEffect != null) {
                 this.SoundEffectInstance = soundEffect.CreateInstance();

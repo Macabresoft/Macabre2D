@@ -22,7 +22,7 @@
             scene.AddComponent(audioPlayer);
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClip = new AudioClip();
-            audioPlayer.AudioClip.AssetId = lasterId;
+            audioPlayer.AudioClip.Id = lasterId;
             audioPlayer.AddChild(new VolumeController());
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json");

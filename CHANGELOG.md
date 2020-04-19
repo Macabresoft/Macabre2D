@@ -19,6 +19,7 @@
 ### Fixes
 
 * Deleting assets outside the editor no longer causes a crash.
+* Audio assets now work relatively reliably.
 
 ## 0.3.11.0
 
