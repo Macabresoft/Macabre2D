@@ -189,6 +189,10 @@
             return;
         }
 
+        public void RemoveComponent(BaseComponent component) {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         public void RemoveModule(BaseModule module) {
             return;

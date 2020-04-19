@@ -185,6 +185,12 @@
         void QueueEndOfFrameAction(Action<FrameTime> action);
 
         /// <summary>
+        /// Removes the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        void RemoveComponent(BaseComponent component);
+
+        /// <summary>
         /// Removes the module.
         /// </summary>
         /// <param name="module">The module.</param>

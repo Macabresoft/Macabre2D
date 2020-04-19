@@ -217,7 +217,7 @@
 
         /// <inheritdoc/>
         public BaseComponent FindComponent(string name) {
-            foreach (var component in this.Components) {
+            foreach (var component in this.Components.Concat(this.ComponentsForSaving)) {
                 if (string.Equals(name, component.Name)) {
                     return component;
                 }
