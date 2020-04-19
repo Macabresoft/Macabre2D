@@ -9,7 +9,7 @@
     /// <summary>
     /// A component which will render the specified text.
     /// </summary>
-    public sealed class TextRenderComponent : BaseComponent, IDrawableComponent, IAssetComponent<Font>, IRotatable {
+    public class TextRenderComponent : BaseComponent, IDrawableComponent, IAssetComponent<Font>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
@@ -138,7 +138,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        public virtual void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
                     MacabreGame.Instance.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
@@ -244,7 +244,7 @@
         }
 
         private Vector2 CreateSize() {
-            return this.Font.SpriteFont.MeasureString(this.Text);
+            return this.Font?.SpriteFont != null ? this.Font.SpriteFont.MeasureString(this.Text) : Vector2.Zero;
         }
 
         private void Offset_AmountChanged(object sender, EventArgs e) {
