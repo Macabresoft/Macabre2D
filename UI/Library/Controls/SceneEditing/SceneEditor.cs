@@ -134,6 +134,10 @@
             }
         }
 
+        public void Exit() {
+            return;
+        }
+
         public void FocusComponent(BaseComponent component) {
             if (component is IBoundable boundable) {
                 this._cameraWrapper.Camera.ZoomTo(boundable);

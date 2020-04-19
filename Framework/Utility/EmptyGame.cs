@@ -80,6 +80,11 @@
         }
 
         /// <inheritdoc/>
+        public void Exit() {
+            return;
+        }
+
+        /// <inheritdoc/>
         public void SaveAndApplyGraphicsSettings() {
             return;
         }
