@@ -245,12 +245,11 @@
 
         /// <inheritdoc/>
         protected override void Update(GameTime gameTime) {
-#if DEBUG
             var keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.Escape) && keyboardState.IsKeyDown(Keys.LeftAlt)) {
+            if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
                 this.Exit();
             }
-#endif
+
             this._frameTime = new FrameTime(gameTime, this.GameSpeed);
             this.CurrentScene?.Update(this._frameTime);
         }

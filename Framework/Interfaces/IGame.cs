@@ -75,6 +75,11 @@
         SpriteBatch SpriteBatch { get; }
 
         /// <summary>
+        /// Exits thie game.
+        /// </summary>
+        void Exit();
+
+        /// <summary>
         /// Saves the applies graphics settings.
         /// </summary>
         void SaveAndApplyGraphicsSettings();
