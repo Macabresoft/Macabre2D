@@ -31,7 +31,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MacabreGame"/> class.
         /// </summary>
-        public MacabreGame() {
+        public MacabreGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
             this.Settings = new GameSettings();
@@ -229,6 +229,7 @@
 
         /// <inheritdoc/>
         protected override void LoadContent() {
+            base.LoadContent();
             this.AssetManager = this.Content.Load<AssetManager>(Framework.AssetManager.ContentFileName);
             this.AssetManager.Initialize(this.Content);
             this.Settings = this.AssetManager.Load<GameSettings>(GameSettings.ContentFileName);
@@ -240,6 +241,7 @@
 
         /// <inheritdoc/>
         protected override void UnloadContent() {
+            base.UnloadContent();
             this.Content.Unload();
         }
 
