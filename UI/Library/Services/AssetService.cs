@@ -59,9 +59,9 @@
             await Task.Run(() => {
                 var tempPath = Path.Combine(this._fileService.ProjectDirectoryPath, "temp");
                 var dllPaths = new[] {
-                    $@"..\Gameplay\bin\{mode.ToString()}\Newtonsoft.Json.dll",
-                    $@"..\Gameplay\bin\{mode.ToString()}\Macabre2D.Framework.dll",
-                    $@"..\Gameplay\bin\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
+                    $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Newtonsoft.Json.dll",
+                    $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Macabre2D.Framework.dll",
+                    $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Macabre2D.Project.Gameplay.dll"
                 };
 
                 var outputDirectory = configuration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, mode);

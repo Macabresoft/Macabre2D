@@ -103,13 +103,14 @@
                 Serializer.Instance.Serialize(this.CurrentProject.GameSettings, Path.Combine(this._fileService.ProjectDirectoryPath, "Content", $"{GameSettings.ContentFileName}{FileHelper.GameSettingsExtension}"));
 
                 var assets = this.CurrentProject.AssetFolder.GetAllContentAssets();
-                var dllPaths = new[] {
-                    $@"..\Gameplay\bin\{mode.ToString()}\Newtonsoft.Json.dll",
-                    $@"..\Gameplay\bin\{mode.ToString()}\Macabre2D.Framework.dll",
-                    $@"..\Gameplay\bin\{mode.ToString()}\Macabre2D.Project.Gameplay.dll"
-                };
 
                 foreach (var configuration in this.CurrentProject.BuildConfigurations) {
+                    var dllPaths = new[] {
+                        $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Newtonsoft.Json.dll",
+                        $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Macabre2D.Framework.dll",
+                        $@"..\..\Intermediary\{configuration.Platform}\bin\{mode}\Macabre2D.Project.Gameplay.dll"
+                    };
+
                     var outputDirectory = configuration.GetCompiledContentPath(this._fileService.ProjectDirectoryPath, mode);
                     configuration.CreateContentFile(this._fileService.ProjectDirectoryPath, assets, false, dllPaths);
                     var contentFilePath = Path.Combine(this._fileService.ProjectDirectoryPath, "Content", $"{configuration.Platform.ToString()}.mgcb");
