@@ -99,6 +99,10 @@
       <Project>{f604b0d7-900c-4dca-afd8-c3b413af8d43}</Project>
       <Name>Macabre2D.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Intermediary\DesktopGL\Macabre2D.Intermediary.DesktopGL.csproj">
+      <Project>{2670a2a4-7db0-4a31-b23c-c332d9289dfc}</Project>
+      <Name>Macabre2D.Intermediary.DesktopGL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gameplay\Macabre2D.Project.Gameplay.csproj">
       <Project>{ce39dfb1-2c80-452f-a799-abc878773b1d}</Project>
       <Name>Macabre2D.Project.Gameplay</Name>

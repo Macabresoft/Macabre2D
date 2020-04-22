@@ -20,6 +20,7 @@
 
 * Deleting assets outside the editor no longer causes a crash.
 * Audio assets now work relatively reliably.
+* Intermediary project added to hopefully fix cross platform support.
 
 ## 0.3.11.0
 

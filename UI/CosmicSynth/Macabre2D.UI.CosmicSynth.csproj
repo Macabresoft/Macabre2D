@@ -256,12 +256,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon.ico" />
-    <Resource Include="Art\logo16.png">
-      <Link>logo16.png</Link>
-    </Resource>
-    <Resource Include="Art\logo64.png">
-      <Link>logo64.png</Link>
-    </Resource>
+    <Resource Include="Art\logo16.png" />
+    <Resource Include="Art\logo64.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
