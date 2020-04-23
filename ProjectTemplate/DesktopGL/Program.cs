@@ -9,11 +9,11 @@
 #endif
 
     internal static class Program {
-        private static MacabreGame game;
 
         internal static void RunGame() {
-            game = new MacabreGame();
-            game.Run();
+            using (var game = new MacabreGame()) {
+                game.Run();
+            }
         }
 
         /// <summary>

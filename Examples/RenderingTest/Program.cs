@@ -8,11 +8,11 @@
 #endif
 
     internal static class Program {
-        private static RenderingTestGame game;
 
         internal static void RunGame() {
-            game = new RenderingTestGame();
-            game.Run();
+            using (var game = new RenderingTestGame()) {
+                game.Run();
+            }
         }
 
         /// <summary>
