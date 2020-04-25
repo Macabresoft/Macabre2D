@@ -6,3 +6,4 @@
 *.ico filter=lfs diff=lfs merge=lfs -text
 *.so.0 filter=lfs diff=lfs merge=lfs -text
 *.so.1 filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
