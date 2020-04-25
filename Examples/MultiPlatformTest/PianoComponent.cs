@@ -1,7 +1,6 @@
-﻿namespace Macabre2D.Examples.AudioTest {
+﻿namespace Macabre2D.Examples.MultiPlatformTest {
 
     using Macabre2D.Framework;
-    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
     using System.Collections.Generic;
@@ -9,7 +8,6 @@
     using System.Linq;
 
     public sealed class PianoComponent : BaseComponent, IUpdateableComponent {
-        private readonly Camera _camera;
 
         private readonly FilterSortCollection<IClickablePianoComponent> _clickables = new FilterSortCollection<IClickablePianoComponent>(
             c => c.IsClickable,
@@ -20,20 +18,18 @@
             (c, handler) => { });
 
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
-        private readonly Instrument _instrument = new Instrument(); // TODO: dynamic
-        private readonly Song _song = new Song(); // TODO: dynamic
+        private readonly Instrument _instrument = new Instrument();
+
+        // TODO: dynamic
+        private readonly Song _song = new Song();
+
+        private Camera _camera;
+        // TODO: dynamic
 
         private IClickablePianoComponent _currentClickable;
 
         public PianoComponent() : base() {
-            this._camera = this.AddChild<Camera>();
             this._componentChildrenChangedHandler = new NotifyCollectionChangedEventHandler(this.Component_ChildrenChanged);
-        }
-
-        public void ResetCamera() {
-            this._camera.ViewHeight = SceneHelper.SceneHeight;
-            var viewWidth = this._camera.GetViewWidth();
-            this._camera.LocalPosition = new Vector2((0.5f * viewWidth) - 1f, this._camera.ViewHeight * 0.5f);
         }
 
         public void Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState) {
@@ -73,7 +69,7 @@
                 }
             }
 
-            this.ResetCamera();
+            this._camera = this.Scene.GetAllComponentsOfType<Camera>().First();
 
             foreach (var child in this.GetChildrenOfType<IClickablePianoComponent>()) {
                 this._clickables.Add(child);

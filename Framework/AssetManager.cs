@@ -4,6 +4,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -15,6 +16,13 @@
         /// Clears the mappings.
         /// </summary>
         void ClearMappings();
+
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>The identifier associated with the path provided.</returns>
+        Guid GetId(string path);
 
         /// <summary>
         /// Gets the path.
@@ -94,6 +102,11 @@
         /// <inheritdoc/>
         public void ClearMappings() {
             this._idToPathMapping.Clear();
+        }
+
+        /// <inheritdoc/>
+        public Guid GetId(string path) {
+            return this._idToPathMapping.FirstOrDefault(x => x.Value == path).Key;
         }
 
         /// <inheritdoc/>

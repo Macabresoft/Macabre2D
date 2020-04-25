@@ -1,7 +1,7 @@
-﻿using Macabre2D.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿namespace Macabre2D.Examples.MultiPlatformTest {
 
-namespace Macabre2D.Examples.AudioTest {
+    using Macabre2D.Framework;
+    using Microsoft.Xna.Framework.Input;
 
     public sealed class VolumeController : BaseComponent, IUpdateableComponent {
         private AudioPlayer _audioClip;

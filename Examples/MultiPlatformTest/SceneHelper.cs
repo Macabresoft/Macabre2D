@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Examples.AudioTest {
+﻿namespace Macabre2D.Examples.MultiPlatformTest {
 
     using Macabre2D.Framework;
     using System;

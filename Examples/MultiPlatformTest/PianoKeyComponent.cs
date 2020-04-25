@@ -1,9 +1,9 @@
-﻿using Macabre2D.Framework;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using System;
+﻿namespace Macabre2D.Examples.MultiPlatformTest {
 
-namespace Macabre2D.Examples.AudioTest {
+    using Macabre2D.Framework;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Audio;
+    using System;
 
     public sealed class PianoKeyComponent : SimpleBodyComponent, IClickablePianoComponent, IUpdateableComponent {
         private const ushort SamplesPerBuffer = 1000;

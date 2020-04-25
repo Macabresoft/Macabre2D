@@ -16,6 +16,10 @@
             this._assetManager.ClearMappings();
         }
 
+        public Guid GetId(string path) {
+            return this._assetManager.GetId(path);
+        }
+
         public string GetPath(Guid id) {
             return this._assetManager.GetPath(id);
         }

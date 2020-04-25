@@ -35,6 +35,24 @@
         }
 
         /// <summary>
+        /// Gets or sets the local grid.
+        /// </summary>
+        /// <value>The local grid.</value>
+        [DataMember(Name = "Local Grid", Order = 1)]
+        public TileGrid LocalGrid {
+            get {
+                return this._localGrid;
+            }
+
+            set {
+                if (this._localGrid != value) {
+                    this._localGrid = value;
+                    this.GridChanged.SafeInvoke(this);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance should use the local grid.
         /// </summary>
         /// <value><c>true</c> if this instance should use the local grid; otherwise, <c>false</c>.</value>
@@ -47,24 +65,6 @@
             set {
                 if (value != this._useLocalGrid) {
                     this._useLocalGrid = value;
-                    this.GridChanged.SafeInvoke(this);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the local grid.
-        /// </summary>
-        /// <value>The local grid.</value>
-        [DataMember(Name = "Local Grid", Order = 1)]
-        internal TileGrid LocalGrid {
-            get {
-                return this._localGrid;
-            }
-
-            set {
-                if (this._localGrid != value) {
-                    this._localGrid = value;
                     this.GridChanged.SafeInvoke(this);
                 }
             }
