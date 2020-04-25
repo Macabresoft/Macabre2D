@@ -31,12 +31,12 @@
 /processorParam:TextureFormat=Color
 /build:ColoredSquares.png
 
-#begin LeagueMono.spritefont
+#begin League Mono.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:LeagueMono.spritefont
+/build:League Mono.spritefont
 
 #begin WhiteSquare.png
 /importer:TextureImporter

@@ -145,7 +145,7 @@
 
         private void PreLoadRenderingStuff(Scene scene) {
             var fontId = Guid.NewGuid();
-            this.AssetManager.SetMapping(fontId, "LeagueMono");
+            this.AssetManager.SetMapping(fontId, "League Mono");
             var coloredSquaresId = Guid.NewGuid();
             this.AssetManager.SetMapping(coloredSquaresId, "ColoredSquares");
             var whiteSquareId = Guid.NewGuid();
