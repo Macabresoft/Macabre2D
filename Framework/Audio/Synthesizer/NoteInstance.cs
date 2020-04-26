@@ -8,17 +8,32 @@
     [DataContract]
     public sealed class NoteInstance {
         private ushort _length = 1;
+        private float _velocity = 1f;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NoteInstance"/> class.
         /// </summary>
         /// <param name="beat">The beat.</param>
         /// <param name="length">The length.</param>
+        /// <param name="velocity">The velocity.</param>
         /// <param name="frequency">The frequency.</param>
-        public NoteInstance(ushort beat, ushort length, Frequency frequency) {
+        public NoteInstance(ushort beat, ushort length, float velocity, Frequency frequency) : this(beat, length, velocity, frequency, frequency) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoteInstance"/> class.
+        /// </summary>
+        /// <param name="beat">The beat.</param>
+        /// <param name="length">The length.</param>
+        /// <param name="velocity">The velocity.</param>
+        /// <param name="startFrequency">The start frequency.</param>
+        /// <param name="endFrequency">The end frequency.</param>
+        public NoteInstance(ushort beat, ushort length, float velocity, Frequency startFrequency, Frequency endFrequency) {
             this.Beat = beat;
             this.Length = length;
-            this.Frequency = frequency;
+            this.Velocity = velocity;
+            this.StartFrequency = startFrequency;
+            this.EndFrequency = endFrequency;
         }
 
         /// <summary>
@@ -35,11 +50,11 @@
         public ushort Beat { get; set; }
 
         /// <summary>
-        /// Gets or sets the frequency.
+        /// Gets or sets the end frequency.
         /// </summary>
-        /// <value>The frequency.</value>
+        /// <value>The end frequency.</value>
         [DataMember]
-        public Frequency Frequency { get; set; }
+        public Frequency EndFrequency { get; set; }
 
         /// <summary>
         /// Gets the length.
@@ -58,6 +73,42 @@
 
                 this._length = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the frequency.
+        /// </summary>
+        /// <value>The frequency.</value>
+        [DataMember]
+        public Frequency StartFrequency { get; set; }
+
+        /// <summary>
+        /// Gets or sets the velocity.
+        /// </summary>
+        /// <value>The velocity.</value>
+        [DataMember]
+        public float Velocity {
+            get {
+                return this._velocity;
+            }
+
+            set {
+                this._velocity = value.Clamp(0f, 1f);
+            }
+        }
+
+        /// <summary>
+        /// Gets the frequency.
+        /// </summary>
+        /// <param name="percentageOfNotePlayed">The percentage of note played.</param>
+        /// <returns>The frequency.</returns>
+        public float GetFrequency(float percentageOfNotePlayed) {
+            var result = this.StartFrequency.Value;
+            if (this.StartFrequency != this.EndFrequency) {
+                result = (this.StartFrequency.Value * (1f - percentageOfNotePlayed)) + (this.EndFrequency.Value * percentageOfNotePlayed);
+            }
+
+            return result;
         }
     }
 }
