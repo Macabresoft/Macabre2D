@@ -23,6 +23,7 @@
 * Intermediary project added to hopefully fix cross platform support.
 * Resources now appropriately disposed of when game is exited.
 * DesktopGL project should work across Mac and Linux now (previously was broken on every platform except Windows).
+* Tile grids now update in the UI as they are edited.
 
 ## 0.3.11.0
 

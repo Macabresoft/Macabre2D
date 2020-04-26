@@ -30,7 +30,6 @@
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
         private readonly ResettableLazy<TileGrid> _worldGrid;
-        private GridConfiguration _gridConfiguration = new GridConfiguration();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent"/> class.
@@ -38,10 +37,8 @@
         protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
+            this.GridConfiguration.GridChanged += this.GridConfiguration_GridChanged;
         }
-
-        /// <inheritdoc/>
-        public event EventHandler GridChanged;
 
         /// <inheritdoc/>
         public event EventHandler TilesChanged;
@@ -229,7 +226,6 @@
             this._worldGrid.Reset();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
-            this.GridChanged?.SafeInvoke(this);
         }
 
         /// <summary>
@@ -290,6 +286,10 @@
             }
 
             return tileGrid;
+        }
+
+        private void GridConfiguration_GridChanged(object sender, EventArgs e) {
+            this.OnGridChanged();
         }
 
         private void ResetMaximumTile() {
