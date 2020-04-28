@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.UI.Library.Services {
 
+    using Macabre2D.Framework;
     using Macabre2D.UI.Library.Common;
     using Macabre2D.UI.Library.Controls.ValueEditors;
     using Macabre2D.UI.Library.Models;
@@ -66,6 +67,11 @@
                 var enumEditor = new EnumEditor();
                 await enumEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = enumEditor;
+            }
+            else if (typeof(BaseModule).IsAssignableFrom(memberType)) {
+                var moduleEditor = new ModuleEditor();
+                await moduleEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
+                result = moduleEditor;
             }
             else if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
                 var genericEditor = new GenericValueEditor {

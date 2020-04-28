@@ -9,6 +9,7 @@
     using Microsoft.Win32;
     using System;
     using System.IO;
+    using System.Linq;
     using System.Windows;
     using Unity;
     using Unity.Injection;
@@ -31,6 +32,8 @@
         SceneAsset ShowSaveSceneWindow(Project project, Scene scene);
 
         bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
+
+        bool ShowSelectModuleDialog(Scene scene, Type moduleType, out BaseModule module);
 
         bool ShowSelectProjectDialog(out FileInfo projectFileInfo);
 
@@ -214,6 +217,15 @@
                 asset = null;
             }
 
+            return result;
+        }
+
+        public bool ShowSelectModuleDialog(Scene scene, Type moduleType, out BaseModule module) {
+            var modules = scene.GetAllModules().Where(x => moduleType.IsAssignableFrom(x.GetType()));
+            var window = this._container.Resolve<SelectModuleDialog>(new ParameterOverride("modules", new InjectionParameter(modules)));
+
+            var result = window.SimpleShowDialog();
+            module = result ? window.ViewModel.SelectedModule : null;
             return result;
         }
 

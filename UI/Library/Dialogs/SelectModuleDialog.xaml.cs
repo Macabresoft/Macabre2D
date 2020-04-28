@@ -1,16 +1,16 @@
 ﻿namespace Macabre2D.UI.Library.Dialogs {
 
-    public partial class SelectAssetDialog {
+    public partial class SelectModuleDialog {
 
-        public SelectAssetDialog(SelectAssetViewModel viewModel) {
+        public SelectModuleDialog(SelectModuleViewModel viewModel) {
             this.ViewModel = viewModel;
             viewModel.Finished += this.ViewModel_Finished;
             this.InitializeComponent();
         }
 
-        public SelectAssetViewModel ViewModel {
+        public SelectModuleViewModel ViewModel {
             get {
-                return this.DataContext as SelectAssetViewModel;
+                return this.DataContext as SelectModuleViewModel;
             }
 
             set {

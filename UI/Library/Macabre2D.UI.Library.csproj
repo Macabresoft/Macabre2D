@@ -302,6 +302,9 @@
     <Compile Include="Controls\ValueEditors\LineColliderEditor.xaml.cs">
       <DependentUpon>LineColliderEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ValueEditors\ModuleEditor.xaml.cs">
+      <DependentUpon>ModuleEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValueEditors\NamedValueEditor.cs" />
     <Compile Include="Controls\ValueEditors\RenderSettingsEditor.xaml.cs">
       <DependentUpon>RenderSettingsEditor.xaml</DependentUpon>
@@ -363,6 +366,10 @@
       <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\SelectAssetViewModel.cs" />
+    <Compile Include="Dialogs\SelectModuleDialog.xaml.cs">
+      <DependentUpon>SelectModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectModuleViewModel.cs" />
     <Compile Include="Dialogs\SelectProjectDialog.xaml.cs">
       <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
     </Compile>
@@ -593,6 +600,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ValueEditors\ModuleEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ValueEditors\RenderSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -664,6 +675,10 @@
     <Page Include="Dialogs\SelectAssetDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelectModuleDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\SelectProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

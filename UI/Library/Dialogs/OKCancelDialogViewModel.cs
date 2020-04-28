@@ -11,8 +11,8 @@
         protected readonly RelayCommand _okCommand;
 
         public OKCancelDialogViewModel() {
-            this._cancelCommand = new RelayCommand(() => this.Finished.SafeInvoke(this, false), this.CanExecuteCancelCommand);
-            this._okCommand = new RelayCommand(() => this.Finished.SafeInvoke(this, true), this.CanExecuteOKCommand);
+            this._cancelCommand = new RelayCommand(() => this.OnFinished(false), this.CanExecuteCancelCommand);
+            this._okCommand = new RelayCommand(() => this.OnFinished(true), this.CanExecuteOKCommand);
         }
 
         public event EventHandler<bool> Finished;
@@ -35,6 +35,11 @@
 
         protected virtual bool CanExecuteOKCommand() {
             return !this.HasErrors;
+        }
+
+        private void OnFinished(bool wasOk) {
+            this.Finished.SafeInvoke(this, wasOk);
+            this.Finished = null;
         }
     }
 }

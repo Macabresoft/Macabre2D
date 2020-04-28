@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.UI.Library.Dialogs {
 
-    using Macabre2D.UI.Library.Dialogs;
     using System.Windows;
 
     public partial class SelectTypeDialog {
