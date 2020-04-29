@@ -15,8 +15,20 @@
 
     public partial class ComponentHierarchy : UserControl, IDropTarget {
 
+        public static readonly DependencyProperty HighlightedTypeProperty = DependencyProperty.Register(
+            nameof(ComponentHierarchy.HighlightedType),
+            typeof(Type),
+            typeof(ComponentHierarchy),
+            new PropertyMetadata(typeof(BaseComponent)));
+
+        public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register(
+            nameof(ComponentHierarchy.IsEditable),
+            typeof(bool),
+            typeof(ComponentHierarchy),
+            new PropertyMetadata(true));
+
         public static readonly DependencyProperty RootProperty = DependencyProperty.Register(
-            nameof(Root),
+                            nameof(Root),
             typeof(IParent<ComponentWrapper>),
             typeof(ComponentHierarchy),
             new PropertyMetadata());
@@ -34,13 +46,21 @@
             new PropertyMetadata());
 
         private readonly RelayCommand _addComponentCommand;
+
         private readonly RelayCommand _cloneComponentCommand;
+
         private readonly IComponentService _componentService = ViewContainer.Resolve<IComponentService>();
+
         private readonly RelayCommand _createPrefabCommand;
+
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
+
         private readonly IMonoGameService _monoGameService = ViewContainer.Resolve<IMonoGameService>();
+
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
+
         private readonly RelayCommand _removeComponentCommand;
+
         private readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
         public ComponentHierarchy() {
@@ -68,6 +88,16 @@
             get {
                 return this._createPrefabCommand;
             }
+        }
+
+        public Type HighlightedType {
+            get { return (Type)this.GetValue(HighlightedTypeProperty); }
+            set { this.SetValue(HighlightedTypeProperty, value); }
+        }
+
+        public bool IsEditable {
+            get { return (bool)this.GetValue(IsEditableProperty); }
+            set { this.SetValue(IsEditableProperty, value); }
         }
 
         public ICommand RemoveComponentCommand {

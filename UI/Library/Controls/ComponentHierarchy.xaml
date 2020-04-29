@@ -8,7 +8,9 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Macabre2D.UI.Library.Controls">
     <UserControl.Resources>
+        <converters:ComponentHighlightColorConverter x:Key="_componentHighlightColorConverter" />
         <converters:ComponentParentToCollectionConverter x:Key="_componentParentToCollectionConverter" />
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=_componentHierarchy}">
         <Grid.RowDefinitions>
@@ -38,7 +40,8 @@
                   ItemsSource="{Binding Root, Converter={StaticResource _componentParentToCollectionConverter}}"
                   SelectedItemChanged="TreeView_SelectedItemChanged">
             <TreeView.Resources>
-                <ContextMenu x:Key="ComponentContextMenu">
+                <ContextMenu x:Key="ComponentContextMenu"
+                             Visibility="{Binding DataContext.ShowContextMenu, Converter={StaticResource _boolToVisibilityConverter}}">
                     <MenuItem Header="Add"
                               Command="{Binding DataContext.AddComponentCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}"
                               ToolTip="Adds a component under the currently selected item." />
@@ -66,7 +69,19 @@
                                           ItemsSource="{Binding Children}">
                     <local:EditableTreeViewItemControl AllowUndo="True"
                                                        Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                       ValidTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}" />
+                                                       ValidTypes="{Binding ValidTypes, ElementName=_componentHierarchy, Mode=OneWay}">
+                        <local:EditableTreeViewItemControl.Foreground>
+                            <MultiBinding Converter="{StaticResource _componentHighlightColorConverter}">
+                                <Binding ElementName="_componentHierarchy"
+                                         Path="HighlightedType"
+                                         Mode="OneWay" />
+                                <Binding Path="Component"
+                                         Mode="OneWay" />
+                                <Binding Source="{StaticResource BlackBrush}" />
+                                <Binding Source="{StaticResource GrayBrush7}" />
+                            </MultiBinding>
+                        </local:EditableTreeViewItemControl.Foreground>
+                    </local:EditableTreeViewItemControl>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

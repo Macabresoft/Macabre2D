@@ -26,8 +26,14 @@
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(new List<Type>()));
 
+        public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register(
+            nameof(EditableTreeViewItemControl.IsEditable),
+            typeof(bool),
+            typeof(EditableTreeViewItemControl),
+            new PropertyMetadata(true));
+
         public static readonly DependencyProperty IsFileNameProperty = DependencyProperty.Register(
-                    nameof(IsFileName),
+                            nameof(IsFileName),
             typeof(bool),
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(false));
@@ -57,7 +63,9 @@
             new PropertyMetadata(new List<Type>()));
 
         private readonly IDialogService _dialogService;
+
         private readonly IUndoService _undoService;
+
         private bool _isEditing;
 
         public EditableTreeViewItemControl() {
@@ -76,6 +84,11 @@
         public IEnumerable<Type> InvalidTypes {
             get { return (IEnumerable<Type>)this.GetValue(InvalidTypesProperty); }
             set { this.SetValue(InvalidTypesProperty, value); }
+        }
+
+        public bool IsEditable {
+            get { return (bool)this.GetValue(IsEditableProperty); }
+            set { this.SetValue(IsEditableProperty, value); }
         }
 
         public bool IsEditing {
@@ -202,7 +215,7 @@
 
         private void TreeItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-            if (this.CanEditTreeViewItem(treeViewItem)) {
+            if (this.IsEditable && this.CanEditTreeViewItem(treeViewItem)) {
                 this._editableTextBox.Text = this.GetEditableText(this.Text);
                 this.IsEditing = true;
                 e.Handled = true;

@@ -325,6 +325,7 @@
     <Compile Include="Converters\EnumTypeToValuesConverter.cs" />
     <Compile Include="Converters\EqualityToBoolConverter.cs" />
     <Compile Include="Converters\EqualityToVisibilityConverter.cs" />
+    <Compile Include="Converters\ComponentHighlightColorConverter.cs" />
     <Compile Include="Converters\HyphenateTextConverter.cs" />
     <Compile Include="Converters\ImageAssetToBitmapImageConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
@@ -366,6 +367,10 @@
       <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\SelectAssetViewModel.cs" />
+    <Compile Include="Dialogs\SelectComponentDialog.xaml.cs">
+      <DependentUpon>SelectComponentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectComponentViewModel.cs" />
     <Compile Include="Dialogs\SelectModuleDialog.xaml.cs">
       <DependentUpon>SelectModuleDialog.xaml</DependentUpon>
     </Compile>
@@ -675,6 +680,10 @@
     <Page Include="Dialogs\SelectAssetDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelectComponentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\SelectModuleDialog.xaml">
       <SubType>Designer</SubType>
