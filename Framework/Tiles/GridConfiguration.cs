@@ -9,13 +9,7 @@
     /// </summary>
     [DataContract]
     public sealed class GridConfiguration {
-#pragma warning disable IDE0044 // Add readonly modifier
-
-        [DataMember(Name = "Grid Module", Order = 1)]
         private GridModule _gridModule;
-
-#pragma warning restore IDE0044 // Add readonly modifier
-
         private TileGrid _localGrid = new TileGrid(Vector2.One);
         private bool _useLocalGrid = true;
 
@@ -31,6 +25,38 @@
         public TileGrid Grid {
             get {
                 return (this.UseLocalGrid || this._gridModule == null) ? this._localGrid : this._gridModule.Grid;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the grid module. This will be used when <see cref="UseLocalGrid"/> is set
+        /// to false.
+        /// </summary>
+        /// <value>The grid module.</value>
+        [DataMember(Name = "Grid Module", Order = 1)]
+        public GridModule GridModule {
+            get {
+                return this._gridModule;
+            }
+
+            set {
+                var oldGridModule = this._gridModule;
+
+                if (this._gridModule != value) {
+                    this._gridModule = value;
+
+                    if (!this.UseLocalGrid) {
+                        this.GridChanged.SafeInvoke(this);
+                    }
+
+                    if (this._gridModule != null) {
+                        this._gridModule.GridChanged += this.GridModule_GridChanged;
+                    }
+
+                    if (oldGridModule != null) {
+                        oldGridModule.GridChanged -= this.GridModule_GridChanged;
+                    }
+                }
             }
         }
 
@@ -67,6 +93,12 @@
                     this._useLocalGrid = value;
                     this.GridChanged.SafeInvoke(this);
                 }
+            }
+        }
+
+        private void GridModule_GridChanged(object sender, EventArgs e) {
+            if (!this.UseLocalGrid) {
+                this.GridChanged.SafeInvoke(this);
             }
         }
     }
