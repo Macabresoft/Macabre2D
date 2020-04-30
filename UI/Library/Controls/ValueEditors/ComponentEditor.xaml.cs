@@ -8,24 +8,24 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    public partial class ModuleEditor : NamedValueEditor<BaseModule> {
+    public partial class ComponentEditor : NamedValueEditor<BaseComponent> {
         private readonly IDialogService _dialogService = ViewContainer.Resolve<IDialogService>();
-        private Type _moduleType;
+        private Type _componentType;
 
-        public ModuleEditor() {
-            this.SelectModuleCommand = new RelayCommand(() => {
-                if (this._dialogService.ShowSelectModuleDialog(this._sceneService.CurrentScene.SavableValue, this._moduleType, out var module)) {
-                    this.Value = module;
+        public ComponentEditor() {
+            this.SelectComponentCommand = new RelayCommand(() => {
+                if (this._dialogService.ShowSelectComponentDialog(this._sceneService.CurrentScene, this._componentType, out var component)) {
+                    this.Value = component?.Component;
                 }
             });
 
             this.InitializeComponent();
         }
 
-        public ICommand SelectModuleCommand { get; }
+        public ICommand SelectComponentCommand { get; }
 
         public override Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
-            this._moduleType = memberType;
+            this._componentType = memberType;
             return base.Initialize(value, memberType, owner, propertName, title);
         }
     }

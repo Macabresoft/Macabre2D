@@ -33,6 +33,8 @@
 
         bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
 
+        bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out ComponentWrapper componentWrapper);
+
         bool ShowSelectModuleDialog(Scene scene, Type moduleType, out BaseModule module);
 
         bool ShowSelectProjectDialog(out FileInfo projectFileInfo);
@@ -217,6 +219,16 @@
                 asset = null;
             }
 
+            return result;
+        }
+
+        public bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out ComponentWrapper componentWrapper) {
+            var window = this._container.Resolve<SelectComponentDialog>(
+                new ParameterOverride("sceneAsset", new InjectionParameter(sceneAsset)),
+                new ParameterOverride("requestedType", new InjectionParameter(requestedType)));
+
+            var result = window.SimpleShowDialog();
+            componentWrapper = result ? window.ViewModel.SelectedComponent : null;
             return result;
         }
 

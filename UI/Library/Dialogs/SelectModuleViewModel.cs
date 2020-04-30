@@ -14,6 +14,7 @@
         }
 
         public IReadOnlyCollection<BaseModule> AvailableModules { get; }
+
         public Func<object, string, bool> FilterFunc { get; }
 
         [RequiredValidation]

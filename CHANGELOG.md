@@ -9,6 +9,7 @@
 * TileableComponents now use a GridConfiguration that allows them to link up to a GridModule instead of a local grid.
 * Modules can be given names.
 * Components can have selectable modules in the editor.
+* Components can have linked components in the editor.
 
 ### Refactors
 

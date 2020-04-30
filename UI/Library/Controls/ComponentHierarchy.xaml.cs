@@ -222,9 +222,11 @@
         }
 
         private void TreeItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-            if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.SceneEditor != null) {
-                this._monoGameService.SceneEditor.FocusComponent(componentWrapper.Component);
+            if (this.IsEditable) {
+                var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
+                if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.SceneEditor != null) {
+                    this._monoGameService.SceneEditor.FocusComponent(componentWrapper.Component);
+                }
             }
         }
 

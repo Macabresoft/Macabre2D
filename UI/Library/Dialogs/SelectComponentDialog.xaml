@@ -10,26 +10,19 @@
                    Width="800">
     <Grid Margin="{StaticResource DoubleMarginAll}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <controls:CollectionFilterBox Grid.Row="0"
-                                      x:Name="_filterBox"
-                                      ItemsSource="{Binding AvailableModules, Mode=OneWay}"
-                                      FilterFunc="{Binding FilterFunc, Mode=OneTime}" />
-
-        <ListBox Grid.Row="1"
-                 Margin="{StaticResource DoubleMarginTB}"
-                 ItemsSource="{Binding FilteredItems, ElementName=_filterBox, Mode=OneWay}"
-                 SelectedItem="{Binding SelectedModule}"
-                 SelectionMode="Single"
-                 DisplayMemberPath="Name" />
+        <controls:ComponentHierarchy Grid.Row="0"
+                                     IsEditable="False"
+                                     Root="{Binding Scene, Mode=OneWay}"
+                                     HighlightedType="{Binding RequestedType, Mode=OneWay}"
+                                     SelectedComponent="{Binding SelectedComponent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="3"
+                    Grid.Row="1"
                     Margin="{StaticResource StandardMarginAll}">
             <Button Content="_OK"
                     Command="{Binding OKCommand}"

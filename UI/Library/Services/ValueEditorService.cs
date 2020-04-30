@@ -73,6 +73,11 @@
                 await moduleEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = moduleEditor;
             }
+            else if (typeof(BaseComponent).IsAssignableFrom(memberType)) {
+                var componentEditor = new ComponentEditor();
+                await componentEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
+                result = componentEditor;
+            }
             else if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
                 var genericEditor = new GenericValueEditor {
                     DeclaringType = declaringType
