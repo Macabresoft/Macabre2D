@@ -1,0 +1,27 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.CommonLibrary.Controls.ValueEditors.EnumEditor"
+                        x:Name="_enumEditor"
+                        x:TypeArguments="system:Object"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors"
+                        xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters"
+                        xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <UserControl.Resources>
+        <converters:EnumTypeToValuesConverter x:Key="_enumTypeToValuesConverter" />
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=_enumEditor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding Title}"
+                   VerticalAlignment="Center" />
+
+        <ComboBox Grid.Column="2"
+                  ItemsSource="{Binding EnumType, Converter={StaticResource _enumTypeToValuesConverter}}"
+                  SelectedItem="{Binding Value}" />
+    </Grid>
+</local:NamedValueEditor>

@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Project.DesktopGL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Resources", "UI\Resources\Macabre2D.UI.Resources.csproj", "{310D54CB-E336-4F67-B39E-0D4EA4E9D2FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Library", "UI\Library\Macabre2D.UI.Library.csproj", "{07B8E881-70A6-4AA2-B342-6E0B80326F6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.CommonLibrary", "UI\CommonLibrary\Macabre2D.UI.CommonLibrary.csproj", "{07B8E881-70A6-4AA2-B342-6E0B80326F6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.GameEditor", "UI\GameEditor\Macabre2D.UI.GameEditor.csproj", "{C8E5C1A1-48B7-4CE9-BB70-1BF2781E2EE6}"
 EndProject

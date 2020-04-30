@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.CosmicSynth {
 
+    using Macabre2D.UI.CommonLibrary.Services;
     using Macabre2D.UI.CosmicSynth.Properties;
-    using Macabre2D.UI.Library.Services;
 
     public sealed class SettingsManager {
         private readonly IAutoSaveService _autoSaveService;

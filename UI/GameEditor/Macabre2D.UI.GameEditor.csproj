@@ -259,9 +259,9 @@
       <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library\Macabre2D.UI.Library.csproj">
+    <ProjectReference Include="..\CommonLibrary\Macabre2D.UI.CommonLibrary.csproj">
       <Project>{07b8e881-70a6-4aa2-b342-6e0b80326f6a}</Project>
-      <Name>Macabre2D.UI.Library</Name>
+      <Name>Macabre2D.UI.CommonLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj">
       <Project>{ce39dfb1-2c80-452f-a799-abc878773b1d}</Project>

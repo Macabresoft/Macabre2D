@@ -2,9 +2,9 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Common;
+    using Macabre2D.UI.CommonLibrary.Models;
+    using Macabre2D.UI.CommonLibrary.Services;
     using System;
     using System.IO;
     using System.Linq;

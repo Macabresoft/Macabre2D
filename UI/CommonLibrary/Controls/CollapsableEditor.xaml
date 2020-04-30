@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Macabre2D.UI.CommonLibrary.Controls.CollapsableEditor"
+             x:Name="_collapsableEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:Macabre2D.UI.CommonLibrary.Controls">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="_inverseBoolToVisibilityConverter" />
+        <converters:InverseBoolConverter x:Key="_inverseBoolConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Separator Grid.Row="0"
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding ShowTopSeparator, ElementName=_collapsableEditor, Converter={StaticResource _boolToVisibilityConverter}}" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding Title, ElementName=_collapsableEditor}"
+                   VerticalAlignment="Center" />
+
+        <ContentControl Grid.Row="1"
+                        Grid.Column="1"
+                        Content="{Binding CollapsedContent, ElementName=_collapsableEditor}"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _boolToVisibilityConverter}}" />
+
+        <local:IconToggleButton Grid.Row="1"
+                                Grid.Column="2"
+                                IsNotToggledKind="ChevronLeft"
+                                IsToggled="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _inverseBoolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                IsToggledKind="ChevronDown" />
+
+        <ContentControl Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        Content="{Binding UncollapsedContent, ElementName=_collapsableEditor}"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsCollapsed, ElementName=_collapsableEditor, Converter={StaticResource _inverseBoolToVisibilityConverter}}" />
+
+        <Separator Grid.Row="3"
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding ShowBottomSeparator, ElementName=_collapsableEditor, Converter={StaticResource _boolToVisibilityConverter}}" />
+    </Grid>
+</UserControl>

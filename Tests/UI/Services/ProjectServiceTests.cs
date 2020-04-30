@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.Tests.UI.Services {
 
-    using Macabre2D.UI.Library.Models;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Models;
+    using Macabre2D.UI.CommonLibrary.Services;
     using NSubstitute;
     using NUnit.Framework;
     using System;

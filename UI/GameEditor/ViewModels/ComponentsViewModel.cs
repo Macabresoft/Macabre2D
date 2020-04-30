@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.GameEditor.ViewModels {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Services;
 
     public sealed class ComponentsViewModel : NotifyPropertyChanged {
 

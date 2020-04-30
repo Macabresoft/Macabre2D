@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Macabre2D.UI.CommonLibrary.Controls.CommandContextMenu"
+             x:Name="_commandContextMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    <Border BorderBrush="Transparent">
+        <iconPacks:PackIconMaterial Kind="DotsVertical"
+                                    MouseDown="OnMouseDown"
+                                    Background="Transparent"
+                                    Foreground="{StaticResource BlackBrush}"
+                                    Height="16"
+                                    Width="16">
+            <iconPacks:PackIconMaterial.ContextMenu>
+                <ContextMenu x:Name="_contextMenu"
+                             StaysOpen="True" />
+            </iconPacks:PackIconMaterial.ContextMenu>
+        </iconPacks:PackIconMaterial>
+    </Border>
+</UserControl>

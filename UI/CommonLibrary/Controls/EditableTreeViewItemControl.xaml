@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Macabre2D.UI.CommonLibrary.Controls.EditableTreeViewItemControl"
+             x:Name="_editableTreeViewItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters">
+    <UserControl.Resources>
+        <converters:MultiBoolToVisibilityConverter x:Key="_multiBoolToVisibilityConverter" />
+        <converters:InverseMultiBoolToVisibilityConverter x:Key="_inverseMultiBoolToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <TextBlock x:Name="_treeViewItemText"
+                   Text="{Binding Text, ElementName=_editableTreeViewItemControl}"
+                   MouseLeftButtonDown="TreeItem_MouseLeftButtonDown">
+            <TextBlock.Visibility>
+                <MultiBinding Converter="{StaticResource _inverseMultiBoolToVisibilityConverter}">
+                    <Binding Path="IsSelected"
+                             RelativeSource="{RelativeSource AncestorType={x:Type TreeViewItem}}" />
+                    <Binding Path="IsEditing"
+                             ElementName="_editableTreeViewItemControl" />
+                </MultiBinding>
+            </TextBlock.Visibility>
+        </TextBlock>
+        <TextBox x:Name="_editableTextBox"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 IsVisibleChanged="TreeItem_IsVisibleChanged"
+                 KeyDown="TreeItem_KeyDown"
+                 LostFocus="TreeItem_LostFocus"
+                 Margin="-1,1">
+            <TextBox.Visibility>
+                <MultiBinding Converter="{StaticResource _multiBoolToVisibilityConverter}">
+                    <Binding Path="IsSelected"
+                             RelativeSource="{RelativeSource AncestorType={x:Type TreeViewItem}}" />
+                    <Binding Path="IsEditing"
+                             ElementName="_editableTreeViewItemControl" />
+                </MultiBinding>
+            </TextBox.Visibility>
+        </TextBox>
+    </Grid>
+</UserControl>

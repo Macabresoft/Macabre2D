@@ -1,0 +1,6 @@
+﻿<UserControl x:Class="Macabre2D.UI.CommonLibrary.Controls.LayersNameEditor"
+             x:Name="_layersNameEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ItemsControl x:Name="_layerList" />
+</UserControl>

@@ -3,8 +3,8 @@
     using log4net;
     using Macabre2D.UI.CosmicSynth.Properties;
     using Macabre2D.UI.CosmicSynth.Views;
-    using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Common;
+    using Macabre2D.UI.CommonLibrary.Services;
     using System;
     using System.Linq;
     using System.Reflection;

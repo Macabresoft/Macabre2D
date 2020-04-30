@@ -1,0 +1,13 @@
+﻿<local:NamedValueEditor x:Class="Macabre2D.UI.CommonLibrary.Controls.ValueEditors.GenericValueEditor"
+                        x:Name="_genericValueEditor"
+                        x:TypeArguments="system:Object"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors"
+                        xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <ItemsControl ScrollViewer.CanContentScroll="False"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Editors, ElementName=_genericValueEditor}"
+                  MaxWidth="2560"
+                  MaxHeight="1600" />
+</local:NamedValueEditor>

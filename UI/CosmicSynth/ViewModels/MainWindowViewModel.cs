@@ -2,7 +2,7 @@
 
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Services;
     using System.Windows.Input;
 
     public sealed class MainWindowViewModel : NotifyPropertyChanged {

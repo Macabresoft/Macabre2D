@@ -1,6 +1,6 @@
 ﻿namespace Macabre2D.UI.GameEditor.Views.Data {
 
-    using Macabre2D.UI.Library.Models;
+    using Macabre2D.UI.CommonLibrary.Models;
     using System.Windows;
     using System.Windows.Controls;
 

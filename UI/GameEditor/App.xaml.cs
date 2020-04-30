@@ -2,8 +2,8 @@
 
     using log4net;
     using Macabre2D.UI.GameEditor.Properties;
-    using Macabre2D.UI.Library.Common;
-    using Macabre2D.UI.Library.Services;
+    using Macabre2D.UI.CommonLibrary.Common;
+    using Macabre2D.UI.CommonLibrary.Services;
     using Macabre2D.UI.GameEditor.Views;
     using System;
     using System.Linq;
