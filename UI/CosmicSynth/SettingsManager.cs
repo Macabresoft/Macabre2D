@@ -12,23 +12,14 @@
             this._monoGameService = monoGameService;
         }
 
-        public string GetLastOpenTabName() {
-            return Settings.Default.LastTab;
-        }
-
         public void Initialize() {
             this._autoSaveService.AutoSaveIntervalInMinutes = Settings.Default.AutoSaveIntervalInMinutes;
             this._autoSaveService.NumberOfAutoSaves = Settings.Default.NumberOfAutoSaves;
-            this._monoGameService.ShowGrid = Settings.Default.ShowGrid;
-            this._monoGameService.ShowSelection = Settings.Default.ShowSelection;
         }
 
-        public void Save(string openedTabName) {
+        public void Save() {
             Settings.Default.AutoSaveIntervalInMinutes = this._autoSaveService.AutoSaveIntervalInMinutes;
             Settings.Default.NumberOfAutoSaves = this._autoSaveService.NumberOfAutoSaves;
-            Settings.Default.LastTab = openedTabName;
-            Settings.Default.ShowGrid = this._monoGameService.ShowGrid;
-            Settings.Default.ShowSelection = this._monoGameService.ShowSelection;
             Settings.Default.Save();
         }
     }

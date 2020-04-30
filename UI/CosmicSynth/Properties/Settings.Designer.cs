@@ -25,42 +25,6 @@ namespace Macabre2D.UI.CosmicSynth.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Project")]
-        public string LastTab {
-            get {
-                return ((string)(this["LastTab"]));
-            }
-            set {
-                this["LastTab"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowGrid {
-            get {
-                return ((bool)(this["ShowGrid"]));
-            }
-            set {
-                this["ShowGrid"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowSelection {
-            get {
-                return ((bool)(this["ShowSelection"]));
-            }
-            set {
-                this["ShowSelection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
         public byte AutoSaveIntervalInMinutes {
             get {
