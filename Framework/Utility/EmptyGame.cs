@@ -56,9 +56,9 @@
         public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
 
         /// <inheritdoc/>
-        public bool InstantiatePrefabs {
+        public bool IsDesignMode {
             get {
-                return false;
+                return true;
             }
         }
 

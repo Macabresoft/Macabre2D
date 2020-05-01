@@ -90,9 +90,9 @@
 
         public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
 
-        public bool InstantiatePrefabs {
+        public bool IsDesignMode {
             get {
-                return false;
+                return true;
             }
         }
 

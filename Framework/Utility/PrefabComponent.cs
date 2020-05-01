@@ -79,7 +79,7 @@
 
         /// <inheritdoc/>
         public override void LoadContent() {
-            if (this.Scene.IsInitialized && !MacabreGame.Instance.InstantiatePrefabs) {
+            if (this.Scene.IsInitialized && MacabreGame.Instance.IsDesignMode) {
                 this.Prefrab?.Component?.LoadContent();
             }
 
@@ -113,7 +113,7 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             if (this.Prefrab?.Component is BaseComponent component) {
-                if (MacabreGame.Instance.InstantiatePrefabs) {
+                if (MacabreGame.Instance.IsDesignMode) {
                     if (this.Parent != null) {
                         var clone = component.Clone();
                         this.Parent.AddChild(clone);

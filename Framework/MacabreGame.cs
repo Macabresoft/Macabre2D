@@ -138,9 +138,9 @@
         }
 
         /// <inheritdoc/>
-        public bool InstantiatePrefabs {
+        public bool IsDesignMode {
             get {
-                return true;
+                return false;
             }
         }
 
