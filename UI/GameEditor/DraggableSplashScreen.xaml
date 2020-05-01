@@ -23,7 +23,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Image Source="pack://application:,,,/;component/logo64.png"
+        <Image Source="pack://application:,,,/;component/Icon64.png"
                Grid.Row="0"
                Grid.Column="0"
                Height="64"

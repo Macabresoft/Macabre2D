@@ -39,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\Art\Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -70,10 +70,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Icon.ico" />
-    <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -122,6 +118,12 @@
     <None Include="Content\WhiteSquare.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\Art\Icon.bmp">
+      <Link>Icon.bmp</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Art\Icon.ico">
+      <Link>Icon.ico</Link>
+    </EmbeddedResource>
     <Content Include="..\..\Binaries\DesktopGL\x64\SDL2.dll">
       <Link>x64\SDL2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

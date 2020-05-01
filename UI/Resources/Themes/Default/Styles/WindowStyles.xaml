@@ -9,7 +9,7 @@
         <Setter Property="IconTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Image Source="pack://application:,,,/;component/logo16.png"
+                    <Image Source="pack://application:,,,/;component/Icon16.png"
                            Height="16"
                            Width="16"
                            VerticalAlignment="Center"
