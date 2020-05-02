@@ -7,7 +7,7 @@
     /// A weighted tile that can be used in a <see cref="RandomTileSet"/>.
     /// </summary>
     [DataContract]
-    public sealed class WeightedTile {
+    public sealed class WeightedTile : NotifyPropertyChanged {
         private Sprite _sprite;
         private ushort _weight = 1;
 
@@ -43,8 +43,7 @@
             }
 
             set {
-                this._sprite = value;
-                this.SpriteChanged.SafeInvoke(this);
+                this.Set(ref this._sprite, value, true);
             }
         }
 
@@ -59,7 +58,7 @@
             }
 
             set {
-                this._weight = Math.Max((ushort)1, value);
+                this.Set(ref this._weight, Math.Max((ushort)1, value));
             }
         }
     }

@@ -14,6 +14,7 @@
         [DataMember]
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
+        private Color _color = Color.White;
         private Sprite _sprite;
         private Vector2 _tileScale;
 
@@ -42,7 +43,15 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember(Order = 1)]
-        public Color Color { get; set; } = Color.White;
+        public Color Color {
+            get {
+                return this._color;
+            }
+
+            set {
+                this.Set(ref this._color, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the sprite.
@@ -54,8 +63,7 @@
                 return this._sprite;
             }
             set {
-                if (this._sprite != value) {
-                    this._sprite = value;
+                if (this.Set(ref this._sprite, value)) {
                     this.LoadContent();
                     this._tileScale = this.GetTileScale(this.Sprite);
                 }

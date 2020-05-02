@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -126,6 +127,12 @@
             return directions;
         }
 
+        private void GridConfiguration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(GridConfiguration.Grid)) {
+                this.OnRequestReset(sender, e);
+            }
+        }
+
         private void OnRequestReset(object sender, EventArgs e) {
             this.ResetColliders();
         }
@@ -202,7 +209,7 @@
 
         private void SetTileable(ITileable tileable) {
             if (this._tileable != null) {
-                this._tileable.GridConfiguration.GridChanged -= this.OnRequestReset;
+                this._tileable.GridConfiguration.PropertyChanged -= this.GridConfiguration_PropertyChanged;
                 this._tileable.TilesChanged -= this.OnRequestReset;
                 this._tileable.TransformChanged -= this.OnRequestReset;
             }
@@ -210,7 +217,7 @@
             this._tileable = tileable;
 
             if (this._tileable != null) {
-                this._tileable.GridConfiguration.GridChanged += this.OnRequestReset;
+                this._tileable.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
                 this._tileable.TilesChanged += this.OnRequestReset;
                 this._tileable.TransformChanged += this.OnRequestReset;
             }

@@ -15,6 +15,7 @@
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Point, ushort> _activeTileToIndex = new Dictionary<Point, ushort>();
 
+        private Color _color = Color.White;
         private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
         private RandomTileSet _tileSet;
@@ -37,7 +38,15 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember(Order = 1)]
-        public Color Color { get; set; } = Color.White;
+        public Color Color {
+            get {
+                return this._color;
+            }
+
+            set {
+                this.Set(ref this._color, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the tile set.
@@ -50,20 +59,16 @@
             }
 
             set {
-                if (this._tileSet?.Id != value?.Id) {
-                    var originalValue = this._tileSet;
-                    this._tileSet = value;
+                var originalValue = this._tileSet;
+                if (this.Set(ref this._tileSet, value) && this.IsInitialized) {
+                    this.LoadContent();
 
-                    if (this.IsInitialized) {
-                        this.LoadContent();
+                    if (this._tileSet != null) {
+                        this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
+                    }
 
-                        if (this._tileSet != null) {
-                            this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
-                        }
-
-                        if (originalValue != null) {
-                            originalValue.SpriteChanged -= this.TileSet_SpriteChanged;
-                        }
+                    if (originalValue != null) {
+                        originalValue.SpriteChanged -= this.TileSet_SpriteChanged;
                     }
                 }
             }

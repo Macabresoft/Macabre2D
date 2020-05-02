@@ -1,22 +1,17 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// The configuration of a <see cref="TileGrid"/> for s <see cref="TileableComponent"/>.
     /// </summary>
     [DataContract]
-    public sealed class GridConfiguration {
+    public sealed class GridConfiguration : NotifyPropertyChanged {
         private GridModule _gridModule;
         private TileGrid _localGrid = new TileGrid(Vector2.One);
         private bool _useLocalGrid = true;
-
-        /// <summary>
-        /// Occurs when the grid changes.
-        /// </summary>
-        public event EventHandler GridChanged;
 
         /// <summary>
         /// Gets the grid.
@@ -46,15 +41,15 @@
                     this._gridModule = value;
 
                     if (!this.UseLocalGrid) {
-                        this.GridChanged.SafeInvoke(this);
+                        this.RaisePropertyChanged(true, nameof(this.Grid));
                     }
 
                     if (this._gridModule != null) {
-                        this._gridModule.GridChanged += this.GridModule_GridChanged;
+                        this._gridModule.PropertyChanged += this.GridModule_PropertyChanged;
                     }
 
                     if (oldGridModule != null) {
-                        oldGridModule.GridChanged -= this.GridModule_GridChanged;
+                        oldGridModule.PropertyChanged -= this.GridModule_PropertyChanged;
                     }
                 }
             }
@@ -71,9 +66,8 @@
             }
 
             set {
-                if (this._localGrid != value) {
-                    this._localGrid = value;
-                    this.GridChanged.SafeInvoke(this);
+                if (this.Set(ref this._localGrid, value) && this.UseLocalGrid) {
+                    this.RaisePropertyChanged(true, nameof(this.Grid));
                 }
             }
         }
@@ -89,16 +83,15 @@
             }
 
             set {
-                if (value != this._useLocalGrid) {
-                    this._useLocalGrid = value;
-                    this.GridChanged.SafeInvoke(this);
+                if (this.Set(ref this._useLocalGrid, value)) {
+                    this.RaisePropertyChanged(true, nameof(this.Grid));
                 }
             }
         }
 
-        private void GridModule_GridChanged(object sender, EventArgs e) {
-            if (!this.UseLocalGrid) {
-                this.GridChanged.SafeInvoke(this);
+        private void GridModule_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (!this.UseLocalGrid && e.PropertyName == nameof(this.GridModule.Grid)) {
+                this.RaisePropertyChanged(true, nameof(this.Grid));
             }
         }
     }

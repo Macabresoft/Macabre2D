@@ -17,8 +17,6 @@
         private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
 
         private bool _isLoaded = false;
-
-        [DataMember]
         private bool _useIntermediateDirections = false;
 
         /// <summary>
@@ -62,13 +60,14 @@
         /// <c>true</c> if this is using intermediate directions in addition to cardinal directions;
         /// otherwise, <c>false</c>.
         /// </value>
+        [DataMember(Name = "Use Intermediate Directions")]
         public bool UseIntermediateDirections {
             get {
                 return this._useIntermediateDirections;
             }
 
             set {
-                if (this._useIntermediateDirections != value) {
+                if (this.Set(ref this._useIntermediateDirections, value)) {
                     this._useIntermediateDirections = value;
                     this._indexToSprites.Clear();
                 }

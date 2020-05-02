@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -37,7 +38,7 @@
         protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
-            this.GridConfiguration.GridChanged += this.GridConfiguration_GridChanged;
+            this.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
         }
 
         /// <inheritdoc/>
@@ -158,6 +159,13 @@
         /// Clears the active tiles.
         /// </summary>
         protected abstract void ClearActiveTiles();
+
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                base.Dispose(disposing);
+                this.GridConfiguration.PropertyChanged -= this.GridConfiguration_PropertyChanged;
+            }
+        }
 
         /// <summary>
         /// Gets the maximum tile.
@@ -288,8 +296,10 @@
             return tileGrid;
         }
 
-        private void GridConfiguration_GridChanged(object sender, EventArgs e) {
-            this.OnGridChanged();
+        private void GridConfiguration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.GridConfiguration.Grid)) {
+                this.OnGridChanged();
+            }
         }
 
         private void ResetMaximumTile() {
