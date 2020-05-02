@@ -6,14 +6,11 @@
     /// A varient of <see cref="BaseModule"/> that implements some of the basics of <see cref="IUpdateableModule"/>.
     /// </summary>
     public abstract class BaseUpdateableModule : BaseModule, IUpdateableModule {
-
-        [DataMember]
         private bool _isEnabled = true;
-
-        [DataMember]
         private int _updateOrder;
 
         /// <inheritdoc/>
+        [DataMember(Name = "Enabled")]
         public bool IsEnabled {
             get {
                 return this._isEnabled;
@@ -24,6 +21,7 @@
         }
 
         /// <inheritdoc/>
+        [DataMember(Name = "Update Order")]
         public int UpdateOrder {
             get {
                 return this._updateOrder;

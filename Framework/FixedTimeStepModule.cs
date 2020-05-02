@@ -13,7 +13,6 @@
         private float _postTimePassed;
         private float _preTimePassed;
 
-        [DataMember]
         private float _timeStep = 1f / 30f;
 
         /// <summary>
@@ -37,13 +36,14 @@
         /// </summary>
         /// <value>The time step.</value>
         /// <exception cref="NotSupportedException">Time step must be greater than 0.</exception>
+        [DataMember]
         public float TimeStep {
             get {
                 return this._timeStep;
             }
             set {
                 if (value >= 0f) {
-                    this._timeStep = value;
+                    this.Set(ref this._timeStep, value);
                 }
                 else {
                     throw new NotSupportedException("Time step must be greater than 0.");

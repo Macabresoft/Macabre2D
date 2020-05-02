@@ -23,26 +23,20 @@
         private readonly List<Func<BaseComponent, bool>> _resolveChildActions = new List<Func<BaseComponent, bool>>();
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
-        [DataMember(Name = "Draw Order")]
         private int _drawOrder;
-
-        [DataMember(Name = "Enable")]
         private bool _isEnabled = true;
-
         private bool _isTransformUpToDate;
-
-        [DataMember(Name = "Visible")]
         private bool _isVisible = true;
-
+        private Layers _layers = Layers.Layer01;
         private Vector2 _localPosition;
         private Vector2 _localScale = Vector2.One;
+        private string _name;
 
         [DataMember]
         private BaseComponent _parent;
 
         private Transform _transform = new Transform();
 
-        [DataMember(Name = "Update Order")]
         private int _updateOrder;
 
         /// <summary>
@@ -69,6 +63,7 @@
         }
 
         /// <inheritdoc/>
+        [DataMember(Name = "Draw Order")]
         public int DrawOrder {
             get {
                 return this._drawOrder;
@@ -84,12 +79,13 @@
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <inheritdoc/>
+        [DataMember(Name = "Enable")]
         public bool IsEnabled {
             get {
                 return this._isEnabled && (this.Parent == null || this.Parent.IsEnabled);
             }
             set {
-                this.Set(ref this._isEnabled, value, this.Parent == null || this.Parent.IsEnabled || MacabreGame.Instance.IsDesignMode);
+                this.Set(ref this._isEnabled, value, this.Parent == null || this.Parent.IsEnabled);
             }
         }
 
@@ -100,6 +96,7 @@
         public bool IsInitialized { get; private set; }
 
         /// <inheritdoc/>
+        [DataMember(Name = "Visible")]
         public bool IsVisible {
             get {
                 return this.IsEnabled && this._isVisible;
@@ -117,7 +114,15 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public Layers Layers { get; set; } = Layers.Layer01;
+        public Layers Layers {
+            get {
+                return this._layers;
+            }
+
+            set {
+                this.Set(ref this._layers, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the local position.
@@ -158,7 +163,15 @@
         /// </summary>
         /// <value>The name.</value>
         [DataMember]
-        public string Name { get; set; }
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <inheritdoc/>
         public BaseComponent Parent {
@@ -212,6 +225,7 @@
         }
 
         /// <inheritdoc/>
+        [DataMember(Name = "Update Order")]
         public int UpdateOrder {
             get {
                 return this._updateOrder;

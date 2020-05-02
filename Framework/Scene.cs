@@ -15,7 +15,7 @@
     /// Represents an in-game scene (level, menu screen, loading screen, cinematic, etc).
     /// </summary>
     [DataContract]
-    public sealed class Scene : IScene, IDisposable {
+    public sealed class Scene : NotifyPropertyChanged, IScene, IDisposable {
         private static readonly Action<IUpdateableModule, FrameTime> ModulePostUpdateAction = (module, frameTime) => module.PostUpdate(frameTime);
         private static readonly Action<IUpdateableModule, FrameTime> ModulePreUpdateAction = (module, frameTime) => module.PreUpdate(frameTime);
         private static readonly Action<IUpdateableComponent, FrameTime> UpdateAction = (updateable, frameTime) => updateable.Update(frameTime);
@@ -52,7 +52,9 @@
             (m1, m2) => Comparer<int>.Default.Compare(m1.UpdateOrder, m2.UpdateOrder),
             nameof(IUpdateableModule.UpdateOrder));
 
+        private Color _backgroundColor = Color.Black;
         private bool _disposedValue;
+        private string _name;
         private int _sessionIdCounter = int.MinValue;
 
         /// <summary>
@@ -79,8 +81,16 @@
         public Guid AssetId { get; set; }
 
         /// <inheritdoc/>
-        [DataMember]
-        public Color BackgroundColor { get; set; } = Color.Black;
+        [DataMember(Name = "Background Color")]
+        public Color BackgroundColor {
+            get {
+                return this._backgroundColor;
+            }
+
+            set {
+                this.Set(ref this._backgroundColor, value);
+            }
+        }
 
         /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Components {
@@ -94,7 +104,15 @@
 
         /// <inheritdoc/>
         [DataMember]
-        public string Name { get; set; }
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         internal FilterSortCollection<Camera> Cameras { get; } = new FilterSortCollection<Camera>(
             c => c.IsEnabled,

@@ -7,6 +7,7 @@
     /// </summary>
     [DataContract]
     public abstract class BaseModule : BaseIdentifiable {
+        private string _name;
 
         /// <summary>
         /// Gets a value indicating whether this instance is initialized.
@@ -19,7 +20,15 @@
         /// </summary>
         /// <value>The name.</value>
         [DataMember]
-        public string Name { get; set; }
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the scene.
