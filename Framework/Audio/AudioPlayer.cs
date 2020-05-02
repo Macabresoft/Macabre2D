@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework.Audio;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -210,16 +211,18 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.IsEnabledChanged += this.AudioPlayer_IsEnabledChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
         }
 
-        private void AudioPlayer_IsEnabledChanged(object sender, EventArgs e) {
-            if (this.ShouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
-                this._audioClip.SoundEffectInstance.IsLooped = true;
-                this.Play();
-            }
-            else if (!this.IsEnabled) {
-                this.Stop();
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.IsEnabled)) {
+                if (this.ShouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+                    this._audioClip.SoundEffectInstance.IsLooped = true;
+                    this.Play();
+                }
+                else if (!this.IsEnabled) {
+                    this.Stop();
+                }
             }
         }
     }

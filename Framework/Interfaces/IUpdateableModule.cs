@@ -1,21 +1,11 @@
 ﻿namespace Macabre2D.Framework {
 
-    using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// Represents a module that can be updated before and after all components update.
     /// </summary>
-    public interface IUpdateableModule {
-
-        /// <summary>
-        /// Occurs when this instance becomes enabled or disabled.
-        /// </summary>
-        event EventHandler IsEnabledChanged;
-
-        /// <summary>
-        /// Occurs when the update order has changed.
-        /// </summary>
-        event EventHandler UpdateOrderChanged;
+    public interface IUpdateableModule : INotifyPropertyChanged {
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is enabled.

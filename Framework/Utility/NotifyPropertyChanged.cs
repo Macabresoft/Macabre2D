@@ -22,6 +22,13 @@
         }
 
         /// <summary>
+        /// Disposes <see cref="PropertyChanged"/>.
+        /// </summary>
+        protected void DisposePropertyChanged() {
+            this.PropertyChanged = null;
+        }
+
+        /// <summary>
         /// Sets the specified field.
         /// </summary>
         /// <typeparam name="T">The type being set.</typeparam>

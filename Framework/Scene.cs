@@ -26,11 +26,9 @@
 
         private readonly FilterSortCollection<IDrawableComponent> _drawableComponents = new FilterSortCollection<IDrawableComponent>(
             d => d.IsVisible,
-            (d, handler) => d.IsVisibleChanged += handler,
-            (d, handler) => d.IsVisibleChanged -= handler,
+            nameof(IDrawableComponent.IsVisible),
             (d1, d2) => Comparer<int>.Default.Compare(d1.DrawOrder, d2.DrawOrder),
-            (d, handler) => d.DrawOrderChanged += handler,
-            (d, handler) => d.DrawOrderChanged -= handler);
+            nameof(IDrawableComponent.DrawOrder));
 
         private readonly QuadTree<IDrawableComponent> _drawTree = new QuadTree<IDrawableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
         private readonly List<Action<FrameTime>> _endOfFrameActions = new List<Action<FrameTime>>();
@@ -40,24 +38,19 @@
 
         private readonly FilterCollection<IUpdateableComponentAsync> _updateableAsyncComponents = new FilterCollection<IUpdateableComponentAsync>(
             u => u.IsEnabled,
-            (u, handler) => u.IsEnabledChanged += handler,
-            (u, handler) => u.IsEnabledChanged -= handler);
+            nameof(IUpdateableComponentAsync.IsEnabled));
 
         private readonly FilterSortCollection<IUpdateableComponent> _updateableComponents = new FilterSortCollection<IUpdateableComponent>(
             u => u.IsEnabled,
-            (u, handler) => u.IsEnabledChanged += handler,
-            (u, handler) => u.IsEnabledChanged -= handler,
+            nameof(IUpdateableComponent.IsEnabled),
             (u1, u2) => Comparer<int>.Default.Compare(u1.UpdateOrder, u2.UpdateOrder),
-            (u, handler) => u.UpdateOrderChanged += handler,
-            (u, handler) => u.UpdateOrderChanged -= handler);
+            nameof(IUpdateableComponent.UpdateOrder));
 
         private readonly FilterSortCollection<IUpdateableModule> _updateableModules = new FilterSortCollection<IUpdateableModule>(
             m => m.IsEnabled,
-            (m, handler) => m.IsEnabledChanged += handler,
-            (m, handler) => m.IsEnabledChanged -= handler,
+            nameof(IUpdateableModule.IsEnabled),
             (m1, m2) => Comparer<int>.Default.Compare(m1.UpdateOrder, m2.UpdateOrder),
-            (m, handler) => m.UpdateOrderChanged += handler,
-            (m, handler) => m.UpdateOrderChanged -= handler);
+            nameof(IUpdateableModule.UpdateOrder));
 
         private bool _disposedValue;
         private int _sessionIdCounter = int.MinValue;
@@ -105,11 +98,9 @@
 
         internal FilterSortCollection<Camera> Cameras { get; } = new FilterSortCollection<Camera>(
             c => c.IsEnabled,
-            (c, handler) => c.IsEnabledChanged += handler,
-            (c, handler) => c.IsEnabledChanged -= handler,
+            nameof(Camera.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            (c, handler) => c.RenderOrderChanged += handler,
-            (c, handler) => c.RenderOrderChanged -= handler);
+            nameof(Camera.RenderOrder));
 
         [DataMember]
         internal HashSet<BaseComponent> ComponentsForSaving { get; } = new HashSet<BaseComponent>();

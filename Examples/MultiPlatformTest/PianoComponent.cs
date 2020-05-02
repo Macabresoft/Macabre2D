@@ -11,11 +11,9 @@
 
         private readonly FilterSortCollection<IClickablePianoComponent> _clickables = new FilterSortCollection<IClickablePianoComponent>(
             c => c.IsClickable,
-            (c, handler) => c.ClickabilityChanged += handler,
-            (c, handler) => c.ClickabilityChanged -= handler,
+            nameof(IClickablePianoComponent.IsClickable),
             (c1, c2) => Comparer<int>.Default.Compare(c1.Priority, c2.Priority),
-            (c, handler) => { },
-            (c, handler) => { });
+            nameof(IClickablePianoComponent.Priority));
 
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
         private readonly Instrument _instrument = new Instrument();

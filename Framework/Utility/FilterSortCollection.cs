@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
 
     /// <summary>
@@ -10,7 +11,7 @@
     /// this code from the MonoGame source code. Theirs is private to Game, I wanted to reuse this
     /// all over the place.
     /// </summary>
-    public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
+    public sealed class FilterSortCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
 
         private static readonly Comparison<int> RemoveJournalSortComparison =
             (x, y) => Comparer<int>.Default.Compare(y, x);
@@ -19,38 +20,30 @@
         private readonly Comparison<AddJournalEntry> _addJournalSortComparison;
         private readonly List<T> _cachedFilteredItems = new List<T>();
         private readonly Predicate<T> _filter;
-        private readonly Action<T, EventHandler> _filterChangedSubscriber;
-        private readonly Action<T, EventHandler> _filterChangedUnsubscriber;
+        private readonly string _filterPropertyName;
         private readonly List<T> _items = new List<T>();
         private readonly object _lock = new object();
         private readonly List<int> _removeJournal = new List<int>();
         private readonly Comparison<T> _sort;
-        private readonly Action<T, EventHandler> _sortChangedSubscriber;
-        private readonly Action<T, EventHandler> _sortChangedUnsubscriber;
+        private readonly string _sortPropertyName;
         private bool _shouldRebuildCache = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterSortCollection{T}"/> class.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        /// <param name="filterChangedSubscriber">The filter changed subscriber.</param>
-        /// <param name="filterChangedUnsubscriber">The filter changed unsubscriber.</param>
+        /// <param name="filterPropertyName">Name of the filter property.</param>
         /// <param name="sort">The sort.</param>
-        /// <param name="sortChangedSubscriber">The sort changed subscriber.</param>
-        /// <param name="sortChangedUnsubscriber">The sort changed unsubscriber.</param>
+        /// <param name="sortPropertName">Name of the sort propert.</param>
         public FilterSortCollection(
             Predicate<T> filter,
-            Action<T, EventHandler> filterChangedSubscriber,
-            Action<T, EventHandler> filterChangedUnsubscriber,
+            string filterPropertyName,
             Comparison<T> sort,
-            Action<T, EventHandler> sortChangedSubscriber,
-            Action<T, EventHandler> sortChangedUnsubscriber) {
+            string sortPropertName) {
             this._filter = filter;
-            this._filterChangedSubscriber = filterChangedSubscriber;
-            this._filterChangedUnsubscriber = filterChangedUnsubscriber;
+            this._filterPropertyName = filterPropertyName;
             this._sort = sort;
-            this._sortChangedSubscriber = sortChangedSubscriber;
-            this._sortChangedUnsubscriber = sortChangedUnsubscriber;
+            this._sortPropertyName = sortPropertName;
 
             this._addJournalSortComparison = this.CompareAddJournalEntry;
         }
@@ -130,8 +123,7 @@
         public void Clear() {
             lock (this._lock) {
                 for (var i = 0; i < this._items.Count; ++i) {
-                    this._filterChangedUnsubscriber(this._items[i], this.Item_FilterPropertyChanged);
-                    this._sortChangedUnsubscriber(this._items[i], this.Item_SortPropertyChanged);
+                    this.UnsubscribeFromItemEvents(this._items[i]);
                 }
 
                 var items = this._items;
@@ -313,12 +305,6 @@
             return false;
         }
 
-        /// <summary>
-        /// Compares the add journal entry.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <returns></returns>
         private int CompareAddJournalEntry(AddJournalEntry x, AddJournalEntry y) {
             var result = this._sort(x.Item, y.Item);
             if (result != 0) {
@@ -328,43 +314,28 @@
             return x.Order - y.Order;
         }
 
-        /// <summary>
-        /// Invalidates the cache.
-        /// </summary>
         private void InvalidateCache() {
             this._shouldRebuildCache = true;
         }
 
-        /// <summary>
-        /// Handles the FilterPropertyChanged event of an item.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void Item_FilterPropertyChanged(object sender, EventArgs e) {
-            this.InvalidateCache();
+        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == this._sortPropertyName) {
+                var item = (T)sender;
+                var index = this._items.IndexOf(item);
+
+                this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
+                this._removeJournal.Add(index);
+
+                // Until the item is back in place, we don't care about its events. We will
+                // re-subscribe when this._addJournal is processed.
+                this.UnsubscribeFromItemEvents(item);
+                this.InvalidateCache();
+            }
+            else if (e.PropertyName == this._filterPropertyName) {
+                this.InvalidateCache();
+            }
         }
 
-        /// <summary>
-        /// Handles the SortPropertyChanged event of an item.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void Item_SortPropertyChanged(object sender, EventArgs e) {
-            var item = (T)sender;
-            var index = this._items.IndexOf(item);
-
-            this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
-            this._removeJournal.Add(index);
-
-            // Until the item is back in place, we don't care about its events. We will re-subscribe
-            // when this._addJournal is processed.
-            this.UnsubscribeFromItemEvents(item);
-            this.InvalidateCache();
-        }
-
-        /// <summary>
-        /// Processes the add journal.
-        /// </summary>
         private void ProcessAddJournal() {
             if (this._addJournal.Count == 0) {
                 return;
@@ -400,9 +371,6 @@
             this._addJournal.Clear();
         }
 
-        /// <summary>
-        /// Processes the remove journal.
-        /// </summary>
         private void ProcessRemoveJournal() {
             if (this._removeJournal.Count == 0) {
                 return;
@@ -421,22 +389,12 @@
             this._removeJournal.Clear();
         }
 
-        /// <summary>
-        /// Subscribes to item events.
-        /// </summary>
-        /// <param name="item">The item.</param>
         private void SubscribeToItemEvents(T item) {
-            this._filterChangedSubscriber(item, this.Item_FilterPropertyChanged);
-            this._sortChangedSubscriber(item, this.Item_SortPropertyChanged);
+            item.PropertyChanged += this.Item_PropertyChanged;
         }
 
-        /// <summary>
-        /// Unsubscribes from item events.
-        /// </summary>
-        /// <param name="item">The item.</param>
         private void UnsubscribeFromItemEvents(T item) {
-            this._filterChangedUnsubscriber(item, this.Item_FilterPropertyChanged);
-            this._sortChangedUnsubscriber(item, this.Item_SortPropertyChanged);
+            item.PropertyChanged -= this.Item_PropertyChanged;
         }
 
         /// <summary>

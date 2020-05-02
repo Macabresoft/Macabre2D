@@ -1,6 +1,5 @@
 ﻿namespace Macabre2D.Framework {
 
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -15,21 +14,12 @@
         private int _updateOrder;
 
         /// <inheritdoc/>
-        public event EventHandler IsEnabledChanged;
-
-        /// <inheritdoc/>
-        public event EventHandler UpdateOrderChanged;
-
-        /// <inheritdoc/>
         public bool IsEnabled {
             get {
                 return this._isEnabled;
             }
             set {
-                if (this._isEnabled != value) {
-                    this._isEnabled = value;
-                    this.IsEnabledChanged.SafeInvoke(this);
-                }
+                this.Set(ref this._isEnabled, value);
             }
         }
 
@@ -40,10 +30,7 @@
             }
 
             set {
-                if (value != this._updateOrder) {
-                    this._updateOrder = value;
-                    this.UpdateOrderChanged.SafeInvoke(this);
-                }
+                this.Set(ref this._updateOrder, value);
             }
         }
 

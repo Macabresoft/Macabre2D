@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
@@ -13,7 +14,7 @@
     /// The base class for all components.
     /// </summary>
     [DataContract]
-    public abstract class BaseComponent : IBaseComponent, IDisposable {
+    public abstract class BaseComponent : NotifyPropertyChanged, IBaseComponent, IDisposable {
         protected bool _disposedValue;
 
         [DataMember]
@@ -48,31 +49,17 @@
         /// Initializes a new instance of the <see cref="BaseComponent"/> class.
         /// </summary>
         protected BaseComponent() {
-            this.IsEnabledChanged += this.Self_EnabledChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
             this.ParentChanged += this.BaseComponent_ParentChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
         }
 
         /// <inheritdoc/>
-        public event EventHandler DrawOrderChanged;
-
-        /// <inheritdoc/>
-        public event EventHandler IsEnabledChanged;
-
-        /// <inheritdoc/>
-        public event EventHandler IsVisibleChanged;
-
-        /// <inheritdoc/>
         public event EventHandler<BaseComponent> ParentChanged;
 
         /// <inheritdoc/>
         public event EventHandler TransformChanged;
-
-        /// <summary>
-        /// Occurs when [update order changed].
-        /// </summary>
-        public event EventHandler UpdateOrderChanged;
 
         /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Children {
@@ -88,10 +75,7 @@
             }
 
             set {
-                if (value != this._drawOrder) {
-                    this._drawOrder = value;
-                    this.DrawOrderChanged.SafeInvoke(this);
-                }
+                this.Set(ref this._drawOrder, value, true);
             }
         }
 
@@ -105,13 +89,7 @@
                 return this._isEnabled && (this.Parent == null || this.Parent.IsEnabled);
             }
             set {
-                if (this._isEnabled != value) {
-                    this._isEnabled = value;
-
-                    if (this.Parent == null || this.Parent.IsEnabled) {
-                        this.IsEnabledChanged.SafeInvoke(this);
-                    }
-                }
+                this.Set(ref this._isEnabled, value, this.Parent == null || this.Parent.IsEnabled || MacabreGame.Instance.IsDesignMode);
             }
         }
 
@@ -131,7 +109,7 @@
                     this._isVisible = value;
 
                     if (this.IsEnabled) {
-                        this.IsVisibleChanged.SafeInvoke(this);
+                        this.RaisePropertyChanged();
                     }
                 }
             }
@@ -199,19 +177,19 @@
                         this._parent.AddChild(this);
 
                         if (this.IsInitialized == wasInitialized && this.IsInitialized) {
-                            this._parent.IsEnabledChanged += this.Parent_EnabledChanged;
+                            this._parent.PropertyChanged += this.Parent_PropertyChanged;
                             this._parent.TransformChanged += this.Parent_TransformChanged;
                         }
 
                         if (originalParent != null) {
                             originalParent.RemoveChild(this);
-                            originalParent.IsEnabledChanged -= this.Parent_EnabledChanged;
+                            originalParent.PropertyChanged -= this.Parent_PropertyChanged;
                             originalParent.TransformChanged -= this.Parent_TransformChanged;
                         }
                     }
                     else if (originalParent != null) {
                         originalParent.RemoveChild(this);
-                        originalParent.IsEnabledChanged -= this.Parent_EnabledChanged;
+                        originalParent.PropertyChanged -= this.Parent_PropertyChanged;
                         originalParent.TransformChanged -= this.Parent_TransformChanged;
                     }
 
@@ -240,10 +218,7 @@
             }
 
             set {
-                if (value != this._updateOrder) {
-                    this._updateOrder = value;
-                    this.UpdateOrderChanged.SafeInvoke(this);
-                }
+                this.Set(ref this._updateOrder, value, true);
             }
         }
 
@@ -562,7 +537,7 @@
                 }
 
                 if (this._parent != null) {
-                    this._parent.IsEnabledChanged += this.Parent_EnabledChanged;
+                    this._parent.PropertyChanged += this.Parent_PropertyChanged;
                     this._parent.TransformChanged += this.Parent_TransformChanged;
                 }
 
@@ -691,11 +666,11 @@
                 }
 
                 if (this._parent != null) {
-                    this._parent.IsEnabledChanged -= this.Parent_EnabledChanged;
+                    this._parent.PropertyChanged -= this.Parent_PropertyChanged;
                     this._parent.TransformChanged -= this.Parent_TransformChanged;
                 }
 
-                this.IsEnabledChanged = null;
+                this.DisposePropertyChanged();
                 this.ParentChanged = null;
                 this.TransformChanged = null;
                 this._children.Clear();
@@ -744,9 +719,11 @@
             this.TransformChanged.SafeInvoke(this);
         }
 
-        private void Parent_EnabledChanged(object sender, EventArgs e) {
-            if (this._isEnabled) {
-                this.IsEnabledChanged.SafeInvoke(this);
+        private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.IsEnabled)) {
+                if (this._isEnabled) {
+                    this.RaisePropertyChanged(nameof(this.IsEnabled));
+                }
             }
         }
 
@@ -828,9 +805,9 @@
             }
         }
 
-        private void Self_EnabledChanged(object sender, EventArgs e) {
-            if (this._isVisible) {
-                this.IsVisibleChanged.SafeInvoke(this);
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.IsEnabled) && this._isVisible) {
+                this.RaisePropertyChanged(nameof(this.IsVisible));
             }
         }
     }

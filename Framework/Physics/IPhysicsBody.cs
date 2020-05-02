@@ -34,6 +34,12 @@
         PhysicsMaterial PhysicsMaterial { get; }
 
         /// <summary>
+        /// Gets the update order.
+        /// </summary>
+        /// <value>The update order.</value>
+        int UpdateOrder { get; }
+
+        /// <summary>
         /// Gets the colliders attached to this body.
         /// </summary>
         /// <returns>The colliders.</returns>

@@ -1,11 +1,12 @@
 ﻿namespace Macabre2D.Framework {
 
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     /// <summary>
     /// Interface for a base component. Contains shared properties between all components.
     /// </summary>
-    public interface IBaseComponent : IIdentifiableComponent, IWorldTransformable {
+    public interface IBaseComponent : INotifyPropertyChanged, IIdentifiableComponent, IWorldTransformable {
 
         /// <summary>
         /// Gets the children.

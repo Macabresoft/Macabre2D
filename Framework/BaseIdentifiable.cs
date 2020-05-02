@@ -7,7 +7,7 @@
     /// Base implementation of <see cref="IIdentifiable"/>.
     /// </summary>
     [DataContract]
-    public class BaseIdentifiable : IIdentifiable {
+    public class BaseIdentifiable : NotifyPropertyChanged, IIdentifiable {
 
         [DataMember]
         private Guid _id = Guid.NewGuid();
@@ -19,7 +19,7 @@
             }
 
             set {
-                this._id = value;
+                this.Set(ref this._id, value);
             }
         }
     }

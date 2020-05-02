@@ -3,8 +3,9 @@
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
+    using System.ComponentModel;
 
-    public interface IClickablePianoComponent : IIdentifiableComponent {
+    public interface IClickablePianoComponent : IIdentifiableComponent, INotifyPropertyChanged {
 
         event EventHandler ClickabilityChanged;
 

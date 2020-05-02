@@ -27,11 +27,6 @@
         }
 
         /// <summary>
-        /// Occurs when the render order has changed.
-        /// </summary>
-        public event EventHandler RenderOrderChanged;
-
-        /// <summary>
         /// Occurs when the view height has changed.
         /// </summary>
         public event EventHandler ViewHeightChanged;
@@ -60,10 +55,7 @@
             }
 
             set {
-                if (this._renderOrder != value) {
-                    this._renderOrder = value;
-                    this.RenderOrderChanged.SafeInvoke(this);
-                }
+                this.Set(ref this._renderOrder, value, true);
             }
         }
 

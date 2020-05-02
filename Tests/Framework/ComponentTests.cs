@@ -6,7 +6,9 @@
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
+    using CategoryAttribute = NUnit.Framework.CategoryAttribute;
 
     [TestFixture]
     public static class ComponentTests {
@@ -79,7 +81,7 @@
                 component.DrawOrder = 0;
 
                 var drawOrderChanged = false;
-                component.DrawOrderChanged += (object sender, EventArgs e) => drawOrderChanged = true;
+                component.PropertyChanged += (object sender, PropertyChangedEventArgs e) => drawOrderChanged |= e.PropertyName == nameof(component.DrawOrder);
 
                 component.DrawOrder = 1;
                 Assert.IsTrue(drawOrderChanged);
@@ -99,7 +101,7 @@
                 Assert.IsTrue(component.IsEnabled);
 
                 var enabledChanged = false;
-                component.IsEnabledChanged += (object sender, EventArgs e) => enabledChanged = true;
+                component.PropertyChanged += (object sender, PropertyChangedEventArgs e) => enabledChanged |= e.PropertyName == nameof(component.IsEnabled);
                 parent.IsEnabled = false;
                 Assert.IsTrue(enabledChanged);
                 Assert.IsFalse(component.IsEnabled);
@@ -496,7 +498,7 @@
                 component.UpdateOrder = 0;
 
                 var updateOrderChanged = false;
-                component.UpdateOrderChanged += (object sender, EventArgs e) => updateOrderChanged = true;
+                component.PropertyChanged += (object sender, PropertyChangedEventArgs e) => updateOrderChanged |= e.PropertyName == nameof(component.UpdateOrder);
 
                 component.UpdateOrder = 1;
                 Assert.IsTrue(updateOrderChanged);
@@ -515,7 +517,7 @@
                 Assert.IsTrue(component.IsVisible);
 
                 var visibleChanged = false;
-                component.IsVisibleChanged += (object sender, EventArgs e) => visibleChanged = true;
+                component.PropertyChanged += (object sender, PropertyChangedEventArgs e) => visibleChanged |= e.PropertyName == nameof(component.IsVisible);
                 component.IsVisible = false;
                 Assert.IsTrue(visibleChanged);
                 Assert.IsFalse(component.IsVisible);

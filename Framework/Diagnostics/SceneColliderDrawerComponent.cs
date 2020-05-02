@@ -7,11 +7,9 @@
 
         private readonly FilterSortCollection<IPhysicsBody> _bodies = new FilterSortCollection<IPhysicsBody>(
             r => r.IsEnabled,
-            (r, handler) => r.IsEnabledChanged += handler,
-            (r, handler) => r.IsEnabledChanged -= handler,
+            nameof(IPhysicsBody.IsEnabled),
             (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-            (r, handler) => r.UpdateOrderChanged += handler,
-            (r, handler) => r.UpdateOrderChanged -= handler);
+            nameof(IPhysicsBody.UpdateOrder));
 
         public override BoundingArea BoundingArea { get; } = new BoundingArea(0.5f * float.MinValue, 0.5f * float.MaxValue);
 

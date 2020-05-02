@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
     using System;
+    using System.ComponentModel;
 
     public sealed class PianoKeyComponent : SimpleBodyComponent, IClickablePianoComponent, IUpdateableComponent {
         private const ushort SamplesPerBuffer = 1000;
@@ -38,7 +39,7 @@
                 Offset = this._spriteRenderer.RenderSettings.Offset
             };
 
-            this.IsEnabledChanged += this.Self_IsEnabledChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
         }
 
         public event EventHandler ClickabilityChanged;
@@ -123,8 +124,10 @@
             }
         }
 
-        private void Self_IsEnabledChanged(object sender, EventArgs e) {
-            this.ClickabilityChanged.SafeInvoke(this);
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.IsEnabled)) {
+                this.ClickabilityChanged.SafeInvoke(this);
+            }
         }
     }
 }

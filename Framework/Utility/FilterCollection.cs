@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -9,37 +10,29 @@
     /// The FilterCollection class provides efficient, reusable filtering based on a filter
     /// predicate, and associate change events.
     /// </summary>
-    public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> {
+    public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T> where T : INotifyPropertyChanged {
 
         private static readonly Comparison<int> RemoveJournalSortComparison =
             (x, y) => Comparer<int>.Default.Compare(y, x);
 
         private readonly List<T> _cachedFilteredItems = new List<T>();
         private readonly Predicate<T> _filter;
-        private readonly Action<T, EventHandler> _filterChangedSubscriber;
-        private readonly Action<T, EventHandler> _filterChangedUnsubscriber;
-
+        private readonly string _filterPropertyName;
         private readonly List<T> _items = new List<T>();
-
         private readonly List<T> _itemsToAdd = new List<T>();
-
         private readonly List<int> _itemsToRemove = new List<int>();
-
         private bool _shouldRebuildCache = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Macabre2D.ComponentCollection`1"/> class.
         /// </summary>
         /// <param name="filter">Filter.</param>
-        /// <param name="filterChangedSubscriber">Filter changed subscriber.</param>
-        /// <param name="filterChangedUnsubscriber">Filter changed unsubscriber.</param>
+        /// <param name="filterPropertyName">Name of the filter property.</param>
         public FilterCollection(
             Predicate<T> filter,
-            Action<T, EventHandler> filterChangedSubscriber,
-            Action<T, EventHandler> filterChangedUnsubscriber) {
+            string filterPropertyName) {
             this._filter = filter;
-            this._filterChangedSubscriber = filterChangedSubscriber;
-            this._filterChangedUnsubscriber = filterChangedUnsubscriber;
+            this._filterPropertyName = filterPropertyName;
         }
 
         /// <summary>
@@ -97,7 +90,7 @@
         /// </summary>
         public void Clear() {
             for (var i = 0; i < this._items.Count; i++) {
-                this._filterChangedUnsubscriber(this._items[i], this.Item_FilterPropertyChanged);
+                this.UnsubscribeFromItemEvents(this._items[i]);
             }
 
             // Copy before clear for collection changed event.
@@ -123,8 +116,8 @@
         }
 
         /// <summary>
-        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to an
-        /// <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to
+        /// an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
         /// </summary>
         /// <param name="array">
         /// The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements
@@ -283,25 +276,16 @@
             return false;
         }
 
-        /// <summary>
-        /// Invalidates the cache.
-        /// </summary>
         private void InvalidateCache() {
             this._shouldRebuildCache = true;
         }
 
-        /// <summary>
-        /// Handles the FilterPropertyChanged event of an item.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void Item_FilterPropertyChanged(object sender, EventArgs e) {
-            this.InvalidateCache();
+        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == this._filterPropertyName) {
+                this.InvalidateCache();
+            }
         }
 
-        /// <summary>
-        /// Processes the add journal.
-        /// </summary>
         private void ProcessAddJournal() {
             if (this._itemsToAdd.Count == 0) {
                 return;
@@ -315,9 +299,6 @@
             this._itemsToAdd.Clear();
         }
 
-        /// <summary>
-        /// Processes the remove journal.
-        /// </summary>
         private void ProcessRemoveJournal() {
             if (this._itemsToRemove.Count == 0) {
                 return;
@@ -333,20 +314,12 @@
             this._itemsToRemove.Clear();
         }
 
-        /// <summary>
-        /// Subscribes to item events.
-        /// </summary>
-        /// <param name="item">The item.</param>
         private void SubscribeToItemEvents(T item) {
-            this._filterChangedSubscriber(item, this.Item_FilterPropertyChanged);
+            item.PropertyChanged += this.Item_PropertyChanged;
         }
 
-        /// <summary>
-        /// Unsubscribes from item events.
-        /// </summary>
-        /// <param name="item">The item.</param>
         private void UnsubscribeFromItemEvents(T item) {
-            this._filterChangedUnsubscriber(item, this.Item_FilterPropertyChanged);
+            item.PropertyChanged -= this.Item_PropertyChanged;
         }
     }
 }
