@@ -13,6 +13,7 @@
     public sealed class Camera : BaseComponent, IBoundable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Matrix> _matrix;
+        private Layers _layersToRender = Layers.All;
         private int _renderOrder;
         private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
         private bool _snapToPixels;
@@ -26,11 +27,6 @@
             this._matrix = new ResettableLazy<Matrix>(this.CreateViewMatrix);
         }
 
-        /// <summary>
-        /// Occurs when the view height has changed.
-        /// </summary>
-        public event EventHandler ViewHeightChanged;
-
         /// <inheritdoc/>
         public BoundingArea BoundingArea {
             get {
@@ -43,7 +39,15 @@
         /// </summary>
         /// <value>The layers to render.</value>
         [DataMember(Name = "Layers to Render")]
-        public Layers LayersToRender { get; set; } = Layers.All;
+        public Layers LayersToRender {
+            get {
+                return this._layersToRender;
+            }
+
+            set {
+                this.Set(ref this._layersToRender, value);
+            }
+        }
 
         /// <summary>
         /// Gets the render order. A lower number will be rendered first.
@@ -76,11 +80,9 @@
             }
 
             set {
-                if (value != this._samplerStateType) {
-                    this._samplerStateType = value;
-                }
-
+                this.Set(ref this._samplerStateType, value);
                 this.SamplerState = this._samplerStateType.ToSamplerState();
+                this.RaisePropertyChanged(nameof(this.SamplerState));
             }
         }
 
@@ -103,8 +105,7 @@
             }
 
             set {
-                if (value != this._snapToPixels) {
-                    this._snapToPixels = value;
+                if (this.Set(ref this._snapToPixels, value)) {
                     this._matrix.Reset();
                     this._boundingArea.Reset();
                 }
@@ -128,11 +129,9 @@
                     value = 0.1f;
                 }
 
-                if (value != this._viewHeight) {
-                    this._viewHeight = value;
+                if (this.Set(ref this._viewHeight, value)) {
                     this._boundingArea.Reset();
                     this._matrix.Reset();
-                    this.ViewHeightChanged.SafeInvoke(this);
                 }
             }
         }

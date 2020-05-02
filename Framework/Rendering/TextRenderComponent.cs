@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -14,6 +15,7 @@
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
         private readonly ResettableLazy<Vector2> _size;
+        private Color _color = Color.Black;
         private Font _font;
         private float _rotation;
         private bool _snapToPixels;
@@ -41,7 +43,15 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember(Order = 1)]
-        public Color Color { get; set; } = Color.Black;
+        public Color Color {
+            get {
+                return this._color;
+            }
+
+            set {
+                this.Set(ref this._color, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the font.
@@ -54,11 +64,12 @@
             }
 
             set {
-                this._font = value;
-                this.LoadContent();
-                this._boundingArea.Reset();
-                this._size.Reset();
-                this.RenderSettings.ResetOffset();
+                if (this.Set(ref this._font, value)) {
+                    this.LoadContent();
+                    this._boundingArea.Reset();
+                    this._size.Reset();
+                    this.RenderSettings.ResetOffset();
+                }
             }
         }
 
@@ -77,13 +88,9 @@
             }
 
             set {
-                if (value != this._rotation) {
-                    this._rotation = value.NormalizeAngle();
-
-                    if (!this._snapToPixels) {
-                        this._boundingArea.Reset();
-                        this._rotatableTransform.Reset();
-                    }
+                if (this.Set(ref this._rotation, value.NormalizeAngle()) && !this._snapToPixels) {
+                    this._boundingArea.Reset();
+                    this._rotatableTransform.Reset();
                 }
             }
         }
@@ -101,8 +108,7 @@
             }
 
             set {
-                if (value != this._snapToPixels) {
-                    this._snapToPixels = value;
+                if (this.Set(ref this._snapToPixels, value)) {
                     if (!this._snapToPixels) {
                         this._rotatableTransform.Reset();
                     }
@@ -130,10 +136,11 @@
                     value = string.Empty;
                 }
 
-                this._text = value;
-                this._boundingArea.Reset();
-                this._size.Reset();
-                this.RenderSettings.ResetOffset();
+                if (this.Set(ref this._text, value)) {
+                    this._boundingArea.Reset();
+                    this._size.Reset();
+                    this.RenderSettings.ResetOffset();
+                }
             }
         }
 
@@ -195,7 +202,7 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             this.TransformChanged += this.Self_TransformChanged;
-            this.RenderSettings.OffsetChanged += this.Offset_AmountChanged;
+            this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(new Func<Vector2>(() => this._size.Value));
         }
 
@@ -247,10 +254,12 @@
             return this.Font?.SpriteFont != null ? this.Font.SpriteFont.MeasureString(this.Text) : Vector2.Zero;
         }
 
-        private void Offset_AmountChanged(object sender, EventArgs e) {
-            this._pixelTransform.Reset();
-            this._rotatableTransform.Reset();
-            this._boundingArea.Reset();
+        private void RenderSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
+                this._pixelTransform.Reset();
+                this._rotatableTransform.Reset();
+                this._boundingArea.Reset();
+            }
         }
 
         private void Self_TransformChanged(object sender, EventArgs e) {

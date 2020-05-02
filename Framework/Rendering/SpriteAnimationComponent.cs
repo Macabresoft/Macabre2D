@@ -15,7 +15,6 @@
         private uint _currentFrameIndex;
         private uint _currentStepIndex;
 
-        [DataMember(Order = 10, Name = "Default Animation")]
         private SpriteAnimation _defaultAnimation;
 
         private byte _frameRate = 30;
@@ -39,6 +38,21 @@
         }
 
         /// <summary>
+        /// Gets or sets the default animation.
+        /// </summary>
+        /// <value>The default animation.</value>
+        [DataMember(Order = 10, Name = "Default Animation")]
+        public SpriteAnimation DefaultAnimation {
+            get {
+                return this._defaultAnimation;
+            }
+
+            set {
+                this.Set(ref this._defaultAnimation, value);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the frame rate. This is represented in frames per second.
         /// </summary>
         /// <value>The frame rate.</value>
@@ -50,7 +64,7 @@
 
             set {
                 if (value > 0) {
-                    this._frameRate = value;
+                    this.Set(ref this._frameRate, value);
                 }
             }
         }

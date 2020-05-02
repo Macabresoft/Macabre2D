@@ -25,7 +25,7 @@
     /// Render settings for rendering a sprite or text. Handles offset and flipping of the sprite.
     /// </summary>
     [DataContract]
-    public sealed class RenderSettings {
+    public sealed class RenderSettings : NotifyPropertyChanged {
         private bool _flipHorizontal;
         private bool _flipVertical;
         private Vector2 _offset;
@@ -49,11 +49,6 @@
         }
 
         /// <summary>
-        /// Occurs when <see cref="Offset"/> changes.
-        /// </summary>
-        public event EventHandler OffsetChanged;
-
-        /// <summary>
         /// Gets or sets a value indicating whether the render should be flipped horizontally.
         /// </summary>
         /// <value><c>true</c> if the render should be flipped horizontally; otherwise, <c>false</c>.</value>
@@ -64,13 +59,13 @@
             }
 
             set {
-                this._flipHorizontal = value;
-
-                if (this._flipHorizontal) {
-                    this.Orientation |= SpriteEffects.FlipHorizontally;
-                }
-                else {
-                    this.Orientation &= ~SpriteEffects.FlipHorizontally;
+                if (this.Set(ref this._flipHorizontal, value)) {
+                    if (this._flipHorizontal) {
+                        this.Orientation |= SpriteEffects.FlipHorizontally;
+                    }
+                    else {
+                        this.Orientation &= ~SpriteEffects.FlipHorizontally;
+                    }
                 }
             }
         }
@@ -86,15 +81,15 @@
             }
 
             set {
-                this._flipVertical = value;
-
-                // Since the default state is to flip vertically, this looks a little backwards, but
-                // just trust it!
-                if (this._flipVertical) {
-                    this.Orientation &= ~SpriteEffects.FlipVertically;
-                }
-                else {
-                    this.Orientation |= SpriteEffects.FlipVertically;
+                if (this.Set(ref this._flipVertical, value)) {
+                    // Since the default state is to flip vertically, this looks a little backwards,
+                    // but just trust it!
+                    if (this._flipVertical) {
+                        this.Orientation &= ~SpriteEffects.FlipVertically;
+                    }
+                    else {
+                        this.Orientation |= SpriteEffects.FlipVertically;
+                    }
                 }
             }
         }
@@ -117,10 +112,9 @@
             }
 
             set {
-                if (value != this._offset) {
-                    this._offset = value;
+                if (this.Set(ref this._offset, value)) {
                     this._type = PixelOffsetType.Custom;
-                    this.OffsetChanged.SafeInvoke(this);
+                    this.RaisePropertyChanged(true, nameof(this.OffsetType));
                 }
             }
         }
@@ -136,8 +130,7 @@
             }
 
             set {
-                if (value != this._type) {
-                    this._type = value;
+                if (this.Set(ref this._type, value)) {
                     this.ResetOffset();
                 }
             }
@@ -214,7 +207,7 @@
                     }
                 }
 
-                this.OffsetChanged.SafeInvoke(this);
+                this.RaisePropertyChanged(true, nameof(this.Offset));
             }
         }
     }

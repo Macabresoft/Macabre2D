@@ -6,8 +6,9 @@
     /// A step in a sprite animation.
     /// </summary>
     [DataContract]
-    public sealed class SpriteAnimationStep {
+    public sealed class SpriteAnimationStep : NotifyPropertyChanged {
         private int _frames = 1;
+        private Sprite _sprite;
 
         /// <summary>
         /// Gets or sets the number of frames this sprite will be seen.
@@ -20,8 +21,8 @@
             }
 
             set {
-                if (value != this._frames && value > 0) {
-                    this._frames = value;
+                if (value > 0) {
+                    this.Set(ref this._frames, value);
                 }
             }
         }
@@ -31,6 +32,14 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember]
-        public Sprite Sprite { get; set; }
+        public Sprite Sprite {
+            get {
+                return this._sprite;
+            }
+
+            set {
+                this.Set(ref this._sprite, value);
+            }
+        }
     }
 }

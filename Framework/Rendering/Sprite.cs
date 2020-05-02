@@ -10,6 +10,9 @@
     /// </summary>
     public sealed class Sprite : BaseIdentifiable, IAsset, IDisposable {
         private bool _disposedValue = false;
+        private Point _location;
+        private string _name;
+        private Point _size;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite"/> class.
@@ -67,21 +70,45 @@
         /// </summary>
         /// <value>The location.</value>
         [DataMember]
-        public Point Location { get; set; }
+        public Point Location {
+            get {
+                return this._location;
+            }
+
+            set {
+                this.Set(ref this._location, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         [DataMember]
-        public string Name { get; set; }
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>
         [DataMember]
-        public Point Size { get; set; }
+        public Point Size {
+            get {
+                return this._size;
+            }
+
+            set {
+                this.Set(ref this._size, value);
+            }
+        }
 
         /// <summary>
         /// Gets the texture.

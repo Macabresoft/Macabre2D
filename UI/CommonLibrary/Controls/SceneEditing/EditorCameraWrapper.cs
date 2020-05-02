@@ -6,6 +6,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
+    using System.ComponentModel;
     using System.Windows.Input;
 
     public sealed class EditorCameraWrapper : NotifyPropertyChanged {
@@ -37,11 +38,11 @@
                 var oldCamera = this._camera;
                 if (this.Set(ref this._camera, value)) {
                     if (oldCamera != null) {
-                        oldCamera.ViewHeightChanged -= this.Camera_ViewHeightChanged;
+                        oldCamera.PropertyChanged -= this.Camera_ViewHeightChanged;
                     }
 
                     if (this._camera != null) {
-                        this._camera.ViewHeightChanged += this.Camera_ViewHeightChanged;
+                        this._camera.PropertyChanged += this.Camera_ViewHeightChanged;
                     }
 
                     this.ResetStatusProperties();
@@ -167,16 +168,18 @@
             this._previousMouseState = mouseState;
         }
 
-        private void Camera_ViewHeightChanged(object sender, System.EventArgs e) {
-            if (this._primaryGridDrawer != null && this._primaryGridDrawer != null) {
-                var gridSize = this.GetGridSize();
-                this._primaryGridDrawer.Grid = new TileGrid(new Vector2(gridSize));
+        private void Camera_ViewHeightChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Camera.ViewHeight)) {
+                if (this._primaryGridDrawer != null && this._primaryGridDrawer != null) {
+                    var gridSize = this.GetGridSize();
+                    this._primaryGridDrawer.Grid = new TileGrid(new Vector2(gridSize));
 
-                var smallGridSize = gridSize / 2f;
-                this._secondaryGridDrawer.Grid = new TileGrid(new Vector2(smallGridSize));
+                    var smallGridSize = gridSize / 2f;
+                    this._secondaryGridDrawer.Grid = new TileGrid(new Vector2(smallGridSize));
+                }
+
+                this.ResetStatusProperties();
             }
-
-            this.ResetStatusProperties();
         }
 
         private int GetGridSize() {
