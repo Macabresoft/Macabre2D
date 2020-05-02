@@ -33,7 +33,7 @@
 
         bool ShowSelectAssetDialog(Project project, Type assetType, bool allowNull, out Asset asset);
 
-        bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out ComponentWrapper componentWrapper);
+        bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out BaseComponent component);
 
         bool ShowSelectModuleDialog(Scene scene, Type moduleType, out BaseModule module);
 
@@ -222,13 +222,13 @@
             return result;
         }
 
-        public bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out ComponentWrapper componentWrapper) {
+        public bool ShowSelectComponentDialog(SceneAsset sceneAsset, Type requestedType, out BaseComponent component) {
             var window = this._container.Resolve<SelectComponentDialog>(
                 new ParameterOverride("sceneAsset", new InjectionParameter(sceneAsset)),
                 new ParameterOverride("requestedType", new InjectionParameter(requestedType)));
 
             var result = window.SimpleShowDialog();
-            componentWrapper = result ? window.ViewModel.SelectedComponent : null;
+            component = result ? window.ViewModel.SelectedComponent : null;
             return result;
         }
 

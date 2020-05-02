@@ -4,14 +4,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabre2D.UI.CommonLibrary.Controls"
              xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters"
-             xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers"
+             xmlns:models="clr-namespace:Macabre2D.UI.CommonLibrary.Models"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:monoGameControls="clr-namespace:Macabre2D.UI.MonoGameIntegration;assembly=Macabre2D.UI.MonoGameIntegration"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:valueEditors="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors">
     <UserControl.Resources>
-        <converters:ComponentWrapperEditingStyleToVisibilityConverter x:Key="_editingStyleConverter" />
+        <converters:ComponentEditingStyleToVisibilityConverter x:Key="_editingStyleConverter" />
         <converters:EqualityToBoolConverter x:Key="_equalityToBoolConverter" />
         <converters:InverseBoolConverter x:Key="_inverseBoolConverter" />
     </UserControl.Resources>
@@ -45,39 +43,39 @@
             <Separator HorizontalAlignment="Center"
                        VerticalAlignment="Stretch" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Translation}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Translation}}"
                                        IsToggledKind="Triangle"
                                        IsNotToggledKind="TriangleOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Translation}}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Translation}}"
                                        ToolTip="Translation Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Scale}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Scale}}"
                                        IsToggledKind="Square"
                                        IsNotToggledKind="SquareOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Scale}}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Scale}}"
                                        ToolTip="Scale Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Rotation}}"
                                        IsToggledKind="Circle"
                                        IsNotToggledKind="CircleOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Rotation}}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Rotation}}"
                                        ToolTip="Rotation Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Tile}}"
                                        IsToggledKind="ViewGrid"
                                        IsNotToggledKind="GridLarge"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.Tile}}"
+                                       Visibility="{Binding ComponentService.SelectedItem, Converter={StaticResource _editingStyleConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.Tile}}"
                                        ToolTip="Tile Gizmo" />
 
-            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static frameworkWrappers:ComponentEditingStyle.None}}"
+            <controls:IconToggleButton IsToggled="{Binding MonoGameService.EditingStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource _equalityToBoolConverter}, ConverterParameter={x:Static models:ComponentEditingStyle.None}}"
                                        IsToggledKind="EyeOff"
                                        IsNotToggledKind="EyeOffOutline"
                                        IsHitTestVisible="{Binding IsToggled, RelativeSource={RelativeSource Self}, Converter={StaticResource _inverseBoolConverter}}"

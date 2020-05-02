@@ -9,6 +9,6 @@
         /// Gets the rotation.
         /// </summary>
         /// <value>The rotation.</value>
-        float Rotation { get; }
+        float Rotation { get; set; }
     }
 }

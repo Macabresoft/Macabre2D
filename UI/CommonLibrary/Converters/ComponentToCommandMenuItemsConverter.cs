@@ -3,7 +3,6 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Common;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -15,8 +14,8 @@
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             IReadOnlyCollection<MenuItem> result;
-            if (value is ComponentWrapper componentWrapper && componentWrapper.Component != null) {
-                result = GetMenuItems(componentWrapper.Component);
+            if (value is BaseComponent component) {
+                result = GetMenuItems(component);
             }
             else {
                 result = new List<MenuItem>();

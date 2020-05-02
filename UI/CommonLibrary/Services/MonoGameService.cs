@@ -3,9 +3,9 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Controls.SceneEditing;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Microsoft.Xna.Framework;
     using System;
+    using System.ComponentModel;
     using System.Linq;
 
     public interface IMonoGameService {
@@ -49,7 +49,7 @@
             ISceneService sceneService) {
             this._sceneEditor = sceneEditor;
             this._componentService = componentService;
-            this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._componentService.PropertyChanged += this.ComponentService_PropertyChanged;
             this._fileService = fileService;
             this._sceneService = sceneService;
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
@@ -111,30 +111,32 @@
             this._sceneEditor.ResetCamera();
         }
 
-        private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            var editingStyleOverride = this.GetEditingStyleOverride(e.NewValue);
+        private void ComponentService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this._componentService.SelectedItem)) {
+                var componentEditingStyle = this._componentService.SelectedItem.GetEditingStyle();
+                var editingStyleOverride = this.GetEditingStyleOverride(componentEditingStyle);
 
-            if (e.NewValue != null && editingStyleOverride == ComponentEditingStyle.None && !this._hasSelectedGizmoBeenManuallyChanged && e.NewValue.EditingStyle != ComponentEditingStyle.None) {
-                foreach (var editingStyle in this._recentlyUsedEditingStyles) {
-                    if (e.NewValue.EditingStyle.HasFlag(editingStyle)) {
-                        editingStyleOverride = editingStyle;
-                        break;
+                if (this._componentService.SelectedItem != null && editingStyleOverride == ComponentEditingStyle.None && !this._hasSelectedGizmoBeenManuallyChanged && componentEditingStyle != ComponentEditingStyle.None) {
+                    foreach (var editingStyle in this._recentlyUsedEditingStyles) {
+                        if (componentEditingStyle.HasFlag(editingStyle)) {
+                            editingStyleOverride = editingStyle;
+                            break;
+                        }
                     }
                 }
-            }
 
-            this.SetEditingStyle(editingStyleOverride);
+                this.SetEditingStyle(editingStyleOverride);
+            }
         }
 
-        private ComponentEditingStyle GetEditingStyleOverride(ComponentWrapper wrapper) {
+        private ComponentEditingStyle GetEditingStyleOverride(ComponentEditingStyle componentEditingStyle) {
             var result = ComponentEditingStyle.None;
-            if (wrapper != null) {
-                if (wrapper.EditingStyle.HasFlag(ComponentEditingStyle.Tile)) {
-                    result = ComponentEditingStyle.Tile;
-                }
-                else if (wrapper.EditingStyle.HasFlag(this.EditingStyle)) {
-                    result = this.EditingStyle;
-                }
+
+            if (componentEditingStyle.HasFlag(ComponentEditingStyle.Tile)) {
+                result = ComponentEditingStyle.Tile;
+            }
+            else if (componentEditingStyle.HasFlag(this.EditingStyle)) {
+                result = this.EditingStyle;
             }
 
             return result;

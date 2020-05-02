@@ -5,10 +5,10 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -28,20 +28,20 @@
             new PropertyMetadata(true));
 
         public static readonly DependencyProperty RootProperty = DependencyProperty.Register(
-                            nameof(Root),
-            typeof(IParent<ComponentWrapper>),
+            nameof(Root),
+            typeof(Scene),
             typeof(ComponentHierarchy),
             new PropertyMetadata());
 
         public static readonly DependencyProperty SelectedComponentProperty = DependencyProperty.Register(
             nameof(SelectedComponent),
-            typeof(ComponentWrapper),
+            typeof(BaseComponent),
             typeof(ComponentHierarchy),
             new PropertyMetadata());
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
             nameof(SelectedItem),
-            typeof(IParent<ComponentWrapper>),
+            typeof(object),
             typeof(ComponentHierarchy),
             new PropertyMetadata());
 
@@ -64,11 +64,11 @@
         private readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
 
         public ComponentHierarchy() {
-            this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._componentService.PropertyChanged += this.ComponentService_SelectionChanged;
             this._addComponentCommand = new RelayCommand(this.AddComponent, () => this.SelectedItem != null);
-            this._cloneComponentCommand = new RelayCommand(this.CloneComponent, () => this.SelectedItem is ComponentWrapper);
-            this._createPrefabCommand = new RelayCommand(this.CreatePrefab, () => this.SelectedItem is ComponentWrapper);
-            this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem is ComponentWrapper);
+            this._cloneComponentCommand = new RelayCommand(this.CloneComponent, () => this.SelectedItem is BaseComponent);
+            this._createPrefabCommand = new RelayCommand(this.CreatePrefab, () => this.SelectedItem is BaseComponent);
+            this._removeComponentCommand = new RelayCommand(this.RemoveComponent, () => this.SelectedItem is BaseComponent);
             this.InitializeComponent();
         }
 
@@ -106,38 +106,43 @@
             }
         }
 
-        public IParent<ComponentWrapper> Root {
-            get { return (IParent<ComponentWrapper>)this.GetValue(RootProperty); }
+        public Scene Root {
+            get { return (Scene)this.GetValue(RootProperty); }
             set { this.SetValue(RootProperty, value); }
         }
 
-        public ComponentWrapper SelectedComponent {
-            get { return (ComponentWrapper)this.GetValue(SelectedComponentProperty); }
+        public BaseComponent SelectedComponent {
+            get { return (BaseComponent)this.GetValue(SelectedComponentProperty); }
             set { this.SetValue(SelectedComponentProperty, value); }
         }
 
-        public IParent<ComponentWrapper> SelectedItem {
-            get { return (IParent<ComponentWrapper>)this.GetValue(SelectedItemProperty); }
+        public object SelectedItem {
+            get { return this.GetValue(SelectedItemProperty); }
             set { this.SetValue(SelectedItemProperty, value); }
         }
 
         public IEnumerable<Type> ValidTypes {
             get {
-                return new[] { typeof(ComponentWrapper) };
+                return new[] { typeof(BaseComponent) };
             }
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo) {
-            if (dropInfo.Data is ComponentWrapper &&
-                dropInfo.TargetItem is IParent<ComponentWrapper>) {
+            if (dropInfo.Data is BaseComponent &&
+                (dropInfo.TargetItem is BaseComponent || dropInfo.TargetItem is Scene)) {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
             }
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo) {
-            if (dropInfo.Data is ComponentWrapper component && dropInfo.TargetItem is IParent<ComponentWrapper> target) {
-                component.Parent = target;
+            if (dropInfo.Data is BaseComponent component) {
+                if (dropInfo.TargetItem is BaseComponent targetComponent) {
+                    component.Parent = targetComponent;
+                }
+                else if (dropInfo.TargetItem is Scene) {
+                    component.Parent = null;
+                }
             }
         }
 
@@ -150,37 +155,47 @@
             }
         }
 
-        private void AddComponent(BaseComponent component, IParent<ComponentWrapper> parent) {
-            var componentWrapper = new ComponentWrapper(component);
+        private void AddComponent(BaseComponent component, object parent) {
+            var originalParent = component.Parent;
+            if (parent is BaseComponent parentComponent) {
+                var undoCommand = new UndoCommand(
+                    () => parentComponent.AddChild(component),
+                    () => parentComponent.RemoveChild(component));
 
-            var undoCommand = new UndoCommand(
-                () => parent.AddChild(componentWrapper),
-                () => parent.RemoveChild(componentWrapper));
+                this._undoService.Do(undoCommand);
+            }
+            else if (parent is Scene scene) {
+                var undoCommand = new UndoCommand(
+                    () => scene.AddChild(component),
+                    () => scene.RemoveChild(component));
 
-            this._undoService.Do(undoCommand);
+                this._undoService.Do(undoCommand);
+            }
         }
 
         private void CloneComponent() {
-            if (this.SelectedItem is ComponentWrapper componentWrapper) {
-                var clone = componentWrapper.Component.Clone();
-                this.AddComponent(clone, componentWrapper.Parent);
+            if (this.SelectedItem is BaseComponent component) {
+                var clone = component.Clone();
+                this.AddComponent(clone, component.Parent);
             }
         }
 
-        private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (e.NewValue == null) {
-                if (this._treeView.FindTreeViewItem(this.Root) is TreeViewItem rootTreeViewItem) {
-                    rootTreeViewItem.IsSelected = true;
+        private void ComponentService_SelectionChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this._componentService.SelectedItem)) {
+                if (this._componentService.SelectedItem == null) {
+                    if (this._treeView.FindTreeViewItem(this.Root) is TreeViewItem rootTreeViewItem) {
+                        rootTreeViewItem.IsSelected = true;
+                    }
                 }
-            }
-            else if (this._treeView.FindTreeViewItem(e.NewValue) is TreeViewItem treeViewItem) {
-                treeViewItem.IsSelected = true;
+                else if (this._treeView.FindTreeViewItem(this._componentService.SelectedItem) is TreeViewItem treeViewItem) {
+                    treeViewItem.IsSelected = true;
+                }
             }
         }
 
         private void CreatePrefab() {
-            if (this.SelectedItem is ComponentWrapper component) {
-                var clone = component.Component.Clone();
+            if (this.SelectedItem is BaseComponent component) {
+                var clone = component.Clone();
                 clone.Parent = null;
                 var asset = new PrefabAsset(clone.Name);
                 asset.SavableValue.Component = clone;
@@ -194,15 +209,14 @@
                         Prefrab = asset.SavableValue
                     };
 
-                    var prefabComponentWrapper = new ComponentWrapper(prefabComponent);
-                    parent.AddChild(prefabComponentWrapper);
-                    this.SelectedItem = prefabComponentWrapper;
+                    parent.AddChild(prefabComponent);
+                    this.SelectedItem = prefabComponent;
                 }
             }
         }
 
         private void RemoveComponent() {
-            if (this.SelectedItem is ComponentWrapper component) {
+            if (this.SelectedItem is BaseComponent component) {
                 UndoCommand undoCommand;
 
                 if (component.Parent != null) {
@@ -224,15 +238,15 @@
         private void TreeItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (this.IsEditable) {
                 var treeViewItem = (e.OriginalSource as DependencyObject)?.FindAncestor<TreeViewItem>();
-                if (treeViewItem?.DataContext is ComponentWrapper componentWrapper && this._monoGameService.SceneEditor != null) {
-                    this._monoGameService.SceneEditor.FocusComponent(componentWrapper.Component);
+                if (treeViewItem?.DataContext is BaseComponent component && this._monoGameService.SceneEditor != null) {
+                    this._monoGameService.SceneEditor.FocusComponent(component);
                 }
             }
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            this.SelectedItem = e.NewValue as IParent<ComponentWrapper>;
-            this.SelectedComponent = e.NewValue as ComponentWrapper;
+            this.SelectedItem = e.NewValue;
+            this.SelectedComponent = e.NewValue as BaseComponent;
             this._addComponentCommand.RaiseCanExecuteChanged();
             this._cloneComponentCommand.RaiseCanExecuteChanged();
             this._createPrefabCommand.RaiseCanExecuteChanged();

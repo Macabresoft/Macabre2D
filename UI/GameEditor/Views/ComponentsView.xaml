@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <controls:ComponentHierarchy Grid.Row="0"
-                                     Root="{Binding SceneService.CurrentScene}"
+                                     Root="{Binding SceneService.CurrentScene.SavableValue}"
                                      SelectedComponent="{Binding ComponentService.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <GridSplitter Grid.Row="1"

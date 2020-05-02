@@ -39,7 +39,7 @@
         /// Gets the children.
         /// </summary>
         /// <value>The children.</value>
-        IReadOnlyCollection<BaseComponent> Components { get; }
+        IReadOnlyCollection<BaseComponent> Children { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is initialized.
@@ -56,16 +56,16 @@
         /// <summary>
         /// Adds a component as a child of this scene.
         /// </summary>
-        /// <typeparam name="T">A component type.</typeparam>
-        /// <returns>The added component.</returns>
-        T AddComponent<T>() where T : BaseComponent, new();
+        /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
+        /// <param name="component">The component.</param>
+        bool AddChild(BaseComponent component);
 
         /// <summary>
         /// Adds a component as a child of this scene.
         /// </summary>
-        /// <returns><c>true</c>, if component was added, <c>false</c> otherwise.</returns>
-        /// <param name="component">The component.</param>
-        bool AddComponent(BaseComponent component);
+        /// <typeparam name="T">A component type.</typeparam>
+        /// <returns>The added component.</returns>
+        T AddChild<T>() where T : BaseComponent, new();
 
         /// <summary>
         /// Adds the module.

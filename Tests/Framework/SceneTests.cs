@@ -12,7 +12,7 @@
         public static void Scene_AddComponent_AddsModuleDuringInitializeTest() {
             using (var scene = new Scene())
             using (var component = new ModuleOwningTestComponent()) {
-                scene.AddComponent(component);
+                scene.AddChild(component);
                 scene.Initialize();
                 Assert.True(component.IsInitialized);
                 Assert.True(component.Module.IsInitialized);
@@ -38,14 +38,14 @@
                 scene.ComponentCreated += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
                 scene.Initialize();
-                scene.AddComponent(parent);
+                scene.AddChild(parent);
 
                 Assert.True(parentHasBeenAdded);
                 Assert.True(child1HasBeenAdded);
                 Assert.True(child2HasBeenAdded);
-                Assert.False(scene.Components.Contains(child1));
-                Assert.False(scene.Components.Contains(child2));
-                Assert.Contains(parent, scene.Components.ToList());
+                Assert.False(scene.Children.Contains(child1));
+                Assert.False(scene.Children.Contains(child2));
+                Assert.Contains(parent, scene.Children.ToList());
             }
         }
 
@@ -67,7 +67,7 @@
                 scene.ComponentCreated += (object sender, BaseComponent e) => child1HasBeenAdded = child1HasBeenAdded || e == child1;
                 scene.ComponentCreated += (object sender, BaseComponent e) => child2HasBeenAdded = child2HasBeenAdded || e == child2;
 
-                scene.AddComponent(parent);
+                scene.AddChild(parent);
 
                 Assert.False(parentHasBeenAdded);
                 Assert.False(child1HasBeenAdded);
@@ -78,9 +78,9 @@
                 Assert.True(parentHasBeenAdded);
                 Assert.True(child1HasBeenAdded);
                 Assert.True(child2HasBeenAdded);
-                Assert.False(scene.Components.Contains(child1));
-                Assert.False(scene.Components.Contains(child2));
-                Assert.Contains(parent, scene.Components.ToList());
+                Assert.False(scene.Children.Contains(child1));
+                Assert.False(scene.Children.Contains(child2));
+                Assert.Contains(parent, scene.Children.ToList());
             }
         }
 
@@ -90,7 +90,7 @@
             using (var scene = new Scene())
             using (var child = new TestComponent())
             using (var parent = new TestComponent()) {
-                scene.AddComponent(parent);
+                scene.AddChild(parent);
                 child.Parent = parent;
 
                 var hasBeenAdded = false;
@@ -99,8 +99,8 @@
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
-                Assert.False(scene.Components.Contains(child));
-                Assert.Contains(parent, scene.Components.ToList());
+                Assert.False(scene.Children.Contains(child));
+                Assert.Contains(parent, scene.Children.ToList());
             }
         }
 
@@ -110,7 +110,7 @@
             using (var scene = new Scene())
             using (var child = new TestComponent())
             using (var parent = new TestComponent()) {
-                scene.AddComponent(parent);
+                scene.AddChild(parent);
                 child.Parent = parent;
 
                 var hasBeenAdded = false;
@@ -121,8 +121,8 @@
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
-                Assert.False(scene.Components.Contains(child));
-                Assert.Contains(parent, scene.Components.ToList());
+                Assert.False(scene.Children.Contains(child));
+                Assert.Contains(parent, scene.Children.ToList());
             }
         }
 
@@ -136,10 +136,10 @@
                 scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
 
                 scene.Initialize();
-                scene.AddComponent(component);
+                scene.AddChild(component);
 
                 Assert.True(hasBeenAdded);
-                Assert.Contains(component, scene.Components.ToList());
+                Assert.Contains(component, scene.Children.ToList());
             }
         }
 
@@ -151,14 +151,14 @@
                 var hasBeenAdded = false;
 
                 scene.ComponentCreated += (object sender, BaseComponent e) => hasBeenAdded = hasBeenAdded || e == component;
-                scene.AddComponent(component);
+                scene.AddChild(component);
 
                 Assert.False(hasBeenAdded);
 
                 scene.Initialize();
 
                 Assert.True(hasBeenAdded);
-                Assert.Contains(component, scene.Components.ToList());
+                Assert.Contains(component, scene.Children.ToList());
             }
         }
 
@@ -167,16 +167,16 @@
         public static void Scene_DestroyComponent_NullParentTest() {
             using (var scene = new Scene())
             using (var component = new TestComponent()) {
-                scene.AddComponent(component);
+                scene.AddChild(component);
                 scene.Initialize();
-                Assert.Contains(component, scene.Components.ToList());
+                Assert.Contains(component, scene.Children.ToList());
 
                 var hasBeenRemoved = false;
                 scene.ComponentDestroyed += (object sender, BaseComponent e) => hasBeenRemoved = hasBeenRemoved || e == component;
                 scene.DestroyComponent(component);
 
                 Assert.True(hasBeenRemoved);
-                Assert.False(scene.Components.Contains(component));
+                Assert.False(scene.Children.Contains(component));
             }
         }
     }

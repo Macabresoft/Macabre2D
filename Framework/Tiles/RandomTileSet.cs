@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -47,7 +48,7 @@
         public WeightedTile AddTile() {
             var tile = new WeightedTile();
             this._tiles.Add(tile);
-            tile.SpriteChanged += this.Tile_SpriteChanged;
+            tile.PropertyChanged += this.Tile_PropertyChanged;
             return tile;
         }
 
@@ -148,7 +149,7 @@
         /// <param name="tile">The tile.</param>
         /// <returns>A value indicating whether or not the tile was removed.</returns>
         public bool RemoveTile(WeightedTile tile) {
-            tile.SpriteChanged -= Tile_SpriteChanged;
+            tile.PropertyChanged -= Tile_PropertyChanged;
             return this._tiles.Remove(tile);
         }
 
@@ -163,8 +164,8 @@
             return sprite != null;
         }
 
-        private void Tile_SpriteChanged(object sender, EventArgs e) {
-            if (this._isLoaded && sender is WeightedTile tile) {
+        private void Tile_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (this._isLoaded && e.PropertyName == nameof(WeightedTile.Sprite) && sender is WeightedTile tile) {
                 tile.Sprite?.Load();
                 var index = (ushort)this._tiles.IndexOf(tile);
                 this.SpriteChanged?.SafeInvoke(this, index);

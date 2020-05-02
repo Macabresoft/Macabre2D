@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.IO;
     using System.Linq;
@@ -20,8 +21,8 @@
         private static readonly Action<IUpdateableModule, FrameTime> ModulePreUpdateAction = (module, frameTime) => module.PreUpdate(frameTime);
         private static readonly Action<IUpdateableComponent, FrameTime> UpdateAction = (updateable, frameTime) => updateable.Update(frameTime);
         private static readonly Func<IUpdateableComponentAsync, FrameTime, Task> UpdateAsyncAction = (updateableAsync, frameTime) => updateableAsync.UpdateAsync(frameTime);
+        private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
-        private readonly List<BaseComponent> _components = new List<BaseComponent>();
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
 
         private readonly FilterSortCollection<IDrawableComponent> _drawableComponents = new FilterSortCollection<IDrawableComponent>(
@@ -93,9 +94,9 @@
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<BaseComponent> Components {
+        public IReadOnlyCollection<BaseComponent> Children {
             get {
-                return this._components;
+                return this._children;
             }
         }
 
@@ -124,32 +125,42 @@
         internal HashSet<BaseComponent> ComponentsForSaving { get; } = new HashSet<BaseComponent>();
 
         /// <inheritdoc/>
-        public T AddComponent<T>() where T : BaseComponent, new() {
-            var component = new T { IsEnabled = true };
-            this.AddComponent(component);
-            return component;
-        }
-
-        /// <inheritdoc/>
-        public bool AddComponent(BaseComponent component) {
+        public bool AddChild(BaseComponent component) {
             if (component == null) {
                 throw new ArgumentNullException(nameof(component));
             }
 
-            if (!this.IsInitialized) {
-                if (!this.ComponentsForSaving.Any(x => x.Id == component.Id)) {
-                    this.ComponentsForSaving.Add(component);
+            if (component.Parent != null) {
+                component.Parent = null;
+            }
+            else {
+                if (!this.IsInitialized) {
+                    if (!this.ComponentsForSaving.Any(x => x.Id == component.Id)) {
+                        this.ComponentsForSaving.Add(component);
+                    }
+
+                    return false;
                 }
 
-                return false;
-            }
+                if (component.Parent != null) {
+                }
+                else {
+                }
 
-            if (!this._components.Any(x => x.Id == component.Id)) {
-                this._components.Add(component);
-                this.TrackComponent(component);
+                if (!this._children.Any(x => x.Id == component.Id)) {
+                    this._children.Add(component);
+                    this.TrackComponent(component);
+                }
             }
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public T AddChild<T>() where T : BaseComponent, new() {
+            var component = new T { IsEnabled = true };
+            this.AddChild(component);
+            return component;
         }
 
         // <inheritdoc/>
@@ -226,7 +237,7 @@
 
         /// <inheritdoc/>
         public BaseComponent FindComponent(string name) {
-            foreach (var component in this.Components.Concat(this.ComponentsForSaving)) {
+            foreach (var component in this.Children.Concat(this.ComponentsForSaving)) {
                 if (string.Equals(name, component.Name)) {
                     return component;
                 }
@@ -242,7 +253,7 @@
 
         /// <inheritdoc/>
         public T FindComponentOfType<T>() where T : BaseComponent {
-            foreach (var component in this.Components) {
+            foreach (var component in this.Children) {
                 if (component is T componentOfType) {
                     return componentOfType;
                 }
@@ -271,7 +282,7 @@
         public IEnumerable<BaseComponent> GetAllComponents(bool includeComponentsForSaving, bool includeNestedComponents) {
             var components = new List<BaseComponent>();
 
-            foreach (var component in this.Components) {
+            foreach (var component in this.Children) {
                 components.Add(component);
 
                 if (includeNestedComponents) {
@@ -296,7 +307,7 @@
         public List<T> GetAllComponentsOfType<T>() {
             var components = new List<T>();
 
-            foreach (var component in this._components) {
+            foreach (var component in this._children) {
                 if (component is T specifiedComponent) {
                     components.Add(specifiedComponent);
                 }
@@ -352,7 +363,7 @@
                 }
 
                 foreach (var component in this.ComponentsForSaving) {
-                    this.AddComponent(component);
+                    this.AddChild(component);
                 }
 
                 this.ComponentsForSaving.Clear();
@@ -365,7 +376,7 @@
 
         /// <inheritdoc/>
         public void LoadContent() {
-            foreach (var child in this.Components) {
+            foreach (var child in this.Children) {
                 child.LoadContent();
             }
         }
@@ -381,7 +392,7 @@
         /// <param name="component">The component.</param>
         /// <returns>A value indicating whether or not the child was removed.</returns>
         public bool RemoveChild(BaseComponent component) {
-            var result = this._components.Remove(component);
+            var result = this._children.Remove(component);
             result = this.ComponentsForSaving.Remove(component) || result;
             return result;
         }
@@ -442,7 +453,7 @@
         /// </summary>
         /// <param name="filePath">Path of the file.</param>
         public void SaveToFile(string filePath) {
-            this.ComponentsForSaving.AddRange(this._components);
+            this.ComponentsForSaving.AddRange(this._children);
             this.Name = Path.GetFileNameWithoutExtension(filePath);
             Serializer.Instance.Serialize(this, filePath);
         }
@@ -480,12 +491,12 @@
         private void Component_ParentChanged(object sender, BaseComponent e) {
             if (sender is BaseComponent baseComponent) {
                 if (e == null) {
-                    if (!this._components.Any(x => x.Id == baseComponent.Id)) {
-                        this._components.Add(baseComponent);
+                    if (!this._children.Any(x => x.Id == baseComponent.Id)) {
+                        this._children.Add(baseComponent);
                     }
                 }
                 else {
-                    this._components.Remove(baseComponent);
+                    this._children.Remove(baseComponent);
                 }
             }
         }
@@ -493,7 +504,7 @@
         private void Dispose(bool disposing) {
             if (!this._disposedValue) {
                 if (disposing) {
-                    foreach (var component in this._components) {
+                    foreach (var component in this._children) {
                         component.Dispose();
                     }
 

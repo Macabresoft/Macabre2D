@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.UI.CommonLibrary.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
+    using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;

@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -59,8 +58,8 @@
             this._gridDrawer.Initialize(this._game.CurrentScene);
         }
 
-        public bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
-            if (selectedComponent.Component is ITileable tileable) {
+        public bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, BaseComponent selectedComponent) {
+            if (selectedComponent is ITileable tileable) {
                 if (this.ShouldAdd(mouseState)) {
                     this.AddTile(tileable, mousePosition);
                 }

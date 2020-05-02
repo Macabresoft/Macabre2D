@@ -636,6 +636,8 @@
             this._localPosition = localTransform.Position;
             this._localScale = localTransform.Scale;
             this.HandleMatrixOrTransformChanged();
+            this.RaisePropertyChanged(nameof(this.LocalPosition));
+            this.RaisePropertyChanged(nameof(this.LocalScale));
         }
 
         /// <summary>

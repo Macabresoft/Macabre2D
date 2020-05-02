@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -68,7 +67,7 @@
             this._yAxisTriangleRenderer.Initialize(this.Game.CurrentScene);
         }
 
-        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, BaseComponent selectedComponent) {
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
@@ -91,15 +90,15 @@
                 }
                 else {
                     if (this._neutralAxisBody.Collider.Contains(mousePosition)) {
-                        this.StartDrag(GizmoAxis.Neutral, selectedComponent.Component.WorldTransform.Position);
+                        this.StartDrag(GizmoAxis.Neutral, selectedComponent.WorldTransform.Position);
                         hadInteractions = true;
                     }
                     else if (this._xAxisBody.Collider.Contains(mousePosition)) {
-                        this.StartDrag(GizmoAxis.X, selectedComponent.Component.WorldTransform.Position);
+                        this.StartDrag(GizmoAxis.X, selectedComponent.WorldTransform.Position);
                         hadInteractions = true;
                     }
                     else if (this._yAxisBody.Collider.Contains(mousePosition)) {
-                        this.StartDrag(GizmoAxis.Y, selectedComponent.Component.WorldTransform.Position);
+                        this.StartDrag(GizmoAxis.Y, selectedComponent.WorldTransform.Position);
                         hadInteractions = true;
                     }
                 }
@@ -153,10 +152,10 @@
             }
         }
 
-        private void EndDrag(ComponentWrapper selectedComponent) {
+        private void EndDrag(BaseComponent selectedComponent) {
             if (this.CurrentAxis != GizmoAxis.None) {
                 var originalPosition = this._unmovedWorldPosition;
-                var newPosition = selectedComponent.Component.WorldTransform.Position;
+                var newPosition = selectedComponent.WorldTransform.Position;
                 var undoCommand = new UndoCommand(() => {
                     this.UpdatePosition(selectedComponent, newPosition);
                 },
@@ -202,9 +201,8 @@
             this.YAxisColor = new Color(this.YAxisColor, 0.5f);
         }
 
-        private void UpdatePosition(ComponentWrapper component, Vector2 newPosition) {
-            component.Component.SetWorldPosition(newPosition);
-            component.UpdateProperty(nameof(BaseComponent.LocalPosition), component.Component.LocalPosition);
+        private void UpdatePosition(BaseComponent component, Vector2 newPosition) {
+            component.SetWorldPosition(newPosition);
         }
     }
 }

@@ -1,18 +1,19 @@
 ﻿namespace Macabre2D.UI.CommonLibrary.Converters {
 
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
+    using Macabre2D.Framework;
+    using Macabre2D.UI.CommonLibrary.Models;
     using System;
     using System.Globalization;
     using System.Windows;
     using System.Windows.Data;
 
-    public sealed class ComponentWrapperEditingStyleToVisibilityConverter : IValueConverter {
+    public sealed class ComponentEditingStyleToVisibilityConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var result = Visibility.Collapsed;
 
-            if (value is ComponentWrapper component && parameter is ComponentEditingStyle editingStyle) {
-                result = (component.EditingStyle & editingStyle) == editingStyle ? Visibility.Visible : Visibility.Collapsed;
+            if (value is BaseComponent component && parameter is ComponentEditingStyle editingStyle) {
+                result = (component.GetEditingStyle() & editingStyle) == editingStyle ? Visibility.Visible : Visibility.Collapsed;
             }
 
             return result;

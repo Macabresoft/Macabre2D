@@ -17,7 +17,7 @@
             var scene = new Scene();
 
             var cameraScroller = new CameraScroller();
-            scene.AddComponent(cameraScroller);
+            scene.AddChild(cameraScroller);
 
             var camera = new Camera();
             cameraScroller.AddChild(camera);
@@ -43,7 +43,7 @@
         }
 
         private void PostLoadAudioStuff() {
-            var pianoComponent = this.CurrentScene.AddComponent<PianoComponent>();
+            var pianoComponent = this.CurrentScene.AddChild<PianoComponent>();
             pianoComponent.LocalPosition -= new Vector2(6f, 15f);
         }
 
@@ -52,7 +52,7 @@
             var arrowSpriteRenderer1 = new SpriteRenderComponent();
             arrowSpriteRenderer1.Sprite = arrowSprite1;
             arrowSpriteRenderer1.LocalPosition += new Vector2(2f, -2f);
-            this.CurrentScene.AddComponent(arrowSpriteRenderer1);
+            this.CurrentScene.AddChild(arrowSpriteRenderer1);
 
             var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
             var arrowSpriteRenderer2 = new SpriteRenderComponent();
@@ -60,32 +60,32 @@
             arrowSpriteRenderer2.Sprite = arrowSprite2;
             arrowSpriteRenderer2.LocalPosition += new Vector2(3f, -1f);
             arrowSpriteRenderer2.LocalScale = new Vector2(0.75f, 2f);
-            this.CurrentScene.AddComponent(arrowSpriteRenderer2);
+            this.CurrentScene.AddChild(arrowSpriteRenderer2);
 
             var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
             var quadSpriteRenderer1 = new SpriteRenderComponent();
             quadSpriteRenderer1.Sprite = quadSprite1;
             quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
-            this.CurrentScene.AddComponent(quadSpriteRenderer1);
+            this.CurrentScene.AddChild(quadSpriteRenderer1);
 
             var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
             var quadSpriteRenderer2 = new SpriteRenderComponent();
             quadSpriteRenderer2.Color = Color.Khaki;
             quadSpriteRenderer2.Sprite = quadSprite2;
             quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
-            this.CurrentScene.AddComponent(quadSpriteRenderer2);
+            this.CurrentScene.AddChild(quadSpriteRenderer2);
 
             var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
             var rightTriangleSpriteRenderer1 = new SpriteRenderComponent();
             rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
             rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
-            this.CurrentScene.AddComponent(rightTriangleSpriteRenderer1);
+            this.CurrentScene.AddChild(rightTriangleSpriteRenderer1);
 
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
             var circleSpriteRenderer = new SpriteRenderComponent();
             circleSpriteRenderer.Sprite = circleSprite;
             circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
-            this.CurrentScene.AddComponent(circleSpriteRenderer);
+            this.CurrentScene.AddChild(circleSpriteRenderer);
 
             var binaryTileMap = new BinaryTileMap {
                 DrawOrder = -300,
@@ -110,7 +110,7 @@
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;
 
-            this.CurrentScene.AddComponent(binaryTileMap);
+            this.CurrentScene.AddChild(binaryTileMap);
 
             var spriteAnimation = new SpriteAnimation();
             var coloredSquaresId = this.AssetManager.GetId("ColoredSquares");
@@ -136,7 +136,7 @@
             this.AssetManager.SetMapping(lasterId, "laser");
 
             var audioPlayer = new AudioPlayer();
-            scene.AddComponent(audioPlayer);
+            scene.AddChild(audioPlayer);
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClip = new AudioClip();
             audioPlayer.AudioClip.Id = lasterId;
@@ -157,11 +157,11 @@
 
             spriteAnimator.DrawOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
-            scene.AddComponent(spriteAnimator);
+            scene.AddChild(spriteAnimator);
 
             var spinner = new Scaler();
             spinner.LocalPosition -= new Vector2(2f, 0);
-            scene.AddComponent(spinner);
+            scene.AddChild(spinner);
             var spriteRenderer3 = new SpriteRenderComponent();
             spinner.AddChild(spriteRenderer3);
             spriteRenderer3.DrawOrder = -200;
@@ -187,7 +187,7 @@
             outwardSpinningDotBoundingArea.LineThickness = 3f;
 
             var textRenderer = new TextRenderComponent();
-            scene.AddComponent(textRenderer);
+            scene.AddChild(textRenderer);
             textRenderer.Text = "Hello, World";
             textRenderer.Font = new Font(fontId);
             textRenderer.Color = Color.DarkMagenta;
@@ -198,7 +198,7 @@
             textRendererBoundingArea.LineThickness = 3f;
             textRenderer.AddChild(textRendererBoundingArea);
 
-            scene.AddComponent(new MouseClickDebugger());
+            scene.AddChild(new MouseClickDebugger());
         }
     }
 }

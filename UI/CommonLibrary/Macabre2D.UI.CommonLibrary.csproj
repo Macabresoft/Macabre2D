@@ -323,7 +323,7 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ComponentParentToCollectionConverter.cs" />
     <Compile Include="Converters\ComponentToCommandMenuItemsConverter.cs" />
-    <Compile Include="Converters\ComponentWrapperEditingStyleToVisibilityConverter.cs" />
+    <Compile Include="Converters\ComponentEditingStyleToVisibilityConverter.cs" />
     <Compile Include="Converters\EnumerableToVisibilityConverter.cs" />
     <Compile Include="Converters\EnumTypeToValuesConverter.cs" />
     <Compile Include="Converters\EqualityToBoolConverter.cs" />
@@ -398,9 +398,9 @@
     <Compile Include="Models\AudioAsset.cs" />
     <Compile Include="Models\AutoTileSetAsset.cs" />
     <Compile Include="Models\BuildConfiguration.cs" />
+    <Compile Include="Models\ComponentEditingStyle.cs" />
     <Compile Include="Models\FolderAsset.cs" />
     <Compile Include="Models\FontAsset.cs" />
-    <Compile Include="Models\FrameworkWrappers\ComponentWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\ModuleWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\NullSpriteWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\SpriteAnimationStepWrapper.cs" />

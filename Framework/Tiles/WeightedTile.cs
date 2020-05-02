@@ -28,11 +28,6 @@
         }
 
         /// <summary>
-        /// Occurs when the sprite is changed.
-        /// </summary>
-        public event EventHandler SpriteChanged;
-
-        /// <summary>
         /// Gets or sets the sprite.
         /// </summary>
         /// <value>The sprite.</value>

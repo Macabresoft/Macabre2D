@@ -19,6 +19,7 @@
 * Using MonoGame.WpfCore template instead of MonoGame.Framework.WpfInterop to display and edit scenes in the editor.
 * Updated icon to new simplified skull.
 * Components and modules use PropertyChanged instead of specific events.
+* Editor now uses components directly instead of using wrappers.
 
 ### Fixes
 

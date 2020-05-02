@@ -1,12 +1,12 @@
-﻿using Macabre2D.UI.CommonLibrary.Models;
-using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
-using Macabre2D.UI.CommonLibrary.Models.Validation;
-using System;
+﻿namespace Macabre2D.UI.CommonLibrary.Dialogs {
 
-namespace Macabre2D.UI.CommonLibrary.Dialogs {
+    using Macabre2D.Framework;
+    using Macabre2D.UI.CommonLibrary.Models;
+    using Macabre2D.UI.CommonLibrary.Models.Validation;
+    using System;
 
     public class SelectComponentViewModel : OKCancelDialogViewModel {
-        private ComponentWrapper _selectedComponent;
+        private BaseComponent _selectedComponent;
 
         public SelectComponentViewModel(SceneAsset sceneAsset, Type requestedType) {
             this.Scene = sceneAsset;
@@ -18,7 +18,7 @@ namespace Macabre2D.UI.CommonLibrary.Dialogs {
         public SceneAsset Scene { get; }
 
         [RequiredValidation]
-        public ComponentWrapper SelectedComponent {
+        public BaseComponent SelectedComponent {
             get {
                 return this._selectedComponent;
             }
@@ -31,7 +31,7 @@ namespace Macabre2D.UI.CommonLibrary.Dialogs {
         }
 
         protected override bool CanExecuteOKCommand() {
-            return this.SelectedComponent?.Component != null && RequestedType.IsAssignableFrom(this.SelectedComponent.Component?.GetType());
+            return this.SelectedComponent != null && this.RequestedType.IsAssignableFrom(this.SelectedComponent.GetType());
         }
     }
 }

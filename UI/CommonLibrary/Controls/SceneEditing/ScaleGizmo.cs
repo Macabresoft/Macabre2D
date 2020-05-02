@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -47,7 +46,7 @@
             this._yAxisSquareRenderer.Initialize(this.Game.CurrentScene);
         }
 
-        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, BaseComponent selectedComponent) {
             var hadInteractions = false;
             if (mouseState.LeftButton == ButtonState.Pressed) {
                 if (this._previousButtonState == ButtonState.Pressed) {
@@ -58,7 +57,7 @@
                         var newLineLength = Vector2.Distance(this.XAxisLineDrawer.StartPoint, newPosition);
                         this.XAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = this.GetScaleSign(newPosition, selectedComponent.Component) * newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, selectedComponent) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -75,7 +74,7 @@
                         var newLineLength = Vector2.Distance(this.YAxisLineDrawer.StartPoint, newPosition);
                         this.YAxisLineDrawer.EndPoint = newPosition;
 
-                        var multiplier = this.GetScaleSign(newPosition, selectedComponent.Component) * newLineLength / this._defaultLineLength;
+                        var multiplier = this.GetScaleSign(newPosition, selectedComponent) * newLineLength / this._defaultLineLength;
                         var newScale = this._unmovedWorldScale;
 
                         if (keyboardState.IsKeyDown(Keys.LeftShift)) {
@@ -90,11 +89,11 @@
                 }
                 else {
                     if (this._xAxisBody.Collider.Contains(mousePosition)) {
-                        this.StartDrag(GizmoAxis.X, selectedComponent.Component.WorldTransform.Scale);
+                        this.StartDrag(GizmoAxis.X, selectedComponent.WorldTransform.Scale);
                         hadInteractions = true;
                     }
                     else if (this._yAxisBody.Collider.Contains(mousePosition)) {
-                        this.StartDrag(GizmoAxis.Y, selectedComponent.Component.WorldTransform.Scale);
+                        this.StartDrag(GizmoAxis.Y, selectedComponent.WorldTransform.Scale);
                         hadInteractions = true;
                     }
                 }
@@ -137,10 +136,10 @@
             }
         }
 
-        private void EndDrag(ComponentWrapper selectedComponent) {
+        private void EndDrag(BaseComponent selectedComponent) {
             if (this.CurrentAxis != GizmoAxis.None) {
                 var originalScale = this._unmovedWorldScale;
-                var newScale = selectedComponent.Component.WorldTransform.Scale;
+                var newScale = selectedComponent.WorldTransform.Scale;
                 var undoCommand = new UndoCommand(() => {
                     this.UpdateScale(selectedComponent, newScale);
                 },
@@ -182,9 +181,8 @@
             this.YAxisColor = new Color(this.YAxisColor, 0.5f);
         }
 
-        private void UpdateScale(ComponentWrapper component, Vector2 newScale) {
-            component.Component.SetWorldScale(newScale);
-            component.UpdateProperty(nameof(BaseComponent.LocalScale), component.Component.LocalScale);
+        private void UpdateScale(BaseComponent component, Vector2 newScale) {
+            component.SetWorldScale(newScale);
         }
     }
 }

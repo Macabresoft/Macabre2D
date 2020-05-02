@@ -15,7 +15,7 @@
         public ComponentEditor() {
             this.SelectComponentCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectComponentDialog(this._sceneService.CurrentScene, this._componentType, out var component)) {
-                    this.Value = component?.Component;
+                    this.Value = component;
                 }
             });
 

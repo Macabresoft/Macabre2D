@@ -16,7 +16,7 @@
 
         <controls:ComponentHierarchy Grid.Row="0"
                                      IsEditable="False"
-                                     Root="{Binding Scene, Mode=OneWay}"
+                                     Root="{Binding Scene.SavableValue, Mode=OneWay}"
                                      HighlightedType="{Binding RequestedType, Mode=OneWay}"
                                      SelectedComponent="{Binding SelectedComponent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 

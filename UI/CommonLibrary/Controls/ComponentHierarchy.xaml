@@ -2,7 +2,7 @@
              x:Name="_componentHierarchy"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:frameworkWrappers="clr-namespace:Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers"
+             xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters"
              xmlns:dragDrop="urn:gong-wpf-dragdrop"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -72,7 +72,7 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type frameworkWrappers:ComponentWrapper}"
+                <HierarchicalDataTemplate DataType="{x:Type framework:BaseComponent}"
                                           ItemsSource="{Binding Children}">
                     <local:EditableTreeViewItemControl AllowUndo="True"
                                                        IsEditable="{Binding IsEditable, ElementName=_componentHierarchy, Mode=OneWay}"
@@ -83,8 +83,7 @@
                                 <Binding ElementName="_componentHierarchy"
                                          Path="HighlightedType"
                                          Mode="OneWay" />
-                                <Binding Path="Component"
-                                         Mode="OneWay" />
+                                <Binding Mode="OneWay" />
                                 <Binding Source="{StaticResource BlackBrush}" />
                                 <Binding Source="{StaticResource GrayBrush7}" />
                             </MultiBinding>

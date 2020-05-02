@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -44,7 +43,7 @@
             this._circleOutlineDrawer.Initialize(game.CurrentScene);
         }
 
-        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent) {
+        public override bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, BaseComponent selectedComponent) {
             var hadInteractions = false;
 
             if (mouseState.LeftButton == ButtonState.Pressed) {
@@ -52,7 +51,7 @@
                     hadInteractions = true;
                     this.UpdateAngle(selectedComponent, this.GetNewAngle(selectedComponent, mousePosition));
                 }
-                else if (this._circleBody.Collider.Contains(mousePosition) && selectedComponent.Component is IRotatable rotatable) {
+                else if (this._circleBody.Collider.Contains(mousePosition) && selectedComponent is IRotatable rotatable) {
                     this.StartDrag(rotatable.Rotation);
                     hadInteractions = true;
                 }
@@ -85,8 +84,8 @@
             }
         }
 
-        private void EndDrag(ComponentWrapper selectedComponent) {
-            if (this.CurrentAxis != GizmoAxis.None && selectedComponent.Component is IRotatable rotatable) {
+        private void EndDrag(BaseComponent selectedComponent) {
+            if (this.CurrentAxis != GizmoAxis.None && selectedComponent is IRotatable rotatable) {
                 var originalAngle = this._unmovedWorldRotationAngle;
                 var newAngle = rotatable.Rotation;
                 var undoCommand = new UndoCommand(() => {
@@ -105,8 +104,8 @@
             this.XAxisColor = new Color(this.XAxisColor, 1f);
         }
 
-        private float GetNewAngle(ComponentWrapper selectedComponent, Vector2 mousePosition) {
-            var worldPosition = selectedComponent.Component.WorldTransform.Position;
+        private float GetNewAngle(BaseComponent selectedComponent, Vector2 mousePosition) {
+            var worldPosition = selectedComponent.WorldTransform.Position;
             var normalizedMouseVector = mousePosition - worldPosition;
             return (float)Math.Atan2(normalizedMouseVector.Y, normalizedMouseVector.X);
         }
@@ -119,9 +118,9 @@
             this.XAxisColor = new Color(this.XAxisColor, 0.5f);
         }
 
-        private void UpdateAngle(ComponentWrapper component, float newRotationAngle) {
-            if (component.Component is IRotatable) {
-                component.UpdateProperty(nameof(IRotatable.Rotation), newRotationAngle);
+        private void UpdateAngle(BaseComponent component, float newRotationAngle) {
+            if (component is IRotatable rotateable) {
+                rotateable.Rotation = newRotationAngle;
             }
         }
     }

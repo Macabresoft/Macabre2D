@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.CommonLibrary.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -72,7 +71,7 @@
             this.YAxisLineDrawer.Initialize(this.Game.CurrentScene);
         }
 
-        public abstract bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, ComponentWrapper selectedComponent);
+        public abstract bool Update(FrameTime frameTime, MouseState mouseState, KeyboardState keyboardState, Vector2 mousePosition, BaseComponent selectedComponent);
 
         protected abstract void DrawGizmo(FrameTime frameTime, BaseComponent selectedComponent, BoundingArea viewBoundingArea, float viewRatio, float lineLength);
 

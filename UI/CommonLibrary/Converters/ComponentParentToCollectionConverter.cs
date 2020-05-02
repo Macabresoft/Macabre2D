@@ -1,7 +1,6 @@
 ﻿namespace Macabre2D.UI.CommonLibrary.Converters {
 
-    using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
+    using Macabre2D.Framework;
     using System;
     using System.Collections.ObjectModel;
     using System.Globalization;
@@ -10,8 +9,8 @@
     public sealed class ComponentParentToCollectionConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var collection = new ObservableCollection<IParent<ComponentWrapper>>();
-            if (value is IParent<ComponentWrapper> parent) {
+            var collection = new ObservableCollection<Scene>();
+            if (value is Scene parent) {
                 collection.Add(parent);
             }
 

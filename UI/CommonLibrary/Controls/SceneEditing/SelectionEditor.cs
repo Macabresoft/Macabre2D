@@ -1,11 +1,12 @@
 ﻿namespace Macabre2D.UI.CommonLibrary.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
+    using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.CommonLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public sealed class SelectionEditor {
         private readonly IComponentService _componentService;
@@ -33,7 +34,7 @@
             TileGizmo tileGizmo,
             TranslationGizmo translationGizmo) {
             this._componentService = componentService;
-            this._componentService.SelectionChanged += this.ComponentService_SelectionChanged;
+            this._componentService.PropertyChanged += this.ComponentService_SelectionChanged;
 
             this._editingStyleToGizmo.Add(ComponentEditingStyle.Rotation, rotationGizmo);
             this._editingStyleToGizmo.Add(ComponentEditingStyle.Scale, scaleGizmo);
@@ -57,7 +58,7 @@
                 }
             }
 
-            gizmo?.Draw(frameTime, viewBoundingArea, this._componentService.SelectedItem?.Component);
+            gizmo?.Draw(frameTime, viewBoundingArea, this._componentService.SelectedItem);
         }
 
         public void Initialize(SceneEditor game) {
@@ -89,7 +90,7 @@
                 var hadInteractions = false;
                 var mousePosition = this._game.CurrentCamera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
-                if (this._componentService.SelectedItem?.Component != null) {
+                if (this._componentService.SelectedItem != null) {
                     if (this._editingStyleToGizmo.TryGetValue(this._game.EditingStyle, out var gizmo) && gizmo.Update(frameTime, mouseState, keyboardState, mousePosition, this._componentService.SelectedItem)) {
                         if (!string.IsNullOrWhiteSpace(gizmo.EditingPropertyName)) {
                             this._componentService.SelectedItem.RaisePropertyChanged(gizmo.EditingPropertyName);
@@ -100,11 +101,11 @@
                 }
 
                 if (!hadInteractions && mouseState.LeftButton == ButtonState.Pressed && this._previousLeftMouseButtonState == ButtonState.Released) {
-                    this._componentService.SelectComponent(null);
+                    this._componentService.SelectedItem = null;
                     foreach (var drawable in this._game.CurrentScene.GetVisibleDrawableComponents()) {
                         if (drawable.BoundingArea.Contains(mousePosition) && drawable is BaseComponent drawableComponent) {
                             if (!(drawableComponent is ITileable tileable) || tileable.HasActiveTileAt(mousePosition)) {
-                                this._componentService.SelectComponent(drawableComponent);
+                                this._componentService.SelectedItem = drawableComponent;
                             }
                         }
                     }
@@ -114,12 +115,9 @@
             this._previousLeftMouseButtonState = mouseState.LeftButton;
         }
 
-        private void ComponentService_SelectionChanged(object sender, ValueChangedEventArgs<ComponentWrapper> e) {
-            if (e.NewValue is ComponentWrapper wrapper) {
-                this.ResetDependencies(wrapper.Component);
-            }
-            else {
-                this.ResetDependencies(null);
+        private void ComponentService_SelectionChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this._componentService.SelectedItem)) {
+                this.ResetDependencies(this._componentService.SelectedItem);
             }
         }
 

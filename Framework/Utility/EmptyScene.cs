@@ -69,7 +69,7 @@
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<BaseComponent> Components {
+        public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return new List<BaseComponent>();
             }
@@ -90,12 +90,12 @@
         }
 
         /// <inheritdoc/>
-        public T AddComponent<T>() where T : BaseComponent, new() {
+        public T AddChild<T>() where T : BaseComponent, new() {
             return default;
         }
 
         /// <inheritdoc/>
-        public bool AddComponent(BaseComponent component) {
+        public bool AddChild(BaseComponent component) {
             return default;
         }
 

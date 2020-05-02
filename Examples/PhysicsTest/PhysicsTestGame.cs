@@ -26,7 +26,7 @@
             var scene = new Scene();
 
             var camera = new Camera();
-            scene.AddComponent(camera);
+            scene.AddChild(camera);
 
             var physicsModule = scene.CreateModule<PhysicsModule>(1f / 60f);
             physicsModule.Gravity.Value = new Vector2(0f, -9f);
@@ -42,7 +42,7 @@
             circleDrawer.Color = Color.Green;
             circleDrawer.LineThickness = 2f;
             circleBody.AddChild(new VelocityChanger());
-            scene.AddComponent(circleBody);
+            scene.AddChild(circleBody);
 
             for (var y = 0; y < 1; y++) {
                 for (var x = 0; x < 1; x++) {
@@ -57,7 +57,7 @@
                     smallCircleBody.AddChild(smallCircleDrawer);
                     smallCircleDrawer.Color = Color.OrangeRed;
                     smallCircleDrawer.LineThickness = 1f;
-                    scene.AddComponent(smallCircleBody);
+                    scene.AddChild(smallCircleBody);
                 }
             }
 
@@ -69,7 +69,7 @@
             rectangleBody.AddChild(rectangleDrawer);
             rectangleDrawer.Color = Color.White;
             rectangleDrawer.LineThickness = 1f;
-            scene.AddComponent(rectangleBody);
+            scene.AddChild(rectangleBody);
 
             var angleBody1 = new SimpleBodyComponent();
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
@@ -78,7 +78,7 @@
             angleBody1.AddChild(angleDrawer1);
             angleDrawer1.Color = Color.White;
             angleDrawer1.LineThickness = 1f;
-            scene.AddComponent(angleBody1);
+            scene.AddChild(angleBody1);
 
             var angleBody2 = new SimpleBodyComponent();
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
@@ -87,7 +87,7 @@
             angleBody2.AddChild(angleDrawer2);
             angleDrawer2.Color = Color.White;
             angleDrawer2.LineThickness = 1f;
-            scene.AddComponent(angleBody2);
+            scene.AddChild(angleBody2);
 
             var lineBody = new SimpleBodyComponent();
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
@@ -96,7 +96,7 @@
             lineBody.AddChild(lineDrawer);
             lineDrawer.Color = Color.White;
             lineDrawer.LineThickness = 1f;
-            scene.AddComponent(lineBody);
+            scene.AddChild(lineBody);
 
             var triggerBody = new SimpleBodyComponent();
             triggerBody.Collider = PolygonCollider.CreateRectangle(2f, 2f);
@@ -104,7 +104,7 @@
             triggerBody.IsTrigger = true;
             var triggerListener = new TriggerListener();
             triggerBody.AddChild(triggerListener);
-            scene.AddComponent(triggerBody);
+            scene.AddChild(triggerBody);
 
             scene.SaveToFile(@"TestGame - CurrentLevel.json");
             this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
