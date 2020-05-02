@@ -45,6 +45,7 @@
                     this._points.Clear();
                     this._points.AddRange(RectangleCollider.CreatePoints(width, value));
                     this.Reset();
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -69,6 +70,7 @@
                     this._points.Clear();
                     this._points.AddRange(RectangleCollider.CreatePoints(value, height));
                     this.Reset();
+                    this.RaisePropertyChanged();
                 }
             }
         }

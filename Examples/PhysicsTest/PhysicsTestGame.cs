@@ -29,7 +29,7 @@
             scene.AddComponent(camera);
 
             var physicsModule = scene.CreateModule<PhysicsModule>(1f / 60f);
-            physicsModule.Gravity = new Gravity(new Vector2(0f, -9f));
+            physicsModule.Gravity.Value = new Vector2(0f, -9f);
 
             var circleBody = new DynamicBodyComponent();
             circleBody.LocalPosition -= new Vector2(0f, 3f);

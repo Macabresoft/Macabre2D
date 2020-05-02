@@ -13,22 +13,10 @@
     public sealed class TileableBodyComponent : BaseBody {
         private readonly List<Collider> _colliders = new List<Collider>();
 
-#pragma warning disable IDE0044 // Add readonly modifier
-
-        [DataMember(Name = "Bottom Layers", Order = 103)]
         private Layers _overrideLayersBottomEdge = Layers.None;
-
-        [DataMember(Name = "Left Layers", Order = 100)]
         private Layers _overrideLayersLeftEdge = Layers.None;
-
-        [DataMember(Name = "Right Layers", Order = 102)]
         private Layers _overrideLayersRightEdge = Layers.None;
-
-        [DataMember(Name = "Top Layers", Order = 101)]
         private Layers _overrideLayersTopEdge = Layers.None;
-
-#pragma warning restore IDE0044 // Add readonly modifier
-
         private ITileable _tileable;
 
         /// <inheritdoc/>
@@ -42,6 +30,66 @@
         public override bool HasCollider {
             get {
                 return this._colliders.Any();
+            }
+        }
+
+        /// <summary>
+        /// Gets the bottom edge's overriden layer;
+        /// </summary>
+        /// <value>The bottom edge's overriden layer;</value>
+        [DataMember(Name = "Bottom Layers", Order = 103)]
+        public Layers OverrideLayersBottomEdge {
+            get {
+                return this._overrideLayersBottomEdge;
+            }
+
+            set {
+                this.Set(ref this._overrideLayersBottomEdge, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the left edge's overriden layer;
+        /// </summary>
+        /// <value>The left edge's overriden layer;</value>
+        [DataMember(Name = "Left Layers", Order = 100)]
+        public Layers OverrideLayersLeftEdge {
+            get {
+                return this._overrideLayersLeftEdge;
+            }
+
+            set {
+                this.Set(ref this._overrideLayersLeftEdge, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the right edge's overriden layer;
+        /// </summary>
+        /// <value>The right edge's overriden layer;</value>
+        [DataMember(Name = "Right Layers", Order = 102)]
+        public Layers OverrideLayersRightEdge {
+            get {
+                return this._overrideLayersRightEdge;
+            }
+
+            set {
+                this.Set(ref this._overrideLayersRightEdge, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the top edge's overriden layer;
+        /// </summary>
+        /// <value>The top edge's overriden layer;</value>
+        [DataMember(Name = "Top Layers", Order = 101)]
+        public Layers OverrideLayersTopEdge {
+            get {
+                return this._overrideLayersTopEdge;
+            }
+
+            set {
+                this.Set(ref this._overrideLayersTopEdge, value);
             }
         }
 

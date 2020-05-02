@@ -156,7 +156,7 @@
         }
 
         /// <inheritdoc/>
-        public override List<Vector2> GetAxesForSAT(Collider other) {
+        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             var axes = new List<Vector2>();
 
             if (other is PolygonCollider polygon) {

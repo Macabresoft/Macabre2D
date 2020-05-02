@@ -29,8 +29,9 @@
             }
 
             set {
-                this._collider = value;
-                this._collider?.Initialize(this);
+                if (this.Set(ref this._collider, value)) {
+                    this._collider?.Initialize(this);
+                }
             }
         }
 

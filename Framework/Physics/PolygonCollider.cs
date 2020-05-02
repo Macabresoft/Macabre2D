@@ -53,7 +53,7 @@
         /// Gets the normals.
         /// </summary>
         /// <value>The normals.</value>
-        public List<Vector2> Normals {
+        public IReadOnlyCollection<Vector2> Normals {
             get {
                 return this._normals.Value;
             }
@@ -194,7 +194,7 @@
         }
 
         /// <inheritdoc/>
-        public override List<Vector2> GetAxesForSAT(Collider other) {
+        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             return this.Normals;
         }
 

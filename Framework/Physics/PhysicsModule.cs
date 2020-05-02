@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -11,28 +12,74 @@
     public sealed class PhysicsModule : SimplePhysicsModule, ICollisionBasedPhysicsModule {
         private readonly Dictionary<int, List<int>> _collisionsHandled = new Dictionary<int, List<int>>();
 
-        [DataMember]
         private ICollisionResolver _collisionResolver;
+        private float _groundedness = 0.35f;
+        private float _minimumPostBounceMagnitude = 1.5f;
+        private float _minimumPostFrictionMagnitude = 0.2f;
+        private float _stickiness = 0.1f;
+
+        [DataMember(Name = "Collision Resolver", Order = 0)]
+        public ICollisionResolver CollisionResolver {
+            get {
+                return this._collisionResolver;
+            }
+
+            private set {
+                this.Set(ref this._collisionResolver, value);
+            }
+        }
 
         /// <inheritdoc/>
-        [DataMember]
-        public Gravity Gravity { get; set; }
+        [DataMember(Order = 1)]
+        public Gravity Gravity { get; } = new Gravity(Vector2.Zero);
 
         /// <inheritdoc/>
-        [DataMember]
-        public float Groundedness { get; set; } = 0.35f;
+        [DataMember(Order = 2)]
+        public float Groundedness {
+            get {
+                return this._groundedness;
+            }
+
+            set {
+                this.Set(ref this._groundedness, value);
+            }
+        }
 
         /// <inheritdoc/>
-        [DataMember]
-        public float MinimumPostBounceMagnitude { get; set; } = 1.5f;
+        [DataMember(Order = 4, Name = "Minimum Post-Bounce Magnitude")]
+        public float MinimumPostBounceMagnitude {
+            get {
+                return this._minimumPostBounceMagnitude;
+            }
+
+            set {
+                this.Set(ref this._minimumPostBounceMagnitude, value);
+            }
+        }
 
         /// <inheritdoc/>
-        [DataMember]
-        public float MinimumPostFrictionMagnitude { get; set; } = 0.2f;
+        [DataMember(Order = 5, Name = "Minimum Post-Friction Magnitude")]
+        public float MinimumPostFrictionMagnitude {
+            get {
+                return this._minimumPostFrictionMagnitude;
+            }
+
+            set {
+                this.Set(ref this._minimumPostFrictionMagnitude, value);
+            }
+        }
 
         /// <inheritdoc/>
-        [DataMember]
-        public float Stickiness { get; set; } = 0.1f;
+        [DataMember(Order = 3)]
+        public float Stickiness {
+            get {
+                return this._stickiness;
+            }
+
+            set {
+                this.Set(ref this._stickiness, value);
+            }
+        }
 
         /// <inheritdoc/>
         public override void FixedPostUpdate() {

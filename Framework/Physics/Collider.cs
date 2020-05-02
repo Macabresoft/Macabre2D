@@ -30,12 +30,11 @@
     /// Collider to be attached to bodies in the physics engine.
     /// </summary>
     [DataContract]
-    public abstract class Collider : IBoundable {
+    public abstract class Collider : NotifyPropertyChanged, IBoundable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _transform;
         private Vector2 _offset;
 
-        [DataMember(Name = "Collider Layers")]
         private Layers _overrideLayers = Layers.None;
 
         /// <summary>
@@ -69,13 +68,14 @@
         /// Gets the layers.
         /// </summary>
         /// <value>The layers.</value>
+        [DataMember(Name = "Collider Layers")]
         public Layers Layers {
             get {
                 return this._overrideLayers != Layers.None ? this._overrideLayers : (this.Body?.Layers ?? Layers.None);
             }
 
             internal set {
-                this._overrideLayers = value;
+                this.Set(ref this._overrideLayers, value);
             }
         }
 
@@ -90,8 +90,7 @@
             }
 
             set {
-                if (this._offset != value) {
-                    this._offset = value;
+                if (this.Set(ref this._offset, value)) {
                     this.Reset();
                 }
             }
@@ -122,7 +121,7 @@
             var overlap = float.MaxValue;
             var smallestAxis = Vector2.Zero;
 
-            var axes = this.GetAxesForSAT(other);
+            var axes = new List<Vector2>(this.GetAxesForSAT(other));
             axes.AddRange(other.GetAxesForSAT(this));
 
             var thisContainsOther = true;
@@ -201,7 +200,7 @@
         /// </summary>
         /// <param name="other">The other collider.</param>
         /// <returns>The axes to test for the Separating Axis Theorem</returns>
-        public abstract List<Vector2> GetAxesForSAT(Collider other);
+        public abstract IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other);
 
         /// <summary>
         /// Gets the center of the collider.

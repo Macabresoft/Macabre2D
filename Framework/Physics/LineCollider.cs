@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Collider representing a line defined by a start and end point to be used by the physics engine.
@@ -29,6 +30,7 @@
         /// runtime if possible.
         /// </summary>
         /// <value>The end.</value>
+        [DataMember(Order = 1)]
         public Vector2 End {
             get {
                 return this._points[1];
@@ -37,6 +39,7 @@
             set {
                 this._points[1] = value;
                 this.Reset();
+                this.RaisePropertyChanged();
             }
         }
 
@@ -45,6 +48,7 @@
         /// runtime if possible.
         /// </summary>
         /// <value>The start.</value>
+        [DataMember(Order = 0)]
         public Vector2 Start {
             get {
                 return this._points[0];
@@ -53,6 +57,7 @@
             set {
                 this._points[0] = value;
                 this.Reset();
+                this.RaisePropertyChanged();
             }
         }
 
@@ -67,7 +72,7 @@
         }
 
         /// <inheritdoc/>
-        public override List<Vector2> GetAxesForSAT(Collider other) {
+        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             var normals = base.GetAxesForSAT(other);
             var result = new List<Vector2>();
             var thisCenter = this.GetCenter();
@@ -99,8 +104,8 @@
             if (ray.Intersects(edge, out var intersection)) {
                 var normal = edge.GetNormal();
 
-                // We need to reverse the normal if the start of the ray is in the opposite direction
-                // of our default normal
+                // We need to reverse the normal if the start of the ray is in the opposite
+                // direction of our default normal
                 if (Vector2.Distance(intersection - normal, ray.Start) < Vector2.Distance(intersection + normal, ray.Start)) {
                     normal = -normal;
                 }

@@ -1,15 +1,14 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Represents gravity in the physics engine. This class helps deal with commonly required things
-    /// like the gravity direction and perpindicular.
+    /// Represents gravity in the physics engine. This class helps deal with commonly required
+    /// things like the gravity direction and perpindicular.
     /// </summary>
     [DataContract]
-    public sealed class Gravity {
+    public sealed class Gravity : NotifyPropertyChanged {
         private Vector2 _value;
 
         /// <summary>
@@ -17,13 +16,9 @@
         /// </summary>
         /// <param name="value">The value.</param>
         public Gravity(Vector2 value) {
-            this.SetProperties(value);
+            this._value = value;
+            this.SetProperties();
         }
-
-        /// <summary>
-        /// Occurs when [value changed].
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs<Vector2>> ValueChanged;
 
         /// <summary>
         /// Gets the direction of gravity. This is a normalized vector.
@@ -48,16 +43,13 @@
             }
 
             set {
-                if (this._value != value) {
-                    var oldValue = this._value;
-                    this.SetProperties(value);
-                    this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<Vector2>(oldValue, this._value));
+                if (this.Set(ref this._value, value, true)) {
+                    this.SetProperties();
                 }
             }
         }
 
-        private void SetProperties(Vector2 value) {
-            this._value = value;
+        private void SetProperties() {
             this.Direction = this._value.GetNormalized();
             this.Perpindicular = this.Direction.GetPerpendicular();
         }
