@@ -53,9 +53,6 @@
         public event EventHandler<BaseComponent> ParentChanged;
 
         /// <inheritdoc/>
-        public event EventHandler TransformChanged;
-
-        /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return this._children;
@@ -106,7 +103,7 @@
                     this._isVisible = value;
 
                     if (this.IsEnabled) {
-                        this.RaisePropertyChanged();
+                        this.RaisePropertyChanged(true);
                     }
                 }
             }
@@ -134,8 +131,7 @@
                 return this._localPosition;
             }
             set {
-                if (value != this._localPosition) {
-                    this._localPosition = value;
+                if (this.Set(ref this._localPosition, value)) {
                     this.HandleMatrixOrTransformChanged();
                 }
             }
@@ -151,8 +147,7 @@
                 return this._localScale;
             }
             set {
-                if (value != this._localScale) {
-                    this._localScale = value;
+                if (this.Set(ref this._localScale, value)) {
                     this.HandleMatrixOrTransformChanged();
                 }
             }
@@ -191,19 +186,16 @@
 
                         if (this.IsInitialized == wasInitialized && this.IsInitialized) {
                             this._parent.PropertyChanged += this.Parent_PropertyChanged;
-                            this._parent.TransformChanged += this.Parent_TransformChanged;
                         }
 
                         if (originalParent != null) {
                             originalParent.RemoveChild(this);
                             originalParent.PropertyChanged -= this.Parent_PropertyChanged;
-                            originalParent.TransformChanged -= this.Parent_TransformChanged;
                         }
                     }
                     else if (originalParent != null) {
                         originalParent.RemoveChild(this);
                         originalParent.PropertyChanged -= this.Parent_PropertyChanged;
-                        originalParent.TransformChanged -= this.Parent_TransformChanged;
                     }
 
                     this.ParentChanged.SafeInvoke(this, this._parent);
@@ -552,7 +544,6 @@
 
                 if (this._parent != null) {
                     this._parent.PropertyChanged += this.Parent_PropertyChanged;
-                    this._parent.TransformChanged += this.Parent_TransformChanged;
                 }
 
                 foreach (var child in this._children) {
@@ -681,12 +672,10 @@
 
                 if (this._parent != null) {
                     this._parent.PropertyChanged -= this.Parent_PropertyChanged;
-                    this._parent.TransformChanged -= this.Parent_TransformChanged;
                 }
 
                 this.DisposePropertyChanged();
                 this.ParentChanged = null;
-                this.TransformChanged = null;
                 this._children.Clear();
                 this._parent = null;
                 this._resolveChildActions.Clear();
@@ -730,19 +719,18 @@
         private void HandleMatrixOrTransformChanged() {
             this._transformMatrix.Reset();
             this._isTransformUpToDate = false;
-            this.TransformChanged.SafeInvoke(this);
+            this.RaisePropertyChanged(true, nameof(this.WorldTransform));
         }
 
         private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.IsEnabled)) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this.HandleMatrixOrTransformChanged();
+            }
+            else if (e.PropertyName == nameof(this.IsEnabled)) {
                 if (this._isEnabled) {
-                    this.RaisePropertyChanged(nameof(this.IsEnabled));
+                    this.RaisePropertyChanged(true, nameof(this.IsEnabled));
                 }
             }
-        }
-
-        private void Parent_TransformChanged(object sender, EventArgs e) {
-            this.HandleMatrixOrTransformChanged();
         }
 
         private void ResolveChildren() {
@@ -821,7 +809,7 @@
 
         private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.IsEnabled) && this._isVisible) {
-                this.RaisePropertyChanged(nameof(this.IsVisible));
+                this.RaisePropertyChanged(true, nameof(this.IsVisible));
             }
         }
     }

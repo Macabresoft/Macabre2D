@@ -1,7 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
-    using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -49,13 +49,15 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.TransformChanged -= this.Self_TransformChanged;
-            this.TransformChanged += this.Self_TransformChanged;
+            this.PropertyChanged -= this.Self_PropertyChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
             this._collider?.Initialize(this);
         }
 
-        private void Self_TransformChanged(object sender, EventArgs e) {
-            this._collider?.Reset();
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this._collider?.Reset();
+            }
         }
     }
 }

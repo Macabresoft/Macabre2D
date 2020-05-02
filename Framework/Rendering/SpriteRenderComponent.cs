@@ -173,7 +173,7 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.TransformChanged += this.Self_TransformChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
@@ -239,10 +239,12 @@
             }
         }
 
-        private void Self_TransformChanged(object sender, EventArgs e) {
-            this._boundingArea.Reset();
-            this._pixelTransform.Reset();
-            this._rotatableTransform.Reset();
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this._boundingArea.Reset();
+                this._pixelTransform.Reset();
+                this._rotatableTransform.Reset();
+            }
         }
     }
 }

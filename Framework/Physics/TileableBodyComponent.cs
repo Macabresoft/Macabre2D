@@ -211,7 +211,7 @@
             if (this._tileable != null) {
                 this._tileable.GridConfiguration.PropertyChanged -= this.GridConfiguration_PropertyChanged;
                 this._tileable.TilesChanged -= this.OnRequestReset;
-                this._tileable.TransformChanged -= this.OnRequestReset;
+                this._tileable.PropertyChanged -= this.Tileable_PropertyChanged;
             }
 
             this._tileable = tileable;
@@ -219,10 +219,16 @@
             if (this._tileable != null) {
                 this._tileable.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
                 this._tileable.TilesChanged += this.OnRequestReset;
-                this._tileable.TransformChanged += this.OnRequestReset;
+                this._tileable.PropertyChanged += this.Tileable_PropertyChanged; ;
             }
 
             this.ResetColliders();
+        }
+
+        private void Tileable_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this._tileable.WorldTransform)) {
+                this.OnRequestReset(sender, e);
+            }
         }
 
         private void TileableBodyComponent_ParentChanged(object sender, BaseComponent e) {

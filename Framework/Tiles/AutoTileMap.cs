@@ -4,6 +4,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -221,7 +222,7 @@
             base.Initialize();
 
             this._previousWorldScale = this.WorldTransform.Scale;
-            this.TransformChanged += this.AutoTileMapComponent_TransformChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
 
             if (this.TileSet != null) {
                 this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
@@ -255,13 +256,6 @@
             }
 
             return result;
-        }
-
-        private void AutoTileMapComponent_TransformChanged(object sender, EventArgs e) {
-            if (this.WorldTransform.Scale != this._previousWorldScale) {
-                this._previousWorldScale = this.WorldTransform.Scale;
-                this.ResetSpriteScales();
-            }
         }
 
         private byte GetIndex(Point tile) {
@@ -355,6 +349,13 @@
                     var sprite = this.TileSet.GetSprite(i);
                     this._spriteScales[i] = this.GetTileScale(sprite);
                 }
+            }
+        }
+
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform) && this.WorldTransform.Scale != this._previousWorldScale) {
+                this._previousWorldScale = this.WorldTransform.Scale;
+                this.ResetSpriteScales();
             }
         }
 

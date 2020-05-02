@@ -2,8 +2,8 @@
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -229,7 +229,7 @@
             this._boundingArea.Reset();
             this._matrix.Reset();
             this.SamplerState = this._samplerStateType.ToSamplerState();
-            this.TransformChanged += this.Self_TransformChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -278,9 +278,11 @@
             return viewport.Width * ratio;
         }
 
-        private void Self_TransformChanged(object sender, EventArgs e) {
-            this._boundingArea.Reset();
-            this._matrix.Reset();
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this._boundingArea.Reset();
+                this._matrix.Reset();
+            }
         }
     }
 }

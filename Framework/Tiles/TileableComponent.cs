@@ -219,7 +219,7 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.TransformChanged += this.Self_TransformChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
             this._worldGrid.Reset();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
@@ -324,8 +324,10 @@
             this._boundingArea.Reset();
         }
 
-        private void Self_TransformChanged(object sender, EventArgs e) {
-            this.OnGridChanged();
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this.OnGridChanged();
+            }
         }
     }
 }

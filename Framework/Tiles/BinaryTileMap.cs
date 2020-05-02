@@ -3,6 +3,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -159,7 +160,7 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             base.Initialize();
-            this.TransformChanged += this.Self_TransformChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
         }
 
         /// <inheritdoc/>
@@ -178,8 +179,10 @@
             return this._activeTiles.Remove(tile);
         }
 
-        private void Self_TransformChanged(object sender, EventArgs e) {
-            this._tileScale = this.GetTileScale(this.Sprite);
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.WorldTransform)) {
+                this._tileScale = this.GetTileScale(this.Sprite);
+            }
         }
     }
 }
