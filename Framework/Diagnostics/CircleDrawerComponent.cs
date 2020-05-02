@@ -1,4 +1,6 @@
-﻿namespace Macabre2D.Framework {
+﻿using System.Runtime.Serialization;
+
+namespace Macabre2D.Framework {
 
     /// <summary>
     /// Draws a circle.
@@ -22,6 +24,7 @@
         /// with pixels or polygons, so this is us faking it as usual. This value must be at least 3.
         /// </remarks>
         /// <value>The complexity.</value>
+        [DataMember(Order = 3)]
         public int Complexity {
             get {
                 return this._complexity;
@@ -32,7 +35,7 @@
                     value = 3;
                 }
 
-                this._complexity = value;
+                this.Set(ref this._complexity, value);
             }
         }
 

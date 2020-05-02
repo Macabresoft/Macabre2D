@@ -9,6 +9,9 @@
     /// <seealso cref="Macabre2D.Framework.BaseComponent"/>
     /// <seealso cref="Macabre2D.Framework.IDrawableComponent"/>
     public abstract class BaseDrawerComponent : BaseComponent, IDrawableComponent {
+        private Color _color = Color.White;
+        private float _lineThickness = 1f;
+        private bool _useDynamicLineThickness;
 
         /// <inheritdoc/>
         public abstract BoundingArea BoundingArea { get; }
@@ -18,20 +21,45 @@
         /// </summary>
         /// <value>The color.</value>
         [DataMember(Order = 0)]
-        public Color Color { get; set; } = Color.White;
+        public Color Color {
+            get {
+                return this._color;
+            }
+
+            set {
+                this.Set(ref this._color, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the line thickness.
         /// </summary>
         /// <value>The line thickness.</value>
         [DataMember(Order = 1)]
-        public float LineThickness { get; set; } = 1f;
+        public float LineThickness {
+            get {
+                return this._lineThickness;
+            }
+
+            set {
+                this.Set(ref this._lineThickness, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this should use dynamic line thickness.
         /// </summary>
         /// <value><c>true</c> if this should use dynamic line thickness; otherwise, <c>false</c>.</value>
-        public bool UseDynamicLineThickness { get; set; }
+        [DataMember(Order = 2)]
+        public bool UseDynamicLineThickness {
+            get {
+                return this._useDynamicLineThickness;
+            }
+
+            set {
+                this.Set(ref this._useDynamicLineThickness, value);
+            }
+        }
 
         /// <summary>
         /// Gets the primitive drawer.

@@ -2,11 +2,14 @@
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Draws a line.
     /// </summary>
     public sealed class LineDrawerComponent : BaseDrawerComponent {
+        private Vector2 _endPoint;
+        private Vector2 _startPoint;
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
@@ -19,13 +22,31 @@
         /// Gets or sets the end point.
         /// </summary>
         /// <value>The end point.</value>
-        public Vector2 EndPoint { get; set; }
+        [DataMember(Order = 4)]
+        public Vector2 EndPoint {
+            get {
+                return this._endPoint;
+            }
+
+            set {
+                this.Set(ref this._endPoint, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the start point.
         /// </summary>
         /// <value>The start point.</value>
-        public Vector2 StartPoint { get; set; }
+        [DataMember(Order = 3)]
+        public Vector2 StartPoint {
+            get {
+                return this._startPoint;
+            }
+
+            set {
+                this.Set(ref this._startPoint, value);
+            }
+        }
 
         /// <inheritdoc/>
         public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
