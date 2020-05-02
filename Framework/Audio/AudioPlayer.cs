@@ -11,35 +11,25 @@
     /// Plays a <see cref="AudioClip"/>.
     /// </summary>
     public sealed class AudioPlayer : BaseComponent, IAssetComponent<AudioClip> {
-
-        [DataMember(Order = 0, Name = "Audio Clip")]
         private AudioClip _audioClip;
-
-        [DataMember(Order = 3, Name = "Pan")]
         private float _pan;
-
-        [DataMember(Order = 4, Name = "Pitch")]
         private float _pitch;
-
-        [DataMember(Order = 1, Name = "Should Loop")]
         private bool _shouldLoop;
-
-        [DataMember(Order = 2, Name = "Volume")]
-        private float _volume;
+        private float _volume = 1f;
 
         /// <summary>
         /// Gets or sets the audio clip.
         /// </summary>
         /// <value>The audio clip.</value>
+        [DataMember(Order = 0, Name = "Audio Clip")]
         public AudioClip AudioClip {
             get {
                 return this._audioClip;
             }
 
             set {
-                if (this._audioClip != value) {
-                    this._audioClip?.SoundEffectInstance?.Stop(true);
-                    this._audioClip = value;
+                if (this.Set(ref this._audioClip, value) && !MacabreGame.Instance.IsDesignMode && this._audioClip?.SoundEffectInstance != null) {
+                    this._audioClip.SoundEffectInstance.Stop(true);
                     this.LoadContent();
                 }
             }
@@ -49,14 +39,14 @@
         /// Gets or sets the pan.
         /// </summary>
         /// <value>The pan.</value>
+        [DataMember(Order = 3, Name = "Pan")]
         public float Pan {
             get {
                 return this._pan;
             }
 
             set {
-                this._pan = MathHelper.Clamp(value, -1f, 1f);
-                if (this._audioClip?.SoundEffectInstance != null) {
+                if (this.Set(ref this._pan, MathHelper.Clamp(value, -1f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.Pan = this._pan;
                 }
             }
@@ -66,14 +56,14 @@
         /// Gets or sets the pitch.
         /// </summary>
         /// <value>The pitch.</value>
+        [DataMember(Order = 4, Name = "Pitch")]
         public float Pitch {
             get {
                 return this._pitch;
             }
 
             set {
-                this._pitch = MathHelper.Clamp(value, -1f, 1f);
-                if (this._audioClip?.SoundEffectInstance != null) {
+                if (this.Set(ref this._pitch, MathHelper.Clamp(value, -1f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.Pitch = this._pitch;
                 }
             }
@@ -83,14 +73,14 @@
         /// Gets or sets a value indicating whether this <see cref="AudioPlayer"/> should loop.
         /// </summary>
         /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
+        [DataMember(Order = 1, Name = "Should Loop")]
         public bool ShouldLoop {
             get {
                 return this._shouldLoop;
             }
 
             set {
-                this._shouldLoop = value;
-                if (this._audioClip?.SoundEffectInstance != null) {
+                if (this.Set(ref this._shouldLoop, value) && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.IsLooped = this._shouldLoop;
                 }
             }
@@ -110,14 +100,14 @@
         /// Gets or sets the volume.
         /// </summary>
         /// <value>The volume.</value>
+        [DataMember(Order = 2, Name = "Volume")]
         public float Volume {
             get {
                 return this._volume;
             }
 
             set {
-                this._volume = MathHelper.Clamp(value, 0f, 1f);
-                if (this._audioClip?.SoundEffectInstance != null) {
+                if (this.Set(ref this._volume, MathHelper.Clamp(value, 0f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.Volume = this._volume;
                 }
             }
