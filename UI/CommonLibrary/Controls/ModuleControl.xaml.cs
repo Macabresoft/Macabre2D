@@ -4,7 +4,6 @@
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Controls.ValueEditors;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using System.ComponentModel;
     using System.Linq;
@@ -18,7 +17,7 @@
 
         public static readonly DependencyProperty ModuleProperty = DependencyProperty.Register(
             nameof(Module),
-            typeof(ModuleWrapper),
+            typeof(BaseModule),
             typeof(ModuleControl),
             new PropertyMetadata(null, new PropertyChangedCallback(OnModuleChanged)));
 
@@ -38,7 +37,7 @@
         public bool IsModuleEnabled {
             get {
                 var result = false;
-                if (this.Module?.Module is IUpdateableModule updateableModule) {
+                if (this.Module is IUpdateableModule updateableModule) {
                     result = updateableModule.IsEnabled;
                 }
 
@@ -46,7 +45,7 @@
             }
 
             set {
-                if (this.Module?.Module is IUpdateableModule updateableModule) {
+                if (this.Module is IUpdateableModule updateableModule) {
                     this.UpdateModuleProperty(nameof(IUpdateableModule.IsEnabled), this.IsModuleEnabled, value);
                 }
             }
@@ -54,33 +53,33 @@
 
         public bool IsModuleUpdateable {
             get {
-                return this.Module?.Module is IUpdateableModule;
+                return this.Module is IUpdateableModule;
             }
         }
 
-        public ModuleWrapper Module {
-            get { return (ModuleWrapper)this.GetValue(ModuleProperty); }
+        public BaseModule Module {
+            get { return (BaseModule)this.GetValue(ModuleProperty); }
             set { this.SetValue(ModuleProperty, value); }
         }
 
         public string ModuleName {
             get {
-                if (this?.Module?.Module != null) {
-                    return this.Module.Module.Name;
+                if (this.Module != null) {
+                    return this.Module.Name;
                 }
 
                 return string.Empty;
             }
 
             set {
-                this.UpdateModuleProperty(nameof(this.Module.Module.Name), this.ModuleName, value);
+                this.UpdateModuleProperty(nameof(this.Module.Name), this.ModuleName, value);
             }
         }
 
         public string ModuleTypeFullName {
             get {
-                if (this?.Module?.Module != null) {
-                    return this.Module.Module.GetType().FullName;
+                if (this.Module != null) {
+                    return this.Module.GetType().FullName;
                 }
 
                 return typeof(BaseModule).FullName;
@@ -89,8 +88,8 @@
 
         public string ModuleTypeName {
             get {
-                if (this?.Module?.Module != null) {
-                    return this.Module.Module.GetType().Name;
+                if (this.Module != null) {
+                    return this.Module.GetType().Name;
                 }
 
                 return typeof(BaseModule).Name;
@@ -99,7 +98,7 @@
 
         public int ModuleUpdateOrder {
             get {
-                if (this.Module?.Module is IUpdateableModule updateableModule) {
+                if (this.Module is IUpdateableModule updateableModule) {
                     return updateableModule.UpdateOrder;
                 }
 
@@ -107,7 +106,7 @@
             }
 
             set {
-                if (this.Module?.Module is IUpdateableModule) {
+                if (this.Module is IUpdateableModule) {
                     this.UpdateModuleProperty(nameof(IUpdateableModule.UpdateOrder), this.ModuleUpdateOrder, value);
                 }
             }
@@ -115,14 +114,14 @@
 
         private static async void OnModuleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is ModuleControl control) {
-                if (e.OldValue is ModuleWrapper oldWrapper) {
-                    oldWrapper.PropertyChanged -= control.Wrapper_PropertyChanged;
+                if (e.OldValue is BaseModule oldModule) {
+                    oldModule.PropertyChanged -= control.Wrapper_PropertyChanged;
                 }
 
-                if (e.NewValue is ModuleWrapper wrapper) {
+                if (e.NewValue is BaseModule newModule) {
                     await control.PopulateEditors();
                     control.RaisePropertyChanged();
-                    wrapper.PropertyChanged += control.Wrapper_PropertyChanged;
+                    newModule.PropertyChanged += control.Wrapper_PropertyChanged;
                 }
                 else {
                     control.Editors.Clear();
@@ -132,8 +131,8 @@
 
         private async Task PopulateEditors() {
             var editors = this.IsModuleUpdateable ?
-                await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseUpdateableModule), typeof(BaseModule), typeof(BaseUpdateableModule)) :
-                await this._valueEditorService.CreateEditors(this.Module.Module, typeof(BaseModule), typeof(BaseModule));
+                await this._valueEditorService.CreateEditors(this.Module, typeof(BaseUpdateableModule), typeof(BaseModule), typeof(BaseUpdateableModule)) :
+                await this._valueEditorService.CreateEditors(this.Module, typeof(BaseModule), typeof(BaseModule));
 
             var count = editors.Count;
             for (var i = 0; i < count; i++) {
@@ -169,11 +168,11 @@
         private void UpdateModuleProperty(string propertyPath, object originalValue, object newValue, [CallerMemberName] string localPropertyName = "") {
             var undoCommand = new UndoCommand(
                 () => {
-                    this.Module.UpdateProperty(propertyPath, newValue);
+                    this.Module.SetProperty(propertyPath, newValue);
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(localPropertyName));
                 },
                 () => {
-                    this.Module.UpdateProperty(propertyPath, originalValue);
+                    this.Module.SetProperty(propertyPath, originalValue);
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(localPropertyName));
                 });
 
@@ -181,8 +180,8 @@
         }
 
         private void Wrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (sender is ModuleWrapper) {
-                if (e.PropertyName == nameof(ModuleWrapper.Name)) {
+            if (sender is BaseModule) {
+                if (e.PropertyName == nameof(BaseModule.Name)) {
                     this.RaisePropertyChanged(nameof(this.ModuleName));
                 }
             }

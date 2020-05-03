@@ -4,10 +4,10 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Models;
-    using Macabre2D.UI.CommonLibrary.Models.FrameworkWrappers;
     using Macabre2D.UI.CommonLibrary.Services;
     using System;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -17,27 +17,26 @@
 
         public static readonly DependencyProperty ModulesProperty = DependencyProperty.Register(
             nameof(Modules),
-            typeof(ObservableCollection<ModuleWrapper>),
+            typeof(ObservableCollection<BaseModule>),
             typeof(ModuleList),
             new PropertyMetadata());
 
         public static readonly DependencyProperty SelectedModuleProperty = DependencyProperty.Register(
             nameof(SelectedModule),
-            typeof(ModuleWrapper),
+            typeof(BaseModule),
             typeof(ModuleList),
-            new PropertyMetadata());
+            new PropertyMetadata(null, new PropertyChangedCallback(OnModuleChanged)));
 
         private readonly RelayCommand _addModuleCommand;
-        private readonly IDialogService _dialogService;
+        private readonly IDialogService _dialogService = ViewContainer.Instance.Resolve<IDialogService>();
         private readonly RelayCommand _removeModuleCommand;
-        private readonly IUndoService _undoService;
+        private readonly ISceneService _sceneService = ViewContainer.Instance.Resolve<ISceneService>();
+        private readonly IUndoService _undoService = ViewContainer.Instance.Resolve<IUndoService>();
 
         public ModuleList() {
-            this._dialogService = ViewContainer.Instance.Resolve<IDialogService>();
-            this._undoService = ViewContainer.Instance.Resolve<IUndoService>();
             this._addModuleCommand = new RelayCommand(this.AddModule);
             this._removeModuleCommand = new RelayCommand(this.RemoveModule, () => this.SelectedModule != null);
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public ICommand AddModuleCommand {
@@ -46,9 +45,9 @@
             }
         }
 
-        public ObservableCollection<ModuleWrapper> Modules {
-            get { return (ObservableCollection<ModuleWrapper>)GetValue(ModulesProperty); }
-            set { SetValue(ModulesProperty, value); }
+        public ObservableCollection<BaseModule> Modules {
+            get { return (ObservableCollection<BaseModule>)this.GetValue(ModulesProperty); }
+            set { this.SetValue(ModulesProperty, value); }
         }
 
         public ICommand RemoveModuleCommand {
@@ -57,32 +56,62 @@
             }
         }
 
-        public ModuleWrapper SelectedModule {
-            get { return (ModuleWrapper)GetValue(SelectedModuleProperty); }
-            set { SetValue(SelectedModuleProperty, value); }
+        public BaseModule SelectedModule {
+            get { return (BaseModule)this.GetValue(SelectedModuleProperty); }
+            set { this.SetValue(SelectedModuleProperty, value); }
+        }
+
+        private static void OnModuleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            if (d is ModuleList control) {
+                if (e.NewValue is BaseModule newModule) {
+                    newModule.PropertyChanged += control.NewModule_PropertyChanged;
+                }
+
+                if (e.OldValue is BaseModule oldModule) {
+                    oldModule.PropertyChanged -= control.NewModule_PropertyChanged;
+                }
+            }
         }
 
         private void AddModule() {
             var type = this._dialogService.ShowSelectTypeDialog(typeof(BaseModule), "Select a Module");
 
             if (type != null) {
-                var baseModule = Activator.CreateInstance(type) as BaseModule;
-                baseModule.Name = type.Name;
-                var moduleWrapper = new ModuleWrapper(baseModule);
+                var module = Activator.CreateInstance(type) as BaseModule;
+                module.Name = type.Name;
 
+                var hasChanges = this._sceneService.CurrentScene.HasChanges;
                 var undoCommand = new UndoCommand(
-                    () => this.Modules.Add(moduleWrapper),
-                    () => this.Modules.Remove(moduleWrapper));
+                    () => {
+                        this.Modules.Add(module);
+                        this._sceneService.CurrentScene.HasChanges = true;
+                    },
+                    () => {
+                        this.Modules.Remove(module);
+                        this._sceneService.CurrentScene.HasChanges = hasChanges;
+                    });
 
                 this._undoService.Do(undoCommand);
             }
         }
 
+        private void NewModule_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this._sceneService.CurrentScene.HasChanges = true;
+        }
+
         private void RemoveModule() {
             var module = this.SelectedModule;
+
+            var hasChanges = this._sceneService.CurrentScene.HasChanges;
             var undoCommand = new UndoCommand(
-                () => this.Modules.Remove(module),
-                () => this.Modules.Add(module));
+                () => {
+                    this.Modules.Remove(module);
+                    this._sceneService.CurrentScene.HasChanges = true;
+                },
+                () => {
+                    this.Modules.Add(module);
+                    this._sceneService.CurrentScene.HasChanges = hasChanges;
+                });
 
             this._undoService.Do(undoCommand);
         }

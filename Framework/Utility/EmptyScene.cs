@@ -83,6 +83,13 @@
         }
 
         /// <inheritdoc/>
+        public IReadOnlyCollection<BaseModule> Modules {
+            get {
+                return new List<BaseModule>();
+            }
+        }
+
+        /// <inheritdoc/>
         public string Name {
             get {
                 return default;

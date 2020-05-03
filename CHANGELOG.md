@@ -20,6 +20,7 @@
 * Updated icon to new simplified skull.
 * Components and modules use PropertyChanged instead of specific events.
 * Editor now uses components directly instead of using wrappers.
+* Editor now uses modules directly instead of using wrappers.
 
 ### Fixes
 

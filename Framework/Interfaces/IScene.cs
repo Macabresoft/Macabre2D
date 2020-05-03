@@ -48,6 +48,12 @@
         bool IsInitialized { get; }
 
         /// <summary>
+        /// Gets the modules.
+        /// </summary>
+        /// <value>The modules.</value>
+        IReadOnlyCollection<BaseModule> Modules { get; }
+
+        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>

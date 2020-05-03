@@ -401,7 +401,6 @@
     <Compile Include="Models\ComponentEditingStyle.cs" />
     <Compile Include="Models\FolderAsset.cs" />
     <Compile Include="Models\FontAsset.cs" />
-    <Compile Include="Models\FrameworkWrappers\ModuleWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\NullSpriteWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\SpriteAnimationStepWrapper.cs" />
     <Compile Include="Models\FrameworkWrappers\SpriteWrapper.cs" />

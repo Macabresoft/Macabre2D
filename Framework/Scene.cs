@@ -35,7 +35,7 @@
         private readonly List<Action<FrameTime>> _endOfFrameActions = new List<Action<FrameTime>>();
 
         [DataMember]
-        private readonly HashSet<BaseModule> _modules = new HashSet<BaseModule>();
+        private readonly ObservableCollection<BaseModule> _modules = new ObservableCollection<BaseModule>();
 
         private readonly FilterCollection<IUpdateableComponentAsync> _updateableAsyncComponents = new FilterCollection<IUpdateableComponentAsync>(
             u => u.IsEnabled,
@@ -102,6 +102,13 @@
 
         /// <inheritdoc/>
         public bool IsInitialized { get; private set; }
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<BaseModule> Modules {
+            get {
+                return this._modules;
+            }
+        }
 
         /// <inheritdoc/>
         [DataMember]

@@ -34,15 +34,12 @@
                 if (this.Set(ref this._currentScene, value)) {
                     if (originalScene != null) {
                         originalScene.OnDeleted -= this.SceneAsset_OnDeleted;
-                        originalScene.OnRefreshed -= this.SceneAsset_OnRefreshed;
-                        originalScene.Unload();
                     }
 
                     if (this._currentScene != null) {
                         var assetFolder = this._currentScene.GetRootFolder();
                         this.SyncAssets(assetFolder);
                         this._currentScene.OnDeleted += this.SceneAsset_OnDeleted;
-                        this._currentScene.OnRefreshed += this.SceneAsset_OnRefreshed;
                     }
                 }
             }
@@ -54,7 +51,6 @@
                 Parent = parentAsset,
             });
 
-            this.CurrentScene.Load();
             this.CurrentScene.HasChanges = true;
             return this.CurrentScene;
         }
@@ -72,7 +68,6 @@
                     }
                 }
 
-                asset.Load();
                 this.CurrentScene = asset;
                 this.CurrentScene.HasChanges = false;
                 return this.CurrentScene;
@@ -83,12 +78,6 @@
 
         private void SceneAsset_OnDeleted(object sender, System.EventArgs e) {
             this.CurrentScene = null;
-        }
-
-        private void SceneAsset_OnRefreshed(object sender, System.EventArgs e) {
-            if (sender is SceneAsset sceneAsset) {
-                sceneAsset.Load();
-            }
         }
 
         private void SyncAssets(FolderAsset rootFolderAsset) {

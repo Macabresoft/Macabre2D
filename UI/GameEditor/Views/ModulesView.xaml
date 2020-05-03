@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <controls:ModuleList Grid.Row="0"
-                             Modules="{Binding SceneService.CurrentScene.Modules}"
+                             Modules="{Binding SceneService.CurrentScene.SavableValue.Modules}"
                              SelectedModule="{Binding SelectedModule, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <GridSplitter Grid.Row="1"
