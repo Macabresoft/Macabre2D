@@ -267,6 +267,10 @@
       <Project>{ce39dfb1-2c80-452f-a799-abc878773b1d}</Project>
       <Name>Macabre2D.Project.Gameplay</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameEditorLibrary\Macabre2D.UI.GameEditorLibrary.csproj">
+      <Project>{45fec098-23f5-44c6-a554-e2bca7056dc7}</Project>
+      <Name>Macabre2D.UI.GameEditorLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Resources\Macabre2D.UI.Resources.csproj">
       <Project>{310d54cb-e336-4f67-b39e-0d4ea4e9d2fa}</Project>
       <Name>Macabre2D.UI.Resources</Name>

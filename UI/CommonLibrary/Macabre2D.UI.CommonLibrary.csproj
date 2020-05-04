@@ -196,20 +196,11 @@
     <Compile Include="Common\TreeViewExtensions.cs" />
     <Compile Include="Common\TypeExtensions.cs" />
     <Compile Include="Common\ViewContainer.cs" />
-    <Compile Include="Controls\AssetBrowser.xaml.cs">
-      <DependentUpon>AssetBrowser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AssetEditorControl.xaml.cs">
-      <DependentUpon>AssetEditorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AssetEditors\AutoTileSetAssetEditor.xaml.cs">
-      <DependentUpon>AutoTileSetAssetEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AssetEditors\SpriteWrapperEditor.xaml.cs">
-      <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\ByteEditor.xaml.cs">
       <DependentUpon>ByteEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CollapsableEditor.xaml.cs">
+      <DependentUpon>CollapsableEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CollectionFilterBox.xaml.cs">
       <DependentUpon>CollectionFilterBox.xaml</DependentUpon>
@@ -220,53 +211,14 @@
     <Compile Include="Controls\EditableTreeViewItemControl.xaml.cs">
       <DependentUpon>EditableTreeViewItemControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LayerMatrixEditor.xaml.cs">
-      <DependentUpon>LayerMatrixEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\LayersNameEditor.xaml.cs">
-      <DependentUpon>LayersNameEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SceneEditing\BaseAxisGizmo.cs" />
-    <Compile Include="Controls\SceneEditing\EditorAssetManager.cs" />
-    <Compile Include="Controls\SceneEditing\EditorCameraWrapper.cs" />
-    <Compile Include="Controls\SceneEditing\IGizmo.cs" />
-    <Compile Include="Controls\SceneEditing\RotationGizmo.cs" />
-    <Compile Include="Controls\SceneEditing\ScaleGizmo.cs" />
-    <Compile Include="Controls\SceneEditing\SceneEditorControl.xaml.cs">
-      <DependentUpon>SceneEditorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SceneEditing\SelectionEditor.cs" />
-    <Compile Include="Controls\SceneEditing\TileGizmo.cs" />
-    <Compile Include="Controls\SceneEditing\TranslationGizmo.cs" />
-    <Compile Include="Controls\ValueEditors\AudioClipEditor.xaml.cs">
-      <DependentUpon>AudioClipEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\AutoTileSetEditor.xaml.cs">
-      <DependentUpon>AutoTileSetEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\BoolEditor.xaml.cs">
       <DependentUpon>BoolEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CollapsableEditor.xaml.cs">
-      <DependentUpon>CollapsableEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\ColliderEditor.xaml.cs">
-      <DependentUpon>ColliderEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ValueEditors\ColorEditor.xaml.cs">
       <DependentUpon>ColorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ComponentControl.xaml.cs">
-      <DependentUpon>ComponentControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ComponentHierarchy.xaml.cs">
-      <DependentUpon>ComponentHierarchy.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ContentSwitcher.xaml.cs">
       <DependentUpon>ContentSwitcher.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\ComponentEditor.xaml.cs">
-      <DependentUpon>ComponentEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ValueEditors\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
@@ -274,17 +226,8 @@
     <Compile Include="Controls\ValueEditors\FloatEditor.xaml.cs">
       <DependentUpon>FloatEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AssetEditors\FontAssetEditor.xaml.cs">
-      <DependentUpon>FontAssetEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\FontEditor.xaml.cs">
-      <DependentUpon>FontEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\IconToggleButton.xaml.cs">
       <DependentUpon>IconToggleButton.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AssetEditors\ImageAssetEditor.xaml.cs">
-      <DependentUpon>ImageAssetEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ValueEditors\GenericValueEditor.xaml.cs">
       <DependentUpon>GenericValueEditor.xaml</DependentUpon>
@@ -292,135 +235,38 @@
     <Compile Include="Controls\ValueEditors\IntEditor.xaml.cs">
       <DependentUpon>IntEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ModuleControl.xaml.cs">
-      <DependentUpon>ModuleControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ModuleList.xaml.cs">
-      <DependentUpon>ModuleList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\ISeparatedValueEditor.cs" />
-    <Compile Include="Controls\ValueEditors\LayersEditor.xaml.cs">
-      <DependentUpon>LayersEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\LineColliderEditor.xaml.cs">
-      <DependentUpon>LineColliderEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\ModuleEditor.xaml.cs">
-      <DependentUpon>ModuleEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\NamedValueEditor.cs" />
-    <Compile Include="Controls\ValueEditors\RenderSettingsEditor.xaml.cs">
-      <DependentUpon>RenderSettingsEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\PointEditor.xaml.cs">
       <DependentUpon>PointEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\AssetIdToContentPathConverter.cs" />
-    <Compile Include="Converters\AssetItemSourceConverter.cs" />
-    <Compile Include="Converters\AssetParentToCollectionConverter.cs" />
-    <Compile Include="Converters\AssetTypeToVisibilityConverter.cs" />
-    <Compile Include="Converters\AutoTileCardinalIndexToCanvasConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Converters\ComponentParentToCollectionConverter.cs" />
-    <Compile Include="Converters\ComponentToCommandMenuItemsConverter.cs" />
-    <Compile Include="Converters\ComponentEditingStyleToVisibilityConverter.cs" />
     <Compile Include="Converters\EnumerableToVisibilityConverter.cs" />
     <Compile Include="Converters\EnumTypeToValuesConverter.cs" />
     <Compile Include="Converters\EqualityToBoolConverter.cs" />
     <Compile Include="Converters\EqualityToVisibilityConverter.cs" />
-    <Compile Include="Converters\ComponentHighlightColorConverter.cs" />
     <Compile Include="Converters\HyphenateTextConverter.cs" />
-    <Compile Include="Converters\ImageAssetToBitmapImageConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseMultiBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseNullToVisibilityConverter.cs" />
-    <Compile Include="Converters\LayersToBoolConverter.cs" />
-    <Compile Include="Converters\LayersToMultiNameConverter.cs" />
-    <Compile Include="Converters\LayerToNameConverter.cs" />
     <Compile Include="Converters\MultiBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToBoolConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ObjectToTypeNameConverter.cs" />
     <Compile Include="Converters\RemoveFileExtensionConverter.cs" />
-    <Compile Include="Converters\SpriteMaxSizeConverter.cs" />
-    <Compile Include="Converters\SpriteWrapperToCroppedBitmapConverter.cs" />
-    <Compile Include="Dialogs\AssetNameChangeDialog.xaml.cs">
-      <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
+    <Compile Include="Controls\EditableListBoxItemControl.xaml.cs">
+      <DependentUpon>EditableListBoxItemControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
-    <Compile Include="Dialogs\GenerateSpritesDialog.xaml.cs">
-      <DependentUpon>GenerateSpritesDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\GenerateSpritesViewModel.cs" />
     <Compile Include="Dialogs\OKCancelDialogViewModel.cs" />
-    <Compile Include="Dialogs\SaveAssetAsDialog.xaml.cs">
-      <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SaveAssetAsViewModel.cs" />
-    <Compile Include="Dialogs\SaveDiscardCancelDialog.xaml.cs">
-      <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
-    <Compile Include="Dialogs\SaveSceneDialog.xaml.cs">
-      <DependentUpon>SaveSceneDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SaveSceneViewModel.cs" />
-    <Compile Include="Dialogs\SelectAssetDialog.xaml.cs">
-      <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SelectAssetViewModel.cs" />
-    <Compile Include="Dialogs\SelectComponentDialog.xaml.cs">
-      <DependentUpon>SelectComponentDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SelectComponentViewModel.cs" />
-    <Compile Include="Dialogs\SelectModuleDialog.xaml.cs">
-      <DependentUpon>SelectModuleDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SelectModuleViewModel.cs" />
-    <Compile Include="Dialogs\SelectProjectDialog.xaml.cs">
-      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SelectProjectViewModel.cs" />
-    <Compile Include="Dialogs\SelectSpriteDialog.xaml.cs">
-      <DependentUpon>SelectSpriteDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SelectSpriteViewModel.cs" />
     <Compile Include="Dialogs\SelectTypeDialog.xaml.cs">
       <DependentUpon>SelectTypeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\SelectTypeViewModel.cs" />
-    <Compile Include="Controls\EditableListBoxItemControl.xaml.cs">
-      <DependentUpon>EditableListBoxItemControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AddableAsset.cs" />
-    <Compile Include="Models\Asset.cs" />
-    <Compile Include="Models\AudioAsset.cs" />
-    <Compile Include="Models\AutoTileSetAsset.cs" />
-    <Compile Include="Models\BuildConfiguration.cs" />
-    <Compile Include="Models\ComponentEditingStyle.cs" />
-    <Compile Include="Models\FolderAsset.cs" />
-    <Compile Include="Models\FontAsset.cs" />
-    <Compile Include="Models\FrameworkWrappers\NullSpriteWrapper.cs" />
-    <Compile Include="Models\FrameworkWrappers\SpriteAnimationStepWrapper.cs" />
-    <Compile Include="Models\FrameworkWrappers\SpriteWrapper.cs" />
-    <Compile Include="Models\IHierarchical.cs" />
-    <Compile Include="Models\IIdentifiableAsset.cs" />
-    <Compile Include="Models\ImageAsset.cs" />
-    <Compile Include="Models\IndexedWrapper.cs" />
     <Compile Include="Models\IParent.cs" />
-    <Compile Include="Models\IReloadableAsset.cs" />
-    <Compile Include="Models\ISyncAsset.cs" />
     <Compile Include="Models\MemberInfoAttribute.cs" />
-    <Compile Include="Models\MetadataAsset.cs" />
-    <Compile Include="Models\NullAsset.cs" />
     <Compile Include="Models\ObservableVersion.cs" />
-    <Compile Include="Models\PrefabAsset.cs" />
-    <Compile Include="Models\Project.cs" />
     <Compile Include="Models\SaveDiscardCancelResult.cs" />
-    <Compile Include="Models\SceneAsset.cs" />
-    <Compile Include="Models\ShaderAsset.cs" />
-    <Compile Include="Models\SpriteAnimationAsset.cs" />
     <Compile Include="Models\UndoCommand.cs" />
     <Compile Include="Models\Validation\CustomValidationResult.cs" />
     <Compile Include="Models\Validation\FileNameValidationAttribute.cs" />
@@ -430,76 +276,22 @@
     <Compile Include="Models\Validation\ValidationAttribute.cs" />
     <Compile Include="Models\Validation\ValidationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\AssetEditors\SpriteAnimationAssetEditor.xaml.cs">
-      <DependentUpon>SpriteAnimationAssetEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\PrefabEditor.xaml.cs">
-      <DependentUpon>PrefabEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\RectangleColliderEditor.xaml.cs">
-      <DependentUpon>RectangleColliderEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\ShaderEditor.xaml.cs">
-      <DependentUpon>ShaderEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\SpriteAnimationEditor.xaml.cs">
-      <DependentUpon>SpriteAnimationEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\SpriteEditor.xaml.cs">
-      <DependentUpon>SpriteEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SpriteViewer.xaml.cs">
-      <DependentUpon>SpriteViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ValueEditors\StringEditor.xaml.cs">
       <DependentUpon>StringEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ValueEditors\TileGridEditor.xaml.cs">
-      <DependentUpon>TileGridEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ValueEditors\VectorEditor.xaml.cs">
       <DependentUpon>VectorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AssemblyService.cs" />
-    <Compile Include="Services\AssetService.cs" />
-    <Compile Include="Services\AutoSaveService.cs" />
     <Compile Include="Services\BusyService.cs" />
-    <Compile Include="Services\ComponentService.cs" />
-    <Compile Include="Services\Content\ContentBuilder.cs" />
-    <Compile Include="Services\DialogService.cs" />
-    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\CommonDialogService.cs" />
+    <Compile Include="Services\IChangeDetectionService.cs" />
     <Compile Include="Services\LoggingService.cs" />
-    <Compile Include="Services\MonoGameService.cs" />
-    <Compile Include="Services\ProjectService.cs" />
-    <Compile Include="Services\SceneService.cs" />
-    <Compile Include="Services\StatusService.cs" />
-    <Compile Include="Services\TextCreator.cs" />
     <Compile Include="Services\UndoService.cs" />
     <Compile Include="Services\ValueEditorService.cs" />
-    <Compile Include="Controls\SceneEditing\SceneEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\AssetBrowser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\AssetEditorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\AssetEditors\AutoTileSetAssetEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\AssetEditors\SpriteWrapperEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\ValueEditors\ByteEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CollectionFilterBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -511,26 +303,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\LayerMatrixEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\LayersNameEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SceneEditing\SceneEditorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\AudioClipEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\AutoTileSetEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\ValueEditors\BoolEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -539,29 +311,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ValueEditors\ColliderEditor.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Controls\CollectionFilterBox.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ValueEditors\ColorEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ComponentControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ComponentHierarchy.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\ContentSwitcher.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ValueEditors\ComponentEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ValueEditors\EnumEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -571,19 +331,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\AssetEditors\FontAssetEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\FontEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\IconToggleButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\AssetEditors\ImageAssetEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -595,59 +343,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ModuleControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ModuleList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ValueEditors\LayersEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\LineColliderEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\ModuleEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\RenderSettingsEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\ValueEditors\PointEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\AssetEditors\SpriteAnimationAssetEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\PrefabEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\RectangleColliderEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\ShaderEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\SpriteAnimationEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ValueEditors\SpriteEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SpriteViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -655,61 +351,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ValueEditors\TileGridEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\ValueEditors\VectorEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\AssetNameChangeDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\GenerateSpritesDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SaveAssetAsDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SaveDiscardCancelDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SaveSceneDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SelectAssetDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SelectComponentDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\SelectModuleDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\SelectProjectDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SelectSpriteDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SelectTypeDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\EditableListBoxItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelectTypeDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

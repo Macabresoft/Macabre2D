@@ -62,15 +62,11 @@
             typeof(EditableTreeViewItemControl),
             new PropertyMetadata(new List<Type>()));
 
-        private readonly IDialogService _dialogService;
-
-        private readonly IUndoService _undoService;
-
+        private readonly ICommonDialogService _dialogService = ViewContainer.Resolve<ICommonDialogService>();
+        private readonly IUndoService _undoService = ViewContainer.Resolve<IUndoService>();
         private bool _isEditing;
 
         public EditableTreeViewItemControl() {
-            this._dialogService = ViewContainer.Resolve<IDialogService>();
-            this._undoService = ViewContainer.Resolve<IUndoService>();
             this.InitializeComponent();
         }
 

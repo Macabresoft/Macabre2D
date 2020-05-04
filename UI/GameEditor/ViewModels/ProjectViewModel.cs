@@ -3,6 +3,8 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.GameEditorLibrary.Models;
+    using Macabre2D.UI.GameEditorLibrary.Services;
     using Microsoft.Xna.Framework;
 
     public sealed class ProjectViewModel : NotifyPropertyChanged {

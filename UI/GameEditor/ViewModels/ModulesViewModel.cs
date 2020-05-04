@@ -2,6 +2,7 @@
 
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.GameEditorLibrary.Services;
 
     public sealed class ModulesViewModel : NotifyPropertyChanged {
         private BaseModule _selectedModule;

@@ -1,17 +1,17 @@
 ﻿namespace Macabre2D.UI.GameEditor.Views {
 
-    using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.GameEditor.ViewModels;
+    using Macabre2D.UI.GameEditorLibrary.Services;
     using System.ComponentModel;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
-    using Macabre2D.UI.CommonLibrary.Models;
 
     public partial class MainWindow {
-        private IDialogService _dialogService;
+        private readonly IGameDialogService _dialogService;
 
-        public MainWindow(MainWindowViewModel viewModel, IDialogService dialogService) {
+        public MainWindow(MainWindowViewModel viewModel, IGameDialogService dialogService) {
             this.DataContext = viewModel;
             this.InitializeComponent();
             this._dialogService = dialogService;

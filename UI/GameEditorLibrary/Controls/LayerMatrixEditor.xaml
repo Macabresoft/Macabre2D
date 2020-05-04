@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="Macabre2D.UI.GameEditorLibrary.Controls.LayerMatrixEditor"
+             x:Name="_layerMatrixEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabre2D.UI.GameEditorLibrary.Controls">
+    <Grid DataContext="{Binding ElementName=_layerMatrixEditor}"
+          x:Name="_layersGrid" />
+</UserControl>

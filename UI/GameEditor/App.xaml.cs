@@ -1,10 +1,11 @@
 ﻿namespace Macabre2D.UI.GameEditor {
 
     using log4net;
-    using Macabre2D.UI.GameEditor.Properties;
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.GameEditor.Properties;
     using Macabre2D.UI.GameEditor.Views;
+    using Macabre2D.UI.GameEditorLibrary.Services;
     using System;
     using System.Linq;
     using System.Reflection;
@@ -71,7 +72,7 @@
             this._projectService = this._container.Resolve<IProjectService>();
 
             if (!Settings.Default.ClosedSuccessfully && this._projectService.GetAutoSaveFiles().Any()) {
-                var dialogService = this._container.Resolve<IDialogService>();
+                var dialogService = this._container.Resolve<IGameDialogService>();
                 if (dialogService.ShowSelectProjectDialog(out var fileInfo)) {
                     await busyService.PerformTask(this._projectService.LoadProject(fileInfo.FullName), true);
 
@@ -119,6 +120,7 @@
             var log = LogManager.GetLogger(typeof(App));
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
             this._container.RegisterInstance(typeof(SettingsManager), this._container.Resolve<SettingsManager>(), new ContainerControlledLifetimeManager());
+            this._container.RegisterInstance<IChangeDetectionService>(this._container.Resolve<SceneService>());
         }
 
         private void RegisterTypes() {
@@ -127,7 +129,8 @@
             this._container.RegisterType<IAutoSaveService, AutoSaveService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IBusyService, BusyService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IComponentService, ComponentService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IDialogService, DialogService>();
+            this._container.RegisterType<IGameDialogService, GameDialogService>();
+            this._container.RegisterType<ICommonDialogService, GameDialogService>();
             this._container.RegisterType<IFileService, FileService>();
             this._container.RegisterType<ILoggingService, LoggingService>();
             this._container.RegisterType<IMonoGameService, MonoGameService>(new ContainerControlledLifetimeManager());
@@ -135,7 +138,7 @@
             this._container.RegisterType<ISceneService, SceneService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IStatusService, StatusService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IUndoService, UndoService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IValueEditorService, ValueEditorService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<IValueEditorService, GameValueEditorService>(new ContainerControlledLifetimeManager());
         }
 
         private void SaveSettings() {

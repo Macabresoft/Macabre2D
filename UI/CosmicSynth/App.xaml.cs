@@ -1,10 +1,10 @@
 ﻿namespace Macabre2D.UI.CosmicSynth {
 
     using log4net;
-    using Macabre2D.UI.CosmicSynth.Properties;
-    using Macabre2D.UI.CosmicSynth.Views;
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.CosmicSynth.Properties;
+    using Macabre2D.UI.CosmicSynth.Views;
     using System;
     using System.Linq;
     using System.Reflection;
@@ -79,17 +79,8 @@
 
         private void RegisterTypes() {
             this._container.RegisterType<IAssemblyService, AssemblyService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IAssetService, AssetService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IAutoSaveService, AutoSaveService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IBusyService, BusyService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IComponentService, ComponentService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IDialogService, DialogService>();
-            this._container.RegisterType<IFileService, FileService>();
             this._container.RegisterType<ILoggingService, LoggingService>();
-            this._container.RegisterType<IMonoGameService, MonoGameService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IProjectService, ProjectService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<ISceneService, SceneService>(new ContainerControlledLifetimeManager());
-            this._container.RegisterType<IStatusService, StatusService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IUndoService, UndoService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IValueEditorService, ValueEditorService>(new ContainerControlledLifetimeManager());
         }

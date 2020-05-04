@@ -5,6 +5,8 @@
     using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.GameEditorLibrary.Models;
+    using Macabre2D.UI.GameEditorLibrary.Services;
     using System;
     using System.IO;
     using System.Linq;
@@ -12,14 +14,14 @@
     using System.Windows.Input;
 
     public sealed class AssetsViewModel : NotifyPropertyChanged {
-        private readonly IDialogService _dialogService;
+        private readonly IGameDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
 
         public AssetsViewModel(
             IAssetService assetService,
             IBusyService busyService,
-            IDialogService dialogService,
+            IGameDialogService dialogService,
             IProjectService projectService,
             ISceneService sceneService,
             IUndoService undoService) {

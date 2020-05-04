@@ -4,6 +4,8 @@
     using Macabre2D.Framework;
     using Macabre2D.UI.CommonLibrary.Models;
     using Macabre2D.UI.CommonLibrary.Services;
+    using Macabre2D.UI.GameEditorLibrary.Models;
+    using Macabre2D.UI.GameEditorLibrary.Services;
     using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows;
@@ -20,7 +22,7 @@
     }
 
     public sealed class MainWindowViewModel : NotifyPropertyChanged {
-        private readonly IDialogService _dialogService;
+        private readonly IGameDialogService _dialogService;
         private readonly RelayCommand _redoCommand;
         private readonly RelayCommand _undoCommand;
         private readonly IUndoService _undoService;
@@ -28,7 +30,7 @@
 
         public MainWindowViewModel(
             IBusyService busyService,
-            IDialogService dialogService,
+            IGameDialogService dialogService,
             IProjectService projectService,
             ISceneService sceneService,
             IUndoService undoService) {

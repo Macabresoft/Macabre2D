@@ -5,7 +5,7 @@
                    xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters;assembly=Macabre2D.UI.CommonLibrary"
                    xmlns:local="clr-namespace:Macabre2D.UI.GameEditor.Views"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:sceneEditing="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.SceneEditing;assembly=Macabre2D.UI.CommonLibrary"
+                   xmlns:sceneEditing="clr-namespace:Macabre2D.UI.GameEditorLibrary.Controls.SceneEditing;assembly=Macabre2D.UI.GameEditorLibrary"
                    xmlns:system="clr-namespace:System;assembly=mscorlib"
                    xmlns:viewModels="clr-namespace:Macabre2D.UI.GameEditor.ViewModels"
                    Style="{StaticResource StandardWindowStyle}"

@@ -1,0 +1,541 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{45FEC098-23F5-44C6-A554-E2BCA7056DC7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Macabre2D.UI.GameEditorLibrary</RootNamespace>
+    <AssemblyName>Macabre2D.UI.GameEditorLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommonServiceLocator.2.0.5\lib\net47\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\gong-wpf-dragdrop.2.2.0\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.IconPacks.Material.3.7.0\lib\net47\MahApps.Metro.IconPacks.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks.Material, Version=3.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.IconPacks.Material.3.7.0\lib\net47\MahApps.Metro.IconPacks.Material.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MonoGame.Framework.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework.Content.Pipeline, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MonoGame.Framework.Content.Pipeline.Portable.3.7.1.189\lib\portable-net45+win8+wpa81\MonoGame.Framework.Content.Pipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NSubstitute.4.2.1\lib\net46\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.7.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Permissions.4.7.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.5.11.5\lib\net47\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.6.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.5.11.5\lib\net47\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controls\AssetBrowser.xaml.cs">
+      <DependentUpon>AssetBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AssetEditorControl.xaml.cs">
+      <DependentUpon>AssetEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AssetEditors\AutoTileSetAssetEditor.xaml.cs">
+      <DependentUpon>AutoTileSetAssetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AssetEditors\SpriteWrapperEditor.xaml.cs">
+      <DependentUpon>SpriteWrapperEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LayerMatrixEditor.xaml.cs">
+      <DependentUpon>LayerMatrixEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LayersNameEditor.xaml.cs">
+      <DependentUpon>LayersNameEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SceneEditing\BaseAxisGizmo.cs" />
+    <Compile Include="Controls\SceneEditing\EditorAssetManager.cs" />
+    <Compile Include="Controls\SceneEditing\EditorCameraWrapper.cs" />
+    <Compile Include="Controls\SceneEditing\IGizmo.cs" />
+    <Compile Include="Controls\SceneEditing\RotationGizmo.cs" />
+    <Compile Include="Controls\SceneEditing\ScaleGizmo.cs" />
+    <Compile Include="Controls\SceneEditing\SceneEditorControl.xaml.cs">
+      <DependentUpon>SceneEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SceneEditing\SelectionEditor.cs" />
+    <Compile Include="Controls\SceneEditing\TileGizmo.cs" />
+    <Compile Include="Controls\SceneEditing\TranslationGizmo.cs" />
+    <Compile Include="Controls\ValueEditors\AudioClipEditor.xaml.cs">
+      <DependentUpon>AudioClipEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\AutoTileSetEditor.xaml.cs">
+      <DependentUpon>AutoTileSetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\ColliderEditor.xaml.cs">
+      <DependentUpon>ColliderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ComponentControl.xaml.cs">
+      <DependentUpon>ComponentControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ComponentHierarchy.xaml.cs">
+      <DependentUpon>ComponentHierarchy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\ComponentEditor.xaml.cs">
+      <DependentUpon>ComponentEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AssetEditors\FontAssetEditor.xaml.cs">
+      <DependentUpon>FontAssetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AssetEditors\ImageAssetEditor.xaml.cs">
+      <DependentUpon>ImageAssetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModuleControl.xaml.cs">
+      <DependentUpon>ModuleControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModuleList.xaml.cs">
+      <DependentUpon>ModuleList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\LayersEditor.xaml.cs">
+      <DependentUpon>LayersEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\LineColliderEditor.xaml.cs">
+      <DependentUpon>LineColliderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\ModuleEditor.xaml.cs">
+      <DependentUpon>ModuleEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\RenderSettingsEditor.xaml.cs">
+      <DependentUpon>RenderSettingsEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\AssetIdToContentPathConverter.cs" />
+    <Compile Include="Converters\AssetItemSourceConverter.cs" />
+    <Compile Include="Converters\AssetParentToCollectionConverter.cs" />
+    <Compile Include="Converters\AssetTypeToVisibilityConverter.cs" />
+    <Compile Include="Converters\AutoTileCardinalIndexToCanvasConverter.cs" />
+    <Compile Include="Converters\ComponentParentToCollectionConverter.cs" />
+    <Compile Include="Converters\ComponentToCommandMenuItemsConverter.cs" />
+    <Compile Include="Converters\ComponentEditingStyleToVisibilityConverter.cs" />
+    <Compile Include="Converters\ComponentHighlightColorConverter.cs" />
+    <Compile Include="Converters\ImageAssetToBitmapImageConverter.cs" />
+    <Compile Include="Converters\LayersToBoolConverter.cs" />
+    <Compile Include="Converters\LayersToMultiNameConverter.cs" />
+    <Compile Include="Converters\LayerToNameConverter.cs" />
+    <Compile Include="Converters\SpriteMaxSizeConverter.cs" />
+    <Compile Include="Converters\SpriteWrapperToCroppedBitmapConverter.cs" />
+    <Compile Include="Dialogs\AssetNameChangeDialog.xaml.cs">
+      <DependentUpon>AssetNameChangeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AssetNameChangeViewModel.cs" />
+    <Compile Include="Dialogs\GenerateSpritesDialog.xaml.cs">
+      <DependentUpon>GenerateSpritesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GenerateSpritesViewModel.cs" />
+    <Compile Include="Dialogs\SaveAssetAsDialog.xaml.cs">
+      <DependentUpon>SaveAssetAsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveAssetAsViewModel.cs" />
+    <Compile Include="Dialogs\SaveDiscardCancelDialog.xaml.cs">
+      <DependentUpon>SaveDiscardCancelDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveDiscardCancelViewModel.cs" />
+    <Compile Include="Dialogs\SaveSceneDialog.xaml.cs">
+      <DependentUpon>SaveSceneDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveSceneViewModel.cs" />
+    <Compile Include="Dialogs\SelectAssetDialog.xaml.cs">
+      <DependentUpon>SelectAssetDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectAssetViewModel.cs" />
+    <Compile Include="Dialogs\SelectComponentDialog.xaml.cs">
+      <DependentUpon>SelectComponentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectComponentViewModel.cs" />
+    <Compile Include="Dialogs\SelectModuleDialog.xaml.cs">
+      <DependentUpon>SelectModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectModuleViewModel.cs" />
+    <Compile Include="Dialogs\SelectProjectDialog.xaml.cs">
+      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectProjectViewModel.cs" />
+    <Compile Include="Dialogs\SelectSpriteDialog.xaml.cs">
+      <DependentUpon>SelectSpriteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectSpriteViewModel.cs" />
+    <Compile Include="Models\AddableAsset.cs" />
+    <Compile Include="Models\Asset.cs" />
+    <Compile Include="Models\AudioAsset.cs" />
+    <Compile Include="Models\AutoTileSetAsset.cs" />
+    <Compile Include="Models\BuildConfiguration.cs" />
+    <Compile Include="Models\ComponentEditingStyle.cs" />
+    <Compile Include="Models\FolderAsset.cs" />
+    <Compile Include="Models\FontAsset.cs" />
+    <Compile Include="Models\FrameworkWrappers\NullSpriteWrapper.cs" />
+    <Compile Include="Models\FrameworkWrappers\SpriteAnimationStepWrapper.cs" />
+    <Compile Include="Models\FrameworkWrappers\SpriteWrapper.cs" />
+    <Compile Include="Models\IIdentifiableAsset.cs" />
+    <Compile Include="Models\ImageAsset.cs" />
+    <Compile Include="Models\IndexedWrapper.cs" />
+    <Compile Include="Models\IReloadableAsset.cs" />
+    <Compile Include="Models\ISyncAsset.cs" />
+    <Compile Include="Models\MetadataAsset.cs" />
+    <Compile Include="Models\NullAsset.cs" />
+    <Compile Include="Models\PrefabAsset.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\SceneAsset.cs" />
+    <Compile Include="Models\ShaderAsset.cs" />
+    <Compile Include="Models\SpriteAnimationAsset.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controls\AssetEditors\SpriteAnimationAssetEditor.xaml.cs">
+      <DependentUpon>SpriteAnimationAssetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\PrefabEditor.xaml.cs">
+      <DependentUpon>PrefabEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\RectangleColliderEditor.xaml.cs">
+      <DependentUpon>RectangleColliderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\ShaderEditor.xaml.cs">
+      <DependentUpon>ShaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\SpriteAnimationEditor.xaml.cs">
+      <DependentUpon>SpriteAnimationEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\SpriteEditor.xaml.cs">
+      <DependentUpon>SpriteEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpriteViewer.xaml.cs">
+      <DependentUpon>SpriteViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ValueEditors\TileGridEditor.xaml.cs">
+      <DependentUpon>TileGridEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Services\AssetService.cs" />
+    <Compile Include="Services\AutoSaveService.cs" />
+    <Compile Include="Services\ComponentService.cs" />
+    <Compile Include="Services\Content\ContentBuilder.cs" />
+    <Compile Include="Services\GameDialogService.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\GameValueEditorService.cs" />
+    <Compile Include="Services\MonoGameService.cs" />
+    <Compile Include="Services\ProjectService.cs" />
+    <Compile Include="Services\SceneService.cs" />
+    <Compile Include="Services\StatusService.cs" />
+    <Compile Include="Controls\SceneEditing\SceneEditor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AssetBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\AssetEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AssetEditors\AutoTileSetAssetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AssetEditors\SpriteWrapperEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayerMatrixEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayersNameEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SceneEditing\SceneEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\AudioClipEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\AutoTileSetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\ColliderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ComponentControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ComponentHierarchy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ValueEditors\ComponentEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AssetEditors\FontAssetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AssetEditors\ImageAssetEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ModuleControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ModuleList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ValueEditors\LayersEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\LineColliderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\ModuleEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\RenderSettingsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AssetEditors\SpriteAnimationAssetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\PrefabEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\RectangleColliderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\ShaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\SpriteAnimationEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\SpriteEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SpriteViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ValueEditors\TileGridEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\AssetNameChangeDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\GenerateSpritesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SaveAssetAsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SaveDiscardCancelDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SaveSceneDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelectAssetDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelectComponentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelectModuleDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelectProjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SelectSpriteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj">
+      <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
+      <Name>Macabre2D.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Project\Gameplay\Macabre2D.Project.Gameplay.csproj">
+      <Project>{ce39dfb1-2c80-452f-a799-abc878773b1d}</Project>
+      <Name>Macabre2D.Project.Gameplay</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonLibrary\Macabre2D.UI.CommonLibrary.csproj">
+      <Project>{07b8e881-70a6-4aa2-b342-6e0b80326f6a}</Project>
+      <Name>Macabre2D.UI.CommonLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MonoGameIntegration\Macabre2D.UI.MonoGameIntegration.csproj">
+      <Project>{E3E80D77-F56C-4AA3-9124-7F6211E4F952}</Project>
+      <Name>Macabre2D.UI.MonoGameIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Resources\Macabre2D.UI.Resources.csproj">
+      <Project>{310d54cb-e336-4f67-b39e-0d4ea4e9d2fa}</Project>
+      <Name>Macabre2D.UI.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

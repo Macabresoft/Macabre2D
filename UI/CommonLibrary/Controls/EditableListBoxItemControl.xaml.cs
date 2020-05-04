@@ -56,12 +56,12 @@
             typeof(EditableListBoxItemControl),
             new PropertyMetadata(new List<Type>()));
 
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly IUndoService _undoService;
         private bool _isEditing;
 
         public EditableListBoxItemControl() {
-            this._dialogService = ViewContainer.Resolve<IDialogService>();
+            this._dialogService = ViewContainer.Resolve<ICommonDialogService>();
             this._undoService = ViewContainer.Resolve<IUndoService>();
             this.InitializeComponent();
         }

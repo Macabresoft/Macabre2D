@@ -18,7 +18,7 @@
         Task<IList<DependencyObject>> CreateEditors(object editableObject, Type declaringType, params Type[] typesToIgnore);
     }
 
-    public sealed class ValueEditorService : IValueEditorService {
+    public class ValueEditorService : IValueEditorService {
         private readonly IAssemblyService _assemblyService;
 
         public ValueEditorService(IAssemblyService assemblyService) {
@@ -31,6 +31,21 @@
 
         public async Task<IList<DependencyObject>> CreateEditors(object editableObject, Type declaringType, params Type[] typesToIgnore) {
             return await this.CreateEditors(string.Empty, editableObject, editableObject, declaringType, typesToIgnore);
+        }
+
+        protected virtual async Task<DependencyObject> GetSpecializedEditor(object originalObject, object value, Type memberType, string propertyPath, string memberName, Type declaringType) {
+            DependencyObject result = null;
+
+            if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
+                var genericEditor = new GenericValueEditor {
+                    DeclaringType = declaringType
+                };
+
+                await genericEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
+                result = genericEditor;
+            }
+
+            return result;
         }
 
         private async Task<IList<DependencyObject>> CreateEditors(string currentPath, object editableObject, object originalObject, Type declaringType, params Type[] typesToIgnore) {
@@ -68,23 +83,8 @@
                 await enumEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
                 result = enumEditor;
             }
-            else if (typeof(BaseModule).IsAssignableFrom(memberType)) {
-                var moduleEditor = new ModuleEditor();
-                await moduleEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                result = moduleEditor;
-            }
-            else if (typeof(BaseComponent).IsAssignableFrom(memberType)) {
-                var componentEditor = new ComponentEditor();
-                await componentEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                result = componentEditor;
-            }
-            else if (value != null) { // TODO: I don't know, this should probably work when value is null. Maybe it already does?
-                var genericEditor = new GenericValueEditor {
-                    DeclaringType = declaringType
-                };
-
-                await genericEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-                result = genericEditor;
+            else {
+                result = await this.GetSpecializedEditor(originalObject, value, memberType, propertyPath, memberName, declaringType);
             }
 
             return result;

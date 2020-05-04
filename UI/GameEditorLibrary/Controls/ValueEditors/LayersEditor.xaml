@@ -1,0 +1,33 @@
+﻿<valueEditor:NamedValueEditor x:Class="Macabre2D.UI.GameEditorLibrary.Controls.ValueEditors.LayersEditor"
+                              x:Name="_layersEditor"
+                              x:TypeArguments="framework:Layers"
+                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:controls="clr-namespace:Macabre2D.UI.CommonLibrary.Controls;assembly=Macabre2D.UI.CommonLibrary"
+                              xmlns:converters="clr-namespace:Macabre2D.UI.GameEditorLibrary.Converters"
+                              xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework"
+                              xmlns:valueEditor="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors;assembly=Macabre2D.UI.CommonLibrary">
+    <UserControl.Resources>
+        <converters:LayersToMultiNameConverter x:Key="_layersToMultiNameConverter" />
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=_layersEditor}">
+        <controls:CollapsableEditor x:Name="_collapsableEditor"
+                                    Title="{Binding Title}"
+                                    ShowBottomSeparator="{Binding ShowBottomSeparator}"
+                                    ShowTopSeparator="{Binding ShowTopSeparator}">
+            <controls:CollapsableEditor.CollapsedContent>
+                <TextBlock Text="{Binding Value, Mode=OneWay, Converter={StaticResource _layersToMultiNameConverter}}"
+                           ToolTip="{Binding Path=Text, RelativeSource={RelativeSource Self}}" />
+            </controls:CollapsableEditor.CollapsedContent>
+            <controls:CollapsableEditor.UncollapsedContent>
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </controls:CollapsableEditor.UncollapsedContent>
+        </controls:CollapsableEditor>
+    </Grid>
+</valueEditor:NamedValueEditor>

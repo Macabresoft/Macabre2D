@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Macabre2D.UI.GameEditorLibrary.Controls.ModuleControl"
+             x:Name="_moduleControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabre2D.UI.CommonLibrary.Converters;assembly=Macabre2D.UI.CommonLibrary"
+             xmlns:valueEditors="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors;assembly=Macabre2D.UI.CommonLibrary">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter" />
+    </UserControl.Resources>
+    <ScrollViewer DataContext="{Binding ElementName=_moduleControl}"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           FontWeight="Bold"
+                           Text="Type"
+                           VerticalAlignment="Center" />
+                <TextBox Grid.Column="1"
+                         IsReadOnly="True"
+                         Text="{Binding ModuleTypeName, Mode=OneWay}" />
+            </Grid>
+
+            <valueEditors:StringEditor Grid.Row="1"
+                                       Title="Name"
+                                       Value="{Binding ModuleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       ToolTip="{Binding ModuleTypeFullName, Mode=OneWay}" />
+
+            <Grid Grid.Row="2"
+                  Visibility="{Binding IsModuleUpdateable, Converter={StaticResource _boolToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <valueEditors:BoolEditor Grid.Column="0"
+                                         Title="Enabled"
+                                         ToolTip="Is Enabled (does this module update on scene start?)"
+                                         Value="{Binding IsModuleEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <valueEditors:IntEditor Grid.Column="1"
+                                        Title="Update Order"
+                                        ToolTip="Update Order (lower numbers update earlier in the loop)"
+                                        Value="{Binding ModuleUpdateOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+
+            <Separator Grid.Row="3" />
+
+            <ItemsControl ScrollViewer.CanContentScroll="False"
+                          Grid.Row="4"
+                          ItemsSource="{Binding Editors}"
+                          MaxWidth="2560"
+                          MaxHeight="1600" />
+        </Grid>
+    </ScrollViewer>
+</UserControl>
