@@ -1,16 +1,13 @@
 ﻿namespace Macabre2D.UI.GameEditorLibrary.Controls.SceneEditing {
 
     using Macabre2D.Framework;
-    using Macabre2D.UI.GameEditorLibrary.Models;
     using Macabre2D.UI.MonoGameIntegration;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Windows;
 
-    public class SceneEditor : MonoGameViewModel, IGame {
-        private readonly EditorCameraWrapper _cameraWrapper;
-        private readonly SelectionEditor _selectionEditor;
+    public class SongEditor : MonoGameViewModel, IGame {
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
 #pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
@@ -22,9 +19,7 @@
         private string _rootContentDirectory;
         private IGameSettings _settings;
 
-        public SceneEditor(EditorCameraWrapper cameraWrapper, SelectionEditor selectionEditor) : base() {
-            this._cameraWrapper = cameraWrapper;
-            this._selectionEditor = selectionEditor;
+        public SongEditor() : base() {
             this.Settings = new GameSettings();
             MacabreGame.Instance = this;
         }
@@ -49,12 +44,6 @@
             }
         }
 
-        public Camera CurrentCamera {
-            get {
-                return this._cameraWrapper.Camera;
-            }
-        }
-
         public IScene CurrentScene {
             get {
                 return this._currentScene;
@@ -74,8 +63,6 @@
                 this.RaisePropertyChanged(nameof(this.CurrentScene));
             }
         }
-
-        public ComponentEditingStyle EditingStyle { get; internal set; } = ComponentEditingStyle.Translation;
 
         public double GameSpeed {
             get {
@@ -121,11 +108,9 @@
             if (this._isInitialized && this._isContentLoaded) {
                 if (this.CurrentScene != null) {
                     this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                    this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
-                    this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
-                    this._cameraWrapper.Draw(this._frameTime);
-                    this._selectionEditor.Draw(this._frameTime, this._cameraWrapper.Camera.BoundingArea);
-                    this.SpriteBatch.End();
+                    ////this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
+                    ////this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
+                    ////this.SpriteBatch.End();
                 }
                 else if (this.Settings != null) {
                     this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
@@ -135,15 +120,6 @@
 
         public void Exit() {
             return;
-        }
-
-        public void FocusComponent(BaseComponent component) {
-            if (component is IBoundable boundable) {
-                this._cameraWrapper.Camera.ZoomTo(boundable);
-            }
-            else if (component != null) {
-                this._cameraWrapper.Camera.SetWorldPosition(component.WorldTransform.Position);
-            }
         }
 
         public override void Initialize(MonoGameKeyboard keyboard, MonoGameMouse mouse) {
@@ -164,8 +140,8 @@
         public void ResetCamera() {
             // This probably seems weird, but it resets the view height which causes the view matrix
             // and bounding area to be reevaluated.
-            this._cameraWrapper.Camera.ViewHeight += 1;
-            this._cameraWrapper.Camera.ViewHeight -= 1;
+            ////this._cameraWrapper.Camera.ViewHeight += 1;
+            ////this._cameraWrapper.Camera.ViewHeight -= 1;
         }
 
         public void SaveAndApplyGraphicsSettings() {
@@ -191,16 +167,12 @@
                 var keyboardState = this.Keyboard.GetState();
 
                 this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-                this._selectionEditor.Update(this._frameTime, mouseState, keyboardState);
-                this._cameraWrapper.Update(this._frameTime, mouseState, keyboardState);
             }
         }
 
         private void InitializeComponents() {
             if (this.CurrentScene != null) {
                 this.CurrentScene.Initialize();
-                this._cameraWrapper.Initialize(this);
-                this._selectionEditor.Initialize(this);
             }
         }
     }

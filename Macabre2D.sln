@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Examples.MultiPla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.GameEditorLibrary", "UI\GameEditorLibrary\Macabre2D.UI.GameEditorLibrary.csproj", "{45FEC098-23F5-44C6-A554-E2BCA7056DC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.CosmicSynthLibrary", "UI\CosmicSynthLibrary\Macabre2D.UI.CosmicSynthLibrary.csproj", "{C8821548-564F-4127-95F6-A4B960BFB587}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -154,6 +156,14 @@ Global
 		{45FEC098-23F5-44C6-A554-E2BCA7056DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45FEC098-23F5-44C6-A554-E2BCA7056DC7}.Release|x64.ActiveCfg = Release|Any CPU
 		{45FEC098-23F5-44C6-A554-E2BCA7056DC7}.Release|x64.Build.0 = Release|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Debug|x64.Build.0 = Debug|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Release|x64.ActiveCfg = Release|Any CPU
+		{C8821548-564F-4127-95F6-A4B960BFB587}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,6 +180,7 @@ Global
 		{2670A2A4-7DB0-4A31-B23C-C332D9289DFC} = {5B3501DB-CD7B-4388-8714-22D0B17618D7}
 		{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7} = {217190B4-0A19-4B85-8131-2EF3984BA669}
 		{45FEC098-23F5-44C6-A554-E2BCA7056DC7} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
+		{C8821548-564F-4127-95F6-A4B960BFB587} = {357EBB18-5593-43D0-9FA2-DC1933CEE8BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}
