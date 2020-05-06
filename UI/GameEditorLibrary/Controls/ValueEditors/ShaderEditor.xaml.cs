@@ -22,14 +22,18 @@
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
         public ShaderEditor() : base() {
-            this.SelectShaderCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(ShaderAsset), true, out var asset)) {
                     this.Asset = asset as ShaderAsset;
                     this.Value = this.Asset?.SavableValue;
                 }
             }, true);
 
-            this.Loaded += ShaderEditor_Loaded;
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
+            this.Loaded += this.ShaderEditor_Loaded;
             this.InitializeComponent();
         }
 
@@ -38,7 +42,8 @@
             set { this.SetValue(AssetProperty, value); }
         }
 
-        public ICommand SelectShaderCommand { get; }
+        public ICommand ClearCommand { get; }
+        public ICommand SelectCommand { get; }
 
         private void ShaderEditor_Loaded(object sender, RoutedEventArgs e) {
             if (this.Value != null && (this.Asset == null || this.Asset.SavableValue?.Id != this.Value.Id)) {

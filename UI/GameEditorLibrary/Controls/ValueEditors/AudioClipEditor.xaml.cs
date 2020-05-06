@@ -13,15 +13,21 @@
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
         public AudioClipEditor() : base() {
-            this.SelectAudioClipCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(AudioAsset), true, out var asset)) {
                     this.Value = asset is AudioAsset audioAsset ? audioAsset.AudioClip : null;
                 }
             }, true);
 
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
             this.InitializeComponent();
         }
 
-        public ICommand SelectAudioClipCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
     }
 }

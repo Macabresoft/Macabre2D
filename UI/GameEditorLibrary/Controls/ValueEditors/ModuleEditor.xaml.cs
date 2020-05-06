@@ -15,16 +15,22 @@
         private Type _moduleType;
 
         public ModuleEditor() {
-            this.SelectModuleCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectModuleDialog(this._sceneService.CurrentScene.SavableValue, this._moduleType, out var module)) {
                     this.Value = module;
                 }
             });
 
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
             this.InitializeComponent();
         }
 
-        public ICommand SelectModuleCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
 
         public override Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
             this._moduleType = memberType;

@@ -18,17 +18,23 @@
         private SpriteWrapper _spriteWrapper;
 
         public SpriteEditor() : base() {
-            this.SelectSpriteCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectSpriteDialog(this.SpriteWrapper, out var spriteWrapper)) {
                     this.SpriteWrapper = spriteWrapper;
                 }
             }, true);
 
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
             this.Loaded += this.SpriteEditor_Loaded;
             this.InitializeComponent();
         }
 
-        public ICommand SelectSpriteCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
 
         public SpriteWrapper SpriteWrapper {
             get {

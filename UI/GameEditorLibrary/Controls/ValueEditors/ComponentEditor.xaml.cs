@@ -15,16 +15,22 @@
         private Type _componentType;
 
         public ComponentEditor() {
-            this.SelectComponentCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectComponentDialog(this._sceneService.CurrentScene, this._componentType, out var component)) {
                     this.Value = component;
                 }
             });
 
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
             this.InitializeComponent();
         }
 
-        public ICommand SelectComponentCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
 
         public override Task Initialize(object value, Type memberType, object owner, string propertName, string title) {
             this._componentType = memberType;

@@ -3,12 +3,14 @@
                               x:TypeArguments="framework:SpriteAnimation"
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                               xmlns:valueEditor="clr-namespace:Macabre2D.UI.CommonLibrary.Controls.ValueEditors;assembly=Macabre2D.UI.CommonLibrary"
                               xmlns:framework="clr-namespace:Macabre2D.Framework;assembly=Macabre2D.Framework">
     <Grid DataContext="{Binding ElementName=_spriteAnimationEditor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -24,11 +26,24 @@
                  ToolTip="{Binding Asset.Name, FallbackValue='(None)'}"
                  VerticalAlignment="Center" />
 
-        <Button Grid.Column="2"
+        <Button Command="{Binding SelectCommand}"
+                ToolTip="Select a new value."
+                Grid.Column="2"
                 Margin="{StaticResource StandardMarginAll}"
                 VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Content="Browse"
-                Command="{Binding SelectSpriteAnimationCommand}" />
+                HorizontalAlignment="Center">
+            <iconPacks:PackIconMaterial Kind="FolderOpen"
+                                        Foreground="{StaticResource BlackBrush}" />
+        </Button>
+
+        <Button Command="{Binding ClearCommand}"
+                ToolTip="Clear the selected value."
+                Grid.Column="3"
+                Margin="{StaticResource StandardMarginTRB}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            <iconPacks:PackIconMaterial Kind="Close"
+                                        Foreground="{StaticResource BlackBrush}" />
+        </Button>
     </Grid>
 </valueEditor:NamedValueEditor>

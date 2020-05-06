@@ -13,15 +13,21 @@
         private readonly IProjectService _projectService = ViewContainer.Resolve<IProjectService>();
 
         public PrefabEditor() : base() {
-            this.SelectPrefabCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(PrefabAsset), true, out var asset)) {
                     this.Value = asset is PrefabAsset prefabAsset ? prefabAsset.SavableValue : null;
                 }
             }, true);
 
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
+
             this.InitializeComponent();
         }
 
-        public ICommand SelectPrefabCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
     }
 }

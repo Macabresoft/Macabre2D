@@ -10,6 +10,7 @@
 * Modules can be given names.
 * Components can have selectable modules in the editor.
 * Components can have linked components in the editor.
+* Added a *clear* button for referential value editors that can be null.
 
 ### Refactors
 

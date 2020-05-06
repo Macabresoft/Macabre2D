@@ -16,12 +16,16 @@
         private AutoTileSetAsset _asset;
 
         public AutoTileSetEditor() : base() {
-            this.SelectAutoTileSetCommand = new RelayCommand(() => {
+            this.SelectCommand = new RelayCommand(() => {
                 if (this._dialogService.ShowSelectAssetDialog(this._projectService.CurrentProject, typeof(AutoTileSetAsset), true, out var asset)) {
                     this.Asset = asset as AutoTileSetAsset;
                     this.Value = this.Asset?.SavableValue;
                 }
             }, true);
+
+            this.ClearCommand = new RelayCommand(() => {
+                this.Value = null;
+            });
 
             this.Loaded += this.AutoTileSetEditor_Loaded;
             this.InitializeComponent();
@@ -38,7 +42,9 @@
             }
         }
 
-        public ICommand SelectAutoTileSetCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public ICommand SelectCommand { get; }
 
         private void AutoTileSetEditor_Loaded(object sender, RoutedEventArgs e) {
             if (this.Value != null && (this.Asset == null || this.Asset.SavableValue?.Id != this.Value.Id)) {
