@@ -17,7 +17,10 @@ namespace Macabre2D.UI.MonoGameIntegration {
 
         public MonoGameKeyboard(FrameworkElement focusElement) {
             this._focusElement = focusElement ?? throw new ArgumentNullException(nameof(focusElement));
+            Instance = this;
         }
+
+        public static MonoGameKeyboard Instance { get; private set; }
 
         public KeyboardState GetState() {
             if (this._focusElement.IsMouseDirectlyOver && Keyboard.FocusedElement != this._focusElement) {

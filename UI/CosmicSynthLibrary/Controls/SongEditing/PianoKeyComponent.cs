@@ -110,7 +110,7 @@
             this._spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.BottomLeft;
 
             this.Collider = new RectangleCollider(2f, 1f) {
-                Offset = this._spriteRenderer.RenderSettings.Offset
+                Offset = 0.5f * this._spriteRenderer.RenderSettings.Size * GameSettings.Instance.InversePixelsPerUnit
             };
         }
 

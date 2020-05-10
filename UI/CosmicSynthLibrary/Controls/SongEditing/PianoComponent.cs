@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.MonoGameIntegration;
     using Microsoft.Xna.Framework.Input;
     using System;
     using System.Collections.Generic;
@@ -51,7 +52,7 @@
             }
         }
 
-        public void Update(FrameTime frameTime) => this.Update(frameTime, Mouse.GetState(), Keyboard.GetState());
+        public void Update(FrameTime frameTime) => this.Update(frameTime, MonoGameMouse.Instance.GetState(), MonoGameKeyboard.Instance.GetState());
 
         protected override void Initialize() {
             var pitches = Enum.GetValues(typeof(Pitch)).Cast<Pitch>().OrderBy(x => x).ToList();

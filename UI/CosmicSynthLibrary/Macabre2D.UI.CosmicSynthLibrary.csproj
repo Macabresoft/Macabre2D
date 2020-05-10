@@ -170,6 +170,7 @@
     <Compile Include="Controls\SongEditing\PianoRoll.cs" />
     <Compile Include="Controls\SongEditing\PianoComponent.cs" />
     <Compile Include="Controls\SongEditing\PianoKeyComponent.cs" />
+    <Compile Include="Controls\SongEditing\SceneColliderDrawerComponent.cs" />
     <Compile Include="Controls\SongEditing\SongEditorControl.xaml.cs">
       <DependentUpon>SongEditorControl.xaml</DependentUpon>
     </Compile>

@@ -29,6 +29,7 @@
             this._camera = this.CurrentScene.AddChild<Camera>();
             this._camera.ViewHeight = 36f;
             this.CurrentScene.AddChild(new PianoComponent(this._pianoRoll));
+            this.CurrentScene.AddChild<SceneColliderDrawerComponent>();
         }
 
         public event EventHandler<double> GameSpeedChanged;
@@ -78,6 +79,7 @@
 
         public override void Initialize(MonoGameKeyboard keyboard, MonoGameMouse mouse) {
             base.Initialize(keyboard, mouse);
+            FrameworkDispatcher.Update();
             this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.AssetManager.Initialize(this.Content);
             this.CurrentScene.Initialize();

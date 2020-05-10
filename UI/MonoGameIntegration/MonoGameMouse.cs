@@ -36,7 +36,10 @@ namespace Macabre2D.UI.MonoGameIntegration {
             this._focusElement.MouseLeftButtonUp += this.HandleMouse;
             this._focusElement.MouseRightButtonDown += this.HandleMouse;
             this._focusElement.MouseRightButtonUp += this.HandleMouse;
+            Instance = this;
         }
+
+        public static MonoGameMouse Instance { get; private set; }
 
         /// <summary>
         /// Gets or sets the mouse capture behaviour. If true, the mouse will be captured within the
