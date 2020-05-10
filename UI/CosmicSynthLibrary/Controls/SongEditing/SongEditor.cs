@@ -6,6 +6,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Windows;
+    using Point = Microsoft.Xna.Framework.Point;
 
     public class SongEditor : MonoGameViewModel, IGame {
         private readonly Camera _camera;
@@ -13,6 +14,7 @@
         private FrameTime _frameTime;
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;
+        private Point _viewportSize;
 
         public SongEditor() : base() {
             this.Settings = new GameSettings() {
@@ -33,6 +35,8 @@
         }
 
         public event EventHandler<double> GameSpeedChanged;
+
+        public event EventHandler<Point> ViewportSizeChanged;
 
         public IAssetManager AssetManager { get; } = new AssetManager();
 
@@ -65,6 +69,12 @@
         public bool ShowSelection { get; internal set; } = true;
 
         public SpriteBatch SpriteBatch { get; private set; }
+
+        public Point ViewportSize {
+            get {
+                return this._viewportSize;
+            }
+        }
 
         public override void Draw(GameTime gameTime) {
             if (this._isInitialized && this._isContentLoaded) {
@@ -103,6 +113,9 @@
         }
 
         public override void SizeChanged(object sender, SizeChangedEventArgs e) {
+            this._viewportSize = new Point(Convert.ToInt32(e.NewSize.Width), Convert.ToInt32(e.NewSize.Height));
+            this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
+
             if (e.NewSize.Width > e.PreviousSize.Width || e.NewSize.Height > e.PreviousSize.Height) {
                 this.ResetCamera();
             }

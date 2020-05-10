@@ -21,6 +21,7 @@
         private GraphicsSettings _graphicsSettings = new GraphicsSettings();
         private bool _isInitialized;
         private IGameSettings _settings;
+        private Point _viewportSize;
 
         /// <summary>
         /// Initializes the <see cref="MacabreGame"/> class.
@@ -40,6 +41,9 @@
 
         /// <inheritdoc/>
         public event EventHandler<double> GameSpeedChanged;
+
+        /// <inheritdoc/>
+        public event EventHandler<Point> ViewportSizeChanged;
 
         /// <summary>
         /// Gets the singleton instance of <see cref="IGame"/> for the current session.
@@ -168,6 +172,13 @@
             }
         }
 
+        /// <inheritdoc/>
+        public Point ViewportSize {
+            get {
+                return this._viewportSize;
+            }
+        }
+
         public void SaveAndApplyGraphicsSettings() {
             this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
             this.ApplyGraphicsSettings();
@@ -215,6 +226,8 @@
         /// <inheritdoc/>
         protected override void Initialize() {
             base.Initialize();
+
+            this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.CurrentScene?.Initialize();
 
             if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, out var graphicsSettings)) {
@@ -250,6 +263,11 @@
             var keyboardState = Keyboard.GetState();
             if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
                 this.Exit();
+            }
+
+            if (this._viewportSize.X != this.GraphicsDevice.Viewport.Width || this._viewportSize.Y != this.GraphicsDevice.Viewport.Height) {
+                this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+                this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
             }
 
             this._frameTime = new FrameTime(gameTime, this.GameSpeed);

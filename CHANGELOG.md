@@ -11,6 +11,7 @@
 * Components can have selectable modules in the editor.
 * Components can have linked components in the editor.
 * Added a *clear* button for referential value editors that can be null.
+* MacabreGame object now fires an event when the viewport size changes.
 
 ### Refactors
 
@@ -31,7 +32,6 @@
 * Resources now appropriately disposed of when game is exited.
 * DesktopGL project should work across Mac and Linux now (previously was broken on every platform except Windows).
 * Tile grids now update in the UI as they are edited.
-* RenderSettings on a SpriteRenderComponent will be properly updated when the Sprite changes.
 
 ## 0.3.11.0
 

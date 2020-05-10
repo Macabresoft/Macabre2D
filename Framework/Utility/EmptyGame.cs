@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -12,6 +13,9 @@
 
         /// <inheritdoc/>
         public event EventHandler<double> GameSpeedChanged;
+
+        /// <inheritdoc/>
+        public event EventHandler<Point> ViewportSizeChanged;
 
         /// <inheritdoc/>
         public IAssetManager AssetManager {
@@ -74,6 +78,13 @@
 
         /// <inheritdoc/>
         public SpriteBatch SpriteBatch {
+            get {
+                return default;
+            }
+        }
+
+        /// <inheritdoc/>
+        public Point ViewportSize {
             get {
                 return default;
             }

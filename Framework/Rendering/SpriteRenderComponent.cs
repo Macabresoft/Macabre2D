@@ -113,7 +113,6 @@
                 if (this.Set(ref this._sprite, value)) {
                     this.LoadContent();
                     this._boundingArea.Reset();
-                    this.RenderSettings.Initialize(this.CreateSize);
                     this.RenderSettings.ResetOffset();
                 }
             }

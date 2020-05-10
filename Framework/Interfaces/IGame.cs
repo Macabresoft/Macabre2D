@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -13,6 +14,11 @@
         /// Occurs when the game speed has changed.
         /// </summary>
         event EventHandler<double> GameSpeedChanged;
+
+        /// <summary>
+        /// Occurs when the viewport changes.
+        /// </summary>
+        event EventHandler<Point> ViewportSizeChanged;
 
         /// <summary>
         /// Gets the asset manager.
@@ -75,6 +81,12 @@
         /// </summary>
         /// <value>The sprite batch.</value>
         SpriteBatch SpriteBatch { get; }
+
+        /// <summary>
+        /// Gets the size of the viewport.
+        /// </summary>
+        /// <value>The size of the viewport.</value>
+        Point ViewportSize { get; }
 
         /// <summary>
         /// Exits thie game.
