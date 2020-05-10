@@ -112,6 +112,7 @@
             set {
                 if (this.Set(ref this._sprite, value)) {
                     this.LoadContent();
+                    this.RenderSettings.InvalidateSize();
                     this._boundingArea.Reset();
                     this.RenderSettings.ResetOffset();
                 }
@@ -241,6 +242,7 @@
 
         private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.WorldTransform)) {
+                this.RenderSettings.InvalidateSize();
                 this._boundingArea.Reset();
                 this._pixelTransform.Reset();
                 this._rotatableTransform.Reset();

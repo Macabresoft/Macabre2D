@@ -106,18 +106,20 @@
             base.Initialize();
 
             this._spriteRenderer = this.AddChild<SpriteRenderComponent>();
-            this._spriteRenderer.Sprite = new Sprite(AssetManager.Instance.GetId(PianoRoll.SpriteSheetPath), this.Frequency.Note.IsNatural() ? WhiteKeySpriteLocation : BlackKeySpriteLocation, PianoKeySpriteSize);
             this._spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.BottomLeft;
-
-            this.Collider = new RectangleCollider(2f, 1f) {
-                Offset = 0.5f * this._spriteRenderer.RenderSettings.Size * GameSettings.Instance.InversePixelsPerUnit
-            };
+            this._spriteRenderer.Sprite = new Sprite(AssetManager.Instance.GetId(PianoRoll.SpriteSheetPath), this.Frequency.Note.IsNatural() ? WhiteKeySpriteLocation : BlackKeySpriteLocation, PianoKeySpriteSize);
+            this._spriteRenderer.OnInitialized += this.SpriteRenderer_OnInitialized;
+            this.Collider = new RectangleCollider(2f, 1f);
         }
 
         private void Self_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.IsEnabled)) {
                 this.RaisePropertyChanged(nameof(this.IsClickable));
             }
+        }
+
+        private void SpriteRenderer_OnInitialized(object sender, EventArgs e) {
+            this.Collider.Offset = 0.5f * this._spriteRenderer.RenderSettings.Size * GameSettings.Instance.InversePixelsPerUnit;
         }
     }
 }

@@ -50,6 +50,9 @@
         }
 
         /// <inheritdoc/>
+        public event EventHandler OnInitialized;
+
+        /// <inheritdoc/>
         public event EventHandler<BaseComponent> ParentChanged;
 
         /// <inheritdoc/>
@@ -540,6 +543,8 @@
                 }
                 finally {
                     this.IsInitialized = true;
+                    this.OnInitialized.SafeInvoke(this);
+                    this.OnInitialized = null;
                 }
 
                 if (this._parent != null) {

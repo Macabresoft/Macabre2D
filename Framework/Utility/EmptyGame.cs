@@ -88,6 +88,10 @@
             get {
                 return default;
             }
+
+            set {
+                this.ViewportSizeChanged.SafeInvoke(this, default);
+            }
         }
 
         /// <inheritdoc/>
