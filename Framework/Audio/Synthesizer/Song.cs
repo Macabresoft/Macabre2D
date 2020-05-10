@@ -22,6 +22,13 @@
         private ushort _samplesPerBeat = MaximumSampleRate / 4;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Song"/> class.
+        /// </summary>
+        public Song() {
+            this.AddTrack();
+        }
+
+        /// <summary>
         /// Gets or sets the beats per minute.
         /// </summary>
         /// <value>The beats per minute.</value>
@@ -111,7 +118,7 @@
         /// <param name="track">The track.</param>
         /// <returns>A value indicating whether or not the track was removed.</returns>
         public bool RemoveTrack(Track track) {
-            return this._tracks.Remove(track);
+            return this._tracks.Count > 1 && this._tracks.Remove(track);
         }
     }
 }

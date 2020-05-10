@@ -166,6 +166,10 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\SongEditing\EditorAssetManager.cs" />
+    <Compile Include="Controls\SongEditing\IClickablePianoRollComponent.cs" />
+    <Compile Include="Controls\SongEditing\PianoRoll.cs" />
+    <Compile Include="Controls\SongEditing\PianoComponent.cs" />
+    <Compile Include="Controls\SongEditing\PianoKeyComponent.cs" />
     <Compile Include="Controls\SongEditing\SongEditorControl.xaml.cs">
       <DependentUpon>SongEditorControl.xaml</DependentUpon>
     </Compile>

@@ -25,6 +25,8 @@
             var movingDot = new MovingDot();
             camera.AddChild(movingDot);
 
+            this.AssetManager.SetMapping(Guid.NewGuid(), "WhiteSquare");
+
             var spriteRenderer = new SpriteRenderComponent();
             spriteRenderer.Sprite = new Sprite(this.AssetManager.GetId("WhiteSquare"), Point.Zero, new Point(32, 32));
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;

@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.GameEditorLibrary.Controls.SceneEditing {
+﻿namespace Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing {
 
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework.Audio;

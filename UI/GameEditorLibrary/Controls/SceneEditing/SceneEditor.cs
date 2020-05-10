@@ -13,10 +13,7 @@
         private readonly SelectionEditor _selectionEditor;
         private IAssetManager _assetManager = new AssetManager();
         private IScene _currentScene;
-#pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
         private FrameTime _frameTime;
-#pragma warning restore IDE0052 // Remove unread private members
-
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;
         private string _rootContentDirectory;

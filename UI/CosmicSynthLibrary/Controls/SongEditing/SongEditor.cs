@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.UI.GameEditorLibrary.Controls.SceneEditing {
+﻿namespace Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing {
 
     using Macabre2D.Framework;
     using Macabre2D.UI.MonoGameIntegration;
@@ -8,61 +8,34 @@
     using System.Windows;
 
     public class SongEditor : MonoGameViewModel, IGame {
-        private IAssetManager _assetManager = new AssetManager();
-        private IScene _currentScene;
-#pragma warning disable IDE0052 // Remove unread private members. This is somehow used by the base class with reflection.
+        private readonly Camera _camera;
+        private readonly IPianoRoll _pianoRoll = new PianoRoll();
         private FrameTime _frameTime;
-#pragma warning restore IDE0052 // Remove unread private members
-
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;
-        private string _rootContentDirectory;
-        private IGameSettings _settings;
 
         public SongEditor() : base() {
-            this.Settings = new GameSettings();
+            this.Settings = new GameSettings() {
+                PixelsPerUnit = 16
+            };
+
+            GameSettings.Instance = this.Settings;
             MacabreGame.Instance = this;
+            this.AssetManager.SetMapping(Guid.NewGuid(), PianoRoll.SpriteSheetPath);
+            this.CurrentScene = new Scene {
+                BackgroundColor = Color.Black
+            };
+
+            this._camera = this.CurrentScene.AddChild<Camera>();
+            this._camera.ViewHeight = 36f;
+            this.CurrentScene.AddChild(new PianoComponent(this._pianoRoll));
         }
 
         public event EventHandler<double> GameSpeedChanged;
 
-        public IAssetManager AssetManager {
-            get {
-                return this._assetManager;
-            }
+        public IAssetManager AssetManager { get; } = new AssetManager();
 
-            set {
-                if (value != null) {
-                    this._assetManager = new EditorAssetManager(value);
-
-                    if (this.Content != null) {
-                        this._assetManager.Initialize(this.Content);
-                    }
-
-                    this.RaisePropertyChanged(nameof(this.AssetManager));
-                }
-            }
-        }
-
-        public IScene CurrentScene {
-            get {
-                return this._currentScene;
-            }
-
-            set {
-                this._currentScene = value;
-
-                if (this._isInitialized && this._currentScene != null) {
-                    this.InitializeComponents();
-                }
-
-                if (this._isContentLoaded) {
-                    this._currentScene.LoadContent();
-                }
-
-                this.RaisePropertyChanged(nameof(this.CurrentScene));
-            }
-        }
+        public IScene CurrentScene { get; }
 
         public double GameSpeed {
             get {
@@ -84,19 +57,7 @@
 
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
-        public IGameSettings Settings {
-            get {
-                return this._settings;
-            }
-
-            set {
-                if (value != null) {
-                    this._settings = value;
-                    GameSettings.Instance = this._settings;
-                    this.RaisePropertyChanged(nameof(this.Settings));
-                }
-            }
-        }
+        public IGameSettings Settings { get; }
 
         public bool ShowGrid { get; internal set; } = true;
 
@@ -106,15 +67,8 @@
 
         public override void Draw(GameTime gameTime) {
             if (this._isInitialized && this._isContentLoaded) {
-                if (this.CurrentScene != null) {
-                    this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
-                    ////this.CurrentScene.Draw(this._frameTime, this._cameraWrapper.Camera);
-                    ////this.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, RasterizerState.CullNone, null, this._cameraWrapper.Camera.ViewMatrix);
-                    ////this.SpriteBatch.End();
-                }
-                else if (this.Settings != null) {
-                    this.GraphicsDevice.Clear(this.Settings.FallbackBackgroundColor);
-                }
+                this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
+                this.CurrentScene.Draw(this._frameTime);
             }
         }
 
@@ -125,34 +79,25 @@
         public override void Initialize(MonoGameKeyboard keyboard, MonoGameMouse mouse) {
             base.Initialize(keyboard, mouse);
             this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
-
-            this.InitializeComponents();
+            this.AssetManager.Initialize(this.Content);
+            this.CurrentScene.Initialize();
             this._isInitialized = true;
         }
 
         public override void LoadContent() {
-            this.Content.RootDirectory = this._rootContentDirectory;
-            this.AssetManager.Initialize(this.Content);
-            this.CurrentScene?.LoadContent();
+            this.CurrentScene.LoadContent();
             this._isContentLoaded = true;
         }
 
         public void ResetCamera() {
             // This probably seems weird, but it resets the view height which causes the view matrix
             // and bounding area to be reevaluated.
-            ////this._cameraWrapper.Camera.ViewHeight += 1;
-            ////this._cameraWrapper.Camera.ViewHeight -= 1;
+            this._camera.ViewHeight += 1;
+            this._camera.ViewHeight -= 1;
         }
 
         public void SaveAndApplyGraphicsSettings() {
             return;
-        }
-
-        public void SetContentPath(string path) {
-            this._rootContentDirectory = path;
-            if (this.Content != null) {
-                this.Content.RootDirectory = this._rootContentDirectory;
-            }
         }
 
         public override void SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -162,18 +107,8 @@
         }
 
         public override void Update(GameTime gameTime) {
-            if (this.CurrentScene != null) {
-                var mouseState = this.Mouse.GetState();
-                var keyboardState = this.Keyboard.GetState();
-
-                this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-            }
-        }
-
-        private void InitializeComponents() {
-            if (this.CurrentScene != null) {
-                this.CurrentScene.Initialize();
-            }
+            this._frameTime = new FrameTime(gameTime, this.GameSpeed);
+            this.CurrentScene.Update(this._frameTime);
         }
     }
 }

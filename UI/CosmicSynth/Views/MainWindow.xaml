@@ -6,7 +6,7 @@
                    xmlns:local="clr-namespace:Macabre2D.UI.CosmicSynth.Views"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:system="clr-namespace:System;assembly=mscorlib"
-                   xmlns:viewModels="clr-namespace:Macabre2D.UI.CosmicSynth.ViewModels"
+                   xmlns:songEditing="clr-namespace:Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing;assembly=Macabre2D.UI.CosmicSynthLibrary"
                    Style="{StaticResource StandardWindowStyle}"
                    WindowState="Maximized">
     <metro:MetroWindow.Resources>
@@ -76,9 +76,7 @@
                             Margin="{StaticResource StandardMarginL}"
                             Style="{StaticResource VerticalGridSplitter}" />
 
-            <Border Grid.Column="2"
-                    BorderBrush="Black"
-                    Background="Black" />
+            <songEditing:SongEditorControl Grid.Column="2" />
         </Grid>
 
         <Border Background="#11FFFFFF"
