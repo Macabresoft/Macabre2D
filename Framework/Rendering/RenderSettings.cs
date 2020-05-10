@@ -143,6 +143,16 @@
         public SpriteEffects Orientation { get; private set; } = SpriteEffects.FlipVertically;
 
         /// <summary>
+        /// Gets the size.
+        /// </summary>
+        /// <value>The size.</value>
+        public Vector2 Size {
+            get {
+                return this._size?.Value ?? Vector2.Zero;
+            }
+        }
+
+        /// <summary>
         /// Initializes the specified size factory.
         /// </summary>
         /// <param name="sizeFactory">The size factory.</param>
