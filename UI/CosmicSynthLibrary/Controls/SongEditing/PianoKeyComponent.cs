@@ -19,7 +19,7 @@
 
         public PianoKeyComponent(Note note, Pitch pitch, IPianoRoll pianoRoll) : base() {
             this._pianoRoll = pianoRoll;
-            this.LocalPosition = new Vector2(-2f, this._pianoRoll.GetRowPosition(note, pitch) + 0.5f);
+            this.LocalPosition = new Vector2(0f, this._pianoRoll.GetRowPosition(note, pitch));
             this.Frequency = new Frequency(note, pitch);
             this.PropertyChanged += this.Self_PropertyChanged;
         }

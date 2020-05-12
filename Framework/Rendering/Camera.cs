@@ -50,6 +50,13 @@
         }
 
         /// <summary>
+        /// Gets the offset settings.
+        /// </summary>
+        /// <value>The offset settings.</value>
+        [DataMember(Name = "Offset Settings")]
+        public OffsetSettings OffsetSettings { get; } = new OffsetSettings(Vector2.Zero, PixelOffsetType.Center);
+
+        /// <summary>
         /// Gets the render order. A lower number will be rendered first.
         /// </summary>
         /// <value>The render order.</value>
@@ -106,8 +113,7 @@
 
             set {
                 if (this.Set(ref this._snapToPixels, value)) {
-                    this._matrix.Reset();
-                    this._boundingArea.Reset();
+                    this.ResetLazyValues();
                 }
             }
         }
@@ -130,8 +136,7 @@
                 }
 
                 if (this.Set(ref this._viewHeight, value)) {
-                    this._boundingArea.Reset();
-                    this._matrix.Reset();
+                    this.ResetLazyValues();
                 }
             }
         }
@@ -152,15 +157,16 @@
         /// <param name="point">The point.</param>
         /// <returns>The world space location of the point.</returns>
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
-            if (MacabreGame.Instance.GraphicsDevice is GraphicsDevice graphicsDevice) {
-                var ratio = this.ViewHeight / graphicsDevice.Viewport.Height;
+            var result = Vector2.Zero;
+
+            if (this.OffsetSettings.Size.Y != 0f) {
+                var ratio = this.ViewHeight / this.OffsetSettings.Size.Y;
                 var pointVector = point.ToVector2();
-                var relativeY = graphicsDevice.Viewport.Height - pointVector.Y;
-                var vectorPosition = new Vector2(pointVector.X - 0.5f * graphicsDevice.Viewport.Width, relativeY - 0.5f * graphicsDevice.Viewport.Height) * ratio;
-                return vectorPosition + this.WorldTransform.Position;
+                var vectorPosition = new Vector2(pointVector.X + this.OffsetSettings.Offset.X, -pointVector.Y + this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y) * ratio;
+                result = this.GetWorldTransform(vectorPosition).Position;
             }
 
-            return Vector2.Zero;
+            return result;
         }
 
         /// <summary>
@@ -168,7 +174,9 @@
         /// </summary>
         /// <returns>The width of the view.</returns>
         public float GetViewWidth() {
-            return this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport);
+            var size = this.OffsetSettings.Size;
+            var ratio = size.Y != 0 ? this.ViewHeight / this.OffsetSettings.Size.Y : 0f;
+            return size.X * ratio;
         }
 
         /// <inheritdoc/>
@@ -224,26 +232,35 @@
             }
         }
 
+        protected override void Dispose(bool disposing) {
+            base.Dispose(disposing);
+
+            if (disposing) {
+                MacabreGame.Instance.ViewportSizeChanged -= this.Game_ViewportSizeChanged;
+            }
+        }
+
         /// <inheritdoc/>
         protected override void Initialize() {
-            this._boundingArea.Reset();
-            this._matrix.Reset();
+            MacabreGame.Instance.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+            this.OffsetSettings.Initialize(this.CreateSize);
+            this.ResetLazyValues();
             this.SamplerState = this._samplerStateType.ToSamplerState();
             this.PropertyChanged += this.Self_PropertyChanged;
         }
 
         private BoundingArea CreateBoundingArea() {
-            var viewPort = MacabreGame.Instance.GraphicsDevice.Viewport;
-            var ratio = this.ViewHeight / viewPort.Height;
-            var halfHeight = this.ViewHeight * 0.5f;
-            var halfWidth = this.GetViewWidth(MacabreGame.Instance.GraphicsDevice.Viewport) * 0.5f;
+            var ratio = this.ViewHeight / this.OffsetSettings.Size.Y;
+            var width = this.OffsetSettings.Size.X * ratio;
+            var height = this.OffsetSettings.Size.Y * ratio;
+            var offset = this.OffsetSettings.Offset * ratio;
 
             var points = new List<Vector2> {
-                this.GetWorldTransform(new Vector2(-halfWidth, -halfHeight)).Position,
-                this.GetWorldTransform(new Vector2(-halfWidth, halfHeight)).Position,
-                this.GetWorldTransform(new Vector2(halfWidth, halfHeight)).Position,
-                this.GetWorldTransform(new Vector2(halfWidth, -halfHeight)).Position
-            };
+                    this.GetWorldTransform(offset).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
+                    this.GetWorldTransform(offset + new Vector2(width, height)).Position,
+                    this.GetWorldTransform(offset + new Vector2(0f, height)).Position
+                };
 
             var minimumX = points.Min(x => x.X);
             var minimumY = points.Min(x => x.Y);
@@ -260,28 +277,34 @@
             return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
         }
 
+        private Vector2 CreateSize() {
+            return new Vector2(MacabreGame.Instance.ViewportSize.X, MacabreGame.Instance.ViewportSize.Y);
+        }
+
         private Matrix CreateViewMatrix() {
             var pixelsPerUnit = MacabreGame.Instance.Settings.PixelsPerUnit;
-            var viewPort = MacabreGame.Instance.GraphicsDevice.Viewport;
-            var origin = new Vector2(viewPort.Width * 0.5f, viewPort.Height * 0.5f);
-            var zoom = viewPort.Height / (pixelsPerUnit * this.ViewHeight);
+            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
             var worldTransform = this.WorldTransform;
 
             return
                 Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
                 Matrix.CreateScale(zoom, -zoom, 0f) *
-                Matrix.CreateTranslation(new Vector3(origin, 0f));
+                Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
         }
 
-        private float GetViewWidth(Viewport viewport) {
-            var ratio = this.ViewHeight / viewport.Height;
-            return viewport.Width * ratio;
+        private void Game_ViewportSizeChanged(object sender, Point e) {
+            this.OffsetSettings.InvalidateSize();
+            this.ResetLazyValues();
+        }
+
+        private void ResetLazyValues() {
+            this._boundingArea.Reset();
+            this._matrix.Reset();
         }
 
         private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.WorldTransform)) {
-                this._boundingArea.Reset();
-                this._matrix.Reset();
+                this.ResetLazyValues();
             }
         }
     }

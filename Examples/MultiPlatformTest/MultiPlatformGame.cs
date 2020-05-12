@@ -20,6 +20,7 @@
             scene.AddChild(cameraScroller);
 
             var camera = new Camera();
+            camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraScroller.AddChild(camera);
 
             var movingDot = new MovingDot();

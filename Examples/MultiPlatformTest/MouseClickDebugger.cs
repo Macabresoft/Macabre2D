@@ -3,7 +3,6 @@
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
-    using System.Linq;
 
     public sealed class MouseClickDebugger : BaseDrawerComponent, IUpdateableComponent {
         private Camera _camera;
@@ -28,7 +27,7 @@
             base.Initialize();
             this.Color = Color.Green;
             this.LineThickness = 3f;
-            this._camera = this.Scene.GetAllComponentsOfType<Camera>().FirstOrDefault();
+            this._camera = this.Scene.FindComponentOfType<Camera>();
         }
     }
 }

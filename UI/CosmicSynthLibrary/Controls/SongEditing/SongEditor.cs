@@ -30,8 +30,9 @@
 
             this._camera = this.CurrentScene.AddChild<Camera>();
             this._camera.ViewHeight = 36f;
+            this._camera.OffsetSettings.OffsetType = PixelOffsetType.BottomLeft;
+            this._camera.LocalPosition = Vector2.Zero;
             this.CurrentScene.AddChild(new PianoComponent(this._pianoRoll));
-            this.CurrentScene.AddChild<SceneColliderDrawerComponent>();
         }
 
         public event EventHandler<double> GameSpeedChanged;
