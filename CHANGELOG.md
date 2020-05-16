@@ -14,6 +14,7 @@
 * MacabreGame object now fires an event when the viewport size changes.
 * Event now fires off when a component is initialized.
 * Cameras can now have their origins offset (previous defaulted to an origin in the center of the screen).
+* Synthesizer keys appear depressed when played.
 
 ### Refactors
 

@@ -58,7 +58,7 @@
 
         protected override void Initialize() {
             var pitches = Enum.GetValues(typeof(Pitch)).Cast<Pitch>().OrderBy(x => x).ToList();
-            var notes = Enum.GetValues(typeof(Note)).Cast<Note>().OrderBy(x => x).ToList();
+            var notes = Enum.GetValues(typeof(Note)).Cast<byte>().Distinct().Cast<Note>().OrderBy(x => x).ToList();
 
             foreach (var pitch in pitches) {
                 foreach (var note in notes) {
