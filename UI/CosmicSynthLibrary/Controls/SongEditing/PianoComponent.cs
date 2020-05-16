@@ -50,6 +50,8 @@
                     }
                 }
             }
+
+            this._pianoRoll.Buffer(0.8f);
         }
 
         public void Update(FrameTime frameTime) => this.Update(frameTime, MonoGameMouse.Instance.GetState(), MonoGameKeyboard.Instance.GetState());

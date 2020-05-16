@@ -53,12 +53,9 @@
     <Compile Include="MouseClickDebugger.cs" />
     <Compile Include="MovingDot.cs" />
     <Compile Include="MultiPlatformGame.cs" />
-    <Compile Include="PianoComponent.cs" />
-    <Compile Include="PianoKeyComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scaler.cs" />
-    <Compile Include="SceneHelper.cs" />
     <Compile Include="VolumeController.cs" />
   </ItemGroup>
   <ItemGroup>

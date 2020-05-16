@@ -3,19 +3,15 @@
     using Microsoft.Xna.Framework.Audio;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Plays a song.
     /// </summary>
     public sealed class SongPlayer {
-        public const ushort BytesPerSample = 2;
-        private const ushort NumberOfChannels = 2;
         private readonly HashSet<Voice> _activeVoices = new HashSet<Voice>();
-        private readonly IAudioEffect _clipper = new SoftClipperEffect();
         private readonly HashSet<Voice> _inactiveVoices = new HashSet<Voice>();
         private readonly DynamicSoundEffectInstance _soundEffectInstance;
-        private readonly VoicePool _voicePool;
+        private readonly VoicePool<Voice> _voicePool;
         private ushort _currentBeat = 0;
 
         /// <summary>
@@ -23,7 +19,7 @@
         /// </summary>
         /// <param name="song">The song.</param>
         /// <param name="voicePool">The voice pool.</param>
-        public SongPlayer(Song song, VoicePool voicePool) {
+        public SongPlayer(Song song, VoicePool<Voice> voicePool) {
             this.Song = song ?? throw new ArgumentNullException(nameof(song));
             this._voicePool = voicePool;
             this._soundEffectInstance = new DynamicSoundEffectInstance(song.SampleRate, AudioChannels.Stereo);
@@ -33,7 +29,7 @@
         /// Initializes a new instance of the <see cref="SongPlayer"/> class.
         /// </summary>
         /// <param name="song">The song.</param>
-        public SongPlayer(Song song) : this(song, new VoicePool()) {
+        public SongPlayer(Song song) : this(song, new VoicePool<Voice>()) {
         }
 
         /// <summary>
@@ -69,32 +65,8 @@
                     }
                 }
 
-                var voiceSamples = this._activeVoices.Select(x => x.GetNextSamples()).ToList();
-                var samples = new byte[this.Song.SamplesPerBeat * NumberOfChannels * BytesPerSample];
                 var trackMultiplier = volume / (float)Math.Sqrt(this.Song.Tracks.Count);
-
-                for (var i = 0; i < this.Song.SamplesPerBeat; i++) {
-                    var relevantSamples = voiceSamples.Select(x => x[i]).ToList();
-                    var leftChannel = this._clipper.ApplyEffect(trackMultiplier * relevantSamples.Sum(x => x.LeftChannel), 0f);
-                    var rightChannel = this._clipper.ApplyEffect(trackMultiplier * relevantSamples.Sum(x => x.RightChannel), 0f);
-                    var leftShort = (short)(leftChannel >= 0.0f ? leftChannel * short.MaxValue : leftChannel * -short.MinValue);
-                    var rightShort = (short)(rightChannel >= 0.0f ? rightChannel * short.MaxValue : rightChannel * -short.MinValue);
-                    var index = i * NumberOfChannels * BytesPerSample;
-
-                    if (!BitConverter.IsLittleEndian) {
-                        samples[index] = (byte)(leftShort >> 8);
-                        samples[index + 1] = (byte)leftShort;
-                        samples[index + 2] = (byte)(rightShort >> 8);
-                        samples[index + 3] = (byte)rightShort;
-                    }
-                    else {
-                        samples[index] = (byte)leftShort;
-                        samples[index + 1] = (byte)(leftShort >> 8);
-                        samples[index + 2] = (byte)rightShort;
-                        samples[index + 3] = (byte)(rightShort >> 8);
-                    }
-                }
-
+                var samples = SampleHelper.GetBufferSamples(this._activeVoices, this.Song.SamplesPerBeat, trackMultiplier);
                 this._soundEffectInstance.SubmitBuffer(samples);
                 this._currentBeat++;
             }

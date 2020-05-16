@@ -5,10 +5,11 @@
     /// <summary>
     /// A synthesizer voice. These are pooled and used to play notes to completion.
     /// </summary>
-    public sealed class Voice {
+    public class Voice : IDisposable, IVoice {
         private ushort _beatsPlayed;
         private float _inverseSampleRate;
         private bool _isActive;
+        private bool _isDisposed = false;
         private NoteInstance _note;
         private int _noteLengthInSamples;
         private float _peakAmplitude;
@@ -16,30 +17,31 @@
         private Song _song;
         private Track _track;
 
-        /// <summary>
-        /// Occurs when the note is finished.
-        /// </summary>
+        /// <inheritdoc/>
         public event EventHandler OnFinished;
 
-        private Envelope Envelope {
+        protected Envelope Envelope {
             get {
                 return this.Instrument.NoteEnvelope;
             }
         }
 
-        private Instrument Instrument {
+        protected Instrument Instrument {
             get {
                 return this._track.Instrument;
             }
         }
 
-        /// <summary>
-        /// Gets the next samples.
-        /// </summary>
-        /// <returns>The next samples.</returns>
+        /// <inheritdoc/>
+        public void Dispose() {
+            this.Dispose(true);
+        }
+
+        /// <inheritdoc/>
         public AudioSample[] GetNextSamples() {
-            var samples = new AudioSample[this._song.SamplesPerBeat];
-            var sampleModifier = this._song.SamplesPerBeat * this._beatsPlayed;
+            var samplesPerBeat = this.GetSamplesPerBuffer();
+            var samples = new AudioSample[samplesPerBeat];
+            var sampleModifier = samplesPerBeat * this._beatsPlayed;
 
             for (var i = 0; i < samples.Length; i++) {
                 if (this._isActive) {
@@ -71,13 +73,8 @@
             return samples;
         }
 
-        /// <summary>
-        /// Reinitializes the specified instrument.
-        /// </summary>
-        /// <param name="song">The song.</param>
-        /// <param name="track">The track.</param>
-        /// <param name="note">The note.</param>
-        public void Reinitialize(Song song, Track track, NoteInstance note) {
+        /// <inheritdoc/>
+        public virtual void Reinitialize(Song song, Track track, NoteInstance note) {
             this._isActive = true;
             this._song = song;
             this._track = track;
@@ -87,6 +84,26 @@
             this._preReleaseVolume = 0f;
             this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;
             this._inverseSampleRate = 1f / this._song.SampleRate;
+        }
+
+        // To detect redundant calls
+        protected virtual void Dispose(bool disposing) {
+            if (!this._isDisposed) {
+                this.OnFinished = null;
+                this._isDisposed = true;
+            }
+        }
+
+        protected virtual ushort GetSamplesPerBuffer() {
+            return this._song.SamplesPerBeat;
+        }
+
+        protected virtual bool IsNoteOver(int sampleNumber) {
+            return sampleNumber >= this._noteLengthInSamples;
+        }
+
+        protected virtual bool IsNoteReleasing(int sampleNumber) {
+            return (sampleNumber - this._noteLengthInSamples) < this.Envelope.Release;
         }
 
         private float GetAttackAmplitude(int sampleNumber) {
@@ -103,7 +120,7 @@
 
         private float GetSampleAmplitude(int sampleNumber) {
             var result = 0f;
-            if (sampleNumber < this._noteLengthInSamples) {
+            if (!this.IsNoteOver(sampleNumber)) {
                 if (sampleNumber < this.Envelope.Attack) {
                     result = this.GetAttackAmplitude(sampleNumber);
                 }
@@ -116,7 +133,7 @@
 
                 this._preReleaseVolume = result;
             }
-            else if ((sampleNumber - this._noteLengthInSamples) < this.Envelope.Release) {
+            else if (this.IsNoteReleasing(sampleNumber)) {
                 result = this.GetReleaseAmplitude(sampleNumber);
             }
             else {

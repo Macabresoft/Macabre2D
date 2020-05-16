@@ -39,15 +39,9 @@
             scene.SaveToFile(@"TestGame - CurrentLevel.json");
             this.CurrentScene = Serializer.Instance.Deserialize<Scene>(@"TestGame - CurrentLevel.json");
 
-            this.PostLoadAudioStuff();
             this.PostLoadRenderingStuff();
 
             this._isLoaded = true;
-        }
-
-        private void PostLoadAudioStuff() {
-            var pianoComponent = this.CurrentScene.AddChild<PianoComponent>();
-            pianoComponent.LocalPosition -= new Vector2(6f, 15f);
         }
 
         private void PostLoadRenderingStuff() {
