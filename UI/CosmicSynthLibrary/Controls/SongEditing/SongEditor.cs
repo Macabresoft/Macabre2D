@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.CommonLibrary.Common;
     using Macabre2D.UI.MonoGameIntegration;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +11,7 @@
 
     public class SongEditor : MonoGameViewModel, IGame {
         private readonly Camera _camera;
-        private readonly IPianoRoll _pianoRoll = new PianoRoll();
+        private readonly IPianoRoll _pianoRoll = ViewContainer.Resolve<IPianoRoll>();
         private FrameTime _frameTime;
         private bool _isContentLoaded = false;
         private bool _isInitialized = false;

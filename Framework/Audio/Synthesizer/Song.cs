@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -16,7 +17,7 @@
         private const ushort MinimumSamplesPerBeat = (MinimumSampleRate * 60) / 1000; // Maximum of 1000 beats per minute.
 
         [DataMember]
-        private readonly List<Track> _tracks = new List<Track>();
+        private readonly ObservableCollection<Track> _tracks = new ObservableCollection<Track>();
 
         private ushort _sampleRate = MaximumSampleRate;
         private ushort _samplesPerBeat = MaximumSampleRate / 4;

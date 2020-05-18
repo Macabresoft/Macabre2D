@@ -175,10 +175,25 @@
       <DependentUpon>SongEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SongEditing\SongEditor.cs" />
+    <Compile Include="Controls\TrackControl.xaml.cs">
+      <DependentUpon>TrackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackListControl.xaml.cs">
+      <DependentUpon>TrackListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SongService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\SongEditing\SongEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TrackControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TrackListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

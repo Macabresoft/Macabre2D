@@ -120,7 +120,7 @@
             var log = LogManager.GetLogger(typeof(App));
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
             this._container.RegisterInstance(typeof(SettingsManager), this._container.Resolve<SettingsManager>(), new ContainerControlledLifetimeManager());
-            this._container.RegisterInstance<IChangeDetectionService>(this._container.Resolve<SceneService>());
+            this._container.RegisterInstance<IChangeDetectionService>(this._container.Resolve<ISceneService>());
         }
 
         private void RegisterTypes() {

@@ -72,6 +72,10 @@
                 <ColumnDefinition Width=".75*" />
             </Grid.ColumnDefinitions>
 
+            <local:TracksView Grid.Column="0"
+                              IsEnabled="{Binding BusyService.ShowBusyIndicator, Converter={StaticResource _inverseBoolConverter}}"
+                              Margin="{StaticResource DoubleMarginAll}" />
+
             <GridSplitter Grid.Column="1"
                             Margin="{StaticResource StandardMarginL}"
                             Style="{StaticResource VerticalGridSplitter}" />

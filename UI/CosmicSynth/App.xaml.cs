@@ -5,6 +5,8 @@
     using Macabre2D.UI.CommonLibrary.Services;
     using Macabre2D.UI.CosmicSynth.Properties;
     using Macabre2D.UI.CosmicSynth.Views;
+    using Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing;
+    using Macabre2D.UI.CosmicSynthLibrary.Services;
     using System;
     using System.Linq;
     using System.Reflection;
@@ -75,6 +77,7 @@
             var log = LogManager.GetLogger(typeof(App));
             this._container.RegisterInstance(typeof(ILog), log, new ContainerControlledLifetimeManager());
             this._container.RegisterInstance(typeof(SettingsManager), this._container.Resolve<SettingsManager>(), new ContainerControlledLifetimeManager());
+            this._container.RegisterInstance<IChangeDetectionService>(this._container.Resolve<ISongService>());
         }
 
         private void RegisterTypes() {
@@ -83,6 +86,9 @@
             this._container.RegisterType<ILoggingService, LoggingService>();
             this._container.RegisterType<IUndoService, UndoService>(new ContainerControlledLifetimeManager());
             this._container.RegisterType<IValueEditorService, ValueEditorService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<ICommonDialogService, CommonDialogService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<ISongService, SongService>(new ContainerControlledLifetimeManager());
+            this._container.RegisterType<IPianoRoll, PianoRoll>(new ContainerControlledLifetimeManager());
         }
 
         private void SaveSettings() {

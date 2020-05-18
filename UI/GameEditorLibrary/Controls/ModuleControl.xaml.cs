@@ -27,7 +27,7 @@
         public ModuleControl() {
             this._undoService = ViewContainer.Instance.Resolve<IUndoService>();
             this._valueEditorService = ViewContainer.Instance.Resolve<IValueEditorService>();
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

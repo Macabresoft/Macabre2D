@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.UI.CosmicSynthLibrary.Controls.SongEditing {
 
     using Macabre2D.Framework;
+    using Macabre2D.UI.CosmicSynthLibrary.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
     using System.Collections.Generic;
@@ -25,12 +26,14 @@
     public sealed class PianoRoll : IPianoRoll {
         public const string SpriteSheetPath = "PianoRollSpriteSheet";
         private readonly Dictionary<Frequency, LiveVoice> _activeVoices = new Dictionary<Frequency, LiveVoice>();
+        private readonly ISongService _songService;
         private readonly VoicePool<LiveVoice> _voicePool = new VoicePool<LiveVoice>();
-        private Song _song;
         private DynamicSoundEffectInstance _soundEffectInstance;
         private Track _track;
 
-        public PianoRoll() {
+        public PianoRoll(ISongService songService) {
+            this._songService = songService;
+            this._songService.PropertyChanged += this.SongService_PropertyChanged;
             FrameworkDispatcher.Update();
             this._soundEffectInstance = new DynamicSoundEffectInstance(Song.MinimumSampleRate, AudioChannels.Mono);
         }
@@ -39,18 +42,7 @@
 
         public Song Song {
             get {
-                if (this._song == null) {
-                    this.Song = new Song();
-                }
-
-                return this._song;
-            }
-
-            set {
-                if (this._song != value) {
-                    this._song = value;
-                    this.SetSoundEffectInstance(new DynamicSoundEffectInstance(this._song.SampleRate, AudioChannels.Stereo));
-                }
+                return this._songService.CurrentSong;
             }
         }
 
@@ -64,7 +56,9 @@
             }
 
             set {
-                this._track = value;
+                if (this.Song.Tracks.Contains(value)) {
+                    this._track = value;
+                }
             }
         }
 
@@ -112,9 +106,12 @@
             return result;
         }
 
-        private void SetSoundEffectInstance(DynamicSoundEffectInstance value) {
-            this._soundEffectInstance?.Dispose();
-            this._soundEffectInstance = value;
+        private void SongService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ISongService.CurrentSong)) {
+                this._soundEffectInstance?.Stop();
+                this._soundEffectInstance?.Dispose();
+                this._soundEffectInstance = new DynamicSoundEffectInstance(this._songService.CurrentSong.SampleRate, AudioChannels.Stereo);
+            }
         }
     }
 }
