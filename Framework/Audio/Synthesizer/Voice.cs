@@ -32,6 +32,12 @@
             }
         }
 
+        protected NoteInstance Note {
+            get {
+                return this._note;
+            }
+        }
+
         /// <inheritdoc/>
         public void Dispose() {
             this.Dispose(true);
@@ -94,6 +100,10 @@
             }
         }
 
+        protected virtual int GetNoteLengthInSamples() {
+            return this._noteLengthInSamples;
+        }
+
         protected virtual ushort GetSamplesPerBuffer() {
             return this._song.SamplesPerBeat;
         }
@@ -111,11 +121,11 @@
         }
 
         private float GetDecayAmplitude(int sampleNumber) {
-            return this._peakAmplitude * (1f - ((sampleNumber - this.Envelope.Attack) / this.Envelope.Decay));
+            return this.Envelope.SustainAmplitude + (this._peakAmplitude - this.Envelope.SustainAmplitude) * (1f - ((sampleNumber - this.Envelope.Attack) / (float)this.Envelope.Decay));
         }
 
         private float GetReleaseAmplitude(int sampleNumber) {
-            return this._preReleaseVolume * (1f - ((sampleNumber - this._noteLengthInSamples) / this.Envelope.Release));
+            return this._preReleaseVolume * (1f - ((sampleNumber - this.GetNoteLengthInSamples()) / (float)this.Envelope.Release));
         }
 
         private float GetSampleAmplitude(int sampleNumber) {

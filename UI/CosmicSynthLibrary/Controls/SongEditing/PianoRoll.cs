@@ -26,6 +26,7 @@
     public sealed class PianoRoll : IPianoRoll {
         public const string SpriteSheetPath = "PianoRollSpriteSheet";
         private readonly Dictionary<Frequency, LiveVoice> _activeVoices = new Dictionary<Frequency, LiveVoice>();
+        private readonly HashSet<LiveVoice> _inactiveVoices = new HashSet<LiveVoice>();
         private readonly ISongService _songService;
         private readonly VoicePool<LiveVoice> _voicePool = new VoicePool<LiveVoice>();
         private DynamicSoundEffectInstance _soundEffectInstance;
@@ -63,6 +64,13 @@
         }
 
         public void Buffer(float volume) {
+            foreach (var inactiveVoice in this._inactiveVoices) {
+                this._activeVoices.Remove(inactiveVoice.Frequency);
+                this._voicePool.Return(inactiveVoice);
+            }
+
+            this._inactiveVoices.Clear();
+
             if (this._activeVoices.Any() && this._soundEffectInstance.PendingBufferCount < 2) {
                 var samples = SampleHelper.GetBufferSamples(this._activeVoices.Values, this.SamplesPerBuffer, volume);
                 this._soundEffectInstance.SubmitBuffer(samples);
@@ -78,6 +86,7 @@
                 var voice = this._voicePool.GetNext();
                 voice.SamplesPerBuffer = this.SamplesPerBuffer;
                 voice.Reinitialize(this.Song, this.Track, new NoteInstance(0, 1, 1f, frequency));
+                voice.OnFinished += this.Voice_OnFinished;
                 this._activeVoices.Add(frequency, voice);
 
                 if (this._soundEffectInstance.State != SoundState.Playing) {
@@ -89,8 +98,6 @@
         public void StopNote(Frequency frequency) {
             if (this._activeVoices.TryGetValue(frequency, out var voice)) {
                 voice.Stop();
-                this._activeVoices.Remove(frequency);
-                this._voicePool.Return(voice);
             }
         }
 
@@ -111,6 +118,13 @@
                 this._soundEffectInstance?.Stop();
                 this._soundEffectInstance?.Dispose();
                 this._soundEffectInstance = new DynamicSoundEffectInstance(this._songService.CurrentSong.SampleRate, AudioChannels.Stereo);
+            }
+        }
+
+        private void Voice_OnFinished(object sender, System.EventArgs e) {
+            if (sender is LiveVoice voice) {
+                voice.OnFinished -= this.Voice_OnFinished;
+                this._inactiveVoices.Add(voice);
             }
         }
     }

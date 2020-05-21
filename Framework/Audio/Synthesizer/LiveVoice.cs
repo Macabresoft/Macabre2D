@@ -2,7 +2,13 @@
 
     public sealed class LiveVoice : Voice {
         private bool _isPlaying = false;
-        private int _releaseSamplesPlayed = -1;
+        private int _samplesBeforeRelease = -1;
+
+        public Frequency Frequency {
+            get {
+                return this.Note.StartFrequency;
+            }
+        }
 
         public ushort SamplesPerBuffer { get; set; } = 1000;
 
@@ -10,12 +16,16 @@
             base.Reinitialize(song, track, note);
 
             this._isPlaying = true;
-            this._releaseSamplesPlayed = -1;
+            this._samplesBeforeRelease = -1;
         }
 
         public void Stop() {
             this._isPlaying = false;
-            this._releaseSamplesPlayed = -1;
+            this._samplesBeforeRelease = -1;
+        }
+
+        protected override int GetNoteLengthInSamples() {
+            return this._samplesBeforeRelease;
         }
 
         protected override ushort GetSamplesPerBuffer() {
@@ -23,12 +33,16 @@
         }
 
         protected override bool IsNoteOver(int sampleNumber) {
-            return !this._isPlaying;
+            var result = !this._isPlaying;
+            if (result && this._samplesBeforeRelease < 0) {
+                this._samplesBeforeRelease = this._samplesBeforeRelease > 0 ? this._samplesBeforeRelease : sampleNumber;
+            }
+
+            return result;
         }
 
         protected override bool IsNoteReleasing(int sampleNumber) {
-            this._releaseSamplesPlayed++;
-            return this._releaseSamplesPlayed < this.Envelope.Release;
+            return sampleNumber - this._samplesBeforeRelease < this.Envelope.Release;
         }
     }
 }
