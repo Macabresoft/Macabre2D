@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Comet Overdrive, Brett Story")]
-[assembly: AssemblyProduct("Macabre2D")]
+[assembly: AssemblyProduct("Macabre2D.Framework")]
 [assembly: AssemblyCopyright("Copyright © 2016 - 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
