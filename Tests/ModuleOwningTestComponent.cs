@@ -1,6 +1,6 @@
 ﻿using Macabre2D.Framework;
 
-namespace Macabre2D.Tests.Framework {
+namespace Macabre2D.Framework.Tests {
 
     internal sealed class ModuleOwningTestComponent : TestComponent {
         public BaseModule Module { get; private set; }

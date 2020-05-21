@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Tests.Framework.Rendering {
+﻿namespace Macabre2D.Framework.Tests.Rendering {
 
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;

@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Tests.Framework {
+﻿namespace Macabre2D.Framework.Tests {
 
     using Macabre2D.Framework;
     using System.Threading;

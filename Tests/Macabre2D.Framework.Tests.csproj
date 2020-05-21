@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B9BACBD8-E99B-431C-8596-591F54385D9C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Macabre2D.Tests</RootNamespace>
-    <AssemblyName>Macabre2D.Tests</AssemblyName>
+    <RootNamespace>Macabre2D.Framework.Tests</RootNamespace>
+    <AssemblyName>Macabre2D.Framework.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <TargetFrameworkProfile />
@@ -84,26 +84,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\CameraTests.cs" />
-    <Compile Include="Framework\ComponentTests.cs" />
-    <Compile Include="Framework\IdentifiableContentComponentTests.cs" />
-    <Compile Include="Framework\ModuleOwningTestComponent.cs" />
-    <Compile Include="Framework\Physics\CircleColliderTests.cs" />
-    <Compile Include="Framework\Physics\LineColliderTests.cs" />
-    <Compile Include="Framework\Physics\PolygonColliderTests.cs" />
-    <Compile Include="Framework\Physics\RaycastTests.cs" />
-    <Compile Include="Framework\Physics\RectangleColliderTests.cs" />
-    <Compile Include="Framework\Physics\SimplePhysicsModuleTests.cs" />
-    <Compile Include="Framework\Rendering\SpriteAnimatorTests.cs" />
-    <Compile Include="Framework\WindowsSaveDataManagerTests.cs" />
-    <Compile Include="Framework\SerializerTests.cs" />
-    <Compile Include="Framework\TestComponent.cs" />
-    <Compile Include="Framework\TestUpdateableComponent.cs" />
-    <Compile Include="Framework\SceneTests.cs" />
-    <Compile Include="Framework\Tiles\TileableComponentTests.cs" />
-    <Compile Include="Framework\VectorExtensionsTests.cs" />
-    <Compile Include="UI\Services\ProjectServiceTests.cs" />
-    <Compile Include="UI\Services\UndoServiceTests.cs" />
+    <Compile Include="CameraTests.cs" />
+    <Compile Include="ComponentTests.cs" />
+    <Compile Include="IdentifiableContentComponentTests.cs" />
+    <Compile Include="ModuleOwningTestComponent.cs" />
+    <Compile Include="Physics\CircleColliderTests.cs" />
+    <Compile Include="Physics\LineColliderTests.cs" />
+    <Compile Include="Physics\PolygonColliderTests.cs" />
+    <Compile Include="Physics\RaycastTests.cs" />
+    <Compile Include="Physics\RectangleColliderTests.cs" />
+    <Compile Include="Physics\SimplePhysicsModuleTests.cs" />
+    <Compile Include="Rendering\SpriteAnimatorTests.cs" />
+    <Compile Include="WindowsSaveDataManagerTests.cs" />
+    <Compile Include="SerializerTests.cs" />
+    <Compile Include="TestComponent.cs" />
+    <Compile Include="TestUpdateableComponent.cs" />
+    <Compile Include="SceneTests.cs" />
+    <Compile Include="Tiles\TileableComponentTests.cs" />
+    <Compile Include="VectorExtensionsTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -117,18 +115,6 @@
     <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj">
       <Project>{d5b27b29-00a8-40a7-9911-46c84ebc7f37}</Project>
       <Name>Macabre2D.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\CommonLibrary\Macabre2D.UI.CommonLibrary.csproj">
-      <Project>{07b8e881-70a6-4aa2-b342-6e0b80326f6a}</Project>
-      <Name>Macabre2D.UI.CommonLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\GameEditorLibrary\Macabre2D.UI.GameEditorLibrary.csproj">
-      <Project>{45fec098-23f5-44c6-a554-e2bca7056dc7}</Project>
-      <Name>Macabre2D.UI.GameEditorLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Resources\Macabre2D.UI.Resources.csproj">
-      <Project>{310d54cb-e336-4f67-b39e-0d4ea4e9d2fa}</Project>
-      <Name>Macabre2D.UI.Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

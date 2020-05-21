@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Macabre2D.Tests.Framework.Tiles {
+namespace Macabre2D.Framework.Tests.Tiles {
 
     [TestFixture]
     public static class TileableComponentTests {

@@ -100,7 +100,7 @@
     </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="Content\LeagueMono.spritefont" />
+    <None Include="Content\League Mono.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -5,36 +5,23 @@
 ### Features
 
 * MacabreGame object now has GameSpeed property which can dictate how fast time dependent components and modules are running.
-* CosmicSynth has been folded into the Macabre2D.Framework project.
+* CosmicSynth framework has been folded into the Macabre2D.Framework project.
 * TileableComponents now use a GridConfiguration that allows them to link up to a GridModule instead of a local grid.
 * Modules can be given names.
-* Components can have selectable modules in the editor.
-* Components can have linked components in the editor.
-* Added a *clear* button for referential value editors that can be null.
 * MacabreGame object now fires an event when the viewport size changes.
 * Event now fires off when a component is initialized.
 * Cameras can now have their origins offset (previous defaulted to an origin in the center of the screen).
-* Synthesizer keys appear depressed when played.
 
 ### Refactors
 
-* Merged editor and framework back into a combined repository.
-* Project autosaves now go into a special hidden folder.
 * Time handled through new TimeFrame object, which will allow adjustments to game speed.
-* Using MonoGame.WpfCore template instead of MonoGame.Framework.WpfInterop to display and edit scenes in the editor.
 * Updated icon to new simplified skull.
 * Components and modules use PropertyChanged instead of specific events.
-* Editor now uses components directly instead of using wrappers.
-* Editor now uses modules directly instead of using wrappers.
 
 ### Fixes
 
-* Deleting assets outside the editor no longer causes a crash.
 * Audio assets now work relatively reliably.
-* Intermediary project added to hopefully fix cross platform support.
 * Resources now appropriately disposed of when game is exited.
-* DesktopGL project should work across Mac and Linux now (previously was broken on every platform except Windows).
-* Tile grids now update in the UI as they are edited.
 
 ## 0.3.11.0
 
