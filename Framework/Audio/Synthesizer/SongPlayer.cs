@@ -5,9 +5,28 @@
     using System.Collections.Generic;
 
     /// <summary>
+    /// Interface for an object that can play songs.
+    /// </summary>
+    public interface ISongPlayer {
+
+        /// <summary>
+        /// Gets the song.
+        /// </summary>
+        /// <value>The song.</value>
+        Song Song { get; }
+
+        /// <summary>
+        /// Buffers the <see cref="DynamicSoundEffectInstance"/> owned by this instance at the
+        /// specified volume.
+        /// </summary>
+        /// <param name="volume">The volume.</param>
+        void Buffer(float volume);
+    }
+
+    /// <summary>
     /// Plays a song.
     /// </summary>
-    public sealed class SongPlayer {
+    public sealed class SongPlayer : ISongPlayer {
         private readonly HashSet<Voice> _activeVoices = new HashSet<Voice>();
         private readonly HashSet<Voice> _inactiveVoices = new HashSet<Voice>();
         private readonly DynamicSoundEffectInstance _soundEffectInstance;
@@ -32,15 +51,10 @@
         public SongPlayer(Song song) : this(song, new VoicePool<Voice>()) {
         }
 
-        /// <summary>
-        /// Gets or sets the song.
-        /// </summary>
-        /// <value>The song.</value>
+        /// <inheritdoc/>
         public Song Song { get; }
 
-        /// <summary>
-        /// Buffers this instance.
-        /// </summary>
+        /// <inheritdoc/>
         public void Buffer(float volume) {
             if (this._currentBeat >= this.Song.Length) {
                 this._currentBeat = 0;
