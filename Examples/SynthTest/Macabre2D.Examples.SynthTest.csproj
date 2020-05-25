@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7}</ProjectGuid>
+    <ProjectGuid>{5E76F509-A3E3-47B2-9687-3C3E294B38E9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Macabre2D.Examples.MultiPlatformTest</RootNamespace>
-    <AssemblyName>Macabre2D.Examples.MultiPlatformTest</AssemblyName>
+    <RootNamespace>Macabre2D.Examples.SynthTest</RootNamespace>
+    <AssemblyName>Macabre2D.Examples.SynthTest</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
@@ -51,14 +51,9 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CameraScroller.cs" />
-    <Compile Include="MouseClickDebugger.cs" />
-    <Compile Include="MovingDot.cs" />
-    <Compile Include="MultiPlatformGame.cs" />
+    <Compile Include="SynthGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scaler.cs" />
-    <Compile Include="VolumeController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
@@ -102,7 +97,6 @@
     </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="Content\League Mono.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -112,11 +106,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\ColoredSquares.png" />
-    <None Include="Content\laser.wav" />
-    <None Include="Content\WhiteSquare.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Content\PianoRollSpriteSheet.png" />
     <EmbeddedResource Include="..\..\Art\Icon.bmp">
       <Link>Icon.bmp</Link>
     </EmbeddedResource>

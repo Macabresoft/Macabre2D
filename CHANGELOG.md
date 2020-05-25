@@ -6,8 +6,11 @@
 
 * Updateable components are provided an input state which captures the current and previous mouse and keyboard states.
 * Updateable modules are provided an input state which captures the current and previous mouse and keyboard states.
+* PianoComponent can play using instruments from the built in synthesizer.
 
 ### Refactors
+
+* Added a SynthTest example project.
 
 ### Fixes
 

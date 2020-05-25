@@ -7,24 +7,23 @@
     /// A piano key inside of a <see cref="PianoComponent"/>.
     /// </summary>
     public sealed class PianoKeyComponent : SimpleBodyComponent, IClickablePianoComponent {
-        private static readonly Point BlackPressedKeySpriteLocation = new Point(0, 32);
-        private static readonly Point BlackUnpressedKeySpriteLocation = new Point(0, 0);
-        private static readonly Point PianoKeySpriteSize = new Point(32, 16);
-        private static readonly Point WhitePressedKeySpriteLocation = new Point(0, 48);
-        private static readonly Point WhiteUnpressedKeySpriteLocation = new Point(0, 16);
-        private readonly LiveSongPlayer _songPlayer;
-        private Sprite _pressedSprite;
-        private SpriteRenderComponent _spriteRenderer;
-        private Sprite _unpressedSprite;
+        ////private static readonly Point BlackPressedKeySpriteLocation = new Point(0, 32);
+        ////private static readonly Point BlackUnpressedKeySpriteLocation = new Point(0, 0);
+        ////private static readonly Point PianoKeySpriteSize = new Point(32, 16);
+        ////private static readonly Point WhitePressedKeySpriteLocation = new Point(0, 48);
+        ////private static readonly Point WhiteUnpressedKeySpriteLocation = new Point(0, 16);
+        ////this._unpressedSprite = new Sprite(spriteSheetPath, isNatural? WhiteUnpressedKeySpriteLocation : BlackUnpressedKeySpriteLocation, PianoKeySpriteSize);
+        ////    this._pressedSprite = new Sprite(spriteSheetPath, isNatural? WhitePressedKeySpriteLocation : BlackPressedKeySpriteLocation, PianoKeySpriteSize);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PianoKeyComponent"/> class.
-        /// </summary>
-        /// <param name="note">The note.</param>
-        /// <param name="pitch">The pitch.</param>
-        /// <param name="songPlayer">The song player.</param>
-        public PianoKeyComponent(Note note, Pitch pitch, LiveSongPlayer songPlayer) : base() {
-            this._songPlayer = songPlayer;
+        private readonly Sprite _pressedSprite;
+        private readonly LiveSongPlayer _songPlayer;
+        private readonly Sprite _unpressedSprite;
+        private SpriteRenderComponent _spriteRenderer;
+
+        public PianoKeyComponent(Note note, Pitch pitch, LiveSongPlayer songPlayer, Sprite pressedSprite, Sprite unpressedSprite) : base() {
+            this._songPlayer = songPlayer ?? throw new ArgumentNullException(nameof(songPlayer));
+            this._pressedSprite = pressedSprite ?? throw new ArgumentNullException(nameof(pressedSprite));
+            this._unpressedSprite = unpressedSprite ?? throw new ArgumentNullException(nameof(unpressedSprite));
             this.LocalPosition = new Vector2(0f, this.GetRowPosition(note, pitch));
             this.Frequency = new Frequency(note, pitch);
             this.PropertyChanged += this.Self_PropertyChanged;
@@ -88,8 +87,6 @@
             this._spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.BottomLeft;
             var spriteSheetPath = AssetManager.Instance.GetId(LiveSongPlayer.SpriteSheetPath);
             var isNatural = this.Frequency.Note.IsNatural();
-            this._unpressedSprite = new Sprite(spriteSheetPath, isNatural ? WhiteUnpressedKeySpriteLocation : BlackUnpressedKeySpriteLocation, PianoKeySpriteSize);
-            this._pressedSprite = new Sprite(spriteSheetPath, isNatural ? WhitePressedKeySpriteLocation : BlackPressedKeySpriteLocation, PianoKeySpriteSize);
             this._spriteRenderer.Sprite = this._unpressedSprite;
             this._spriteRenderer.OnInitialized += this.SpriteRenderer_OnInitialized;
             this.Collider = new RectangleCollider(2f, 1f);
