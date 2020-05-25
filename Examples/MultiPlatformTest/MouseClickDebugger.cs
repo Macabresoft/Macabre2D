@@ -2,7 +2,6 @@
 
     using Macabre2D.Framework;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
 
     public sealed class MouseClickDebugger : BaseDrawerComponent, IUpdateableComponent {
         private Camera _camera;
@@ -18,9 +17,8 @@
             this.PrimitiveDrawer?.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
         }
 
-        public void Update(FrameTime frameTime) {
-            var mouseState = Mouse.GetState();
-            this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position));
+        public void Update(FrameTime frameTime, InputState inputState) {
+            this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
         }
 
         protected override void Initialize() {

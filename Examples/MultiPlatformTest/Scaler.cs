@@ -13,7 +13,7 @@
 
 #pragma warning disable CS0649
 
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             if ((this.LocalScale.X > 2f && this._currentSign > 0) || (this.LocalScale.X < -2f && this._currentSign < 0)) {
                 this._currentSign *= -1f;
             }

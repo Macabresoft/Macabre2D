@@ -11,7 +11,8 @@
         /// Updates this instance asynchronously.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
+        /// <param name="inputState">State of the input.</param>
         /// <returns>The task.</returns>
-        Task UpdateAsync(FrameTime frameTime);
+        Task UpdateAsync(FrameTime frameTime, InputState inputState);
     }
 }

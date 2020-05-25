@@ -216,7 +216,7 @@
         }
 
         /// <inheritdoc/>
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             return;
         }
 

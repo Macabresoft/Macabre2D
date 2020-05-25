@@ -147,7 +147,7 @@
         }
 
         /// <inheritdoc/>
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
                 this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
                 this._currentAnimation.Animation.LoadContent();

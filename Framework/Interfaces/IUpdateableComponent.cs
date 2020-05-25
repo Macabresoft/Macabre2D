@@ -15,6 +15,7 @@
         /// Updates this instance.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
-        void Update(FrameTime frameTime);
+        /// <param name="inputState">State of the input.</param>
+        void Update(FrameTime frameTime, InputState inputState);
     }
 }

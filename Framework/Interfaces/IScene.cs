@@ -222,7 +222,8 @@
         /// <summary>
         /// Updates this scene.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void Update(FrameTime frameTime);
+        /// <param name="frameTime">The frame time.</param>
+        /// <param name="inputState">State of the input.</param>
+        void Update(FrameTime frameTime, InputState inputState);
     }
 }

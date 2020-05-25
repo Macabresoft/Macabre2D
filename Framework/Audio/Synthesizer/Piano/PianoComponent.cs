@@ -30,7 +30,8 @@
         }
 
         /// inheritdoc />
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
+            throw new NotImplementedException();
         }
 
         protected override void Initialize() {

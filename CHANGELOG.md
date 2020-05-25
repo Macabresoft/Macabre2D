@@ -4,6 +4,8 @@
 
 ### Features
 
+* Updateable components are provided an input state which captures the current and previous mouse and keyboard states.
+
 ### Refactors
 
 ### Fixes

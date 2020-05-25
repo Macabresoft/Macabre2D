@@ -158,6 +158,32 @@
         }
 
         /// <summary>
+        /// Iterates through each filtered item asynchronously.
+        /// </summary>
+        /// <typeparam name="TUserData">The type of the user data.</typeparam>
+        /// <param name="action">The action.</param>
+        /// <param name="userData">The user data.</param>
+        public Task ForeachEachFilteredItemAsync<TUserData1, TUserDate2>(Func<T, TUserData1, TUserDate2, Task> action, TUserData1 userData1, TUserDate2 userDate2) {
+            return Task.Run(() => {
+                this.RebuildCache();
+
+                var tasks = new Task[this._cachedFilteredItems.Count];
+
+                for (var i = 0; i < this._cachedFilteredItems.Count; i++) {
+                    tasks[i] = action(this._cachedFilteredItems[i], userData1, userDate2);
+                }
+
+                Task.WaitAll(tasks);
+
+                // If the cache was invalidated as a result of processing items, now is a good time
+                // to clear it and give the GC (more of) a chance to do its thing.
+                if (this._shouldRebuildCache) {
+                    this._cachedFilteredItems.Clear();
+                }
+            });
+        }
+
+        /// <summary>
         /// Iterates through each filtered item.
         /// </summary>
         /// <typeparam name="TUserData">The type of the user data.</typeparam>

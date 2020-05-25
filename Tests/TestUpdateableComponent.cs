@@ -10,7 +10,7 @@
             private set;
         }
 
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             this.UpdateCount++;
             Thread.Sleep(10);
         }

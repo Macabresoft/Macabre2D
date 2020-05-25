@@ -13,37 +13,35 @@
 #pragma warning restore CS0649
         private int _previousScrollValue;
 
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             if (this._camera != null) {
-                var mouseState = Mouse.GetState();
-                if (mouseState.ScrollWheelValue != this._previousScrollValue) {
-                    var scrollViewChange = (float)(frameTime.SecondsPassed * (this._previousScrollValue - mouseState.ScrollWheelValue)) * 2f;
+                if (inputState.CurrentMouseState.ScrollWheelValue != this._previousScrollValue) {
+                    var scrollViewChange = (float)(frameTime.SecondsPassed * (this._previousScrollValue - inputState.CurrentMouseState.ScrollWheelValue)) * 2f;
                     var isZoomIn = scrollViewChange < 0;
                     if (isZoomIn) {
-                        this._camera.ZoomTo(mouseState.Position, scrollViewChange * -1f);
+                        this._camera.ZoomTo(inputState.CurrentMouseState.Position, scrollViewChange * -1f);
                     }
                     else {
                         this._camera.ViewHeight += scrollViewChange;
                     }
-                    this._previousScrollValue = mouseState.ScrollWheelValue;
+                    this._previousScrollValue = inputState.CurrentMouseState.ScrollWheelValue;
                 }
 
-                var keyboardState = Keyboard.GetState();
                 var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
 
-                if (keyboardState.IsKeyDown(Keys.W)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.A)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.S)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
                     this._camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.D)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
             }

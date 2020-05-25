@@ -8,26 +8,24 @@
         private IDynamicPhysicsBody _body;
         private float _speed = 0.5f;
 
-        public void Update(FrameTime frameTime) {
-            var keyboardState = Keyboard.GetState();
-
-            if (keyboardState.IsKeyDown(Keys.W)) {
+        public void Update(FrameTime frameTime, InputState inputState) {
+            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                 this._body.Velocity += new Vector2(0f, this._speed);
             }
 
-            if (keyboardState.IsKeyDown(Keys.S)) {
+            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
                 this._body.Velocity += new Vector2(0f, -this._speed);
             }
 
-            if (keyboardState.IsKeyDown(Keys.A)) {
+            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
                 this._body.Velocity += new Vector2(-this._speed, 0f);
             }
 
-            if (keyboardState.IsKeyDown(Keys.D)) {
+            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
                 this._body.Velocity += new Vector2(this._speed, 0f);
             }
 
-            if (keyboardState.IsKeyDown(Keys.Space)) {
+            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
                 this._body.Velocity = Vector2.Zero;
             }
         }

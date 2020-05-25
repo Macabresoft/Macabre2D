@@ -19,8 +19,8 @@
     public sealed class Scene : NotifyPropertyChanged, IScene, IDisposable {
         private static readonly Action<IUpdateableModule, FrameTime> ModulePostUpdateAction = (module, frameTime) => module.PostUpdate(frameTime);
         private static readonly Action<IUpdateableModule, FrameTime> ModulePreUpdateAction = (module, frameTime) => module.PreUpdate(frameTime);
-        private static readonly Action<IUpdateableComponent, FrameTime> UpdateAction = (updateable, frameTime) => updateable.Update(frameTime);
-        private static readonly Func<IUpdateableComponentAsync, FrameTime, Task> UpdateAsyncAction = (updateableAsync, frameTime) => updateableAsync.UpdateAsync(frameTime);
+        private static readonly Action<IUpdateableComponent, FrameTime, InputState> UpdateAction = (updateable, frameTime, inputState) => updateable.Update(frameTime, inputState);
+        private static readonly Func<IUpdateableComponentAsync, FrameTime, InputState, Task> UpdateAsyncAction = (updateableAsync, frameTime, InputState) => updateableAsync.UpdateAsync(frameTime, InputState);
         private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
         private readonly NotifyCollectionChangedEventHandler _componentChildrenChangedHandler;
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
@@ -466,11 +466,11 @@
         }
 
         /// <inheritdoc/>
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, frameTime);
 
-            var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, frameTime);
-            this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, frameTime);
+            var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, frameTime, inputState);
+            this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, frameTime, inputState);
             task.Wait();
 
             foreach (var action in this._endOfFrameActions) {

@@ -7,23 +7,21 @@
     public class MovingDot : BaseComponent, IUpdateableComponent {
         private readonly float _speed = 1f;
 
-        public void Update(FrameTime frameTime) {
+        public void Update(FrameTime frameTime, InputState inputState) {
             if (this.Parent == null) {
-                var keyboardState = Keyboard.GetState();
-
-                if (keyboardState.IsKeyDown(Keys.W)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                     this.LocalPosition += new Vector2(0f, this._speed);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.S)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
                     this.LocalPosition += new Vector2(0f, -this._speed);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.A)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
                     this.LocalPosition += new Vector2(-this._speed, 0f);
                 }
 
-                if (keyboardState.IsKeyDown(Keys.D)) {
+                if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
                     this.LocalPosition += new Vector2(this._speed, 0f);
                 }
             }

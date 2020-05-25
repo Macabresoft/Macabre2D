@@ -15,6 +15,7 @@
         protected SpriteBatch _spriteBatch;
         private static IGame _instance = new EmptyGame();
         private IAssetManager _assetManager = new AssetManager();
+        private InputState _currentInputState;
         private IScene _currentScene;
         private FrameTime _frameTime;
         private double _gameSpeed = 1d;
@@ -270,8 +271,9 @@
                 this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
             }
 
+            this._currentInputState = new InputState(Mouse.GetState(), keyboardState, this._currentInputState);
             this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-            this.CurrentScene?.Update(this._frameTime);
+            this.CurrentScene?.Update(this._frameTime, this._currentInputState);
         }
     }
 }
