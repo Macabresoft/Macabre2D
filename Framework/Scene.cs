@@ -17,8 +17,8 @@
     /// </summary>
     [DataContract]
     public sealed class Scene : NotifyPropertyChanged, IScene, IDisposable {
-        private static readonly Action<IUpdateableModule, FrameTime> ModulePostUpdateAction = (module, frameTime) => module.PostUpdate(frameTime);
-        private static readonly Action<IUpdateableModule, FrameTime> ModulePreUpdateAction = (module, frameTime) => module.PreUpdate(frameTime);
+        private static readonly Action<IUpdateableModule, FrameTime, InputState> ModulePostUpdateAction = (module, frameTime, inputState) => module.PostUpdate(frameTime, inputState);
+        private static readonly Action<IUpdateableModule, FrameTime, InputState> ModulePreUpdateAction = (module, frameTime, inputState) => module.PreUpdate(frameTime, inputState);
         private static readonly Action<IUpdateableComponent, FrameTime, InputState> UpdateAction = (updateable, frameTime, inputState) => updateable.Update(frameTime, inputState);
         private static readonly Func<IUpdateableComponentAsync, FrameTime, InputState, Task> UpdateAsyncAction = (updateableAsync, frameTime, InputState) => updateableAsync.UpdateAsync(frameTime, InputState);
         private readonly ObservableCollection<BaseComponent> _children = new ObservableCollection<BaseComponent>();
@@ -467,7 +467,7 @@
 
         /// <inheritdoc/>
         public void Update(FrameTime frameTime, InputState inputState) {
-            this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, frameTime);
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, frameTime, inputState);
 
             var task = this._updateableAsyncComponents.ForeachEachFilteredItemAsync(Scene.UpdateAsyncAction, frameTime, inputState);
             this._updateableComponents.ForEachFilteredItem(Scene.UpdateAction, frameTime, inputState);
@@ -477,7 +477,7 @@
                 action.SafeInvoke(frameTime);
             }
 
-            this._updateableModules.ForEachFilteredItem(Scene.ModulePostUpdateAction, frameTime);
+            this._updateableModules.ForEachFilteredItem(Scene.ModulePostUpdateAction, frameTime, inputState);
         }
 
         private void Component_ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) {

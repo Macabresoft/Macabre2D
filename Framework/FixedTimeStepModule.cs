@@ -66,7 +66,7 @@
         }
 
         /// <inheritdoc/>
-        public override void PostUpdate(FrameTime frameTime) {
+        public override void PostUpdate(FrameTime frameTime, InputState inputState) {
             if (this._hasPostUpdate) {
                 this._postTimePassed += (float)frameTime.SecondsPassed;
 
@@ -85,7 +85,7 @@
         }
 
         /// <inheritdoc/>
-        public override void PreUpdate(FrameTime frameTime) {
+        public override void PreUpdate(FrameTime frameTime, InputState inputState) {
             if (this._hasPreUpdate) {
                 this._preTimePassed += (float)frameTime.SecondsPassed;
 

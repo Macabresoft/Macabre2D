@@ -33,9 +33,9 @@
         }
 
         /// <inheritdoc/>
-        public abstract void PostUpdate(FrameTime frameTime);
+        public abstract void PostUpdate(FrameTime frameTime, InputState inputState);
 
         /// <inheritdoc/>
-        public abstract void PreUpdate(FrameTime frameTime);
+        public abstract void PreUpdate(FrameTime frameTime, InputState inputState);
     }
 }

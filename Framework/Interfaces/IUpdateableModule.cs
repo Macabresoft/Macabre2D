@@ -23,12 +23,14 @@
         /// Updates after the normal update occurs for a scene.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
-        void PostUpdate(FrameTime frameTime);
+        /// <param name="inputState">State of the input.</param>
+        void PostUpdate(FrameTime frameTime, InputState inputState);
 
         /// <summary>
         /// Updates before the normal update for a scene.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
-        void PreUpdate(FrameTime frameTime);
+        /// <param name="inputState">State of the input.</param>
+        void PreUpdate(FrameTime frameTime, InputState inputState);
     }
 }
