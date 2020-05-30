@@ -36,8 +36,8 @@
         public InputState(MouseState mouseState, KeyboardState keyboardState, InputState inputState) {
             this.CurrentMouseState = mouseState;
             this.CurrentKeyboardState = keyboardState;
-            this.PreviousMouseState = inputState.PreviousMouseState;
-            this.PreviousKeyboardState = inputState.PreviousKeyboardState;
+            this.PreviousMouseState = inputState.CurrentMouseState;
+            this.PreviousKeyboardState = inputState.CurrentKeyboardState;
         }
 
         /// <inheritdoc/>
