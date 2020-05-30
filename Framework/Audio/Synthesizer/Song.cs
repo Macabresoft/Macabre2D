@@ -95,7 +95,7 @@
         /// <param name="beats">The beats.</param>
         /// <returns>The number of samples within the beat length.</returns>
         public ulong ConvertBeatsToSamples(float beats) {
-            return (ulong)Math.Floor((this.SampleRate * 60f) / beats);
+            return (ulong)Math.Floor((this.SampleRate * 60f * beats) / this.BeatsPerMinute);
         }
 
         /// <summary>

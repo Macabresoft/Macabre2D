@@ -44,11 +44,11 @@
         public AudioSample[] GetBuffer(ushort numberOfSamples) {
             var samples = new AudioSample[numberOfSamples];
 
-            for (uint i = 0; i < samples.Length; i++) {
-                if (this._isActive && i >= this._offset) {
-                    var sampleNumber = this._samplesPlayed + i;
+            for (var i = 0; i < samples.Length; i++) {
+                var sampleNumber = (int)this._samplesPlayed + i - (int)this._offset;
+                if (this._isActive && sampleNumber >= 0) {
                     var frequency = this.Note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
-                    var volume = this.GetSampleAmplitude(sampleNumber);
+                    var volume = this.GetSampleAmplitude((ulong)sampleNumber);
                     var time = sampleNumber * this._inverseSampleRate;
                     var leftSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.LeftChannelVolume);
                     var rightSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.RightChannelVolume);
@@ -82,7 +82,7 @@
             this.Note = note;
             this._samplesPlayed = 0;
             this._startingBeat = startingBeat;
-            this._offset = this._song.ConvertBeatsToSamples(this._startingBeat - this.Note.Beat);
+            this._offset = this._song.ConvertBeatsToSamples(this.Note.Beat - this._startingBeat);
             this._noteLengthInSamples = this._song.ConvertBeatsToSamples(this.Note.Length);
             this._preReleaseVolume = 0f;
             this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;

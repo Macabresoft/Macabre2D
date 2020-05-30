@@ -5,6 +5,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     [ExcludeFromCodeCoverage]
     public class SynthGame : MacabreGame {
@@ -50,7 +51,40 @@
             var blackKeyPressed = new Sprite(spriteSheetId, BlackPressedKeySpriteLocation, PianoKeySpriteSize);
             var songPlayer = new LiveSongPlayer(new Song());
             this.CurrentScene.AddChild(new PianoComponent(songPlayer, whiteKeyUnpressed, whiteKeyPressed, blackKeyUnpressed, blackKeyPressed));
+            this.CurrentScene.AddChild(new SongPlayerComponent(this.CreateSong()));
             this._isLoaded = true;
+        }
+
+        private Song CreateSong() {
+            var song = new Song {
+                BeatsPerMinute = 120
+            };
+
+            var firstTrack = song.Tracks.First();
+            firstTrack.Instrument.Oscillator = new SawToothOscillator();
+            firstTrack.LeftChannelVolume = 0.25f;
+            firstTrack.RightChannelVolume = 0.75f;
+
+            firstTrack.AddNote(0f, 1f, Note.C);
+            firstTrack.AddNote(1f, 1f, Note.F);
+            firstTrack.AddNote(2f, 1f, Note.G);
+            firstTrack.AddNote(3f, 1f, Note.C);
+
+            //var secondTrack = song.AddTrack();
+            //secondTrack.Instrument.Oscillator = new SineWaveOscillator();
+            //secondTrack.LeftChannelVolume = 0.75f;
+            //secondTrack.RightChannelVolume = 0.25f;
+
+            //firstTrack.AddSlideNote(0f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(0.5f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(1f, 0.5f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(1.5f, 0.5f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(2f, 0.5f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(2.5f, 0.5f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(3f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+            //firstTrack.AddSlideNote(3.5f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+
+            return song;
         }
     }
 }

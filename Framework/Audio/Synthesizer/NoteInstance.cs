@@ -30,7 +30,7 @@
         /// <param name="velocity">The velocity.</param>
         /// <param name="startFrequency">The start frequency.</param>
         /// <param name="endFrequency">The end frequency.</param>
-        public NoteInstance(ushort beat, ushort length, float velocity, Frequency startFrequency, Frequency endFrequency) {
+        public NoteInstance(float beat, float length, float velocity, Frequency startFrequency, Frequency endFrequency) {
             this.Beat = beat;
             this.Length = length;
             this.Velocity = velocity;
