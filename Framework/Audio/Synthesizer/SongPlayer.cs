@@ -20,7 +20,7 @@
         /// specified volume.
         /// </summary>
         /// <param name="volume">The volume.</param>
-        void Buffer(float volume);
+        void Buffer(float volume, ushort numberOfSamples);
     }
 
     /// <summary>
@@ -31,7 +31,7 @@
         private readonly HashSet<Voice> _inactiveVoices = new HashSet<Voice>();
         private readonly DynamicSoundEffectInstance _soundEffectInstance;
         private readonly VoicePool<Voice> _voicePool;
-        private ushort _currentBeat = 0;
+        private float _currentBeat = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SongPlayer"/> class.
@@ -55,9 +55,9 @@
         public Song Song { get; }
 
         /// <inheritdoc/>
-        public void Buffer(float volume) {
+        public void Buffer(float volume, ushort numberOfSamples) {
             if (this._currentBeat >= this.Song.Length) {
-                this._currentBeat = 0;
+                this._currentBeat = 0f;
             }
 
             foreach (var voice in this._inactiveVoices) {
@@ -68,21 +68,29 @@
             this._inactiveVoices.Clear();
 
             if (this._soundEffectInstance.PendingBufferCount < 3) {
+                var beatLengthOfBuffer = this.Song.ConvertSamplesToBeats(numberOfSamples);
+                var endOfBuffer = this._currentBeat + beatLengthOfBuffer;
+                if (endOfBuffer > this.Song.Length) {
+                    endOfBuffer = this.Song.Length;
+                    beatLengthOfBuffer = endOfBuffer - this._currentBeat;
+                }
+
+                var range = new RangeVector(this._currentBeat, endOfBuffer);
                 foreach (var track in this.Song.Tracks) {
-                    var notes = track.GetNotes(this._currentBeat);
+                    var notes = track.GetNotes(range);
 
                     foreach (var note in notes) {
-                        var voice = this._voicePool.GetNext();
-                        voice.Reinitialize(this.Song, track, note);
+                        var offset = note.Beat - this._currentBeat;
+                        var voice = this._voicePool.GetNext(this.Song, track, note, offset);
                         voice.OnFinished += this.Voice_OnFinished;
                         this._activeVoices.Add(voice);
                     }
                 }
 
                 var trackMultiplier = volume / (float)Math.Sqrt(this.Song.Tracks.Count);
-                var samples = SampleHelper.GetBufferSamples(this._activeVoices, this.Song.SamplesPerBeat, trackMultiplier);
+                var samples = SampleHelper.GetBufferSamples(this._activeVoices, numberOfSamples, trackMultiplier);
                 this._soundEffectInstance.SubmitBuffer(samples);
-                this._currentBeat++;
+                this._currentBeat += beatLengthOfBuffer;
             }
         }
 

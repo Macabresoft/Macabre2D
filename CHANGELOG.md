@@ -11,6 +11,7 @@
 ### Refactors
 
 * Added a SynthTest example project.
+* Synthesizer reworked to allow for more dynamic notes that are not directly tied to samples or rigidly restricted to full beats.
 
 ### Fixes
 

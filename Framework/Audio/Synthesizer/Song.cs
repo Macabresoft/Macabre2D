@@ -11,16 +11,16 @@
     /// </summary>
     [DataContract]
     public sealed class Song {
+        public const ushort MaximummBeatsPerMinute = 1000;
         public const ushort MaximumSampleRate = 44100 / 2;
+        public const ushort MinimumBeatsPerMinute = 10;
         public const ushort MinimumSampleRate = 8000;
-        private const ushort MaximumSamplesPerBeat = MaximumSampleRate / 2; // Minimum of 120 beats per minute.
-        private const ushort MinimumSamplesPerBeat = (MinimumSampleRate * 60) / 1000; // Maximum of 1000 beats per minute.
 
         [DataMember]
         private readonly ObservableCollection<Track> _tracks = new ObservableCollection<Track>();
 
+        private ushort _beatsPerMinute = 120;
         private ushort _sampleRate = MaximumSampleRate;
-        private ushort _samplesPerBeat = MaximumSampleRate / 4;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Song"/> class.
@@ -33,13 +33,14 @@
         /// Gets or sets the beats per minute.
         /// </summary>
         /// <value>The beats per minute.</value>
-        public double BeatsPerMinute {
+        [DataMember]
+        public ushort BeatsPerMinute {
             get {
-                return (this.SampleRate * 60D) / this.SamplesPerBeat;
+                return this._beatsPerMinute;
             }
 
             set {
-                this.SamplesPerBeat = (ushort)Math.Round((this.SampleRate * 60D) / value);
+                this._beatsPerMinute = value.Clamp(MinimumBeatsPerMinute, MaximummBeatsPerMinute);
             }
         }
 
@@ -47,9 +48,9 @@
         /// Gets the length.
         /// </summary>
         /// <value>The length.</value>
-        public int Length {
+        public float Length {
             get {
-                return this._tracks.Any() ? this._tracks.Max(x => x.Length) : 0;
+                return this._tracks.Any() ? this._tracks.Max(x => x.Length) : 0f;
             }
         }
 
@@ -65,31 +66,6 @@
 
             set {
                 this._sampleRate = value.Clamp(MinimumSampleRate, MaximumSampleRate);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the samples per beat.
-        /// </summary>
-        /// <value>The samples per beat.</value>
-        [DataMember]
-        public ushort SamplesPerBeat {
-            get {
-                return this._samplesPerBeat;
-            }
-
-            set {
-                this._samplesPerBeat = value.Clamp(MinimumSamplesPerBeat, MaximumSamplesPerBeat);
-            }
-        }
-
-        /// <summary>
-        /// Gets the total number of samples.
-        /// </summary>
-        /// <value>The total number of samples.</value>
-        public ulong TotalNumberOfSamples {
-            get {
-                return (ulong)this.Length * this.SamplesPerBeat;
             }
         }
 
@@ -111,6 +87,24 @@
             var track = new Track();
             this._tracks.Add(track);
             return track;
+        }
+
+        /// <summary>
+        /// Converts a length of beats into the equivilant amount of samples.
+        /// </summary>
+        /// <param name="beats">The beats.</param>
+        /// <returns>The number of samples within the beat length.</returns>
+        public ulong ConvertBeatsToSamples(float beats) {
+            return (ulong)Math.Floor((this.SampleRate * 60f) / beats);
+        }
+
+        /// <summary>
+        /// Converts a set of samples to the length in beats they represent.
+        /// </summary>
+        /// <param name="numberOfSamples">The number of samples.</param>
+        /// <returns>The length of the beat that the number of samples encompass.</returns>
+        public float ConvertSamplesToBeats(ushort numberOfSamples) {
+            return (this.BeatsPerMinute * numberOfSamples) / (this.SampleRate * 60f);
         }
 
         /// <summary>

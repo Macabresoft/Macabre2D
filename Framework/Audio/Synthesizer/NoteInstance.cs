@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -7,7 +8,8 @@
     /// </summary>
     [DataContract]
     public sealed class NoteInstance {
-        private ushort _length = 1;
+        private float _beat;
+        private float _length = 1f;
         private float _velocity = 1f;
 
         /// <summary>
@@ -47,7 +49,15 @@
         /// </summary>
         /// <value>The beat.</value>
         [DataMember]
-        public ushort Beat { get; set; }
+        public float Beat {
+            get {
+                return this._beat;
+            }
+
+            set {
+                this._beat = Math.Max(0f, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the end frequency.
@@ -61,17 +71,13 @@
         /// </summary>
         /// <value>The length.</value>
         [DataMember]
-        public ushort Length {
+        public float Length {
             get {
                 return this._length;
             }
 
             private set {
-                if (value == 0) {
-                    value = 1;
-                }
-
-                this._length = value;
+                this._length = Math.Max(0.125f, value);
             }
         }
 

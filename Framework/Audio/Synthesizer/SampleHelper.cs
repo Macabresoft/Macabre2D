@@ -18,7 +18,7 @@
         /// <param name="trackVolumeMultiplier">The track volume multiplier.</param>
         /// <returns>The samples for the audio buffer.</returns>
         public static byte[] GetBufferSamples<T>(ICollection<T> voices, ushort numberOfSamples, float trackVolumeMultiplier) where T : IVoice {
-            var voiceSamples = voices.Select(x => x.GetNextSamples()).ToList();
+            var voiceSamples = voices.Select(x => x.GetBuffer(numberOfSamples)).ToList();
             var samples = new byte[numberOfSamples * NumberOfChannels * BytesPerSample];
 
             for (var i = 0; i < numberOfSamples; i++) {

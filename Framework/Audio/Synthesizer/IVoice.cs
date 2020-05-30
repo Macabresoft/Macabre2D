@@ -13,10 +13,10 @@
         event EventHandler OnFinished;
 
         /// <summary>
-        /// Gets the next samples.
+        /// Gets the buffer for the number of samples provided.
         /// </summary>
-        /// <returns>The next samples.</returns>
-        AudioSample[] GetNextSamples();
+        /// <returns>The buffer.</returns>
+        AudioSample[] GetBuffer(ushort numberOfSamples);
 
         /// <summary>
         /// Reinitializes the specified instrument.
@@ -24,6 +24,7 @@
         /// <param name="song">The song.</param>
         /// <param name="track">The track.</param>
         /// <param name="note">The note.</param>
-        void Reinitialize(Song song, Track track, NoteInstance note);
+        /// <param name="startingBeat">The starting beat.</param>
+        void Reinitialize(Song song, Track track, NoteInstance note, float startingBeat);
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Macabre2D.Framework {
 
     using Microsoft.Xna.Framework;
+    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -8,22 +9,44 @@
     /// </summary>
     [DataContract]
     public sealed class Envelope {
+        private const ushort MaximumAttackTime = 5000;
+        private const ushort MaximumDecayTime = 5000;
+        private const ushort MaximumReleaseTime = 10000;
+        private ushort _attack = 50;
+        private ushort _decay;
         private float _peakAmplitude = 0.8f;
+        private ushort _release = 50;
         private float _sustainAmplitude = 0.5f;
 
         /// <summary>
-        /// Gets or sets attack length in samples.
+        /// Gets or sets attack length in milliseconds.
         /// </summary>
         /// <value>The attack time.</value>
         [DataMember]
-        public ushort Attack { get; set; }
+        public ushort Attack {
+            get {
+                return this._attack;
+            }
+
+            set {
+                this._attack = Math.Min(value, MaximumAttackTime);
+            }
+        }
 
         /// <summary>
-        /// Gets or sets decay length in samples.
+        /// Gets or sets decay length in milliseconds.
         /// </summary>
         /// <value>The decay time.</value>
         [DataMember]
-        public ushort Decay { get; set; }
+        public ushort Decay {
+            get {
+                return this._decay;
+            }
+
+            set {
+                this._decay = Math.Min(value, MaximumDecayTime);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the peak amplitude. This value is only relevant if <see cref="Decay"/> is
@@ -46,7 +69,15 @@
         /// </summary>
         /// <value>The release time.</value>
         [DataMember]
-        public ushort Release { get; set; }
+        public ushort Release {
+            get {
+                return this._release;
+            }
+
+            set {
+                this._release = Math.Min(value, MaximumReleaseTime);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the sustain amplitude. This is a value between 0.0 and 1.0 representing the

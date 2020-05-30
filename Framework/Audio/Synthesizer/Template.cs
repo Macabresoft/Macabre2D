@@ -14,10 +14,10 @@
         private readonly List<TemplatedTrack> _templatedTracks = new List<TemplatedTrack>();
 
         [DataMember]
-        private ushort _sampleRate;
+        private ushort _beatsPerMinute;
 
         [DataMember]
-        private ushort _samplesPerBeat;
+        private ushort _sampleRate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Template"/> class.
@@ -25,7 +25,7 @@
         /// <param name="song">The song.</param>
         public Template(Song song) {
             this._sampleRate = song.SampleRate;
-            this._samplesPerBeat = song.SamplesPerBeat;
+            this._beatsPerMinute = song.BeatsPerMinute;
 
             foreach (var track in song.Tracks) {
                 this._templatedTracks.Add(new TemplatedTrack(track));
@@ -39,7 +39,7 @@
         public Song ToSong() {
             var song = new Song() {
                 SampleRate = this._sampleRate,
-                SamplesPerBeat = this._samplesPerBeat
+                BeatsPerMinute = this._beatsPerMinute
             };
 
             foreach (var templatedTrack in this._templatedTracks) {

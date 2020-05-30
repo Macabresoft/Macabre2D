@@ -26,12 +26,6 @@
             this._soundEffectInstance = new DynamicSoundEffectInstance(this.Song.SampleRate, AudioChannels.Stereo);
         }
 
-        /// <summary>
-        /// Gets or sets the samples per buffer.
-        /// </summary>
-        /// <value>The samples per buffer.</value>
-        public ushort SamplesPerBuffer { get; set; } = 500;
-
         /// inheritdoc />
         public Song Song { get; }
 
@@ -56,7 +50,7 @@
         }
 
         /// inheritdoc />
-        public void Buffer(float volume) {
+        public void Buffer(float volume, ushort numberOfSamples) {
             foreach (var inactiveVoice in this._inactiveVoices) {
                 this._activeVoices.Remove(inactiveVoice.Frequency);
                 this._voicePool.Return(inactiveVoice);
@@ -65,7 +59,7 @@
             this._inactiveVoices.Clear();
 
             if (this._activeVoices.Any() && this._soundEffectInstance.PendingBufferCount < 2) {
-                var samples = SampleHelper.GetBufferSamples(this._activeVoices.Values, this.SamplesPerBuffer, volume);
+                var samples = SampleHelper.GetBufferSamples(this._activeVoices.Values, numberOfSamples, volume);
                 this._soundEffectInstance.SubmitBuffer(samples);
             }
         }
@@ -76,9 +70,7 @@
         /// <param name="frequency">The frequency.</param>
         public void PlayNote(Frequency frequency) {
             if (!this._activeVoices.ContainsKey(frequency)) {
-                var voice = this._voicePool.GetNext();
-                voice.SamplesPerBuffer = this.SamplesPerBuffer;
-                voice.Reinitialize(this.Song, this.Track, new NoteInstance(0, 1, 1f, frequency));
+                var voice = this._voicePool.GetNext(this.Song, this.Track, new NoteInstance(0, 1, 1f, frequency), 0f);
                 voice.OnFinished += this.Voice_OnFinished;
                 this._activeVoices.Add(frequency, voice);
 

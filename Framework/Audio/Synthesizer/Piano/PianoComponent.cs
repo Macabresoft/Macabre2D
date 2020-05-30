@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Linq;
+    using System.Runtime.Serialization;
 
     public class PianoComponent : BaseComponent, IUpdateableComponent {
         private readonly Sprite _blackKeyPressed;
@@ -40,6 +41,13 @@
             this._componentChildrenChangedHandler = new NotifyCollectionChangedEventHandler(this.Component_ChildrenChanged);
         }
 
+        /// <summary>
+        /// Gets or sets the samples per buffer.
+        /// </summary>
+        /// <value>The samples per buffer.</value>
+        [DataMember]
+        public ushort SamplesPerBuffer { get; set; } = 500;
+
         /// inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
             var mouseWorldPosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
@@ -65,7 +73,7 @@
                 }
             }
 
-            this._songPlayer.Buffer(0.8f);
+            this._songPlayer.Buffer(0.8f, this.SamplesPerBuffer);
         }
 
         protected override void Initialize() {

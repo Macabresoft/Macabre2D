@@ -42,9 +42,9 @@
         /// Gets the length.
         /// </summary>
         /// <value>The length.</value>
-        public int Length {
+        public float Length {
             get {
-                return this._notes.Any() ? this._notes.Max(x => x.Beat + x.Length) : 0;
+                return this._notes.Any() ? this._notes.Max(x => x.Beat + x.Length) : 0f;
             }
         }
 
@@ -95,10 +95,10 @@
         /// <summary>
         /// Gets the notes.
         /// </summary>
-        /// <param name="beat">The beat.</param>
-        /// <returns>The notes for the specified beat.</returns>
-        public IEnumerable<NoteInstance> GetNotes(ushort beat) {
-            return this._notes.Where(x => x.Beat == beat);
+        /// <param name="beatRange">The range of beats to gather notes for.</param>
+        /// <returns>The notes for the specified range.</returns>
+        public IEnumerable<NoteInstance> GetNotes(RangeVector beatRange) {
+            return this._notes.Where(x => x.Beat >= beatRange.Min && x.Beat < beatRange.Max);
         }
     }
 }

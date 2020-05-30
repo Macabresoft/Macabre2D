@@ -6,15 +6,16 @@
     /// A synthesizer voice. These are pooled and used to play notes to completion.
     /// </summary>
     public class Voice : IDisposable, IVoice {
-        private ushort _beatsPlayed;
         private float _inverseSampleRate;
         private bool _isActive;
         private bool _isDisposed = false;
-        private NoteInstance _note;
-        private int _noteLengthInSamples;
+        private ulong _noteLengthInSamples;
+        private ulong _offset;
         private float _peakAmplitude;
         private float _preReleaseVolume = 0f;
+        private ulong _samplesPlayed;
         private Song _song;
+        private float _startingBeat;
         private Track _track;
 
         /// <inheritdoc/>
@@ -32,11 +33,7 @@
             }
         }
 
-        protected NoteInstance Note {
-            get {
-                return this._note;
-            }
-        }
+        protected NoteInstance Note { get; private set; }
 
         /// <inheritdoc/>
         public void Dispose() {
@@ -44,15 +41,13 @@
         }
 
         /// <inheritdoc/>
-        public AudioSample[] GetNextSamples() {
-            var samplesPerBeat = this.GetSamplesPerBuffer();
-            var samples = new AudioSample[samplesPerBeat];
-            var sampleModifier = samplesPerBeat * this._beatsPlayed;
+        public AudioSample[] GetBuffer(ushort numberOfSamples) {
+            var samples = new AudioSample[numberOfSamples];
 
-            for (var i = 0; i < samples.Length; i++) {
-                if (this._isActive) {
-                    var sampleNumber = sampleModifier + i;
-                    var frequency = this._note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
+            for (uint i = 0; i < samples.Length; i++) {
+                if (this._isActive && i >= this._offset) {
+                    var sampleNumber = this._samplesPlayed + i;
+                    var frequency = this.Note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
                     var volume = this.GetSampleAmplitude(sampleNumber);
                     var time = sampleNumber * this._inverseSampleRate;
                     var leftSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.LeftChannelVolume);
@@ -70,7 +65,7 @@
                 }
             }
 
-            this._beatsPlayed++;
+            this._samplesPlayed += numberOfSamples;
 
             if (!this._isActive) {
                 this.OnFinished?.Invoke(this, EventArgs.Empty);
@@ -80,13 +75,15 @@
         }
 
         /// <inheritdoc/>
-        public virtual void Reinitialize(Song song, Track track, NoteInstance note) {
+        public virtual void Reinitialize(Song song, Track track, NoteInstance note, float startingBeat) {
             this._isActive = true;
             this._song = song;
             this._track = track;
-            this._note = note;
-            this._beatsPlayed = 0;
-            this._noteLengthInSamples = this._note.Length * this._song.SamplesPerBeat;
+            this.Note = note;
+            this._samplesPlayed = 0;
+            this._startingBeat = startingBeat;
+            this._offset = this._song.ConvertBeatsToSamples(this._startingBeat - this.Note.Beat);
+            this._noteLengthInSamples = this._song.ConvertBeatsToSamples(this.Note.Length);
             this._preReleaseVolume = 0f;
             this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;
             this._inverseSampleRate = 1f / this._song.SampleRate;
@@ -100,35 +97,31 @@
             }
         }
 
-        protected virtual int GetNoteLengthInSamples() {
+        protected virtual ulong GetNoteLengthInSamples() {
             return this._noteLengthInSamples;
         }
 
-        protected virtual ushort GetSamplesPerBuffer() {
-            return this._song.SamplesPerBeat;
-        }
-
-        protected virtual bool IsNoteOver(int sampleNumber) {
+        protected virtual bool IsNoteOver(ulong sampleNumber) {
             return sampleNumber >= this._noteLengthInSamples;
         }
 
-        protected virtual bool IsNoteReleasing(int sampleNumber) {
+        protected virtual bool IsNoteReleasing(ulong sampleNumber) {
             return (sampleNumber - this._noteLengthInSamples) < this.Envelope.Release;
         }
 
-        private float GetAttackAmplitude(int sampleNumber) {
+        private float GetAttackAmplitude(ulong sampleNumber) {
             return this._peakAmplitude * (sampleNumber / (float)this.Envelope.Attack);
         }
 
-        private float GetDecayAmplitude(int sampleNumber) {
+        private float GetDecayAmplitude(ulong sampleNumber) {
             return this.Envelope.SustainAmplitude + (this._peakAmplitude - this.Envelope.SustainAmplitude) * (1f - ((sampleNumber - this.Envelope.Attack) / (float)this.Envelope.Decay));
         }
 
-        private float GetReleaseAmplitude(int sampleNumber) {
+        private float GetReleaseAmplitude(ulong sampleNumber) {
             return this._preReleaseVolume * (1f - ((sampleNumber - this.GetNoteLengthInSamples()) / (float)this.Envelope.Release));
         }
 
-        private float GetSampleAmplitude(int sampleNumber) {
+        private float GetSampleAmplitude(ulong sampleNumber) {
             var result = 0f;
             if (!this.IsNoteOver(sampleNumber)) {
                 if (sampleNumber < this.Envelope.Attack) {
@@ -150,7 +143,7 @@
                 this._isActive = false;
             }
 
-            return result * this._note.Velocity;
+            return result * this.Note.Velocity;
         }
     }
 }
