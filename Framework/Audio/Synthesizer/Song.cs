@@ -41,8 +41,21 @@
 
             set {
                 this._beatsPerMinute = value.Clamp(MinimumBeatsPerMinute, MaximummBeatsPerMinute);
+                this.BeatsPerSecond = this._beatsPerMinute / 60f;
             }
         }
+
+        /// <summary>
+        /// Gets the beats per second.
+        /// </summary>
+        /// <value>The beats per second.</value>
+        public float BeatsPerSecond { get; private set; } = 120f / 60f;
+
+        /// <summary>
+        /// Gets the inverse sample rate.
+        /// </summary>
+        /// <value>The inverse sample rate.</value>
+        public float InverseSampleRate { get; private set; } = 1f / MaximumSampleRate;
 
         /// <summary>
         /// Gets the length.
@@ -66,6 +79,7 @@
 
             set {
                 this._sampleRate = value.Clamp(MinimumSampleRate, MaximumSampleRate);
+                this.InverseSampleRate = 1f / this._sampleRate;
             }
         }
 
@@ -95,7 +109,7 @@
         /// <param name="beats">The beats.</param>
         /// <returns>The number of samples within the beat length.</returns>
         public ulong ConvertBeatsToSamples(float beats) {
-            return (ulong)Math.Floor((this.SampleRate * 60f * beats) / this.BeatsPerMinute);
+            return (ulong)Math.Floor((this.SampleRate * beats) / this.BeatsPerSecond);
         }
 
         /// <summary>
@@ -104,7 +118,7 @@
         /// <param name="numberOfSamples">The number of samples.</param>
         /// <returns>The length of the beat that the number of samples encompass.</returns>
         public float ConvertSamplesToBeats(ushort numberOfSamples) {
-            return (this.BeatsPerMinute * numberOfSamples) / (this.SampleRate * 60f);
+            return this.BeatsPerSecond * numberOfSamples * this.InverseSampleRate;
         }
 
         /// <summary>

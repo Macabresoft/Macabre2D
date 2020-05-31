@@ -73,6 +73,7 @@
                 if (endOfBuffer > this.Song.Length) {
                     endOfBuffer = this.Song.Length;
                     beatLengthOfBuffer = endOfBuffer - this._currentBeat;
+                    numberOfSamples = (ushort)this.Song.ConvertBeatsToSamples(beatLengthOfBuffer);
                 }
 
                 var range = new RangeVector(this._currentBeat, endOfBuffer);
@@ -80,8 +81,7 @@
                     var notes = track.GetNotes(range);
 
                     foreach (var note in notes) {
-                        var offset = note.Beat - this._currentBeat;
-                        var voice = this._voicePool.GetNext(this.Song, track, note, offset);
+                        var voice = this._voicePool.GetNext(this.Song, track, note, this._currentBeat);
                         voice.OnFinished += this.Voice_OnFinished;
                         this._activeVoices.Add(voice);
                     }

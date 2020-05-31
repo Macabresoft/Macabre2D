@@ -6,7 +6,6 @@
     /// A synthesizer voice. These are pooled and used to play notes to completion.
     /// </summary>
     public class Voice : IDisposable, IVoice {
-        private float _inverseSampleRate;
         private bool _isActive;
         private bool _isDisposed = false;
         private ulong _noteLengthInSamples;
@@ -49,7 +48,7 @@
                 if (this._isActive && sampleNumber >= 0) {
                     var frequency = this.Note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
                     var volume = this.GetSampleAmplitude((ulong)sampleNumber);
-                    var time = sampleNumber * this._inverseSampleRate;
+                    var time = sampleNumber * this._song.InverseSampleRate;
                     var leftSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.LeftChannelVolume);
                     var rightSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.RightChannelVolume);
 
@@ -86,10 +85,8 @@
             this._noteLengthInSamples = this._song.ConvertBeatsToSamples(this.Note.Length);
             this._preReleaseVolume = 0f;
             this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;
-            this._inverseSampleRate = 1f / this._song.SampleRate;
         }
 
-        // To detect redundant calls
         protected virtual void Dispose(bool disposing) {
             if (!this._isDisposed) {
                 this.OnFinished = null;

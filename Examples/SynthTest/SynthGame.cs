@@ -20,8 +20,8 @@
             base.Initialize();
 
             this._graphics.IsFullScreen = false;
-            this._graphics.PreferredBackBufferHeight = 768;
-            this._graphics.PreferredBackBufferWidth = 1024;
+            this._graphics.PreferredBackBufferHeight = 1080;
+            this._graphics.PreferredBackBufferWidth = 1920;
             this._graphics.ApplyChanges();
             this.IsMouseVisible = true;
         }
@@ -62,27 +62,33 @@
 
             var firstTrack = song.Tracks.First();
             firstTrack.Instrument.Oscillator = new SawToothOscillator();
+            firstTrack.Instrument.NoteEnvelope.Attack = 50;
+            firstTrack.Instrument.NoteEnvelope.Release = 50;
             firstTrack.LeftChannelVolume = 0.25f;
             firstTrack.RightChannelVolume = 0.75f;
 
-            firstTrack.AddNote(0f, 1f, Note.C);
-            firstTrack.AddNote(1f, 1f, Note.F);
-            firstTrack.AddNote(2f, 1f, Note.G);
-            firstTrack.AddNote(3f, 1f, Note.C);
+            var secondTrack = song.AddTrack();
+            secondTrack.Instrument.Oscillator = new SineWaveOscillator();
+            secondTrack.Instrument.NoteEnvelope.Attack = 100;
+            secondTrack.Instrument.NoteEnvelope.Release = 500;
+            secondTrack.LeftChannelVolume = 0.75f;
+            secondTrack.RightChannelVolume = 0.25f;
 
-            //var secondTrack = song.AddTrack();
-            //secondTrack.Instrument.Oscillator = new SineWaveOscillator();
-            //secondTrack.LeftChannelVolume = 0.75f;
-            //secondTrack.RightChannelVolume = 0.25f;
+            for (var i = 0; i < 4; i++) {
+                firstTrack.AddNote((4f * i) + 0f, 1f, Note.C);
+                firstTrack.AddNote((4f * i) + 1f, 1f, Note.F);
+                firstTrack.AddNote((4f * i) + 2f, 1f, Note.G);
+                firstTrack.AddNote((4f * i) + 3f, 1f, Note.C);
 
-            //firstTrack.AddSlideNote(0f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(0.5f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(1f, 0.5f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(1.5f, 0.5f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(2f, 0.5f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(2.5f, 0.5f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(3f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
-            //firstTrack.AddSlideNote(3.5f, 0.5f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 0f, 0.4f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 0.5f, 0.4f, new Frequency(Note.C, Pitch.Low), new Frequency(Note.C, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 1f, 0.4f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 1.5f, 0.4f, new Frequency(Note.F, Pitch.Low), new Frequency(Note.F, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 2f, 0.4f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 2.5f, 0.4f, new Frequency(Note.G, Pitch.Low), new Frequency(Note.G, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 3f, 0.4f, new Frequency(Note.C, Pitch.High), new Frequency(Note.C, Pitch.Normal), 1f);
+                secondTrack.AddSlideNote((4f * i) + 3.5f, 0.4f, new Frequency(Note.C, Pitch.High), new Frequency(Note.C, Pitch.Normal), 1f);
+            }
 
             return song;
         }
