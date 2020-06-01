@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.3.14.0
+
+### Features
+
+### Refactors
+
+### Fixes
+
 ## 0.3.13.0
 
 ### Features
@@ -12,8 +20,6 @@
 
 * Added a SynthTest example project.
 * Synthesizer reworked to allow for more dynamic notes that are not directly tied to samples or rigidly restricted to full beats.
-
-### Fixes
 
 ## 0.3.12.0
 
