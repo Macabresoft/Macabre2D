@@ -7,6 +7,9 @@
     using System.Linq;
     using System.Runtime.Serialization;
 
+    /// <summary>
+    /// A component that creates a piano that can play notes.
+    /// </summary>
     public class PianoComponent : BaseComponent, IUpdateableComponent {
         private readonly Sprite _blackKeyPressed;
         private readonly Sprite _blackKeyUnpressed;

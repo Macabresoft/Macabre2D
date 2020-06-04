@@ -7,14 +7,6 @@
     /// A piano key inside of a <see cref="PianoComponent"/>.
     /// </summary>
     public sealed class PianoKeyComponent : SimpleBodyComponent, IClickablePianoComponent {
-        ////private static readonly Point BlackPressedKeySpriteLocation = new Point(0, 32);
-        ////private static readonly Point BlackUnpressedKeySpriteLocation = new Point(0, 0);
-        ////private static readonly Point PianoKeySpriteSize = new Point(32, 16);
-        ////private static readonly Point WhitePressedKeySpriteLocation = new Point(0, 48);
-        ////private static readonly Point WhiteUnpressedKeySpriteLocation = new Point(0, 16);
-        ////this._unpressedSprite = new Sprite(spriteSheetPath, isNatural? WhiteUnpressedKeySpriteLocation : BlackUnpressedKeySpriteLocation, PianoKeySpriteSize);
-        ////    this._pressedSprite = new Sprite(spriteSheetPath, isNatural? WhitePressedKeySpriteLocation : BlackPressedKeySpriteLocation, PianoKeySpriteSize);
-
         private readonly Sprite _pressedSprite;
         private readonly LiveSongPlayer _songPlayer;
         private readonly Sprite _unpressedSprite;
