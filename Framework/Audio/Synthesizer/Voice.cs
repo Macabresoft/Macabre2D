@@ -8,6 +8,7 @@
     public class Voice : IDisposable, IVoice {
         private bool _isActive;
         private bool _isDisposed = false;
+        private float _noteLengthInMilliseconds;
         private ulong _noteLengthInSamples;
         private ulong _offset;
         private float _peakAmplitude;
@@ -47,8 +48,8 @@
                 var sampleNumber = (int)this._samplesPlayed + i - (int)this._offset;
                 if (this._isActive && sampleNumber >= 0) {
                     var frequency = this.Note.GetFrequency((sampleNumber / (float)this._noteLengthInSamples).Clamp(0f, 1f));
-                    var volume = this.GetSampleAmplitude((ulong)sampleNumber);
                     var time = sampleNumber * this._song.InverseSampleRate;
+                    var volume = this.GetSampleAmplitude(time * 1000f);
                     var leftSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.LeftChannelVolume);
                     var rightSample = this.Instrument.Oscillator.GetSignal(time, frequency, volume * this._track.RightChannelVolume);
 
@@ -83,6 +84,7 @@
             this._startingBeat = startingBeat;
             this._offset = this._song.ConvertBeatsToSamples(this.Note.Beat - this._startingBeat);
             this._noteLengthInSamples = this._song.ConvertBeatsToSamples(this.Note.Length);
+            this._noteLengthInMilliseconds = 1000f * (this.Note.Length / this._song.BeatsPerSecond);
             this._preReleaseVolume = 0f;
             this._peakAmplitude = this.Envelope.Decay > 0 ? this.Envelope.PeakAmplitude : this.Envelope.SustainAmplitude;
         }
@@ -94,38 +96,38 @@
             }
         }
 
-        protected virtual ulong GetNoteLengthInSamples() {
-            return this._noteLengthInSamples;
+        protected virtual float GetNoteLengthInMilliseconds() {
+            return this._noteLengthInMilliseconds;
         }
 
-        protected virtual bool IsNoteOver(ulong sampleNumber) {
-            return sampleNumber >= this._noteLengthInSamples;
+        protected virtual bool IsNoteOver(float millisecondsIntoNote) {
+            return millisecondsIntoNote >= this._noteLengthInMilliseconds;
         }
 
-        protected virtual bool IsNoteReleasing(ulong sampleNumber) {
-            return (sampleNumber - this._noteLengthInSamples) < this.Envelope.Release;
+        protected virtual bool IsNoteReleasing(float millisecondsIntoNote) {
+            return (millisecondsIntoNote - this._noteLengthInMilliseconds) < this.Envelope.Release;
         }
 
-        private float GetAttackAmplitude(ulong sampleNumber) {
-            return this._peakAmplitude * (sampleNumber / (float)this.Envelope.Attack);
+        private float GetAttackAmplitude(float millisecondsIntoNote) {
+            return this._peakAmplitude * (millisecondsIntoNote / this.Envelope.Attack);
         }
 
-        private float GetDecayAmplitude(ulong sampleNumber) {
-            return this.Envelope.SustainAmplitude + (this._peakAmplitude - this.Envelope.SustainAmplitude) * (1f - ((sampleNumber - this.Envelope.Attack) / (float)this.Envelope.Decay));
+        private float GetDecayAmplitude(float millisecondsIntoNote) {
+            return this.Envelope.SustainAmplitude + (this._peakAmplitude - this.Envelope.SustainAmplitude) * (1f - ((millisecondsIntoNote - this.Envelope.Attack) / this.Envelope.Decay));
         }
 
-        private float GetReleaseAmplitude(ulong sampleNumber) {
-            return this._preReleaseVolume * (1f - ((sampleNumber - this.GetNoteLengthInSamples()) / (float)this.Envelope.Release));
+        private float GetReleaseAmplitude(float millisecondsIntoNote) {
+            return this._preReleaseVolume * (1f - ((millisecondsIntoNote - this.GetNoteLengthInMilliseconds()) / this.Envelope.Release));
         }
 
-        private float GetSampleAmplitude(ulong sampleNumber) {
+        private float GetSampleAmplitude(float millisecondsIntoNote) {
             var result = 0f;
-            if (!this.IsNoteOver(sampleNumber)) {
-                if (sampleNumber < this.Envelope.Attack) {
-                    result = this.GetAttackAmplitude(sampleNumber);
+            if (!this.IsNoteOver(millisecondsIntoNote)) {
+                if (millisecondsIntoNote < this.Envelope.Attack) {
+                    result = this.GetAttackAmplitude(millisecondsIntoNote);
                 }
-                else if ((sampleNumber - this.Envelope.Attack) < this.Envelope.Decay) {
-                    result = this.GetDecayAmplitude(sampleNumber);
+                else if ((millisecondsIntoNote - this.Envelope.Attack) < this.Envelope.Decay) {
+                    result = this.GetDecayAmplitude(millisecondsIntoNote);
                 }
                 else {
                     result = this._track.Instrument.NoteEnvelope.SustainAmplitude;
@@ -133,8 +135,8 @@
 
                 this._preReleaseVolume = result;
             }
-            else if (this.IsNoteReleasing(sampleNumber)) {
-                result = this.GetReleaseAmplitude(sampleNumber);
+            else if (this.IsNoteReleasing(millisecondsIntoNote)) {
+                result = this.GetReleaseAmplitude(millisecondsIntoNote);
             }
             else {
                 this._isActive = false;

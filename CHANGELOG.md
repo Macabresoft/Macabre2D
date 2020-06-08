@@ -4,9 +4,12 @@
 
 ### Features
 
+* Synthesizer now relies on milliseconds for its note envelope.
+
 ### Refactors
 
 ### Fixes
+
 
 ## 0.3.13.0
 

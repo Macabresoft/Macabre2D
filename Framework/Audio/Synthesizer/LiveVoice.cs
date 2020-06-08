@@ -5,7 +5,7 @@
     /// </summary>
     public sealed class LiveVoice : Voice {
         private bool _isPlaying = false;
-        private ulong _samplesBeforeRelease = 0;
+        private float _millisecondsBeforeRelease = 0f;
 
         /// <summary>
         /// Gets the frequency.
@@ -22,7 +22,7 @@
             base.Reinitialize(song, track, note, startingBeat);
 
             this._isPlaying = true;
-            this._samplesBeforeRelease = 0;
+            this._millisecondsBeforeRelease = 0;
         }
 
         /// <summary>
@@ -30,24 +30,24 @@
         /// </summary>
         public void Stop() {
             this._isPlaying = false;
-            this._samplesBeforeRelease = 0;
+            this._millisecondsBeforeRelease = 0;
         }
 
-        protected override ulong GetNoteLengthInSamples() {
-            return this._samplesBeforeRelease;
+        protected override float GetNoteLengthInMilliseconds() {
+            return this._millisecondsBeforeRelease;
         }
 
-        protected override bool IsNoteOver(ulong sampleNumber) {
+        protected override bool IsNoteOver(float millisecondsIntoNote) {
             var result = !this._isPlaying;
-            if (result && this._samplesBeforeRelease == 0) {
-                this._samplesBeforeRelease = this._samplesBeforeRelease > 0 ? this._samplesBeforeRelease : sampleNumber;
+            if (result && this._millisecondsBeforeRelease == 0f) {
+                this._millisecondsBeforeRelease = this._millisecondsBeforeRelease > 0 ? this._millisecondsBeforeRelease : millisecondsIntoNote;
             }
 
             return result;
         }
 
-        protected override bool IsNoteReleasing(ulong sampleNumber) {
-            return sampleNumber - this._samplesBeforeRelease < this.Envelope.Release;
+        protected override bool IsNoteReleasing(float millisecondsIntoNote) {
+            return millisecondsIntoNote - this._millisecondsBeforeRelease < this.Envelope.Release;
         }
     }
 }

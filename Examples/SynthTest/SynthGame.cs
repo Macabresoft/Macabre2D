@@ -49,9 +49,10 @@
             var whiteKeyPressed = new Sprite(spriteSheetId, WhitePressedKeySpriteLocation, PianoKeySpriteSize);
             var blackKeyUnpressed = new Sprite(spriteSheetId, BlackUnpressedKeySpriteLocation, PianoKeySpriteSize);
             var blackKeyPressed = new Sprite(spriteSheetId, BlackPressedKeySpriteLocation, PianoKeySpriteSize);
-            var songPlayer = new LiveSongPlayer(new Song());
+            var song = this.CreateSong();
+            var songPlayer = new LiveSongPlayer(song);
             this.CurrentScene.AddChild(new PianoComponent(songPlayer, whiteKeyUnpressed, whiteKeyPressed, blackKeyUnpressed, blackKeyPressed));
-            this.CurrentScene.AddChild(new SongPlayerComponent(this.CreateSong()));
+            this.CurrentScene.AddChild(new SongPlayerComponent(song));
             this._isLoaded = true;
         }
 
@@ -62,8 +63,11 @@
 
             var firstTrack = song.Tracks.First();
             firstTrack.Instrument.Oscillator = new SawToothOscillator();
-            firstTrack.Instrument.NoteEnvelope.Attack = 50;
-            firstTrack.Instrument.NoteEnvelope.Release = 50;
+            firstTrack.Instrument.NoteEnvelope.Attack = 500;
+            firstTrack.Instrument.NoteEnvelope.Decay = 1000;
+            firstTrack.Instrument.NoteEnvelope.PeakAmplitude = 1f;
+            firstTrack.Instrument.NoteEnvelope.SustainAmplitude = 0.5f;
+            firstTrack.Instrument.NoteEnvelope.Release = 500;
             firstTrack.LeftChannelVolume = 0.25f;
             firstTrack.RightChannelVolume = 0.75f;
 
