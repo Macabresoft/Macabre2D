@@ -5,6 +5,7 @@
 ### Features
 
 * Synthesizer now relies on milliseconds for its note envelope.
+* Icon updated.
 
 ### Refactors
 
