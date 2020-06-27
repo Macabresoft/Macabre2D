@@ -132,7 +132,7 @@
             var lasterId = Guid.NewGuid();
             this.AssetManager.SetMapping(lasterId, "laser");
 
-            var audioPlayer = new AudioPlayer();
+            var audioPlayer = new AudioPlayerComponent();
             scene.AddChild(audioPlayer);
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClip = new AudioClip();

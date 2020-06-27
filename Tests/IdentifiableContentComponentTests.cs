@@ -9,7 +9,7 @@
         [Test]
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_AudioPlayerTest() {
-            var audioPlayer = new AudioPlayer();
+            var audioPlayer = new AudioPlayerComponent();
             var audioClip = new AudioClip();
             audioPlayer.AudioClip = audioClip;
 

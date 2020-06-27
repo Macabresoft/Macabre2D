@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿namespace Macabre2D.Framework {
 
-namespace Macabre2D.Framework {
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
-    public abstract class BaseBody : BaseComponent, IPhysicsBody {
+    public abstract class BaseBodyComponent : BaseComponent, IPhysicsBody {
 
         /// <inheritdoc/>
         public event EventHandler<CollisionEventArgs> CollisionOccured;

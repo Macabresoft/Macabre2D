@@ -4,32 +4,32 @@
     using Microsoft.Xna.Framework.Input;
 
     public sealed class VolumeController : BaseComponent, IUpdateableComponent {
-        private AudioPlayer _audioClip;
+        private AudioPlayerComponent _audioPlayer;
 
         public void Update(FrameTime frameTime, InputState inputState) {
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
-                this._audioClip.Volume += 0.1f;
+                this._audioPlayer.Volume += 0.1f;
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
-                this._audioClip.Volume -= 0.1f;
+                this._audioPlayer.Volume -= 0.1f;
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
-                this._audioClip.Pitch += 0.1f;
+                this._audioPlayer.Pitch += 0.1f;
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
-                this._audioClip.Pitch -= 0.1f;
+                this._audioPlayer.Pitch -= 0.1f;
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
-                this._audioClip.Play();
+                this._audioPlayer.Play();
             }
         }
 
         protected override void Initialize() {
-            this._audioClip = this.Parent as AudioPlayer;
+            this._audioPlayer = this.Parent as AudioPlayerComponent;
         }
     }
 }

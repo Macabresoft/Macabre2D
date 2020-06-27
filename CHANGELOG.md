@@ -9,6 +9,9 @@
 
 ### Refactors
 
+* Renamed components to end with 'Component'.
+* Unused interfaces removed.
+
 ### Fixes
 
 

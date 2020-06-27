@@ -10,7 +10,7 @@
     /// <summary>
     /// Plays a <see cref="AudioClip"/>.
     /// </summary>
-    public sealed class AudioPlayer : BaseComponent, IAssetComponent<AudioClip> {
+    public sealed class AudioPlayerComponent : BaseComponent, IAssetComponent<AudioClip> {
         private AudioClip _audioClip;
         private float _pan;
         private float _pitch;
@@ -70,7 +70,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="AudioPlayer"/> should loop.
+        /// Gets or sets a value indicating whether this <see cref="AudioPlayerComponent"/> should loop.
         /// </summary>
         /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
         [DataMember(Order = 1, Name = "Should Loop")]

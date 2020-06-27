@@ -6,7 +6,19 @@
     /// <summary>
     /// Interface for a class that contains a world <see cref="Transform"/>.
     /// </summary>
-    public interface IWorldTransformable : INotifyPropertyChanged, IScaleable, ITranslateable {
+    public interface IWorldTransformable : INotifyPropertyChanged {
+
+        /// <summary>
+        /// Gets or sets the local position.
+        /// </summary>
+        /// <value>The local position.</value>
+        Vector2 LocalPosition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local scale.
+        /// </summary>
+        /// <value>The local scale.</value>
+        Vector2 LocalScale { get; set; }
 
         /// <summary>
         /// Gets the world transform.
@@ -91,6 +103,18 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <returns>The world transform.</returns>
         Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle);
+
+        /// <summary>
+        /// Sets the world position.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        void SetWorldPosition(Vector2 position);
+
+        /// <summary>
+        /// Sets the world scale.
+        /// </summary>
+        /// <param name="scale">The scale.</param>
+        void SetWorldScale(Vector2 scale);
 
         /// <summary>
         /// Sets the world transform.

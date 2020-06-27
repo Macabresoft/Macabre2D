@@ -8,10 +8,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A <see cref="BaseBody"/> which reacts to a <see cref="ITileable"/> parent and creates
+    /// A <see cref="BaseBodyComponent"/> which reacts to a <see cref="ITileable"/> parent and creates
     /// colliders based on the available grid.
     /// </summary>
-    public sealed class TileableBodyComponent : BaseBody {
+    public sealed class TileableBodyComponent : BaseBodyComponent {
         private readonly List<Collider> _colliders = new List<Collider>();
 
         private Layers _overrideLayersBottomEdge = Layers.None;
