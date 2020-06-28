@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.3.15.0
+
+### Features
+
+### Refactors
+
+### Fixes
+
 ## 0.3.14.0
 
 ### Features
@@ -12,9 +20,6 @@
 * Renamed components to end with 'Component'.
 * Unused interfaces removed.
 * Layers renamed to cater to general cases over customization.
-
-### Fixes
-
 
 ## 0.3.13.0
 
