@@ -27,7 +27,7 @@
         private bool _isEnabled = true;
         private bool _isTransformUpToDate;
         private bool _isVisible = true;
-        private Layers _layers = Layers.Layer01;
+        private Layers _layers = Layers.Default;
         private Vector2 _localPosition;
         private Vector2 _localScale = Vector2.One;
         private string _name;

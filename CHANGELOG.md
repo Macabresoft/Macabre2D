@@ -11,6 +11,7 @@
 
 * Renamed components to end with 'Component'.
 * Unused interfaces removed.
+* Layers renamed to cater to general cases over customization.
 
 ### Fixes
 

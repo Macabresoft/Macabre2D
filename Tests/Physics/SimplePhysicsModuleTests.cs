@@ -19,13 +19,13 @@
             var scene = Substitute.For<IScene>();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
-            var raycastLayer = Layers.Layer10;
+            var raycastLayer = Layers.Custom1;
 
             gameSettings.Layers.Returns(layerSettings);
             GameSettings.Instance = gameSettings;
 
             if (!layersCompatible) {
-                raycastLayer = Layers.Layer06;
+                raycastLayer = Layers.Custom2;
             }
 
             var physicsModule = new SimplePhysicsModule();
@@ -33,7 +33,7 @@
             using (var circleBody = new SimpleBodyComponent()) {
                 circleBody.SetWorldPosition(Vector2.Zero);
                 circleBody.Collider = new CircleCollider(1f);
-                circleBody.Layers = Layers.Layer10;
+                circleBody.Layers = Layers.Custom1;
                 circleBody.Initialize(scene);
 
                 scene.GetAllComponentsOfType<IPhysicsBody>().Returns(new List<IPhysicsBody>(new[] { circleBody }));
@@ -60,7 +60,7 @@
             using (var lineBody = new SimpleBodyComponent()) {
                 lineBody.SetWorldPosition(Vector2.Zero);
                 lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
-                lineBody.Layers = Layers.Layer01;
+                lineBody.Layers = Layers.Default;
                 lineBody.Initialize(scene);
 
                 scene.GetAllComponentsOfType<IPhysicsBody>().Returns(new List<IPhysicsBody>(new[] { lineBody }));
@@ -71,15 +71,15 @@
 
                 physicsModule.FixedPreUpdate();
 
-                var result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Layer01, out var hit);
+                var result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
                 Assert.AreEqual(raycastHit, result);
-                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Layer01, out hit);
+                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
                 Assert.AreEqual(raycastHit, result);
 
                 physicsModule.FixedPostUpdate();
 
                 physicsModule.FixedPreUpdate();
-                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Layer01, out hit);
+                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
                 Assert.AreEqual(raycastHit, result);
 
                 physicsModule.FixedPostUpdate();
