@@ -14,9 +14,6 @@
         private readonly List<Layers> _layers;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Layers, string> _layersToName = new Dictionary<Layers, string>();
-
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new Dictionary<Layers, Layers>();
 
         /// <summary>
@@ -30,25 +27,6 @@
             foreach (var layer in this._layers) {
                 this._layerToCollisionMask[layer] = Layers.All;
             }
-        }
-
-        /// <summary>
-        /// Occurs when a layer's name has changed.
-        /// </summary>
-        public event EventHandler<LayerNameChangedEventArgs> LayerNameChanged;
-
-        /// <summary>
-        /// Gets the name of the layer.
-        /// </summary>
-        /// <param name="layer">The layer.</param>
-        /// <returns>The name of the layer.</returns>
-        public string GetLayerName(Layers layer) {
-            string name;
-            if (!this._layersToName.TryGetValue(layer, out name)) {
-                name = layer.ToString();
-            }
-
-            return name;
         }
 
         /// <summary>
@@ -74,16 +52,6 @@
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Sets the name of the layer.
-        /// </summary>
-        /// <param name="layer">The layer.</param>
-        /// <param name="name">The name.</param>
-        public void SetLayerName(Layers layer, string name) {
-            this._layersToName[layer] = name;
-            this.LayerNameChanged.SafeInvoke(this, new LayerNameChangedEventArgs(layer, name));
         }
 
         /// <summary>

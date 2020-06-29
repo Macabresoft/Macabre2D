@@ -6,6 +6,8 @@
 
 ### Refactors
 
+* Removed layer naming.
+
 ### Fixes
 
 ## 0.3.14.0
