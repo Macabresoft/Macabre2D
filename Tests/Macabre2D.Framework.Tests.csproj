@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\Synthesizer\SongTests.cs" />
     <Compile Include="CameraTests.cs" />
     <Compile Include="ComponentTests.cs" />
     <Compile Include="IdentifiableContentComponentTests.cs" />

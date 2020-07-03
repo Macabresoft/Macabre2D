@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -11,12 +12,12 @@
     /// </summary>
     [DataContract]
     public sealed class Song {
-        public const ushort MaximummBeatsPerMinute = 1000;
+        public const ushort MaximumBeatsPerMinute = 1000;
         public const ushort MaximumSampleRate = 44100 / 2;
         public const ushort MinimumBeatsPerMinute = 10;
         public const ushort MinimumSampleRate = 8000;
 
-        [DataMember]
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly ObservableCollection<Track> _tracks = new ObservableCollection<Track>();
 
         private ushort _beatsPerMinute = 120;
@@ -40,7 +41,7 @@
             }
 
             set {
-                this._beatsPerMinute = value.Clamp(MinimumBeatsPerMinute, MaximummBeatsPerMinute);
+                this._beatsPerMinute = value.Clamp(MinimumBeatsPerMinute, MaximumBeatsPerMinute);
                 this.BeatsPerSecond = this._beatsPerMinute / 60f;
             }
         }

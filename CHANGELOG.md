@@ -10,6 +10,8 @@
 
 ### Fixes
 
+* Song will no longer add a new track when being deserialized.
+
 ## 0.3.14.0
 
 ### Features
