@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Examples.MultiPlatformTest", "Examples\MultiPlatformTest\Macabre2D.Examples.MultiPlatformTest.csproj", "{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Examples.SynthTest", "Examples\SynthTest\Macabre2D.Examples.SynthTest.csproj", "{5E76F509-A3E3-47B2-9687-3C3E294B38E9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,13 +58,6 @@ Global
 		{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7}.Release|x64.ActiveCfg = Release|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Debug|x64.Build.0 = Debug|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Release|x64.ActiveCfg = Release|Any CPU
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,7 +65,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7DA350E5-5713-443F-A9D6-61A45600D8A5} = {217190B4-0A19-4B85-8131-2EF3984BA669}
 		{96B72D57-4A97-4D30-A3FE-35DCA47D6BF7} = {217190B4-0A19-4B85-8131-2EF3984BA669}
-		{5E76F509-A3E3-47B2-9687-3C3E294B38E9} = {217190B4-0A19-4B85-8131-2EF3984BA669}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}

@@ -7,10 +7,9 @@
 ### Refactors
 
 * Removed layer naming.
+* Removed synthesizer (it was a failed project).
 
 ### Fixes
-
-* Song will no longer add a new track when being deserialized.
 
 ## 0.3.14.0
 
