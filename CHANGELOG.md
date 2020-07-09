@@ -11,6 +11,8 @@
 
 ### Fixes
 
+* Initialized SpriteAnimationComponents will set their sprite to the first frame of the default animation (if it exists).
+
 ## 0.3.14.0
 
 ### Features

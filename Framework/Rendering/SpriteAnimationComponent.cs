@@ -195,6 +195,7 @@
             this._millisecondsPerFrame = 1000u / this._frameRate;
             if (this._defaultAnimation != null) {
                 this.Play(this._defaultAnimation, true);
+                this.Sprite = this._defaultAnimation.Steps.FirstOrDefault()?.Sprite;
             }
         }
     }
