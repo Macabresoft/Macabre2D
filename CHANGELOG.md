@@ -8,6 +8,8 @@
 
 ### Fixes
 
+* Camera will now adjust its bounding area if its offset is changed after initialization.
+
 ## 0.3.15.0
 
 ### Refactors

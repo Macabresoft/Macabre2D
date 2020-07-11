@@ -244,6 +244,7 @@
         protected override void Initialize() {
             MacabreGame.Instance.ViewportSizeChanged += this.Game_ViewportSizeChanged;
             this.OffsetSettings.Initialize(this.CreateSize);
+            this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
             this.ResetLazyValues();
             this.SamplerState = this._samplerStateType.ToSamplerState();
             this.PropertyChanged += this.Self_PropertyChanged;
@@ -295,6 +296,12 @@
         private void Game_ViewportSizeChanged(object sender, Point e) {
             this.OffsetSettings.InvalidateSize();
             this.ResetLazyValues();
+        }
+
+        private void OffsetSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.OffsetSettings.Offset)) {
+                this._boundingArea.Reset();
+            }
         }
 
         private void ResetLazyValues() {
