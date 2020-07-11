@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.3.16.0
+## 0.3.17.0
 
 ### Features
 
@@ -8,7 +8,15 @@
 
 ### Fixes
 
+---
+
+## 0.3.16.0
+
+### Fixes
+
 * Camera will now adjust its bounding area if its offset is changed after initialization.
+
+---
 
 ## 0.3.15.0
 
@@ -20,6 +28,8 @@
 ### Fixes
 
 * Initialized SpriteAnimationComponents will set their sprite to the first frame of the default animation (if it exists).
+
+---
 
 ## 0.3.14.0
 
@@ -34,6 +44,8 @@
 * Unused interfaces removed.
 * Layers renamed to cater to general cases over customization.
 
+---
+
 ## 0.3.13.0
 
 ### Features
@@ -46,6 +58,8 @@
 
 * Added a SynthTest example project.
 * Synthesizer reworked to allow for more dynamic notes that are not directly tied to samples or rigidly restricted to full beats.
+
+---
 
 ## 0.3.12.0
 
@@ -70,6 +84,8 @@
 * Audio assets now work relatively reliably.
 * Resources now appropriately disposed of when game is exited.
 
+---
+
 ## 0.3.11.0
 
 ### Features
@@ -83,11 +99,15 @@
 * Removed unused fields.
 * Made 'BaseComponent' constructor protected.
 
+---
+
 ## 0.3.10.0
 
 ### Refactors
 
 * Removed dependency on .NET Framework in favor of using only .NET Standard 2.0.
+
+---
 
 ## 0.3.9.0
 
@@ -98,6 +118,8 @@
 ### Fixes
 
 * When a component is removed, it will now be both removed from the main collection of components and the collection for saving uninitialized components (just in case, this was causing issues in the editor).
+
+---
 
 ## 0.3.8.0
 
@@ -113,6 +135,8 @@
 
 * BoundingAreas now check for minimal difference between two floating point numbers instead of exact values. This fixes various physics interactions.
 
+---
+
 ## 0.3.7.0
 
 ### Refactors
@@ -122,6 +146,8 @@
 ### Fixes
 
 * SpriteAnimationComponent now runs its update synchronously so it does not have issues being altered in the middle of an update.
+
+---
 
 ## 0.3.6.0
 
@@ -136,11 +162,15 @@
 * Cleaned up some pixel snap code.
 * Cleaned up transform code and reduced duplication.
 
+---
+
 ## 0.3.5.0
 
 ### Fixes
 
 * Raycasting from a 'SimplePhysicsModule' will now respect layers.
+
+---
 
 ## 0.3.4.0
 
@@ -155,12 +185,16 @@
 * More components are appended with 'Component' at the end of their class name.
 * 'SpriteAnimationComponent' no longer has a default animation on it and instead must have animations queued onto it.
 
+---
+
 ## 0.3.3.0
 
 ### Refactors
 
 * More internally accessed things have been made public.
 * Repository link updated in NuGet package.
+
+---
 
 ## 0.3.2.0
 
@@ -177,6 +211,8 @@
 ### Compatibility Breaks
 
 * You now must install the League Mono font as described in the updated README file.
+
+---
 
 ## 0.3.1.0
 
@@ -197,6 +233,8 @@
 ### Fixes
 
 * Changing project name and startup scene trigger the project as having changes.
+
+---
 
 ## 0.3.0.0
 
@@ -243,6 +281,7 @@
 
 * The handling of [DataMember] attribute's name can cause objects created in previous versions to not deserialize properly going forward.
 
+---
 
 ## 0.2.0.0
 
