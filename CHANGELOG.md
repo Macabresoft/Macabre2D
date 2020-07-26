@@ -6,6 +6,8 @@
 
 ### Refactors
 
+* Removed ParentChanged event from BaseComponent.
+
 ### Fixes
 
 ---

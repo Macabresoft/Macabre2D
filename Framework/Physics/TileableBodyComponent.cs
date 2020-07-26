@@ -8,8 +8,8 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A <see cref="BaseBodyComponent"/> which reacts to a <see cref="ITileable"/> parent and creates
-    /// colliders based on the available grid.
+    /// A <see cref="BaseBodyComponent"/> which reacts to a <see cref="ITileable"/> parent and
+    /// creates colliders based on the available grid.
     /// </summary>
     public sealed class TileableBodyComponent : BaseBodyComponent {
         private readonly List<Collider> _colliders = new List<Collider>();
@@ -101,8 +101,16 @@
 
         /// <inheritdoc/>
         protected override void Initialize() {
-            this.ParentChanged += this.TileableBodyComponent_ParentChanged;
             this.SetTileable(this.Parent as ITileable);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            base.OnPropertyChanged(sender, e);
+
+            if (e.PropertyName == nameof(this.Parent)) {
+                this.SetTileable(e as ITileable);
+            }
         }
 
         private CardinalDirections GetEdgeDirections(Point tile) {
@@ -229,10 +237,8 @@
             if (e.PropertyName == nameof(this._tileable.WorldTransform)) {
                 this.OnRequestReset(sender, e);
             }
-        }
-
-        private void TileableBodyComponent_ParentChanged(object sender, BaseComponent e) {
-            this.SetTileable(e as ITileable);
+            else if (e.PropertyName == nameof(this.Parent)) {
+            }
         }
 
         private class TileLineSegment {

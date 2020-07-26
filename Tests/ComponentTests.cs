@@ -384,35 +384,6 @@
 
         [Test]
         [Category("Unit Test")]
-        public static void Component_ParentChangedTest() {
-            using (var parent = new TestComponent())
-            using (var child = new TestComponent()) {
-                var parentChangedCalled1 = false;
-
-                Assert.NotNull(child);
-
-                child.ParentChanged += (sender, e) => parentChangedCalled1 = e == parent;
-
-                child.Parent = parent;
-
-                Assert.True(parentChangedCalled1);
-                Assert.AreEqual(child.Parent, parent);
-                Assert.AreEqual(1, parent.Children.Count);
-
-                var parentChangedCalled2 = false;
-
-                child.ParentChanged += (sender, e) => parentChangedCalled2 = e == null;
-
-                child.Parent = null;
-
-                Assert.True(parentChangedCalled2);
-                Assert.IsNull(child.Parent);
-                Assert.IsEmpty(parent.Children);
-            }
-        }
-
-        [Test]
-        [Category("Unit Test")]
         public static void Component_ResolveChildren_HasChildrenTest() {
             using (var component = new WithChildrenComponent()) {
                 component.AddChild<EmptyComponent>();

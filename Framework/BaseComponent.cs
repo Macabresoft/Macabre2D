@@ -43,17 +43,13 @@
         /// Initializes a new instance of the <see cref="BaseComponent"/> class.
         /// </summary>
         protected BaseComponent() {
-            this.PropertyChanged += this.Self_PropertyChanged;
-            this.ParentChanged += this.BaseComponent_ParentChanged;
+            this.PropertyChanged += this.OnPropertyChanged;
             this._children.CollectionChanged += this.Children_CollectionChanged;
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
         }
 
         /// <inheritdoc/>
         public event EventHandler OnInitialized;
-
-        /// <inheritdoc/>
-        public event EventHandler<BaseComponent> ParentChanged;
 
         /// <inheritdoc/>
         public IReadOnlyCollection<BaseComponent> Children {
@@ -201,7 +197,7 @@
                         originalParent.PropertyChanged -= this.Parent_PropertyChanged;
                     }
 
-                    this.ParentChanged.SafeInvoke(this, this._parent);
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -682,7 +678,6 @@
                 }
 
                 this.DisposePropertyChanged();
-                this.ParentChanged = null;
                 this._children.Clear();
                 this._parent = null;
                 this._resolveChildActions.Clear();
@@ -696,8 +691,20 @@
         /// </summary>
         protected abstract void Initialize();
 
-        private void BaseComponent_ParentChanged(object sender, BaseComponent e) {
-            this.HandleMatrixOrTransformChanged();
+        /// <summary>
+        /// Called when a property on the current object changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">
+        /// The <see cref="PropertyChangedEventArgs"/> instance containing the event data.
+        /// </param>
+        protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Parent)) {
+                this.HandleMatrixOrTransformChanged();
+            }
+            else if (e.PropertyName == nameof(this.IsEnabled) && this._isVisible) {
+                this.RaisePropertyChanged(true, nameof(this.IsVisible));
+            }
         }
 
         private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -811,12 +818,6 @@
                         }
                     }
                 }
-            }
-        }
-
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.IsEnabled) && this._isVisible) {
-                this.RaisePropertyChanged(true, nameof(this.IsVisible));
             }
         }
     }

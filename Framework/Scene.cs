@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -147,11 +148,6 @@
                     }
 
                     return false;
-                }
-
-                if (component.Parent != null) {
-                }
-                else {
                 }
 
                 if (!this._children.Any(x => x.Id == component.Id)) {
@@ -495,16 +491,9 @@
             }
         }
 
-        private void Component_ParentChanged(object sender, BaseComponent e) {
-            if (sender is BaseComponent baseComponent) {
-                if (e == null) {
-                    if (!this._children.Any(x => x.Id == baseComponent.Id)) {
-                        this._children.Add(baseComponent);
-                    }
-                }
-                else {
-                    this._children.Remove(baseComponent);
-                }
+        private void Component_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(BaseComponent.Parent) && sender is BaseComponent baseComponent && baseComponent.Parent == null) {
+                this._children.Remove(baseComponent);
             }
         }
 
@@ -562,7 +551,7 @@
                 this.TrackComponent(child);
             }
 
-            component.ParentChanged += this.Component_ParentChanged;
+            component.PropertyChanged += this.Component_PropertyChanged;
             component.SubscribeToChildrenChanged(this._componentChildrenChangedHandler);
             component.SessionId = Interlocked.Increment(ref this._sessionIdCounter);
             this.ComponentCreated.SafeInvoke(this, component);
