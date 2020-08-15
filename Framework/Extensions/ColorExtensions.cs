@@ -3,7 +3,7 @@
     using Microsoft.Xna.Framework;
 
     /// <summary>
-    /// Extension methods for <see cref="Color"/>.
+    /// Extension methods for <see cref="Color" />.
     /// </summary>
     public static class ColorExtensions {
 
@@ -23,7 +23,7 @@
         /// <param name="color">The color.</param>
         /// <returns>The luma value.</returns>
         public static float GetLuma(this Color color) {
-            color.Deconstruct(out var red, out var green, out var blue);
+            color.Deconstruct(out byte red, out byte green, out byte blue);
             return 0.2126f * red + 0.7152f * green + 0.0722f * blue;
         }
     }

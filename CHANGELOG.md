@@ -1,14 +1,14 @@
 # Change Log
 
-## 0.3.17.0
+## 0.4.0.0
 
 ### Features
+
+* Updated to MonoGame 3.8.
 
 ### Refactors
 
 * Removed ParentChanged event from BaseComponent.
-
-### Fixes
 
 ---
 

@@ -1,36 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Authors>Macabresoft, Brett Story</Authors>
-    <Company>Macabresoft</Company>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RepositoryUrl>https://github.com/BrettStory/Macabre2D.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/BrettStory/Macabre2D.Framework</PackageProjectUrl>
-    <AssemblyVersion>0.3.17.0</AssemblyVersion>
-    <FileVersion>0.3.17.0</FileVersion>
-    <Version>0.3.17</Version>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>Icon128.png</PackageIcon>
-    <PackageTags>MonoGame, Game, XNA</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Authors>Brett Story</Authors>
+		<Company>Macabresoft</Company>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RepositoryUrl>https://github.com/BrettStory/Macabre2D.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/BrettStory/Macabre2D.Framework</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>Icon128.png</PackageIcon>
+		<PackageTags>MonoGame, Game, XNA</PackageTags>
+		<PackageVersion>0.4.0.0</PackageVersion>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <NoWarn>NU1701</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<NoWarn>NU1701</NoWarn>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-  </ItemGroup>
+	<ItemGroup>
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\CppNet.dll" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\libmojoshader_64.dll" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.deps.json" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.dll" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.exe" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.pdb" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.dev.json" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.json" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.dll" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.xml" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.dll" />
+	  <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\Art\Icon128.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\Art\Icon128.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Content.Pipeline.Portable" Version="3.7.1.189" PrivateAssets="All" />
-    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1641" PrivateAssets="None" />
+		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="None" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	</ItemGroup>
 </Project>

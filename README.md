@@ -16,8 +16,6 @@ The full source code is available here from GitHub:
 
 * Clone the source: `git clone https://github.com/BrettStory/Macabre2D.Framework`
 * Pull down LFS objects: `git lfs pull` and `git lfs fetch --all`
-* Install MonoGame for your version of Visual Studio: http://www.monogame.net/downloads/
-    * Macabre2D is built with MonoGame 3.7 in mind.
 * Restore NuGet packages for Macabre2D.Framework.sln.
 
 ## Using Fonts
