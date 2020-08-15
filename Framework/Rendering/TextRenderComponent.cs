@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -22,7 +23,7 @@
         private string _text = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextRenderComponent"/> class.
+        /// Initializes a new instance of the <see cref="TextRenderComponent" /> class.
         /// </summary>
         public TextRenderComponent() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
@@ -31,7 +32,7 @@
             this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
@@ -80,7 +81,7 @@
         [DataMember(Order = 4, Name = "Render Settings")]
         public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Order = 5)]
         public float Rotation {
             get {
@@ -97,7 +98,7 @@
 
         /// <summary>
         /// Gets or sets a value indicating whether this text renderer should snap to the pixel
-        /// ratio defined in <see cref="IGameSettings"/>.
+        /// ratio defined in <see cref="IGameSettings" />.
         /// </summary>
         /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
@@ -144,7 +145,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
@@ -156,17 +157,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<Guid> GetOwnedAssetIds() {
             return this.Font != null ? new[] { this.Font.Id } : new Guid[0];
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HasAsset(Guid id) {
             return this._font?.Id == id;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void LoadContent() {
             if (this.Scene.IsInitialized && this.Font != null) {
                 this.Font.Load();
@@ -175,14 +176,14 @@
             base.LoadContent();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void RefreshAsset(Font newInstance) {
             if (this.Font == null || this.Font.Id == newInstance?.Id) {
                 this.Font = newInstance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -192,14 +193,14 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryGetAsset(Guid id, out Font asset) {
             var result = this.Font != null && this.Font.Id == id;
             asset = result ? this.Font : null;
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Initialize() {
             this.PropertyChanged += this.Self_PropertyChanged;
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;

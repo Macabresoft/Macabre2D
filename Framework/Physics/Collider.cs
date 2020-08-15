@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -38,7 +39,7 @@
         private Layers _overrideLayers = Layers.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Collider"/> class.
+        /// Initializes a new instance of the <see cref="Collider" /> class.
         /// </summary>
         protected Collider() {
             this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
@@ -51,7 +52,7 @@
         /// <value>The body.</value>
         public IPhysicsBody Body { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -37,21 +38,21 @@
     /// <summary>
     /// Collider representing a circle to be used by the physics engine.
     /// </summary>
-    /// <seealso cref="Collider"/>
+    /// <seealso cref="Collider" />
     public sealed class CircleCollider : Collider {
         private readonly ResettableLazy<float> _scaledRadius;
         private float _radius;
         private RadiusScalingType _radiusScalingType = RadiusScalingType.None;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CircleCollider"/> class.
+        /// Initializes a new instance of the <see cref="CircleCollider" /> class.
         /// </summary>
         public CircleCollider() : base() {
             this._scaledRadius = new ResettableLazy<float>(this.CreateScaledRadius);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CircleCollider"/> class.
+        /// Initializes a new instance of the <see cref="CircleCollider" /> class.
         /// </summary>
         /// <param name="radius">The radius.</param>
         public CircleCollider(float radius) : this() {
@@ -59,7 +60,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CircleCollider"/> class.
+        /// Initializes a new instance of the <see cref="CircleCollider" /> class.
         /// </summary>
         /// <param name="radius">The radius.</param>
         /// <param name="scalingType">Type of the scaling.</param>
@@ -77,7 +78,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ColliderType ColliderType {
             get {
                 return ColliderType.Circle;
@@ -128,13 +129,13 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Vector2 point) {
             // Do we want to do <= here?
             return Vector2.Distance(point, this.Center) <= this.ScaledRadius;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Collider other) {
             if (other.ColliderType == ColliderType.Circle) {
                 var circle = other as CircleCollider;
@@ -155,7 +156,7 @@
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             var axes = new List<Vector2>();
 
@@ -193,12 +194,12 @@
             return axes;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override Vector2 GetCenter() {
             return this.Center;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override Projection GetProjection(Vector2 axis) {
             var minimum = Vector2.Dot(axis, this.Center);
             var maximum = minimum + this.ScaledRadius;
@@ -206,7 +207,7 @@
             return new Projection(axis, minimum, maximum);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override BoundingArea CreateBoundingArea() {
             return new BoundingArea(
                 this.Center.X - this.ScaledRadius,
@@ -215,13 +216,13 @@
                 this.Center.Y + this.ScaledRadius);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void ResetLazyFields() {
             base.ResetLazyFields();
             this.ResetScaledRadius();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryHit(LineSegment ray, out RaycastHit result) {
             var distanceX = ray.Direction.X * ray.Distance;
             var distanceY = ray.Direction.Y * ray.Distance;

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -40,7 +41,7 @@
         private int _updateOrder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseComponent"/> class.
+        /// Initializes a new instance of the <see cref="BaseComponent" /> class.
         /// </summary>
         protected BaseComponent() {
             this.PropertyChanged += this.OnPropertyChanged;
@@ -48,17 +49,17 @@
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler OnInitialized;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return this._children;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Name = "Draw Order")]
         public int DrawOrder {
             get {
@@ -70,11 +71,11 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Name = "Enable")]
         public bool IsEnabled {
             get {
@@ -91,7 +92,7 @@
         /// <value>A value indicating whether or not this instance has been initialized.</value>
         public bool IsInitialized { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Name = "Visible")]
         public bool IsVisible {
             get {
@@ -108,7 +109,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Layers Layers {
             get {
@@ -167,7 +168,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BaseComponent Parent {
             get {
                 return this._parent;
@@ -202,7 +203,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int SessionId { get; internal set; }
 
         /// <summary>
@@ -215,7 +216,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Name = "Update Order")]
         public int UpdateOrder {
             get {
@@ -227,7 +228,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform WorldTransform {
             get {
                 if (!this._isTransformUpToDate) {
@@ -268,7 +269,7 @@
         /// Adds a new child component to this component. The new component will not be completely
         /// added until next update.
         /// </summary>
-        /// <typeparam name="T">A class of type <see cref="BaseComponent"/>.</typeparam>
+        /// <typeparam name="T">A class of type <see cref="BaseComponent" />.</typeparam>
         /// <returns>The added component.</returns>
         public T AddChild<T>() where T : BaseComponent, new() {
             var component = new T { IsEnabled = true };
@@ -282,7 +283,8 @@
         /// <param name="type">The type.</param>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">
-        /// Exception gets hit if you don't pass in a type that inherits from <see cref="BaseComponent"/>.
+        /// Exception gets hit if you don't pass in a type that inherits from <see
+        /// cref="BaseComponent" />.
         /// </exception>
         public BaseComponent AddChild(Type type) {
             if (typeof(BaseComponent).IsAssignableFrom(type)) {
@@ -296,7 +298,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
@@ -342,7 +344,7 @@
         /// Gets the child that is the specified type.
         /// </summary>
         /// <returns>The component.</returns>
-        /// <typeparam name="T">A class of type <see cref="BaseComponent"/>.</typeparam>
+        /// <typeparam name="T">A class of type <see cref="BaseComponent" />.</typeparam>
         public T GetChild<T>() where T : BaseComponent {
             return (T)this.Children.FirstOrDefault(x => x.GetType() == typeof(T));
         }
@@ -352,7 +354,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>
-        /// A <see cref="BaseComponent"/> of the specified type in children, or null if it doesn't exist.
+        /// A <see cref="BaseComponent" /> of the specified type in children, or null if it doesn't exist.
         /// </returns>
         public BaseComponent GetChild(Type type) {
             return this.Children.FirstOrDefault(x => x.GetType() == type || type.IsAssignableFrom(x.GetType()));
@@ -363,7 +365,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>
-        /// A <see cref="BaseComponent"/> of the specified type in children, or null if it doesn't exist.
+        /// A <see cref="BaseComponent" /> of the specified type in children, or null if it doesn't exist.
         /// </returns>
         public BaseComponent GetChild(Type type, string name) {
             return this.Children.FirstOrDefault(x => x.Name == name && (x.GetType() == type || type.IsAssignableFrom(x.GetType())));
@@ -400,7 +402,7 @@
         /// Gets the component as this component's parent, or that component's parent, or that
         /// component's parent, and so on.
         /// </summary>
-        /// <typeparam name="T">A class of type <see cref="BaseComponent"/>.</typeparam>
+        /// <typeparam name="T">A class of type <see cref="BaseComponent" />.</typeparam>
         /// <returns>A component of the specified type in this component's ancestors.</returns>
         public T GetComponentFromParent<T>() where T : BaseComponent {
             if (this.Parent != null) {
@@ -453,7 +455,7 @@
             return components;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(float rotationAngle) {
             var worldTransform = this.WorldTransform;
             var matrix =
@@ -464,13 +466,13 @@
             return matrix.ToTransform();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(Vector2 originOffset) {
             var matrix = Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) * this.TransformMatrix;
             return matrix.ToTransform();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
             var worldTransform = this.WorldTransform;
 
@@ -483,7 +485,7 @@
             return matrix.ToTransform();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
             var worldTransform = this.WorldTransform;
 
@@ -496,7 +498,7 @@
             return matrix.ToTransform();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
             var worldTransform = this.WorldTransform;
 
@@ -508,19 +510,19 @@
             return matrix.ToTransform();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
             var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset;
             return this.GetWorldTransform(position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
             var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
             return this.GetWorldTransform(position);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
             var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
             return this.GetWorldTransform(position, rotationAngle);
@@ -592,7 +594,7 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void LoadContent() {
             foreach (var child in this._children) {
                 child.LoadContent();
@@ -613,17 +615,17 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetWorldPosition(Vector2 position) {
             this.SetWorldTransform(position, this.WorldTransform.Scale);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetWorldScale(Vector2 scale) {
             this.SetWorldTransform(this.WorldTransform.Position, scale);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SetWorldTransform(Vector2 position, Vector2 scale) {
             var matrix =
                 Matrix.CreateScale(scale.X, scale.Y, 1f) *
@@ -696,7 +698,7 @@
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">
-        /// The <see cref="PropertyChangedEventArgs"/> instance containing the event data.
+        /// The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
         /// </param>
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.Parent)) {

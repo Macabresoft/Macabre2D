@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -7,7 +8,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Base class for easy and generic implementations of <see cref="IAutoTileSet"/>.
+    /// Base class for easy and generic implementations of <see cref="IAutoTileSet" />.
     /// </summary>
     public sealed class AutoTileSet : BaseIdentifiable, IAsset {
         private const byte CardinalSize = 16;
@@ -20,13 +21,13 @@
         private bool _useIntermediateDirections = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSet"/> class.
+        /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
         /// </summary>
         public AutoTileSet() : base() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSet"/> class.
+        /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
         /// </summary>
         /// <param name="assetId">The asset identifier.</param>
         public AutoTileSet(Guid assetId) : this() {
@@ -38,7 +39,7 @@
         /// </summary>
         public event EventHandler<byte> SpriteChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
 

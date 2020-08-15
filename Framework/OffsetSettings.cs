@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;
@@ -14,13 +15,13 @@
         private PixelOffsetType _type;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OffsetSettings"/> class.
+        /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
         /// </summary>
         public OffsetSettings() : this(Vector2.Zero, PixelOffsetType.Custom) {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OffsetSettings"/> class.
+        /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
         /// </summary>
         /// <param name="offset">The offset.</param>
         /// <param name="type">The type.</param>
@@ -33,11 +34,11 @@
         /// Gets or sets the offset amount. This size is in pixels.
         /// </summary>
         /// <remarks>
-        /// The reason this is in pixels is because if <see cref="GameSettings.PixelsPerUnit"/>
+        /// The reason this is in pixels is because if <see cref="GameSettings.PixelsPerUnit" />
         /// changes, a pixel value for offset will still be valid. Otherwise this would need to
-        /// reset every time <see cref="GameSettings.PixelsPerUnit"/> changes, which is not
-        /// something the engine really handles. We allow this pixel value to be a <see
-        /// cref="float"/> because it provides greater accuracy when converting it to engine units.
+        /// reset every time <see cref="GameSettings.PixelsPerUnit" /> changes, which is not
+        /// something the engine really handles. We allow this pixel value to be a <see cref="float"
+        /// /> because it provides greater accuracy when converting it to engine units.
         /// </remarks>
         /// <value>The amount.</value>
         [DataMember(Order = 1)]
@@ -101,11 +102,11 @@
         }
 
         /// <summary>
-        /// Resets the <see cref="Offset"/> property according to the <see cref="OffsetType"/> property.
+        /// Resets the <see cref="Offset" /> property according to the <see cref="OffsetType" /> property.
         /// </summary>
         /// <remarks>
         /// Should be called manually when the size factory will produce a new value. Will be called
-        /// automatically when <see cref="OffsetType"/> changes.
+        /// automatically when <see cref="OffsetType" /> changes.
         /// </remarks>
         public void ResetOffset() {
             if (this._size != null && this._type != PixelOffsetType.Custom) {

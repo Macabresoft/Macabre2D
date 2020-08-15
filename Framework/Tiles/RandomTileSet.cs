@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -17,7 +18,7 @@
         private bool _isLoaded = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RandomTileSet"/> class.
+        /// Initializes a new instance of the <see cref="RandomTileSet" /> class.
         /// </summary>
         public RandomTileSet() {
         }
@@ -27,7 +28,7 @@
         /// </summary>
         public event EventHandler<ushort> SpriteChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
 
@@ -44,7 +45,7 @@
         /// <summary>
         /// Adds the tile.
         /// </summary>
-        /// <returns>An empty <see cref="WeightedTile"/>.</returns>
+        /// <returns>An empty <see cref="WeightedTile" />.</returns>
         public WeightedTile AddTile() {
             var tile = new WeightedTile();
             this._tiles.Add(tile);

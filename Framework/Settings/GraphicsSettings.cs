@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Runtime.Serialization;
@@ -31,13 +32,13 @@
         private Point _resolution = new Point(1920, 1080);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GraphicsSettings"/> class.
+        /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
         /// </summary>
         public GraphicsSettings() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GraphicsSettings"/> class.
+        /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
         /// </summary>
         /// <param name="displayMode">The display mode.</param>
         /// <param name="resolution">The resolution.</param>
@@ -47,7 +48,7 @@
         }
 
         /// <summary>
-        /// Occurs when either <see cref="DisplayMode"/> or <see cref="Resolution"/> has changed.
+        /// Occurs when either <see cref="DisplayMode" /> or <see cref="Resolution" /> has changed.
         /// </summary>
         public event EventHandler SettingsChanged;
 

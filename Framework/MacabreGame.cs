@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
@@ -25,13 +26,13 @@
         private Point _viewportSize;
 
         /// <summary>
-        /// Initializes the <see cref="MacabreGame"/> class.
+        /// Initializes the <see cref="MacabreGame" /> class.
         /// </summary>
         static MacabreGame() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MacabreGame"/> class.
+        /// Initializes a new instance of the <see cref="MacabreGame" /> class.
         /// </summary>
         public MacabreGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
@@ -40,14 +41,14 @@
             MacabreGame.Instance = this;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<double> GameSpeedChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<Point> ViewportSizeChanged;
 
         /// <summary>
-        /// Gets the singleton instance of <see cref="IGame"/> for the current session.
+        /// Gets the singleton instance of <see cref="IGame" /> for the current session.
         /// </summary>
         /// <value>The instance.</value>
         public static IGame Instance {
@@ -62,7 +63,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IAssetManager AssetManager {
             get {
                 return this._assetManager;
@@ -91,7 +92,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IScene CurrentScene {
             get {
                 return this._currentScene;
@@ -116,7 +117,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public double GameSpeed {
             get {
                 return this._gameSpeed;
@@ -130,7 +131,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public GraphicsSettings GraphicsSettings {
             get {
                 return this._graphicsSettings;
@@ -142,17 +143,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsDesignMode {
             get {
                 return false;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager(); // TODO: allow other platforms
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IGameSettings Settings {
             get {
                 return this._settings;
@@ -166,14 +167,14 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public SpriteBatch SpriteBatch {
             get {
                 return this._spriteBatch;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Point ViewportSize {
             get {
                 return this._viewportSize;
@@ -213,7 +214,7 @@
             this._graphics.ApplyChanges();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.CurrentScene != null) {
                 this.GraphicsDevice.Clear(this.CurrentScene.BackgroundColor);
@@ -224,7 +225,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Initialize() {
             base.Initialize();
 
@@ -241,7 +242,7 @@
             this._isInitialized = true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void LoadContent() {
             base.LoadContent();
             this.AssetManager = this.Content.Load<AssetManager>(Framework.AssetManager.ContentFileName);
@@ -253,13 +254,13 @@
             this._isLoaded = true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void UnloadContent() {
             base.UnloadContent();
             this.Content.Unload();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Update(GameTime gameTime) {
             var keyboardState = Keyboard.GetState();
             if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {

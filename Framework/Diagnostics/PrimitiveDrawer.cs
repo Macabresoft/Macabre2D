@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -13,7 +14,7 @@
         private readonly Texture2D _pixel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PrimitiveDrawer"/> class.
+        /// Initializes a new instance of the <see cref="PrimitiveDrawer" /> class.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
         /// <param name="gameSettings">The game settings.</param>

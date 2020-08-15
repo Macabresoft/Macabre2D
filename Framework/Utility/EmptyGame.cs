@@ -1,44 +1,45 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
 
     /// <summary>
-    /// An empty game that is referenced if no <see cref="MacabreGame"/> haas been created.
+    /// An empty game that is referenced if no <see cref="MacabreGame" /> haas been created.
     /// </summary>
-    /// <seealso cref="Macabre2D.Framework.IGame"/>
+    /// <seealso cref="Macabre2D.Framework.IGame" />
     internal class EmptyGame : IGame {
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<double> GameSpeedChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<Point> ViewportSizeChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IAssetManager AssetManager {
             get {
                 return default;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ContentManager Content {
             get {
                 return default;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IScene CurrentScene {
             get {
                 return EmptyScene.Instance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public double GameSpeed {
             get {
                 return 1f;
@@ -49,41 +50,41 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public GraphicsDevice GraphicsDevice {
             get {
                 return null;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsDesignMode {
             get {
                 return true;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IGameSettings Settings {
             get {
                 return GameSettings.Instance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public SpriteBatch SpriteBatch {
             get {
                 return default;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Point ViewportSize {
             get {
                 return default;
@@ -94,12 +95,12 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Exit() {
             return;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SaveAndApplyGraphicsSettings() {
             return;
         }

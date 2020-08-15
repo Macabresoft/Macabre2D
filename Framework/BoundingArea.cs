@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System.Linq;
 
@@ -30,7 +31,7 @@
         public readonly float Width;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundingArea"/> class.
+        /// Initializes a new instance of the <see cref="BoundingArea" /> class.
         /// </summary>
         /// <param name="minimum">The minimum.</param>
         /// <param name="maximum">The maximum.</param>
@@ -42,7 +43,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundingArea"/> class.
+        /// Initializes a new instance of the <see cref="BoundingArea" /> class.
         /// </summary>
         /// <param name="minimumX">The minimum x.</param>
         /// <param name="maximumX">The maximum x.</param>
@@ -56,7 +57,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundingArea"/> class.
+        /// Initializes a new instance of the <see cref="BoundingArea" /> class.
         /// </summary>
         /// <param name="minimumValue">The minimum value.</param>
         /// <param name="maximumValue">The maximum value.</param>

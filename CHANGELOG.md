@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.4.1.0
+
+### Refactors
+
+* Using Macabresoft.Core.
+
+---
+
 ## 0.4.0.0
 
 ### Features

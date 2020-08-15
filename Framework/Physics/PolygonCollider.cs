@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,7 +9,7 @@
     /// <summary>
     /// Collider representing a generic polygon to be used by the physics engine.
     /// </summary>
-    /// <seealso cref="Collider"/>
+    /// <seealso cref="Collider" />
     public class PolygonCollider : Collider {
 
         [DataMember]
@@ -19,7 +20,7 @@
         private ResettableLazy<List<Vector2>> _worldPoints;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
+        /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
         /// </summary>
         public PolygonCollider() : base() {
             this._worldPoints = new ResettableLazy<List<Vector2>>(this.CreateWorldPoints);
@@ -28,7 +29,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
+        /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
         /// </summary>
         /// <param name="points">The points.</param>
         public PolygonCollider(IEnumerable<Vector2> points) : this() {
@@ -36,13 +37,13 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonCollider"/> class.
+        /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
         /// </summary>
         /// <param name="points">The points.</param>
         public PolygonCollider(params Vector2[] points) : this(points as IEnumerable<Vector2>) {
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ColliderType ColliderType {
             get {
                 return ColliderType.Polygon;
@@ -96,7 +97,7 @@
             return new PolygonCollider(points);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Vector2 point) {
             if (!this.BoundingArea.Contains(point)) {
                 return false;
@@ -132,7 +133,7 @@
             return true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Collider other) {
             if (!this.BoundingArea.Overlaps(other.BoundingArea)) {
                 return false;
@@ -193,17 +194,17 @@
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             return this.Normals;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override Vector2 GetCenter() {
             return this._center.Value;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override Projection GetProjection(Vector2 axis) {
             return Projection.CreatePolygonProjection(axis, this.WorldPoints);
         }
@@ -216,7 +217,7 @@
             base.Reset();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override BoundingArea CreateBoundingArea() {
             return new BoundingArea(
                 this.WorldPoints.Min(p => p.X),
@@ -248,7 +249,7 @@
             return normals;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void ResetLazyFields() {
             base.ResetLazyFields();
             this._worldPoints.Reset();
@@ -256,7 +257,7 @@
             this._center.Reset();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryHit(LineSegment ray, out RaycastHit result) {
             var hasIntersection = false;
             var contactPoint = Vector2.Zero;

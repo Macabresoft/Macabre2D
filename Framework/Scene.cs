@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -60,29 +61,29 @@
         private int _sessionIdCounter = int.MinValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scene"/> class.
+        /// Initializes a new instance of the <see cref="Scene" /> class.
         /// </summary>
         public Scene() {
             this._componentChildrenChangedHandler = new NotifyCollectionChangedEventHandler(this.Component_ChildrenChanged);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<BaseComponent> ComponentCreated;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<BaseComponent> ComponentDestroyed;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<BaseModule> ModuleAdded;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler<BaseModule> ModuleRemoved;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Name = "Background Color")]
         public Color BackgroundColor {
             get {
@@ -94,24 +95,24 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IReadOnlyCollection<BaseComponent> Children {
             get {
                 return this._children;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsInitialized { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IReadOnlyCollection<BaseModule> Modules {
             get {
                 return this._modules;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public string Name {
             get {
@@ -132,7 +133,7 @@
         [DataMember]
         internal HashSet<BaseComponent> ComponentsForSaving { get; } = new HashSet<BaseComponent>();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool AddChild(BaseComponent component) {
             if (component == null) {
                 throw new ArgumentNullException(nameof(component));
@@ -159,14 +160,14 @@
             return true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T AddChild<T>() where T : BaseComponent, new() {
             var component = new T { IsEnabled = true };
             this.AddChild(component);
             return component;
         }
 
-        // <inheritdoc/>
+        // <inheritdoc />
         public bool AddModule(BaseModule module) {
             if (!this._modules.Any(x => x.Id == module.Id)) {
                 this._modules.Add(module);
@@ -185,40 +186,40 @@
             return true;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool AddModule(FixedTimeStepModule module, float timeStep) {
             module.TimeStep = timeStep;
             return this.AddModule(module);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T CreateModule<T>() where T : BaseModule, new() {
             var module = new T();
             this.AddModule(module);
             return module;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
             var module = this.CreateModule<T>();
             this.AddModule(module, timeStep);
             return module;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void DestroyComponent(BaseComponent component) {
             this.RemoveComponent(component);
             this.ComponentDestroyed.SafeInvoke(this, component);
             component.Dispose();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Draw(FrameTime frameTime) {
             this._drawTree.Clear();
             this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
@@ -228,7 +229,7 @@
             });
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Draw(FrameTime frameTime, params Camera[] cameras) {
             this._drawTree.Clear();
             this._drawableComponents.ForEachFilteredItem(d => this._drawTree.Insert(d));
@@ -238,7 +239,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BaseComponent FindComponent(string name) {
             foreach (var component in this.Children.Concat(this.ComponentsForSaving)) {
                 if (string.Equals(name, component.Name)) {
@@ -254,7 +255,7 @@
             return null;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T FindComponentOfType<T>() where T : BaseComponent {
             foreach (var component in this.Children) {
                 if (component is T componentOfType) {
@@ -270,7 +271,7 @@
             return default(T);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BaseModule FindModule(string name) {
             return this._modules.FirstOrDefault(x => x.Name == name);
         }
@@ -306,7 +307,7 @@
             return components;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public List<T> GetAllComponentsOfType<T>() {
             var components = new List<T>();
 
@@ -337,24 +338,24 @@
             return this._modules.ToList();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T GetModule<T>() where T : BaseModule {
             this._updateableModules.RebuildCache();
             return (T)this._updateableModules.FirstOrDefault(x => x.GetType() == typeof(T));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<T> GetModules<T>() where T : BaseModule {
             this._updateableModules.RebuildCache();
             return this._updateableModules.OfType<T>();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<IDrawableComponent> GetVisibleDrawableComponents() {
             return this._drawableComponents;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Initialize() {
             if (!this.IsInitialized) {
                 this.IsInitialized = true;
@@ -377,14 +378,14 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void LoadContent() {
             foreach (var child in this.Children) {
                 child.LoadContent();
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void QueueEndOfFrameAction(Action<FrameTime> action) {
             this._endOfFrameActions.Add(action);
         }
@@ -416,7 +417,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void RemoveModule(BaseModule module) {
             if (this._modules.Remove(module) && this.IsInitialized) {
                 this.ModuleRemoved.SafeInvoke(this, module);
@@ -429,7 +430,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T ResolveDependency<T>() where T : new() {
             if (this._dependencies.TryGetValue(typeof(T), out var dependency)) {
                 return (T)dependency;
@@ -440,7 +441,7 @@
             return (T)dependency;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T ResolveDependency<T>(Func<T> objectFactory) {
             if (this._dependencies.TryGetValue(typeof(T), out var dependency)) {
                 return (T)dependency;
@@ -452,7 +453,8 @@
         }
 
         /// <summary>
-        /// Saves this scene to a file with the specified file name using the specified <see cref="ISerializer"/>
+        /// Saves this scene to a file with the specified file name using the specified <see
+        /// cref="ISerializer" />
         /// </summary>
         /// <param name="filePath">Path of the file.</param>
         public void SaveToFile(string filePath) {
@@ -461,7 +463,7 @@
             Serializer.Instance.Serialize(this, filePath);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
             this._updateableModules.ForEachFilteredItem(Scene.ModulePreUpdateAction, frameTime, inputState);
 

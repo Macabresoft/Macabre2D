@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -24,7 +25,7 @@
         private bool _shouldRebuildCache = true;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Macabre2D.ComponentCollection`1"/> class.
+        /// Initializes a new instance of the <see cref="T:Macabre2D.ComponentCollection`1" /> class.
         /// </summary>
         /// <param name="filter">Filter.</param>
         /// <param name="filterPropertyName">Name of the filter property.</param>
@@ -41,7 +42,8 @@
         public event EventHandler<CollectionChangedEventArgs<T>> CollectionChanged;
 
         /// <summary>
-        /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// Gets the number of elements contained in the <see
+        /// cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
         public int Count {
             get { return this._items.Count; }
@@ -49,16 +51,18 @@
 
         /// <summary>
         /// Gets a value indicating whether the <see
-        /// cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
+        /// cref="T:System.Collections.Generic.ICollection`1" /> is read-only.
         /// </summary>
         public bool IsReadOnly {
             get { return false; }
         }
 
         /// <summary>
-        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        /// <param name="item">
+        /// The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </param>
         public void Add(T item) {
             this._itemsToAdd.Add(item);
             this.InvalidateCache();
@@ -86,7 +90,7 @@
         }
 
         /// <summary>
-        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
         public void Clear() {
             for (var i = 0; i < this._items.Count; i++) {
@@ -103,29 +107,31 @@
         }
 
         /// <summary>
-        /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains
-        /// a specific value.
+        /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" />
+        /// contains a specific value.
         /// </summary>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        /// <param name="item">
+        /// The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </param>
         /// <returns>
-        /// true if <paramref name="item"/> is found in the <see
-        /// cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
+        /// true if <paramref name="item" /> is found in the <see
+        /// cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false.
         /// </returns>
         public bool Contains(T item) {
             return this._items.Contains(item);
         }
 
         /// <summary>
-        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to
-        /// an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to
+        /// an <see cref="T:System.Array" />, starting at a particular <see cref="T:System.Array" /> index.
         /// </summary>
         /// <param name="array">
-        /// The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements
-        /// copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see
-        /// cref="T:System.Array"/> must have zero-based indexing.
+        /// The one-dimensional <see cref="T:System.Array" /> that is the destination of the
+        /// elements copied from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see
+        /// cref="T:System.Array" /> must have zero-based indexing.
         /// </param>
         /// <param name="arrayIndex">
-        /// The zero-based index in <paramref name="array"/> at which copying begins.
+        /// The zero-based index in <paramref name="array" /> at which copying begins.
         /// </param>
         public void CopyTo(T[] array, int arrayIndex) {
             this._items.CopyTo(array, arrayIndex);
@@ -227,7 +233,7 @@
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate
         /// through the collection.
         /// </returns>
         public IEnumerator<T> GetEnumerator() {
@@ -263,13 +269,17 @@
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// Removes the first occurrence of a specific object from the <see
+        /// cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        /// <param name="item">
+        /// The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </param>
         /// <returns>
-        /// true if <paramref name="item"/> was successfully removed from the <see
-        /// cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also
-        /// returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// true if <paramref name="item" /> was successfully removed from the <see
+        /// cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also
+        /// returns false if <paramref name="item" /> is not found in the original <see
+        /// cref="T:System.Collections.Generic.ICollection`1" />.
         /// </returns>
         public bool Remove(T item) {
             if (this._itemsToAdd.Remove(item)) {

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -25,7 +26,8 @@
     }
 
     /// <summary>
-    /// A tileable component. Contains a <see cref="TileGrid"/> and implements <see cref="ITileable"/>.
+    /// A tileable component. Contains a <see cref="TileGrid" /> and implements <see
+    /// cref="ITileable" />.
     /// </summary>
     public abstract class TileableComponent : BaseComponent, ITileable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
@@ -33,7 +35,7 @@
         private readonly ResettableLazy<TileGrid> _worldGrid;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileableComponent"/> class.
+        /// Initializes a new instance of the <see cref="TileableComponent" /> class.
         /// </summary>
         protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
@@ -41,37 +43,37 @@
             this.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public event EventHandler TilesChanged;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract IReadOnlyCollection<Point> ActiveTiles { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public GridConfiguration GridConfiguration { get; private set; } = new GridConfiguration();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Point MaximumTile { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Point MinimumTile { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public TileGrid WorldGrid {
             get {
                 return this._worldGrid.Value;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool AddTile(Point tile) {
             var result = this.TryAddTile(tile);
             if (result) {
@@ -109,7 +111,7 @@
             this.TilesChanged.SafeInvoke(this);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Point GetTileThatContains(Vector2 worldPosition) {
             var result = Point.Zero;
             var worldGrid = this.WorldGrid;
@@ -124,16 +126,16 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract bool HasActiveTileAt(Point tilePosition);
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HasActiveTileAt(Vector2 worldPosition) {
             var tile = this.GetTileThatContains(worldPosition);
             return this.HasActiveTileAt(tile);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveTile(Point tile) {
             var result = this.TryRemoveTile(tile);
             if (result) {
@@ -217,7 +219,7 @@
         /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
         protected abstract bool HasActiveTiles();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Initialize() {
             this.PropertyChanged += this.Self_PropertyChanged;
             this._worldGrid.Reset();
@@ -228,7 +230,7 @@
         }
 
         /// <summary>
-        /// Called when <see cref="LocalGrid"/> changes.
+        /// Called when <see cref="LocalGrid" /> changes.
         /// </summary>
         protected virtual void OnGridChanged() {
             this._worldGrid.Reset();

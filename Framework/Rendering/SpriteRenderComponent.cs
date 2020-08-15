@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -20,7 +21,7 @@
         private Sprite _sprite;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteRenderComponent"/> class.
+        /// Initializes a new instance of the <see cref="SpriteRenderComponent" /> class.
         /// </summary>
         public SpriteRenderComponent() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
@@ -28,7 +29,7 @@
             this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
@@ -57,7 +58,7 @@
         [DataMember(Order = 4, Name = "Render Settings")]
         public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember(Order = 3)]
         public float Rotation {
             get {
@@ -76,7 +77,7 @@
 
         /// <summary>
         /// Gets or sets a value indicating whether this sprite renderer should snap to the pixel
-        /// ratio defined in <see cref="IGameSettings"/>.
+        /// ratio defined in <see cref="IGameSettings" />.
         /// </summary>
         /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
@@ -119,7 +120,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this._snapToPixels) {
                 MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
@@ -129,17 +130,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual IEnumerable<Guid> GetOwnedAssetIds() {
             return this.Sprite != null ? new[] { this.Sprite.Id } : new Guid[0];
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void LoadContent() {
             if (this.Scene.IsInitialized) {
                 this.Sprite?.Load();
@@ -148,14 +149,14 @@
             base.LoadContent();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void RefreshAsset(Sprite newInstance) {
             if (newInstance != null && this.Sprite?.Id == newInstance.Id) {
                 this.Sprite = newInstance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -165,14 +166,14 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual bool TryGetAsset(Guid id, out Sprite asset) {
             var result = this.Sprite != null && this.Sprite.Id == id;
             asset = result ? this.Sprite : null;
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Initialize() {
             this.PropertyChanged += this.Self_PropertyChanged;
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;

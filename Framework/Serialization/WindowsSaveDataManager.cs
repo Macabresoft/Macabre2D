@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using System;
     using System.IO;
 
@@ -8,7 +9,7 @@
     /// </summary>
     public sealed class WindowsSaveDataManager : ISaveDataManager {
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Delete(string fileName) {
             var filePath = this.GetFilePath(fileName);
             if (File.Exists(filePath)) {
@@ -16,12 +17,12 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string GetPathToDataDirectory() {
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T Load<T>(string fileName) where T : IVersionedData {
             var filePath = this.GetFilePath(fileName);
             if (!File.Exists(filePath)) {
@@ -31,12 +32,12 @@
             return Serializer.Instance.Deserialize<T>(filePath);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Save<T>(string fileName, T saveData) where T : IVersionedData {
             Serializer.Instance.Serialize(saveData, this.GetFilePath(fileName));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryLoad<T>(string fileName, out T loadedData) where T : IVersionedData {
             var filePath = this.GetFilePath(fileName);
             var result = true;

@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
@@ -20,14 +21,14 @@
         private float _viewHeight = 10f;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Camera"/> class.
+        /// Initializes a new instance of the <see cref="Camera" /> class.
         /// </summary>
         public Camera() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._matrix = new ResettableLazy<Matrix>(this.CreateViewMatrix);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
@@ -102,7 +103,7 @@
 
         /// <summary>
         /// Gets or sets a value indicating whether this camera should snap to the pixel ratio
-        /// defined in <see cref="IGameSettings"/>.
+        /// defined in <see cref="IGameSettings" />.
         /// </summary>
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
         [DataMember(Name = "Snap to Pixels")]
@@ -179,7 +180,7 @@
             return size.X * ratio;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void LoadContent() {
             if (this.Scene.IsInitialized) {
                 this.Shader?.Load();
@@ -240,7 +241,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void Initialize() {
             MacabreGame.Instance.ViewportSizeChanged += this.Game_ViewportSizeChanged;
             this.OffsetSettings.Initialize(this.CreateSize);

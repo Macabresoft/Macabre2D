@@ -1,5 +1,6 @@
 ﻿namespace Macabre2D.Framework {
 
+    using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System.Runtime.Serialization;
 
@@ -19,7 +20,7 @@
         public readonly Vector2 Scale;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Transform"/> struct.
+        /// Initializes a new instance of the <see cref="Transform" /> struct.
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public Transform(Matrix matrix) {
@@ -31,7 +32,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Transform"/> struct.
+        /// Initializes a new instance of the <see cref="Transform" /> struct.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
@@ -39,7 +40,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Transform"/> struct.
+        /// Initializes a new instance of the <see cref="Transform" /> struct.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
