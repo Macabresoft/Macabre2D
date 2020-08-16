@@ -1,10 +1,10 @@
-# Macabre2D
+# Macabresoft.MonoGame
 
-A 2D game framework built on top of the MonoGame framework. This project was started on April 23, 2016 (some early repository history was lost).
+Common MonoGame functionality used across Macabresoft products. A framework built on top of another framework.
 
 ## Supported Platforms
 
-Macabre2D.Framework and its example projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020.
+Macabresoft.MonoGame.Core and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020.
 
 ## Git LFS
 
@@ -14,9 +14,9 @@ You must install Git LFS (Large File Storage) to use this repository. [This arti
 
 The full source code is available here from GitHub:
 
-* Clone the source: `git clone https://github.com/BrettStory/Macabre2D.Framework`
+* Clone the source: `git clone https://github.com/BrettStory/Macabresoft.MonoGame`
 * Pull down LFS objects: `git lfs pull` and `git lfs fetch --all`
-* Restore NuGet packages for Macabre2D.Framework.sln.
+* Restore NuGet packages for Macabresoft.MonoGame.Core.sln.
 
 ## Using Fonts
  

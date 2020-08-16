@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Samples.Content {
+﻿namespace Macabresoft.MonoGame.Samples.Content {
 
     using System;
 

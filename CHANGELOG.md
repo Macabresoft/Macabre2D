@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.4.2.0
+
+### Refactors
+
+* Renaming Macabre2D.Framework to Macabresoft.MonoGame.Core.
+* Targeting .NET Standard 2.0 instead of 2.1.
+
 ## 0.4.1.0
 
 ### Refactors
@@ -76,7 +83,7 @@
 ### Features
 
 * MacabreGame object now has GameSpeed property which can dictate how fast time dependent components and modules are running.
-* CosmicSynth framework has been folded into the Macabre2D.Framework project.
+* CosmicSynth framework has been folded into the Macabresoft.MonoGame.Core project.
 * TileableComponents now use a GridConfiguration that allows them to link up to a GridModule instead of a local grid.
 * Modules can be given names.
 * MacabreGame object now fires an event when the viewport size changes.
@@ -216,7 +223,7 @@
 
 ### Fixes
 
-* Hiding inherited 'Components' property on 'MacabreGame' class as it is a MonoGame functionality not used by Macabre2D.
+* Hiding inherited 'Components' property on 'MacabreGame' class as it is a MonoGame functionality not used by MacabreGame.
 
 ### Compatibility Breaks
 
@@ -335,4 +342,4 @@
 
 ## 0.1.2.0 and Earlier
 
-I apologize, but changes were not well tracked prior to 0.2.0.0. Luckily for you, there's a 0% chance you were using Macabre2D at this time. It was barely functional and changed a lot!
+I apologize, but changes were not well tracked prior to 0.2.0.0. Luckily for you, there's a 0% chance you were using this library at that time. It was barely functional and changed a lot!

@@ -1,6 +1,6 @@
-﻿namespace Macabre2D.Samples.Content {
+﻿namespace Macabresoft.MonoGame.Samples.Content {
 
-    using Macabre2D.Framework;
+    using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework.Input;
 
     public sealed class VolumeController : BaseComponent, IUpdateableComponent {
