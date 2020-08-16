@@ -1,11 +1,21 @@
 # Change Log
 
+## 0.4.3.0
+
+### Fixes
+
+* No longer requires consumers of this package to use the DesktopGL version of MonoGame.
+
+---
+
 ## 0.4.2.0
 
 ### Refactors
 
 * Renaming Macabre2D.Framework to Macabresoft.MonoGame.Core.
 * Targeting .NET Standard 2.0 instead of 2.1.
+
+---
 
 ## 0.4.1.0
 

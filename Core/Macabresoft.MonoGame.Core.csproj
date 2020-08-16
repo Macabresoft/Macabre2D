@@ -12,9 +12,9 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageTags>MonoGame, Game, XNA</PackageTags>
-		<Version>0.4.2</Version>
-		<AssemblyVersion>0.4.2.0</AssemblyVersion>
-		<FileVersion>0.4.2.0</FileVersion>	
+		<Version>0.4.3</Version>
+		<AssemblyVersion>0.4.3.0</AssemblyVersion>
+		<FileVersion>0.4.3.0</FileVersion>	
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -44,7 +44,7 @@
 	<ItemGroup>
 		<PackageReference Include="Macabresoft.Core" Version="1.0.3" />
 		<PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1641" PrivateAssets="None" />
-		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="None" />
+		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 </Project>
