@@ -10,6 +10,11 @@
     [DataContract]
     public struct Transform {
 
+        /// <summary>
+        /// The origin trasnform.
+        /// </summary>
+        public static readonly Transform Origin = new Transform(Vector2.Zero, Vector2.One);
+
         [DataMember]
         public readonly Vector2 Position;
 
