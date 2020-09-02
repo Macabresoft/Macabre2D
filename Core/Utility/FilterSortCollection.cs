@@ -59,7 +59,7 @@
         /// cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
         public int Count {
-            get { return this._items.Count; }
+            get { return this._cachedFilteredItems.Count; }
         }
 
         /// <summary>
@@ -236,7 +236,8 @@
         /// through the collection.
         /// </returns>
         public IEnumerator<T> GetEnumerator() {
-            return this._items.GetEnumerator();
+            this.RebuildCache();
+            return this._cachedFilteredItems.GetEnumerator();
         }
 
         /// <summary>

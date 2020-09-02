@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Macabresoft.Core;
-    using System;
+    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -31,6 +31,24 @@
         /// </summary>
         /// <value><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</value>
         bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// Gets the layers.
+        /// </summary>
+        /// <value>The layers.</value>
+        Layers Layers { get; }
+
+        /// <summary>
+        /// Gets or sets the local position.
+        /// </summary>
+        /// <value>The local position.</value>
+        Vector2 LocalPosition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local scale.
+        /// </summary>
+        /// <value>The local scale.</value>
+        Vector2 LocalScale { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -75,7 +93,7 @@
         /// Adds a new component of the specified type.
         /// </summary>
         /// <typeparam name="T">
-        /// An object that implements <see cref="IGameComponent" /> and has an empty constructor.
+        /// A type that implements <see cref="IGameComponent" /> and has an empty constructor.
         /// </typeparam>
         /// <returns>The added component.</returns>
         T AddComponent<T>() where T : IGameComponent, new();
@@ -122,7 +140,7 @@
     /// A <see cref="ITransformable" /> descendent of <see cref="IScene" /> which holds a collection
     /// of <see cref="IGameComponent" />
     /// </summary>
-    public class GameEntity : PropertyChangedNotifier, IGameEntity {
+    public class GameEntity : NotifyPropertyChanged, IGameEntity {
 
         [DataMember]
         private readonly ObservableCollection<IGameEntity> _children = new ObservableCollection<IGameEntity>();
@@ -130,13 +148,20 @@
         [DataMember]
         private readonly ObservableCollection<IGameComponent> _components = new ObservableCollection<IGameComponent>();
 
+        private readonly ResettableLazy<Matrix> _transformMatrix;
+
         [DataMember]
         private bool _isEnabled;
 
-        private bool _isInitialized;
+        private bool _isTransformUpToDate;
+        private Layers _layers = Layers.Default;
+        private Vector2 _localPosition;
+        private Vector2 _localScale = Vector2.One;
 
         [DataMember]
         private string _name;
+
+        private Transform _transform = new Transform();
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameEntity> Children => this._children;
@@ -147,11 +172,55 @@
         /// <inheritdoc />
         public bool IsEnabled {
             get {
-                return this._isInitialized && this._isEnabled;
+                return this._isEnabled;
             }
 
             set {
                 this.Set(ref this._isEnabled, value);
+            }
+        }
+
+        /// <inheritdoc />
+        [DataMember]
+        public Layers Layers {
+            get {
+                return this._layers;
+            }
+
+            set {
+                this.Set(ref this._layers, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the local position.
+        /// </summary>
+        /// <value>The local position.</value>
+        [DataMember(Name = "Local Position")]
+        public Vector2 LocalPosition {
+            get {
+                return this._localPosition;
+            }
+            set {
+                if (this.Set(ref this._localPosition, value)) {
+                    this.HandleMatrixOrTransformChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the local scale.
+        /// </summary>
+        /// <value>The local scale.</value>
+        [DataMember(Name = "Local Scale")]
+        public Vector2 LocalScale {
+            get {
+                return this._localScale;
+            }
+            set {
+                if (this.Set(ref this._localScale, value)) {
+                    this.HandleMatrixOrTransformChanged();
+                }
             }
         }
 
@@ -173,7 +242,26 @@
         public IGameScene Scene { get; private set; }
 
         /// <inheritdoc />
-        public virtual Transform Transform => throw new NotImplementedException();
+        public virtual Transform Transform {
+            get {
+                if (!this._isTransformUpToDate) {
+                    this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
+                    this._isTransformUpToDate = true;
+                }
+
+                return this._transform;
+            }
+        }
+
+        /// <summary>
+        /// Gets the transform matrix.
+        /// </summary>
+        /// <value>The transform matrix.</value>
+        public Matrix TransformMatrix {
+            get {
+                return this._transformMatrix.Value;
+            }
+        }
 
         /// <inheritdoc />
         public T AddChild<T>() where T : IGameEntity, new() {
@@ -210,30 +298,23 @@
                 component.Entity?.RemoveComponent(component);
                 this._components.Add(component);
 
-                if (this._isInitialized) {
-                    component.Initialize(this);
+                if (this.Scene != null) {
+                    this.Scene.Invoke(() => component.Initialize(this));
                 }
             }
         }
 
         /// <inheritdoc />
         public void Initialize(IGameScene scene, IGameEntity parent) {
-            if (!this._isInitialized) {
-                try {
-                    this.Scene = scene;
-                    this.Parent = parent;
+            this.Scene = scene;
+            this.Parent = parent;
 
-                    foreach (var component in this.Components) {
-                        component.Initialize(this);
-                    }
+            foreach (var component in this.Components) {
+                component.Initialize(this);
+            }
 
-                    foreach (var child in this.Children) {
-                        child.Initialize(this.Scene, this);
-                    }
-                }
-                finally {
-                    this._isInitialized = true;
-                }
+            foreach (var child in this.Children) {
+                child.Initialize(this.Scene, this);
             }
         }
 
@@ -250,21 +331,49 @@
 
         /// <inheritdoc />
         public bool RemoveChild(IGameEntity entity) {
-            return this._children.Remove(entity);
+            var result = false;
+            if (this.Scene != null) {
+                if (this._children.Contains(entity)) {
+                    this.Scene.Invoke(() => this._children.Remove(entity));
+                    result = true;
+                }
+            }
+            else {
+                result = this._children.Remove(entity);
+            }
+
+            return result;
         }
 
         /// <inheritdoc />
         public bool RemoveComponent(IGameComponent component) {
-            return this._components.Remove(component);
+            var result = false;
+            if (this.Scene != null) {
+                if (this._components.Contains(component)) {
+                    this.Scene.Invoke(() => this._components.Remove(component));
+                    result = true;
+                }
+            }
+            else {
+                result = this._components.Remove(component);
+            }
+
+            return result;
         }
 
         private bool CanAddChild(IGameEntity entity) {
             return entity != null && entity != this && !this.Children.Any(x => x == entity) && !this.IsDescendentOf(entity);
         }
 
+        private void HandleMatrixOrTransformChanged() {
+            this._transformMatrix.Reset();
+            this._isTransformUpToDate = false;
+            this.RaisePropertyChanged(true, nameof(this.Transform));
+        }
+
         private void OnAddChild(IGameEntity entity) {
-            if (this._isInitialized) {
-                entity.Initialize(this.Scene, this);
+            if (this.Scene != null) {
+                this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
             }
         }
     }

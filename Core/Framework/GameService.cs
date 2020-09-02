@@ -16,12 +16,6 @@
         void Initialize(IGameScene scene);
 
         /// <summary>
-        /// Registers a component with this service.
-        /// </summary>
-        /// <param name="component">The component.</param>
-        void RegisterComponent(IGameComponent component);
-
-        /// <summary>
         /// Updates this instance.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
@@ -35,11 +29,16 @@
     [DataContract]
     public abstract class GameService : PropertyChangedNotifier, IGameService {
 
-        /// <inheritdoc />
-        public abstract void Initialize(IGameScene scene);
+        /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        protected IGameScene Scene { get; private set; }
 
         /// <inheritdoc />
-        public abstract void RegisterComponent(IGameComponent component);
+        public virtual void Initialize(IGameScene scene) {
+            this.Scene = scene;
+        }
 
         /// <inheritdoc />
         public abstract void Update(FrameTime frameTime, InputState inputState);
