@@ -27,12 +27,19 @@
 
     /// <summary>
     /// A tileable component. Contains a <see cref="TileGrid" /> and implements <see
-    /// cref="ITileable" />.
+    /// cref="IGameTileableComponent" />.
     /// </summary>
-    public abstract class TileableComponent : BaseComponent, ITileable {
+    public abstract class TileableComponent : GameComponent, IGameTileableComponent {
+
+        /// <summary>
+        /// An empty tileable component.
+        /// </summary>
+        public static readonly IGameTileableComponent Empty = new EmptyTileableComponent();
+
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
         private readonly ResettableLazy<TileGrid> _worldGrid;
+        private TileGrid _grid = TileGrid.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent" /> class.
@@ -40,11 +47,10 @@
         protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
-            this.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
         }
 
         /// <inheritdoc />
-        public event EventHandler TilesChanged;
+        public event EventHandler? TilesChanged;
 
         /// <inheritdoc />
         public abstract IReadOnlyCollection<Point> ActiveTiles { get; }
@@ -58,7 +64,17 @@
 
         /// <inheritdoc />
         [DataMember]
-        public GridConfiguration GridConfiguration { get; private set; } = new GridConfiguration();
+        public TileGrid Grid {
+            get {
+                return this._grid;
+            }
+
+            set {
+                if (this.Set(ref this._grid, value)) {
+                    this.OnGridChanged();
+                }
+            }
+        }
 
         /// <inheritdoc />
         public Point MaximumTile { get; private set; }
@@ -136,6 +152,15 @@
         }
 
         /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            this._worldGrid.Reset();
+            this.ResetBoundingArea();
+            this.ResetTileBoundingAreas();
+            this.ResetMinimumTile();
+            this.ResetMaximumTile();
+        }
+
+        /// <inheritdoc />
         public bool RemoveTile(Point tile) {
             var result = this.TryRemoveTile(tile);
             if (result) {
@@ -161,13 +186,6 @@
         /// Clears the active tiles.
         /// </summary>
         protected abstract void ClearActiveTiles();
-
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                base.Dispose(disposing);
-                this.GridConfiguration.PropertyChanged -= this.GridConfiguration_PropertyChanged;
-            }
-        }
 
         /// <summary>
         /// Gets the maximum tile.
@@ -219,14 +237,12 @@
         /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
         protected abstract bool HasActiveTiles();
 
-        /// <inheritdoc />
-        protected override void Initialize() {
-            this.PropertyChanged += this.Self_PropertyChanged;
-            this._worldGrid.Reset();
-            this.ResetBoundingArea();
-            this.ResetTileBoundingAreas();
-            this.ResetMinimumTile();
-            this.ResetMaximumTile();
+        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
+            base.OnEntityPropertyChanged(e);
+
+            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+                this.OnGridChanged();
+            }
         }
 
         /// <summary>
@@ -281,27 +297,18 @@
         }
 
         private TileGrid CreateWorldGrid() {
-            var tileGrid = this.GridConfiguration.Grid;
-            if (this.GridConfiguration.UseLocalGrid) {
-                var worldTransform = this.WorldTransform;
+            var transform = this.Entity.Transform;
 
-                var matrix =
-                    Matrix.CreateScale(worldTransform.Scale.X, worldTransform.Scale.Y, 1f) *
-                    Matrix.CreateScale(tileGrid.TileSize.X, tileGrid.TileSize.Y, 1f) *
-                    Matrix.CreateTranslation(tileGrid.Offset.X, tileGrid.Offset.Y, 0f) *
-                    Matrix.CreateTranslation(worldTransform.Position.X, worldTransform.Position.Y, 0f);
+            var matrix =
+                Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
+                Matrix.CreateScale(this.Grid.TileSize.X, this.Grid.TileSize.Y, 1f) *
+                Matrix.CreateTranslation(this.Grid.Offset.X, this.Grid.Offset.Y, 0f) *
+                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
 
-                var transform = matrix.ToTransform();
-                tileGrid = new TileGrid(transform.Scale, transform.Position);
-            }
+            var gridTransform = matrix.ToTransform();
+            var tileGrid = new TileGrid(gridTransform.Scale, gridTransform.Position);
 
             return tileGrid;
-        }
-
-        private void GridConfiguration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.GridConfiguration.Grid)) {
-                this.OnGridChanged();
-            }
         }
 
         private void ResetMaximumTile() {
@@ -326,9 +333,57 @@
             this._boundingArea.Reset();
         }
 
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.WorldTransform)) {
-                this.OnGridChanged();
+        private sealed class EmptyTileableComponent : EmptyGameComponent, IGameTileableComponent {
+
+            /// <inheritdoc />
+            public event EventHandler? TilesChanged;
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<Point> ActiveTiles => throw new NotImplementedException();
+
+            /// <inheritdoc />
+            public BoundingArea BoundingArea => BoundingArea.Empty;
+
+            /// <inheritdoc />
+            public TileGrid Grid => TileGrid.Empty;
+
+            /// <inheritdoc />
+            public Point MaximumTile => Point.Zero;
+
+            /// <inheritdoc />
+            public Point MinimumTile => Point.Zero;
+
+            /// <inheritdoc />
+            public TileGrid WorldGrid => TileGrid.Empty;
+
+            /// <inheritdoc />
+            public bool AddTile(Point tile) {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public void ClearTiles() {
+                return;
+            }
+
+            /// <inheritdoc />
+            public Point GetTileThatContains(Vector2 worldPosition) {
+                return Point.Zero;
+            }
+
+            /// <inheritdoc />
+            public bool HasActiveTileAt(Point tilePosition) {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool HasActiveTileAt(Vector2 worldPosition) {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool RemoveTile(Point tile) {
+                return false;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -39,6 +40,12 @@
         /// </summary>
         /// <value>The game.</value>
         IGame Game { get; }
+
+        /// <summary>
+        /// Gets the grid.
+        /// </summary>
+        /// <value>The grid.</value>
+        TileGrid Grid { get; }
 
         /// <summary>
         /// Gets the physics bodies.
@@ -150,9 +157,9 @@
 
         private FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
             r => r.IsEnabled,
-    nameof(IPhysicsBody.IsEnabled),
-    (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-    nameof(IPhysicsBody.UpdateOrder));
+            nameof(IPhysicsBody.IsEnabled),
+            (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
+            nameof(IPhysicsBody.UpdateOrder));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameScene" /> class.
@@ -174,6 +181,9 @@
 
         /// <inheritdoc />
         public IGame Game { get; private set; } = DefaultGame.Empty;
+
+        /// <inheritdoc />
+        public TileGrid Grid { get; set; } = new TileGrid(Vector2.One);
 
         /// <inheritdoc />
         public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
@@ -281,6 +291,9 @@
 
             /// <inheritdoc />
             public IGame Game => DefaultGame.Empty;
+
+            /// <inheritdoc />
+            public TileGrid Grid { get; } = new TileGrid(Vector2.One);
 
             /// <inheritdoc />
             public IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get; } = new IPhysicsBody[0];

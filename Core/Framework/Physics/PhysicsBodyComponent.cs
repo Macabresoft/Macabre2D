@@ -88,6 +88,11 @@
             public int UpdateOrder => 0;
 
             /// <inheritdoc />
+            public void Dispose() {
+                return;
+            }
+
+            /// <inheritdoc />
             public IEnumerable<Collider> GetColliders() {
                 return new Collider[0];
             }

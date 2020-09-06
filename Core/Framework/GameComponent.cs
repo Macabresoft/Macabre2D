@@ -1,12 +1,13 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
+    using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Interface for a descendent of <see cref="IGameEntity" />.
     /// </summary>
-    public interface IGameComponent : IEnableable, IIdentifiable, INotifyPropertyChanged {
+    public interface IGameComponent : IEnableable, IIdentifiable, INotifyPropertyChanged, IDisposable {
 
         /// <summary>
         /// Gets the entity.
@@ -56,10 +57,40 @@
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is disposed.
+        /// </summary>
+        /// <value><c>true</c> if this instance is disposed; otherwise, <c>false</c>.</value>
+        protected bool IsDisposed { get; private set; }
+
+        /// <inheritdoc />
+        public void Dispose() {
+            if (!this.IsDisposed) {
+                this.Entity.PropertyChanged -= this.Entity_PropertyChanged;
+                this.PropertyChanged -= this.Self_PropertyChanged;
+
+                Dispose(true);
+                this.IsDisposed = true;
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
         /// <inheritdoc />
         public virtual void Initialize(IGameEntity entity) {
             this.Entity = entity;
-            this.PropertyChanged += this.GameComponent_PropertyChanged;
+            this.PropertyChanged += this.Self_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release
+        /// only unmanaged resources.
+        /// </param>
+        protected virtual void Dispose(bool disposing) {
+            return;
         }
 
         /// <summary>
@@ -87,8 +118,26 @@
             this.OnEntityPropertyChanged(e);
         }
 
-        private void GameComponent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             this.OnPropertyChanged(e);
+        }
+
+        internal class EmptyGameComponent : IGameComponent {
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            public IGameEntity Entity => GameEntity.Empty;
+
+            public Guid Id => Guid.Empty;
+            public bool IsEnabled => false;
+
+            public void Dispose() {
+                return;
+            }
+
+            public void Initialize(IGameEntity entity) {
+                return;
+            }
         }
     }
 }

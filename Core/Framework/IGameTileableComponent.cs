@@ -7,8 +7,8 @@
     /// <summary>
     /// An interface for tileable components.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.IBoundable"/>
-    public interface ITileable : IBoundable, IWorldTransformable {
+    /// <seealso cref="Macabresoft.MonoGame.Core.IBoundable" />
+    public interface IGameTileableComponent : IGameComponent, IBoundable {
 
         /// <summary>
         /// Occurs when a tile is added or removed.
@@ -22,10 +22,10 @@
         IReadOnlyCollection<Point> ActiveTiles { get; }
 
         /// <summary>
-        /// Gets the grid configuration.
+        /// Gets the grid.
         /// </summary>
-        /// <value>The grid configuration.</value>
-        GridConfiguration GridConfiguration { get; }
+        /// <value>The grid.</value>
+        TileGrid Grid { get; }
 
         /// <summary>
         /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid,
@@ -42,9 +42,9 @@
         Point MinimumTile { get; }
 
         /// <summary>
-        /// Gets the <see cref="LocalGrid"/> transformed to world coordinates.
+        /// Gets the <see cref="LocalGrid" /> transformed to world coordinates.
         /// </summary>
-        /// <value>The <see cref="LocalGrid"/> transformed to world coordinates.</value>
+        /// <value>The <see cref="LocalGrid" /> transformed to world coordinates.</value>
         TileGrid WorldGrid { get; }
 
         /// <summary>

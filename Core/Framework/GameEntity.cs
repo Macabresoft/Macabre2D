@@ -129,6 +129,16 @@
         /// <param name="component">The component.</param>
         /// <returns>A value indicating whether or not the component was removed.</returns>
         bool RemoveComponent(IGameComponent component);
+
+        /// <summary>
+        /// Tries the get component a component of the specified type that belongs to this instance.
+        /// </summary>
+        /// <typeparam name="T">The type of component to search for.</typeparam>
+        /// <param name="component">The component.</param>
+        /// <returns>
+        /// A value indicating whether or not a component of the specified type was found.
+        /// </returns>
+        bool TryGetComponent<T>(out T? component) where T : class;
     }
 
     /// <summary>
@@ -464,6 +474,12 @@
             this.RaisePropertyChanged(nameof(this.LocalScale));
         }
 
+        /// <inheritdoc />
+        public bool TryGetComponent<T>(out T? component) where T : class {
+            component = this.Components.OfType<T>().FirstOrDefault();
+            return component != null;
+        }
+
         /// <summary>
         /// Called when a property on the current object changes.
         /// </summary>
@@ -661,6 +677,12 @@
             /// <inheritdoc />
             public void SetWorldTransform(Vector2 position, Vector2 scale) {
                 throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public bool TryGetComponent<T>(out T? component) where T : class {
+                component = null;
+                return false;
             }
         }
     }
