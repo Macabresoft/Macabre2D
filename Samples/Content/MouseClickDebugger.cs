@@ -4,7 +4,7 @@
     using Microsoft.Xna.Framework;
 
     public sealed class MouseClickDebugger : BaseDrawerComponent, IUpdateableComponent {
-        private Camera _camera;
+        private CameraComponent _camera;
 
         public override BoundingArea BoundingArea {
             get {
@@ -25,7 +25,7 @@
             base.Initialize();
             this.Color = Color.Green;
             this.LineThickness = 3f;
-            this._camera = this.Scene.FindComponentOfType<Camera>();
+            this._camera = this.Scene.FindComponentOfType<CameraComponent>();
         }
     }
 }

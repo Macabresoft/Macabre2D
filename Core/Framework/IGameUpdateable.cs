@@ -3,7 +3,7 @@
     using System.ComponentModel;
 
     /// <summary>
-    /// Interface for an updateable descendent of <see cref="IGameLoop" />.
+    /// Interface for an updateable descendent of <see cref="IGame" />.
     /// </summary>
     public interface IGameUpdateable : INotifyPropertyChanged {
 

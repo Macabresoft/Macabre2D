@@ -8,7 +8,7 @@
 
     /// <summary>
     /// Interface for a combination of <see cref="IGameService" /> and <see cref="IGameEntity" />
-    /// which runs on a <see cref="IGameLoop" />.
+    /// which runs on a <see cref="IGame" />.
     /// </summary>
     public interface IGameScene : IGameEntity, IGameUpdateable {
 
@@ -35,10 +35,16 @@
         IReadOnlyCollection<IGameCameraComponent> CameraComponents { get; }
 
         /// <summary>
-        /// Gets the game loop.
+        /// Gets the game currently running this scene.
         /// </summary>
-        /// <value>The game loop.</value>
-        IGameLoop GameLoop { get; }
+        /// <value>The game.</value>
+        IGame Game { get; }
+
+        /// <summary>
+        /// Gets the physics bodies.
+        /// </summary>
+        /// <value>The physics bodies.</value>
+        IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get; }
 
         /// <summary>
         /// Gets the renderable components.
@@ -76,8 +82,8 @@
         /// <summary>
         /// Initializes the specified game loop.
         /// </summary>
-        /// <param name="gameLoop">The game loop.</param>
-        void Initialize(IGameLoop gameLoop);
+        /// <param name="loop">The game loop.</param>
+        void Initialize(IGame loop);
 
         /// <summary>
         /// Invokes the specified action after the current update
@@ -107,11 +113,16 @@
 
     /// <summary>
     /// A user-created combination of <see cref="IGameService" /> and <see cref="IGameEntity" />
-    /// which runs on a <see cref="IGameLoop" />.
+    /// which runs on a <see cref="IGame" />.
     /// </summary>
     public sealed class GameScene : GameEntity, IGameScene {
-        private readonly Queue<Action> _actionsToInvoke = new Queue<Action>();
 
+        /// <summary>
+        /// The default empty <see cref="IGameScene" /> that is present before initialization.
+        /// </summary>
+        public static readonly new IGameScene Empty = new EmptyGameScene();
+
+        private readonly Queue<Action> _actionsToInvoke = new Queue<Action>();
         private readonly HashSet<IGameComponent> _allComponentsInScene = new HashSet<IGameComponent>();
 
         private readonly FilterSortCollection<IGameCameraComponent> _cameraComponents = new FilterSortCollection<IGameCameraComponent>(
@@ -137,6 +148,12 @@
 
         private bool _isInitialized = false;
 
+        private FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
+            r => r.IsEnabled,
+    nameof(IPhysicsBody.IsEnabled),
+    (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
+    nameof(IPhysicsBody.UpdateOrder));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GameScene" /> class.
         /// </summary>
@@ -144,10 +161,10 @@
         }
 
         /// <inheritdoc />
-        public event EventHandler<IGameComponent> ComponentRegistered;
+        public event EventHandler<IGameComponent>? ComponentRegistered;
 
         /// <inheritdoc />
-        public event EventHandler<IGameComponent> ComponentUnregistered;
+        public event EventHandler<IGameComponent>? ComponentUnregistered;
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameComponent> AllComponentsInScene => this._allComponentsInScene;
@@ -156,7 +173,10 @@
         public IReadOnlyCollection<IGameCameraComponent> CameraComponents => this._cameraComponents;
 
         /// <inheritdoc />
-        public IGameLoop GameLoop { get; private set; }
+        public IGame Game { get; private set; } = DefaultGame.Empty;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
 
         public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents => this._renderableComponents;
 
@@ -188,10 +208,10 @@
         }
 
         /// <inheritdoc />
-        public void Initialize(IGameLoop gameLoop) {
+        public void Initialize(IGame loop) {
             if (!this._isInitialized) {
                 try {
-                    this.GameLoop = gameLoop;
+                    this.Game = loop;
                     this.Initialize(this, this);
 
                     foreach (var service in this.Services) {
@@ -242,6 +262,76 @@
         public void Update(FrameTime frameTime, InputState inputState) {
             foreach (var service in this.Services) {
                 service.Update(frameTime, inputState);
+            }
+        }
+
+        internal class EmptyGameScene : EmptyGameEntity, IGameScene {
+
+            /// <inheritdoc />
+            public event EventHandler<IGameComponent>? ComponentRegistered;
+
+            /// <inheritdoc />
+            public event EventHandler<IGameComponent>? ComponentUnregistered;
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameComponent> AllComponentsInScene { get; } = new IGameComponent[0];
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameCameraComponent> CameraComponents { get; } = new IGameCameraComponent[0];
+
+            /// <inheritdoc />
+            public IGame Game => DefaultGame.Empty;
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get; } = new IPhysicsBody[0];
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents { get; } = new IGameRenderableComponent[0];
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameService> Services { get; } = new IGameService[0];
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get; } = new IGameUpdateableComponent[0];
+
+            /// <inheritdoc />
+            public T AddService<T>() where T : IGameService, new() {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void AddService(IGameService service) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void Initialize(IGame gameLoop) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void Invoke(Action action) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void RegisterComponent(IGameComponent component) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public bool RemoveService(IGameService service) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void UnregisterComponent(IGameComponent component) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void Update(FrameTime frameTime, InputState inputState) {
+                throw new NotSupportedException("Initialization has not occured.");
             }
         }
     }

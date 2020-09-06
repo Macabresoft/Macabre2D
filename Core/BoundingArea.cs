@@ -11,6 +11,11 @@
     public struct BoundingArea {
 
         /// <summary>
+        /// The empty bounding area.
+        /// </summary>
+        public static readonly BoundingArea Empty = new BoundingArea(0f, 0f);
+
+        /// <summary>
         /// The height of this instance.
         /// </summary>
         public readonly float Height;

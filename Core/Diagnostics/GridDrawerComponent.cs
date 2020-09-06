@@ -8,12 +8,12 @@
     /// </summary>
     /// <seealso cref="Macabresoft.MonoGame.Core.Diagnostics.BaseDrawer"/>
     public sealed class GridDrawerComponent : BaseDrawerComponent {
-        private Camera _camera;
+        private CameraComponent _camera;
 
         /// <inheritdoc/>
         public override BoundingArea BoundingArea {
             get {
-                if (this.Camera is Camera camera) {
+                if (this.Camera is CameraComponent camera) {
                     return camera.BoundingArea;
                 }
 
@@ -25,9 +25,9 @@
         /// Gets or sets the camera.
         /// </summary>
         /// <value>The camera.</value>
-        public Camera Camera {
+        public CameraComponent Camera {
             get {
-                return this._camera ?? this.Parent as Camera;
+                return this._camera ?? this.Parent as CameraComponent;
             }
 
             set {

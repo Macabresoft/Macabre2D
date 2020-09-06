@@ -22,7 +22,7 @@
             float expectedViewHeight,
             float expectedX,
             float expectedY) {
-            var camera = new Camera() {
+            var camera = new CameraComponent() {
                 ViewHeight = startingViewHeight
             };
 

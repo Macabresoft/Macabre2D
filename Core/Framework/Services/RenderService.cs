@@ -22,7 +22,7 @@
                     var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
 
                     if (potentialRenderables.Any()) {
-                        this.Scene.GameLoop.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
+                        this.Scene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
 
                         foreach (var component in potentialRenderables) {
                             // As long as it doesn't equal Layers.None, at least one of the layers
@@ -32,7 +32,7 @@
                             }
                         }
 
-                        this.Scene.GameLoop.SpriteBatch.SpriteBatch.End();
+                        this.Scene.Game.SpriteBatch.End();
                     }
                 }
             }

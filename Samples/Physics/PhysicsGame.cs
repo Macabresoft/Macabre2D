@@ -25,7 +25,7 @@
 
             var scene = new Scene();
 
-            var camera = new Camera();
+            var camera = new CameraComponent();
             scene.AddChild(camera);
 
             var physicsModule = scene.CreateModule<PhysicsModule>(1f / 60f);

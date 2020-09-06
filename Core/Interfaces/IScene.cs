@@ -86,7 +86,7 @@
         /// <param name="module">The module.</param>
         /// <param name="timeStep">The time step.</param>
         /// <returns>A value indicating whether or not the module was added.</returns>
-        bool AddModule(FixedTimeStepModule module, float timeStep);
+        bool AddModule(FixedTimeStepService module, float timeStep);
 
         /// <summary>
         /// Creates a module of the specified type.
@@ -101,7 +101,7 @@
         /// <typeparam name="T">A type of module with a fixed time step.</typeparam>
         /// <param name="timeStep">The time step.</param>
         /// <returns>The added module.</returns>
-        T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new();
+        T CreateModule<T>(float timeStep) where T : FixedTimeStepService, new();
 
         /// <summary>
         /// Destroys the component.
@@ -120,7 +120,7 @@
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
         /// <param name="cameras">The cameras.</param>
-        void Draw(FrameTime frameTime, params Camera[] cameras);
+        void Draw(FrameTime frameTime, params CameraComponent[] cameras);
 
         /// <summary>
         /// Finds a component in the scene with the specified name. If multiple components have the

@@ -2,6 +2,7 @@
 
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -39,18 +40,6 @@
         Layers Layers { get; }
 
         /// <summary>
-        /// Gets or sets the local position.
-        /// </summary>
-        /// <value>The local position.</value>
-        Vector2 LocalPosition { get; set; }
-
-        /// <summary>
-        /// Gets or sets the local scale.
-        /// </summary>
-        /// <value>The local scale.</value>
-        Vector2 LocalScale { get; set; }
-
-        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
@@ -67,6 +56,12 @@
         /// </summary>
         /// <value>The scene.</value>
         IGameScene Scene { get; }
+
+        /// <summary>
+        /// Gets the transform matrix.
+        /// </summary>
+        /// <value>The transform matrix.</value>
+        Matrix TransformMatrix { get; }
 
         /// <summary>
         /// Adds a child of the specified type.
@@ -142,6 +137,11 @@
     /// </summary>
     public class GameEntity : NotifyPropertyChanged, IGameEntity {
 
+        /// <summary>
+        /// The default empty <see cref="IGameEntity" /> that is present before initialization.
+        /// </summary>
+        public static readonly IGameEntity Empty = new EmptyGameEntity();
+
         [DataMember]
         private readonly ObservableCollection<IGameEntity> _children = new ObservableCollection<IGameEntity>();
 
@@ -159,9 +159,14 @@
         private Vector2 _localScale = Vector2.One;
 
         [DataMember]
-        private string _name;
+        private string _name = string.Empty;
 
         private Transform _transform = new Transform();
+
+        public GameEntity() {
+            this.PropertyChanged += this.OnPropertyChanged;
+            this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
+        }
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameEntity> Children => this._children;
@@ -236,10 +241,10 @@
         }
 
         /// <inheritdoc />
-        public IGameEntity Parent { get; private set; }
+        public IGameEntity Parent { get; private set; } = GameEntity.Empty;
 
         /// <inheritdoc />
-        public IGameScene Scene { get; private set; }
+        public IGameScene Scene { get; private set; } = GameScene.Empty;
 
         /// <inheritdoc />
         public virtual Transform Transform {
@@ -253,10 +258,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets the transform matrix.
-        /// </summary>
-        /// <value>The transform matrix.</value>
+        /// <inheritdoc />
         public Matrix TransformMatrix {
             get {
                 return this._transformMatrix.Value;
@@ -302,6 +304,79 @@
                     this.Scene.Invoke(() => component.Initialize(this));
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(float rotationAngle) {
+            var transform = this.Transform;
+            var matrix =
+                Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
+                Matrix.CreateRotationZ(rotationAngle) *
+                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
+
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(Vector2 originOffset) {
+            var matrix = Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) * this.TransformMatrix;
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
+            var transform = this.Transform;
+
+            var matrix =
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
+                Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
+                Matrix.CreateRotationZ(rotationAngle) *
+                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
+
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
+            var transform = this.Transform;
+
+            var matrix =
+                Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
+                Matrix.CreateRotationZ(rotationAngle) *
+                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
+
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
+            var transform = this.Transform;
+
+            var matrix =
+                Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
+                Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
+                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
+
+            return matrix.ToTransform();
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset;
+            return this.GetWorldTransform(position);
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            return this.GetWorldTransform(position);
+        }
+
+        /// <inheritdoc />
+        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            return this.GetWorldTransform(position, rotationAngle);
         }
 
         /// <inheritdoc />
@@ -361,8 +436,61 @@
             return result;
         }
 
+        /// <inheritdoc />
+        public void SetWorldPosition(Vector2 position) {
+            this.SetWorldTransform(position, this.Transform.Scale);
+        }
+
+        /// <inheritdoc />
+        public void SetWorldScale(Vector2 scale) {
+            this.SetWorldTransform(this.Transform.Position, scale);
+        }
+
+        /// <inheritdoc />
+        public void SetWorldTransform(Vector2 position, Vector2 scale) {
+            var matrix =
+                Matrix.CreateScale(scale.X, scale.Y, 1f) *
+                Matrix.CreateTranslation(position.X, position.Y, 0f);
+
+            if (this.Parent != null) {
+                matrix *= Matrix.Invert(this.Parent.TransformMatrix);
+            }
+
+            var localTransform = matrix.ToTransform();
+            this._localPosition = localTransform.Position;
+            this._localScale = localTransform.Scale;
+            this.HandleMatrixOrTransformChanged();
+            this.RaisePropertyChanged(nameof(this.LocalPosition));
+            this.RaisePropertyChanged(nameof(this.LocalScale));
+        }
+
+        /// <summary>
+        /// Called when a property on the current object changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">
+        /// The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
+        /// </param>
+        protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Parent)) {
+                this.HandleMatrixOrTransformChanged();
+            }
+        }
+
         private bool CanAddChild(IGameEntity entity) {
             return entity != null && entity != this && !this.Children.Any(x => x == entity) && !this.IsDescendentOf(entity);
+        }
+
+        private Matrix GetMatrix() {
+            var transformMatrix =
+                Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
+                Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
+
+            if (this.Parent != null) {
+                transformMatrix *= this.Parent.TransformMatrix;
+            }
+
+            return transformMatrix;
         }
 
         private void HandleMatrixOrTransformChanged() {
@@ -374,6 +502,165 @@
         private void OnAddChild(IGameEntity entity) {
             if (this.Scene != null) {
                 this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
+            }
+        }
+
+        internal class EmptyGameEntity : IGameEntity {
+
+            /// <inheritdoc />
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameEntity> Children { get; } = new IGameEntity[0];
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<IGameComponent> Components { get; } = new IGameComponent[0];
+
+            /// <inheritdoc />
+            public bool IsEnabled {
+                get => false;
+                set {
+                    return;
+                }
+            }
+
+            /// <inheritdoc />
+            public Layers Layers => Layers.None;
+
+            /// <inheritdoc />
+            public Vector2 LocalPosition {
+                get => Vector2.Zero;
+                set {
+                    return;
+                }
+            }
+
+            /// <inheritdoc />
+            public Vector2 LocalScale {
+                get => Vector2.One;
+                set {
+                    return;
+                }
+            }
+
+            /// <inheritdoc />
+            public string Name {
+                get => "Empty";
+                set {
+                    return;
+                }
+            }
+
+            /// <inheritdoc />
+            public IGameEntity Parent => GameScene.Empty;
+
+            /// <inheritdoc />
+            public IGameScene Scene => GameScene.Empty;
+
+            /// <inheritdoc />
+            public Transform Transform => Transform.Origin;
+
+            /// <inheritdoc />
+            public Matrix TransformMatrix => Matrix.Identity;
+
+            /// <inheritdoc />
+            public T AddChild<T>() where T : IGameEntity, new() {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public IGameEntity AddChild() {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void AddChild(IGameEntity entity) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public T AddComponent<T>() where T : IGameComponent, new() {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void AddComponent(IGameComponent component) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(float rotationAngle) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(Vector2 originOffset) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
+                return this.Transform;
+            }
+
+            /// <inheritdoc />
+            public void Initialize(IGameScene scene, IGameEntity parent) {
+                throw new NotSupportedException("An empty entity cannot be intialized.");
+            }
+
+            /// <inheritdoc />
+            public bool IsDescendentOf(IGameEntity entity) {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool RemoveChild(IGameEntity entity) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public bool RemoveComponent(IGameComponent component) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void SetWorldPosition(Vector2 position) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void SetWorldScale(Vector2 scale) {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public void SetWorldTransform(Vector2 position, Vector2 scale) {
+                throw new NotSupportedException("Initialization has not occured.");
             }
         }
     }

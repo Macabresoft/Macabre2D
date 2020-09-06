@@ -19,7 +19,7 @@
             var cameraScroller = new CameraScroller();
             scene.AddChild(cameraScroller);
 
-            var camera = new Camera();
+            var camera = new CameraComponent();
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraScroller.AddChild(camera);
 

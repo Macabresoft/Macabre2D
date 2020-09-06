@@ -33,7 +33,7 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        protected IGameScene Scene { get; private set; }
+        protected IGameScene Scene { get; private set; } = GameScene.Empty;
 
         /// <inheritdoc />
         public virtual void Initialize(IGameScene scene) {

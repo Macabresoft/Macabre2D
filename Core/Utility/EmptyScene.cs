@@ -112,7 +112,7 @@
         }
 
         /// <inheritdoc/>
-        public bool AddModule(FixedTimeStepModule module, float timeStep) {
+        public bool AddModule(FixedTimeStepService module, float timeStep) {
             return default;
         }
 
@@ -122,7 +122,7 @@
         }
 
         /// <inheritdoc/>
-        public T CreateModule<T>(float timeStep) where T : FixedTimeStepModule, new() {
+        public T CreateModule<T>(float timeStep) where T : FixedTimeStepService, new() {
             return default;
         }
 
@@ -142,7 +142,7 @@
         }
 
         /// <inheritdoc/>
-        public void Draw(FrameTime frameTime, params Camera[] cameras) {
+        public void Draw(FrameTime frameTime, params CameraComponent[] cameras) {
             return;
         }
 

@@ -5,7 +5,7 @@
     /// <summary>
     /// An interface for a game component that can update on a background thread.
     /// </summary>
-    public interface IUpdateableComponentAsync : IBaseComponent, IEnableableComponent {
+    public interface IUpdateableComponentAsync : IBaseComponent, IEnableable {
 
         /// <summary>
         /// Updates this instance asynchronously.

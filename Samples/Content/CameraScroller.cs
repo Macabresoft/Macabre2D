@@ -7,7 +7,7 @@
     public sealed class CameraScroller : BaseComponent, IUpdateableComponent {
 
         [Child]
-        private Camera _camera;
+        private CameraComponent _camera;
 
         private int _previousScrollValue;
 

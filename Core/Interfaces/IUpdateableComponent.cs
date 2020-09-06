@@ -3,7 +3,7 @@
     /// <summary>
     /// An updateable component.
     /// </summary>
-    public interface IUpdateableComponent : IBaseComponent, IEnableableComponent {
+    public interface IUpdateableComponent : IBaseComponent, IEnableable {
 
         /// <summary>
         /// Gets the update order.
