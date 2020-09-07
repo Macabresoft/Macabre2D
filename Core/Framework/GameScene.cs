@@ -112,6 +112,23 @@
         bool RemoveService(IGameService service);
 
         /// <summary>
+        /// Resolves the dependency.
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency.</typeparam>
+        /// <returns>The dependency if it already exists or a newly created dependency.</returns>
+        T ResolveDependency<T>() where T : new();
+
+        /// <summary>
+        /// Resolves the dependency.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objectFactory">The object factory.</param>
+        /// <returns>
+        /// The dependency if it already exists or a dependency created from the provided factory.
+        /// </returns>
+        T ResolveDependency<T>(Func<T> objectFactory) where T : class;
+
+        /// <summary>
         /// Unregisters the component from services.
         /// </summary>
         /// <param name="component">The component.</param>
@@ -137,6 +154,8 @@
             nameof(IGameCameraComponent.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
             nameof(IGameCameraComponent.RenderOrder));
+
+        private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
 
         private readonly FilterSortCollection<IGameRenderableComponent> _renderableComponents = new FilterSortCollection<IGameRenderableComponent>(
             c => c.IsVisible,
@@ -260,6 +279,28 @@
         }
 
         /// <inheritdoc />
+        public T ResolveDependency<T>() where T : new() {
+            if (this._dependencies.TryGetValue(typeof(T), out var dependency)) {
+                return (T)dependency;
+            }
+
+            dependency = new T();
+            this._dependencies.Add(typeof(T), dependency);
+            return (T)dependency;
+        }
+
+        /// <inheritdoc />
+        public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
+            if (this._dependencies.TryGetValue(typeof(T), out var found) && found is T dependency) {
+                return dependency;
+            }
+
+            dependency = objectFactory.SafeInvoke();
+            this._dependencies.Add(typeof(T), dependency);
+            return dependency;
+        }
+
+        /// <inheritdoc />
         public void UnregisterComponent(IGameComponent component) {
             this._allComponentsInScene.Add(component);
             this._cameraComponents.Remove(component);
@@ -309,42 +350,52 @@
 
             /// <inheritdoc />
             public T AddService<T>() where T : IGameService, new() {
-                throw new NotSupportedException("Initialization has not occured.");
+                return new T();
             }
 
             /// <inheritdoc />
             public void AddService(IGameService service) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void Initialize(IGame gameLoop) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void Invoke(Action action) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void RegisterComponent(IGameComponent component) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public bool RemoveService(IGameService service) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return false;
+            }
+
+            /// <inheritdoc />
+            public T ResolveDependency<T>() where T : new() {
+                return new T();
+            }
+
+            /// <inheritdoc />
+            public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
+                return objectFactory.SafeInvoke();
             }
 
             /// <inheritdoc />
             public void UnregisterComponent(IGameComponent component) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void Update(FrameTime frameTime, InputState inputState) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
         }
     }

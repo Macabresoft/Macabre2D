@@ -8,7 +8,7 @@ namespace Macabresoft.MonoGame.Core {
     public sealed class CircleDrawerComponent : BaseDrawerComponent {
         private int _complexity;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
                 return new BoundingArea(-this.Radius, this.Radius);
@@ -45,11 +45,11 @@ namespace Macabresoft.MonoGame.Core {
         /// <value>The radius.</value>
         public float Radius { get; set; }
 
-        /// <inheritdoc/>
-        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Radius > 0f && this.PrimitiveDrawer != null) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawCircle(MacabreGame.Instance.SpriteBatch, this.Radius, this.WorldTransform.Position, this.Complexity, this.Color, lineThickness);
+                this.PrimitiveDrawer.DrawCircle(this.Entity.Scene.Game.SpriteBatch, this.Radius, this.Entity.Transform.Position, this.Complexity, this.Color, lineThickness);
             }
         }
     }

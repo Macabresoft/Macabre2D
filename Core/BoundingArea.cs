@@ -16,6 +16,11 @@
         public static readonly BoundingArea Empty = new BoundingArea(0f, 0f);
 
         /// <summary>
+        /// The maximum sized bounding area.
+        /// </summary>
+        public static readonly BoundingArea MaximumSize = new BoundingArea(float.MinValue * 0.5f, float.MaxValue * 0.5f);
+
+        /// <summary>
         /// The height of this instance.
         /// </summary>
         public readonly float Height;
@@ -80,6 +85,22 @@
         public bool IsEmpty {
             get {
                 return this.Minimum == this.Maximum;
+            }
+        }
+
+        /// <summary>
+        /// Combines the specified bounding areas.
+        /// </summary>
+        /// <param name="boundingAreas">The bounding areas.</param>
+        /// <returns>A bounding area that includes all provided bounding areas.</returns>
+        public static BoundingArea Combine(params BoundingArea[] boundingAreas) {
+            if (boundingAreas.Any()) {
+                var minimums = boundingAreas.Select(x => x.Minimum).ToArray();
+                var maximums = boundingAreas.Select(x => x.Maximum).ToArray();
+                return new BoundingArea(minimums.Select(x => x.X).Min(), maximums.Select(x => x.X).Max(), minimums.Select(x => x.Y).Min(), maximums.Select(x => x.Y).Max());
+            }
+            else {
+                return BoundingArea.Empty;
             }
         }
 

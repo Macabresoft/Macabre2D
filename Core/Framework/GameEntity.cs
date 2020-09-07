@@ -100,6 +100,13 @@
         void AddComponent(IGameComponent component);
 
         /// <summary>
+        /// Gets the components of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The components of specified type.</returns>
+        IEnumerable<T> GetComponents<T>();
+
+        /// <summary>
         /// Initializes this entity as a descendent of <paramref name="scene" /> and <paramref
         /// name="parent" />.
         /// </summary>
@@ -314,6 +321,11 @@
                     this.Scene.Invoke(() => component.Initialize(this));
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<T> GetComponents<T>() {
+            return this.Components.OfType<T>();
         }
 
         /// <inheritdoc />
@@ -602,6 +614,11 @@
             /// <inheritdoc />
             public void AddComponent(IGameComponent component) {
                 throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public IEnumerable<T> GetComponents<T>() {
+                return new T[0];
             }
 
             /// <inheritdoc />

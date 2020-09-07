@@ -7,6 +7,6 @@
     /// </summary>
     /// <seealso cref="Macabresoft.MonoGame.Core.Content.JsonProcessor{Macabresoft.MonoGame.Core.Scene}" />
     [ContentProcessor(DisplayName = "Scene Processor - Macabresoft.MonoGame.Core")]
-    public sealed class SceneProcessor : JsonProcessor<Scene> {
+    public sealed class SceneProcessor : JsonProcessor<GameScene> {
     }
 }

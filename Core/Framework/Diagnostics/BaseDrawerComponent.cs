@@ -6,15 +6,10 @@
     /// <summary>
     /// A base class for drawing the outlines of components.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.BaseComponent"/>
-    /// <seealso cref="Macabresoft.MonoGame.Core.IDrawableComponent"/>
-    public abstract class BaseDrawerComponent : BaseComponent, IDrawableComponent {
+    public abstract class BaseDrawerComponent : GameRenderableComponent {
         private Color _color = Color.White;
         private float _lineThickness = 1f;
         private bool _useDynamicLineThickness;
-
-        /// <inheritdoc/>
-        public abstract BoundingArea BoundingArea { get; }
 
         /// <summary>
         /// Gets or sets the color.
@@ -65,10 +60,15 @@
         /// Gets the primitive drawer.
         /// </summary>
         /// <value>The primitive drawer.</value>
-        protected PrimitiveDrawer PrimitiveDrawer { get; private set; }
+        protected PrimitiveDrawer? PrimitiveDrawer { get; private set; }
 
-        /// <inheritdoc/>
-        public abstract void Draw(FrameTime frameTime, BoundingArea viewBoundingArea);
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            this.PrimitiveDrawer = this.Entity.Scene.ResolveDependency(
+                () => new PrimitiveDrawer(this.Entity.Scene.Game.SpriteBatch));
+        }
 
         /// <summary>
         /// Gets the line thickness.
@@ -78,18 +78,10 @@
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
             if (this.UseDynamicLineThickness) {
-                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, MacabreGame.Instance.GraphicsDevice.Viewport.Height);
+                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.Entity.Scene.Game.GraphicsDevice.Viewport.Height);
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            if (this.Scene != null) {
-                this.PrimitiveDrawer = this.Scene.ResolveDependency(
-                    () => new PrimitiveDrawer(MacabreGame.Instance.SpriteBatch));
-            }
         }
     }
 }

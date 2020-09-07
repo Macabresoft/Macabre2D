@@ -6,34 +6,10 @@
     /// <summary>
     /// Draws a grid for the specified camera.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.Diagnostics.BaseDrawer"/>
     public sealed class GridDrawerComponent : BaseDrawerComponent {
-        private CameraComponent _camera;
 
-        /// <inheritdoc/>
-        public override BoundingArea BoundingArea {
-            get {
-                if (this.Camera is CameraComponent camera) {
-                    return camera.BoundingArea;
-                }
-
-                return new BoundingArea();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the camera.
-        /// </summary>
-        /// <value>The camera.</value>
-        public CameraComponent Camera {
-            get {
-                return this._camera ?? this.Parent as CameraComponent;
-            }
-
-            set {
-                this._camera = value;
-            }
-        }
+        /// <inheritdoc />
+        public override BoundingArea BoundingArea => BoundingArea.MaximumSize;
 
         /// <summary>
         /// Gets or sets the grid.
@@ -41,13 +17,13 @@
         /// <value>The grid.</value>
         public TileGrid Grid { get; set; }
 
-        /// <inheritdoc/>
-        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer == null) {
                 return;
             }
 
-            var spriteBatch = MacabreGame.Instance.SpriteBatch;
+            var spriteBatch = this.Entity.Scene.Game.SpriteBatch;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var boundingArea = this.BoundingArea;
 

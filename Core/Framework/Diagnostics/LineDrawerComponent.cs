@@ -11,7 +11,7 @@
         private Vector2 _endPoint;
         private Vector2 _startPoint;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
                 return new BoundingArea(Vector2.Min(this.StartPoint, this.EndPoint), Vector2.Max(this.StartPoint, this.EndPoint));
@@ -48,9 +48,9 @@
             }
         }
 
-        /// <inheritdoc/>
-        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && MacabreGame.Instance.SpriteBatch is SpriteBatch spriteBatch) {
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);
             }
