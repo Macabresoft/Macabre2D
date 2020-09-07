@@ -12,5 +12,11 @@
         /// </summary>
         /// <value>The asset identifier.</value>
         Guid AssetId { get; set; }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        string Name { get; }
     }
 }

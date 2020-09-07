@@ -11,6 +11,14 @@
     /// Base class for easy and generic implementations of <see cref="IAutoTileSet" />.
     /// </summary>
     public sealed class AutoTileSet : BaseIdentifiable, IAsset {
+
+        /// <summary>
+        /// An empty auto tile set.
+        /// </summary>
+        public static readonly AutoTileSet Empty = new AutoTileSet() {
+            Name = "Empty"
+        };
+
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
@@ -18,6 +26,7 @@
         private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
 
         private bool _isLoaded = false;
+        private string _name = string.Empty;
         private bool _useIntermediateDirections = false;
 
         /// <summary>
@@ -37,11 +46,23 @@
         /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
-        public event EventHandler<byte> SpriteChanged;
+        public event EventHandler<byte>? SpriteChanged;
 
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the size.
@@ -139,7 +160,7 @@
             var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
 
             foreach (var index in indexes) {
-                this.SetSprite(null, index);
+                this.SetSprite(Sprite.Empty, index);
                 result = true;
             }
 

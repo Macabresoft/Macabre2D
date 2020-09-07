@@ -9,9 +9,9 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A component which maps <see cref="AutoTileSet"/> onto a <see cref="TileGrid"/>.
+    /// A component which maps <see cref="AutoTileSet" /> onto a <see cref="TileGrid" />.
     /// </summary>
-    public sealed class AutoTileMap : TileableComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite>, IDrawableComponent {
+    public sealed class AutoTileMap : RenderableTileMap, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
@@ -19,7 +19,7 @@
         private Color _color = Color.White;
         private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
-        private AutoTileSet _tileSet;
+        private AutoTileSet _tileSet = AutoTileSet.Empty;
 
         /// <summary>
         /// Represents four directions from a single tile.
@@ -47,7 +47,7 @@
             All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IReadOnlyCollection<Point> ActiveTiles {
             get {
                 return this._activeTileToIndex.Keys;
@@ -81,86 +81,66 @@
 
             set {
                 var originalValue = this._tileSet;
+                this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
 
                 if (this.Set(ref this._tileSet, value)) {
-                    if (this.IsInitialized) {
-                        this.LoadContent();
-
-                        if (this._tileSet != null) {
-                            this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
-                        }
-
-                        if (originalValue != null) {
-                            originalValue.SpriteChanged -= this.TileSet_SpriteChanged;
-                        }
-                    }
+                    this.ReloadTileSet();
                 }
+
+                this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
             }
         }
 
-        /// <inheritdoc/>
-        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.TileSet != null) {
-                foreach (var activeTileToIndex in this._activeTileToIndex) {
-                    var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
-                    if (boundingArea.Overlaps(viewBoundingArea)) {
-                        if (this.TileSet.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
-                            MacabreGame.Instance.SpriteBatch.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         IEnumerable<Guid> IAssetComponent<AutoTileSet>.GetOwnedAssetIds() {
             return this.TileSet == null ? new Guid[0] : new[] { this.TileSet.Id };
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         IEnumerable<Guid> IAssetComponent<Sprite>.GetOwnedAssetIds() {
             return this.TileSet == null ? Enumerable.Empty<Guid>() : this.TileSet.GetSpriteIds();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool HasActiveTileAt(Point tilePosition) {
             return this._activeTileToIndex.ContainsKey(tilePosition);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HasAsset(Guid id) {
             return this.TileSet?.Id == id || this.TileSet?.HasSprite(id) == true;
         }
 
-        /// <inheritdoc/>
-        public override void LoadContent() {
-            if (this.Scene.IsInitialized) {
-                this.TileSet?.Load();
-                this.ReevaluateIndexes();
-                this.ResetSpriteScales();
-            }
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
 
-            base.LoadContent();
+            this._previousWorldScale = this.Entity.Transform.Scale;
+            // I think maybe I don't need this.
+            ////this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
+            this.TileSet.Load();
+            this.ReevaluateIndexes();
+            this.ResetSpriteScales();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IAssetComponent<AutoTileSet>.RefreshAsset(AutoTileSet newInstance) {
             if (newInstance != null && this.TileSet?.Id == newInstance.Id) {
                 this.TileSet = newInstance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         void IAssetComponent<Sprite>.RefreshAsset(Sprite newInstance) {
             this.TileSet?.RefreshSprite(newInstance);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveAsset(Guid id) {
             var result = false;
             if (this.TileSet != null) {
                 if (this.TileSet.Id == id) {
-                    this.TileSet = null;
+                    this.TileSet = AutoTileSet.Empty;
                     result = true;
                 }
                 else {
@@ -171,7 +151,21 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.TileSet != null) {
+                foreach (var activeTileToIndex in this._activeTileToIndex) {
+                    var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
+                    if (boundingArea.Overlaps(viewBoundingArea)) {
+                        if (this.TileSet.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
+                            this.Entity.Scene.Game.SpriteBatch.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc />
         bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet asset) {
             var result = false;
             if (this.TileSet?.Id == id) {
@@ -179,63 +173,60 @@
                 result = true;
             }
             else {
-                asset = null;
+                asset = AutoTileSet.Empty;
             }
 
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
             if (this.TileSet != null) {
                 this.TileSet.TryGetSprite(id, out asset);
             }
             else {
-                asset = null;
+                asset = Sprite.Empty;
             }
 
             return asset != null;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void ClearActiveTiles() {
             this._activeTileToIndex.Clear();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override Point GetMaximumTile() {
             return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override Point GetMinimumTile() {
             return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool HasActiveTiles() {
             return this._activeTileToIndex.Any();
         }
 
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            base.Initialize();
+        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
+            base.OnEntityPropertyChanged(e);
 
-            this._previousWorldScale = this.WorldTransform.Scale;
-            this.PropertyChanged += this.Self_PropertyChanged;
-
-            if (this.TileSet != null) {
-                this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
+            if (e.PropertyName == nameof(this.Entity.Transform) && this.Entity.Transform.Scale != this._previousWorldScale) {
+                this._previousWorldScale = this.Entity.Transform.Scale;
+                this.ResetSpriteScales();
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnGridChanged() {
             base.OnGridChanged();
             this.ResetSpriteScales();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryAddTile(Point tile) {
             var result = false;
             if (!this._activeTileToIndex.ContainsKey(tile)) {
@@ -248,7 +239,7 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryRemoveTile(Point tile) {
             var result = this._activeTileToIndex.Remove(tile);
             if (result) {
@@ -341,6 +332,13 @@
             }
         }
 
+        /// <inheritdoc />
+        private void ReloadTileSet() {
+            this.TileSet?.Load();
+            this.ReevaluateIndexes();
+            this.ResetSpriteScales();
+        }
+
         private void ResetSpriteScales() {
             if (this.TileSet != null) {
                 this._spriteScales = new Vector2[this.TileSet.Size];
@@ -349,13 +347,6 @@
                     var sprite = this.TileSet.GetSprite(i);
                     this._spriteScales[i] = this.GetTileScale(sprite);
                 }
-            }
-        }
-
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.WorldTransform) && this.WorldTransform.Scale != this._previousWorldScale) {
-                this._previousWorldScale = this.WorldTransform.Scale;
-                this.ResetSpriteScales();
             }
         }
 

@@ -12,10 +12,18 @@
     /// </summary>
     public sealed class RandomTileSet : BaseIdentifiable, IAsset {
 
+        /// <summary>
+        /// An empty random tile set.
+        /// </summary>
+        public static readonly RandomTileSet Empty = new RandomTileSet() {
+            Name = "Empty"
+        };
+
         [DataMember]
         private readonly List<WeightedTile> _tiles = new List<WeightedTile>();
 
         private bool _isLoaded = false;
+        private string _name = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomTileSet" /> class.
@@ -26,11 +34,23 @@
         /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
-        public event EventHandler<ushort> SpriteChanged;
+        public event EventHandler<ushort>? SpriteChanged;
 
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the tiles.
@@ -81,7 +101,7 @@
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
         public Sprite GetSprite(ushort index) {
-            return index < this._tiles.Count ? this._tiles[index]?.Sprite : null;
+            return index < this._tiles.Count ? this._tiles[index].Sprite : Sprite.Empty;
         }
 
         /// <summary>
@@ -138,7 +158,7 @@
             var tiles = this._tiles.Where(x => x.Sprite?.Id == spriteId).ToList();
 
             foreach (var tile in tiles) {
-                tile.Sprite = null;
+                tile.Sprite = Sprite.Empty;
             }
 
             return result;
