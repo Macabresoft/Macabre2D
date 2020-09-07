@@ -38,7 +38,7 @@
         }
 
         /// <inheritdoc />
-        public bool TryLoad<T>(string fileName, out T loadedData) where T : IVersionedData {
+        public bool TryLoad<T>(string fileName, out T? loadedData) where T : class, IVersionedData {
             var filePath = this.GetFilePath(fileName);
             var result = true;
             try {

@@ -7,17 +7,19 @@
     using System.Linq;
 
     /// <summary>
-    /// Converts a <see cref="Color"/> to and from JSON.
+    /// Converts a <see cref="Color" /> to and from JSON.
     /// </summary>
-    /// <seealso cref="Newtonsoft.Json.JsonConverter"/>
+    /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class JsonColorConverter : JsonConverter {
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool CanConvert(Type objectType) {
             return objectType == typeof(Color);
         }
 
-        /// <inheritdoc/>
+#nullable disable
+
+        /// <inheritdoc />
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
             var jsonObject = JObject.Load(reader);
             var properties = jsonObject.Properties().ToList();
@@ -28,7 +30,7 @@
                 (byte)properties.First(x => x.Name == "A"));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             var color = (Color)value;
             writer.WriteStartObject();
@@ -42,5 +44,7 @@
             serializer.Serialize(writer, color.A);
             writer.WriteEndObject();
         }
+
+#nullable enable
     }
 }

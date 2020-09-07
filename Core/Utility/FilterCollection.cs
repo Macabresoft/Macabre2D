@@ -39,7 +39,7 @@
         /// <summary>
         /// Occurs when [collection changed].
         /// </summary>
-        public event EventHandler<CollectionChangedEventArgs<T>> CollectionChanged;
+        public event EventHandler<CollectionChangedEventArgs<T>>? CollectionChanged;
 
         /// <summary>
         /// Gets the number of elements contained in the <see

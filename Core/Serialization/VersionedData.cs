@@ -30,7 +30,7 @@
     public class VersionedData : IVersionedData {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VersionedData"/> class.
+        /// Initializes a new instance of the <see cref="VersionedData" /> class.
         /// </summary>
         /// <param name="version">The version.</param>
         public VersionedData(Version version) : this() {
@@ -38,18 +38,18 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VersionedData"/> class.
+        /// Initializes a new instance of the <see cref="VersionedData" /> class.
         /// </summary>
         protected VersionedData() {
             this.TypeName = this.GetType().Name;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
-        public string TypeName { get; private set; }
+        public string TypeName { get; private set; } = string.Empty;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
-        public Version Version { get; set; }
+        public Version Version { get; set; } = new Version();
     }
 }
