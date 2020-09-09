@@ -2,6 +2,7 @@
 
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -12,7 +13,7 @@
         /// <summary>
         /// The default empty <see cref="IGame" /> that is present before initialization.
         /// </summary>
-        public static readonly IGame Empty = new EmptyGameLoop();
+        public static readonly IGame Empty = new EmptyGame();
 
         protected readonly GraphicsDeviceManager _graphics;
         protected SpriteBatch? _spriteBatch;
@@ -166,9 +167,9 @@
         }
 
         /// <inheritdoc />
-        public SpriteBatch SpriteBatch {
+        public SpriteBatch? SpriteBatch {
             get {
-                return this._spriteBatch ?? new SpriteBatch(this.GraphicsDevice);
+                return this._spriteBatch;
             }
         }
 
@@ -228,10 +229,8 @@
         }
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("This is a function of MonoGame not used by MacabreGame.", true)]
-        protected new void Draw(GameTime gameTime) {
-            return;
+        protected override void Draw(GameTime gameTime) {
+            this.Scene.Render(this._frameTime);
         }
 
         /// <inheritdoc />
@@ -286,14 +285,12 @@
                 this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
             }
 
-            if (this.Scene != null) {
-                this._currentInputState = new InputState(Mouse.GetState(), keyboardState, this._currentInputState);
-                this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-                this.Scene.Update(this._frameTime, this._currentInputState);
-            }
+            this._currentInputState = new InputState(Mouse.GetState(), keyboardState, this._currentInputState);
+            this._frameTime = new FrameTime(gameTime, this.GameSpeed);
+            this.Scene.Update(this._frameTime, this._currentInputState);
         }
 
-        private sealed class EmptyGameLoop : Game, IGame {
+        private sealed class EmptyGame : IGame {
 
             /// <inheritdoc />
             public event EventHandler<double>? GameSpeedChanged;
@@ -303,6 +300,8 @@
 
             /// <inheritdoc />
             public IAssetManager AssetManager { get; } = new AssetManager();
+
+            public ContentManager? Content => null;
 
             /// <inheritdoc />
             public double GameSpeed {
@@ -314,6 +313,8 @@
                     this.GameSpeedChanged.SafeInvoke(this, 1f);
                 }
             }
+
+            public GraphicsDevice? GraphicsDevice => null;
 
             /// <inheritdoc />
             public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
@@ -339,7 +340,7 @@
             }
 
             /// <inheritdoc />
-            public SpriteBatch SpriteBatch => new SpriteBatch(this.GraphicsDevice);
+            public SpriteBatch? SpriteBatch => null;
 
             /// <inheritdoc />
             public Point ViewportSize {
@@ -350,6 +351,10 @@
                 set {
                     this.ViewportSizeChanged.SafeInvoke(this, default);
                 }
+            }
+
+            public void Exit() {
+                throw new NotImplementedException();
             }
 
             /// <inheritdoc />

@@ -8,7 +8,7 @@
     /// A body to be used by the physics engine.
     /// </summary>
     /// <seealso cref="BaseComponent" />
-    public class SimpleBodyComponent : PhysicsBodyComponent, IPhysicsBody {
+    public class SimplePhysicsBody : PhysicsBody, IPhysicsBody {
         private Collider _collider = Collider.Empty;
 
         /// <inheritdoc />
@@ -49,6 +49,7 @@
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
             this._collider.Initialize(this);
         }
 

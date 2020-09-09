@@ -4,11 +4,22 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class VelocityChanger : BaseComponent, IUpdateableComponent {
+    public sealed class VelocityChanger : GameUpdateableComponent {
         private IDynamicPhysicsBody _body;
         private float _speed = 0.5f;
 
-        public void Update(FrameTime frameTime, InputState inputState) {
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            if (this.Entity.TryGetComponent<IDynamicPhysicsBody>(out var body) && body != null) {
+                this._body = body;
+            }
+            else {
+                this._body = DynamicPhysicsBody.Empty;
+            }
+        }
+
+        public override void Update(FrameTime frameTime, InputState inputState) {
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                 this._body.Velocity += new Vector2(0f, this._speed);
             }
@@ -28,10 +39,6 @@
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
                 this._body.Velocity = Vector2.Zero;
             }
-        }
-
-        protected override void Initialize() {
-            this._body = this.Parent as IDynamicPhysicsBody;
         }
     }
 }

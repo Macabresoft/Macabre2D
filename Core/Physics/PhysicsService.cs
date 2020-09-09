@@ -9,8 +9,8 @@
     /// <summary>
     /// A module which allows for raycasting and handles rigidbody physics interactions.
     /// </summary>
-    /// <seealso cref="SimplePhysicsModule" />
-    public sealed class PhysicsModule : SimplePhysicsModule, IGamePhysicsService {
+    /// <seealso cref="SimplePhysicsService" />
+    public sealed class PhysicsService : SimplePhysicsService, IGamePhysicsService {
         private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new Dictionary<Guid, List<Guid>>();
 
         [DataMember(Name = "Collision Resolver", Order = 0)]

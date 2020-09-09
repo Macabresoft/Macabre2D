@@ -31,7 +31,7 @@
         private IGameEntity _entity = GameEntity.Empty;
 
         [DataMember]
-        private bool _isEnabled;
+        private bool _isEnabled = true;
 
         /// <inheritdoc />
         public IGameEntity Entity {

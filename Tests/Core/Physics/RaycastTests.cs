@@ -16,7 +16,7 @@
             // session) that was failing due to floating point precision.
             var ray = new LineSegment(new Vector2(3.125f, 0.616657f), new Vector2(0f, -1f), 0.666667f);
 
-            using (var body = new SimpleBodyComponent()) {
+            using (var body = new SimplePhysicsBody()) {
                 body.Initialize(Substitute.For<IScene>());
                 body.LocalPosition = new Vector2(0f, -0.5f);
                 body.Collider = new RectangleCollider(18f, 1f);

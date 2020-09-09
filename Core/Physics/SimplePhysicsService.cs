@@ -8,7 +8,7 @@
     /// A module which allows simple raycasting through colliders, which are sorted into a quad tree.
     /// </summary>
     /// <seealso cref="FixedTimeStepService" />
-    public class SimplePhysicsModule : FixedTimeStepService {
+    public class SimplePhysicsService : FixedTimeStepService {
 
         /// <summary>
         /// Gets the collider tree.
@@ -58,7 +58,7 @@
             var hits = this.RaycastAll(start, direction, distance, layers);
 
             if (hits.Count == 0) {
-                hit = null;
+                hit = RaycastHit.Empty;
                 return false;
             }
 

@@ -152,6 +152,7 @@
     /// A <see cref="ITransformable" /> descendent of <see cref="IScene" /> which holds a collection
     /// of <see cref="IGameComponent" />
     /// </summary>
+    [DataContract]
     public class GameEntity : NotifyPropertyChanged, IGameEntity {
 
         /// <summary>
@@ -168,7 +169,7 @@
         private readonly ResettableLazy<Matrix> _transformMatrix;
 
         [DataMember]
-        private bool _isEnabled;
+        private bool _isEnabled = true;
 
         private bool _isTransformUpToDate;
         private Layers _layers = Layers.Default;
@@ -276,7 +277,7 @@
         }
 
         /// <inheritdoc />
-        public Matrix TransformMatrix {
+        public virtual Matrix TransformMatrix {
             get {
                 return this._transformMatrix.Value;
             }
@@ -313,13 +314,11 @@
 
         /// <inheritdoc />
         public void AddComponent(IGameComponent component) {
-            if (component != null) {
-                component.Entity?.RemoveComponent(component);
-                this._components.Add(component);
+            component.Entity.RemoveComponent(component);
+            this._components.Add(component);
 
-                if (this.Scene != null) {
-                    this.Scene.Invoke(() => component.Initialize(this));
-                }
+            if (this.Scene != null) {
+                this.Scene.Invoke(() => component.Initialize(this));
             }
         }
 
@@ -408,11 +407,14 @@
 
             foreach (var component in this.Components) {
                 component.Initialize(this);
+                this.Scene.RegisterComponent(component);
             }
 
             foreach (var child in this.Children) {
                 child.Initialize(this.Scene, this);
             }
+
+            this.HandleMatrixOrTransformChanged();
         }
 
         /// <inheritdoc />
@@ -673,27 +675,27 @@
 
             /// <inheritdoc />
             public bool RemoveChild(IGameEntity entity) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return false;
             }
 
             /// <inheritdoc />
             public bool RemoveComponent(IGameComponent component) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return false;
             }
 
             /// <inheritdoc />
             public void SetWorldPosition(Vector2 position) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void SetWorldScale(Vector2 scale) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />
             public void SetWorldTransform(Vector2 position, Vector2 scale) {
-                throw new NotSupportedException("Initialization has not occured.");
+                return;
             }
 
             /// <inheritdoc />

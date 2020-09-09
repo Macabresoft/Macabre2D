@@ -11,7 +11,7 @@
     /// <summary>
     /// Represents a camera into the game world.
     /// </summary>
-    public sealed class CameraComponent : GameComponent, IBoundable {
+    public sealed class CameraComponent : GameComponent, IBoundable, IGameCameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Matrix> _matrix;
         private Layers _layersToRender = Layers.All;

@@ -30,7 +30,7 @@
         /// Gets the content manager.
         /// </summary>
         /// <value>The content manager.</value>
-        ContentManager Content { get; }
+        ContentManager? Content { get; }
 
         /// <summary>
         /// Gets or sets the game speed.
@@ -42,7 +42,7 @@
         /// Gets the graphics device.
         /// </summary>
         /// <value>The graphics device.</value>
-        GraphicsDevice GraphicsDevice { get; }
+        GraphicsDevice? GraphicsDevice { get; }
 
         /// <summary>
         /// Gets the graphics settings.
@@ -80,7 +80,7 @@
         /// Gets the sprite batch.
         /// </summary>
         /// <value>The sprite batch.</value>
-        SpriteBatch SpriteBatch { get; }
+        SpriteBatch? SpriteBatch { get; }
 
         /// <summary>
         /// Gets the size of the viewport.

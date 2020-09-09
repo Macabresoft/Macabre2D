@@ -8,10 +8,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A <see cref="PhysicsBodyComponent" /> which reacts to a <see cref="IGameTileableComponent"
-    /// /> parent and creates colliders based on the available grid.
+    /// A <see cref="PhysicsBody" /> which reacts to a <see cref="IGameTileableComponent" /> parent
+    /// and creates colliders based on the available grid.
     /// </summary>
-    public sealed class TileableBodyComponent : PhysicsBodyComponent {
+    public sealed class TileableBodyComponent : PhysicsBody {
         private readonly List<Collider> _colliders = new List<Collider>();
 
         private Layers _overrideLayersBottomEdge = Layers.None;

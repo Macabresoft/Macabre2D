@@ -2,9 +2,11 @@
 
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -28,6 +30,12 @@
         /// </summary>
         /// <value>All components in this scene.</value>
         IReadOnlyCollection<IGameComponent> AllComponentsInScene { get; }
+
+        /// <summary>
+        /// Gets or sets the color of the background.
+        /// </summary>
+        /// <value>The color of the background.</value>
+        Color BackgroundColor { get; set; }
 
         /// <summary>
         /// Gets the camera components.
@@ -87,10 +95,10 @@
         void AddService(IGameService service);
 
         /// <summary>
-        /// Initializes the specified game loop.
+        /// Initializes this instance with the specified game.
         /// </summary>
-        /// <param name="loop">The game loop.</param>
-        void Initialize(IGame loop);
+        /// <param name="game">The game.</param>
+        void Initialize(IGame game);
 
         /// <summary>
         /// Invokes the specified action after the current update
@@ -110,6 +118,12 @@
         /// <param name="service">The service.</param>
         /// <returns>A value indicating whether or not the service was removed.</returns>
         bool RemoveService(IGameService service);
+
+        /// <summary>
+        /// Renders the scene.
+        /// </summary>
+        /// <param name="frameTime">The frame time.</param>
+        public void Render(FrameTime frameTime);
 
         /// <summary>
         /// Resolves the dependency.
@@ -146,16 +160,22 @@
         /// </summary>
         public static readonly new IGameScene Empty = new EmptyGameScene();
 
-        private readonly Queue<Action> _actionsToInvoke = new Queue<Action>();
+        private readonly List<Action> _actionsToInvoke = new List<Action>();
         private readonly HashSet<IGameComponent> _allComponentsInScene = new HashSet<IGameComponent>();
 
         private readonly FilterSortCollection<IGameCameraComponent> _cameraComponents = new FilterSortCollection<IGameCameraComponent>(
             c => c.IsEnabled,
-            nameof(IGameCameraComponent.IsEnabled),
+            nameof(IGameComponent.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
             nameof(IGameCameraComponent.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
+
+        private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
+            r => r.IsEnabled,
+            nameof(IGameComponent.IsEnabled),
+            (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
+            nameof(IPhysicsBody.UpdateOrder));
 
         private readonly FilterSortCollection<IGameRenderableComponent> _renderableComponents = new FilterSortCollection<IGameRenderableComponent>(
             c => c.IsVisible,
@@ -163,28 +183,18 @@
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
             nameof(IGameRenderableComponent.RenderOrder));
 
+        private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+
         [DataMember]
         private readonly ObservableCollection<IGameService> _services = new ObservableCollection<IGameService>();
 
         private readonly FilterSortCollection<IGameUpdateableComponent> _updateableComponents = new FilterSortCollection<IGameUpdateableComponent>(
             c => c.IsEnabled,
-            nameof(IGameUpdateableComponent.IsEnabled),
+            nameof(IGameComponent.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
             nameof(IGameUpdateableComponent.UpdateOrder));
 
         private bool _isInitialized = false;
-
-        private FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
-            r => r.IsEnabled,
-            nameof(IPhysicsBody.IsEnabled),
-            (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-            nameof(IPhysicsBody.UpdateOrder));
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GameScene" /> class.
-        /// </summary>
-        public GameScene() {
-        }
 
         /// <inheritdoc />
         public event EventHandler<IGameComponent>? ComponentRegistered;
@@ -194,6 +204,10 @@
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameComponent> AllComponentsInScene => this._allComponentsInScene;
+
+        /// <inheritdoc />
+        [DataMember]
+        public Color BackgroundColor { get; set; } = new Color(30, 15, 15);
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameCameraComponent> CameraComponents => this._cameraComponents;
@@ -214,6 +228,9 @@
 
         /// <inheritdoc />
         public override Transform Transform => Transform.Origin;
+
+        /// <inheritdoc />
+        public override Matrix TransformMatrix => Matrix.Identity;
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
@@ -237,10 +254,10 @@
         }
 
         /// <inheritdoc />
-        public void Initialize(IGame loop) {
+        public void Initialize(IGame game) {
             if (!this._isInitialized) {
                 try {
-                    this.Game = loop;
+                    this.Game = game;
                     this.Initialize(this, this);
 
                     foreach (var service in this.Services) {
@@ -250,21 +267,28 @@
                 finally {
                     this._isInitialized = true;
                 }
+
+                var actions = this._actionsToInvoke.ToList();
+                foreach (var action in actions) {
+                    action();
+                    this._actionsToInvoke.Remove(action);
+                }
             }
         }
 
         /// <inheritdoc />
         public void Invoke(Action action) {
-            this._actionsToInvoke.Enqueue(action);
+            this._actionsToInvoke.Add(action);
         }
 
         /// <inheritdoc />
         public void RegisterComponent(IGameComponent component) {
             this._allComponentsInScene.Add(component);
             this._cameraComponents.Add(component);
+            this._physicsBodies.Add(component);
             this._renderableComponents.Add(component);
             this._updateableComponents.Add(component);
-            this.ComponentUnregistered.SafeInvoke(this, component);
+            this.ComponentRegistered.SafeInvoke(this, component);
         }
 
         /// <inheritdoc />
@@ -276,6 +300,37 @@
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        public void Render(FrameTime frameTime) {
+            if (this.Game.SpriteBatch != null && this.Game.GraphicsDevice != null) {
+                this._renderTree.Clear();
+
+                foreach (var component in this.RenderableComponents) {
+                    this._renderTree.Insert(component);
+                }
+
+                this.Game.GraphicsDevice.Clear(Color.Black);
+
+                foreach (var camera in this.CameraComponents) {
+                    var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
+
+                    if (potentialRenderables.Any()) {
+                        this.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
+
+                        foreach (var component in potentialRenderables) {
+                            // As long as it doesn't equal Layers.None, at least one of the layers
+                            // defined on the component are also to be rendered by LayersToRender.
+                            if ((component.Entity.Layers & camera.LayersToRender) != Layers.None) {
+                                component.Render(frameTime, camera.BoundingArea);
+                            }
+                        }
+
+                        this.Game.SpriteBatch.End();
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -302,8 +357,9 @@
 
         /// <inheritdoc />
         public void UnregisterComponent(IGameComponent component) {
-            this._allComponentsInScene.Add(component);
+            this._allComponentsInScene.Remove(component);
             this._cameraComponents.Remove(component);
+            this._physicsBodies.Remove(component);
             this._renderableComponents.Remove(component);
             this._updateableComponents.Remove(component);
             this.ComponentUnregistered.SafeInvoke(this, component);
@@ -326,6 +382,9 @@
 
             /// <inheritdoc />
             public IReadOnlyCollection<IGameComponent> AllComponentsInScene { get; } = new IGameComponent[0];
+
+            /// <inheritdoc />
+            public Color BackgroundColor { get => Color.HotPink; set { return; } }
 
             /// <inheritdoc />
             public IReadOnlyCollection<IGameCameraComponent> CameraComponents { get; } = new IGameCameraComponent[0];
@@ -376,6 +435,11 @@
             /// <inheritdoc />
             public bool RemoveService(IGameService service) {
                 return false;
+            }
+
+            /// <inheritdoc />
+            public void Render(FrameTime frameTime) {
+                return;
             }
 
             /// <inheritdoc />

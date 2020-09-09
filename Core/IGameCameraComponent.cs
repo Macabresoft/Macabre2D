@@ -8,13 +8,7 @@
     /// Interface for a camera component which tells the engine where to render any <see
     /// cref="IGameRenderableComponent" />.
     /// </summary>
-    public interface IGameCameraComponent : IBoundable, INotifyPropertyChanged {
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is enabled.
-        /// </summary>
-        /// <value><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</value>
-        bool IsEnabled { get; }
+    public interface IGameCameraComponent : IEnableable, IBoundable, INotifyPropertyChanged {
 
         /// <summary>
         /// Gets the layers to render.
@@ -38,7 +32,7 @@
         /// Gets the shader.
         /// </summary>
         /// <value>The shader.</value>
-        Shader Shader { get; }
+        Shader? Shader { get; }
 
         /// <summary>
         /// Gets the view matrix.

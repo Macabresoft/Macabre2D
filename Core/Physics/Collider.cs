@@ -61,7 +61,7 @@
         /// Gets the body that this collider is attached to.
         /// </summary>
         /// <value>The body.</value>
-        public IPhysicsBody Body { get; private set; } = PhysicsBodyComponent.Empty;
+        public IPhysicsBody Body { get; private set; } = PhysicsBody.Empty;
 
         /// <inheritdoc />
         public BoundingArea BoundingArea {

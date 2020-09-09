@@ -87,17 +87,15 @@
         /// </summary>
         /// <param name="sizeFactory">The size factory.</param>
         public void Initialize(Func<Vector2> sizeFactory) {
-            if (this._size == null) {
-                this._size = new ResettableLazy<Vector2>(sizeFactory ?? new Func<Vector2>(() => Vector2.Zero));
-                this.ResetOffset();
-            }
+            this._size = new ResettableLazy<Vector2>(sizeFactory ?? new Func<Vector2>(() => Vector2.Zero));
+            this.ResetOffset();
         }
 
         /// <summary>
         /// Invalidates the size.
         /// </summary>
         public void InvalidateSize() {
-            this._size?.Reset();
+            this._size.Reset();
             this.ResetOffset();
         }
 
@@ -109,7 +107,7 @@
         /// automatically when <see cref="OffsetType" /> changes.
         /// </remarks>
         public void ResetOffset() {
-            if (this._size != null && this._type != PixelOffsetType.Custom) {
+            if (this._type != PixelOffsetType.Custom) {
                 var size = this._size.Value;
 
                 if (size == Vector2.Zero) {

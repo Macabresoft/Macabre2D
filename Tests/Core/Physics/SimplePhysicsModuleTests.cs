@@ -28,9 +28,9 @@
                 raycastLayer = Layers.Custom2;
             }
 
-            var physicsModule = new SimplePhysicsModule();
+            var physicsModule = new SimplePhysicsService();
 
-            using (var circleBody = new SimpleBodyComponent()) {
+            using (var circleBody = new SimplePhysicsBody()) {
                 circleBody.SetWorldPosition(Vector2.Zero);
                 circleBody.Collider = new CircleCollider(1f);
                 circleBody.Layers = Layers.Custom1;
@@ -55,9 +55,9 @@
             gameSettings.Layers.Returns(layerSettings);
             GameSettings.Instance = gameSettings;
 
-            var physicsModule = new SimplePhysicsModule();
+            var physicsModule = new SimplePhysicsService();
 
-            using (var lineBody = new SimpleBodyComponent()) {
+            using (var lineBody = new SimplePhysicsBody()) {
                 lineBody.SetWorldPosition(Vector2.Zero);
                 lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
                 lineBody.Layers = Layers.Default;

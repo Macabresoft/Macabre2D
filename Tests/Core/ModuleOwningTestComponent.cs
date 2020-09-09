@@ -7,7 +7,7 @@
 
         protected override void Initialize() {
             base.Initialize();
-            this.Module = new SimplePhysicsModule();
+            this.Module = new SimplePhysicsService();
             this.Scene.AddModule(this.Module);
         }
     }
