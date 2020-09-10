@@ -8,7 +8,7 @@
 
         public override BoundingArea BoundingArea {
             get {
-                return new BoundingArea(this.LocalPosition - new Vector2(1f, 1f), this.LocalPosition + new Vector2(1f, 1f));
+                return new BoundingArea(this.Entity.LocalPosition - new Vector2(1f, 1f), this.Entity.LocalPosition + new Vector2(1f, 1f));
             }
         }
 

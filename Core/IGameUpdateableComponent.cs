@@ -12,7 +12,7 @@
         /// Gets the update order.
         /// </summary>
         /// <value>The update order.</value>
-        int UpdateOrder { get; }
+        int UpdateOrder { get => 0; }
     }
 
     /// <summary>

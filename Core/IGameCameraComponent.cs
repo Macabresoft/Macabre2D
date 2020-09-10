@@ -20,7 +20,7 @@
         /// Gets the render order.
         /// </summary>
         /// <value>The render order.</value>
-        int RenderOrder { get; }
+        int RenderOrder { get => 0; }
 
         /// <summary>
         /// Gets the state of the sampler.

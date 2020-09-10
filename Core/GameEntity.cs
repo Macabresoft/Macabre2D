@@ -19,13 +19,13 @@
         /// Gets the children.
         /// </summary>
         /// <value>The children.</value>
-        IReadOnlyCollection<IGameEntity> Children { get; }
+        IReadOnlyCollection<IGameEntity> Children { get => new IGameEntity[0]; }
 
         /// <summary>
         /// Gets the components.
         /// </summary>
         /// <value>The components.</value>
-        IReadOnlyCollection<IGameComponent> Components { get; }
+        IReadOnlyCollection<IGameComponent> Components { get => new IGameComponent[0]; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is enabled.
@@ -49,13 +49,13 @@
         /// Gets the parent.
         /// </summary>
         /// <value>The parent.</value>
-        IGameEntity Parent { get; }
+        IGameEntity Parent { get => GameScene.Empty; }
 
         /// <summary>
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        IGameScene Scene { get; }
+        IGameScene Scene { get => GameScene.Empty; }
 
         /// <summary>
         /// Gets the transform matrix.
@@ -541,12 +541,6 @@
             public event PropertyChangedEventHandler? PropertyChanged;
 
             /// <inheritdoc />
-            public IReadOnlyCollection<IGameEntity> Children { get; } = new IGameEntity[0];
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IGameComponent> Components { get; } = new IGameComponent[0];
-
-            /// <inheritdoc />
             public bool IsEnabled {
                 get => false;
                 set {
@@ -580,12 +574,6 @@
                     return;
                 }
             }
-
-            /// <inheritdoc />
-            public IGameEntity Parent => GameScene.Empty;
-
-            /// <inheritdoc />
-            public IGameScene Scene => GameScene.Empty;
 
             /// <inheritdoc />
             public Transform Transform => Transform.Origin;

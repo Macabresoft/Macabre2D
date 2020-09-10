@@ -29,7 +29,7 @@
         /// Gets all components in this scene.
         /// </summary>
         /// <value>All components in this scene.</value>
-        IReadOnlyCollection<IGameComponent> AllComponentsInScene { get; }
+        IReadOnlyCollection<IGameComponent> AllComponentsInScene { get => new IGameComponent[0]; }
 
         /// <summary>
         /// Gets or sets the color of the background.
@@ -41,43 +41,43 @@
         /// Gets the camera components.
         /// </summary>
         /// <value>The camera components.</value>
-        IReadOnlyCollection<IGameCameraComponent> CameraComponents { get; }
+        IReadOnlyCollection<IGameCameraComponent> CameraComponents { get => new IGameCameraComponent[0]; }
 
         /// <summary>
         /// Gets the game currently running this scene.
         /// </summary>
         /// <value>The game.</value>
-        IGame Game { get; }
+        IGame Game { get => DefaultGame.Empty; }
 
         /// <summary>
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
-        TileGrid Grid { get; }
+        TileGrid Grid { get => TileGrid.Empty; }
 
         /// <summary>
         /// Gets the physics bodies.
         /// </summary>
         /// <value>The physics bodies.</value>
-        IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get; }
+        IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get => new IPhysicsBody[0]; }
 
         /// <summary>
         /// Gets the renderable components.
         /// </summary>
         /// <value>The renderable components.</value>
-        IReadOnlyCollection<IGameRenderableComponent> RenderableComponents { get; }
+        IReadOnlyCollection<IGameRenderableComponent> RenderableComponents { get => new IGameRenderableComponent[0]; }
 
         /// <summary>
         /// Gets the services.
         /// </summary>
         /// <value>The services.</value>
-        IReadOnlyCollection<IGameService> Services { get; }
+        IReadOnlyCollection<IGameService> Services { get => new IGameService[0]; }
 
         /// <summary>
         /// Gets the updateable components.
         /// </summary>
         /// <value>The updateable components.</value>
-        IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get; }
+        IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get => new IGameUpdateableComponent[0]; }
 
         /// <summary>
         /// Adds the service.
@@ -381,31 +381,7 @@
             public event EventHandler<IGameComponent>? ComponentUnregistered;
 
             /// <inheritdoc />
-            public IReadOnlyCollection<IGameComponent> AllComponentsInScene { get; } = new IGameComponent[0];
-
-            /// <inheritdoc />
             public Color BackgroundColor { get => Color.HotPink; set { return; } }
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IGameCameraComponent> CameraComponents { get; } = new IGameCameraComponent[0];
-
-            /// <inheritdoc />
-            public IGame Game => DefaultGame.Empty;
-
-            /// <inheritdoc />
-            public TileGrid Grid { get; } = new TileGrid(Vector2.One);
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get; } = new IPhysicsBody[0];
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents { get; } = new IGameRenderableComponent[0];
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IGameService> Services { get; } = new IGameService[0];
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get; } = new IGameUpdateableComponent[0];
 
             /// <inheritdoc />
             public T AddService<T>() where T : IGameService, new() {

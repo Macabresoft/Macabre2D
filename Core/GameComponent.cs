@@ -13,7 +13,7 @@
         /// Gets the entity.
         /// </summary>
         /// <value>The entity.</value>
-        IGameEntity Entity { get; }
+        IGameEntity Entity { get => GameEntity.Empty; }
 
         /// <summary>
         /// Initializes this component as a descendent of <paramref name="scene" /> and <paramref
@@ -132,9 +132,6 @@
 
             /// <inheritdoc />
             public event PropertyChangedEventHandler? PropertyChanged;
-
-            /// <inheritdoc />
-            public IGameEntity Entity => GameEntity.Empty;
 
             /// <inheritdoc />
             public Guid Id {

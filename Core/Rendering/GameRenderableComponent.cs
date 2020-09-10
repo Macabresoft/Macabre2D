@@ -17,7 +17,7 @@
         /// Gets the render order.
         /// </summary>
         /// <value>The render order.</value>
-        int RenderOrder { get; }
+        int RenderOrder { get => 0; }
 
         /// <summary>
         /// Renders this instance.
