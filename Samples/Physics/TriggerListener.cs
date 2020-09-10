@@ -18,12 +18,7 @@
             }
 
             this._body.CollisionOccured += this._body_CollisionOccured;
-
-            this.Entity.Scene.Invoke(() => {
-                this._drawer = this.Entity.AddComponent<ColliderDrawerComponent>();
-                this._drawer.Color = Color.MonoGameOrange;
-                this._drawer.LineThickness = 3f;
-            });
+            this.Entity.TryGetComponent(out this._drawer);
         }
 
         private void _body_CollisionOccured(object sender, CollisionEventArgs e) {

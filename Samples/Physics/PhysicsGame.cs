@@ -43,8 +43,8 @@
             circleDrawer.LineThickness = 2f;
             circleEntity.AddComponent<VelocityChanger>();
 
-            for (var y = 0; y < 1; y++) {
-                for (var x = 0; x < 1; x++) {
+            for (var y = 0; y < 2; y++) {
+                for (var x = 0; x < 4; x++) {
                     var smallCircleEntity = scene.AddChild();
                     smallCircleEntity.Name = $"small circle ({x}, {y})";
                     var smallCircleBody = smallCircleEntity.AddComponent<DynamicPhysicsBody>();
@@ -99,6 +99,9 @@
             triggerEntity.LocalPosition += new Vector2(2f, 2.5f);
             triggerBody.IsTrigger = true;
             triggerEntity.AddComponent<TriggerListener>();
+            var triggerDrawer = triggerEntity.AddComponent<ColliderDrawerComponent>();
+            triggerDrawer.Color = Color.MonoGameOrange;
+            triggerDrawer.LineThickness = 3f;
 
             scene.Initialize(this);
 
