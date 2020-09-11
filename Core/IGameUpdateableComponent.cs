@@ -8,6 +8,9 @@
     /// </summary>
     public interface IGameUpdateableComponent : IGameUpdateable, IGameComponent {
 
+        /// <inheritdoc />
+        bool IEnableable { get => this.Entity.IsEnabled; }
+
         /// <summary>
         /// Gets the update order.
         /// </summary>

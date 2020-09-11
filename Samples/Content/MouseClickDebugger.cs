@@ -3,7 +3,7 @@
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
 
-    public sealed class MouseClickDebugger : BaseDrawerComponent, IUpdateableComponent {
+    public sealed class MouseClickDebugger : BaseDrawerComponent, IGameUpdateableComponent {
         private CameraComponent _camera;
 
         public override BoundingArea BoundingArea {
@@ -12,20 +12,19 @@
             }
         }
 
-        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            var spriteBatch = MacabreGame.Instance.SpriteBatch;
-            this.PrimitiveDrawer?.DrawCircle(spriteBatch, 1f, this.WorldTransform.Position, 50, this.Color, 3f);
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.Color = Color.Green;
+            this.LineThickness = 3f;
+            this.Entity.TryGetComponent(out this._camera);
+        }
+
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            this.PrimitiveDrawer?.DrawCircle(this.Entity.Scene.Game.SpriteBatch, 1f, this.Entity.Transform.Position, 50, this.Color, 3f);
         }
 
         public void Update(FrameTime frameTime, InputState inputState) {
-            this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
-        }
-
-        protected override void Initialize() {
-            base.Initialize();
-            this.Color = Color.Green;
-            this.LineThickness = 3f;
-            this._camera = this.Scene.FindComponentOfType<CameraComponent>();
+            this.Entity.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
         }
     }
 }

@@ -7,8 +7,8 @@
     /// <summary>
     /// A module which allows simple raycasting through colliders, which are sorted into a quad tree.
     /// </summary>
-    /// <seealso cref="FixedTimeStepService" />
-    public class SimplePhysicsService : FixedTimeStepService {
+    /// <seealso cref="FixedTimeStepSystem" />
+    public class SimplePhysicsService : FixedTimeStepSystem {
 
         /// <summary>
         /// Gets the collider tree.

@@ -1,9 +1,9 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     /// <summary>
-    /// A service which does a sorted update loop over enabled updateable components.
+    /// A system which does a sorted update loop over enabled updateable components.
     /// </summary>
-    public sealed class UpdateService : GameService {
+    public sealed class UpdateSystem : GameSystem {
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {

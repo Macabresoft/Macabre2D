@@ -4,10 +4,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A module which updates at a fixed time step.
+    /// A system which updates at a fixed time step.
     /// </summary>
     /// <seealso cref="BaseModule" />
-    public abstract class FixedTimeStepService : GameService {
+    public abstract class FixedTimeStepSystem : GameSystem {
         private float _timePassed;
         private float _timeStep = 1f / 30f;
 

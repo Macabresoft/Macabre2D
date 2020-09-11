@@ -24,7 +24,7 @@
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new GameScene();
-            scene.AddService<UpdateService>();
+            scene.AddService<UpdateSystem>();
 
             scene.AddChild().AddComponent<CameraComponent>();
 

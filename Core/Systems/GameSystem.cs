@@ -5,9 +5,9 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Interface for an service which runs operations for a <see cref="IGameScene" />.
+    /// Interface for an system which runs operations for a <see cref="IGameScene" />.
     /// </summary>
-    public interface IGameService : INotifyPropertyChanged {
+    public interface IGameSystem : INotifyPropertyChanged {
 
         /// <summary>
         /// Initializes this service as a descendent of <paramref name="scene" />.
@@ -24,10 +24,10 @@
     }
 
     /// <summary>
-    /// Base class for a service which runs operations for a <see cref="IGameScene" />.
+    /// Base class for a system which runs operations for a <see cref="IGameScene" />.
     /// </summary>
     [DataContract]
-    public abstract class GameService : PropertyChangedNotifier, IGameService {
+    public abstract class GameSystem : PropertyChangedNotifier, IGameSystem {
 
         /// <summary>
         /// Gets the scene.
