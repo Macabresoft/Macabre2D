@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -23,13 +24,15 @@
                 return;
             }
 
-            foreach (var boundingArea in this._boundingAreas) {
-                var minimum = boundingArea.Minimum;
-                var maximum = boundingArea.Maximum;
-                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                foreach (var boundingArea in this._boundingAreas) {
+                    var minimum = boundingArea.Minimum;
+                    var maximum = boundingArea.Maximum;
+                    var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
-                var points = new Vector2[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
-                this.PrimitiveDrawer.DrawPolygon(this.Entity.Scene.Game.SpriteBatch, this.Color, lineThickness, points);
+                    var points = new Vector2[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
+                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, points);
+                }
             }
         }
 

@@ -443,7 +443,7 @@
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj) {
+            public override bool Equals(object? obj) {
                 if (!(obj is AddJournalEntry)) {
                     return false;
                 }

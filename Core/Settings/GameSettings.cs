@@ -84,7 +84,7 @@
         /// <param name="settingName">Name of the setting.</param>
         /// <param name="settingValue">The setting value.</param>
         /// <returns>A value indicating whether or not the custom setting was found.</returns>
-        bool TryGetCustomSetting(string settingName, out string settingValue);
+        bool TryGetCustomSetting(string settingName, out string? settingValue);
     }
 
     /// <summary>
@@ -198,7 +198,7 @@
         }
 
         /// <inheritdoc />
-        public bool TryGetCustomSetting(string settingName, out string settingValue) {
+        public bool TryGetCustomSetting(string settingName, out string? settingValue) {
             return this._customSettings.TryGetValue(settingName, out settingValue);
         }
     }

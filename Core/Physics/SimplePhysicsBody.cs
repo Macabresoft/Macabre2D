@@ -9,7 +9,7 @@
     /// </summary>
     /// <seealso cref="BaseComponent" />
     public class SimplePhysicsBody : PhysicsBody, IPhysicsBody {
-        private Collider _collider = Collider.Empty;
+        private Collider? _collider;
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
@@ -23,7 +23,7 @@
         /// </summary>
         /// <value>The colliders.</value>
         [DataMember(Order = 0)]
-        public Collider Collider {
+        public Collider? Collider {
             get {
                 return this._collider;
             }
@@ -50,13 +50,13 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this._collider.Initialize(this);
+            this._collider?.Initialize(this);
         }
 
         /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                this._collider.Reset();
+                this._collider?.Reset();
             }
         }
     }

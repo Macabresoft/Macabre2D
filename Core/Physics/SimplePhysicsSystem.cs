@@ -5,10 +5,10 @@
     using System.Linq;
 
     /// <summary>
-    /// A module which allows simple raycasting through colliders, which are sorted into a quad tree.
+    /// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
     /// </summary>
     /// <seealso cref="FixedTimeStepSystem" />
-    public class SimplePhysicsService : FixedTimeStepSystem {
+    public class SimplePhysicsSystem : FixedTimeStepSystem {
 
         /// <summary>
         /// Gets the collider tree.

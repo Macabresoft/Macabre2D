@@ -19,7 +19,7 @@
         private Color _color = Color.White;
         private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
-        private AutoTileSet _tileSet = AutoTileSet.Empty;
+        private AutoTileSet? _tileSet;
 
         /// <summary>
         /// Represents four directions from a single tile.
@@ -74,20 +74,23 @@
         /// </summary>
         /// <value>The tile set.</value>
         [DataMember(Order = 0, Name = "Tile Set")]
-        public AutoTileSet TileSet {
+        public AutoTileSet? TileSet {
             get {
                 return this._tileSet;
             }
 
             set {
-                var originalValue = this._tileSet;
-                this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
+                if (this._tileSet != null) {
+                    this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
+                }
 
                 if (this.Set(ref this._tileSet, value)) {
                     this.ReloadTileSet();
                 }
 
-                this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
+                if (this._tileSet != null) {
+                    this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
+                }
             }
         }
 
@@ -118,7 +121,7 @@
             this._previousWorldScale = this.Entity.Transform.Scale;
             // I think maybe I don't need this.
             ////this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
-            this.TileSet.Load();
+            this.TileSet?.Load();
             this.ReevaluateIndexes();
             this.ResetSpriteScales();
         }
@@ -140,7 +143,7 @@
             var result = false;
             if (this.TileSet != null) {
                 if (this.TileSet.Id == id) {
-                    this.TileSet = AutoTileSet.Empty;
+                    this.TileSet = null;
                     result = true;
                 }
                 else {
@@ -158,7 +161,7 @@
                     var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
                     if (boundingArea.Overlaps(viewBoundingArea)) {
                         if (this.TileSet.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
-                            this.Entity.Scene.Game.SpriteBatch.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
+                            this.Entity.Scene.Game.SpriteBatch?.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
                         }
                     }
                 }
@@ -166,26 +169,26 @@
         }
 
         /// <inheritdoc />
-        bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet asset) {
+        bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet? asset) {
             var result = false;
             if (this.TileSet?.Id == id) {
                 asset = this.TileSet;
                 result = true;
             }
             else {
-                asset = AutoTileSet.Empty;
+                asset = null;
             }
 
             return result;
         }
 
         /// <inheritdoc />
-        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
+        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite? asset) {
             if (this.TileSet != null) {
                 this.TileSet.TryGetSprite(id, out asset);
             }
             else {
-                asset = Sprite.Empty;
+                asset = null;
             }
 
             return asset != null;
@@ -350,8 +353,8 @@
             }
         }
 
-        private void TileSet_SpriteChanged(object sender, byte e) {
-            var sprite = this.TileSet.GetSprite(e);
+        private void TileSet_SpriteChanged(object? sender, byte e) {
+            var sprite = this.TileSet?.GetSprite(e);
             this._spriteScales[e] = this.GetTileScale(sprite);
         }
     }

@@ -32,12 +32,6 @@
     /// A dynamic body.
     /// </summary>
     public sealed class DynamicPhysicsBody : SimplePhysicsBody, IDynamicPhysicsBody {
-
-        /// <summary>
-        /// Empty dynamic physics body.
-        /// </summary>
-        public static readonly new IDynamicPhysicsBody Empty = new EmptyDynamicPhysicsBody();
-
         private bool _isKinematic;
         private float _mass = 1f;
         private Vector2 _velocity;
@@ -76,18 +70,6 @@
             set {
                 this.Set(ref this._velocity, value);
             }
-        }
-
-        private class EmptyDynamicPhysicsBody : EmptyPhysicsBody, IDynamicPhysicsBody {
-
-            /// <inheritdoc />
-            public bool IsKinematic { get => false; set { return; } }
-
-            /// <inheritdoc />
-            public float Mass { get => 0f; set { return; } }
-
-            /// <inheritdoc />
-            public Vector2 Velocity { get => Vector2.Zero; set { return; } }
         }
     }
 }

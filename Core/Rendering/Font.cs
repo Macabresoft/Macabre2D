@@ -10,11 +10,6 @@
     public sealed class Font : BaseIdentifiable, IAsset {
 
         /// <summary>
-        /// The default empty <see cref="Font" />.
-        /// </summary>
-        public static readonly Font Empty = new Font();
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Font" /> class.
         /// </summary>
         public Font() {

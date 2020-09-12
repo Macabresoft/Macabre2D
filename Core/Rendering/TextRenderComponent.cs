@@ -17,7 +17,7 @@
         private readonly ResettableLazy<Transform> _rotatableTransform;
         private readonly ResettableLazy<Vector2> _size;
         private Color _color = Color.Black;
-        private Font _font = Font.Empty;
+        private Font? _font;
         private float _rotation;
         private bool _snapToPixels;
         private string _text = string.Empty;
@@ -59,14 +59,14 @@
         /// </summary>
         /// <value>The font.</value>
         [DataMember(Order = 0)]
-        public Font Font {
+        public Font? Font {
             get {
                 return this._font;
             }
 
             set {
                 if (this.Set(ref this._font, value)) {
-                    this.Font.Load();
+                    this.Font?.Load();
                     this._boundingArea.Reset();
                     this._size.Reset();
                     this.RenderSettings.ResetOffset();
@@ -160,7 +160,7 @@
             base.Initialize(entity);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(new Func<Vector2>(() => this._size.Value));
-            this.Font.Load();
+            this.Font?.Load();
         }
 
         /// <inheritdoc />
@@ -174,7 +174,7 @@
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
-                this.Font = Font.Empty;
+                this.Font = null;
             }
 
             return result;
@@ -184,18 +184,18 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.Font?.SpriteFont != null && this.Text != null) {
                 if (this.SnapToPixels) {
-                    this.Entity.Scene.Game.SpriteBatch.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
                 }
                 else {
-                    this.Entity.Scene.Game.SpriteBatch.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
                 }
             }
         }
 
         /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out Font asset) {
-            var result = this.Font.Id == id;
-            asset = result ? this.Font : Font.Empty;
+        public bool TryGetAsset(Guid id, out Font? asset) {
+            var result = this.Font?.Id == id;
+            asset = result ? this.Font : null;
             return result;
         }
 

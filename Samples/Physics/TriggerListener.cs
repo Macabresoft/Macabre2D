@@ -13,9 +13,6 @@
             if (this.Entity.TryGetComponent<IPhysicsBody>(out var body) && body != null) {
                 this._body = body;
             }
-            else {
-                this._body = PhysicsBody.Empty;
-            }
 
             this._body.CollisionOccured += this._body_CollisionOccured;
             this.Entity.TryGetComponent(out this._drawer);

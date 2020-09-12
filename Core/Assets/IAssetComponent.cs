@@ -29,7 +29,7 @@
     /// Interface for a component that has assets of a specific type.
     /// </summary>
     /// <typeparam name="T">The type of asset.</typeparam>
-    public interface IAssetComponent<T> : IAssetComponent where T : IIdentifiable {
+    public interface IAssetComponent<T> : IAssetComponent where T : class, IIdentifiable {
 
         /// <summary>
         /// Gets the owned asset identifiers on this object.
@@ -53,6 +53,6 @@
         /// <param name="id">The identifier.</param>
         /// <param name="asset">The asset.</param>
         /// <returns>A value indicating whether or not the asset was found.</returns>
-        bool TryGetAsset(Guid id, out T asset);
+        bool TryGetAsset(Guid id, out T? asset);
     }
 }

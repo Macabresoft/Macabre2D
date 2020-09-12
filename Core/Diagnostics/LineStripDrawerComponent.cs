@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -44,9 +45,9 @@
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.PrimitiveDrawer != null && this._points.Any()) {
+            if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this._points.Any()) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawLineStrip(this.Entity.Scene.Game.SpriteBatch, this.Color, lineThickness, this.Points.ToArray());
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Color, lineThickness, this.Points.ToArray());
             }
         }
 

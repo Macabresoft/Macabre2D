@@ -8,7 +8,7 @@
     [DataContract]
     public sealed class SpriteAnimationStep : NotifyPropertyChanged {
         private int _frames = 1;
-        private Sprite _sprite = Sprite.Empty;
+        private Sprite? _sprite;
 
         /// <summary>
         /// Gets or sets the number of frames this sprite will be seen.
@@ -32,7 +32,7 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }

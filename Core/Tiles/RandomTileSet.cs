@@ -12,13 +12,6 @@
     /// </summary>
     public sealed class RandomTileSet : BaseIdentifiable, IAsset {
 
-        /// <summary>
-        /// An empty random tile set.
-        /// </summary>
-        public static readonly RandomTileSet Empty = new RandomTileSet() {
-            Name = "Empty"
-        };
-
         [DataMember]
         private readonly List<WeightedTile> _tiles = new List<WeightedTile>();
 
@@ -100,8 +93,8 @@
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
-        public Sprite GetSprite(ushort index) {
-            return index < this._tiles.Count ? this._tiles[index].Sprite : Sprite.Empty;
+        public Sprite? GetSprite(ushort index) {
+            return index < this._tiles.Count ? this._tiles[index].Sprite : null;
         }
 
         /// <summary>
@@ -109,7 +102,9 @@
         /// </summary>
         /// <returns>The sprite identifiers.</returns>
         public IEnumerable<Guid> GetSpriteIds() {
+#nullable disable
             return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.Id).ToList();
+#nullable enable
         }
 
         /// <summary>
@@ -158,7 +153,7 @@
             var tiles = this._tiles.Where(x => x.Sprite?.Id == spriteId).ToList();
 
             foreach (var tile in tiles) {
-                tile.Sprite = Sprite.Empty;
+                tile.Sprite = null;
             }
 
             return result;
@@ -180,7 +175,7 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <param name="sprite">The sprite.</param>
         /// <returns>A value indicating whether or not the value was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
             sprite = this.Tiles.Select(x => x.Sprite).FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
         }

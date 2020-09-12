@@ -282,9 +282,11 @@
 
         private List<Vector2> CreateWorldPoints() {
             var worldPoints = new List<Vector2>();
-            foreach (var point in this._points) {
-                var worldPoint = this.Body.Entity.GetWorldTransform(this.Offset + point).Position;
-                worldPoints.Add(worldPoint);
+            if (this.Body != null) {
+                foreach (var point in this._points) {
+                    var worldPoint = this.Body.Entity.GetWorldTransform(this.Offset + point).Position;
+                    worldPoints.Add(worldPoint);
+                }
             }
 
             return worldPoints;

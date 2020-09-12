@@ -18,12 +18,12 @@
         /// <summary>
         /// Occurs when a component is registered.
         /// </summary>
-        event EventHandler<IGameComponent> ComponentRegistered;
+        event EventHandler<IGameComponent>? ComponentRegistered;
 
         /// <summary>
         /// Occurs when a component is unregistered.
         /// </summary>
-        event EventHandler<IGameComponent> ComponentUnregistered;
+        event EventHandler<IGameComponent>? ComponentUnregistered;
 
         /// <summary>
         /// Gets all components in this scene.

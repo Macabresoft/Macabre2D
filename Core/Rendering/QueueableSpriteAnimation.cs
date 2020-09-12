@@ -8,11 +8,6 @@
     public sealed class QueueableSpriteAnimation {
 
         /// <summary>
-        /// An empty <see cref="QueueableSpriteAnimation" /> with no actual animation.
-        /// </summary>
-        public static readonly QueueableSpriteAnimation Empty = new QueueableSpriteAnimation(SpriteAnimation.Empty, false);
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="QueueableSpriteAnimation" /> class.
         /// </summary>
         /// <param name="animation">The animation.</param>

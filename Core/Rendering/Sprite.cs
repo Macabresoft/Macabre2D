@@ -9,15 +9,6 @@
     /// Represents a sprite that can be loaded as content.
     /// </summary>
     public sealed class Sprite : BaseIdentifiable, IAsset, IDisposable {
-
-        /// <summary>
-        /// A sprite that contains no <see cref="AssetId" /> nor a <see cref="Texture2D" />.
-        /// </summary>
-        public static readonly Sprite Empty = new Sprite() {
-            Name = "Empty",
-            Id = Guid.Empty
-        };
-
         private bool _disposedValue = false;
         private Point _location;
         private string _name = string.Empty;

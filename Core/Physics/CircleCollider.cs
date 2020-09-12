@@ -227,7 +227,7 @@
             var valueA = (float)(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
 
             if (valueA <= 0.0000001f) {
-                result = null;
+                result = RaycastHit.Empty;
                 return false;
             }
 
@@ -236,7 +236,7 @@
             var det = Math.Pow(valueB, 2f) - 4f * valueA * valueC;
 
             if (det < 0f) {
-                result = null;
+                result = RaycastHit.Empty;
                 return false;
             }
             else if (det == 0f) {

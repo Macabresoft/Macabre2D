@@ -11,10 +11,10 @@
     /// </summary>
     public class SpriteAnimationComponent : SpriteRenderComponent, IGameUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
-        private QueueableSpriteAnimation _currentAnimation = QueueableSpriteAnimation.Empty;
+        private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
         private uint _currentStepIndex;
-        private SpriteAnimation _defaultAnimation = SpriteAnimation.Empty;
+        private SpriteAnimation? _defaultAnimation;
         private byte _frameRate = 30;
         private uint _millisecondsPassed;
         private uint _millisecondsPerFrame;
@@ -29,9 +29,9 @@
         /// Gets the current animation.
         /// </summary>
         /// <value>The current animation.</value>
-        public SpriteAnimation CurrentAnimation {
+        public SpriteAnimation? CurrentAnimation {
             get {
-                return this._currentAnimation.Animation;
+                return this._currentAnimation?.Animation;
             }
         }
 
@@ -40,15 +40,13 @@
         /// </summary>
         /// <value>The default animation.</value>
         [DataMember(Order = 10, Name = "Default Animation")]
-        public SpriteAnimation DefaultAnimation {
+        public SpriteAnimation? DefaultAnimation {
             get {
                 return this._defaultAnimation;
             }
 
             set {
-                if (value.Id != Guid.Empty) {
-                    this.Set(ref this._defaultAnimation, value);
-                }
+                this.Set(ref this._defaultAnimation, value);
             }
         }
 
@@ -162,9 +160,9 @@
             this._currentStepIndex = 0;
 
             if (eraseQueue) {
-                this._currentAnimation = QueueableSpriteAnimation.Empty;
+                this._currentAnimation = null;
                 this._queuedSpriteAnimations.Clear();
-                this.Sprite = Sprite.Empty;
+                this.Sprite = null;
             }
         }
 
@@ -201,7 +199,7 @@
                                 this._millisecondsPassed = 0;
                             }
                             else if (!this._currentAnimation.ShouldLoopIndefinitely) {
-                                this._currentAnimation = QueueableSpriteAnimation.Empty;
+                                this._currentAnimation = null;
                             }
                         }
 

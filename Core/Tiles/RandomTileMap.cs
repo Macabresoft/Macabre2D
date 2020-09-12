@@ -19,7 +19,7 @@
         private Color _color = Color.White;
         private Vector2 _previousWorldScale;
         private Vector2[] _spriteScales = new Vector2[0];
-        private RandomTileSet _tileSet = RandomTileSet.Empty;
+        private RandomTileSet? _tileSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomTileMap" /> class.
@@ -54,20 +54,23 @@
         /// </summary>
         /// <value>The tile set.</value>
         [DataMember(Order = 0, Name = "Tile Set")]
-        public RandomTileSet TileSet {
+        public RandomTileSet? TileSet {
             get {
                 return this._tileSet;
             }
 
             set {
-                var originalValue = this._tileSet;
-                this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
+                if (this._tileSet != null) {
+                    this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
+                }
 
                 if (this.Set(ref this._tileSet, value)) {
                     this.LoadTileSet();
                 }
 
-                this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
+                if (this._tileSet != null) {
+                    this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
+                }
             }
         }
 
@@ -114,7 +117,7 @@
             var result = false;
             if (this.TileSet != null) {
                 if (this.TileSet.Id == id) {
-                    this.TileSet = RandomTileSet.Empty;
+                    this.TileSet = null;
                     result = true;
                 }
                 else {
@@ -130,34 +133,34 @@
             foreach (var activeTileToIndex in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
                 if (boundingArea.Overlaps(viewBoundingArea)) {
-                    if (this.TileSet.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
-                        this.Entity.Scene.Game.SpriteBatch.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
+                    if (this.TileSet?.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
+                        this.Entity.Scene.Game.SpriteBatch?.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
                     }
                 }
             }
         }
 
         /// <inheritdoc />
-        bool IAssetComponent<RandomTileSet>.TryGetAsset(Guid id, out RandomTileSet asset) {
+        bool IAssetComponent<RandomTileSet>.TryGetAsset(Guid id, out RandomTileSet? asset) {
             var result = false;
             if (this.TileSet?.Id == id) {
                 asset = this.TileSet;
                 result = true;
             }
             else {
-                asset = RandomTileSet.Empty;
+                asset = null;
             }
 
             return result;
         }
 
         /// <inheritdoc />
-        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite asset) {
+        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite? asset) {
             if (this.TileSet != null) {
                 this.TileSet.TryGetSprite(id, out asset);
             }
             else {
-                asset = Sprite.Empty;
+                asset = null;
             }
 
             return asset != null;
@@ -219,7 +222,7 @@
         }
 
         private void LoadTileSet() {
-            this.TileSet.Load();
+            this.TileSet?.Load();
             this.ReevaluateIndexes();
             this.ResetSpriteScales();
         }
@@ -248,8 +251,8 @@
             }
         }
 
-        private void TileSet_SpriteChanged(object sender, ushort e) {
-            var sprite = this.TileSet.GetSprite(e);
+        private void TileSet_SpriteChanged(object? sender, ushort e) {
+            var sprite = this.TileSet?.GetSprite(e);
             this._spriteScales[e] = this.GetTileScale(sprite);
         }
     }

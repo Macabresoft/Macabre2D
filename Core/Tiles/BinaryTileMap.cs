@@ -16,7 +16,7 @@
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
         private Color _color = Color.White;
-        private Sprite _sprite = Sprite.Empty;
+        private Sprite? _sprite;
         private Vector2 _tileScale;
 
         /// <summary>
@@ -35,7 +35,7 @@
         /// <inheritdoc />
         public IEnumerable<Sprite> AvailableTiles {
             get {
-                return new[] { this.Sprite };
+                return this.Sprite != null ? new Sprite[] { this.Sprite } : new Sprite[0];
             }
         }
 
@@ -59,7 +59,7 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember(Order = 0)]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }
@@ -102,7 +102,7 @@
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
-                this.Sprite = Sprite.Empty;
+                this.Sprite = null;
             }
 
             return result;
@@ -114,7 +114,7 @@
                 foreach (var tile in this._activeTiles) {
                     var boundingArea = this.GetTileBoundingArea(tile);
                     if (boundingArea.Overlaps(viewBoundingArea)) {
-                        this.Entity.Scene.Game.SpriteBatch.Draw(this.Sprite, boundingArea.Minimum, this._tileScale, this.Color);
+                        this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, boundingArea.Minimum, this._tileScale, this.Color);
                     }
                 }
             }
@@ -126,9 +126,9 @@
         }
 
         /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out Sprite asset) {
-            var result = this.Sprite.Id == id;
-            asset = result ? this.Sprite : Sprite.Empty;
+        public bool TryGetAsset(Guid id, out Sprite? asset) {
+            var result = this.Sprite?.Id == id;
+            asset = result ? this.Sprite : null;
             return result;
         }
 
@@ -177,7 +177,7 @@
         }
 
         private void LoadSprite() {
-            this.Sprite.Load();
+            this.Sprite?.Load();
             this._tileScale = this.GetTileScale(this.Sprite);
         }
     }

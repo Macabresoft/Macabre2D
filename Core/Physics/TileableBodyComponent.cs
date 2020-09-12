@@ -18,7 +18,7 @@
         private Layers _overrideLayersLeftEdge = Layers.None;
         private Layers _overrideLayersRightEdge = Layers.None;
         private Layers _overrideLayersTopEdge = Layers.None;
-        private IGameTileableComponent _tileable = TileableComponent.Empty;
+        private IGameTileableComponent? _tileable;
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
@@ -125,26 +125,28 @@
         private CardinalDirections GetEdgeDirections(Point tile) {
             var directions = CardinalDirections.None;
 
-            if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
-                directions |= CardinalDirections.West;
-            }
+            if (this._tileable != null) {
+                if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
+                    directions |= CardinalDirections.West;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
-                directions |= CardinalDirections.North;
-            }
+                if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
+                    directions |= CardinalDirections.North;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
-                directions |= CardinalDirections.East;
-            }
+                if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
+                    directions |= CardinalDirections.East;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
-                directions |= CardinalDirections.South;
+                if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
+                    directions |= CardinalDirections.South;
+                }
             }
 
             return directions;
         }
 
-        private void OnRequestReset(object sender, EventArgs e) {
+        private void OnRequestReset(object? sender, EventArgs e) {
             this.ResetColliders();
         }
 
@@ -210,8 +212,10 @@
                 }
 
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(this._tileable.Grid.GetTilePosition(segment.StartPoint), this._tileable.Grid.GetTilePosition(segment.EndPoint));
-                    collider.Layers = segment.Layers;
+                    var collider = new LineCollider(this._tileable.Grid.GetTilePosition(segment.StartPoint), this._tileable.Grid.GetTilePosition(segment.EndPoint)) {
+                        Layers = segment.Layers
+                    };
+
                     collider.Initialize(this);
                     this._colliders.Add(collider);
                 }
@@ -219,8 +223,10 @@
         }
 
         private void SetTileable() {
-            this._tileable.PropertyChanged -= this.Tileable_PropertyChanged;
-            this._tileable.TilesChanged -= this.OnRequestReset;
+            if (this._tileable != null) {
+                this._tileable.PropertyChanged -= this.Tileable_PropertyChanged;
+                this._tileable.TilesChanged -= this.OnRequestReset;
+            }
 
             if (this.Entity.TryGetComponent<IGameTileableComponent>(out var tileable) && tileable != null) {
                 this._tileable = tileable;
@@ -228,7 +234,7 @@
                 this._tileable.TilesChanged += this.OnRequestReset;
             }
             else {
-                this._tileable = TileableComponent.Empty;
+                this._tileable = null;
             }
 
             this.ResetColliders();

@@ -8,11 +8,11 @@
     /// </summary>
     /// <seealso cref="ICollisionResolver" />
     public sealed class DefaultCollisionResolver : ICollisionResolver {
-        private IGamePhysicsService _service = EmptyPhysicsService.Instance;
+        private IGamePhysicsSystem? _service;
 
         /// <inheritdoc />
-        public void Initialize(IGamePhysicsService module) {
-            this._service = module;
+        public void Initialize(IGamePhysicsSystem system) {
+            this._service = system;
         }
 
         /// <inheritdoc />
@@ -42,15 +42,15 @@
                         firstBody.Velocity = massRatio * firstReflection + averageMagnitude * inverseMassRatio * e.Normal;
                         otherBody.Velocity = inverseMassRatio * otherReflection + averageMagnitude * massRatio * -e.Normal;
                     }
-                    else {
-                        firstBody.Velocity = this.GetNewVelocity(firstBody, e.SecondCollider.Body, e.Normal, normalPerpindicular, timeStep);
+                    else if (e.SecondCollider.Body is IPhysicsBody secondBody) {
+                        firstBody.Velocity = this.GetNewVelocity(firstBody, secondBody, e.Normal, normalPerpindicular, timeStep);
                     }
                 }
             }
         }
 
         private Vector2 ApplyFriction(Vector2 velocity, Vector2 normalPerpindicular, float friction) {
-            if (friction == 0) {
+            if (friction == 0 || this._service == null) {
                 return velocity;
             }
 
@@ -67,6 +67,10 @@
         }
 
         private Vector2 GetNewVelocity(IDynamicPhysicsBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
+            if (this._service == null) {
+                return firstBody.Velocity;
+            }
+
             var stickyDotProduct = Vector2.Dot(firstBody.Velocity.GetNormalized(), normalPerpindicular);
 
             if (1f - Math.Abs(stickyDotProduct) <= this._service.Stickiness) {

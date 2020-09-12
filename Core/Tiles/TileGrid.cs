@@ -56,7 +56,7 @@
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             return obj is TileGrid grid &&
                    this.Offset.Equals(grid.Offset) &&
                    this.TileSize.Equals(grid.TileSize);

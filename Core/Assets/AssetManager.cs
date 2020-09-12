@@ -25,13 +25,6 @@
         Guid GetId(string path);
 
         /// <summary>
-        /// Gets the path.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The path.</returns>
-        string GetPath(Guid id);
-
-        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="contentManager">The content manager.</param>
@@ -43,6 +36,14 @@
         /// <param name="id">The identifier.</param>
         /// <param name="contentPath">The content path.</param>
         void SetMapping(Guid id, string contentPath);
+
+        /// <summary>
+        /// Gets the path.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="path">The path.</param>
+        /// <returns>A value indicating whether or not the path was found.</returns>
+        bool TryGetPath(Guid id, out string? path);
 
         /// <summary>
         /// Loads the asset at the specified path.
@@ -110,12 +111,6 @@
         }
 
         /// <inheritdoc />
-        public string GetPath(Guid id) {
-            this._idToPathMapping.TryGetValue(id, out var result);
-            return result;
-        }
-
-        /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
             AssetManager.Instance = this;
@@ -124,6 +119,11 @@
         /// <inheritdoc />
         public void SetMapping(Guid id, string contentPath) {
             this._idToPathMapping[id] = contentPath;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetPath(Guid id, out string? path) {
+            return this._idToPathMapping.TryGetValue(id, out path);
         }
 
         /// <inheritdoc />

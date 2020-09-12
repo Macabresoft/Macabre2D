@@ -1,9 +1,9 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     /// <summary>
-    /// A physics module that handles collisions
+    /// A physics system that handles collisions.
     /// </summary>
-    public interface IGamePhysicsService {
+    public interface IGamePhysicsSystem {
 
         /// <summary>
         /// Gets or sets the gravity.
@@ -39,28 +39,5 @@
         /// </summary>
         /// <value>The stickiness.</value>
         float Stickiness { get; }
-    }
-
-    internal sealed class EmptyPhysicsService : IGamePhysicsService {
-
-        /// <summary>
-        /// The empty physics settings instance.
-        /// </summary>
-        public static readonly EmptyPhysicsService Instance = new EmptyPhysicsService();
-
-        /// <inheritdoc />
-        public Gravity Gravity => Gravity.Empty;
-
-        /// <inheritdoc />
-        public float Groundedness => 1f;
-
-        /// <inheritdoc />
-        public float MinimumPostBounceMagnitude => 0f;
-
-        /// <inheritdoc />
-        public float MinimumPostFrictionMagnitude => 0f;
-
-        /// <inheritdoc />
-        public float Stickiness => 1f;
     }
 }

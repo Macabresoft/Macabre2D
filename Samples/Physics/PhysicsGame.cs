@@ -28,7 +28,7 @@
 
             scene.AddChild().AddComponent<CameraComponent>();
 
-            var physicsService = scene.AddService<PhysicsService>();
+            var physicsService = scene.AddService<PhysicsSystem>();
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 

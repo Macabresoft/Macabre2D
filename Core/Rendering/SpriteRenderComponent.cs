@@ -18,7 +18,7 @@
         private Color _color = Color.White;
         private float _rotation;
         private bool _snapToPixels;
-        private Sprite _sprite = Sprite.Empty;
+        private Sprite? _sprite;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderComponent" /> class.
@@ -106,13 +106,13 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember(Order = 0)]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }
             set {
-                if (value.Id != Guid.Empty && this.Set(ref this._sprite, value)) {
-                    this.Sprite.Load();
+                if (this.Set(ref this._sprite, value)) {
+                    this.Sprite?.Load();
                     this.RenderSettings.InvalidateSize();
                     this._boundingArea.Reset();
                     this.RenderSettings.ResetOffset();
@@ -135,7 +135,7 @@
             base.Initialize(entity);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
-            this.Sprite.Load();
+            this.Sprite?.Load();
         }
 
         /// <inheritdoc />
@@ -149,7 +149,7 @@
         public virtual bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
-                this.Sprite = Sprite.Empty;
+                this.Sprite = null;
             }
 
             return result;
@@ -157,18 +157,20 @@
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this._snapToPixels) {
-                this.Entity.Scene.Game.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
-            }
-            else {
-                this.Entity.Scene.Game.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
+            if (this.Sprite != null) {
+                if (this._snapToPixels) {
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
+                }
+                else {
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
+                }
             }
         }
 
         /// <inheritdoc />
-        public virtual bool TryGetAsset(Guid id, out Sprite asset) {
-            var result = this.Sprite.Id == id;
-            asset = result ? this.Sprite : Sprite.Empty;
+        public virtual bool TryGetAsset(Guid id, out Sprite? asset) {
+            var result = this.Sprite?.Id == id;
+            asset = result ? this.Sprite : null;
             return result;
         }
 

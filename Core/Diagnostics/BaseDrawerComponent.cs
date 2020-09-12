@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -66,8 +67,10 @@
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
+#nullable disable
             this.PrimitiveDrawer = this.Entity.Scene.ResolveDependency(
                 () => new PrimitiveDrawer(this.Entity.Scene.Game.SpriteBatch));
+#nullable enable
         }
 
         /// <summary>
@@ -77,8 +80,8 @@
         /// <returns>The appropriate line thickness for this drawer.</returns>
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
-            if (this.UseDynamicLineThickness) {
-                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, this.Entity.Scene.Game.GraphicsDevice.Viewport.Height);
+            if (this.UseDynamicLineThickness && this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice device) {
+                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, device.Viewport.Height);
             }
 
             return result;

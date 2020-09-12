@@ -9,12 +9,6 @@
     /// </summary>
     [DataContract]
     public sealed class Gravity : NotifyPropertyChanged {
-
-        /// <summary>
-        /// Empty gravity.
-        /// </summary>
-        public static readonly Gravity Empty = new Gravity();
-
         private Vector2 _value;
 
         /// <summary>

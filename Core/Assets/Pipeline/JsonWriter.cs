@@ -11,7 +11,7 @@
         private readonly Serializer _serializer = new Serializer();
 
         /// <inheritdoc />
-        public override string GetRuntimeType(TargetPlatform targetPlatform) {
+        public override string? GetRuntimeType(TargetPlatform targetPlatform) {
             return typeof(T).AssemblyQualifiedName;
         }
 

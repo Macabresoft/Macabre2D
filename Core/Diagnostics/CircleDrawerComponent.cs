@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.Serialization;
 
 namespace Macabresoft.MonoGame.Core {
 
@@ -47,9 +48,9 @@ namespace Macabresoft.MonoGame.Core {
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Radius > 0f && this.PrimitiveDrawer != null) {
+            if (this.Radius > 0f && this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawCircle(this.Entity.Scene.Game.SpriteBatch, this.Radius, this.Entity.Transform.Position, this.Complexity, this.Color, lineThickness);
+                this.PrimitiveDrawer.DrawCircle(spriteBatch, this.Radius, this.Entity.Transform.Position, this.Complexity, this.Color, lineThickness);
             }
         }
     }

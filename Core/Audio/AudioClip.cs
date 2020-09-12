@@ -7,12 +7,6 @@
     /// A single audio clip.
     /// </summary>
     public sealed class AudioClip : BaseIdentifiable, IDisposable {
-
-        /// <summary>
-        /// A sprite that contains no <see cref="SoundEffect" />.
-        /// </summary>
-        public static readonly AudioClip Empty = new AudioClip();
-
         private bool _disposedValue = false;
 
         /// <summary>

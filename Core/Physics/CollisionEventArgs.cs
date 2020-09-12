@@ -9,11 +9,6 @@
     public sealed class CollisionEventArgs : EventArgs {
 
         /// <summary>
-        /// Empty event arguments.
-        /// </summary>
-        public static readonly CollisionEventArgs Empty = new CollisionEventArgs(Collider.Empty, Collider.Empty, Vector2.Zero, Vector2.Zero, false, false);
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="CollisionEventArgs" /> class.
         /// </summary>
         /// <param name="firstCollider">The first collider.</param>

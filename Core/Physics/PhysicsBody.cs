@@ -3,7 +3,6 @@
     using Macabresoft.Core;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -62,11 +61,6 @@
     /// </summary>
     public abstract class PhysicsBody : GameComponent, IPhysicsBody {
 
-        /// <summary>
-        /// The empty physics body.
-        /// </summary>
-        public static readonly IPhysicsBody Empty = new EmptyPhysicsBody();
-
         [DataMember]
         private int _updateOrder;
 
@@ -104,75 +98,6 @@
         /// <inheritdoc />
         public void NotifyCollisionOccured(CollisionEventArgs eventArgs) {
             this.CollisionOccured.SafeInvoke(this, eventArgs);
-        }
-
-        internal class EmptyPhysicsBody : IPhysicsBody {
-
-            /// <inheritdoc />
-            public event EventHandler<CollisionEventArgs>? CollisionOccured;
-
-            /// <inheritdoc />
-            public event PropertyChangedEventHandler? PropertyChanged;
-
-            /// <inheritdoc />
-            public BoundingArea BoundingArea => throw new NotImplementedException();
-
-            /// <inheritdoc />
-            public IGameEntity Entity => GameEntity.Empty;
-
-            /// <inheritdoc />
-            public bool HasCollider => false;
-
-            /// <inheritdoc />
-            public Guid Id {
-                get {
-                    return Guid.Empty;
-                }
-
-                set {
-                    return;
-                }
-            }
-
-            /// <inheritdoc />
-            public bool IsEnabled {
-                get {
-                    return false;
-                }
-
-                set {
-                    return;
-                }
-            }
-
-            /// <inheritdoc />
-            public bool IsTrigger => false;
-
-            /// <inheritdoc />
-            public PhysicsMaterial PhysicsMaterial => PhysicsMaterial.Empty;
-
-            /// <inheritdoc />
-            public int UpdateOrder => 0;
-
-            /// <inheritdoc />
-            public void Dispose() {
-                return;
-            }
-
-            /// <inheritdoc />
-            public IEnumerable<Collider> GetColliders() {
-                return new Collider[0];
-            }
-
-            /// <inheritdoc />
-            public void Initialize(IGameEntity entity) {
-                return;
-            }
-
-            /// <inheritdoc />
-            public void NotifyCollisionOccured(CollisionEventArgs eventArgs) {
-                return;
-            }
         }
     }
 }

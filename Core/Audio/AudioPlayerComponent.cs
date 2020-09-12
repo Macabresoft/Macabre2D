@@ -11,7 +11,7 @@
     /// Plays a <see cref="AudioClip" />.
     /// </summary>
     public sealed class AudioPlayerComponent : GameComponent, IAssetComponent<AudioClip> {
-        private AudioClip _audioClip = AudioClip.Empty;
+        private AudioClip? _audioClip;
         private float _pan;
         private float _pitch;
         private bool _shouldLoop;
@@ -22,17 +22,17 @@
         /// </summary>
         /// <value>The audio clip.</value>
         [DataMember(Order = 0, Name = "Audio Clip")]
-        public AudioClip AudioClip {
+        public AudioClip? AudioClip {
             get {
                 return this._audioClip;
             }
 
             set {
                 if (!this.Entity.Scene.Game.IsDesignMode) {
-                    this._audioClip.SoundEffectInstance?.Stop(true);
+                    this._audioClip?.SoundEffectInstance?.Stop(true);
 
                     if (this.Set(ref this._audioClip, value) && !this.Entity.Scene.Game.IsDesignMode) {
-                        this.AudioClip.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+                        this.AudioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
                     }
                 }
             }
@@ -130,9 +130,9 @@
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
-            this._audioClip.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+            this._audioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
 
-            if (this._shouldLoop && this.Entity.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+            if (this._shouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
                 this._audioClip.SoundEffectInstance.IsLooped = true;
                 this.Play();
             }
@@ -168,7 +168,7 @@
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
-                this._audioClip = AudioClip.Empty;
+                this._audioClip = null;
             }
 
             return result;
@@ -194,15 +194,15 @@
         }
 
         /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out AudioClip asset) {
-            var result = this.AudioClip.Id == id;
-            asset = this.AudioClip;
+        public bool TryGetAsset(Guid id, out AudioClip? asset) {
+            var result = this.AudioClip?.Id == id;
+            asset = result ? this.AudioClip : null;
             return result;
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.IsEnabled)) {
-                if (this.ShouldLoop && this.Entity.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+                if (this.ShouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.IsLooped = true;
                     this.Play();
                 }

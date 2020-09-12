@@ -287,12 +287,12 @@
                 Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
         }
 
-        private void Game_ViewportSizeChanged(object sender, Point e) {
+        private void Game_ViewportSizeChanged(object? sender, Point e) {
             this.OffsetSettings.InvalidateSize();
             this.ResetLazyValues();
         }
 
-        private void OffsetSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.OffsetSettings.Offset)) {
                 this._boundingArea.Reset();
             }

@@ -9,7 +9,7 @@
         /// Initializes the collision resolver, providing it the physics service.
         /// </summary>
         /// <param name="service">The service.</param>
-        void Initialize(IGamePhysicsService service);
+        void Initialize(IGamePhysicsSystem service);
 
         /// <summary>
         /// Resolves the collision.

@@ -10,13 +10,6 @@
     /// </summary>
     public sealed class SpriteAnimation : BaseIdentifiable, IAsset {
 
-        /// <summary>
-        /// An empty sprite animation.
-        /// </summary>
-        public static readonly SpriteAnimation Empty = new SpriteAnimation() {
-            Id = Guid.Empty
-        };
-
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new List<SpriteAnimationStep>();
 
@@ -100,7 +93,9 @@
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Guid> GetSpriteIds() {
+#nullable disable
             return this._steps.Where(x => x.Sprite != null).Select(x => x.Sprite.Id);
+#nullable enable
         }
 
         /// <summary>
@@ -121,7 +116,7 @@
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._steps.Select(x => x.Sprite).Where(x => x?.Texture != null)) {
-                        sprite.Load();
+                        sprite?.Load();
                     }
                 }
                 finally {
@@ -151,7 +146,7 @@
             var staps = this._steps.Where(x => x.Sprite?.Id == id);
             foreach (var step in staps) {
                 result = true;
-                step.Sprite = Sprite.Empty;
+                step.Sprite = null;
             }
 
             return result;
@@ -172,8 +167,8 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <param name="sprite">The sprite.</param>
         /// <returns>A value indicating whether or not the sprite was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
-            sprite = this._steps.FirstOrDefault(x => x.Sprite?.Id == spriteId)?.Sprite ?? Sprite.Empty;
+        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
+            sprite = this._steps.FirstOrDefault(x => x.Sprite?.Id == spriteId)?.Sprite;
             return sprite != null;
         }
     }

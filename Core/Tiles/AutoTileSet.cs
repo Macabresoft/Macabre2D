@@ -11,14 +11,6 @@
     /// Base class for easy and generic implementations of <see cref="IAutoTileSet" />.
     /// </summary>
     public sealed class AutoTileSet : BaseIdentifiable, IAsset {
-
-        /// <summary>
-        /// An empty auto tile set.
-        /// </summary>
-        public static readonly AutoTileSet Empty = new AutoTileSet() {
-            Name = "Empty"
-        };
-
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
@@ -101,7 +93,7 @@
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
-        public Sprite GetSprite(byte index) {
+        public Sprite? GetSprite(byte index) {
             this._indexToSprites.TryGetValue(index, out var sprite);
             return sprite;
         }
@@ -160,7 +152,7 @@
             var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
 
             foreach (var index in indexes) {
-                this.SetSprite(Sprite.Empty, index);
+                this.SetSprite(null, index);
                 result = true;
             }
 
@@ -172,7 +164,7 @@
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="index">The index.</param>
-        public void SetSprite(Sprite sprite, byte index) {
+        public void SetSprite(Sprite? sprite, byte index) {
             if (index < this.Size) {
                 if (sprite != null) {
                     this._indexToSprites[index] = sprite;

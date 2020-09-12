@@ -7,10 +7,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A module which allows for raycasting and handles rigidbody physics interactions.
+    /// A system which allows for raycasting and handles rigidbody physics interactions.
     /// </summary>
-    /// <seealso cref="SimplePhysicsService" />
-    public sealed class PhysicsService : SimplePhysicsService, IGamePhysicsService {
+    /// <seealso cref="SimplePhysicsSystem" />
+    public sealed class PhysicsSystem : SimplePhysicsSystem, IGamePhysicsSystem {
         private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new Dictionary<Guid, List<Guid>>();
 
         [DataMember(Name = "Collision Resolver", Order = 0)]
@@ -115,25 +115,27 @@
                 foreach (var collider in body.GetColliders()) {
                     var potentials = this.ColliderTree.RetrievePotentialCollisions(collider);
                     foreach (var otherCollider in potentials.Where(c => c != collider && GameSettings.Instance.Layers.GetShouldCollide(c.Layers, collider.Layers))) {
-                        var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
-                            collisions.Contains(body.Id);
+                        if (otherCollider.Body != null) {
+                            var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
+                                collisions.Contains(body.Id);
 
-                        if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision)) {
-                            if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
-                                this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                            if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision) && collision != null) {
+                                if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {
+                                    this._collisionResolver.ResolveCollision(collision, this.TimeStep);
+                                }
+
+                                body.NotifyCollisionOccured(collision);
+
+                                var otherCollision = new CollisionEventArgs(
+                                    collision.SecondCollider,
+                                    collision.FirstCollider,
+                                    collision.Normal,
+                                    -collision.MinimumTranslationVector,
+                                    collision.SecondContainsFirst,
+                                    collision.FirstContainsSecond);
+                                otherCollider.Body.NotifyCollisionOccured(otherCollision);
+                                collisionsOccured.Add(otherCollider.Body.Id);
                             }
-
-                            body.NotifyCollisionOccured(collision);
-
-                            var otherCollision = new CollisionEventArgs(
-                                collision.SecondCollider,
-                                collision.FirstCollider,
-                                collision.Normal,
-                                -collision.MinimumTranslationVector,
-                                collision.SecondContainsFirst,
-                                collision.FirstContainsSecond);
-                            otherCollider.Body.NotifyCollisionOccured(otherCollision);
-                            collisionsOccured.Add(otherCollider.Body.Id);
                         }
                     }
 

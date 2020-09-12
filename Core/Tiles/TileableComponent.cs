@@ -30,12 +30,6 @@
     /// cref="IGameTileableComponent" />.
     /// </summary>
     public abstract class TileableComponent : GameComponent, IGameTileableComponent {
-
-        /// <summary>
-        /// An empty tileable component.
-        /// </summary>
-        public static readonly IGameTileableComponent Empty = new EmptyTileableComponent();
-
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
         private readonly ResettableLazy<TileGrid> _worldGrid;
@@ -220,7 +214,7 @@
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <returns></returns>
-        protected Vector2 GetTileScale(Sprite sprite) {
+        protected Vector2 GetTileScale(Sprite? sprite) {
             var result = this.WorldGrid.TileSize;
             if (sprite != null && sprite.Size.X != 0 && sprite.Size.Y != 0) {
                 var spriteWidth = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
@@ -331,60 +325,6 @@
             }
 
             this._boundingArea.Reset();
-        }
-
-        private sealed class EmptyTileableComponent : EmptyGameComponent, IGameTileableComponent {
-
-            /// <inheritdoc />
-            public event EventHandler? TilesChanged;
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<Point> ActiveTiles => throw new NotImplementedException();
-
-            /// <inheritdoc />
-            public BoundingArea BoundingArea => BoundingArea.Empty;
-
-            /// <inheritdoc />
-            public TileGrid Grid => TileGrid.Empty;
-
-            /// <inheritdoc />
-            public Point MaximumTile => Point.Zero;
-
-            /// <inheritdoc />
-            public Point MinimumTile => Point.Zero;
-
-            /// <inheritdoc />
-            public TileGrid WorldGrid => TileGrid.Empty;
-
-            /// <inheritdoc />
-            public bool AddTile(Point tile) {
-                return false;
-            }
-
-            /// <inheritdoc />
-            public void ClearTiles() {
-                return;
-            }
-
-            /// <inheritdoc />
-            public Point GetTileThatContains(Vector2 worldPosition) {
-                return Point.Zero;
-            }
-
-            /// <inheritdoc />
-            public bool HasActiveTileAt(Point tilePosition) {
-                return false;
-            }
-
-            /// <inheritdoc />
-            public bool HasActiveTileAt(Vector2 worldPosition) {
-                return false;
-            }
-
-            /// <inheritdoc />
-            public bool RemoveTile(Point tile) {
-                return false;
-            }
         }
     }
 }

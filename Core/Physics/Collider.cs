@@ -37,12 +37,6 @@
     /// </summary>
     [DataContract]
     public abstract class Collider : NotifyPropertyChanged, IBoundable {
-
-        /// <summary>
-        /// The empty collider.
-        /// </summary>
-        public static readonly Collider Empty = new EmptyCollider();
-
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _transform;
         private Vector2 _offset;
@@ -53,7 +47,7 @@
         /// Initializes a new instance of the <see cref="Collider" /> class.
         /// </summary>
         protected Collider() {
-            this._transform = new ResettableLazy<Transform>(() => this.Body.Entity.GetWorldTransform(this.Offset));
+            this._transform = new ResettableLazy<Transform>(() => this.Body?.Entity.GetWorldTransform(this.Offset) ?? Transform.Origin);
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
@@ -61,7 +55,7 @@
         /// Gets the body that this collider is attached to.
         /// </summary>
         /// <value>The body.</value>
-        public IPhysicsBody Body { get; private set; } = PhysicsBody.Empty;
+        public IPhysicsBody? Body { get; private set; }
 
         /// <inheritdoc />
         public BoundingArea BoundingArea {
@@ -83,7 +77,7 @@
         [DataMember(Name = "Collider Layers")]
         public Layers Layers {
             get {
-                return this._overrideLayers != Layers.None ? this._overrideLayers : this.Body.Entity.Layers;
+                return this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Entity.Layers ?? Layers.None;
             }
 
             internal set {
@@ -124,9 +118,9 @@
         /// <param name="other">The other collider.</param>
         /// <param name="collision">The collision.</param>
         /// <returns>A value indicating whether or not the collision occurred.</returns>
-        public bool CollidesWith(Collider other, out CollisionEventArgs collision) {
+        public bool CollidesWith(Collider other, out CollisionEventArgs? collision) {
             if (!this.BoundingArea.Overlaps(other.BoundingArea)) {
-                collision = CollisionEventArgs.Empty;
+                collision = null;
                 return false;
             }
 
@@ -176,7 +170,7 @@
                 }
                 else {
                     // Gap was found, return false.
-                    collision = CollisionEventArgs.Empty;
+                    collision = null;
                     return false;
                 }
             }
@@ -301,47 +295,5 @@
         /// <param name="result">The result.</param>
         /// <returns>A value indicating whether or not a hit occurred.</returns>
         protected abstract bool TryHit(LineSegment ray, out RaycastHit result);
-
-        private sealed class EmptyCollider : Collider {
-
-            /// <inheritdoc />
-            public override ColliderType ColliderType => ColliderType.Empty;
-
-            /// <inheritdoc />
-            public override bool Contains(Collider other) {
-                return false;
-            }
-
-            /// <inheritdoc />
-            public override bool Contains(Vector2 point) {
-                return false;
-            }
-
-            /// <inheritdoc />
-            public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
-                return new Vector2[0];
-            }
-
-            /// <inheritdoc />
-            public override Vector2 GetCenter() {
-                return this.Body.Entity.Transform.Position;
-            }
-
-            /// <inheritdoc />
-            public override Projection GetProjection(Vector2 axis) {
-                return Projection.Empty;
-            }
-
-            /// <inheritdoc />
-            protected override BoundingArea CreateBoundingArea() {
-                return BoundingArea.Empty;
-            }
-
-            /// <inheritdoc />
-            protected override bool TryHit(LineSegment ray, out RaycastHit result) {
-                result = RaycastHit.Empty;
-                return false;
-            }
-        }
     }
 }

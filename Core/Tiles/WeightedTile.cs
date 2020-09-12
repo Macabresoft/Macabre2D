@@ -8,7 +8,7 @@
     /// </summary>
     [DataContract]
     public sealed class WeightedTile : NotifyPropertyChanged {
-        private Sprite _sprite = Sprite.Empty;
+        private Sprite? _sprite;
         private ushort _weight = 1;
 
         /// <summary>
@@ -32,7 +32,7 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }
