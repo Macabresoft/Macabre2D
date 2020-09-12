@@ -13,7 +13,7 @@
             this.Entity.TryGetComponent(out this._spriteRenderer);
         }
 
-        public void Update(FrameTime frameTime, InputState inputState) {
+        public override void Update(FrameTime frameTime, InputState inputState) {
             if ((this.Entity.LocalScale.X > 2f && this._currentSign > 0) || (this.Entity.LocalScale.X < -2f && this._currentSign < 0)) {
                 this._currentSign *= -1f;
             }

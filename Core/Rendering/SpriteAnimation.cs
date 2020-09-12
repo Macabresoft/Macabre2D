@@ -13,7 +13,9 @@
         /// <summary>
         /// An empty sprite animation.
         /// </summary>
-        public static readonly SpriteAnimation Empty = new SpriteAnimation();
+        public static readonly SpriteAnimation Empty = new SpriteAnimation() {
+            Id = Guid.Empty
+        };
 
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new List<SpriteAnimationStep>();

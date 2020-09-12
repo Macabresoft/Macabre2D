@@ -14,19 +14,14 @@
         /// A sprite that contains no <see cref="AssetId" /> nor a <see cref="Texture2D" />.
         /// </summary>
         public static readonly Sprite Empty = new Sprite() {
-            Name = "Empty"
+            Name = "Empty",
+            Id = Guid.Empty
         };
 
         private bool _disposedValue = false;
         private Point _location;
         private string _name = string.Empty;
         private Point _size;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite" /> class.
-        /// </summary>
-        public Sprite() {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> class.
@@ -40,13 +35,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> class.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="assetId">The identifier.</param>
         /// <param name="location">
         /// The location of this specific sprite on the <see cref="Texture2D" />.
         /// </param>
         /// <param name="size">The size of this specific sprite on the <see cref="Texture2D" />.</param>
-        public Sprite(Guid id, Point location, Point size) {
-            this.AssetId = id;
+        public Sprite(Guid assetId, Point location, Point size) {
+            this.Id = Guid.NewGuid();
+            this.AssetId = assetId;
             this.SetLocationAndSize(location, size);
         }
 
@@ -72,9 +68,15 @@
             this.SetLocationAndSize(location, size);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sprite" /> class.
+        /// </summary>
+        private Sprite() {
+        }
+
         /// <inheritdoc />
         [DataMember]
-        public Guid AssetId { get; set; }
+        public Guid AssetId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Gets the location.
@@ -150,7 +152,7 @@
         /// Sets the error texture.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        public void SetErrorTexture(SpriteBatch spriteBatch) {
+        public void SetErrorTexture(SpriteBatch? spriteBatch) {
             if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
                 var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);
                 var pixels = new Color[this.Size.X * this.Size.Y];

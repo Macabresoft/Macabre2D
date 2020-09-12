@@ -111,7 +111,7 @@
                 return this._sprite;
             }
             set {
-                if (this.Set(ref this._sprite, value)) {
+                if (value.Id != Guid.Empty && this.Set(ref this._sprite, value)) {
                     this.Sprite.Load();
                     this.RenderSettings.InvalidateSize();
                     this._boundingArea.Reset();

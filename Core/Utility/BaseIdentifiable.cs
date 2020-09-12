@@ -8,11 +8,10 @@
     /// </summary>
     [DataContract]
     public class BaseIdentifiable : NotifyPropertyChanged, IIdentifiable {
-
-        [DataMember]
-        private Guid _id = Guid.NewGuid();
+        private Guid _id;
 
         /// <inheritdoc />
+        [DataMember]
         public Guid Id {
             get {
                 return this._id;

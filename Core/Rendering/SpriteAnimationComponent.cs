@@ -46,7 +46,9 @@
             }
 
             set {
-                this.Set(ref this._defaultAnimation, value);
+                if (value.Id != Guid.Empty) {
+                    this.Set(ref this._defaultAnimation, value);
+                }
             }
         }
 

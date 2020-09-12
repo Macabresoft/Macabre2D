@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using System.ComponentModel;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Interface for a component which can be rendered.
@@ -32,7 +33,10 @@
     /// cref="IGameRenderableComponent" />.
     /// </summary>
     public abstract class GameRenderableComponent : GameComponent, IGameRenderableComponent {
+
+        [DataMember]
         private bool _isVisible = true;
+
         private int _renderOrder;
 
         /// <inheritdoc />
