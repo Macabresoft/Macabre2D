@@ -4,10 +4,9 @@
     using Microsoft.Xna.Framework;
     using NSubstitute;
     using NUnit.Framework;
-    using System.Collections.Generic;
 
     [TestFixture]
-    public static class SimplePhysicsModuleTests {
+    public static class SimplePhysicsSystemTests {
 
         [Test]
         [Category("Unit Tests")]
@@ -16,7 +15,7 @@
         [TestCase(-2f, 2f, 1f, 0f, true, false, TestName = "Raycast to Circle Collider - No Collision")]
         [TestCase(-2f, 2f, 1f, 0f, false, false, TestName = "Raycast to Circle Collider - No Collision / Different Layers")]
         public static void RaycastCircleTest(float raycastX, float raycastY, float directionX, float directionY, bool layersCompatible, bool raycastHit) {
-            var scene = Substitute.For<IScene>();
+            var scene = new GameScene();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
             var raycastLayer = Layers.Custom1;
@@ -28,61 +27,50 @@
                 raycastLayer = Layers.Custom2;
             }
 
-            var physicsModule = new SimplePhysicsService();
+            var physicsSystem = scene.AddService<SimplePhysicsSystem>();
 
-            using (var circleBody = new SimplePhysicsBody()) {
-                circleBody.SetWorldPosition(Vector2.Zero);
+            var circleEntity = scene.AddChild();
+            using (var circleBody = circleEntity.AddComponent<SimplePhysicsBody>()) {
+                circleEntity.SetWorldPosition(Vector2.Zero);
                 circleBody.Collider = new CircleCollider(1f);
-                circleBody.Layers = Layers.Custom1;
-                circleBody.Initialize(scene);
+                circleEntity.Layers = Layers.Custom1;
+                scene.Initialize(Substitute.For<IGame>());
 
-                scene.GetAllComponentsOfType<IPhysicsBody>().Returns(new List<IPhysicsBody>(new[] { circleBody }));
-
-                physicsModule.PreInitialize();
-                physicsModule.Initialize(scene);
-                physicsModule.PostInitialize();
-
-                var result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
+                var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
                 Assert.AreEqual(raycastHit, result);
             }
         }
 
         [TestCase(0f, 0.6499903f, 0f, -1f, 0.666667f, true, TestName = "Raycast to Line Collider - Collision #1")]
         public static void RaycastLineTest(float raycastX, float raycastY, float directionX, float directionY, float distance, bool raycastHit) {
-            var scene = Substitute.For<IScene>();
+            var scene = new GameScene();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
             gameSettings.Layers.Returns(layerSettings);
             GameSettings.Instance = gameSettings;
 
-            var physicsModule = new SimplePhysicsService();
+            var physicsSystem = scene.AddService<SimplePhysicsSystem>();
 
-            using (var lineBody = new SimplePhysicsBody()) {
-                lineBody.SetWorldPosition(Vector2.Zero);
+            var lineEntity = scene.AddChild();
+            using (var lineBody = lineEntity.AddComponent<SimplePhysicsBody>()) {
+                lineEntity.SetWorldPosition(Vector2.Zero);
                 lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
-                lineBody.Layers = Layers.Default;
+                lineEntity.Layers = Layers.Default;
                 lineBody.Initialize(scene);
 
-                scene.GetAllComponentsOfType<IPhysicsBody>().Returns(new List<IPhysicsBody>(new[] { lineBody }));
+                scene.Initialize(Substitute.For<IGame>());
+                physicsSystem.TimeStep = 1f;
+                physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 1), new System.TimeSpan(0, 0, 1)), 1), new InputState());
 
-                physicsModule.PreInitialize();
-                physicsModule.Initialize(scene);
-                physicsModule.PostInitialize();
-
-                physicsModule.FixedPreUpdate();
-
-                var result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
+                var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
                 Assert.AreEqual(raycastHit, result);
-                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
+                result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
                 Assert.AreEqual(raycastHit, result);
 
-                physicsModule.FixedPostUpdate();
+                physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 2), new System.TimeSpan(0, 0, 1)), 1), new InputState());
 
-                physicsModule.FixedPreUpdate();
-                result = physicsModule.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
+                result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
                 Assert.AreEqual(raycastHit, result);
-
-                physicsModule.FixedPostUpdate();
             }
         }
     }

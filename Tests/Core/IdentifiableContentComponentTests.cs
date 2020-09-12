@@ -23,7 +23,7 @@
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_SpriteRendererTest() {
             var spriteRenderer = new SpriteRenderComponent();
-            var sprite = new Sprite();
+            var sprite = new Sprite(Guid.NewGuid());
             spriteRenderer.Sprite = sprite;
 
             Assert.True(spriteRenderer.HasAsset(sprite.Id));

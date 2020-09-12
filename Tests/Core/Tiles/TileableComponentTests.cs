@@ -1,6 +1,5 @@
 ﻿using Macabresoft.MonoGame.Core;
 using Microsoft.Xna.Framework;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace Macabresoft.MonoGame.Tests.Core.Tiles {
@@ -11,15 +10,16 @@ namespace Macabresoft.MonoGame.Tests.Core.Tiles {
         [Test]
         [Category("Unit Test")]
         public static void TileableComponent_ScaleTest() {
-            using (var component = new BinaryTileMap()) {
-                component.Initialize(Substitute.For<IScene>());
-                var localPosition = component.GridConfiguration.Grid.GetTilePosition(new Point(1, 1));
+            var entity = new GameEntity();
+            using (var component = entity.AddComponent<BinaryTileMap>()) {
+                component.Initialize(entity);
+                var localPosition = component.Grid.GetTilePosition(new Point(1, 1));
                 var worldPosition = component.WorldGrid.GetTilePosition(new Point(1, 1));
 
                 Assert.AreEqual(localPosition, worldPosition);
 
-                component.LocalScale = new Vector2(2f, 1f);
-                localPosition = component.GridConfiguration.Grid.GetTilePosition(new Point(1, 1));
+                entity.LocalScale = new Vector2(2f, 1f);
+                localPosition = component.Grid.GetTilePosition(new Point(1, 1));
                 worldPosition = component.WorldGrid.GetTilePosition(new Point(1, 1));
 
                 Assert.AreNotEqual(localPosition, worldPosition);

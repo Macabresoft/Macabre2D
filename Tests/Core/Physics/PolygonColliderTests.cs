@@ -18,13 +18,14 @@
         public static void PolygonCollider_ContainsCircle(float x1, float y1, float w1, float h1, float x2, float y2, float r2, bool shouldContain) {
             using (var quadBody = new DynamicPhysicsBody())
             using (var circleBody = new DynamicPhysicsBody()) {
-                quadBody.SetWorldPosition(new Vector2(x1, y1));
-                quadBody.Collider = PolygonCollider.CreateRectangle(w1, w1);
-                quadBody.Initialize(null);
+                circleBody.Initialize(new GameEntity());
+                quadBody.Initialize(new GameEntity());
 
-                circleBody.SetWorldPosition(new Vector2(x2, y2));
+                quadBody.Entity.SetWorldPosition(new Vector2(x1, y1));
+                quadBody.Collider = PolygonCollider.CreateRectangle(w1, w1);
+
+                circleBody.Entity.SetWorldPosition(new Vector2(x2, y2));
                 circleBody.Collider = new CircleCollider(r2);
-                circleBody.Initialize(null);
 
                 Assert.AreEqual(shouldContain, quadBody.Collider.Contains(circleBody.Collider));
             }
@@ -39,9 +40,9 @@
         [TestCase(0f, 0f, 1f, 1f, 100f, 100f, false, TestName = "Quad Contains Point - Point is Way Outside")]
         public static void PolygonCollider_ContainsPoint(float x1, float y1, float w, float h, float x2, float y2, bool shouldContain) {
             using (var quadBody = new DynamicPhysicsBody()) {
-                quadBody.SetWorldPosition(new Vector2(x1, y1));
+                quadBody.Initialize(new GameEntity());
+                quadBody.Entity.SetWorldPosition(new Vector2(x1, y1));
                 quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
-                quadBody.Initialize(null);
 
                 Assert.AreEqual(shouldContain, quadBody.Collider.Contains(new Vector2(x2, y2)));
             }
@@ -58,13 +59,14 @@
         public static void PolygonCollider_ContainsPolygon(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool shouldContain) {
             using (var quadBody1 = new DynamicPhysicsBody())
             using (var quadBody2 = new DynamicPhysicsBody()) {
-                quadBody1.SetWorldPosition(new Vector2(x1, y1));
-                quadBody1.Collider = PolygonCollider.CreateRectangle(w1, w1);
-                quadBody1.Initialize(null);
+                quadBody1.Initialize(new GameEntity());
+                quadBody2.Initialize(new GameEntity());
 
-                quadBody2.SetWorldPosition(new Vector2(x2, y2));
+                quadBody1.Entity.SetWorldPosition(new Vector2(x1, y1));
+                quadBody1.Collider = PolygonCollider.CreateRectangle(w1, w1);
+
+                quadBody2.Entity.SetWorldPosition(new Vector2(x2, y2));
                 quadBody2.Collider = PolygonCollider.CreateRectangle(w2, w2);
-                quadBody2.Initialize(null);
 
                 Assert.AreEqual(shouldContain, quadBody1.Collider.Contains(quadBody2.Collider));
             }
@@ -81,13 +83,14 @@
         public static void PolygonCollider_QuadCollidesWithQuadTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool collisionOccured) {
             using (var quadBody1 = new DynamicPhysicsBody())
             using (var quadBody2 = new DynamicPhysicsBody()) {
-                quadBody1.SetWorldPosition(new Vector2(x1, y1));
-                quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
-                quadBody1.Initialize(null);
+                quadBody1.Initialize(new GameEntity());
+                quadBody2.Initialize(new GameEntity());
 
-                quadBody2.SetWorldPosition(new Vector2(x2, y2));
+                quadBody1.Entity.SetWorldPosition(new Vector2(x1, y1));
+                quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
+
+                quadBody2.Entity.SetWorldPosition(new Vector2(x2, y2));
                 quadBody2.Collider = PolygonCollider.CreateRectangle(w2, h2);
-                quadBody2.Initialize(null);
 
                 Assert.AreEqual(collisionOccured, quadBody1.Collider.CollidesWith(quadBody2.Collider, out var collision1));
                 Assert.AreEqual(collisionOccured, quadBody2.Collider.CollidesWith(quadBody1.Collider, out var collision2));
@@ -99,12 +102,12 @@
                     Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
                     Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-                    var originalPosition = quadBody1.WorldTransform.Position;
-                    quadBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
+                    var originalPosition = quadBody1.Entity.Transform.Position;
+                    quadBody1.Entity.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
                     Assert.False(quadBody1.Collider.CollidesWith(quadBody2.Collider, out collision1));
-                    quadBody1.SetWorldPosition(originalPosition);
+                    quadBody1.Entity.SetWorldPosition(originalPosition);
 
-                    quadBody2.SetWorldPosition(quadBody2.WorldTransform.Position + collision2.MinimumTranslationVector);
+                    quadBody2.Entity.SetWorldPosition(quadBody2.Entity.Transform.Position + collision2.MinimumTranslationVector);
                     Assert.False(quadBody2.Collider.CollidesWith(quadBody1.Collider, out collision2));
                 }
                 else {
@@ -124,9 +127,9 @@
         [TestCase(0f, 0f, 2f, 2f, -2f, 1f, 1f, 0f, 5f, true, -1f, 1f, -1f, 0f, TestName = "Raycast on Quad - Ray Hits Top Most Point")]
         public static void PolyGonCollider_QuadIsHitByTest(float qx, float qy, float qw, float qh, float rx, float ry, float directionX, float directionY, float distance, bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
             using (var quadBody = new DynamicPhysicsBody()) {
-                quadBody.SetWorldPosition(new Vector2(qx, qy));
+                quadBody.Initialize(new GameEntity());
+                quadBody.Entity.SetWorldPosition(new Vector2(qx, qy));
                 quadBody.Collider = PolygonCollider.CreateRectangle(qw, qh);
-                quadBody.Initialize(null);
 
                 var ray = new LineSegment(new Vector2(rx, ry), new Vector2(directionX, directionY), distance);
                 Assert.AreEqual(shouldHit, quadBody.Collider.IsHitBy(ray, out var hit));

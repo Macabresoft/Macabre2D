@@ -37,7 +37,7 @@
         /// Gets the layers.
         /// </summary>
         /// <value>The layers.</value>
-        Layers Layers { get; }
+        Layers Layers { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -549,22 +549,21 @@
             }
 
             /// <inheritdoc />
-            public Layers Layers => Layers.None;
+            public Layers Layers {
+                get => Layers.None;
+                set { return; }
+            }
 
             /// <inheritdoc />
             public Vector2 LocalPosition {
                 get => Vector2.Zero;
-                set {
-                    return;
-                }
+                set { return; }
             }
 
             /// <inheritdoc />
             public Vector2 LocalScale {
                 get => Vector2.One;
-                set {
-                    return;
-                }
+                set { return; }
             }
 
             /// <inheritdoc />

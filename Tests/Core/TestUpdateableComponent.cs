@@ -3,14 +3,14 @@
     using Macabresoft.MonoGame.Core;
     using System.Threading;
 
-    internal class TestUpdateableComponent : TestComponent, IUpdateableComponent {
+    internal class TestUpdateableComponent : GameUpdateableComponent {
 
         public int UpdateCount {
             get;
             private set;
         }
 
-        public void Update(FrameTime frameTime, InputState inputState) {
+        public override void Update(FrameTime frameTime, InputState inputState) {
             this.UpdateCount++;
             Thread.Sleep(10);
         }
