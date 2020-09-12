@@ -14,13 +14,6 @@
         /// </summary>
         /// <param name="scene">The scene.</param>
         void Initialize(IGameScene scene);
-
-        /// <summary>
-        /// Updates this instance.
-        /// </summary>
-        /// <param name="frameTime">The frame time.</param>
-        /// <param name="inputState">State of the input.</param>
-        void Update(FrameTime frameTime, InputState inputState);
     }
 
     /// <summary>
@@ -39,8 +32,5 @@
         public virtual void Initialize(IGameScene scene) {
             this.Scene = scene;
         }
-
-        /// <inheritdoc />
-        public abstract void Update(FrameTime frameTime, InputState inputState);
     }
 }

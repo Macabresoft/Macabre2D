@@ -24,11 +24,11 @@
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new GameScene();
-            scene.AddService<UpdateSystem>();
+            scene.AddSystem<UpdateSystem>();
 
             scene.AddChild().AddComponent<CameraComponent>();
 
-            var physicsService = scene.AddService<PhysicsSystem>();
+            var physicsService = scene.AddSystem<PhysicsSystem>();
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 

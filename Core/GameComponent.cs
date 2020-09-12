@@ -30,7 +30,6 @@
     public abstract class GameComponent : BaseIdentifiable, IGameComponent {
         private IGameEntity _entity = GameEntity.Empty;
 
-        [DataMember]
         private bool _isEnabled = true;
 
         /// <inheritdoc />
@@ -47,6 +46,7 @@
         }
 
         /// <inheritdoc />
+        [DataMember]
         public bool IsEnabled {
             get {
                 return this._isEnabled && this.Entity.IsEnabled;

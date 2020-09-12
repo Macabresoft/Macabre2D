@@ -7,7 +7,7 @@
     /// A system which updates at a fixed time step.
     /// </summary>
     /// <seealso cref="BaseModule" />
-    public abstract class FixedTimeStepSystem : GameSystem {
+    public abstract class FixedTimeStepSystem : UpdateSystem, IDynamicGameUpdateable {
         private float _timePassed;
         private float _timeStep = 1f / 30f;
 

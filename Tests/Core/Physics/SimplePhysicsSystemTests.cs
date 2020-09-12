@@ -27,7 +27,7 @@
                 raycastLayer = Layers.Custom2;
             }
 
-            var physicsSystem = scene.AddService<SimplePhysicsSystem>();
+            var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var circleEntity = scene.AddChild();
             using (var circleBody = circleEntity.AddComponent<SimplePhysicsBody>()) {
@@ -49,7 +49,7 @@
             gameSettings.Layers.Returns(layerSettings);
             GameSettings.Instance = gameSettings;
 
-            var physicsSystem = scene.AddService<SimplePhysicsSystem>();
+            var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var lineEntity = scene.AddChild();
             using (var lineBody = lineEntity.AddComponent<SimplePhysicsBody>()) {

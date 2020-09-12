@@ -77,7 +77,7 @@
         /// Gets the updateable components.
         /// </summary>
         /// <value>The updateable components.</value>
-        IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get => new IGameUpdateableComponent[0]; }
+        IReadOnlyCollection<IDynamicGameUpdateable> UpdateableComponents { get => new IDynamicGameUpdateable[0]; }
 
         /// <summary>
         /// Adds the service.
@@ -86,13 +86,13 @@
         /// A type that implements <see cref="IGameSystem" /> and has an empty contructor.
         /// </typeparam>
         /// <returns>The added service.</returns>
-        T AddService<T>() where T : IGameSystem, new();
+        T AddSystem<T>() where T : IGameSystem, new();
 
         /// <summary>
         /// Adds the service.
         /// </summary>
         /// <param name="service">The service.</param>
-        void AddService(IGameSystem service);
+        void AddSystem(IGameSystem service);
 
         /// <summary>
         /// Initializes this instance with the specified game.
@@ -117,7 +117,7 @@
         /// </summary>
         /// <param name="service">The service.</param>
         /// <returns>A value indicating whether or not the service was removed.</returns>
-        bool RemoveService(IGameSystem service);
+        bool RemoveSystem(IGameSystem service);
 
         /// <summary>
         /// Renders the scene.
@@ -186,13 +186,19 @@
         private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         [DataMember]
-        private readonly ObservableCollection<IGameSystem> _services = new ObservableCollection<IGameSystem>();
+        private readonly ObservableCollection<IGameSystem> _systems = new ObservableCollection<IGameSystem>();
 
-        private readonly FilterSortCollection<IGameUpdateableComponent> _updateableComponents = new FilterSortCollection<IGameUpdateableComponent>(
+        private readonly FilterSortCollection<IDynamicGameUpdateable> _updateableComponents = new FilterSortCollection<IDynamicGameUpdateable>(
             c => c.IsEnabled,
-            nameof(IGameComponent.IsEnabled),
+            nameof(IDynamicGameUpdateable.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IGameUpdateableComponent.UpdateOrder));
+            nameof(IDynamicGameUpdateable.UpdateOrder));
+
+        private readonly FilterSortCollection<IDynamicGameUpdateable> _updateableSystems = new FilterSortCollection<IDynamicGameUpdateable>(
+            c => c.IsEnabled,
+            nameof(IDynamicGameUpdateable.IsEnabled),
+            (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
+            nameof(IDynamicGameUpdateable.UpdateOrder));
 
         private bool _isInitialized = false;
 
@@ -224,7 +230,7 @@
         public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents => this._renderableComponents;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameSystem> Systems => this._services;
+        public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
         /// <inheritdoc />
         public override Transform Transform => Transform.Origin;
@@ -233,22 +239,23 @@
         public override Matrix TransformMatrix => Matrix.Identity;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
+        public IReadOnlyCollection<IDynamicGameUpdateable> UpdateableComponents => this._updateableComponents;
 
         /// <inheritdoc />
-        public T AddService<T>() where T : IGameSystem, new() {
-            var service = new T();
-            this.AddService(service);
-            return service;
+        public T AddSystem<T>() where T : IGameSystem, new() {
+            var system = new T();
+            this.AddSystem(system);
+            return system;
         }
 
         /// <inheritdoc />
-        public void AddService(IGameSystem service) {
-            if (service != null) {
-                this._services.Add(service);
+        public void AddSystem(IGameSystem system) {
+            if (system != null) {
+                this._systems.Add(system);
+                this.RegisterSystem(system);
 
                 if (this._isInitialized) {
-                    service.Initialize(this);
+                    system.Initialize(this);
                 }
             }
         }
@@ -260,8 +267,9 @@
                     this.Game = game;
                     this.Initialize(this, this);
 
-                    foreach (var service in this.Systems) {
-                        service.Initialize(this);
+                    foreach (var system in this.Systems) {
+                        this.RegisterSystem(system);
+                        system.Initialize(this);
                     }
                 }
                 finally {
@@ -292,10 +300,10 @@
         }
 
         /// <inheritdoc />
-        public bool RemoveService(IGameSystem service) {
+        public bool RemoveSystem(IGameSystem system) {
             var result = false;
-            if (service != null && this._services.Contains(service)) {
-                this.Invoke(() => this._services.Remove(service));
+            if (system != null && this._systems.Contains(system)) {
+                this.Invoke(() => this._systems.Remove(system));
                 result = true;
             }
 
@@ -367,9 +375,13 @@
 
         /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
-            foreach (var service in this.Systems) {
-                service.Update(frameTime, inputState);
+            foreach (var system in this._updateableSystems) {
+                system.Update(frameTime, inputState);
             }
+        }
+
+        private void RegisterSystem(IGameSystem system) {
+            this._updateableSystems.Add(system);
         }
 
         internal class EmptyGameScene : EmptyGameEntity, IGameScene {
@@ -384,12 +396,12 @@
             public Color BackgroundColor { get => Color.HotPink; set { return; } }
 
             /// <inheritdoc />
-            public T AddService<T>() where T : IGameSystem, new() {
+            public T AddSystem<T>() where T : IGameSystem, new() {
                 return new T();
             }
 
             /// <inheritdoc />
-            public void AddService(IGameSystem service) {
+            public void AddSystem(IGameSystem service) {
                 return;
             }
 
@@ -409,7 +421,7 @@
             }
 
             /// <inheritdoc />
-            public bool RemoveService(IGameSystem service) {
+            public bool RemoveSystem(IGameSystem service) {
                 return false;
             }
 

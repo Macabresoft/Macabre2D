@@ -3,9 +3,9 @@
     using System.ComponentModel;
 
     /// <summary>
-    /// Interface for an updateable descendent of <see cref="IGame" />.
+    /// Interface for an updateable object in the game loop.
     /// </summary>
-    public interface IGameUpdateable : INotifyPropertyChanged {
+    public interface IGameUpdateable : INotifyPropertyChanged, IEnableable {
 
         /// <summary>
         /// Updates this instance.

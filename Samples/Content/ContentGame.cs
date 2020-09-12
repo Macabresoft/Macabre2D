@@ -15,7 +15,7 @@
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new GameScene();
 
-            scene.AddService<UpdateSystem>();
+            scene.AddSystem<UpdateSystem>();
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraScroller>();

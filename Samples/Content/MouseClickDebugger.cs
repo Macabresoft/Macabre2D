@@ -3,7 +3,7 @@
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
 
-    public sealed class MouseClickDebugger : BaseDrawerComponent, IGameUpdateableComponent {
+    public sealed class MouseClickDebugger : BaseDrawerComponent, IDynamicGameUpdateable {
         private CameraComponent _camera;
 
         public override BoundingArea BoundingArea {
