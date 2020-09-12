@@ -43,44 +43,44 @@
         }
 
         private void PostLoadRenderingStuff() {
-            ////var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
-            ////var arrowSpriteRenderer1 = new SpriteRenderComponent();
-            ////arrowSpriteRenderer1.Sprite = arrowSprite1;
-            ////arrowSpriteRenderer1.LocalPosition += new Vector2(2f, -2f);
-            ////this.CurrentScene.AddChild(arrowSpriteRenderer1);
+            var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
+            var arrowSpriteEntity1 = this.Scene.AddChild();
+            var arrowSpriteRenderer1 = arrowSpriteEntity1.AddComponent<SpriteRenderComponent>();
+            arrowSpriteRenderer1.Sprite = arrowSprite1;
+            arrowSpriteEntity1.LocalPosition += new Vector2(2f, -2f);
 
-            ////var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
-            ////var arrowSpriteRenderer2 = new SpriteRenderComponent();
-            ////arrowSpriteRenderer2.Color = Color.LawnGreen;
-            ////arrowSpriteRenderer2.Sprite = arrowSprite2;
-            ////arrowSpriteRenderer2.LocalPosition += new Vector2(3f, -1f);
-            ////arrowSpriteRenderer2.LocalScale = new Vector2(0.75f, 2f);
-            ////this.CurrentScene.AddChild(arrowSpriteRenderer2);
+            var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
+            var arrowSpriteEntity2 = this.Scene.AddChild();
+            var arrowSpriteRenderer2 = arrowSpriteEntity2.AddComponent<SpriteRenderComponent>();
+            arrowSpriteRenderer2.Color = Color.LawnGreen;
+            arrowSpriteRenderer2.Sprite = arrowSprite2;
+            arrowSpriteEntity2.LocalPosition += new Vector2(3f, -1f);
+            arrowSpriteEntity2.LocalScale = new Vector2(0.75f, 2f);
 
-            ////var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
-            ////var quadSpriteRenderer1 = new SpriteRenderComponent();
-            ////quadSpriteRenderer1.Sprite = quadSprite1;
-            ////quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
-            ////this.CurrentScene.AddChild(quadSpriteRenderer1);
+            var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
+            var quadEntity1 = this.Scene.AddChild();
+            var quadSpriteRenderer1 = quadEntity1.AddComponent<SpriteRenderComponent>();
+            quadSpriteRenderer1.Sprite = quadSprite1;
+            quadEntity1.LocalPosition += new Vector2(3f, 2f);
 
-            ////var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
-            ////var quadSpriteRenderer2 = new SpriteRenderComponent();
-            ////quadSpriteRenderer2.Color = Color.Khaki;
-            ////quadSpriteRenderer2.Sprite = quadSprite2;
-            ////quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
-            ////this.CurrentScene.AddChild(quadSpriteRenderer2);
+            var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
+            var quadEntity2 = this.Scene.AddChild();
+            var quadSpriteRenderer2 = quadEntity2.AddComponent<SpriteRenderComponent>();
+            quadSpriteRenderer2.Color = Color.Khaki;
+            quadSpriteRenderer2.Sprite = quadSprite2;
+            quadEntity2.LocalPosition += new Vector2(3f, 1f);
 
-            ////var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
-            ////var rightTriangleSpriteRenderer1 = new SpriteRenderComponent();
-            ////rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
-            ////rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
-            ////this.CurrentScene.AddChild(rightTriangleSpriteRenderer1);
+            var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
+            var rightTriangleEntity = this.Scene.AddChild();
+            var rightTriangleSpriteRenderer1 = rightTriangleEntity.AddComponent<SpriteRenderComponent>();
+            rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
+            rightTriangleEntity.LocalPosition = new Vector2(-3f, 3f);
 
-            ////var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
-            ////var circleSpriteRenderer = new SpriteRenderComponent();
-            ////circleSpriteRenderer.Sprite = circleSprite;
-            ////circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
-            ////this.CurrentScene.AddChild(circleSpriteRenderer);
+            var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
+            var circleEntity = this.Scene.AddChild();
+            var circleSpriteRenderer = circleEntity.AddComponent<SpriteRenderComponent>();
+            circleSpriteRenderer.Sprite = circleSprite;
+            circleEntity.LocalPosition = new Vector2(-5f, 3f);
 
             var binaryTileMapEntity = this.Scene.AddChild();
             var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMap>();
@@ -104,23 +104,25 @@
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;
 
-            ////var spriteAnimation = new SpriteAnimation();
-            ////var coloredSquaresId = this.AssetManager.GetId("ColoredSquares");
-            ////var step = spriteAnimation.AddStep();
-            ////step.Sprite = new Sprite(coloredSquaresId, Point.Zero, new Point(64, 64));
-            ////step.Frames = 2;
-            ////step = spriteAnimation.AddStep();
-            ////step.Sprite = new Sprite(coloredSquaresId, new Point(0, 64), new Point(64, 64));
-            ////step.Frames = 2;
-            ////step = spriteAnimation.AddStep();
-            ////step.Sprite = new Sprite(coloredSquaresId, new Point(64, 64), new Point(64, 64));
-            ////step.Frames = 2;
-            ////step = spriteAnimation.AddStep();
-            ////step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
-            ////step.Frames = 2;
-
-            ////var spriteAnimator = this.Scene.GetAllComponentsOfType<SpriteAnimationComponent>().First();
-            ////spriteAnimator.Enqueue(spriteAnimation, true);
+            foreach (var child in this.Scene.Children) {
+                if (child.TryGetComponent<SpriteAnimationComponent>(out var spriteAnimator)) {
+                    var spriteAnimation = new SpriteAnimation();
+                    var coloredSquaresId = this.AssetManager.GetId("ColoredSquares");
+                    var step = spriteAnimation.AddStep();
+                    step.Sprite = new Sprite(coloredSquaresId, Point.Zero, new Point(64, 64));
+                    step.Frames = 2;
+                    step = spriteAnimation.AddStep();
+                    step.Sprite = new Sprite(coloredSquaresId, new Point(0, 64), new Point(64, 64));
+                    step.Frames = 2;
+                    step = spriteAnimation.AddStep();
+                    step.Sprite = new Sprite(coloredSquaresId, new Point(64, 64), new Point(64, 64));
+                    step.Frames = 2;
+                    step = spriteAnimation.AddStep();
+                    step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
+                    step.Frames = 2;
+                    spriteAnimator.Enqueue(spriteAnimation, true);
+                }
+            }
         }
 
         private void PreLoadAudioStuff(GameScene scene) {
@@ -160,7 +162,7 @@
             middleSpinningDotBoundingArea.Color = Color.Red;
             middleSpinningDotBoundingArea.LineThickness = 3f;
 
-            var scalerEntity2 = scene.AddChild();
+            var scalerEntity2 = scalerEntity1.AddChild();
             scalerEntity2.AddComponent<Scaler>();
             scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
             var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();

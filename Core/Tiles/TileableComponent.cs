@@ -147,6 +147,8 @@
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
             this._worldGrid.Reset();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();

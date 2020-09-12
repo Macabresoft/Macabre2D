@@ -1,12 +1,16 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using System.ComponentModel;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// A base renderable tile map.
     /// </summary>
     public abstract class RenderableTileMap : TileableComponent, IGameRenderableComponent {
+
+        [DataMember]
         private bool _isVisible = true;
+
         private int _renderOrder;
 
         /// <inheritdoc />
