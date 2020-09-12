@@ -30,10 +30,10 @@
             set {
                 if (!this.Entity.Scene.Game.IsDesignMode) {
                     this._audioClip?.SoundEffectInstance?.Stop(true);
+                }
 
-                    if (this.Set(ref this._audioClip, value) && !this.Entity.Scene.Game.IsDesignMode) {
-                        this.AudioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
-                    }
+                if (this.Set(ref this._audioClip, value) && !this.Entity.Scene.Game.IsDesignMode) {
+                    this.AudioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
                 }
             }
         }

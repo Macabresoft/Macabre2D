@@ -16,7 +16,7 @@
             base.Initialize(entity);
             this.Color = Color.Green;
             this.LineThickness = 3f;
-            this.Entity.TryGetComponent(out this._camera);
+            this.Entity.Parent.TryGetComponent(out this._camera);
         }
 
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {

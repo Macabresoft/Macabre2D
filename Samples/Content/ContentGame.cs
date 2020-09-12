@@ -15,11 +15,14 @@
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new GameScene();
 
+            scene.AddService<UpdateSystem>();
+
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraScroller>();
             var camera = cameraEntity.AddComponent<CameraComponent>();
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraEntity.AddComponent<MovingDot>();
+            cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             this.AssetManager.SetMapping(Guid.NewGuid(), "WhiteSquare");
 
@@ -178,9 +181,6 @@
             var textRendererBoundingArea = textEntity.AddComponent<BoundingAreaDrawerComponent>();
             textRendererBoundingArea.Color = Color.Red;
             textRendererBoundingArea.LineThickness = 3f;
-
-            var mouseClickEntity = scene.AddChild();
-            mouseClickEntity.AddComponent<MouseClickDebugger>();
         }
     }
 }

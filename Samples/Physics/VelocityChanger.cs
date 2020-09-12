@@ -5,7 +5,7 @@
     using Microsoft.Xna.Framework.Input;
 
     public sealed class VelocityChanger : GameUpdateableComponent {
-        private IDynamicPhysicsBody? _body;
+        private IDynamicPhysicsBody _body;
         private float _speed = 0.5f;
 
         public override void Initialize(IGameEntity entity) {
