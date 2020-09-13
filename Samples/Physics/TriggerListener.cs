@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.MonoGame.Samples.Physics {
 
     using Macabresoft.MonoGame.Core;
-    using Microsoft.Xna.Framework;
 
     public sealed class TriggerListener : Core.GameComponent {
         private IPhysicsBody _body;
@@ -20,7 +19,7 @@
 
         private void _body_CollisionOccured(object sender, CollisionEventArgs e) {
             if (this._drawer != null) {
-                this._drawer.Color = Color.CornflowerBlue;
+                this._drawer.Color = DefinedColors.ZvukostiGreen;
                 this._drawer.LineThickness = 5f;
             }
         }

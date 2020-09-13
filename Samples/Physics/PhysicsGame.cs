@@ -39,7 +39,7 @@
             circleBody.Mass = 3f;
             circleBody.Collider = new CircleCollider(0.75f);
             var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
-            circleDrawer.Color = Color.Green;
+            circleDrawer.Color = DefinedColors.MacabresoftYellow;
             circleDrawer.LineThickness = 2f;
             circleEntity.AddComponent<VelocityChanger>();
 
@@ -55,7 +55,7 @@
                     smallCircleBody.PhysicsMaterial = new PhysicsMaterial(1f, 0f);
 
                     var smallCircleDrawer = smallCircleEntity.AddComponent<ColliderDrawerComponent>();
-                    smallCircleDrawer.Color = Color.OrangeRed;
+                    smallCircleDrawer.Color = DefinedColors.MacabresoftPurple;
                     smallCircleDrawer.LineThickness = 1f;
                 }
             }
@@ -66,7 +66,7 @@
             rectangleBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             rectangleEntity.LocalPosition -= new Vector2(0f, 4f);
             var rectangleDrawer = rectangleEntity.AddComponent<ColliderDrawerComponent>();
-            rectangleDrawer.Color = Color.White;
+            rectangleDrawer.Color = DefinedColors.MacabresoftBone;
             rectangleDrawer.LineThickness = 1f;
 
             var angleEntity1 = scene.AddChild();
@@ -74,7 +74,7 @@
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
             angleBody1.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer1 = angleEntity1.AddComponent<ColliderDrawerComponent>();
-            angleDrawer1.Color = Color.White;
+            angleDrawer1.Color = DefinedColors.MacabresoftBone;
             angleDrawer1.LineThickness = 1f;
 
             var angleEntity2 = scene.AddChild();
@@ -82,7 +82,7 @@
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
             angleBody2.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer2 = angleEntity2.AddComponent<ColliderDrawerComponent>();
-            angleDrawer2.Color = Color.White;
+            angleDrawer2.Color = DefinedColors.MacabresoftBone;
             angleDrawer2.LineThickness = 1f;
 
             var lineEntity = scene.AddChild();
@@ -90,7 +90,7 @@
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
             lineBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var lineDrawer = lineEntity.AddComponent<ColliderDrawerComponent>();
-            lineDrawer.Color = Color.White;
+            lineDrawer.Color = DefinedColors.MacabresoftBone;
             lineDrawer.LineThickness = 1f;
 
             var triggerEntity = scene.AddChild();
@@ -100,7 +100,7 @@
             triggerBody.IsTrigger = true;
             triggerEntity.AddComponent<TriggerListener>();
             var triggerDrawer = triggerEntity.AddComponent<ColliderDrawerComponent>();
-            triggerDrawer.Color = Color.MonoGameOrange;
+            triggerDrawer.Color = DefinedColors.MacabresoftRed;
             triggerDrawer.LineThickness = 3f;
 
             scene.Initialize(this);
