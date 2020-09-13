@@ -11,6 +11,11 @@ namespace Macabresoft.MonoGame.Core {
     public struct Projection {
 
         /// <summary>
+        /// The empty projection.
+        /// </summary>
+        public static readonly Projection Empty = new Projection(Vector2.Zero, 0f, 0f);
+
+        /// <summary>
         /// The axis on which things are being projected.
         /// </summary>
         public readonly Vector2 Axis;
@@ -26,7 +31,7 @@ namespace Macabresoft.MonoGame.Core {
         public readonly float Minimum;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Projection"/> struct.
+        /// Initializes a new instance of the <see cref="Projection" /> struct.
         /// </summary>
         /// <param name="axis">The axis.</param>
         /// <param name="minimum">The minimum.</param>

@@ -8,10 +8,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Plays a <see cref="AudioClip"/>.
+    /// Plays a <see cref="AudioClip" />.
     /// </summary>
-    public sealed class AudioPlayerComponent : BaseComponent, IAssetComponent<AudioClip> {
-        private AudioClip _audioClip;
+    public sealed class AudioPlayerComponent : GameComponent, IAssetComponent<AudioClip> {
+        private AudioClip? _audioClip;
         private float _pan;
         private float _pitch;
         private bool _shouldLoop;
@@ -22,15 +22,18 @@
         /// </summary>
         /// <value>The audio clip.</value>
         [DataMember(Order = 0, Name = "Audio Clip")]
-        public AudioClip AudioClip {
+        public AudioClip? AudioClip {
             get {
                 return this._audioClip;
             }
 
             set {
-                if (this.Set(ref this._audioClip, value) && !MacabreGame.Instance.IsDesignMode && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.Stop(true);
-                    this.LoadContent();
+                if (!this.Entity.Scene.Game.IsDesignMode) {
+                    this._audioClip?.SoundEffectInstance?.Stop(true);
+                }
+
+                if (this.Set(ref this._audioClip, value) && !this.Entity.Scene.Game.IsDesignMode) {
+                    this.AudioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
                 }
             }
         }
@@ -70,7 +73,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="AudioPlayerComponent"/> should loop.
+        /// Gets or sets a value indicating whether this <see cref="AudioPlayerComponent" /> should loop.
         /// </summary>
         /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
         [DataMember(Order = 1, Name = "Should Loop")]
@@ -113,28 +116,26 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<Guid> GetOwnedAssetIds() {
             return this.AudioClip != null ? new[] { this.AudioClip.Id } : new Guid[0];
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HasAsset(Guid id) {
             return this.AudioClip?.Id == id;
         }
 
-        /// <inheritdoc/>
-        public override void LoadContent() {
-            if (this._audioClip != null && this.Scene.IsInitialized) {
-                this._audioClip.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
 
-                if (this._shouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.IsLooped = true;
-                    this.Play();
-                }
+            this._audioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+
+            if (this._shouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
+                this._audioClip.SoundEffectInstance.IsLooped = true;
+                this.Play();
             }
-
-            base.LoadContent();
         }
 
         /// <summary>
@@ -158,12 +159,12 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void RefreshAsset(AudioClip newInstance) {
             this.AudioClip = newInstance;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -192,25 +193,20 @@
             }
         }
 
-        /// <inheritdoc/>
-        public bool TryGetAsset(Guid id, out AudioClip asset) {
+        /// <inheritdoc />
+        public bool TryGetAsset(Guid id, out AudioClip? asset) {
             var result = this.AudioClip?.Id == id;
             asset = result ? this.AudioClip : null;
             return result;
         }
 
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            this.PropertyChanged += this.Self_PropertyChanged;
-        }
-
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.IsEnabled)) {
-                if (this.ShouldLoop && this.IsEnabled && this._audioClip.SoundEffectInstance != null) {
+                if (this.ShouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
                     this._audioClip.SoundEffectInstance.IsLooped = true;
                     this.Play();
                 }
-                else if (!this.IsEnabled) {
+                else if (!this.Entity.IsEnabled) {
                     this.Stop();
                 }
             }

@@ -4,21 +4,21 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A weighted tile that can be used in a <see cref="RandomTileSet"/>.
+    /// A weighted tile that can be used in a <see cref="RandomTileSet" />.
     /// </summary>
     [DataContract]
     public sealed class WeightedTile : NotifyPropertyChanged {
-        private Sprite _sprite;
+        private Sprite? _sprite;
         private ushort _weight = 1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WeightedTile"/> class.
+        /// Initializes a new instance of the <see cref="WeightedTile" /> class.
         /// </summary>
         internal WeightedTile() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WeightedTile"/> class.
+        /// Initializes a new instance of the <see cref="WeightedTile" /> class.
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="weight">The weight.</param>
@@ -32,7 +32,7 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }

@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -12,20 +13,20 @@
         private BoundingArea _boundingArea;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineStripDrawerComponent"/> class.
+        /// Initializes a new instance of the <see cref="LineStripDrawerComponent" /> class.
         /// </summary>
         public LineStripDrawerComponent() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineStripDrawerComponent"/> class.
+        /// Initializes a new instance of the <see cref="LineStripDrawerComponent" /> class.
         /// </summary>
         /// <param name="points">The points.</param>
         public LineStripDrawerComponent(IEnumerable<Vector2> points) {
             this.ResetPoints(points);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
                 return this._boundingArea;
@@ -42,11 +43,11 @@
             }
         }
 
-        /// <inheritdoc/>
-        public override void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.PrimitiveDrawer != null && this._points.Any()) {
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this._points.Any()) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawLineStrip(MacabreGame.Instance.SpriteBatch, this.Color, lineThickness, this.Points.ToArray());
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Color, lineThickness, this.Points.ToArray());
             }
         }
 

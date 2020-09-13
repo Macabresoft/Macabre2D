@@ -15,9 +15,9 @@
         public static readonly PhysicsMaterial Default = new PhysicsMaterial(0.5f, 1f);
 
         /// <summary>
-        /// A physics material with zero for both values.
+        /// An empty physics material with zero for both values.
         /// </summary>
-        public static readonly PhysicsMaterial Zero = new PhysicsMaterial(0f, 0f);
+        public static readonly PhysicsMaterial Empty = new PhysicsMaterial(0f, 0f);
 
         /// <summary>
         /// A multiplier used when another collider hits the collider with this physics material. A
@@ -34,7 +34,7 @@
         public readonly float Friction;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PhysicsMaterial"/> struct.
+        /// Initializes a new instance of the <see cref="PhysicsMaterial" /> struct.
         /// </summary>
         /// <param name="bounce">The bounce.</param>
         /// <param name="friction">The friction.</param>

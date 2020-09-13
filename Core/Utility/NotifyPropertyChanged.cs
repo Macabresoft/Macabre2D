@@ -4,14 +4,14 @@
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// A base class that implements <see cref="INotifyPropertyChanged"/>
+    /// A base class that implements <see cref="INotifyPropertyChanged" />
     /// </summary>
     public class NotifyPropertyChanged : INotifyPropertyChanged {
 
         /// <summary>
         /// Occurs when a property changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Raises the property changed event.
@@ -22,13 +22,13 @@
         }
 
         public void RaisePropertyChanged(bool forceEvent, [CallerMemberName] string propertyName = "") {
-            if (forceEvent || MacabreGame.Instance?.IsDesignMode != false) {
+            if (forceEvent || DefaultGame.Instance.IsDesignMode != false) {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
         /// <summary>
-        /// Disposes <see cref="PropertyChanged"/>.
+        /// Disposes <see cref="PropertyChanged" />.
         /// </summary>
         protected void DisposePropertyChanged() {
             this.PropertyChanged = null;
@@ -53,7 +53,7 @@
         /// <param name="field">The field.</param>
         /// <param name="value">The value.</param>
         /// <param name="forcePropertyChangedEvent">
-        /// if set to <c>true</c> the <see cref="PropertyChanged"/> even will be raised.
+        /// if set to <c>true</c> the <see cref="PropertyChanged" /> even will be raised.
         /// </param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>A value indicating whether or not the value was successfully set.</returns>

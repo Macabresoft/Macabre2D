@@ -1,20 +1,16 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A base class for drawing the outlines of components.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.BaseComponent"/>
-    /// <seealso cref="Macabresoft.MonoGame.Core.IDrawableComponent"/>
-    public abstract class BaseDrawerComponent : BaseComponent, IDrawableComponent {
+    public abstract class BaseDrawerComponent : GameRenderableComponent {
         private Color _color = Color.White;
         private float _lineThickness = 1f;
         private bool _useDynamicLineThickness;
-
-        /// <inheritdoc/>
-        public abstract BoundingArea BoundingArea { get; }
 
         /// <summary>
         /// Gets or sets the color.
@@ -65,10 +61,17 @@
         /// Gets the primitive drawer.
         /// </summary>
         /// <value>The primitive drawer.</value>
-        protected PrimitiveDrawer PrimitiveDrawer { get; private set; }
+        protected PrimitiveDrawer? PrimitiveDrawer { get; private set; }
 
-        /// <inheritdoc/>
-        public abstract void Draw(FrameTime frameTime, BoundingArea viewBoundingArea);
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+#nullable disable
+            this.PrimitiveDrawer = this.Entity.Scene.ResolveDependency(
+                () => new PrimitiveDrawer(this.Entity.Scene.Game.SpriteBatch));
+#nullable enable
+        }
 
         /// <summary>
         /// Gets the line thickness.
@@ -77,19 +80,11 @@
         /// <returns>The appropriate line thickness for this drawer.</returns>
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
-            if (this.UseDynamicLineThickness) {
-                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, MacabreGame.Instance.GraphicsDevice.Viewport.Height);
+            if (this.UseDynamicLineThickness && this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice device) {
+                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, device.Viewport.Height);
             }
 
             return result;
-        }
-
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            if (this.Scene != null) {
-                this.PrimitiveDrawer = this.Scene.ResolveDependency(
-                    () => new PrimitiveDrawer(MacabreGame.Instance.SpriteBatch));
-            }
         }
     }
 }

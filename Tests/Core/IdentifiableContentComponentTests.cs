@@ -2,6 +2,7 @@
 
     using Macabresoft.MonoGame.Core;
     using NUnit.Framework;
+    using System;
 
     [TestFixture]
     public static class IdentifiableContentComponentTests {
@@ -22,7 +23,7 @@
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_SpriteRendererTest() {
             var spriteRenderer = new SpriteRenderComponent();
-            var sprite = new Sprite();
+            var sprite = new Sprite(Guid.NewGuid());
             spriteRenderer.Sprite = sprite;
 
             Assert.True(spriteRenderer.HasAsset(sprite.Id));
@@ -34,7 +35,7 @@
         [Category("Unit Test")]
         public static void IdentifiableContentComponent_TextRendererTest() {
             var textRenderer = new TextRenderComponent();
-            var font = new Font();
+            var font = new Font(Guid.NewGuid());
             textRenderer.Font = font;
 
             Assert.True(textRenderer.HasAsset(font.Id));

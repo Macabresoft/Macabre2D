@@ -11,6 +11,11 @@
     public struct TileGrid {
 
         /// <summary>
+        /// An empty tile grid.
+        /// </summary>
+        public static readonly TileGrid Empty = new TileGrid(Vector2.One);
+
+        /// <summary>
         /// The offset
         /// </summary>
         [DataMember(Order = 1)]
@@ -24,14 +29,14 @@
         public readonly Vector2 TileSize;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileGrid"/> struct.
+        /// Initializes a new instance of the <see cref="TileGrid" /> struct.
         /// </summary>
         /// <param name="tileSize">Size of the tile.</param>
         public TileGrid(Vector2 tileSize) : this(tileSize, Vector2.Zero) {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileGrid"/> struct.
+        /// Initializes a new instance of the <see cref="TileGrid" /> struct.
         /// </summary>
         /// <param name="gridSize">Size of the grid.</param>
         /// <param name="tileSize">Size of the tile.</param>
@@ -40,24 +45,24 @@
             this.TileSize = tileSize;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public static bool operator !=(TileGrid grid1, TileGrid grid2) {
             return grid1.TileSize != grid2.TileSize || grid1.Offset != grid2.Offset;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public static bool operator ==(TileGrid grid1, TileGrid grid2) {
             return grid1.TileSize == grid2.TileSize && grid1.Offset == grid2.Offset;
         }
 
-        /// <inheritdoc/>
-        public override bool Equals(object obj) {
+        /// <inheritdoc />
+        public override bool Equals(object? obj) {
             return obj is TileGrid grid &&
                    this.Offset.Equals(grid.Offset) &&
                    this.TileSize.Equals(grid.TileSize);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override int GetHashCode() {
             var hashCode = 560318066;
             hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(this.Offset);
@@ -72,6 +77,11 @@
         /// <returns>The tile position.</returns>
         public Vector2 GetTilePosition(Point tile) {
             return new Vector2(tile.X * this.TileSize.X, tile.Y * this.TileSize.Y) + this.Offset;
+        }
+
+        /// <inheritdoc />
+        public override string ToString() {
+            return $"Tile Size: ({this.TileSize.X}, {this.TileSize.Y}), Offset: ({this.Offset.X}, {this.Offset.Y})";
         }
     }
 }

@@ -3,10 +3,15 @@
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class VolumeController : BaseComponent, IUpdateableComponent {
+    public sealed class VolumeController : GameUpdateableComponent {
         private AudioPlayerComponent _audioPlayer;
 
-        public void Update(FrameTime frameTime, InputState inputState) {
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.Entity.TryGetComponent(out this._audioPlayer);
+        }
+
+        public override void Update(FrameTime frameTime, InputState inputState) {
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
                 this._audioPlayer.Volume += 0.1f;
             }
@@ -26,10 +31,6 @@
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
                 this._audioPlayer.Play();
             }
-        }
-
-        protected override void Initialize() {
-            this._audioPlayer = this.Parent as AudioPlayerComponent;
         }
     }
 }

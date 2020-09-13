@@ -50,7 +50,7 @@
         /// <summary>
         /// Occurs when either <see cref="DisplayMode" /> or <see cref="Resolution" /> has changed.
         /// </summary>
-        public event EventHandler SettingsChanged;
+        public event EventHandler? SettingsChanged;
 
         /// <summary>
         /// Gets or sets the display mode.

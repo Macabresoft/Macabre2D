@@ -11,14 +11,14 @@
     /// <summary>
     /// A component which will render a single sprite.
     /// </summary>
-    public class SpriteRenderComponent : BaseComponent, IDrawableComponent, IAssetComponent<Sprite>, IRotatable {
+    public class SpriteRenderComponent : GameRenderableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
         private Color _color = Color.White;
         private float _rotation;
         private bool _snapToPixels;
-        private Sprite _sprite;
+        private Sprite? _sprite;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderComponent" /> class.
@@ -30,7 +30,7 @@
         }
 
         /// <inheritdoc />
-        public BoundingArea BoundingArea {
+        public override BoundingArea BoundingArea {
             get {
                 return this._boundingArea.Value;
             }
@@ -106,27 +106,17 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember(Order = 0)]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }
             set {
                 if (this.Set(ref this._sprite, value)) {
-                    this.LoadContent();
+                    this.Sprite?.Load();
                     this.RenderSettings.InvalidateSize();
                     this._boundingArea.Reset();
                     this.RenderSettings.ResetOffset();
                 }
-            }
-        }
-
-        /// <inheritdoc />
-        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this._snapToPixels) {
-                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
-            }
-            else {
-                MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
             }
         }
 
@@ -141,12 +131,11 @@
         }
 
         /// <inheritdoc />
-        public override void LoadContent() {
-            if (this.Scene.IsInitialized) {
-                this.Sprite?.Load();
-            }
-
-            base.LoadContent();
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
+            this.RenderSettings.Initialize(this.CreateSize);
+            this.Sprite?.Load();
         }
 
         /// <inheritdoc />
@@ -167,17 +156,34 @@
         }
 
         /// <inheritdoc />
-        public virtual bool TryGetAsset(Guid id, out Sprite asset) {
-            var result = this.Sprite != null && this.Sprite.Id == id;
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.Sprite != null) {
+                if (this._snapToPixels) {
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
+                }
+                else {
+                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual bool TryGetAsset(Guid id, out Sprite? asset) {
+            var result = this.Sprite?.Id == id;
             asset = result ? this.Sprite : null;
             return result;
         }
 
-        /// <inheritdoc />
-        protected override void Initialize() {
-            this.PropertyChanged += this.Self_PropertyChanged;
-            this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
-            this.RenderSettings.Initialize(this.CreateSize);
+        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+                this.RenderSettings.InvalidateSize();
+                this._boundingArea.Reset();
+                this._pixelTransform.Reset();
+                this._rotatableTransform.Reset();
+            }
+            else if (e.PropertyName == nameof(IGameEntity.IsEnabled)) {
+                this.RaisePropertyChanged(nameof(this.IsVisible));
+            }
         }
 
         private BoundingArea CreateBoundingArea() {
@@ -188,10 +194,10 @@
                 var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
 
                 var points = new List<Vector2> {
-                    this.GetWorldTransform(offset, this.Rotation).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
-                    this.GetWorldTransform(offset + new Vector2(width, height), this.Rotation).Position,
-                    this.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
+                    this.Entity.GetWorldTransform(offset, this.Rotation).Position,
+                    this.Entity.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
+                    this.Entity.GetWorldTransform(offset + new Vector2(width, height), this.Rotation).Position,
+                    this.Entity.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
                 };
 
                 var minimumX = points.Min(x => x.X);
@@ -216,12 +222,12 @@
         }
 
         private Transform CreatePixelTransform() {
-            var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit).ToPixelSnappedValue();
+            var worldTransform = this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit).ToPixelSnappedValue();
             return worldTransform;
         }
 
         private Transform CreateRotatableTransform() {
-            return this.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation);
+            return this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation);
         }
 
         private Vector2 CreateSize() {
@@ -238,15 +244,6 @@
                 this._pixelTransform.Reset();
                 this._rotatableTransform.Reset();
                 this._boundingArea.Reset();
-            }
-        }
-
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.WorldTransform)) {
-                this.RenderSettings.InvalidateSize();
-                this._boundingArea.Reset();
-                this._pixelTransform.Reset();
-                this._rotatableTransform.Reset();
             }
         }
     }

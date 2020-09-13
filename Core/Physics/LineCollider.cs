@@ -8,11 +8,10 @@
     /// <summary>
     /// Collider representing a line defined by a start and end point to be used by the physics engine.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.Physics.PolygonCollider"/>
     public sealed class LineCollider : PolygonCollider {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineCollider"/> class.
+        /// Initializes a new instance of the <see cref="LineCollider" /> class.
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
@@ -20,7 +19,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineCollider"/> class.
+        /// Initializes a new instance of the <see cref="LineCollider" /> class.
         /// </summary>
         private LineCollider() : base() {
         }
@@ -61,17 +60,17 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Collider other) {
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Contains(Vector2 point) {
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
             var normals = base.GetAxesForSAT(other);
             var result = new List<Vector2>();
@@ -90,14 +89,14 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override List<Vector2> GetNormals() {
             return new List<Vector2> {
                 this.GetNormal(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1))
             };
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryHit(LineSegment ray, out RaycastHit result) {
             var edge = new LineSegment(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1));
 
@@ -114,7 +113,7 @@
                 return true;
             }
 
-            result = null;
+            result = RaycastHit.Empty;
             return false;
         }
     }

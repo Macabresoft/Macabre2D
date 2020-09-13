@@ -8,11 +8,10 @@
     /// <summary>
     /// Collider representing a rectangle to be used by the physics engine.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.Physics.PolygonCollider"/>
     public sealed class RectangleCollider : PolygonCollider {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangleCollider"/> class.
+        /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -20,7 +19,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangleCollider"/> class.
+        /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
         /// </summary>
         private RectangleCollider() : base() {
         }
@@ -75,7 +74,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override List<Vector2> GetNormals() {
             var normals = new List<Vector2>();
 

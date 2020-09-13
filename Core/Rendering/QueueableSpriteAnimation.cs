@@ -3,12 +3,12 @@
     using System;
 
     /// <summary>
-    /// A wrapper for <see cref="SpriteAnimation"/> that allows it to be queued.
+    /// A wrapper for <see cref="SpriteAnimation" /> that allows it to be queued.
     /// </summary>
     public sealed class QueueableSpriteAnimation {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueueableSpriteAnimation"/> class.
+        /// Initializes a new instance of the <see cref="QueueableSpriteAnimation" /> class.
         /// </summary>
         /// <param name="animation">The animation.</param>
         /// <param name="shouldLoopIndefinitely">
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueueableSpriteAnimation"/> class.
+        /// Initializes a new instance of the <see cref="QueueableSpriteAnimation" /> class.
         /// </summary>
         /// <param name="animation">The animation.</param>
         /// <param name="shouldLoopIndefinitely">

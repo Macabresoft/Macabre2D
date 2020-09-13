@@ -139,9 +139,7 @@
                 return false;
             }
 
-            if (other.ColliderType == ColliderType.Circle) {
-                var circle = other as CircleCollider;
-
+            if (other is CircleCollider circle) {
                 // Quickly exit if the center of the circle isn't even inside this polygon.
                 if (!this.Contains(circle.Center)) {
                     return false;
@@ -180,8 +178,7 @@
 
                 return true;
             }
-            else if (other.ColliderType == ColliderType.Polygon) {
-                var polygon = other as PolygonCollider;
+            else if (other is PolygonCollider polygon) {
                 foreach (var point in polygon.WorldPoints) {
                     if (!this.Contains(point)) {
                         return false;
@@ -279,15 +276,17 @@
                 }
             }
 
-            result = hasIntersection ? new RaycastHit(this, contactPoint, normal) : null;
+            result = hasIntersection ? new RaycastHit(this, contactPoint, normal) : RaycastHit.Empty;
             return hasIntersection;
         }
 
         private List<Vector2> CreateWorldPoints() {
             var worldPoints = new List<Vector2>();
-            foreach (var point in this._points) {
-                var worldPoint = this.Body?.GetWorldTransform(this.Offset + point).Position ?? point;
-                worldPoints.Add(worldPoint);
+            if (this.Body != null) {
+                foreach (var point in this._points) {
+                    var worldPoint = this.Body.Entity.GetWorldTransform(this.Offset + point).Position;
+                    worldPoints.Add(worldPoint);
+                }
             }
 
             return worldPoints;

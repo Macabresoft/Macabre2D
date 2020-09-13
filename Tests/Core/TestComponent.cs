@@ -2,17 +2,9 @@
 
     using Macabresoft.MonoGame.Core;
 
-    internal class TestComponent : BaseComponent {
+    internal class TestComponent : GameComponent {
 
         public TestComponent() {
-        }
-
-        public TestComponent(string name) {
-            this.Name = name;
-        }
-
-        protected override void Initialize() {
-            return;
         }
     }
 }

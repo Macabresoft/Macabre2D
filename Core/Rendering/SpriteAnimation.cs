@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,13 +16,13 @@
         private bool _isLoaded = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimation"/> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
         /// </summary>
         public SpriteAnimation() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimation"/> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
         /// </summary>
         /// <param name="steps">The steps.</param>
         /// <param name="shouldLoop">if set to <c>true</c> [should loop].</param>
@@ -31,9 +30,13 @@
             this._steps.AddRange(steps);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the steps.
@@ -90,7 +93,9 @@
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Guid> GetSpriteIds() {
+#nullable disable
             return this._steps.Where(x => x.Sprite != null).Select(x => x.Sprite.Id);
+#nullable enable
         }
 
         /// <summary>
@@ -107,11 +112,11 @@
         /// <summary>
         /// Loads the content.
         /// </summary>
-        public void LoadContent() {
+        public void Load() {
             if (!this._isLoaded) {
                 try {
                     foreach (var sprite in this._steps.Select(x => x.Sprite).Where(x => x?.Texture != null)) {
-                        sprite.Texture = AssetManager.Instance.Load<Texture2D>(sprite.AssetId);
+                        sprite?.Load();
                     }
                 }
                 finally {
@@ -162,7 +167,7 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <param name="sprite">The sprite.</param>
         /// <returns>A value indicating whether or not the sprite was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
             sprite = this._steps.FirstOrDefault(x => x.Sprite?.Id == spriteId)?.Sprite;
             return sprite != null;
         }

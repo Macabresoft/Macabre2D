@@ -8,26 +8,26 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A <see cref="BaseBodyComponent"/> which reacts to a <see cref="ITileable"/> parent and
-    /// creates colliders based on the available grid.
+    /// A <see cref="PhysicsBody" /> which reacts to a <see cref="IGameTileableComponent" /> parent
+    /// and creates colliders based on the available grid.
     /// </summary>
-    public sealed class TileableBodyComponent : BaseBodyComponent {
+    public sealed class TileableBodyComponent : PhysicsBody {
         private readonly List<Collider> _colliders = new List<Collider>();
 
         private Layers _overrideLayersBottomEdge = Layers.None;
         private Layers _overrideLayersLeftEdge = Layers.None;
         private Layers _overrideLayersRightEdge = Layers.None;
         private Layers _overrideLayersTopEdge = Layers.None;
-        private ITileable _tileable;
+        private IGameTileableComponent? _tileable;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
                 return this._tileable?.BoundingArea ?? new BoundingArea();
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool HasCollider {
             get {
                 return this._colliders.Any();
@@ -94,54 +94,59 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IEnumerable<Collider> GetColliders() {
             return this._colliders;
         }
 
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            this.SetTileable(this.Parent as ITileable);
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.SetTileable();
         }
 
-        /// <inheritdoc/>
-        protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            base.OnPropertyChanged(sender, e);
+        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
+            base.OnEntityPropertyChanged(e);
 
-            if (e.PropertyName == nameof(this.Parent)) {
-                this.SetTileable(e as ITileable);
+            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+                this.OnRequestReset(this.Entity, e);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
+            base.OnPropertyChanged(e);
+
+            if (e.PropertyName == nameof(this.Entity)) {
+                this.SetTileable();
             }
         }
 
         private CardinalDirections GetEdgeDirections(Point tile) {
             var directions = CardinalDirections.None;
 
-            if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
-                directions |= CardinalDirections.West;
-            }
+            if (this._tileable != null) {
+                if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
+                    directions |= CardinalDirections.West;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
-                directions |= CardinalDirections.North;
-            }
+                if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
+                    directions |= CardinalDirections.North;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
-                directions |= CardinalDirections.East;
-            }
+                if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
+                    directions |= CardinalDirections.East;
+                }
 
-            if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
-                directions |= CardinalDirections.South;
+                if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
+                    directions |= CardinalDirections.South;
+                }
             }
 
             return directions;
         }
 
-        private void GridConfiguration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(GridConfiguration.Grid)) {
-                this.OnRequestReset(sender, e);
-            }
-        }
-
-        private void OnRequestReset(object sender, EventArgs e) {
+        private void OnRequestReset(object? sender, EventArgs e) {
             this.ResetColliders();
         }
 
@@ -207,37 +212,37 @@
                 }
 
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(this._tileable.GridConfiguration.Grid.GetTilePosition(segment.StartPoint), this._tileable.GridConfiguration.Grid.GetTilePosition(segment.EndPoint));
-                    collider.Layers = segment.Layers;
+                    var collider = new LineCollider(this._tileable.Grid.GetTilePosition(segment.StartPoint), this._tileable.Grid.GetTilePosition(segment.EndPoint)) {
+                        Layers = segment.Layers
+                    };
+
                     collider.Initialize(this);
                     this._colliders.Add(collider);
                 }
             }
         }
 
-        private void SetTileable(ITileable tileable) {
+        private void SetTileable() {
             if (this._tileable != null) {
-                this._tileable.GridConfiguration.PropertyChanged -= this.GridConfiguration_PropertyChanged;
-                this._tileable.TilesChanged -= this.OnRequestReset;
                 this._tileable.PropertyChanged -= this.Tileable_PropertyChanged;
+                this._tileable.TilesChanged -= this.OnRequestReset;
             }
 
-            this._tileable = tileable;
-
-            if (this._tileable != null) {
-                this._tileable.GridConfiguration.PropertyChanged += this.GridConfiguration_PropertyChanged;
+            if (this.Entity.TryGetComponent<IGameTileableComponent>(out var tileable) && tileable != null) {
+                this._tileable = tileable;
+                this._tileable.PropertyChanged += this.Tileable_PropertyChanged;
                 this._tileable.TilesChanged += this.OnRequestReset;
-                this._tileable.PropertyChanged += this.Tileable_PropertyChanged; ;
+            }
+            else {
+                this._tileable = null;
             }
 
             this.ResetColliders();
         }
 
         private void Tileable_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this._tileable.WorldTransform)) {
+            if (e.PropertyName == nameof(IGameTileableComponent.Grid)) {
                 this.OnRequestReset(sender, e);
-            }
-            else if (e.PropertyName == nameof(this.Parent)) {
             }
         }
 

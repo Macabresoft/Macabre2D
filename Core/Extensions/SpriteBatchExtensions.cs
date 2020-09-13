@@ -4,7 +4,7 @@
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// Extensions for <see cref="SpriteBatch"/>.
+    /// Extensions for <see cref="SpriteBatch" />.
     /// </summary>
     public static class SpriteBatchExtensions {
 
@@ -18,7 +18,7 @@
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, float rotation, Color color, SpriteEffects orientation) {
-            if (sprite?.Texture != null && transform != null) {
+            if (sprite.Texture != null && transform != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     transform.Position * GameSettings.Instance.PixelsPerUnit,
@@ -43,7 +43,7 @@
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, float rotation, Color color, SpriteEffects orientation) {
-            if (sprite?.Texture != null) {
+            if (sprite.Texture != null) {
                 spriteBatch.Draw(
                     sprite.Texture,
                     position * GameSettings.Instance.PixelsPerUnit,
@@ -102,7 +102,7 @@
         /// <param name="rotationAngle">The rotation angle.</param>
         /// <param name="color">The color.</param>
         public static void Draw(this SpriteBatch spriteBatch, Font font, string text, Vector2 position, Vector2 scale, float rotationAngle, Color color, SpriteEffects orientation) {
-            if (font?.SpriteFont != null) {
+            if (font.SpriteFont != null) {
                 spriteBatch.DrawString(
                   font.SpriteFont,
                   text,

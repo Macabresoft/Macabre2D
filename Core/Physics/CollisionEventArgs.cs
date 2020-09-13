@@ -9,7 +9,7 @@
     public sealed class CollisionEventArgs : EventArgs {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollisionEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="CollisionEventArgs" /> class.
         /// </summary>
         /// <param name="firstCollider">The first collider.</param>
         /// <param name="secondCollider">The second collider.</param>

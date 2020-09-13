@@ -11,14 +11,8 @@
     public sealed class Sprite : BaseIdentifiable, IAsset, IDisposable {
         private bool _disposedValue = false;
         private Point _location;
-        private string _name;
+        private string _name = string.Empty;
         private Point _size;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite" /> class.
-        /// </summary>
-        public Sprite() {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> class.
@@ -32,14 +26,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> class.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="assetId">The identifier.</param>
         /// <param name="location">
         /// The location of this specific sprite on the <see cref="Texture2D" />.
         /// </param>
         /// <param name="size">The size of this specific sprite on the <see cref="Texture2D" />.</param>
-        public Sprite(Guid id, Point location, Point size) {
-            this.AssetId = id;
-            this.LoadTexture(location, size);
+        public Sprite(Guid assetId, Point location, Point size) {
+            this.Id = Guid.NewGuid();
+            this.AssetId = assetId;
+            this.SetLocationAndSize(location, size);
         }
 
         /// <summary>
@@ -60,12 +55,19 @@
         /// <param name="location">The location.</param>
         /// <param name="size">The size.</param>
         public Sprite(Texture2D texture, Point location, Point size) {
-            this.LoadTexture(texture, location, size);
+            this.Texture = texture;
+            this.SetLocationAndSize(location, size);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sprite" /> class.
+        /// </summary>
+        private Sprite() {
         }
 
         /// <inheritdoc />
         [DataMember]
-        public Guid AssetId { get; set; }
+        public Guid AssetId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Gets the location.
@@ -116,7 +118,7 @@
         /// Gets the texture.
         /// </summary>
         /// <value>The texture.</value>
-        public Texture2D Texture { get; set; }
+        public Texture2D? Texture { get; set; }
 
         /// <inheritdoc />
         public void Dispose() {
@@ -128,11 +130,11 @@
         /// </summary>
         public void Load() {
             if (this.AssetId != Guid.Empty) {
-                try {
-                    this.Texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
+                if (AssetManager.Instance.TryLoad<Texture2D>(this.AssetId, out var texture) && texture != null) {
+                    this.Texture = texture;
                 }
-                catch {
-                    this.SetErrorTexture(MacabreGame.Instance.SpriteBatch);
+                else {
+                    this.SetErrorTexture(DefaultGame.Instance.SpriteBatch);
                 }
             }
         }
@@ -141,7 +143,7 @@
         /// Sets the error texture.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        public void SetErrorTexture(SpriteBatch spriteBatch) {
+        public void SetErrorTexture(SpriteBatch? spriteBatch) {
             if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
                 var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);
                 var pixels = new Color[this.Size.X * this.Size.Y];
@@ -158,7 +160,7 @@
         private void Dispose(bool disposing) {
             if (!this._disposedValue) {
                 if (disposing) {
-                    this.Texture.Dispose();
+                    this.Texture?.Dispose();
                 }
 
                 this._disposedValue = true;
@@ -166,17 +168,14 @@
         }
 
         private void LoadTexture() {
-            var texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
-            this.LoadTexture(texture, Point.Zero, new Point(texture.Width, texture.Height));
+            this.Load();
+
+            if (this.Texture != null) {
+                this.SetLocationAndSize(Point.Zero, new Point(this.Texture.Width, this.Texture.Height));
+            }
         }
 
-        private void LoadTexture(Point location, Point size) {
-            var texture = AssetManager.Instance.Load<Texture2D>(this.AssetId);
-            this.LoadTexture(texture, location, size);
-        }
-
-        private void LoadTexture(Texture2D texture, Point location, Point size) {
-            this.Texture = texture;
+        private void SetLocationAndSize(Point location, Point size) {
             this.Location = location;
             this.Size = size;
         }

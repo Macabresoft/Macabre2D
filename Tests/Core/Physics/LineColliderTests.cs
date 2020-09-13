@@ -15,9 +15,9 @@
             float x1, float y1, float x2, float y2,
             float rx1, float ry1, float rx2, float ry2,
             bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using (var lineBody = new DynamicBodyComponent()) {
+            using (var lineBody = new DynamicPhysicsBody()) {
+                lineBody.Initialize(new GameEntity());
                 lineBody.Collider = new LineCollider(new Vector2(x1, y1), new Vector2(x2, y2));
-                lineBody.Initialize(null);
 
                 var ray = new LineSegment(new Vector2(rx1, ry1), new Vector2(rx2, ry2));
                 Assert.AreEqual(shouldHit, lineBody.Collider.IsHitBy(ray, out var hit));

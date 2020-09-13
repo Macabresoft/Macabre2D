@@ -28,7 +28,7 @@
         public MouseState PreviousMouseState;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InputState"/> struct.
+        /// Initializes a new instance of the <see cref="InputState" /> struct.
         /// </summary>
         /// <param name="mouseState">State of the mouse.</param>
         /// <param name="keyboardState">State of the keyboard.</param>
@@ -40,18 +40,18 @@
             this.PreviousKeyboardState = inputState.CurrentKeyboardState;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public static bool operator !=(InputState left, InputState right) {
             return !(left == right);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public static bool operator ==(InputState left, InputState right) {
             return left.Equals(right);
         }
 
-        /// <inheritdoc/>
-        public override bool Equals(object obj) {
+        /// <inheritdoc />
+        public override bool Equals(object? obj) {
             var result = false;
             if (obj is InputState other) {
                 result = other.CurrentKeyboardState == this.CurrentKeyboardState && other.CurrentMouseState == this.CurrentMouseState &&
@@ -61,7 +61,7 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override int GetHashCode() {
             var hashCode = this.CurrentKeyboardState.GetCombinedHashCode();
             hashCode = this.CurrentMouseState.GetCombinedHashCode(hashCode);

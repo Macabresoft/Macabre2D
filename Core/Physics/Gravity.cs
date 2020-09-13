@@ -12,12 +12,15 @@
         private Vector2 _value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Gravity"/> class.
+        /// Initializes a new instance of the <see cref="Gravity" /> class.
         /// </summary>
         /// <param name="value">The value.</param>
         public Gravity(Vector2 value) {
             this._value = value;
             this.SetProperties();
+        }
+
+        private Gravity() {
         }
 
         /// <summary>

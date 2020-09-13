@@ -52,19 +52,20 @@
     /// <summary>
     /// Serializes to Json.
     /// </summary>
-    /// <seealso cref="ISerializationService"/>
+    /// <seealso cref="ISerializationService" />
     public sealed class Serializer : ISerializer {
+#nullable disable
         private static ISerializer _instance = new Serializer();
         private readonly JsonSerializer _jsonSerializer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Serializer"/> class.
+        /// Initializes a new instance of the <see cref="Serializer" /> class.
         /// </summary>
         public Serializer() : this(new JsonSerializer()) {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Serializer"/> class.
+        /// Initializes a new instance of the <see cref="Serializer" /> class.
         /// </summary>
         /// <param name="jsonSerializer">The json serializer.</param>
         public Serializer(JsonSerializer jsonSerializer) {
@@ -81,7 +82,7 @@
         }
 
         /// <summary>
-        /// Gets the singleton instance of <see cref="ISerializer"/>.
+        /// Gets the singleton instance of <see cref="ISerializer" />.
         /// </summary>
         public static ISerializer Instance {
             get {
@@ -95,7 +96,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T Deserialize<T>(string path) {
             using (var streamReader = new StreamReader(path))
             using (var jsonReader = new JsonTextReader(streamReader)) {
@@ -103,7 +104,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public T DeserializeFromString<T>(string json) {
             using (var stringReader = new StringReader(json))
             using (var jsonReader = new JsonTextReader(stringReader)) {
@@ -111,7 +112,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public object DeserializeFromString(string json, Type type) {
             using (var stringReader = new StringReader(json))
             using (var jsonReader = new JsonTextReader(stringReader)) {
@@ -119,7 +120,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Serialize(object value, string path) {
             var directoryName = Path.GetDirectoryName(path);
             if (!string.IsNullOrWhiteSpace(directoryName)) {
@@ -132,7 +133,7 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string SerializeToString(object value) {
             var stringBuilder = new StringBuilder();
             using (var stringWriter = new StringWriter(stringBuilder))
@@ -143,4 +144,6 @@
             return stringBuilder.ToString();
         }
     }
+
+#nullable enable
 }

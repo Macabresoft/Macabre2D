@@ -18,14 +18,6 @@
         string GetPathToDataDirectory();
 
         /// <summary>
-        /// Loads the specified save data.
-        /// </summary>
-        /// <typeparam name="T">The type of data.</typeparam>
-        /// <param name="fileName">Name of the file.</param>
-        /// <returns>The save data.</returns>
-        T Load<T>(string fileName) where T : IVersionedData;
-
-        /// <summary>
         /// Saves the specified save data.
         /// </summary>
         /// <typeparam name="T">Versioned data.</typeparam>
@@ -40,6 +32,6 @@
         /// <param name="fileName">Name of the file.</param>
         /// <param name="loadedData">The loaded data.</param>
         /// <returns>A value indicating whether or not the data was found.</returns>
-        bool TryLoad<T>(string fileName, out T loadedData) where T : IVersionedData;
+        bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData;
     }
 }

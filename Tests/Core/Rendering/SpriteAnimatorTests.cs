@@ -2,7 +2,6 @@
 
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
-    using NSubstitute;
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
@@ -17,7 +16,7 @@
             var numberOfSteps = 3;
             var animation = CreateAnimation(numberOfSteps);
             var animator = CreateAnimator(1);
-            animator.Initialize(Substitute.For<IScene>());
+            animator.Initialize(new GameEntity());
 
             var gameTime = new GameTime {
                 ElapsedGameTime = TimeSpan.FromMilliseconds(100d)
@@ -50,7 +49,7 @@
             for (var i = 0; i < numberOfSteps; i++) {
                 steps.Add(new SpriteAnimationStep {
                     Frames = 1,
-                    Sprite = new Sprite()
+                    Sprite = new Sprite(Guid.NewGuid())
                 });
             }
 

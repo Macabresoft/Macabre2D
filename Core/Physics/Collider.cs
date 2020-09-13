@@ -24,7 +24,12 @@
         /// <summary>
         /// Some other type of collider. Most custom colliders will fall into this category.
         /// </summary>
-        Other
+        Other,
+
+        /// <summary>
+        /// Reserved for the single empty collider instance.
+        /// </summary>
+        Empty
     }
 
     /// <summary>
@@ -42,7 +47,7 @@
         /// Initializes a new instance of the <see cref="Collider" /> class.
         /// </summary>
         protected Collider() {
-            this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? new Transform());
+            this._transform = new ResettableLazy<Transform>(() => this.Body?.Entity.GetWorldTransform(this.Offset) ?? Transform.Origin);
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
@@ -50,7 +55,7 @@
         /// Gets the body that this collider is attached to.
         /// </summary>
         /// <value>The body.</value>
-        public IPhysicsBody Body { get; private set; }
+        public IPhysicsBody? Body { get; private set; }
 
         /// <inheritdoc />
         public BoundingArea BoundingArea {
@@ -72,7 +77,7 @@
         [DataMember(Name = "Collider Layers")]
         public Layers Layers {
             get {
-                return this._overrideLayers != Layers.None ? this._overrideLayers : (this.Body?.Layers ?? Layers.None);
+                return this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Entity.Layers ?? Layers.None;
             }
 
             internal set {
@@ -113,7 +118,7 @@
         /// <param name="other">The other collider.</param>
         /// <param name="collision">The collision.</param>
         /// <returns>A value indicating whether or not the collision occurred.</returns>
-        public bool CollidesWith(Collider other, out CollisionEventArgs collision) {
+        public bool CollidesWith(Collider other, out CollisionEventArgs? collision) {
             if (!this.BoundingArea.Overlaps(other.BoundingArea)) {
                 collision = null;
                 return false;
@@ -242,7 +247,7 @@
         /// <returns><c>true</c> if this collider is hit by the specified ray; otherwise, <c>false</c>.</returns>
         public bool IsHitBy(LineSegment ray, out RaycastHit hit) {
             if (!ray.BoundingArea.Overlaps(this.BoundingArea)) {
-                hit = null;
+                hit = RaycastHit.Empty;
                 return false;
             }
 

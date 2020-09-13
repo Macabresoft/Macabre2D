@@ -16,6 +16,7 @@
         private readonly List<WeightedTile> _tiles = new List<WeightedTile>();
 
         private bool _isLoaded = false;
+        private string _name = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomTileSet" /> class.
@@ -26,11 +27,23 @@
         /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
-        public event EventHandler<ushort> SpriteChanged;
+        public event EventHandler<ushort>? SpriteChanged;
 
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the tiles.
@@ -80,8 +93,8 @@
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
-        public Sprite GetSprite(ushort index) {
-            return index < this._tiles.Count ? this._tiles[index]?.Sprite : null;
+        public Sprite? GetSprite(ushort index) {
+            return index < this._tiles.Count ? this._tiles[index].Sprite : null;
         }
 
         /// <summary>
@@ -89,7 +102,9 @@
         /// </summary>
         /// <returns>The sprite identifiers.</returns>
         public IEnumerable<Guid> GetSpriteIds() {
+#nullable disable
             return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.Id).ToList();
+#nullable enable
         }
 
         /// <summary>
@@ -160,7 +175,7 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <param name="sprite">The sprite.</param>
         /// <returns>A value indicating whether or not the value was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
             sprite = this.Tiles.Select(x => x.Sprite).FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
         }

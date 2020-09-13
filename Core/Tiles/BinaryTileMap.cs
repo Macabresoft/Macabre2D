@@ -10,32 +10,32 @@
     /// <summary>
     /// A tile map component that is either "on" or "off". The on tiles will show the selected sprite.
     /// </summary>
-    public sealed class BinaryTileMap : TileableComponent, IAssetComponent<Sprite>, IDrawableComponent {
+    public sealed class BinaryTileMap : RenderableTileMap, IAssetComponent<Sprite> {
 
         [DataMember]
         private readonly HashSet<Point> _activeTiles = new HashSet<Point>();
 
         private Color _color = Color.White;
-        private Sprite _sprite;
+        private Sprite? _sprite;
         private Vector2 _tileScale;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryTileMap"/> class.
+        /// Initializes a new instance of the <see cref="BinaryTileMap" /> class.
         /// </summary>
         public BinaryTileMap() : base() {
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override IReadOnlyCollection<Point> ActiveTiles {
             get {
                 return this._activeTiles;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<Sprite> AvailableTiles {
             get {
-                return new[] { this.Sprite };
+                return this.Sprite != null ? new Sprite[] { this.Sprite } : new Sprite[0];
             }
         }
 
@@ -59,63 +59,46 @@
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember(Order = 0)]
-        public Sprite Sprite {
+        public Sprite? Sprite {
             get {
                 return this._sprite;
             }
             set {
                 if (this.Set(ref this._sprite, value)) {
-                    this.LoadContent();
-                    this._tileScale = this.GetTileScale(this.Sprite);
+                    this.LoadSprite();
                 }
             }
         }
 
-        /// <inheritdoc/>
-        public void Draw(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Sprite?.Texture != null && this._activeTiles.Any()) {
-                foreach (var tile in this._activeTiles) {
-                    var boundingArea = this.GetTileBoundingArea(tile);
-                    if (boundingArea.Overlaps(viewBoundingArea)) {
-                        MacabreGame.Instance.SpriteBatch.Draw(this.Sprite, boundingArea.Minimum, this._tileScale, this.Color);
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public IEnumerable<Guid> GetOwnedAssetIds() {
             return this.Sprite != null ? new[] { this.Sprite.Id } : new Guid[0];
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool HasActiveTileAt(Point tilePosition) {
             return this._activeTiles.Contains(tilePosition);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool HasAsset(Guid id) {
             return this._sprite?.Id == id;
         }
 
-        /// <inheritdoc/>
-        public override void LoadContent() {
-            if (this.Scene.IsInitialized) {
-                this.Sprite?.Load();
-                this._tileScale = this.GetTileScale(this.Sprite);
-            }
-
-            base.LoadContent();
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.LoadSprite();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void RefreshAsset(Sprite newInstance) {
             if (newInstance != null && this.Sprite?.Id == newInstance.Id) {
                 this.Sprite = newInstance;
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool RemoveAsset(Guid id) {
             var result = this.HasAsset(id);
             if (result) {
@@ -125,64 +108,77 @@
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.Sprite?.Texture != null && this._activeTiles.Any()) {
+                foreach (var tile in this._activeTiles) {
+                    var boundingArea = this.GetTileBoundingArea(tile);
+                    if (boundingArea.Overlaps(viewBoundingArea)) {
+                        this.Entity.Scene.Game.SpriteBatch?.Draw(this.Sprite, boundingArea.Minimum, this._tileScale, this.Color);
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public bool SetDefaultTile(Sprite newDefault) {
             return false;
         }
 
-        /// <inheritdoc/>
-        public bool TryGetAsset(Guid id, out Sprite asset) {
-            var result = this.Sprite != null && this.Sprite.Id == id;
+        /// <inheritdoc />
+        public bool TryGetAsset(Guid id, out Sprite? asset) {
+            var result = this.Sprite?.Id == id;
             asset = result ? this.Sprite : null;
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void ClearActiveTiles() {
             this._activeTiles.Clear();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override Point GetMaximumTile() {
             return new Point(this._activeTiles.Select(t => t.X).Max(), this._activeTiles.Select(t => t.Y).Max());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override Point GetMinimumTile() {
             return new Point(this._activeTiles.Select(t => t.X).Min(), this._activeTiles.Select(t => t.Y).Min());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool HasActiveTiles() {
             return this._activeTiles.Any();
         }
 
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            base.Initialize();
-            this.PropertyChanged += this.Self_PropertyChanged;
+        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
+            base.OnEntityPropertyChanged(e);
+
+            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+                this._tileScale = this.GetTileScale(this.Sprite);
+            }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnGridChanged() {
             base.OnGridChanged();
             this._tileScale = this.GetTileScale(this.Sprite);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryAddTile(Point tile) {
             return this._activeTiles.Add(tile);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool TryRemoveTile(Point tile) {
             return this._activeTiles.Remove(tile);
         }
 
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.WorldTransform)) {
-                this._tileScale = this.GetTileScale(this.Sprite);
-            }
+        private void LoadSprite() {
+            this.Sprite?.Load();
+            this._tileScale = this.GetTileScale(this.Sprite);
         }
     }
 }

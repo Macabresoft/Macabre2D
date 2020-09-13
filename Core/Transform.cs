@@ -10,6 +10,11 @@
     [DataContract]
     public struct Transform {
 
+        /// <summary>
+        /// The origin trasnform.
+        /// </summary>
+        public static readonly Transform Origin = new Transform(Vector2.Zero, Vector2.One);
+
         [DataMember]
         public readonly Vector2 Position;
 
@@ -59,7 +64,7 @@
             return left.Equals(right);
         }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             return obj is Transform transform && this.Position == transform.Position && this.Rotation == transform.Rotation && this.Scale == transform.Scale;
         }
 

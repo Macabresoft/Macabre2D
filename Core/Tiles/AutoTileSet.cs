@@ -18,6 +18,7 @@
         private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
 
         private bool _isLoaded = false;
+        private string _name = string.Empty;
         private bool _useIntermediateDirections = false;
 
         /// <summary>
@@ -37,11 +38,23 @@
         /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
-        public event EventHandler<byte> SpriteChanged;
+        public event EventHandler<byte>? SpriteChanged;
 
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.Set(ref this._name, value);
+            }
+        }
 
         /// <summary>
         /// Gets the size.
@@ -80,7 +93,7 @@
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
-        public Sprite GetSprite(byte index) {
+        public Sprite? GetSprite(byte index) {
             this._indexToSprites.TryGetValue(index, out var sprite);
             return sprite;
         }
@@ -151,7 +164,7 @@
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="index">The index.</param>
-        public void SetSprite(Sprite sprite, byte index) {
+        public void SetSprite(Sprite? sprite, byte index) {
             if (index < this.Size) {
                 if (sprite != null) {
                     this._indexToSprites[index] = sprite;

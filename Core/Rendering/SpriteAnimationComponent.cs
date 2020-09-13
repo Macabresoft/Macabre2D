@@ -2,27 +2,25 @@
 
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Animates sprites at the specified framerate;
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.BaseComponent"/>
-    public class SpriteAnimationComponent : SpriteRenderComponent, IUpdateableComponent {
+    public class SpriteAnimationComponent : SpriteRenderComponent, IGameUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
-        private QueueableSpriteAnimation _currentAnimation;
+        private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
         private uint _currentStepIndex;
-
-        private SpriteAnimation _defaultAnimation;
-
+        private SpriteAnimation? _defaultAnimation;
         private byte _frameRate = 30;
         private uint _millisecondsPassed;
         private uint _millisecondsPerFrame;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimationComponent"/> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimationComponent" /> class.
         /// </summary>
         public SpriteAnimationComponent() : base() {
         }
@@ -31,7 +29,7 @@
         /// Gets the current animation.
         /// </summary>
         /// <value>The current animation.</value>
-        public SpriteAnimation CurrentAnimation {
+        public SpriteAnimation? CurrentAnimation {
             get {
                 return this._currentAnimation?.Animation;
             }
@@ -42,7 +40,7 @@
         /// </summary>
         /// <value>The default animation.</value>
         [DataMember(Order = 10, Name = "Default Animation")]
-        public SpriteAnimation DefaultAnimation {
+        public SpriteAnimation? DefaultAnimation {
             get {
                 return this._defaultAnimation;
             }
@@ -66,6 +64,13 @@
                 if (value > 0) {
                     this.Set(ref this._frameRate, value);
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public int UpdateOrder {
+            get {
+                return 0;
             }
         }
 
@@ -100,6 +105,21 @@
         /// <param name="numberOfLoops">The number of loops.</param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
             this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
+        }
+
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            this._millisecondsPerFrame = 1000u / this._frameRate;
+            if (this._defaultAnimation != null) {
+                this.Play(this._defaultAnimation, true);
+
+                var step = this._defaultAnimation.Steps.FirstOrDefault();
+                if (step != null) {
+                    this.Sprite = step.Sprite;
+                }
+            }
         }
 
         /// <summary>
@@ -146,12 +166,16 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
             if (this._currentAnimation == null && this._queuedSpriteAnimations.Any()) {
                 this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
-                this._currentAnimation.Animation.LoadContent();
-                this.Sprite = this._currentAnimation.Animation.Steps.FirstOrDefault()?.Sprite;
+                this._currentAnimation.Animation.Load();
+
+                var step = this._currentAnimation.Animation.Steps.FirstOrDefault();
+                if (step != null) {
+                    this.Sprite = step.Sprite;
+                }
             }
 
             if (this._currentAnimation != null) {
@@ -182,20 +206,17 @@
                         currentStep = this._currentAnimation?.Animation.Steps.ElementAt((int)this._currentStepIndex);
 
                         if (currentStep != null) {
-                            this.Sprite = currentStep?.Sprite;
+                            this.Sprite = currentStep.Sprite;
                         }
                     }
                 }
             }
         }
 
-        /// <inheritdoc/>
-        protected override void Initialize() {
-            base.Initialize();
-            this._millisecondsPerFrame = 1000u / this._frameRate;
-            if (this._defaultAnimation != null) {
-                this.Play(this._defaultAnimation, true);
-                this.Sprite = this._defaultAnimation.Steps.FirstOrDefault()?.Sprite;
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.IsVisible)) {
+                this.RaisePropertyChanged(nameof(this.IsEnabled));
             }
         }
     }

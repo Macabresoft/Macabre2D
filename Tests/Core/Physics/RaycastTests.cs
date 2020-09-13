@@ -2,7 +2,6 @@
 
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
-    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -16,9 +15,9 @@
             // session) that was failing due to floating point precision.
             var ray = new LineSegment(new Vector2(3.125f, 0.616657f), new Vector2(0f, -1f), 0.666667f);
 
-            using (var body = new SimpleBodyComponent()) {
-                body.Initialize(Substitute.For<IScene>());
-                body.LocalPosition = new Vector2(0f, -0.5f);
+            using (var body = new SimplePhysicsBody()) {
+                body.Initialize(new GameEntity());
+                body.Entity.LocalPosition = new Vector2(0f, -0.5f);
                 body.Collider = new RectangleCollider(18f, 1f);
                 var result = body.Collider.IsHitBy(ray, out var hit);
                 Assert.IsTrue(result);

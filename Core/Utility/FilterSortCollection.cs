@@ -52,14 +52,14 @@
         /// <summary>
         /// Occurs when [collection changed].
         /// </summary>
-        public event EventHandler<CollectionChangedEventArgs<T>> CollectionChanged;
+        public event EventHandler<CollectionChangedEventArgs<T>>? CollectionChanged;
 
         /// <summary>
         /// Gets the number of elements contained in the <see
         /// cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
         public int Count {
-            get { return this._items.Count; }
+            get { return this._cachedFilteredItems.Count; }
         }
 
         /// <summary>
@@ -236,7 +236,8 @@
         /// through the collection.
         /// </returns>
         public IEnumerator<T> GetEnumerator() {
-            return this._items.GetEnumerator();
+            this.RebuildCache();
+            return this._cachedFilteredItems.GetEnumerator();
         }
 
         /// <summary>
@@ -442,7 +443,7 @@
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj) {
+            public override bool Equals(object? obj) {
                 if (!(obj is AddJournalEntry)) {
                     return false;
                 }

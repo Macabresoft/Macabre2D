@@ -137,13 +137,11 @@
 
         /// <inheritdoc />
         public override bool Contains(Collider other) {
-            if (other.ColliderType == ColliderType.Circle) {
-                var circle = other as CircleCollider;
+            if (other is CircleCollider circle) {
                 var distance = Vector2.Distance(this.Center, circle.Center);
                 return this.ScaledRadius > (distance + circle.ScaledRadius); // Should this be >= ?
             }
-            else if (other.ColliderType == ColliderType.Polygon) {
-                var polygon = other as PolygonCollider;
+            else if (other is PolygonCollider polygon) {
                 foreach (var point in polygon.WorldPoints) {
                     if (!this.Contains(point)) {
                         return false;
@@ -161,12 +159,11 @@
             var axes = new List<Vector2>();
 
             if (other is PolygonCollider polygon) {
-                // Find the closest point on the polygon to the circle
-                var currentDistance = 0f;
                 var distance = float.MaxValue;
                 var closestPoint = polygon.WorldPoints.First();
                 foreach (var point in polygon.WorldPoints) {
-                    currentDistance = Vector2.Distance(point, this.Center);
+                    // Find the closest point on the polygon to the circle
+                    var currentDistance = Vector2.Distance(point, this.Center);
                     if (currentDistance < distance) {
                         distance = currentDistance;
                         closestPoint = point;
@@ -230,7 +227,7 @@
             var valueA = (float)(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
 
             if (valueA <= 0.0000001f) {
-                result = null;
+                result = RaycastHit.Empty;
                 return false;
             }
 
@@ -239,7 +236,7 @@
             var det = Math.Pow(valueB, 2f) - 4f * valueA * valueC;
 
             if (det < 0f) {
-                result = null;
+                result = RaycastHit.Empty;
                 return false;
             }
             else if (det == 0f) {
@@ -274,7 +271,7 @@
             var result = this._radius;
 
             if (this.Body != null) {
-                var worldTransform = this.Body.WorldTransform;
+                var worldTransform = this.Body.Entity.Transform;
                 switch (this.RadiusScalingType) {
                     case RadiusScalingType.X:
                         result = this._radius * worldTransform.Scale.X;

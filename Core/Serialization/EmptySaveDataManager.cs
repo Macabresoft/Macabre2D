@@ -3,32 +3,26 @@
     /// <summary>
     /// An empty save data manager that does nothing with the file system.
     /// </summary>
-    /// <seealso cref="Macabresoft.MonoGame.Core.ISaveDataManager"/>
     public class EmptySaveDataManager : ISaveDataManager {
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Delete(string fileName) {
             return;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string GetPathToDataDirectory() {
-            return null;
+            return string.Empty;
         }
 
-        /// <inheritdoc/>
-        public T Load<T>(string fileName) where T : IVersionedData {
-            return default;
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Save<T>(string fileName, T saveData) where T : IVersionedData {
             return;
         }
 
-        /// <inheritdoc/>
-        public bool TryLoad<T>(string fileName, out T loadedData) where T : IVersionedData {
-            loadedData = default;
+        /// <inheritdoc />
+        public bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData {
+            data = default;
             return false;
         }
     }
