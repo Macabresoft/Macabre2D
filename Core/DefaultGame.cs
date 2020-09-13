@@ -230,7 +230,7 @@
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
-            this.Scene.Render(this._frameTime);
+            this.Scene.Render(this._frameTime, this._currentInputState);
         }
 
         /// <inheritdoc />

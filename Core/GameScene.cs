@@ -2,7 +2,6 @@
 
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -77,7 +76,7 @@
         /// Gets the updateable components.
         /// </summary>
         /// <value>The updateable components.</value>
-        IReadOnlyCollection<IDynamicGameUpdateable> UpdateableComponents { get => new IDynamicGameUpdateable[0]; }
+        IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents { get => new IGameUpdateableComponent[0]; }
 
         /// <summary>
         /// Adds the service.
@@ -123,7 +122,7 @@
         /// Renders the scene.
         /// </summary>
         /// <param name="frameTime">The frame time.</param>
-        public void Render(FrameTime frameTime);
+        public void Render(FrameTime frameTime, InputState inputState);
 
         /// <summary>
         /// Resolves the dependency.
@@ -183,22 +182,14 @@
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
             nameof(IGameRenderableComponent.RenderOrder));
 
-        private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
-
         [DataMember]
         private readonly ObservableCollection<IGameSystem> _systems = new ObservableCollection<IGameSystem>();
 
-        private readonly FilterSortCollection<IDynamicGameUpdateable> _updateableComponents = new FilterSortCollection<IDynamicGameUpdateable>(
+        private readonly FilterSortCollection<IGameUpdateableComponent> _updateableComponents = new FilterSortCollection<IGameUpdateableComponent>(
             c => c.IsEnabled,
-            nameof(IDynamicGameUpdateable.IsEnabled),
+            nameof(IGameUpdateableComponent.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IDynamicGameUpdateable.UpdateOrder));
-
-        private readonly FilterSortCollection<IDynamicGameUpdateable> _updateableSystems = new FilterSortCollection<IDynamicGameUpdateable>(
-            c => c.IsEnabled,
-            nameof(IDynamicGameUpdateable.IsEnabled),
-            (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IDynamicGameUpdateable.UpdateOrder));
+            nameof(IGameUpdateableComponent.UpdateOrder));
 
         private bool _isInitialized = false;
 
@@ -233,13 +224,7 @@
         public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
         /// <inheritdoc />
-        public override Transform Transform => Transform.Origin;
-
-        /// <inheritdoc />
-        public override Matrix TransformMatrix => Matrix.Identity;
-
-        /// <inheritdoc />
-        public IReadOnlyCollection<IDynamicGameUpdateable> UpdateableComponents => this._updateableComponents;
+        public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
 
         /// <inheritdoc />
         public T AddSystem<T>() where T : IGameSystem, new() {
@@ -252,7 +237,6 @@
         public void AddSystem(IGameSystem system) {
             if (system != null) {
                 this._systems.Add(system);
-                this.RegisterSystem(system);
 
                 if (this._isInitialized) {
                     system.Initialize(this);
@@ -268,7 +252,6 @@
                     this.Initialize(this, this);
 
                     foreach (var system in this.Systems) {
-                        this.RegisterSystem(system);
                         system.Initialize(this);
                     }
                 }
@@ -311,32 +294,12 @@
         }
 
         /// <inheritdoc />
-        public void Render(FrameTime frameTime) {
-            if (this.Game.SpriteBatch != null && this.Game.GraphicsDevice != null) {
-                this._renderTree.Clear();
+        public void Render(FrameTime frameTime, InputState inputState) {
+            if (this.Game.GraphicsDevice != null) {
+                this.Game.GraphicsDevice.Clear(this.BackgroundColor);
 
-                foreach (var component in this.RenderableComponents) {
-                    this._renderTree.Insert(component);
-                }
-
-                this.Game.GraphicsDevice.Clear(Color.Black);
-
-                foreach (var camera in this.CameraComponents) {
-                    var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
-
-                    if (potentialRenderables.Any()) {
-                        this.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
-
-                        foreach (var component in potentialRenderables) {
-                            // As long as it doesn't equal Layers.None, at least one of the layers
-                            // defined on the component are also to be rendered by LayersToRender.
-                            if ((component.Entity.Layers & camera.LayersToRender) != Layers.None) {
-                                component.Render(frameTime, camera.BoundingArea);
-                            }
-                        }
-
-                        this.Game.SpriteBatch.End();
-                    }
+                foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
+                    system.Update(frameTime, inputState);
                 }
             }
         }
@@ -375,13 +338,9 @@
 
         /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
-            foreach (var system in this._updateableSystems) {
+            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Update)) {
                 system.Update(frameTime, inputState);
             }
-        }
-
-        private void RegisterSystem(IGameSystem system) {
-            this._updateableSystems.Add(system);
         }
 
         internal class EmptyGameScene : EmptyGameEntity, IGameScene {
@@ -426,7 +385,7 @@
             }
 
             /// <inheritdoc />
-            public void Render(FrameTime frameTime) {
+            public void Render(FrameTime frameTime, InputState inputState) {
                 return;
             }
 

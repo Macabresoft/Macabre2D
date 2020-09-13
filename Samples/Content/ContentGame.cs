@@ -16,6 +16,7 @@
             var scene = new GameScene();
 
             scene.AddSystem<UpdateSystem>();
+            scene.AddSystem<RenderSystem>();
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraScroller>();

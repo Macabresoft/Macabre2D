@@ -5,7 +5,7 @@
     /// <summary>
     /// A base implementation of <see cref="IGameUpdateableComponent" />.
     /// </summary>
-    public abstract class GameUpdateableComponent : GameComponent, IDynamicGameUpdateable {
+    public abstract class GameUpdateableComponent : GameComponent, IGameUpdateableComponent {
         private int _updateOrder = 0;
 
         /// <inheritdoc />

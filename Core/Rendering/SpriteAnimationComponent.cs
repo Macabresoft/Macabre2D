@@ -9,7 +9,7 @@
     /// <summary>
     /// Animates sprites at the specified framerate;
     /// </summary>
-    public class SpriteAnimationComponent : SpriteRenderComponent, IDynamicGameUpdateable {
+    public class SpriteAnimationComponent : SpriteRenderComponent, IGameUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
         private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;

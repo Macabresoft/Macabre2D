@@ -7,7 +7,7 @@
     /// <summary>
     /// Draws a collider.
     /// </summary>
-    public sealed class ColliderDrawerComponent : BaseDrawerComponent, IDynamicGameUpdateable {
+    public sealed class ColliderDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
         private readonly List<IPhysicsBody> _bodies = new List<IPhysicsBody>();
         private BoundingArea _boundingArea;
 

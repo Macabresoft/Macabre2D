@@ -8,7 +8,7 @@
     /// <summary>
     /// Draws bounding areas from colliders for debugging purposes.
     /// </summary>
-    public class BoundingAreaDrawerComponent : BaseDrawerComponent, IDynamicGameUpdateable {
+    public class BoundingAreaDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
         private readonly List<BoundingArea> _boundingAreas = new List<BoundingArea>();
         private BoundingArea _boundingArea;
 

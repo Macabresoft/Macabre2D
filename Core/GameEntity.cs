@@ -265,7 +265,7 @@
         public IGameScene Scene { get; private set; } = GameScene.Empty;
 
         /// <inheritdoc />
-        public virtual Transform Transform {
+        public Transform Transform {
             get {
                 if (!this._isTransformUpToDate) {
                     this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
@@ -277,7 +277,7 @@
         }
 
         /// <inheritdoc />
-        public virtual Matrix TransformMatrix {
+        public Matrix TransformMatrix {
             get {
                 return this._transformMatrix.Value;
             }
@@ -516,7 +516,7 @@
                 Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
                 Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
 
-            if (this.Parent != null) {
+            if (this.Parent != null && this.Parent != this) {
                 transformMatrix *= this.Parent.TransformMatrix;
             }
 
