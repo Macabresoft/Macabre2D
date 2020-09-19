@@ -34,4 +34,16 @@
         /// <returns>A value indicating whether or not the data was found.</returns>
         bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData;
     }
+
+    /// <summary>
+    /// Static class that provides utility for <see cref="ISaveDataManager" />.
+    /// </summary>
+    public static class SaveDataManager {
+
+        /// <summary>
+        /// Gets the empty.
+        /// </summary>
+        /// <value>The empty.</value>
+        public static ISaveDataManager Empty { get; } = new EmptySaveDataManager();
+    }
 }

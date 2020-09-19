@@ -23,9 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Sample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Tests", "Tests\Macabresoft.MonoGame.Tests.csproj", "{24A0BAE5-1C52-416E-880A-C2440FF063D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabresoft.MonoGame.AvaloniaUI", "AvaloniaUI\Macabresoft.MonoGame.AvaloniaUI.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.AvaloniaUI", "AvaloniaUI\Macabresoft.MonoGame.AvaloniaUI.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabresoft.MonoGame.Samples.AvaloniaWindow", "Samples\AvaloniaWindow\Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj", "{DE26FED5-C0BE-46C3-8426-890B71CABCE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Samples.AvaloniaWindow", "Samples\AvaloniaWindow\Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj", "{DE26FED5-C0BE-46C3-8426-890B71CABCE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

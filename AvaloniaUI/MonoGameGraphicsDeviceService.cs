@@ -1,10 +1,11 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.OpenGL;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿// This code was generated from the template provided from craftworkgames MonoGame.WpfCore: github.com/craftworkgames/MonoGame.WpfCore
 
 namespace Macabresoft.MonoGame.AvaloniaUI {
+
+    using Avalonia.Controls;
+    using Microsoft.Xna.Framework.Graphics;
+    using SharpDX.Direct3D9;
+    using System;
 
     public class MonoGameGraphicsDeviceService : IGraphicsDeviceService, IDisposable {
         private bool _isDisposed = false;
@@ -23,7 +24,10 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
 
         public event EventHandler<EventArgs> DeviceResetting;
 
-        public IGlContext Context { get; private set; }
+        public Direct3DEx Direct3DContext { get; private set; }
+
+        public DeviceEx Direct3DDevice { get; private set; }
+
         public GraphicsDevice GraphicsDevice { get; private set; }
 
         public GraphicsDevice CreateGraphicsDevice(IntPtr windowHandle, int width, int height) {
@@ -33,7 +37,7 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
                 BackBufferFormat = SurfaceFormat.Color,
                 DepthStencilFormat = DepthFormat.Depth24,
                 DeviceWindowHandle = windowHandle,
-                PresentationInterval = PresentInterval.Immediate,
+                PresentationInterval = Microsoft.Xna.Framework.Graphics.PresentInterval.Immediate,
                 IsFullScreen = false
             };
 
@@ -42,6 +46,33 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
 
         public void Dispose() {
             this.Dispose(true);
+        }
+
+        public void Initialize(Window window) {
+            this.Direct3DContext = new Direct3DEx();
+
+            var presentParameters = new PresentParameters {
+                Windowed = true,
+                SwapEffect = SwapEffect.Discard,
+                DeviceWindowHandle = window.PlatformImpl.Handle.Handle,
+                PresentationInterval = SharpDX.Direct3D9.PresentInterval.Default
+            };
+
+            this.Direct3DDevice = new DeviceEx(
+                this.Direct3DContext,
+                0,
+                DeviceType.Hardware,
+                IntPtr.Zero,
+                CreateFlags.HardwareVertexProcessing | CreateFlags.Multithreaded | CreateFlags.FpuPreserve,
+                presentParameters);
+
+            // Create the device using the main window handle, and a placeholder size (1,1). The
+            // actual size doesn't matter because whenever we render using this GraphicsDevice, we
+            // will make sure the back buffer is large enough for the window we're rendering into.
+            // Also, the handle doesn't matter because we call GraphicsDevice.Present(...) with the
+            // actual window handle to render into.
+            this.GraphicsDevice = this.CreateGraphicsDevice(window.PlatformImpl.Handle.Handle, 1, 1);
+            this.DeviceCreated?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -65,24 +96,13 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
             }
         }
 
-        public void StartDirect3D(Window window) {
-            var feature = AvaloniaLocator.Current.GetService<IWindowingPlatformGlFeature>();
-            this.Context = feature.ImmediateContext;
-
-            // Create the device using the main window handle, and a placeholder size (1,1). The
-            // actual size doesn't matter because whenever we render using this GraphicsDevice, we
-            // will make sure the back buffer is large enough for the window we're rendering into.
-            // Also, the handle doesn't matter because we call GraphicsDevice.Present(...) with the
-            // actual window handle to render into.
-            this.GraphicsDevice = this.CreateGraphicsDevice(window.PlatformImpl.Handle.Handle, 1, 1);
-            this.DeviceCreated?.Invoke(this, EventArgs.Empty);
-        }
-
         protected virtual void Dispose(bool disposing) {
             if (!this._isDisposed) {
                 if (disposing) {
                     DeviceDisposing?.Invoke(this, EventArgs.Empty);
                     this.GraphicsDevice.Dispose();
+                    this.Direct3DDevice?.Dispose();
+                    this.Direct3DContext?.Dispose();
                 }
 
                 this._isDisposed = true;

@@ -3,7 +3,7 @@
     /// <summary>
     /// An empty save data manager that does nothing with the file system.
     /// </summary>
-    public class EmptySaveDataManager : ISaveDataManager {
+    internal class EmptySaveDataManager : ISaveDataManager {
 
         /// <inheritdoc />
         public void Delete(string fileName) {
