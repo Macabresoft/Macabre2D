@@ -62,7 +62,7 @@
 
             if (this.CanBeginDraw()) {
                 try {
-                    if (this._bitmap == null) {
+                    if (this._bitmap == null || this._bitmap.Size.Width != this.Bounds.Width || this._bitmap.Size.Height != this.Bounds.Height) {
                         this._bitmap = new WriteableBitmap(
                             new PixelSize((int)this.Width, (int)this.Height),
                             new Vector(96d, 96d),
@@ -92,7 +92,7 @@
                 Rect sourceRect = new Rect(this._bitmap.Size).CenterRect(new Rect(destRect.Size));
 
                 var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-                context.DrawImage(this._bitmap, 100d, sourceRect, destRect, interpolationMode);
+                context.DrawImage(this._bitmap, 1d, sourceRect, destRect, interpolationMode);
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Background);
