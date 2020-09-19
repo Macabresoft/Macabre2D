@@ -28,7 +28,6 @@
         private int _instanceCount;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
-        private RenderTarget2D _renderTarget;
         private IMonoGameViewModel _viewModel;
 
         public MonoGameSurfaceDX() {
@@ -38,12 +37,6 @@
 
         ~MonoGameSurfaceDX() {
             this.Dispose(false);
-        }
-
-        public static GraphicsDevice GraphicsDevice {
-            get {
-                return _graphicsDeviceService?.GraphicsDevice;
-            }
         }
 
         public bool FocusOnMouseOver { get; set; } = true;
@@ -69,50 +62,40 @@
 
             if (this.CanBeginDraw()) {
                 try {
-                    if (this._renderTarget == null) {
-                        this._renderTarget = this.CreateRenderTarget();
-                    }
-
-                    if (this._bitmap == null || this._bitmap.PixelSize.Width != this.Width || this._bitmap.PixelSize.Height != this.Height) {
-                        this._bitmap?.Dispose();
+                    if (this._bitmap == null) {
                         this._bitmap = new WriteableBitmap(
                             new PixelSize((int)this.Width, (int)this.Height),
                             new Vector(96d, 96d),
-                            PixelFormat.Rgb565);
+                            PixelFormat.Rgba8888);
 
                         this._viewModel?.SizeChanged(this._bitmap.Size);
                     }
 
                     using (var bitmapLock = this._bitmap.Lock()) {
-                        if (this._renderTarget != null) {
-                            GraphicsDevice.SetRenderTarget(this._renderTarget);
-                            this.SetViewport();
+                        this.SetViewport();
 
-                            this._viewModel?.Update(this._gameTime);
-                            this._viewModel?.Draw(this._gameTime);
+                        this._viewModel?.Update(this._gameTime);
+                        this._viewModel?.Draw(this._gameTime);
 
-                            var data = new byte[bitmapLock.RowBytes * GraphicsDevice.PresentationParameters.BackBufferHeight * 2];
-                            //GraphicsDevice.Flush();
-                            GraphicsDevice.GetBackBufferData(data);
-                            Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
-
-                            Rect viewPort = new Rect(this.Bounds.Size);
-
-                            Rect destRect = viewPort.CenterRect(new Rect(this._bitmap.Size)).Intersect(viewPort);
-                            Rect sourceRect = new Rect(this._bitmap.Size).CenterRect(new Rect(destRect.Size));
-
-                            var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-
-                            context.DrawImage(this._bitmap, 100d, sourceRect, destRect, interpolationMode);
-                        }
+                        var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
+                        this._viewModel.GraphicsDeviceService.GraphicsDevice.GetBackBufferData(data);
+                        Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
+                        this._viewModel.GraphicsDeviceService.GraphicsDevice.Flush();
                     }
                 }
                 finally {
                     this._viewModel.GraphicsDeviceService.GraphicsDevice.SetRenderTarget(null);
                 }
+
+                Rect viewPort = new Rect(this.Bounds.Size);
+                Rect destRect = viewPort.CenterRect(new Rect(this._bitmap.Size)).Intersect(viewPort);
+                Rect sourceRect = new Rect(this._bitmap.Size).CenterRect(new Rect(destRect.Size));
+
+                var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
+                context.DrawImage(this._bitmap, 100d, sourceRect, destRect, interpolationMode);
             }
 
-            Dispatcher.UIThread.InvokeAsync(this.InvalidateVisual, DispatcherPriority.Layout);
+            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Background);
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
@@ -151,41 +134,10 @@
             return this._viewModel?.GraphicsDeviceService != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
         }
 
-        private RenderTarget2D CreateRenderTarget() {
-            RenderTarget2D renderTarget;
-
-            var actualWidth = (int)this.Bounds.Width;
-            var actualHeight = (int)this.Bounds.Width;
-
-            if (actualWidth <= 0 || actualHeight <= 0 || this._viewModel?.GraphicsDeviceService?.GraphicsDevice == null) {
-                renderTarget = null;
-            }
-            else {
-                try {
-                    renderTarget = new RenderTarget2D(
-                        this._viewModel.GraphicsDeviceService.GraphicsDevice,
-                        actualWidth,
-                        actualHeight,
-                        false,
-                        SurfaceFormat.Bgra32,
-                        DepthFormat.Depth24Stencil8,
-                        1,
-                        RenderTargetUsage.PlatformContents,
-                        true);
-                }
-                catch {
-                    renderTarget = null;
-                }
-            }
-
-            return renderTarget;
-        }
-
         private void Dispose(bool disposing) {
             if (!this.IsDisposed) {
                 if (disposing) {
                     this._viewModel?.Dispose();
-                    this._renderTarget?.Dispose();
                     this._instanceCount--;
 
                     if (this._instanceCount <= 0) {
@@ -248,7 +200,6 @@
             window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
 
             this.VisualChildren.Add(this._image);
-            this._renderTarget = this.CreateRenderTarget();
             this._stopwatch.Start();
             this._isInitialized = true;
         }

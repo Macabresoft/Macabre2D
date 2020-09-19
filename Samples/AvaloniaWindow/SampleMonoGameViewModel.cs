@@ -55,7 +55,7 @@ namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
         public override void Initialize() {
             base.Initialize();
             this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+            this.Scene.BackgroundColor = DefinedColors.CosmicJam;
             this._camera = this.Scene.AddChild().AddComponent<CameraComponent>();
             this.Scene.Initialize(this);
             this._isInitialized = true;
@@ -93,6 +93,13 @@ namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
         public override void Update(GameTime gameTime) {
             if (this.Scene != null) {
                 this._frameTime = new FrameTime(gameTime, this.GameSpeed);
+
+                if ((int)Math.Round(this._frameTime.TotalTimeSpan.TotalSeconds) % 2 == 0) {
+                    this.Scene.BackgroundColor = DefinedColors.MacabresoftRed;
+                }
+                else {
+                    this.Scene.BackgroundColor = DefinedColors.MacabresoftYellow;
+                }
             }
         }
     }
