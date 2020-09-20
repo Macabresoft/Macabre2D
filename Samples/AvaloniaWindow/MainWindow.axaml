@@ -5,8 +5,18 @@
         x:Class="Macabresoft.MonoGame.Samples.AvaloniaWindow.MainWindow"
         Title="Macabresoft.MonoGame.Samples.AvaloniaWindow">
 	<Grid>
-		<monoGame:MonoGameSurfaceDX DataContext="{Binding MonoGameViewModel, ElementName=_window, Mode=OneTime}"
-									Width="300"
-									Height="300" />
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<Border Grid.Column="0"
+				Background="Black"
+				Width="256" />
+
+		<monoGame:MonoGameSurfaceDX Grid.Column="1"
+									DataContext="{Binding MonoGameViewModel, ElementName=_window, Mode=OneTime}"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch" />
 	</Grid>
 </Window>

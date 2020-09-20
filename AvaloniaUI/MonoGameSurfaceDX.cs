@@ -64,7 +64,7 @@
                 try {
                     if (this._bitmap == null || this._bitmap.Size.Width != this.Bounds.Width || this._bitmap.Size.Height != this.Bounds.Height) {
                         this._bitmap = new WriteableBitmap(
-                            new PixelSize((int)this.Width, (int)this.Height),
+                            new PixelSize((int)this.Bounds.Width, (int)this.Bounds.Height),
                             new Vector(96d, 96d),
                             PixelFormat.Rgba8888);
 
