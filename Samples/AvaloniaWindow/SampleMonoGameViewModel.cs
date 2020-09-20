@@ -1,9 +1,9 @@
-﻿using Macabresoft.MonoGame.AvaloniaUI;
-using Macabresoft.MonoGame.Core;
-using Microsoft.Xna.Framework;
-using System;
+﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
 
-namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
+    using Macabresoft.MonoGame.AvaloniaUI;
+    using Macabresoft.MonoGame.Core;
+    using Microsoft.Xna.Framework;
+    using System;
 
     public class SampleMonoGameViewModel : MonoGameViewModel, IGame {
         private CameraComponent _camera;

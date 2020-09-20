@@ -24,8 +24,10 @@
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private WriteableBitmap _bitmap;
-        private Image _image;
+
+        ////private Image _image;
         private int _instanceCount;
+
         private bool _isFirstLoad = true;
         private bool _isInitialized;
         private IMonoGameViewModel _viewModel;
@@ -60,17 +62,17 @@
             this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
             this._stopwatch.Restart();
 
+            if (this._bitmap == null || this._bitmap.Size.Width != this.Bounds.Width || this._bitmap.Size.Height != this.Bounds.Height) {
+                this._bitmap = new WriteableBitmap(
+                    new PixelSize((int)this.Bounds.Width, (int)this.Bounds.Height),
+                    new Vector(96d, 96d),
+                    PixelFormat.Rgba8888);
+
+                this._viewModel?.OnSizeChanged(this._bitmap.Size);
+            }
+
             if (this.CanBeginDraw()) {
                 try {
-                    if (this._bitmap == null || this._bitmap.Size.Width != this.Bounds.Width || this._bitmap.Size.Height != this.Bounds.Height) {
-                        this._bitmap = new WriteableBitmap(
-                            new PixelSize((int)this.Bounds.Width, (int)this.Bounds.Height),
-                            new Vector(96d, 96d),
-                            PixelFormat.Rgba8888);
-
-                        this._viewModel?.SizeChanged(this._bitmap.Size);
-                    }
-
                     using (var bitmapLock = this._bitmap.Lock()) {
                         this.SetViewport();
 
@@ -192,14 +194,14 @@
                 return;
             }
 
-            this._image = new Image { Source = _bitmap, Stretch = Stretch.None };
-            this._image.Focusable = true;
+            ////this._image = new Image { Source = _bitmap, Stretch = Stretch.None };
+            ////this._image.Focusable = true;
 
             var window = this.GetVisualRoot() as Window;
 
             window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
 
-            this.VisualChildren.Add(this._image);
+            ////this.VisualChildren.Add(this._image);
             this._stopwatch.Start();
             this._isInitialized = true;
         }

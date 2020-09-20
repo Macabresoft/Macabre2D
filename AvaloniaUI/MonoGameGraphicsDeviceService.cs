@@ -81,8 +81,8 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
         /// GraphicsDeviceControl clients.
         /// </summary>
         public void ResetDevice(int width, int height) {
-            var newWidth = Math.Max(this._parameters.BackBufferWidth, width);
-            var newHeight = Math.Max(this._parameters.BackBufferHeight, height);
+            var newWidth = Math.Max(1, width);
+            var newHeight = Math.Max(1, height);
 
             if (newWidth != this._parameters.BackBufferWidth || newHeight != this._parameters.BackBufferHeight) {
                 DeviceResetting?.Invoke(this, EventArgs.Empty);
