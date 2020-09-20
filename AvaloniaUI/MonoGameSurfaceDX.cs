@@ -24,12 +24,10 @@
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private WriteableBitmap _bitmap;
-
-        ////private Image _image;
         private int _instanceCount;
-
         private bool _isFirstLoad = true;
         private bool _isInitialized;
+        private bool _isResizeProcessing = false;
         private IMonoGameViewModel _viewModel;
 
         public MonoGameSurfaceDX() {
@@ -68,7 +66,13 @@
                     new Vector(96d, 96d),
                     PixelFormat.Rgba8888);
 
-                this._viewModel?.OnSizeChanged(this._bitmap.Size);
+                if (!this._isResizeProcessing) {
+                    this._isResizeProcessing = true;
+                    Dispatcher.UIThread.Post(() => {
+                        this._viewModel?.OnSizeChanged(this._bitmap.Size);
+                        this._isResizeProcessing = false;
+                    }, DispatcherPriority.ContextIdle);
+                }
             }
 
             if (this.CanBeginDraw()) {
@@ -169,10 +173,12 @@
                     break;
             }
 
-            if (deviceNeedsReset ||
-                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this.Bounds.Width ||
-                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this.Bounds.Height) {
+            if (deviceNeedsReset) {
                 this._viewModel.GraphicsDeviceService.ResetDevice((int)this.Bounds.Width, (int)this.Bounds.Height);
+                return false;
+            }
+            else if (this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this.Bounds.Width ||
+                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this.Bounds.Height) {
                 return false;
             }
 
@@ -194,14 +200,8 @@
                 return;
             }
 
-            ////this._image = new Image { Source = _bitmap, Stretch = Stretch.None };
-            ////this._image.Focusable = true;
-
             var window = this.GetVisualRoot() as Window;
-
             window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
-
-            ////this.VisualChildren.Add(this._image);
             this._stopwatch.Start();
             this._isInitialized = true;
         }
