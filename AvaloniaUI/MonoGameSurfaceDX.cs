@@ -16,7 +16,7 @@
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// A surface for a MonoGame <see cref="Gra" />
+    /// A surface for a MonoGame <see cref="GraphicsDevice" />.
     /// </summary>
     /// <seealso cref="Avalonia.Controls.Control" />
     public sealed class MonoGameSurfaceDX : Control, IDisposable {
@@ -30,27 +30,38 @@
         private bool _isResizeProcessing = false;
         private IMonoGameViewModel _viewModel;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MonoGameSurfaceDX" /> class.
+        /// </summary>
         public MonoGameSurfaceDX() {
             this._instanceCount++;
             this.Focusable = true;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="MonoGameSurfaceDX" /> class.
+        /// </summary>
         ~MonoGameSurfaceDX() {
             this.Dispose(false);
         }
 
+        /// <inheritdoc />
         public bool FocusOnMouseOver { get; set; } = true;
 
+        /// <inheritdoc />
         public bool IsDisposed { get; private set; }
 
+        /// <inheritdoc />
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc />
         public override void Render(DrawingContext context) {
             if (this._isFirstLoad) {
                 _graphicsDeviceService.Initialize(this.GetVisualRoot() as Window);
+                this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
                 this._viewModel?.Initialize();
                 this._viewModel?.LoadContent();
                 this._isFirstLoad = false;
@@ -104,11 +115,13 @@
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Background);
         }
 
+        /// <inheritdoc />
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnAttachedToVisualTree(e);
             this.Start();
         }
 
+        /// <inheritdoc />
         protected override void OnDataContextChanged(EventArgs e) {
             base.OnDataContextChanged(e);
             this._viewModel = this.DataContext as IMonoGameViewModel;
@@ -119,21 +132,25 @@
             }
         }
 
+        /// <inheritdoc />
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnDetachedFromVisualTree(e);
             this._viewModel?.UnloadContent();
         }
 
+        /// <inheritdoc />
         protected override void OnGotFocus(GotFocusEventArgs e) {
             this._viewModel?.OnActivated(this, EventArgs.Empty);
             base.OnGotFocus(e);
         }
 
+        /// <inheritdoc />
         protected override void OnLostFocus(RoutedEventArgs e) {
             this._viewModel?.OnDeactivated(this, EventArgs.Empty);
             base.OnLostFocus(e);
         }
 
+        /// <inheritdoc />
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
             // graphics device is big enough, and is not lost.

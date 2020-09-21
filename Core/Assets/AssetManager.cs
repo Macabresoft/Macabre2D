@@ -141,7 +141,12 @@
         /// <inheritdoc />
         public bool TryLoad<T>(Guid id, out T? loaded) where T : class {
             if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
-                loaded = this._contentManager.Load<T>(path);
+                try {
+                    loaded = this._contentManager.Load<T>(path);
+                }
+                catch {
+                    loaded = null;
+                }
             }
             else {
                 loaded = null;

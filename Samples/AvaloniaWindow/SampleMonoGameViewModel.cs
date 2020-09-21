@@ -12,9 +12,18 @@
         }
 
         public override void Initialize() {
-            base.Initialize();
-            this.Scene.BackgroundColor = DefinedColors.CosmicJam;
+            if (this.Settings is GameSettings settings) {
+                settings.PixelsPerUnit = 64;
+            }
+
+            var skullId = Guid.NewGuid();
+            this.AssetManager.SetMapping(skullId, "skull");
+            var spriteRenderer = this.Scene.AddChild().AddComponent<SpriteRenderComponent>();
+            spriteRenderer.Sprite = new Sprite(skullId);
+            spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             this._camera = this.Scene.AddChild().AddComponent<CameraComponent>();
+            base.Initialize();
+            this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }
 
         public void ResetCamera() {
@@ -26,15 +35,6 @@
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
-
-            if (this.Scene != null) {
-                if ((int)Math.Round(this.FrameTime.TotalTimeSpan.TotalSeconds) % 2 == 0) {
-                    this.Scene.BackgroundColor = DefinedColors.MacabresoftRed;
-                }
-                else {
-                    this.Scene.BackgroundColor = DefinedColors.MacabresoftYellow;
-                }
-            }
         }
 
         protected override void OnViewportChanged(Point originalSize, Point newSize) {

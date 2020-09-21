@@ -20,7 +20,7 @@
         /// <param name="assetId">The asset identifier.</param>
         public Sprite(Guid assetId) {
             this.AssetId = assetId;
-            this.LoadTexture();
+            this.Load();
         }
 
         /// <summary>
@@ -35,6 +35,7 @@
             this.Id = Guid.NewGuid();
             this.AssetId = assetId;
             this.SetLocationAndSize(location, size);
+            this.Load();
         }
 
         /// <summary>
@@ -132,6 +133,10 @@
             if (this.AssetId != Guid.Empty) {
                 if (AssetManager.Instance.TryLoad<Texture2D>(this.AssetId, out var texture) && texture != null) {
                     this.Texture = texture;
+
+                    if (this.Size == Point.Zero) {
+                        this.SetLocationAndSize(Point.Zero, new Point(this.Texture.Width, this.Texture.Height));
+                    }
                 }
                 else {
                     this.SetErrorTexture(DefaultGame.Instance.SpriteBatch);
@@ -164,14 +169,6 @@
                 }
 
                 this._disposedValue = true;
-            }
-        }
-
-        private void LoadTexture() {
-            this.Load();
-
-            if (this.Texture != null) {
-                this.SetLocationAndSize(Point.Zero, new Point(this.Texture.Width, this.Texture.Height));
             }
         }
 

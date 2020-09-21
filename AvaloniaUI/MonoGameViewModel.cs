@@ -158,9 +158,11 @@
         /// <inheritdoc />
         public virtual void Initialize() {
             this.Services = new MonoGameServiceProvider();
-            this.Services.AddService(this.GraphicsDeviceService);
+            this.Services.AddService<IGraphicsDeviceService>(this.GraphicsDeviceService);
             this.Content = new ContentManager(this.Services) { RootDirectory = "Content" };
             this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
+            this.AssetManager.Initialize(this.Content);
+            this.Scene.AddSystem<RenderSystem>();
             this.Scene.Initialize(this);
             this.IsInitialized = true;
         }

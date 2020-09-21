@@ -138,10 +138,6 @@
             }
 
             private set {
-                if (value == null) {
-                    throw new NotSupportedException($"{nameof(this.Scene)} cannot be null!");
-                }
-
                 if (this._scene != value) {
                     this._scene = value;
 
