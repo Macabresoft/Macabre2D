@@ -9,6 +9,7 @@
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
+    using Macabresoft.MonoGame.AvaloniaUI.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -19,11 +20,12 @@
     /// A surface for a MonoGame <see cref="GraphicsDevice" />.
     /// </summary>
     /// <seealso cref="Avalonia.Controls.Control" />
-    public sealed class MonoGameSurfaceDX : Control, IDisposable {
+    public sealed class MonoGameSurfaceDX : Border, IDisposable {
         private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private WriteableBitmap _bitmap;
+        private Microsoft.Xna.Framework.Color _currentBackground;
         private int _instanceCount;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
@@ -59,12 +61,21 @@
 
         /// <inheritdoc />
         public override void Render(DrawingContext context) {
-            if (this._isFirstLoad) {
-                _graphicsDeviceService.Initialize(this.GetVisualRoot() as Window);
-                this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
-                this._viewModel?.Initialize();
-                this._viewModel?.LoadContent();
-                this._isFirstLoad = false;
+            base.Render(context);
+
+            if (this._viewModel != null) {
+                if (this._viewModel.Scene.BackgroundColor != this._currentBackground) {
+                    this._currentBackground = this._viewModel.Scene.BackgroundColor;
+                    this.Background = this._currentBackground.ToAvaloniaBrush();
+                }
+
+                if (this._isFirstLoad) {
+                    _graphicsDeviceService.Initialize(this.GetVisualRoot() as Window);
+                    this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
+                    this._viewModel.Initialize();
+                    this._viewModel.LoadContent();
+                    this._isFirstLoad = false;
+                }
             }
 
             this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
@@ -91,8 +102,8 @@
                     using (var bitmapLock = this._bitmap.Lock()) {
                         this.SetViewport();
 
-                        this._viewModel?.Update(this._gameTime);
-                        this._viewModel?.Draw(this._gameTime);
+                        this._viewModel.Update(this._gameTime);
+                        this._viewModel.Draw(this._gameTime);
 
                         var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
                         this._viewModel.GraphicsDeviceService.GraphicsDevice.GetBackBufferData(data);
@@ -124,9 +135,12 @@
         /// <inheritdoc />
         protected override void OnDataContextChanged(EventArgs e) {
             base.OnDataContextChanged(e);
+
             this._viewModel = this.DataContext as IMonoGameViewModel;
 
             if (this._viewModel != null) {
+                this._currentBackground = this._viewModel.Scene.BackgroundColor;
+                this.Background = this._currentBackground.ToAvaloniaBrush();
                 this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
                 Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
             }
