@@ -3,6 +3,7 @@
     using Macabresoft.MonoGame.AvaloniaUI;
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
     using System;
 
     public class SampleMonoGameViewModel : MonoGameViewModel, IGame {
@@ -11,7 +12,7 @@
         public SampleMonoGameViewModel() : base() {
         }
 
-        public override void Initialize() {
+        public override void Initialize(MonoGameMouse mouse) {
             if (this.Settings is GameSettings settings) {
                 settings.PixelsPerUnit = 64;
             }
@@ -22,7 +23,7 @@
             spriteRenderer.Sprite = new Sprite(skullId);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             this._camera = this.Scene.AddChild().AddComponent<CameraComponent>();
-            base.Initialize();
+            base.Initialize(mouse);
             this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }
 
@@ -35,6 +36,13 @@
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
+
+            if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Pressed && this.InputState.PreviousMouseState.LeftButton == ButtonState.Released) {
+                this.Scene.BackgroundColor = DefinedColors.MacabresoftBlack;
+            }
+            else if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Released && this.InputState.PreviousMouseState.LeftButton == ButtonState.Pressed) {
+                this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+            }
         }
 
         protected override void OnViewportChanged(Point originalSize, Point newSize) {

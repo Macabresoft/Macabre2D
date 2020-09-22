@@ -30,6 +30,7 @@
         private bool _isFirstLoad = true;
         private bool _isInitialized;
         private bool _isResizeProcessing = false;
+        private MonoGameMouse _mouse;
         private IMonoGameViewModel _viewModel;
 
         /// <summary>
@@ -72,7 +73,7 @@
                 if (this._isFirstLoad) {
                     _graphicsDeviceService.Initialize(this.GetVisualRoot() as Window);
                     this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
-                    this._viewModel.Initialize();
+                    this._viewModel.Initialize(this._mouse);
                     this._viewModel.LoadContent();
                     this._isFirstLoad = false;
                 }
@@ -231,6 +232,7 @@
                 return;
             }
 
+            this._mouse = new MonoGameMouse(this);
             var window = this.GetVisualRoot() as Window;
             window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
             this._stopwatch.Start();

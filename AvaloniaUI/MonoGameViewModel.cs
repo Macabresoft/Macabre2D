@@ -13,7 +13,18 @@
     /// A view model that essentially acts as a pipeline from Avalonia to a <see cref="IGame" />
     /// </summary>
     public interface IMonoGameViewModel : IGame, IDisposable, INotifyPropertyChanged {
+
+        /// <summary>
+        /// Gets or sets the graphics device service.
+        /// </summary>
+        /// <value>The graphics device service.</value>
         MonoGameGraphicsDeviceService GraphicsDeviceService { get; set; }
+
+        /// <summary>
+        /// Gets or sets the state of the input.
+        /// </summary>
+        /// <value>The state of the input.</value>
+        InputState InputState { get; }
 
         /// <summary>
         /// Draws the current scene.
@@ -24,7 +35,8 @@
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-        void Initialize();
+        /// <param name="mouse">The mouse.</param>
+        void Initialize(MonoGameMouse mouse);
 
         /// <summary>
         /// Loads the content.
@@ -112,7 +124,16 @@
         public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
 
         /// <inheritdoc />
+        public InputState InputState { get; protected set; }
+
+        /// <inheritdoc />
         public bool IsDesignMode => true;
+
+        /// <summary>
+        /// Gets the mouse.
+        /// </summary>
+        /// <value>The mouse.</value>
+        public MonoGameMouse Mouse { get; private set; }
 
         /// <inheritdoc />
         public ISaveDataManager SaveDataManager => Core.SaveDataManager.Empty;
@@ -156,7 +177,8 @@
         }
 
         /// <inheritdoc />
-        public virtual void Initialize() {
+        public virtual void Initialize(MonoGameMouse mouse) {
+            this.Mouse = mouse;
             this.Services = new MonoGameServiceProvider();
             this.Services.AddService<IGraphicsDeviceService>(this.GraphicsDeviceService);
             this.Content = new ContentManager(this.Services) { RootDirectory = "Content" };
@@ -214,6 +236,7 @@
         /// <inheritdoc />
         public virtual void Update(GameTime gameTime) {
             this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
+            this.InputState = new InputState(this.Mouse.State, new Microsoft.Xna.Framework.Input.KeyboardState(), this.InputState);
         }
 
         /// <summary>
