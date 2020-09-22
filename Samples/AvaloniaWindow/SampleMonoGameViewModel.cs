@@ -2,6 +2,7 @@
 
     using Macabresoft.MonoGame.AvaloniaUI;
     using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Samples.AvaloniaWindow.Components;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
@@ -35,8 +36,21 @@
             textRenderEntity.LocalScale = new Vector2(0.25f);
             textRenderEntity.LocalPosition = new Vector2(0f, -3.5f);
 
-            this._camera = this.Scene.AddChild().AddComponent<CameraComponent>();
+            var cameraEntity = this.Scene.AddChild();
+            this._camera = cameraEntity.AddComponent<CameraComponent>();
             this._camera.ViewHeight = 6f;
+            var cameraChild = cameraEntity.AddChild();
+            var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
+            cameraTextRenderer.Font = new Font(leageMonoId);
+            cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
+            cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
+            cameraChild.AddComponent<MouseDebuggerComponent>();
+            cameraChild.LocalScale = new Vector2(0.1f);
+            cameraChild.LocalPosition = new Vector2(0f, -3f);
+
+            this.Scene.AddSystem<UpdateSystem>();
+
             base.Initialize(mouse);
             this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }
@@ -51,11 +65,15 @@
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
 
-            if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Pressed && this.InputState.PreviousMouseState.LeftButton == ButtonState.Released) {
-                this.Scene.BackgroundColor = DefinedColors.MacabresoftBlack;
-            }
-            else if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Released && this.InputState.PreviousMouseState.LeftButton == ButtonState.Pressed) {
-                this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+            if (this.IsInitialized && this.Scene != null) {
+                this.Scene.Update(this.FrameTime, this.InputState);
+
+                if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Pressed && this.InputState.PreviousMouseState.LeftButton == ButtonState.Released) {
+                    this.Scene.BackgroundColor = DefinedColors.MacabresoftBlack;
+                }
+                else if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Released && this.InputState.PreviousMouseState.LeftButton == ButtonState.Pressed) {
+                    this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+                }
             }
         }
 

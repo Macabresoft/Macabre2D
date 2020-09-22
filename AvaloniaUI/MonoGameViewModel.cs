@@ -167,7 +167,7 @@
         /// <inheritdoc />
         public void Draw(GameTime gameTime) {
             if (this.IsInitialized && this.Scene != null) {
-                this.Scene.Render(this.FrameTime, new InputState());
+                this.Scene.Render(this.FrameTime, this.InputState);
             }
         }
 

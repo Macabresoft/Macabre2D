@@ -14,8 +14,6 @@
 		<ProjectReference Include="..\..\AvaloniaUI\Macabresoft.MonoGame.AvaloniaUI.csproj" />
 		<ProjectReference Include="..\..\Core\Macabresoft.MonoGame.Core.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	</ItemGroup>
 	  <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
