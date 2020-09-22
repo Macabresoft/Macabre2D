@@ -22,7 +22,21 @@
             var spriteRenderer = this.Scene.AddChild().AddComponent<SpriteRenderComponent>();
             spriteRenderer.Sprite = new Sprite(skullId);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+
+            var leageMonoId = Guid.NewGuid();
+            this.AssetManager.SetMapping(leageMonoId, "League Mono");
+
+            var textRenderEntity = this.Scene.AddChild();
+            var textRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
+            textRenderer.Font = new Font(leageMonoId);
+            textRenderer.Text = @"github.com/Macabresoft/Macabresoft.MonoGame";
+            textRenderer.Color = DefinedColors.MacabresoftYellow;
+            textRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            textRenderEntity.LocalScale = new Vector2(0.25f);
+            textRenderEntity.LocalPosition = new Vector2(0f, -3.5f);
+
             this._camera = this.Scene.AddChild().AddComponent<CameraComponent>();
+            this._camera.ViewHeight = 6f;
             base.Initialize(mouse);
             this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }

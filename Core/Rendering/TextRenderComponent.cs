@@ -158,9 +158,9 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
+            this.Font?.Load();
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(new Func<Vector2>(() => this._size.Value));
-            this.Font?.Load();
         }
 
         /// <inheritdoc />

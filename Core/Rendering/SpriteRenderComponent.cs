@@ -133,9 +133,9 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
+            this.Sprite?.Load();
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
-            this.Sprite?.Load();
         }
 
         /// <inheritdoc />

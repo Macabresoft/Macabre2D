@@ -124,7 +124,7 @@
                 context.DrawImage(this._bitmap, 1d, sourceRect, destRect, interpolationMode);
             }
 
-            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.MaxValue);
         }
 
         /// <inheritdoc />
