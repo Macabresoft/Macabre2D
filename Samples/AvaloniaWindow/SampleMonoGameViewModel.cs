@@ -6,23 +6,25 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using System;
+    using System.Linq;
 
     public class SampleMonoGameViewModel : MonoGameViewModel, IGame {
         private CameraComponent _camera;
+        private SpriteRenderComponent _skullRenderer;
 
         public SampleMonoGameViewModel() : base() {
         }
 
-        public override void Initialize(MonoGameMouse mouse) {
+        public override void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             if (this.Settings is GameSettings settings) {
                 settings.PixelsPerUnit = 64;
             }
 
             var skullId = Guid.NewGuid();
             this.AssetManager.SetMapping(skullId, "skull");
-            var spriteRenderer = this.Scene.AddChild().AddComponent<SpriteRenderComponent>();
-            spriteRenderer.Sprite = new Sprite(skullId);
-            spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            this._skullRenderer = this.Scene.AddChild().AddComponent<SpriteRenderComponent>();
+            this._skullRenderer.Sprite = new Sprite(skullId);
+            this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             var leageMonoId = Guid.NewGuid();
             this.AssetManager.SetMapping(leageMonoId, "League Mono");
@@ -51,7 +53,7 @@
 
             this.Scene.AddSystem<UpdateSystem>();
 
-            base.Initialize(mouse);
+            base.Initialize(mouse, keyboard);
             this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }
 
@@ -73,6 +75,13 @@
                 }
                 else if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Released && this.InputState.PreviousMouseState.LeftButton == ButtonState.Pressed) {
                     this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+                }
+
+                if (this.InputState.CurrentKeyboardState.GetPressedKeys().Any()) {
+                    this._skullRenderer.Color = DefinedColors.MacabresoftYellow;
+                }
+                else {
+                    this._skullRenderer.Color = Color.White;
                 }
             }
         }

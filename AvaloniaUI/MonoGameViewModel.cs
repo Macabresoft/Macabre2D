@@ -36,7 +36,8 @@
         /// Initializes this instance.
         /// </summary>
         /// <param name="mouse">The mouse.</param>
-        void Initialize(MonoGameMouse mouse);
+        /// <param name="keyboard">The keyboard.</param>
+        void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard);
 
         /// <summary>
         /// Loads the content.
@@ -129,12 +130,6 @@
         /// <inheritdoc />
         public bool IsDesignMode => true;
 
-        /// <summary>
-        /// Gets the mouse.
-        /// </summary>
-        /// <value>The mouse.</value>
-        public MonoGameMouse Mouse { get; private set; }
-
         /// <inheritdoc />
         public ISaveDataManager SaveDataManager => Core.SaveDataManager.Empty;
 
@@ -155,6 +150,18 @@
 
         /// <inheritdoc />
         protected bool IsInitialized { get; private set; }
+
+        /// <summary>
+        /// Gets the keyboard.
+        /// </summary>
+        /// <value>The keyboard.</value>
+        protected MonoGameKeyboard Keyboard { get; private set; }
+
+        /// <summary>
+        /// Gets the mouse.
+        /// </summary>
+        /// <value>The mouse.</value>
+        protected MonoGameMouse Mouse { get; private set; }
 
         /// <inheritdoc />
         protected MonoGameServiceProvider Services { get; private set; }
@@ -177,8 +184,9 @@
         }
 
         /// <inheritdoc />
-        public virtual void Initialize(MonoGameMouse mouse) {
+        public virtual void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             this.Mouse = mouse;
+            this.Keyboard = keyboard;
             this.Services = new MonoGameServiceProvider();
             this.Services.AddService<IGraphicsDeviceService>(this.GraphicsDeviceService);
             this.Content = new ContentManager(this.Services) { RootDirectory = "Content" };
@@ -236,7 +244,7 @@
         /// <inheritdoc />
         public virtual void Update(GameTime gameTime) {
             this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
-            this.InputState = new InputState(this.Mouse.State, new Microsoft.Xna.Framework.Input.KeyboardState(), this.InputState);
+            this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
         }
 
         /// <summary>

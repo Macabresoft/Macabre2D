@@ -4,6 +4,9 @@
     using Microsoft.Xna.Framework.Input;
     using System;
 
+    /// <summary>
+    /// A wrapper for MonoGame's <see cref="MouseState" />.
+    /// </summary>
     public sealed class MonoGameMouse {
         private readonly IInputElement _focusElement;
 
@@ -21,11 +24,12 @@
 
             this._focusElement.PointerPressed += this.HandlePointer;
             this._focusElement.PointerReleased += this.HandlePointer;
-            Instance = this;
         }
 
-        public static MonoGameMouse Instance { get; private set; }
-
+        /// <summary>
+        /// Gets the state.
+        /// </summary>
+        /// <value>The state.</value>
         public MouseState State { get; private set; }
 
         private void HandlePointer(object sender, PointerEventArgs e) {
@@ -34,7 +38,9 @@
             }
 
             if (this._focusElement.IsPointerOver && WindowHelper.IsControlOnActiveWindow(this._focusElement)) {
-                this._focusElement.Focus();
+                if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
+                    this._focusElement.Focus();
+                }
 
                 var position = e.GetPosition(this._focusElement);
                 e.Handled = true;
