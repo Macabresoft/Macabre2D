@@ -50,9 +50,6 @@
         }
 
         /// <inheritdoc />
-        public bool FocusOnMouseOver { get; set; } = true;
-
-        /// <inheritdoc />
         public bool IsDisposed { get; private set; }
 
         /// <inheritdoc />
@@ -90,6 +87,8 @@
                     new Vector(96d, 96d),
                     PixelFormat.Rgba8888);
 
+                this.SetViewport();
+
                 if (!this._isResizeProcessing) {
                     this._isResizeProcessing = true;
                     Dispatcher.UIThread.Post(() => {
@@ -100,29 +99,18 @@
             }
 
             if (this.CanBeginDraw()) {
-                try {
-                    using (var bitmapLock = this._bitmap.Lock()) {
-                        this.SetViewport();
+                using (var bitmapLock = this._bitmap.Lock()) {
+                    this._viewModel.Update(this._gameTime);
+                    this._viewModel.Draw(this._gameTime);
 
-                        this._viewModel.Update(this._gameTime);
-                        this._viewModel.Draw(this._gameTime);
-
-                        var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                        this._viewModel.GraphicsDeviceService.GraphicsDevice.GetBackBufferData(data);
-                        Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
-                        this._viewModel.GraphicsDeviceService.GraphicsDevice.Flush();
-                    }
-                }
-                finally {
-                    this._viewModel.GraphicsDeviceService.GraphicsDevice.SetRenderTarget(null);
+                    var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
+                    this._viewModel.GraphicsDeviceService.GraphicsDevice.GetBackBufferData(data);
+                    Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
                 }
 
                 Rect viewPort = new Rect(this.Bounds.Size);
-                Rect destRect = viewPort.CenterRect(new Rect(this._bitmap.Size)).Intersect(viewPort);
-                Rect sourceRect = new Rect(this._bitmap.Size).CenterRect(new Rect(destRect.Size));
-
                 var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-                context.DrawImage(this._bitmap, 1d, sourceRect, destRect, interpolationMode);
+                context.DrawImage(this._bitmap, 1d, viewPort, viewPort, interpolationMode);
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.MaxValue);
@@ -166,7 +154,6 @@
             base.OnLostFocus(e);
         }
 
-        /// <inheritdoc />
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
             // graphics device is big enough, and is not lost.
@@ -219,13 +206,15 @@
         }
 
         private void SetViewport() {
-            // Many GraphicsDeviceControl instances can be sharing the same GraphicsDevice. The
-            // device backbuffer will be resized to fit the largest of these controls. But what if
-            // we are currently drawing a smaller control? To avoid unwanted stretching, we set the
-            // viewport to only use the top left portion of the full backbuffer.
-            var width = Math.Max(1, (int)this.Bounds.Width);
-            var height = Math.Max(1, (int)this.Bounds.Height);
-            this._viewModel.GraphicsDeviceService.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
+            if (this._viewModel.GraphicsDevice != null) {
+                // Many GraphicsDeviceControl instances can be sharing the same GraphicsDevice. The
+                // device backbuffer will be resized to fit the largest of these controls. But what
+                // if we are currently drawing a smaller control? To avoid unwanted stretching, we
+                // set the viewport to only use the top left portion of the full backbuffer.
+                var width = Math.Max(1, (int)this.Bounds.Width);
+                var height = Math.Max(1, (int)this.Bounds.Height);
+                this._viewModel.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
+            }
         }
 
         private void Start() {
