@@ -113,9 +113,8 @@
             set {
                 if (this.Set(ref this._sprite, value)) {
                     this.Sprite?.Load();
-                    this.RenderSettings.InvalidateSize();
                     this._boundingArea.Reset();
-                    this.RenderSettings.ResetOffset();
+                    this.RenderSettings.InvalidateSize();
                 }
             }
         }

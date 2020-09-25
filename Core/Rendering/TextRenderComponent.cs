@@ -15,7 +15,6 @@
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
-        private readonly ResettableLazy<Vector2> _size;
         private Color _color = Color.Black;
         private Font? _font;
         private float _rotation;
@@ -27,7 +26,6 @@
         /// </summary>
         public TextRenderComponent() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._size = new ResettableLazy<Vector2>(this.CreateSize);
             this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
             this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);
         }
@@ -68,8 +66,7 @@
                 if (this.Set(ref this._font, value)) {
                     this.Font?.Load();
                     this._boundingArea.Reset();
-                    this._size.Reset();
-                    this.RenderSettings.ResetOffset();
+                    this.RenderSettings.InvalidateSize();
                 }
             }
         }
@@ -139,8 +136,7 @@
 
                 if (this.Set(ref this._text, value)) {
                     this._boundingArea.Reset();
-                    this._size.Reset();
-                    this.RenderSettings.ResetOffset();
+                    this.RenderSettings.InvalidateSize();
                 }
             }
         }
@@ -160,7 +156,7 @@
             base.Initialize(entity);
             this.Font?.Load();
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
-            this.RenderSettings.Initialize(new Func<Vector2>(() => this._size.Value));
+            this.RenderSettings.Initialize(this.CreateSize);
         }
 
         /// <inheritdoc />
@@ -211,7 +207,7 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.Font != null && this.Entity.LocalScale.X != 0f && this.Entity.LocalScale.Y != 0f) {
-                var size = this._size.Value;
+                var size = this.RenderSettings.Size;
                 var width = size.X * GameSettings.Instance.InversePixelsPerUnit;
                 var height = size.Y * GameSettings.Instance.InversePixelsPerUnit;
                 var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
