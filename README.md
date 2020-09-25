@@ -1,4 +1,4 @@
-# Macabresoft.MonoGame
+# Macabre2D (Macabresoft.MonoGame)
 
 Common MonoGame functionality used across Macabresoft products. A framework built on top of another framework.
 
