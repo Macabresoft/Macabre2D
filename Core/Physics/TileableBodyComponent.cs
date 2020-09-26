@@ -107,6 +107,7 @@
             this.SetComponents();
         }
 
+        /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             base.OnEntityPropertyChanged(e);
 
