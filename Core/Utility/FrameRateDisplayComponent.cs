@@ -25,13 +25,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-
-            if (this.Entity.TryGetAncestralComponent(out this._camera) && this._camera != null) {
-                this._camera.PropertyChanged += this.Camera_PropertyChanged;
-            }
-
-            this._rollingAverage.Add(0f); // Must initialize it so that infinity is not an option.
-            this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+            this.Entity.TryGetAncestralComponent(out this._camera);
             this.RenderSettings.OffsetType = PixelOffsetType.TopRight;
         }
 
@@ -41,23 +35,14 @@
                 this.CurrentFrameRate = 1f / (float)frameTime.FrameTimeSpan.TotalSeconds;
                 this._rollingAverage.Add(this.CurrentFrameRate);
                 this.Text = $"FPS: {this.AverageFrameRate:F2}";
+                this.AdjustPosition();
             }
         }
 
         private void AdjustPosition() {
             if (this._camera != null) {
-                this.Entity.SetWorldPosition(new Vector2(this._camera.GetViewWidth(), this._camera.ViewHeight));
+                this.Entity.SetWorldPosition(this._camera.Entity.Transform.Position + new Vector2(this._camera.GetViewWidth(), this._camera.ViewHeight) * 0.5f);
             }
-        }
-
-        private void Camera_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(CameraComponent.ViewHeight)) {
-                this.AdjustPosition();
-            }
-        }
-
-        private void Game_ViewportSizeChanged(object? sender, Point e) {
-            this.AdjustPosition();
         }
     }
 }

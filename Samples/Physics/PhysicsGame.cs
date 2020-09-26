@@ -3,6 +3,7 @@
     using Macabresoft.MonoGame.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using System;
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
@@ -21,6 +22,7 @@
         }
 
         protected override void LoadContent() {
+            this.AssetManager.Initialize(this.Content);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new GameScene();
@@ -30,7 +32,16 @@
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 
-            scene.AddChild().AddComponent<CameraComponent>();
+            var leageMonoId = Guid.NewGuid();
+            this.AssetManager.SetMapping(leageMonoId, "League Mono");
+
+            var cameraEntity = scene.AddChild();
+            cameraEntity.AddComponent<CameraComponent>();
+            var frameRateDisplayEntity = cameraEntity.AddChild();
+            var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
+            frameRateDisplay.Font = new Font(leageMonoId);
+            frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
+            frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
             var circleEntity = scene.AddChild();
             var circleBody = circleEntity.AddComponent<DynamicPhysicsBody>();
