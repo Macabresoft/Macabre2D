@@ -100,11 +100,11 @@
         void AddComponent(IGameComponent component);
 
         /// <summary>
-        /// Gets the components of the specified type.
+        /// Gets the component of the specified type if it exists; otherwise, adds the component.
         /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The components of specified type.</returns>
-        IEnumerable<T> GetComponents<T>();
+        /// <typeparam name="T"></typeparam>
+        /// <returns>The component that was found or added.</returns>
+        T GetOrAddComponent<T>() where T : class, IGameComponent, new();
 
         /// <summary>
         /// Initializes this entity as a descendent of <paramref name="scene" /> and <paramref
@@ -145,7 +145,7 @@
         /// <returns>
         /// A value indicating whether or not a component of the specified type was found.
         /// </returns>
-        bool TryGetComponent<T>(out T? component) where T : class;
+        bool TryGetComponent<T>(out T? component) where T : class, IGameComponent;
     }
 
     /// <summary>
@@ -316,15 +316,22 @@
         public void AddComponent(IGameComponent component) {
             component.Entity.RemoveComponent(component);
             this._components.Add(component);
-
-            if (this.Scene != null) {
-                this.Scene.Invoke(() => component.Initialize(this));
-            }
+            this.Scene.Invoke(() => component.Initialize(this));
         }
 
         /// <inheritdoc />
         public IEnumerable<T> GetComponents<T>() {
             return this.Components.OfType<T>();
+        }
+
+        /// <inheritdoc />
+        public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
+            if (this.TryGetComponent<T>(out var component) && component != null) {
+                return component;
+            }
+            else {
+                return this.AddComponent<T>();
+            }
         }
 
         /// <inheritdoc />
@@ -489,7 +496,7 @@
         }
 
         /// <inheritdoc />
-        public bool TryGetComponent<T>(out T? component) where T : class {
+        public bool TryGetComponent<T>(out T? component) where T : class, IGameComponent {
             component = this.Components.OfType<T>().FirstOrDefault();
             return component != null;
         }
@@ -508,7 +515,7 @@
         }
 
         private bool CanAddChild(IGameEntity entity) {
-            return entity != null && entity != this && !this.Children.Any(x => x == entity) && !this.IsDescendentOf(entity);
+            return entity != this && !this.Children.Any(x => x == entity) && !this.IsDescendentOf(entity);
         }
 
         private Matrix GetMatrix() {
@@ -530,9 +537,7 @@
         }
 
         private void OnAddChild(IGameEntity entity) {
-            if (this.Scene != null) {
-                this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
-            }
+            this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
         }
 
         internal class EmptyGameEntity : IGameEntity {
@@ -611,6 +616,11 @@
             }
 
             /// <inheritdoc />
+            public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
+                throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
             public Transform GetWorldTransform(float rotationAngle) {
                 return this.Transform;
             }
@@ -686,7 +696,7 @@
             }
 
             /// <inheritdoc />
-            public bool TryGetComponent<T>(out T? component) where T : class {
+            public bool TryGetComponent<T>(out T? component) where T : class, IGameComponent {
                 component = null;
                 return false;
             }

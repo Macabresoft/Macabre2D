@@ -38,7 +38,7 @@
 
         public void Update(FrameTime frameTime, InputState inputState) {
             this._boundingAreas.Clear();
-            this._boundingAreas.AddRange(this.Entity.GetComponents<IBoundable>().Where(x => x != this).Select(x => x.BoundingArea).Where(x => !x.IsEmpty).ToList());
+            this._boundingAreas.AddRange(this.Entity.Components.OfType<IBoundable>().Where(x => x != this).Select(x => x.BoundingArea).Where(x => !x.IsEmpty).ToList());
             this._boundingArea = BoundingArea.Combine(this._boundingAreas.ToArray());
         }
     }

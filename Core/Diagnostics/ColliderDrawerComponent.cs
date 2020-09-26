@@ -42,7 +42,7 @@
 
         public void Update(FrameTime frameTime, InputState inputState) {
             this._bodies.Clear();
-            this._bodies.AddRange(this.Entity.GetComponents<IPhysicsBody>().Where(x => !x.BoundingArea.IsEmpty).ToList());
+            this._bodies.AddRange(this.Entity.Components.OfType<IPhysicsBody>().Where(x => !x.BoundingArea.IsEmpty).ToList());
             this._boundingArea = BoundingArea.Combine(this._bodies.Select(x => x.BoundingArea).ToArray());
         }
     }
