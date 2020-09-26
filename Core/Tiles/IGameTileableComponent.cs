@@ -21,12 +21,6 @@
         IReadOnlyCollection<Point> ActiveTiles { get; }
 
         /// <summary>
-        /// Gets the grid.
-        /// </summary>
-        /// <value>The grid.</value>
-        TileGrid Grid { get; }
-
-        /// <summary>
         /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid,
         /// which may or may not be from the same tile.
         /// </summary>
@@ -39,12 +33,6 @@
         /// </summary>
         /// <value>The minimum tile.</value>
         Point MinimumTile { get; }
-
-        /// <summary>
-        /// Gets the <see cref="LocalGrid" /> transformed to world coordinates.
-        /// </summary>
-        /// <value>The <see cref="LocalGrid" /> transformed to world coordinates.</value>
-        TileGrid WorldGrid { get; }
 
         /// <summary>
         /// Adds the default tile at the specified position.

@@ -130,6 +130,15 @@
         bool RemoveComponent(IGameComponent component);
 
         /// <summary>
+        /// Tries the get ancestral component. This component could be a component on this instance
+        /// or a parent going all the way up to the scene.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <param name="component">The component.</param>
+        /// <returns>A value indicating whether or not the component was found.</returns>
+        bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent;
+
+        /// <summary>
         /// Tries the get component a component of the specified type that belongs to this instance.
         /// </summary>
         /// <typeparam name="T">The type of component to search for.</typeparam>
@@ -330,6 +339,11 @@
         }
 
         /// <inheritdoc />
+        public bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent {
+            return this.TryGetComponent(out component) || this.Parent.TryAncestralComponent(out component);
+        }
+
+        /// <inheritdoc />
         public bool TryGetComponent<T>(out T? component) where T : class, IGameComponent {
             component = this.Components.OfType<T>().FirstOrDefault();
             return component != null;
@@ -440,6 +454,12 @@
 
             /// <inheritdoc />
             public bool RemoveComponent(IGameComponent component) {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent {
+                component = default;
                 return false;
             }
 

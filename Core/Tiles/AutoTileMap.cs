@@ -224,8 +224,8 @@
         }
 
         /// <inheritdoc />
-        protected override void OnGridChanged() {
-            base.OnGridChanged();
+        protected override void ResetBoundingAreas() {
+            base.ResetBoundingAreas();
             this.ResetSpriteScales();
         }
 

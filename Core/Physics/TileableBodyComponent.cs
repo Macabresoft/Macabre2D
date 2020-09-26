@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
+    using Macabresoft.MonoGame.Core.Tiles;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
@@ -14,6 +15,7 @@
     public sealed class TileableBodyComponent : PhysicsBody {
         private readonly List<Collider> _colliders = new List<Collider>();
 
+        private GridComponent? _gridComponent;
         private Layers _overrideLayersBottomEdge = Layers.None;
         private Layers _overrideLayersLeftEdge = Layers.None;
         private Layers _overrideLayersRightEdge = Layers.None;
@@ -102,7 +104,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this.SetTileable();
+            this.SetComponents();
         }
 
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
@@ -110,15 +112,6 @@
 
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
                 this.OnRequestReset(this.Entity, e);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
-            base.OnPropertyChanged(e);
-
-            if (e.PropertyName == nameof(this.Entity)) {
-                this.SetTileable();
             }
         }
 
@@ -146,6 +139,12 @@
             return directions;
         }
 
+        private void GridComponent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(GridComponent.Grid)) {
+                this.OnRequestReset(sender, e);
+            }
+        }
+
         private void OnRequestReset(object? sender, EventArgs e) {
             this.ResetColliders();
         }
@@ -153,7 +152,7 @@
         private void ResetColliders() {
             this._colliders.Clear();
 
-            if (this._tileable != null) {
+            if (this._tileable != null && this._gridComponent != null) {
                 var allSegments = new List<TileLineSegment>();
 
                 for (var y = this._tileable.MinimumTile.Y; y <= this._tileable.MaximumTile.Y; y++) {
@@ -212,7 +211,7 @@
                 }
 
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(this._tileable.Grid.GetTilePosition(segment.StartPoint), this._tileable.Grid.GetTilePosition(segment.EndPoint)) {
+                    var collider = new LineCollider(this._gridComponent.Grid.GetTilePosition(segment.StartPoint), this._gridComponent.Grid.GetTilePosition(segment.EndPoint)) {
                         Layers = segment.Layers
                     };
 
@@ -222,28 +221,27 @@
             }
         }
 
-        private void SetTileable() {
+        private void SetComponents() {
             if (this._tileable != null) {
-                this._tileable.PropertyChanged -= this.Tileable_PropertyChanged;
                 this._tileable.TilesChanged -= this.OnRequestReset;
             }
 
-            if (this.Entity.TryGetComponent<IGameTileableComponent>(out var tileable) && tileable != null) {
-                this._tileable = tileable;
-                this._tileable.PropertyChanged += this.Tileable_PropertyChanged;
+            if (this.Entity.TryGetComponent(out this._tileable) && this._tileable != null) {
                 this._tileable.TilesChanged += this.OnRequestReset;
             }
             else {
                 this._tileable = null;
             }
 
-            this.ResetColliders();
-        }
-
-        private void Tileable_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IGameTileableComponent.Grid)) {
-                this.OnRequestReset(sender, e);
+            if (this._gridComponent != null) {
+                this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
             }
+
+            if (this.Entity.TryAncestralComponent(out this._gridComponent) && this._gridComponent != null) {
+                this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
+            }
+
+            this.ResetColliders();
         }
 
         private class TileLineSegment {

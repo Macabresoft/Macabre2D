@@ -161,8 +161,8 @@
         }
 
         /// <inheritdoc />
-        protected override void OnGridChanged() {
-            base.OnGridChanged();
+        protected override void ResetBoundingAreas() {
+            base.ResetBoundingAreas();
             this._tileScale = this.GetTileScale(this.Sprite);
         }
 

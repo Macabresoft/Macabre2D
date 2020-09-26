@@ -1,11 +1,11 @@
 ﻿namespace Macabresoft.MonoGame.Core {
 
     using Macabresoft.Core;
+    using Macabresoft.MonoGame.Core.Tiles;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents four directions from a single tile.
@@ -32,15 +32,13 @@
     public abstract class TileableComponent : GameComponent, IGameTileableComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new Dictionary<Point, BoundingArea>();
-        private readonly ResettableLazy<TileGrid> _worldGrid;
-        private TileGrid _grid = TileGrid.Empty;
+        private GridComponent? _gridComponent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileableComponent" /> class.
         /// </summary>
         protected TileableComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._worldGrid = new ResettableLazy<TileGrid>(this.CreateWorldGrid);
         }
 
         /// <inheritdoc />
@@ -57,31 +55,10 @@
         }
 
         /// <inheritdoc />
-        [DataMember]
-        public TileGrid Grid {
-            get {
-                return this._grid;
-            }
-
-            set {
-                if (this.Set(ref this._grid, value)) {
-                    this.OnGridChanged();
-                }
-            }
-        }
-
-        /// <inheritdoc />
         public Point MaximumTile { get; private set; }
 
         /// <inheritdoc />
         public Point MinimumTile { get; private set; }
-
-        /// <inheritdoc />
-        public TileGrid WorldGrid {
-            get {
-                return this._worldGrid.Value;
-            }
-        }
 
         /// <inheritdoc />
         public bool AddTile(Point tile) {
@@ -124,13 +101,16 @@
         /// <inheritdoc />
         public Point GetTileThatContains(Vector2 worldPosition) {
             var result = Point.Zero;
-            var worldGrid = this.WorldGrid;
 
-            if (worldGrid.TileSize.X > 0 && worldGrid.TileSize.Y > 0) {
-                worldPosition -= worldGrid.Offset;
-                var xTile = Math.Floor(worldPosition.X / worldGrid.TileSize.X);
-                var yTile = Math.Floor(worldPosition.Y / worldGrid.TileSize.Y);
-                result = new Point((int)xTile, (int)yTile);
+            if (this._gridComponent != null) {
+                var worldGrid = this._gridComponent.WorldGrid;
+
+                if (worldGrid.TileSize.X > 0 && worldGrid.TileSize.Y > 0) {
+                    worldPosition -= worldGrid.Offset;
+                    var xTile = Math.Floor(worldPosition.X / worldGrid.TileSize.X);
+                    var yTile = Math.Floor(worldPosition.Y / worldGrid.TileSize.Y);
+                    result = new Point((int)xTile, (int)yTile);
+                }
             }
 
             return result;
@@ -149,7 +129,7 @@
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
-            this._worldGrid.Reset();
+            this.SetComponents();
             this.ResetBoundingArea();
             this.ResetTileBoundingAreas();
             this.ResetMinimumTile();
@@ -201,8 +181,8 @@
         /// <param name="tile">The tile.</param>
         /// <returns>The bounding area.</returns>
         protected BoundingArea GetTileBoundingArea(Point tile) {
-            if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
-                var worldGrid = this.WorldGrid;
+            if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea) && this._gridComponent != null) {
+                var worldGrid = this._gridComponent.WorldGrid;
                 var tilePosition = worldGrid.GetTilePosition(tile);
                 boundingArea = new BoundingArea(tilePosition, tilePosition + worldGrid.TileSize);
                 this._tilePositionToBoundingArea.Add(tile, boundingArea);
@@ -217,11 +197,15 @@
         /// <param name="sprite">The sprite.</param>
         /// <returns></returns>
         protected Vector2 GetTileScale(Sprite? sprite) {
-            var result = this.WorldGrid.TileSize;
-            if (sprite != null && sprite.Size.X != 0 && sprite.Size.Y != 0) {
-                var spriteWidth = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
-                var spriteHeight = sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
-                result = new Vector2(this.WorldGrid.TileSize.X / spriteWidth, this.WorldGrid.TileSize.Y / spriteHeight);
+            var result = Vector2.One;
+
+            if (this._gridComponent != null) {
+                result = this._gridComponent.WorldGrid.TileSize;
+                if (sprite != null && sprite.Size.X != 0 && sprite.Size.Y != 0) {
+                    var spriteWidth = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
+                    var spriteHeight = sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                    result = new Vector2(result.X / spriteWidth, result.Y / spriteHeight);
+                }
             }
 
             return result;
@@ -233,29 +217,20 @@
         /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
         protected abstract bool HasActiveTiles();
 
-        protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
-            base.OnEntityPropertyChanged(e);
-
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                this.OnGridChanged();
-            }
-        }
-
-        /// <summary>
-        /// Called when <see cref="LocalGrid" /> changes.
-        /// </summary>
-        protected virtual void OnGridChanged() {
-            this._worldGrid.Reset();
-            this.ResetBoundingArea();
-            this.ResetTileBoundingAreas();
-        }
-
         /// <summary>
         /// Resets the bounding area.
         /// </summary>
         protected void ResetBoundingArea() {
             this._tilePositionToBoundingArea.Clear();
             this._boundingArea.Reset();
+        }
+
+        /// <summary>
+        /// Called when <see cref="LocalGrid" /> changes.
+        /// </summary>
+        protected virtual void ResetBoundingAreas() {
+            this.ResetBoundingArea();
+            this.ResetTileBoundingAreas();
         }
 
         /// <summary>
@@ -281,8 +256,8 @@
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this.HasActiveTiles()) {
-                var worldGrid = this.WorldGrid;
+            if (this._gridComponent != null && this.HasActiveTiles()) {
+                var worldGrid = this._gridComponent.WorldGrid;
                 result = new BoundingArea(worldGrid.GetTilePosition(this.MinimumTile), worldGrid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
             }
             else {
@@ -292,19 +267,10 @@
             return result;
         }
 
-        private TileGrid CreateWorldGrid() {
-            var transform = this.Entity.Transform;
-
-            var matrix =
-                Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
-                Matrix.CreateScale(this.Grid.TileSize.X, this.Grid.TileSize.Y, 1f) *
-                Matrix.CreateTranslation(this.Grid.Offset.X, this.Grid.Offset.Y, 0f) *
-                Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
-
-            var gridTransform = matrix.ToTransform();
-            var tileGrid = new TileGrid(gridTransform.Scale, gridTransform.Position);
-
-            return tileGrid;
+        private void GridComponent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(GridComponent.WorldGrid)) {
+                this.ResetBoundingAreas();
+            }
         }
 
         private void ResetMaximumTile() {
@@ -327,6 +293,16 @@
             }
 
             this._boundingArea.Reset();
+        }
+
+        private void SetComponents() {
+            if (this._gridComponent != null) {
+                this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
+            }
+
+            if (this.Entity.TryAncestralComponent(out this._gridComponent) && this._gridComponent != null) {
+                this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
+            }
         }
     }
 }

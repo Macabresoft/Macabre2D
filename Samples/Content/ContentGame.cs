@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Samples.Content {
 
     using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core.Tiles;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
@@ -84,14 +85,14 @@
             circleEntity.LocalPosition = new Vector2(-5f, 3f);
 
             var binaryTileMapEntity = this.Scene.AddChild();
+            var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
+            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
             var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMap>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
             binaryTileMap.Sprite = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(64, 64));
             binaryTileMap.Color = Color.DarkGray;
-
-            binaryTileMap.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
 
             for (var x = 0; x < 5; x++) {
                 for (var y = 0; y < 10; y++) {
