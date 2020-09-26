@@ -5,7 +5,7 @@
     /// <summary>
     /// A component which measures frame rate.
     /// </summary>
-    public sealed class FrameRateComponent : GameUpdateableComponent {
+    public class FrameRateComponent : GameUpdateableComponent {
         private readonly RollingMeanFloat _rollingAverage = new RollingMeanFloat(10);
 
         /// <summary>

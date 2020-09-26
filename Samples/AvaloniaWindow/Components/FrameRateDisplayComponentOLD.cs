@@ -2,7 +2,7 @@
 
     using Macabresoft.MonoGame.Core;
 
-    public sealed class FrameRateDisplayComponent : GameUpdateableComponent {
+    public sealed class FrameRateDisplayComponentOLD : GameUpdateableComponent {
         private FrameRateComponent _frameRateComponent;
         private TextRenderComponent _textRenderComponent;
 

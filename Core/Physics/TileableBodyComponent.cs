@@ -238,7 +238,7 @@
                 this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
             }
 
-            if (this.Entity.TryAncestralComponent(out this._gridComponent) && this._gridComponent != null) {
+            if (this.Entity.TryGetAncestralComponent(out this._gridComponent) && this._gridComponent != null) {
                 this._gridComponent.PropertyChanged += this.GridComponent_PropertyChanged;
             }
 

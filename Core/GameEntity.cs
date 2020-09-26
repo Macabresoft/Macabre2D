@@ -136,7 +136,7 @@
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="component">The component.</param>
         /// <returns>A value indicating whether or not the component was found.</returns>
-        bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent;
+        bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent;
 
         /// <summary>
         /// Tries the get component a component of the specified type that belongs to this instance.
@@ -339,8 +339,8 @@
         }
 
         /// <inheritdoc />
-        public bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent {
-            return this.TryGetComponent(out component) || this.Parent.TryAncestralComponent(out component);
+        public bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent {
+            return this.TryGetComponent(out component) || this.Parent.TryGetAncestralComponent(out component);
         }
 
         /// <inheritdoc />
@@ -458,7 +458,7 @@
             }
 
             /// <inheritdoc />
-            public bool TryAncestralComponent<T>(out T? component) where T : class, IGameComponent {
+            public bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent {
                 component = default;
                 return false;
             }

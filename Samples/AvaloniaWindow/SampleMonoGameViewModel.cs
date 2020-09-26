@@ -50,17 +50,11 @@
             cameraChild.AddComponent<MouseDebuggerComponent>();
             cameraChild.LocalScale = new Vector2(0.1f);
             cameraChild.LocalPosition = new Vector2(0f, -3f);
-
-            var frameRateEntity = this.Scene.AddChild();
-            frameRateEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateEntity.AddComponent<FrameRateComponent>();
-            var frameRateRender = frameRateEntity.AddComponent<TextRenderComponent>();
-            frameRateRender.Font = new Font(leageMonoId);
-            frameRateRender.Color = DefinedColors.ZvukostiGreen;
-            frameRateRender.RenderSettings.OffsetType = PixelOffsetType.Center;
-            frameRateRender.Text = "FPS: 0.00";
-            frameRateEntity.LocalScale = new Vector2(0.1f);
-            frameRateEntity.LocalPosition = new Vector2(0f, -4f);
+            var frameRateDisplayEntity = cameraEntity.AddChild();
+            var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
+            frameRateDisplay.Font = new Font(leageMonoId);
+            frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
+            frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
             this.Scene.AddSystem<UpdateSystem>();
 

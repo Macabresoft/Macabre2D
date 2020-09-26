@@ -33,7 +33,58 @@
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             this.PreLoadAudioStuff(scene);
-            this.PreLoadRenderingStuff(scene);
+
+            var fontId = Guid.NewGuid();
+            this.AssetManager.SetMapping(fontId, "League Mono");
+            var coloredSquaresId = Guid.NewGuid();
+            this.AssetManager.SetMapping(coloredSquaresId, "ColoredSquares");
+            var whiteSquareId = Guid.NewGuid();
+            this.AssetManager.SetMapping(whiteSquareId, "WhiteSquare");
+
+            var animatedEntity = scene.AddChild();
+            var spriteAnimator = animatedEntity.AddComponent<SpriteAnimationComponent>();
+            spriteAnimator.FrameRate = 4;
+            spriteAnimator.RenderOrder = -100;
+            spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
+
+            var scalerEntity1 = scene.AddChild();
+            scalerEntity1.AddComponent<Scaler>();
+            scalerEntity1.LocalPosition -= new Vector2(2f, 0);
+            var spriteRenderer3 = scalerEntity1.AddComponent<SpriteRenderComponent>();
+            spriteRenderer3.RenderOrder = -200;
+            spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
+            spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
+            var middleSpinningDotBoundingArea = scalerEntity1.AddComponent<BoundingAreaDrawerComponent>();
+            middleSpinningDotBoundingArea.Color = Color.Red;
+            middleSpinningDotBoundingArea.LineThickness = 3f;
+
+            var scalerEntity2 = scalerEntity1.AddChild();
+            scalerEntity2.AddComponent<Scaler>();
+            scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
+            var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();
+            spriteRenderer4.RenderOrder = 100;
+            spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
+            spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
+            var outwardSpinningDotBoundingArea = scalerEntity2.AddComponent<BoundingAreaDrawerComponent>();
+            outwardSpinningDotBoundingArea.Color = Color.Red;
+            outwardSpinningDotBoundingArea.LineThickness = 3f;
+
+            var textEntity = scene.AddChild();
+            var textRenderer = textEntity.AddComponent<TextRenderComponent>();
+            textRenderer.Text = "Hello, World";
+            textRenderer.Font = new Font(fontId);
+            textRenderer.Color = Color.DarkMagenta;
+            textEntity.LocalScale = new Vector2(0.5f, 0.5f);
+            textEntity.LocalPosition -= new Vector2(5f, 5f);
+            var textRendererBoundingArea = textEntity.AddComponent<BoundingAreaDrawerComponent>();
+            textRendererBoundingArea.Color = Color.Red;
+            textRendererBoundingArea.LineThickness = 3f;
+
+            var frameRateDisplayEntity = cameraEntity.AddChild();
+            var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
+            frameRateDisplay.Font = new Font(fontId);
+            frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
+            frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
             scene.Initialize(this);
 
@@ -137,54 +188,6 @@
             audioPlayer.AudioClip = new AudioClip();
             audioPlayer.AudioClip.Id = lasterId;
             audioEntity.AddComponent<VolumeController>();
-        }
-
-        private void PreLoadRenderingStuff(GameScene scene) {
-            var fontId = Guid.NewGuid();
-            this.AssetManager.SetMapping(fontId, "League Mono");
-            var coloredSquaresId = Guid.NewGuid();
-            this.AssetManager.SetMapping(coloredSquaresId, "ColoredSquares");
-            var whiteSquareId = Guid.NewGuid();
-            this.AssetManager.SetMapping(whiteSquareId, "WhiteSquare");
-
-            var animatedEntity = scene.AddChild();
-            var spriteAnimator = animatedEntity.AddComponent<SpriteAnimationComponent>();
-            spriteAnimator.FrameRate = 4;
-            spriteAnimator.RenderOrder = -100;
-            spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
-
-            var scalerEntity1 = scene.AddChild();
-            scalerEntity1.AddComponent<Scaler>();
-            scalerEntity1.LocalPosition -= new Vector2(2f, 0);
-            var spriteRenderer3 = scalerEntity1.AddComponent<SpriteRenderComponent>();
-            spriteRenderer3.RenderOrder = -200;
-            spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
-            spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
-            var middleSpinningDotBoundingArea = scalerEntity1.AddComponent<BoundingAreaDrawerComponent>();
-            middleSpinningDotBoundingArea.Color = Color.Red;
-            middleSpinningDotBoundingArea.LineThickness = 3f;
-
-            var scalerEntity2 = scalerEntity1.AddChild();
-            scalerEntity2.AddComponent<Scaler>();
-            scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
-            var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();
-            spriteRenderer4.RenderOrder = 100;
-            spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
-            spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
-            var outwardSpinningDotBoundingArea = scalerEntity2.AddComponent<BoundingAreaDrawerComponent>();
-            outwardSpinningDotBoundingArea.Color = Color.Red;
-            outwardSpinningDotBoundingArea.LineThickness = 3f;
-
-            var textEntity = scene.AddChild();
-            var textRenderer = textEntity.AddComponent<TextRenderComponent>();
-            textRenderer.Text = "Hello, World";
-            textRenderer.Font = new Font(fontId);
-            textRenderer.Color = Color.DarkMagenta;
-            textEntity.LocalScale = new Vector2(0.5f, 0.5f);
-            textEntity.LocalPosition -= new Vector2(5f, 5f);
-            var textRendererBoundingArea = textEntity.AddComponent<BoundingAreaDrawerComponent>();
-            textRendererBoundingArea.Color = Color.Red;
-            textRendererBoundingArea.LineThickness = 3f;
         }
     }
 }
