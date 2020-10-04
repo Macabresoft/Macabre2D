@@ -81,9 +81,9 @@
             this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
             this._stopwatch.Restart();
 
-            if (this._bitmap == null || this._bitmap.Size.Width != this.Bounds.Width || this._bitmap.Size.Height != this.Bounds.Height) {
+            if (this._bitmap == null || this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) || this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height)) {
                 this._bitmap = new WriteableBitmap(
-                    new PixelSize((int)this.Bounds.Width, (int)this.Bounds.Height),
+                    new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
                     new Vector(96d, 96d),
                     PixelFormat.Rgba8888);
 
@@ -194,11 +194,11 @@
             }
 
             if (deviceNeedsReset) {
-                this._viewModel.GraphicsDeviceService.ResetDevice((int)this.Bounds.Width, (int)this.Bounds.Height);
+                this._viewModel.GraphicsDeviceService.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
                 return false;
             }
-            else if (this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this.Bounds.Width ||
-                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this.Bounds.Height) {
+            else if (this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
+                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
                 return false;
             }
 
