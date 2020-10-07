@@ -28,6 +28,6 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Macabresoft.MonoGame.Core.csproj" />
+    <ProjectReference Include="..\..\Core2D\Macabresoft.MonoGame.Core2D.csproj" />
   </ItemGroup>
 </Project>

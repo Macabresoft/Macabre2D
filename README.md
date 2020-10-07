@@ -4,7 +4,7 @@ Common MonoGame functionality used across Macabresoft products. A framework buil
 
 ## Supported Platforms
 
-Macabresoft.MonoGame.Core and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020. The only exception is the Avalonia project, which still has a dependency on DirectX.
+Macabresoft.MonoGame.Core2D and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020. The only exception is the Avalonia project, which still has a dependency on DirectX.
 
 ## Git LFS
 

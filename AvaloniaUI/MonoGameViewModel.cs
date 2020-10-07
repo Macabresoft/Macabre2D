@@ -2,7 +2,7 @@
 
     using Avalonia;
     using Macabresoft.Core;
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
@@ -131,7 +131,7 @@
         public bool IsDesignMode => true;
 
         /// <inheritdoc />
-        public ISaveDataManager SaveDataManager => Core.SaveDataManager.Empty;
+        public ISaveDataManager SaveDataManager => Core2D.SaveDataManager.Empty;
 
         /// <inheritdoc />
         public IGameScene Scene { get; } = new GameScene();

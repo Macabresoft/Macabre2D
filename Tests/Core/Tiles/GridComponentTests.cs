@@ -1,5 +1,5 @@
-﻿using Macabresoft.MonoGame.Core;
-using Macabresoft.MonoGame.Core.Tiles;
+﻿using Macabresoft.MonoGame.Core2D;
+using Macabresoft.MonoGame.Core2D.Tiles;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

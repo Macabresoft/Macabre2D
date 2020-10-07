@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
 
     using Macabresoft.MonoGame.AvaloniaUI;
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
     using Macabresoft.MonoGame.Samples.AvaloniaWindow.Components;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;

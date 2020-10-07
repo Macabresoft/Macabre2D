@@ -1,6 +1,6 @@
 ﻿namespace Macabresoft.MonoGame.Tests.Core.Physics {
 
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework;
     using NSubstitute;
     using NUnit.Framework;

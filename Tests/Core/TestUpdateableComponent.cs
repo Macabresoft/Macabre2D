@@ -1,6 +1,6 @@
 ﻿namespace Macabresoft.MonoGame.Tests.Core {
 
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
     using System.Threading;
 
     internal class TestUpdateableComponent : GameUpdateableComponent {

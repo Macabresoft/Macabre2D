@@ -1,6 +1,6 @@
 ﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow.Components {
 
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework;
 
     public sealed class MouseDebuggerComponent : GameUpdateableComponent {

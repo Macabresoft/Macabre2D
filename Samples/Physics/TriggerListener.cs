@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.MonoGame.Samples.Physics {
 
-    using Macabresoft.MonoGame.Core;
+    using Macabresoft.MonoGame.Core2D;
 
-    public sealed class TriggerListener : Core.GameComponent {
+    public sealed class TriggerListener : Core2D.GameComponent {
         private IPhysicsBody _body;
         private ColliderDrawerComponent _drawer;
 
