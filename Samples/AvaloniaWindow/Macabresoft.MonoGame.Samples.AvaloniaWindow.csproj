@@ -4,8 +4,8 @@
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.9.12" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
+		<PackageReference Include="Avalonia" Version="0.10.0-preview5" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
 		<PackageReference Include="Macabresoft.Core" Version="1.0.3" />
 		<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
 		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />

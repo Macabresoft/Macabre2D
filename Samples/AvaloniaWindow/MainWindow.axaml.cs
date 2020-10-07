@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
 
-    using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
     using Macabresoft.MonoGame.AvaloniaUI;
@@ -9,9 +8,6 @@
 
         public MainWindow() {
             this.InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         public IMonoGameViewModel MonoGameViewModel { get; } = new SampleMonoGameViewModel();

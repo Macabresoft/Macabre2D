@@ -85,7 +85,8 @@
                 this._bitmap = new WriteableBitmap(
                     new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
                     new Vector(96d, 96d),
-                    PixelFormat.Rgba8888);
+                    PixelFormat.Rgba8888,
+                    AlphaFormat.Opaque);
 
                 this.SetViewport();
 
@@ -110,7 +111,7 @@
 
                 Rect viewPort = new Rect(this.Bounds.Size);
                 var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-                context.DrawImage(this._bitmap, 1d, viewPort, viewPort, interpolationMode);
+                context.DrawImage(this._bitmap, viewPort, viewPort, interpolationMode);
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.MaxValue);
