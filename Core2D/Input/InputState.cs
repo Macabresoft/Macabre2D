@@ -63,11 +63,7 @@
 
         /// <inheritdoc />
         public override int GetHashCode() {
-            var hashCode = this.CurrentKeyboardState.GetCombinedHashCode();
-            hashCode = this.CurrentMouseState.GetCombinedHashCode(hashCode);
-            hashCode = this.PreviousKeyboardState.GetCombinedHashCode(hashCode);
-            hashCode = this.PreviousMouseState.GetCombinedHashCode(hashCode);
-            return hashCode;
+            return System.HashCode.Combine(this.CurrentKeyboardState, this.CurrentMouseState, this.PreviousKeyboardState, this.PreviousMouseState);
         }
     }
 }

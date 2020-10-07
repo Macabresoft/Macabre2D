@@ -98,26 +98,23 @@
 
         /// <inheritdoc />
         public T Deserialize<T>(string path) {
-            using (var streamReader = new StreamReader(path))
-            using (var jsonReader = new JsonTextReader(streamReader)) {
-                return this._jsonSerializer.Deserialize<T>(jsonReader);
-            }
+            using var streamReader = new StreamReader(path);
+            using var jsonReader = new JsonTextReader(streamReader);
+            return this._jsonSerializer.Deserialize<T>(jsonReader);
         }
 
         /// <inheritdoc />
         public T DeserializeFromString<T>(string json) {
-            using (var stringReader = new StringReader(json))
-            using (var jsonReader = new JsonTextReader(stringReader)) {
-                return this._jsonSerializer.Deserialize<T>(jsonReader);
-            }
+            using var stringReader = new StringReader(json);
+            using var jsonReader = new JsonTextReader(stringReader);
+            return this._jsonSerializer.Deserialize<T>(jsonReader);
         }
 
         /// <inheritdoc />
         public object DeserializeFromString(string json, Type type) {
-            using (var stringReader = new StringReader(json))
-            using (var jsonReader = new JsonTextReader(stringReader)) {
-                return this._jsonSerializer.Deserialize(jsonReader, type);
-            }
+            using var stringReader = new StringReader(json);
+            using var jsonReader = new JsonTextReader(stringReader);
+            return this._jsonSerializer.Deserialize(jsonReader, type);
         }
 
         /// <inheritdoc />
@@ -127,10 +124,9 @@
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
 
-            using (var streamWriter = new StreamWriter(path))
-            using (var jsonWriter = new JsonTextWriter(streamWriter)) {
-                this._jsonSerializer.Serialize(jsonWriter, value);
-            }
+            using var streamWriter = new StreamWriter(path);
+            using var jsonWriter = new JsonTextWriter(streamWriter);
+            this._jsonSerializer.Serialize(jsonWriter, value);
         }
 
         /// <inheritdoc />

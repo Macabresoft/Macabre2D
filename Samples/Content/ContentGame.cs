@@ -185,8 +185,9 @@
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();
             audioPlayer.Volume = 0.5f;
-            audioPlayer.AudioClip = new AudioClip();
-            audioPlayer.AudioClip.Id = lasterId;
+            audioPlayer.AudioClip = new AudioClip {
+                Id = lasterId
+            };
             audioEntity.AddComponent<VolumeController>();
         }
     }

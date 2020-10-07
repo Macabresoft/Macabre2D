@@ -13,11 +13,11 @@
                 this._body = body;
             }
 
-            this._body.CollisionOccured += this._body_CollisionOccured;
+            this._body.CollisionOccured += this.Body_CollisionOccured;
             this.Entity.TryGetComponent(out this._drawer);
         }
 
-        private void _body_CollisionOccured(object sender, CollisionEventArgs e) {
+        private void Body_CollisionOccured(object sender, CollisionEventArgs e) {
             if (this._drawer != null) {
                 this._drawer.Color = DefinedColors.ZvukostiGreen;
                 this._drawer.LineThickness = 5f;

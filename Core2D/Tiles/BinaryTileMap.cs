@@ -121,11 +121,6 @@
         }
 
         /// <inheritdoc />
-        public bool SetDefaultTile(Sprite newDefault) {
-            return false;
-        }
-
-        /// <inheritdoc />
         public bool TryGetAsset(Guid id, out Sprite? asset) {
             var result = this.Sprite?.Id == id;
             asset = result ? this.Sprite : null;

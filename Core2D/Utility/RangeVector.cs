@@ -71,8 +71,7 @@
 
         /// <inheritdoc />
         public override int GetHashCode() {
-            var hashCode = this.Max.GetCombinedHashCode();
-            return this.Min.GetCombinedHashCode(hashCode);
+            return System.HashCode.Combine(this.Max, this.Min);
         }
 
         /// <summary>

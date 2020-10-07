@@ -54,36 +54,15 @@
         /// <param name="type">The type.</param>
         /// <returns>The sampler state.</returns>
         public static SamplerState ToSamplerState(this SamplerStateType type) {
-            SamplerState result;
-
-            switch (type) {
-                case SamplerStateType.AnisotropicClamp:
-                    result = SamplerState.AnisotropicClamp;
-                    break;
-
-                case SamplerStateType.AnisotropicWrap:
-                    result = SamplerState.AnisotropicWrap;
-                    break;
-
-                case SamplerStateType.LinearClamp:
-                    result = SamplerState.LinearClamp;
-                    break;
-
-                case SamplerStateType.LinearWrap:
-                    result = SamplerState.LinearWrap;
-                    break;
-
-                case SamplerStateType.PointWrap:
-                    result = SamplerState.PointWrap;
-                    break;
-
-                case SamplerStateType.None:
-                case SamplerStateType.PointClamp:
-                default:
-                    result = SamplerState.PointClamp;
-                    break;
-            }
-
+            var result = type switch
+            {
+                SamplerStateType.AnisotropicClamp => SamplerState.AnisotropicClamp,
+                SamplerStateType.AnisotropicWrap => SamplerState.AnisotropicWrap,
+                SamplerStateType.LinearClamp => SamplerState.LinearClamp,
+                SamplerStateType.LinearWrap => SamplerState.LinearWrap,
+                SamplerStateType.PointWrap => SamplerState.PointWrap,
+                _ => SamplerState.PointClamp,
+            };
             return result;
         }
     }

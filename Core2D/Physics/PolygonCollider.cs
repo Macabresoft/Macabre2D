@@ -15,9 +15,9 @@
         [DataMember]
         protected readonly List<Vector2> _points = new List<Vector2>();
 
-        private ResettableLazy<Vector2> _center;
-        private ResettableLazy<List<Vector2>> _normals;
-        private ResettableLazy<List<Vector2>> _worldPoints;
+        private readonly ResettableLazy<Vector2> _center;
+        private readonly ResettableLazy<List<Vector2>> _normals;
+        private readonly ResettableLazy<List<Vector2>> _worldPoints;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonCollider" /> class.

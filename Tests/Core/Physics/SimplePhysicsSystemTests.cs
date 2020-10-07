@@ -30,15 +30,14 @@
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var circleEntity = scene.AddChild();
-            using (var circleBody = circleEntity.AddComponent<SimplePhysicsBody>()) {
-                circleEntity.SetWorldPosition(Vector2.Zero);
-                circleBody.Collider = new CircleCollider(1f);
-                circleEntity.Layers = Layers.Custom1;
-                scene.Initialize(Substitute.For<IGame>());
+            using var circleBody = circleEntity.AddComponent<SimplePhysicsBody>();
+            circleEntity.SetWorldPosition(Vector2.Zero);
+            circleBody.Collider = new CircleCollider(1f);
+            circleEntity.Layers = Layers.Custom1;
+            scene.Initialize(Substitute.For<IGame>());
 
-                var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
-                Assert.AreEqual(raycastHit, result);
-            }
+            var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
+            Assert.AreEqual(raycastHit, result);
         }
 
         [TestCase(0f, 0.6499903f, 0f, -1f, 0.666667f, true, TestName = "Raycast to Line Collider - Collision #1")]
@@ -52,26 +51,25 @@
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var lineEntity = scene.AddChild();
-            using (var lineBody = lineEntity.AddComponent<SimplePhysicsBody>()) {
-                lineEntity.SetWorldPosition(Vector2.Zero);
-                lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
-                lineEntity.Layers = Layers.Default;
-                lineBody.Initialize(scene);
+            using var lineBody = lineEntity.AddComponent<SimplePhysicsBody>();
+            lineEntity.SetWorldPosition(Vector2.Zero);
+            lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
+            lineEntity.Layers = Layers.Default;
+            lineBody.Initialize(scene);
 
-                scene.Initialize(Substitute.For<IGame>());
-                physicsSystem.TimeStep = 1f;
-                physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 1), new System.TimeSpan(0, 0, 1)), 1), new InputState());
+            scene.Initialize(Substitute.For<IGame>());
+            physicsSystem.TimeStep = 1f;
+            physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 1), new System.TimeSpan(0, 0, 1)), 1), new InputState());
 
-                var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
-                Assert.AreEqual(raycastHit, result);
-                result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
-                Assert.AreEqual(raycastHit, result);
+            var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out var hit);
+            Assert.AreEqual(raycastHit, result);
+            result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
+            Assert.AreEqual(raycastHit, result);
 
-                physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 2), new System.TimeSpan(0, 0, 1)), 1), new InputState());
+            physicsSystem.Update(new FrameTime(new GameTime(new System.TimeSpan(0, 0, 2), new System.TimeSpan(0, 0, 1)), 1), new InputState());
 
-                result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
-                Assert.AreEqual(raycastHit, result);
-            }
+            result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), distance, Layers.Default, out hit);
+            Assert.AreEqual(raycastHit, result);
         }
     }
 }

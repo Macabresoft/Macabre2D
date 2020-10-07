@@ -64,10 +64,7 @@
 
         /// <inheritdoc />
         public override int GetHashCode() {
-            var hashCode = 560318066;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(this.Offset);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(this.TileSize);
-            return hashCode;
+            return System.HashCode.Combine(this.Offset, this.TileSize);
         }
 
         /// <summary>

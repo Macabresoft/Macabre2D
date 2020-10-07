@@ -69,10 +69,7 @@
         }
 
         public override int GetHashCode() {
-            var hashCode = this.Position.GetCombinedHashCode();
-            hashCode = this.Scale.GetCombinedHashCode(hashCode);
-            hashCode = this.Rotation.GetCombinedHashCode(hashCode);
-            return hashCode;
+            return System.HashCode.Combine(this.Position, this.Scale, this.Rotation);
         }
     }
 }

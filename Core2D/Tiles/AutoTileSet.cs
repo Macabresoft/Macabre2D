@@ -15,7 +15,7 @@
         private const byte IntermediateSize = 48;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
+        private readonly Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
 
         private bool _isLoaded = false;
         private string _name = string.Empty;
