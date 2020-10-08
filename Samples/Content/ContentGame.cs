@@ -6,6 +6,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
 
     [ExcludeFromCodeCoverage]
     public class ContentGame : DefaultGame {
@@ -88,9 +89,11 @@
 
             scene.Initialize(this);
 
-            Serializer.Instance.Serialize(scene, @"Content Game - Scene.json");
-            scene = Serializer.Instance.Deserialize<GameScene>(@"Content Game - Scene.json");
+            var filePath = Path.GetTempFileName();
+            Serializer.Instance.Serialize(scene, filePath);
+            scene = Serializer.Instance.Deserialize<GameScene>(filePath);
             this.LoadScene(scene);
+            File.Delete(filePath);
 
             this.PostLoadRenderingStuff();
         }

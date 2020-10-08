@@ -5,6 +5,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
 
     [ExcludeFromCodeCoverage]
     public class PhysicsGame : DefaultGame {
@@ -116,8 +117,10 @@
 
             scene.Initialize(this);
 
-            Serializer.Instance.Serialize(scene, @"Physics Game - Scene.json");
-            scene = Serializer.Instance.Deserialize<GameScene>(@"Physics Game - Scene.json");
+            var fileName = Path.GetTempFileName();
+            Serializer.Instance.Serialize(scene, fileName);
+            scene = Serializer.Instance.Deserialize<GameScene>(fileName);
+            File.Delete(fileName);
             this.LoadScene(scene);
         }
     }
