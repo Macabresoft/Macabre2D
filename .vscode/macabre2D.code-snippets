@@ -1,15 +1,46 @@
 {
     "Class": {
-        "prefix": "class",
+        "prefix": "csclass",
         "scope": "csharp",
         "body": [
-            "namespace Macabresoft.MonoGame.${1:NAMESPACE} {",
+            "namespace Macabresoft.MonoGame.${1:NAMESPACE?} {",
             "   public sealed class ${TM_FILENAME_BASE} {",
             "       $0",
             "   }",
             "}"
 
         ],
-        "description": "Class"
-    }
+    },
+
+    "User Control (.axaml)": {
+        "prefix": "xaml",
+        "body": [
+            "<UserControl xmlns=\"https://github.com/avaloniaui\"",
+            "             xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"",
+            "             x:Class=\"Macabresoft.MonoGame.${1:NAMESPACE?}.${TM_FILENAME_BASE}\">",
+            "   $0",
+            "</UserControl>"
+        ]
+    },
+
+    "User Control (.axaml.cs)": {
+        "prefix": "xamlcs",
+        "scope": "csharp",
+        "body": [
+            "namespace Macabresoft.MonoGame.${1:NAMESPACE?} {",
+            "    using Avalonia.Controls;",
+            "    using Avalonia.Markup.Xaml;",
+            "    public sealed class ${TM_FILENAME_BASE/(.axaml)//} : UserControl {",
+            "        public ${TM_FILENAME_BASE/(.axaml)//}() {",
+            "            this.InitializeComponent();",
+            "        }",
+            "",
+            "        private void InitializeComponent() {",
+            "            AvaloniaXamlLoader.Load(this);",
+            "        }",
+            "    }",
+            "}"
+
+        ],
+    },
 }
