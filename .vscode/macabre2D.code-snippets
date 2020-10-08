@@ -1,0 +1,15 @@
+{
+    "Class": {
+        "prefix": "class",
+        "scope": "csharp",
+        "body": [
+            "namespace Macabresoft.MonoGame.${1:NAMESPACE} {",
+            "   public sealed class ${TM_FILENAME_BASE} {",
+            "       $0",
+            "   }",
+            "}"
+
+        ],
+        "description": "Class"
+    }
+}
