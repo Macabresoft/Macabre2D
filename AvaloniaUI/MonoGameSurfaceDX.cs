@@ -69,7 +69,7 @@
                 }
 
                 if (this._isFirstLoad) {
-                    _graphicsDeviceService.Initialize(this.GetVisualRoot() as Window);
+                    _graphicsDeviceService.Initialize();
                     this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
                     this._viewModel.Initialize(this._mouse, this._keyboard);
                     this._viewModel.LoadContent();

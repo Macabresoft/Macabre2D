@@ -2,16 +2,13 @@
 
 namespace Macabresoft.MonoGame.AvaloniaUI {
 
-    using Avalonia.Controls;
+    using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework.Graphics;
-    using SharpDX.Direct3D9;
     using System;
 
     public class MonoGameGraphicsDeviceService : IGraphicsDeviceService, IDisposable {
+        private readonly DefaultGame _game = new DefaultGame();
         private bool _isDisposed = false;
-
-        // Store the current device settings.
-        private PresentationParameters _parameters;
 
         public MonoGameGraphicsDeviceService() {
         }
@@ -24,54 +21,15 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
 
         public event EventHandler<EventArgs> DeviceResetting;
 
-        public Direct3DEx Direct3DContext { get; private set; }
-
-        public DeviceEx Direct3DDevice { get; private set; }
-
-        public GraphicsDevice GraphicsDevice { get; private set; }
-
-        public GraphicsDevice CreateGraphicsDevice(IntPtr windowHandle, int width, int height) {
-            this._parameters = new PresentationParameters {
-                BackBufferWidth = Math.Max(width, 1),
-                BackBufferHeight = Math.Max(height, 1),
-                BackBufferFormat = SurfaceFormat.Color,
-                DepthStencilFormat = DepthFormat.Depth24,
-                DeviceWindowHandle = windowHandle,
-                PresentationInterval = Microsoft.Xna.Framework.Graphics.PresentInterval.Immediate,
-                IsFullScreen = false
-            };
-
-            return new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, this._parameters);
-        }
+        public GraphicsDevice GraphicsDevice => this._game.GraphicsDevice;
 
         public void Dispose() {
             this.Dispose(true);
         }
 
-        public void Initialize(Window window) {
-            this.Direct3DContext = new Direct3DEx();
-
-            var presentParameters = new PresentParameters {
-                Windowed = true,
-                SwapEffect = SwapEffect.Discard,
-                DeviceWindowHandle = window.PlatformImpl.Handle.Handle,
-                PresentationInterval = SharpDX.Direct3D9.PresentInterval.Default
-            };
-
-            this.Direct3DDevice = new DeviceEx(
-                this.Direct3DContext,
-                0,
-                DeviceType.Hardware,
-                IntPtr.Zero,
-                CreateFlags.HardwareVertexProcessing | CreateFlags.Multithreaded | CreateFlags.FpuPreserve,
-                presentParameters);
-
-            // Create the device using the main window handle, and a placeholder size (1,1). The
-            // actual size doesn't matter because whenever we render using this GraphicsDevice, we
-            // will make sure the back buffer is large enough for the window we're rendering into.
-            // Also, the handle doesn't matter because we call GraphicsDevice.Present(...) with the
-            // actual window handle to render into.
-            this.GraphicsDevice = this.CreateGraphicsDevice(window.PlatformImpl.Handle.Handle, 1, 1);
+        public void Initialize() {
+            this._game.RunOneFrame();
+            this.GraphicsDevice.Reset();
             this.DeviceCreated?.Invoke(this, EventArgs.Empty);
         }
 
@@ -84,14 +42,12 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
             var newWidth = Math.Max(1, width);
             var newHeight = Math.Max(1, height);
 
-            if (newWidth != this._parameters.BackBufferWidth || newHeight != this._parameters.BackBufferHeight) {
+            if (newWidth != this.GraphicsDevice.PresentationParameters.BackBufferWidth || newHeight != this.GraphicsDevice.PresentationParameters.BackBufferHeight) {
                 DeviceResetting?.Invoke(this, EventArgs.Empty);
 
-                this._parameters.BackBufferWidth = newWidth;
-                this._parameters.BackBufferHeight = newHeight;
-
-                this.GraphicsDevice.Reset(this._parameters);
-
+                this.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
+                this.GraphicsDevice.PresentationParameters.BackBufferWidth = newWidth;
+                this.GraphicsDevice.PresentationParameters.BackBufferHeight = newHeight;
                 this.DeviceReset?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -100,9 +56,7 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
             if (!this._isDisposed) {
                 if (disposing) {
                     DeviceDisposing?.Invoke(this, EventArgs.Empty);
-                    this.GraphicsDevice.Dispose();
-                    this.Direct3DDevice?.Dispose();
-                    this.Direct3DContext?.Dispose();
+                    this._game.Dispose();
                 }
 
                 this._isDisposed = true;

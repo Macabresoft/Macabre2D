@@ -128,11 +128,14 @@
 
         /// <inheritdoc />
         public bool TryLoad<T>(string path, out T? loaded) where T : class {
+            loaded = null;
+
             if (this._contentManager != null) {
-                loaded = this._contentManager.Load<T>(path);
-            }
-            else {
-                loaded = null;
+                try {
+                    loaded = this._contentManager.Load<T>(path);
+                }
+                catch (ContentLoadException) {
+                }
             }
 
             return loaded != null;

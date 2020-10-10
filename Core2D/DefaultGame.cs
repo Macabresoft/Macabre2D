@@ -249,7 +249,12 @@
         /// <inheritdoc />
         protected override void LoadContent() {
             base.LoadContent();
-            this.AssetManager = this.Content.Load<AssetManager>(Core2D.AssetManager.ContentFileName);
+            try {
+                this.AssetManager = this.Content.Load<AssetManager>(Core2D.AssetManager.ContentFileName);
+            }
+            catch (ContentLoadException) {
+            }
+
             this.AssetManager.Initialize(this.Content);
 
             if (this.AssetManager.TryLoad<GameSettings>(GameSettings.ContentFileName, out var gameSettings) && gameSettings != null) {
