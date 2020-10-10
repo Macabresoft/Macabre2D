@@ -225,9 +225,8 @@
 
         public void OnSizeChanged(Size newSize) {
             this.GraphicsDeviceService.ResetDevice((int)newSize.Width, (int)newSize.Height);
-
             var originalSize = this.ViewportSize;
-            this.ViewportSize = new Microsoft.Xna.Framework.Point(Convert.ToInt32(newSize.Width), Convert.ToInt32(newSize.Height));
+            this.ViewportSize = new Microsoft.Xna.Framework.Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
             this.OnViewportChanged(originalSize, this.ViewportSize);
         }

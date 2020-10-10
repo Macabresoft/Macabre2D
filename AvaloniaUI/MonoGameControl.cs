@@ -17,10 +17,10 @@
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// A surface for a MonoGame <see cref="GraphicsDevice" />.
+    /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
     /// <seealso cref="Avalonia.Controls.Control" />
-    public sealed class MonoGameSurfaceDX : Border, IDisposable {
+    public sealed class MonoGameControl : Border, IDisposable {
         private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -35,17 +35,17 @@
         private IMonoGameViewModel _viewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MonoGameSurfaceDX" /> class.
+        /// Initializes a new instance of the <see cref="MonoGameControl" /> class.
         /// </summary>
-        public MonoGameSurfaceDX() {
+        public MonoGameControl() {
             this._instanceCount++;
             this.Focusable = true;
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="MonoGameSurfaceDX" /> class.
+        /// Finalizes an instance of the <see cref="MonoGameControl" /> class.
         /// </summary>
-        ~MonoGameSurfaceDX() {
+        ~MonoGameControl() {
             this.Dispose(false);
         }
 
@@ -69,11 +69,13 @@
                 }
 
                 if (this._isFirstLoad) {
-                    _graphicsDeviceService.Initialize();
-                    this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
-                    this._viewModel.Initialize(this._mouse, this._keyboard);
-                    this._viewModel.LoadContent();
-                    this._isFirstLoad = false;
+                    if (this.GetVisualRoot() is Window window) {
+                        _graphicsDeviceService.Initialize(window);
+                        this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
+                        this._viewModel.Initialize(this._mouse, this._keyboard);
+                        this._viewModel.LoadContent();
+                        this._isFirstLoad = false;
+                    }
                 }
             }
 
@@ -81,7 +83,7 @@
             this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
             this._stopwatch.Restart();
 
-            if (this._bitmap == null || this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) || this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height)) {
+            if (this.ShouldPerformResize()) {
                 this._bitmap = new WriteableBitmap(
                     new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
                     new Vector(96d, 96d),
@@ -90,13 +92,11 @@
 
                 this.SetViewport();
 
-                if (!this._isResizeProcessing) {
-                    this._isResizeProcessing = true;
-                    Dispatcher.UIThread.Post(() => {
-                        this._viewModel?.OnSizeChanged(this._bitmap.Size);
-                        this._isResizeProcessing = false;
-                    }, DispatcherPriority.ContextIdle);
-                }
+                this._isResizeProcessing = true;
+                Dispatcher.UIThread.Post(() => {
+                    this._viewModel?.OnSizeChanged(this._bitmap.Size);
+                    this._isResizeProcessing = false;
+                }, DispatcherPriority.ContextIdle);
             }
 
             if (this.CanBeginDraw()) {
@@ -158,7 +158,7 @@
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
             // graphics device is big enough, and is not lost.
-            return this._viewModel?.GraphicsDeviceService != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
+            return !this._isResizeProcessing && this._viewModel?.GraphicsDeviceService != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
         }
 
         private void Dispose(bool disposing) {
@@ -200,6 +200,7 @@
             }
             else if (this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
                 this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
+                this._viewModel.GraphicsDeviceService.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
                 return false;
             }
 
@@ -216,6 +217,15 @@
                 var height = Math.Max(1, (int)this.Bounds.Height);
                 this._viewModel.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
             }
+        }
+
+        private bool ShouldPerformResize() {
+            return !this._isResizeProcessing &&
+                this.Bounds.Width > 0 &&
+                this.Bounds.Height > 0 &&
+                (this._bitmap == null ||
+                this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) ||
+                this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height));
         }
 
         private void Start() {

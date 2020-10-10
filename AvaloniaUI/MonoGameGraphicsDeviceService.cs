@@ -2,12 +2,23 @@
 
 namespace Macabresoft.MonoGame.AvaloniaUI {
 
+    using Avalonia.Controls;
     using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework.Graphics;
     using System;
 
     public class MonoGameGraphicsDeviceService : IGraphicsDeviceService, IDisposable {
         private readonly DefaultGame _game = new DefaultGame();
+
+        private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
+            BackBufferWidth = 1,
+            BackBufferHeight = 1,
+            BackBufferFormat = SurfaceFormat.Color,
+            DepthStencilFormat = DepthFormat.Depth24,
+            PresentationInterval = PresentInterval.Immediate,
+            IsFullScreen = false
+        };
+
         private bool _isDisposed = false;
 
         public MonoGameGraphicsDeviceService() {
@@ -27,8 +38,9 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
             this.Dispose(true);
         }
 
-        public void Initialize() {
+        public void Initialize(Window window) {
             this._game.RunOneFrame();
+            this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
             this.GraphicsDevice.Reset();
             this.DeviceCreated?.Invoke(this, EventArgs.Empty);
         }
@@ -43,11 +55,11 @@ namespace Macabresoft.MonoGame.AvaloniaUI {
             var newHeight = Math.Max(1, height);
 
             if (newWidth != this.GraphicsDevice.PresentationParameters.BackBufferWidth || newHeight != this.GraphicsDevice.PresentationParameters.BackBufferHeight) {
-                DeviceResetting?.Invoke(this, EventArgs.Empty);
-
+                this.DeviceResetting?.Invoke(this, EventArgs.Empty);
                 this.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
-                this.GraphicsDevice.PresentationParameters.BackBufferWidth = newWidth;
-                this.GraphicsDevice.PresentationParameters.BackBufferHeight = newHeight;
+                this._presentationParameters.BackBufferWidth = Math.Max(width, 1);
+                this._presentationParameters.BackBufferHeight = Math.Max(height, 1);
+                this.GraphicsDevice.Reset(this._presentationParameters);
                 this.DeviceReset?.Invoke(this, EventArgs.Empty);
             }
         }
