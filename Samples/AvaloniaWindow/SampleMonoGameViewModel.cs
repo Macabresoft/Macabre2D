@@ -1,35 +1,42 @@
 ﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
 
+    using Avalonia.Controls;
     using Macabresoft.MonoGame.AvaloniaUI;
     using Macabresoft.MonoGame.Core2D;
     using Macabresoft.MonoGame.Samples.AvaloniaWindow.Components;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
     using System;
-    using System.Linq;
 
-    public class SampleMonoGameViewModel : MonoGameViewModel, IGame {
+    public class SampleMonoGameViewModel : MonoGameViewModel {
         private CameraComponent _camera;
         private SpriteRenderComponent _skullRenderer;
 
         public SampleMonoGameViewModel() : base() {
+            this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         }
 
-        public override void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            if (this.Settings is GameSettings settings) {
+        public override void Initialize(Window window, Avalonia.Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
+            if (this.Game.Settings is GameSettings settings) {
                 settings.PixelsPerUnit = 64;
             }
 
+            this.Game.LoadScene(new GameScene());
+            this.Game.Scene.AddSystem<RenderSystem>();
+            this.Game.Scene.AddSystem<UpdateSystem>();
+            this.Game.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+
             var skullId = Guid.NewGuid();
-            this.AssetManager.SetMapping(skullId, "skull");
-            this._skullRenderer = this.Scene.AddChild().AddComponent<SpriteRenderComponent>();
+            this.Game.AssetManager.SetMapping(skullId, "skull");
+            var skullEntity = this.Game.Scene.AddChild();
+            this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
             this._skullRenderer.Sprite = new Sprite(skullId);
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            skullEntity.AddComponent<SampleInputComponent>();
 
             var leageMonoId = Guid.NewGuid();
-            this.AssetManager.SetMapping(leageMonoId, "League Mono");
+            this.Game.AssetManager.SetMapping(leageMonoId, "League Mono");
 
-            var textRenderEntity = this.Scene.AddChild();
+            var textRenderEntity = this.Game.Scene.AddChild();
             var textRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
             textRenderer.Font = new Font(leageMonoId);
             textRenderer.Text = @"github.com/Macabresoft/Macabresoft.MonoGame";
@@ -38,7 +45,7 @@
             textRenderEntity.LocalScale = new Vector2(0.25f);
             textRenderEntity.LocalPosition = new Vector2(0f, -3.5f);
 
-            var cameraEntity = this.Scene.AddChild();
+            var cameraEntity = this.Game.Scene.AddChild();
             this._camera = cameraEntity.AddComponent<CameraComponent>();
             this._camera.ViewHeight = 6f;
             var cameraChild = cameraEntity.AddChild();
@@ -56,47 +63,20 @@
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
-            this.Scene.AddSystem<UpdateSystem>();
-
-            base.Initialize(mouse, keyboard);
-            this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
+            base.Initialize(window, viewportSize, mouse, keyboard);
         }
 
         public void ResetCamera() {
-            // This probably seems weird, but it resets the view height which causes the view matrix
-            // and bounding area to be reevaluated.
-            this._camera.ViewHeight += 1;
-            this._camera.ViewHeight -= 1;
-        }
-
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
-
-            if (this.IsInitialized && this.Scene != null) {
-                this.Scene.Update(this.FrameTime, this.InputState);
-
-                if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Pressed && this.InputState.PreviousMouseState.LeftButton == ButtonState.Released) {
-                    this.Scene.BackgroundColor = DefinedColors.MacabresoftBlack;
-                }
-                else if (this.InputState.CurrentMouseState.LeftButton == ButtonState.Released && this.InputState.PreviousMouseState.LeftButton == ButtonState.Pressed) {
-                    this.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
-                }
-
-                if (this.InputState.CurrentKeyboardState.GetPressedKeys().Any()) {
-                    this._skullRenderer.Color = DefinedColors.MacabresoftYellow;
-                }
-                else {
-                    this._skullRenderer.Color = Color.White;
-                }
+            if (this._camera != null) {
+                // This probably seems weird, but it resets the view height which causes the view
+                // matrix and bounding area to be reevaluated.
+                this._camera.ViewHeight += 1;
+                this._camera.ViewHeight -= 1;
             }
         }
 
-        protected override void OnViewportChanged(Point originalSize, Point newSize) {
-            base.OnViewportChanged(originalSize, newSize);
-
-            if (newSize.X > originalSize.X || newSize.Y > originalSize.Y) {
-                this.ResetCamera();
-            }
+        private void Game_ViewportSizeChanged(object sender, Point e) {
+            this.ResetCamera();
         }
     }
 }

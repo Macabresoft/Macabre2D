@@ -1,10 +1,8 @@
 ﻿namespace Macabresoft.MonoGame.AvaloniaUI {
 
     using Avalonia;
-    using Macabresoft.Core;
+    using Avalonia.Controls;
     using Macabresoft.MonoGame.Core2D;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.ComponentModel;
@@ -12,37 +10,28 @@
     /// <summary>
     /// A view model that essentially acts as a pipeline from Avalonia to a <see cref="IGame" />
     /// </summary>
-    public interface IMonoGameViewModel : IGame, IDisposable, INotifyPropertyChanged {
+    public interface IMonoGameViewModel : IDisposable, INotifyPropertyChanged {
 
         /// <summary>
-        /// Gets or sets the graphics device service.
+        /// Gets the game.
         /// </summary>
-        /// <value>The graphics device service.</value>
-        MonoGameGraphicsDeviceService GraphicsDeviceService { get; set; }
+        /// <value>The game.</value>
+        IGame Game { get; }
 
         /// <summary>
-        /// Gets or sets the state of the input.
+        /// Gets the graphics device.
         /// </summary>
-        /// <value>The state of the input.</value>
-        InputState InputState { get; }
-
-        /// <summary>
-        /// Draws the current scene.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void Draw(GameTime gameTime);
+        /// <value>The graphics device.</value>
+        GraphicsDevice GraphicsDevice { get; }
 
         /// <summary>
         /// Initializes this instance.
         /// </summary>
+        /// <param name="window">The window.</param>
+        /// <param name="viewportSize">Size of the viewport.</param>
         /// <param name="mouse">The mouse.</param>
         /// <param name="keyboard">The keyboard.</param>
-        void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard);
-
-        /// <summary>
-        /// Loads the content.
-        /// </summary>
-        void LoadContent();
+        void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard);
 
         /// <summary>
         /// Called when activated.
@@ -72,109 +61,55 @@
         void OnSizeChanged(Size newSize);
 
         /// <summary>
-        /// Unloads the content.
+        /// Resets the graphics device with a new size.
         /// </summary>
-        void UnloadContent();
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        void ResetDevice(int width, int height);
 
         /// <summary>
-        /// Updates the current scene.
+        /// Runs a single frame.
         /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        void Update(GameTime gameTime);
+        void RunFrame();
     }
 
     /// <summary>
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
     public abstract class MonoGameViewModel : NotifyPropertyChanged, IMonoGameViewModel {
+        private readonly AvaloniaGame _game = new AvaloniaGame();
+
+        private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
+            BackBufferWidth = 1,
+            BackBufferHeight = 1,
+            BackBufferFormat = SurfaceFormat.Color,
+            DepthStencilFormat = DepthFormat.Depth24,
+            PresentationInterval = PresentInterval.Immediate,
+            IsFullScreen = false
+        };
+
         private bool _isDisposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
         /// </summary>
         public MonoGameViewModel() {
-            DefaultGame.Instance = this;
         }
 
         /// <inheritdoc />
-        public event EventHandler<double> GameSpeedChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<Microsoft.Xna.Framework.Point> ViewportSizeChanged;
-
-        /// <inheritdoc />
-        public IAssetManager AssetManager { get; } = new AssetManager();
-
-        /// <inheritdoc />
-        public ContentManager Content { get; set; }
-
-        /// <inheritdoc />
-        public double GameSpeed { get => 1d; set { return; } }
-
-        /// <inheritdoc />
-        public GraphicsDevice GraphicsDevice {
-            get {
-                return this.GraphicsDeviceService?.GraphicsDevice;
-            }
-        }
-
-        /// <inheritdoc />
-        public MonoGameGraphicsDeviceService GraphicsDeviceService { get; set; }
-
-        /// <inheritdoc />
-        public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
-
-        /// <inheritdoc />
-        public InputState InputState { get; protected set; }
-
-        /// <inheritdoc />
-        public bool IsDesignMode => true;
-
-        /// <inheritdoc />
-        public ISaveDataManager SaveDataManager => Core2D.SaveDataManager.Empty;
-
-        /// <inheritdoc />
-        public IGameScene Scene { get; } = new GameScene();
-
-        /// <inheritdoc
-        public IGameSettings Settings { get; } = new GameSettings();
-
-        /// <inheritdoc />
-        public SpriteBatch SpriteBatch { get; private set; }
-
-        /// <inheritdoc />
-        public Microsoft.Xna.Framework.Point ViewportSize { get; private set; }
-
-        /// <inheritdoc />
-        protected FrameTime FrameTime { get; private set; }
-
-        /// <inheritdoc />
-        protected bool IsInitialized { get; private set; }
+        public IGame Game => this._game;
 
         /// <summary>
-        /// Gets the keyboard.
+        /// Gets the graphics device.
         /// </summary>
-        /// <value>The keyboard.</value>
-        protected MonoGameKeyboard Keyboard { get; private set; }
-
-        /// <summary>
-        /// Gets the mouse.
-        /// </summary>
-        /// <value>The mouse.</value>
-        protected MonoGameMouse Mouse { get; private set; }
+        /// <value>The graphics device.</value>
+        public GraphicsDevice GraphicsDevice => this._game.GraphicsDevice;
 
         /// <inheritdoc />
-        protected MonoGameServiceProvider Services { get; private set; }
-
-        /// <inheritdoc
         public void Dispose() {
-            this.Dispose(true);
-        }
-
-        /// <inheritdoc />
-        public void Draw(GameTime gameTime) {
-            if (this.IsInitialized && this.Scene != null) {
-                this.Scene.Render(this.FrameTime, this.InputState);
+            if (!this._isDisposed) {
+                this._game.Dispose();
+                this._isDisposed = true;
             }
         }
 
@@ -183,32 +118,26 @@
             return;
         }
 
-        /// <inheritdoc />
-        public virtual void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            this.Mouse = mouse;
-            this.Keyboard = keyboard;
-            this.Services = new MonoGameServiceProvider();
-            this.Services.AddService<IGraphicsDeviceService>(this.GraphicsDeviceService);
-            this.Content = new ContentManager(this.Services) { RootDirectory = "Content" };
-            this.SpriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this.AssetManager.Initialize(this.Content);
-            this.Scene.AddSystem<RenderSystem>();
-            this.Scene.Initialize(this);
-            this.IsInitialized = true;
-        }
-
-        /// <inheritdoc
-        public virtual void LoadContent() {
+        /// <summary>
+        /// Initializes the <see cref="GraphicsDevice" /> with the current <see cref="Window" />.
+        /// </summary>
+        /// <param name="window">The window.</param>
+        public virtual void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
+            this._game.Initialize(mouse, keyboard);
+            this._game.RunOneFrame();
+            this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
+            this._presentationParameters.BackBufferWidth = Math.Max((int)viewportSize.Width, 1);
+            this._presentationParameters.BackBufferHeight = Math.Max((int)viewportSize.Height, 1);
+            this.GraphicsDevice.Reset(this._presentationParameters);
         }
 
         /// <inheritdoc />
-        public virtual void LoadScene(string sceneName) {
-            return;
+        public virtual void Initialize() {
         }
 
         /// <inheritdoc
         public virtual void LoadScene(IGameScene scene) {
-            return;
+            this._game.LoadScene(scene);
         }
 
         /// <inheritdoc
@@ -223,52 +152,27 @@
         public virtual void OnExiting(object sender, EventArgs args) {
         }
 
+        /// <inheritdoc />
         public void OnSizeChanged(Size newSize) {
-            this.GraphicsDeviceService.ResetDevice((int)newSize.Width, (int)newSize.Height);
-            var originalSize = this.ViewportSize;
-            this.ViewportSize = new Microsoft.Xna.Framework.Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.ViewportSizeChanged.SafeInvoke(this, this.ViewportSize);
-            this.OnViewportChanged(originalSize, this.ViewportSize);
+            this.ResetDevice((int)newSize.Width, (int)newSize.Height);
         }
 
         /// <inheritdoc />
-        public void SaveAndApplyGraphicsSettings() {
-            return;
-        }
+        public void ResetDevice(int width, int height) {
+            var newWidth = Math.Max(1, width);
+            var newHeight = Math.Max(1, height);
 
-        /// <inheritdoc />
-        public virtual void UnloadContent() {
-        }
-
-        /// <inheritdoc />
-        public virtual void Update(GameTime gameTime) {
-            this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
-            this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release
-        /// only unmanaged resources.
-        /// </param>
-        protected virtual void Dispose(bool disposing) {
-            if (!this._isDisposed) {
-                if (disposing) {
-                    this.Content?.Dispose();
-                }
-
-                this._isDisposed = true;
+            if (newWidth != this.GraphicsDevice.PresentationParameters.BackBufferWidth || newHeight != this.GraphicsDevice.PresentationParameters.BackBufferHeight) {
+                this.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
+                this._presentationParameters.BackBufferWidth = Math.Max(width, 1);
+                this._presentationParameters.BackBufferHeight = Math.Max(height, 1);
+                this.GraphicsDevice.Reset(this._presentationParameters);
             }
         }
 
-        /// <summary>
-        /// Called when the viewport changes.
-        /// </summary>
-        /// <param name="originalSize">Size of the original viewport.</param>
-        /// <param name="newSize">The new vie port size.</param>
-        protected virtual void OnViewportChanged(Microsoft.Xna.Framework.Point originalSize, Microsoft.Xna.Framework.Point newSize) {
+        /// <inheritdoc />
+        public void RunFrame() {
+            this._game.RunOneFrame();
         }
     }
 }

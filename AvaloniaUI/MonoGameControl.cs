@@ -19,14 +19,11 @@
     /// <summary>
     /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
-    /// <seealso cref="Avalonia.Controls.Control" />
     public sealed class MonoGameControl : Border, IDisposable {
-        private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private WriteableBitmap _bitmap;
         private Microsoft.Xna.Framework.Color _currentBackground;
-        private int _instanceCount;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
         private bool _isResizeProcessing = false;
@@ -38,7 +35,6 @@
         /// Initializes a new instance of the <see cref="MonoGameControl" /> class.
         /// </summary>
         public MonoGameControl() {
-            this._instanceCount++;
             this.Focusable = true;
         }
 
@@ -63,17 +59,14 @@
             base.Render(context);
 
             if (this._viewModel != null) {
-                if (this._viewModel.Scene.BackgroundColor != this._currentBackground) {
-                    this._currentBackground = this._viewModel.Scene.BackgroundColor;
+                if (this._viewModel.Game.Scene.BackgroundColor != this._currentBackground) {
+                    this._currentBackground = this._viewModel.Game.Scene.BackgroundColor;
                     this.Background = this._currentBackground.ToAvaloniaBrush();
                 }
 
                 if (this._isFirstLoad) {
                     if (this.GetVisualRoot() is Window window) {
-                        _graphicsDeviceService.Initialize(window);
-                        this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
-                        this._viewModel.Initialize(this._mouse, this._keyboard);
-                        this._viewModel.LoadContent();
+                        this._viewModel.Initialize(window, this.Bounds.Size, this._mouse, this._keyboard);
                         this._isFirstLoad = false;
                     }
                 }
@@ -101,11 +94,10 @@
 
             if (this.CanBeginDraw()) {
                 using (var bitmapLock = this._bitmap.Lock()) {
-                    this._viewModel.Update(this._gameTime);
-                    this._viewModel.Draw(this._gameTime);
+                    this._viewModel.RunFrame();
 
                     var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                    this._viewModel.GraphicsDeviceService.GraphicsDevice.GetBackBufferData(data);
+                    this._viewModel.GraphicsDevice.GetBackBufferData(data);
                     Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
                 }
 
@@ -130,17 +122,10 @@
             this._viewModel = this.DataContext as IMonoGameViewModel;
 
             if (this._viewModel != null) {
-                this._currentBackground = this._viewModel.Scene.BackgroundColor;
+                this._currentBackground = this._viewModel.Game.Scene.BackgroundColor;
                 this.Background = this._currentBackground.ToAvaloniaBrush();
-                this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
                 Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
             }
-        }
-
-        /// <inheritdoc />
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
-            base.OnDetachedFromVisualTree(e);
-            this._viewModel?.UnloadContent();
         }
 
         /// <inheritdoc />
@@ -158,18 +143,13 @@
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
             // graphics device is big enough, and is not lost.
-            return !this._isResizeProcessing && this._viewModel?.GraphicsDeviceService != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
+            return !this._isResizeProcessing && this._viewModel?.GraphicsDevice != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
         }
 
         private void Dispose(bool disposing) {
             if (!this.IsDisposed) {
                 if (disposing) {
                     this._viewModel?.Dispose();
-                    this._instanceCount--;
-
-                    if (this._instanceCount <= 0) {
-                        _graphicsDeviceService?.Dispose();
-                    }
                 }
 
                 this.IsDisposed = true;
@@ -177,30 +157,24 @@
         }
 
         private bool HandleDeviceReset() {
-            if (this._viewModel?.GraphicsDeviceService?.GraphicsDevice == null) {
+            if (this._viewModel?.GraphicsDevice == null) {
                 return false;
             }
 
             var deviceNeedsReset = false;
-
-            switch (this._viewModel.GraphicsDeviceService.GraphicsDevice.GraphicsDeviceStatus) {
+            switch (this._viewModel.GraphicsDevice.GraphicsDeviceStatus) {
                 case GraphicsDeviceStatus.Lost:
-                    // If the graphics device is lost, we cannot use it at all.
                     return false;
 
                 case GraphicsDeviceStatus.NotReset:
-                    // If device is in the not-reset state, we should try to reset it.
                     deviceNeedsReset = true;
                     break;
             }
 
-            if (deviceNeedsReset) {
-                this._viewModel.GraphicsDeviceService.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
-                return false;
-            }
-            else if (this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
-                this._viewModel.GraphicsDeviceService.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
-                this._viewModel.GraphicsDeviceService.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
+            if (deviceNeedsReset ||
+                this._viewModel.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
+                this._viewModel.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
+                this._viewModel.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
                 return false;
             }
 
@@ -209,10 +183,6 @@
 
         private void SetViewport() {
             if (this._viewModel.GraphicsDevice != null) {
-                // Many GraphicsDeviceControl instances can be sharing the same GraphicsDevice. The
-                // device backbuffer will be resized to fit the largest of these controls. But what
-                // if we are currently drawing a smaller control? To avoid unwanted stretching, we
-                // set the viewport to only use the top left portion of the full backbuffer.
                 var width = Math.Max(1, (int)this.Bounds.Width);
                 var height = Math.Max(1, (int)this.Bounds.Height);
                 this._viewModel.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);

@@ -19,7 +19,6 @@
         protected SpriteBatch? _spriteBatch;
         private static IGame _instance = DefaultGame.Empty;
         private IAssetManager _assetManager = new AssetManager();
-        private InputState _currentInputState;
         private FrameTime _frameTime;
         private double _gameSpeed = 1d;
         private GraphicsSettings _graphicsSettings = new GraphicsSettings();
@@ -40,7 +39,6 @@
         public DefaultGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            this.Settings = new GameSettings();
             DefaultGame.Instance = this;
         }
 
@@ -121,12 +119,10 @@
             }
         }
 
+        public InputState InputState { get; protected set; } = new InputState();
+
         /// <inheritdoc />
-        public bool IsDesignMode {
-            get {
-                return false;
-            }
-        }
+        public virtual bool IsDesignMode => false;
 
         /// <inheritdoc />
         public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
@@ -191,15 +187,20 @@
             this.Scene = scene;
         }
 
+        /// <inheritdoc />
         public void SaveAndApplyGraphicsSettings() {
             this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
             this.ApplyGraphicsSettings();
         }
 
+        /// <inheritdoc />
         public void SaveGraphicsSettings() {
             this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
         }
 
+        /// <summary>
+        /// Applies the graphics settings.
+        /// </summary>
         protected virtual void ApplyGraphicsSettings() {
             if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
                 this._graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -226,7 +227,7 @@
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
-            this.Scene.Render(this._frameTime, this._currentInputState);
+            this.Scene.Render(this._frameTime, this.InputState);
         }
 
         /// <inheritdoc />
@@ -276,9 +277,11 @@
 
         /// <inheritdoc />
         protected override void Update(GameTime gameTime) {
-            var keyboardState = Keyboard.GetState();
-            if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
-                this.Exit();
+            if (!this.IsDesignMode) {
+                var keyboardState = Keyboard.GetState();
+                if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
+                    this.Exit();
+                }
             }
 
             if (this._viewportSize.X != this.GraphicsDevice.Viewport.Width || this._viewportSize.Y != this.GraphicsDevice.Viewport.Height) {
@@ -286,9 +289,16 @@
                 this.ViewportSizeChanged.SafeInvoke(this, this._viewportSize);
             }
 
-            this._currentInputState = new InputState(Mouse.GetState(), keyboardState, this._currentInputState);
+            this.UpdateInputState();
             this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-            this.Scene.Update(this._frameTime, this._currentInputState);
+            this.Scene.Update(this._frameTime, this.InputState);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="InputState" />.
+        /// </summary>
+        protected virtual void UpdateInputState() {
+            this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), this.InputState);
         }
 
         private sealed class EmptyGame : IGame {
