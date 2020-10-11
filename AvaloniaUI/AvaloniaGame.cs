@@ -2,7 +2,6 @@
 
     using Macabresoft.MonoGame.Core2D;
     using Microsoft.Xna.Framework;
-    using System;
 
     /// <summary>
     /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
@@ -13,8 +12,7 @@
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
         public AvaloniaGame() : base() {
-            this.IsFixedTimeStep = true;
-            this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d);
+            this.IsFixedTimeStep = false;
         }
 
         /// <inheritdoc />
