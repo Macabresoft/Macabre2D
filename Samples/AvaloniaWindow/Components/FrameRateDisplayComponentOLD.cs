@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow.Components {
+﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow.Components {
 
-    using Macabresoft.MonoGame.Core2D;
+    using Macabresoft.Macabre2D.Framework;
 
     public sealed class FrameRateDisplayComponentOLD : GameUpdateableComponent {
         private FrameRateComponent _frameRateComponent;

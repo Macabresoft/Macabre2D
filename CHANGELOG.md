@@ -12,7 +12,7 @@
 
 ### Refactors
 
-* Renaming Macabre2D.Framework to Macabresoft.MonoGame.Core2D.
+* Renaming Macabre2D.Framework to Macabresoft.Macabre2D.Framework.
 * Targeting .NET Standard 2.0 instead of 2.1.
 
 ---
@@ -93,7 +93,7 @@
 ### Features
 
 * MacabreGame object now has GameSpeed property which can dictate how fast time dependent components and modules are running.
-* CosmicSynth framework has been folded into the Macabresoft.MonoGame.Core2D project.
+* CosmicSynth framework has been folded into the Macabresoft.Macabre2D.Framework project.
 * TileableComponents now use a GridConfiguration that allows them to link up to a GridModule instead of a local grid.
 * Modules can be given names.
 * MacabreGame object now fires an event when the viewport size changes.

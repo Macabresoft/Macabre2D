@@ -2,7 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
+namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
     public class App : Application {
         public override void Initialize() {
             AvaloniaXamlLoader.Load(this);

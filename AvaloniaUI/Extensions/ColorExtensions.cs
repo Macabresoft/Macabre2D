@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.MonoGame.AvaloniaUI.Extensions {
+﻿namespace Macabresoft.Macabre2D.AvaloniaUI.Extensions {
 
     using Microsoft.Xna.Framework;
 

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.MonoGame.AvaloniaUI {
+﻿namespace Macabresoft.Macabre2D.AvaloniaUI {
 
     using Avalonia;
     using Avalonia.Controls;
@@ -9,7 +9,7 @@
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
-    using Macabresoft.MonoGame.AvaloniaUI.Extensions;
+    using Macabresoft.Macabre2D.AvaloniaUI.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

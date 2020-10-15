@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj",
+                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.Macabre2D.Samples.AvaloniaWindow.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -23,7 +23,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Samples/Content/Macabresoft.MonoGame.Samples.Content.csproj",
+                "${workspaceFolder}/Samples/Content/Macabresoft.Macabre2D.Samples.Content.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -39,7 +39,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Samples/Physics/Macabresoft.MonoGame.Samples.Physics.csproj",
+                "${workspaceFolder}/Samples/Physics/Macabresoft.Macabre2D.Samples.Physics.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -55,7 +55,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj",
+                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.Macabre2D.Samples.AvaloniaWindow.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -68,7 +68,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj",
+                "${workspaceFolder}/Samples/AvaloniaWindow/Macabresoft.Macabre2D.Samples.AvaloniaWindow.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

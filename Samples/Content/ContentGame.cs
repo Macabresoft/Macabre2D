@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.MonoGame.Samples.Content {
+﻿namespace Macabresoft.Macabre2D.Samples.Content {
 
-    using Macabresoft.MonoGame.Core2D;
-    using Macabresoft.MonoGame.Core2D.Tiles;
+    using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.Framework.Tiles;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

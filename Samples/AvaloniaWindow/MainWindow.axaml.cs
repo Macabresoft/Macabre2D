@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
+﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
 
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.MonoGame.AvaloniaUI;
+    using Macabresoft.Macabre2D.AvaloniaUI;
 
     public class MainWindow : Window {
 

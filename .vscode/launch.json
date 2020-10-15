@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "buildAvaloniaSample",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Samples/AvaloniaWindow/bin/Debug/netcoreapp3.1/Macabresoft.MonoGame.Samples.AvaloniaWindow.dll",
+            "program": "${workspaceFolder}/Samples/AvaloniaWindow/bin/Debug/netcoreapp3.1/Macabresoft.Macabre2D.Samples.AvaloniaWindow.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Samples/AvaloniaWindow",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -23,7 +23,7 @@
             "request": "launch",
             "preLaunchTask": "buildContentSample",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Samples/Content/bin/Debug/netcoreapp3.1/Macabresoft.MonoGame.Samples.Content.dll",
+            "program": "${workspaceFolder}/Samples/Content/bin/Debug/netcoreapp3.1/Macabresoft.Macabre2D.Samples.Content.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Samples/Content",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -36,7 +36,7 @@
             "request": "launch",
             "preLaunchTask": "buildPhysicsSample",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Samples/Physics/bin/Debug/netcoreapp3.1/Macabresoft.MonoGame.Samples.Physics.dll",
+            "program": "${workspaceFolder}/Samples/Physics/bin/Debug/netcoreapp3.1/Macabresoft.Macabre2D.Samples.Physics.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Samples/Physics",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

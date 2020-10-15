@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Core2D", "Core2D\Macabresoft.MonoGame.Core2D.csproj", "{D5B27B29-00A8-40A7-9911-46C84EBC7F37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Framework", "Framework\Macabre2D.Framework.csproj", "{D5B27B29-00A8-40A7-9911-46C84EBC7F37}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0EE4DB8-990E-4017-A424-E1C0EB560BEB}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,15 +17,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{DAAC3CC7-B1C0-4009-84EF-DF6707EA216F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Samples.Physics", "Samples\Physics\Macabresoft.MonoGame.Samples.Physics.csproj", "{08E20FF4-8DA5-43C6-BDCC-74B292390B8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.Physics", "Samples\Physics\Macabre2D.Samples.Physics.csproj", "{08E20FF4-8DA5-43C6-BDCC-74B292390B8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Samples.Content", "Samples\Content\Macabresoft.MonoGame.Samples.Content.csproj", "{40392200-CB1C-45DA-86D4-9E5ADB48975F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.Content", "Samples\Content\Macabre2D.Samples.Content.csproj", "{40392200-CB1C-45DA-86D4-9E5ADB48975F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Tests", "Tests\Macabresoft.MonoGame.Tests.csproj", "{24A0BAE5-1C52-416E-880A-C2440FF063D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Tests", "Tests\Macabre2D.Tests.csproj", "{24A0BAE5-1C52-416E-880A-C2440FF063D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.AvaloniaUI", "AvaloniaUI\Macabresoft.MonoGame.AvaloniaUI.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.AvaloniaUI", "AvaloniaUI\Macabre2D.AvaloniaUI.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabresoft.MonoGame.Samples.AvaloniaWindow", "Samples\AvaloniaWindow\Macabresoft.MonoGame.Samples.AvaloniaWindow.csproj", "{DE26FED5-C0BE-46C3-8426-890B71CABCE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.AvaloniaWindow", "Samples\AvaloniaWindow\Macabre2D.Samples.AvaloniaWindow.csproj", "{DE26FED5-C0BE-46C3-8426-890B71CABCE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

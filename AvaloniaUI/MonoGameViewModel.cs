@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.MonoGame.AvaloniaUI {
+﻿namespace Macabresoft.Macabre2D.AvaloniaUI {
 
     using Avalonia;
     using Avalonia.Controls;
-    using Macabresoft.MonoGame.Core2D;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.ComponentModel;

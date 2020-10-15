@@ -1,10 +1,10 @@
-# Macabre2D (Macabresoft.MonoGame)
+# Macabre2D (Macabresoft.Macabre2D)
 
 Common MonoGame functionality used across Macabresoft products. A framework built on top of another framework. Will eventually be a full-fledged editor/engine.
 
 ## Supported Platforms
 
-Macabresoft.MonoGame.Core2D and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020. The only exception is the Avalonia project, which still has a dependency on DirectX.
+Macabresoft.Macabre2D.Framework and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020. The only exception is the Avalonia project, which still has a dependency on DirectX.
 
 ## Git LFS
 

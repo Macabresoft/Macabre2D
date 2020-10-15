@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.MonoGame.Samples.Physics {
+﻿namespace Macabresoft.Macabre2D.Samples.Physics {
 
-    using Macabresoft.MonoGame.Core2D;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 

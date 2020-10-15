@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.MonoGame.AvaloniaUI {
+﻿namespace Macabresoft.Macabre2D.AvaloniaUI {
 
     using Avalonia.Controls;
     using Avalonia.Input;

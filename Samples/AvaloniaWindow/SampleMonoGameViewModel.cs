@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.MonoGame.Samples.AvaloniaWindow {
+﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
 
     using Avalonia.Controls;
-    using Macabresoft.MonoGame.AvaloniaUI;
-    using Macabresoft.MonoGame.Core2D;
-    using Macabresoft.MonoGame.Samples.AvaloniaWindow.Components;
+    using Macabresoft.Macabre2D.AvaloniaUI;
+    using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Components;
     using Microsoft.Xna.Framework;
     using System;
 
@@ -39,7 +39,7 @@
             var textRenderEntity = this.Game.Scene.AddChild();
             var textRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
             textRenderer.Font = new Font(leageMonoId);
-            textRenderer.Text = @"github.com/Macabresoft/Macabresoft.MonoGame";
+            textRenderer.Text = @"github.com/Macabresoft/Macabresoft.Macabre2D";
             textRenderer.Color = DefinedColors.MacabresoftYellow;
             textRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             textRenderEntity.LocalScale = new Vector2(0.25f);

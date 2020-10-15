@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.MonoGame.Samples.Physics {
+﻿namespace Macabresoft.Macabre2D.Samples.Physics {
 
     using System;
 

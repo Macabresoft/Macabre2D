@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.MonoGame.Samples.Content {
+﻿namespace Macabresoft.Macabre2D.Samples.Content {
 
-    using Macabresoft.MonoGame.Core2D;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
