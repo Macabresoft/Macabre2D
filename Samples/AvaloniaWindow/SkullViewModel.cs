@@ -7,13 +7,13 @@
     using Microsoft.Xna.Framework;
     using System;
 
-    public class SampleMonoGameViewModel : MonoGameViewModel {
+    public sealed class SkullViewModel : MonoGameViewModel {
         private CameraComponent _camera;
         private string _displayText = @"github.com/Macabresoft/Macabresoft.Macabre2D";
         private TextRenderComponent _displayTextRenderer;
         private SpriteRenderComponent _skullRenderer;
 
-        public SampleMonoGameViewModel() : base() {
+        public SkullViewModel(IAvaloniaGame game) : base(game) {
             this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         }
 

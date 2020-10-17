@@ -12,7 +12,7 @@
             <TextBlock Text="Display Text:"
                        Foreground="{StaticResource WhiteBrush}"
                        Margin="0,0,0,8" />
-            <TextBox Text="{Binding ViewModel.DisplayText, ElementName=_window, Mode=TwoWay}"
+            <TextBox Text="{Binding SkullViewModel.DisplayText, ElementName=_window, Mode=TwoWay}"
                      Foreground="{StaticResource WhiteBrush}"
                      BorderBrush="{StaticResource WhiteBrush}"
                      Background="{StaticResource BlackBrush}"
@@ -26,9 +26,17 @@
                       Foreground="{StaticResource WhiteBrush}"
                       Background="{StaticResource WhiteBrush}" />
 
-        <monoGame:MonoGameControl Grid.Column="2"
-                                  DataContext="{Binding ViewModel, ElementName=_window, Mode=OneTime}"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Stretch" />
+        <TabControl Grid.Column="2">
+            <TabItem Header="Skull">
+                <monoGame:MonoGameControl DataContext="{Binding SkullViewModel, ElementName=_window, Mode=OneTime}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch" />
+            </TabItem>
+            <TabItem Header="Solid">
+                <monoGame:MonoGameControl DataContext="{Binding SolidViewModel, ElementName=_window, Mode=OneTime}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

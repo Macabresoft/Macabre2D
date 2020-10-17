@@ -2,11 +2,30 @@
 
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using System;
+
+    /// <summary>
+    /// A <see cref="IGame" /> that can run within Avalonia.
+    /// </summary>
+    public interface IAvaloniaGame : IGame, IDisposable {
+
+        /// <summary>
+        /// Initializes the specified mouse.
+        /// </summary>
+        /// <param name="mouse">The mouse.</param>
+        /// <param name="keyboard">The keyboard.</param>
+        void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard);
+
+        /// <summary>
+        /// Runs one frame.
+        /// </summary>
+        void RunOneFrame();
+    }
 
     /// <summary>
     /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
     /// </summary>
-    public sealed class AvaloniaGame : DefaultGame {
+    public sealed class AvaloniaGame : DefaultGame, IAvaloniaGame {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
@@ -30,11 +49,7 @@
         /// <value>The mouse.</value>
         public MonoGameMouse Mouse { get; private set; }
 
-        /// <summary>
-        /// Initializes the specified mouse.
-        /// </summary>
-        /// <param name="mouse">The mouse.</param>
-        /// <param name="keyboard">The keyboard.</param>
+        /// <inheritdoc />
         public void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             this.Mouse = mouse;
             this.Keyboard = keyboard;

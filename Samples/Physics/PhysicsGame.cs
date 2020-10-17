@@ -15,9 +15,9 @@
         }
 
         protected override void Initialize() {
-            this._graphics.PreferredBackBufferHeight = 1080;
-            this._graphics.PreferredBackBufferWidth = 1920;
-            this._graphics.ApplyChanges();
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.ApplyChanges();
             this.IsFixedTimeStep = false;
             base.Initialize();
         }

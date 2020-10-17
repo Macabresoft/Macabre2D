@@ -70,6 +70,10 @@
                         this._isFirstLoad = false;
                     }
                 }
+
+                if (this._viewModel.Scene != this._viewModel.Game.Scene) {
+                    this._viewModel.ResetScene();
+                }
             }
 
             this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;

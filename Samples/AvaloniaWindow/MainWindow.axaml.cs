@@ -2,14 +2,19 @@
 
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Macabre2D.AvaloniaUI;
 
     public class MainWindow : Window {
 
         public MainWindow() {
+            this.SkullViewModel = new SkullViewModel(new AvaloniaGame());
+            this.SolidViewModel = new SolidViewModel(this.SkullViewModel.Game);
             this.InitializeComponent();
         }
 
-        public SampleMonoGameViewModel ViewModel { get; } = new SampleMonoGameViewModel();
+        public SkullViewModel SkullViewModel { get; }
+
+        public SolidViewModel SolidViewModel { get; }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

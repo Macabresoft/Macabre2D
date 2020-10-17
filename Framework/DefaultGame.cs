@@ -8,6 +8,9 @@
     using System;
     using System.ComponentModel;
 
+    /// <summary>
+    /// The default game for Macabre2D.
+    /// </summary>
     public class DefaultGame : Game, IGame {
 
         /// <summary>

@@ -16,13 +16,19 @@
         /// Gets the game.
         /// </summary>
         /// <value>The game.</value>
-        IGame Game { get; }
+        IAvaloniaGame Game { get; }
 
         /// <summary>
         /// Gets the graphics device.
         /// </summary>
         /// <value>The graphics device.</value>
         GraphicsDevice GraphicsDevice { get; }
+
+        /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        IGameScene Scene { get; }
 
         /// <summary>
         /// Initializes this instance.
@@ -68,6 +74,11 @@
         void ResetDevice(int width, int height);
 
         /// <summary>
+        /// Resets the scene.
+        /// </summary>
+        void ResetScene();
+
+        /// <summary>
         /// Runs a single frame.
         /// </summary>
         void RunFrame();
@@ -77,7 +88,6 @@
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
     public abstract class MonoGameViewModel : NotifyPropertyChanged, IMonoGameViewModel {
-        private readonly AvaloniaGame _game = new AvaloniaGame();
 
         private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
             BackBufferWidth = 1,
@@ -89,6 +99,16 @@
         };
 
         private bool _isDisposed = false;
+        private MonoGameKeyboard _keyboard;
+        private MonoGameMouse _mouse;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        public MonoGameViewModel(IAvaloniaGame game) {
+            this.Game = game;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
@@ -97,18 +117,24 @@
         }
 
         /// <inheritdoc />
-        public IGame Game => this._game;
+        public IAvaloniaGame Game { get; }
 
         /// <summary>
         /// Gets the graphics device.
         /// </summary>
         /// <value>The graphics device.</value>
-        public GraphicsDevice GraphicsDevice => this._game.GraphicsDevice;
+        public GraphicsDevice GraphicsDevice => this.Game.GraphicsDevice;
+
+        /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        public IGameScene Scene { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() {
             if (!this._isDisposed) {
-                this._game.Dispose();
+                this.Game.Dispose();
                 this._isDisposed = true;
             }
         }
@@ -123,21 +149,15 @@
         /// </summary>
         /// <param name="window">The window.</param>
         public virtual void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            this._game.Initialize(mouse, keyboard);
-            this._game.RunOneFrame();
+            this._mouse = mouse;
+            this._keyboard = keyboard;
+            this.Game.Initialize(mouse, keyboard);
+            this.Game.RunOneFrame();
+            this.Scene = this.Game.Scene;
             this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
             this._presentationParameters.BackBufferWidth = Math.Max((int)viewportSize.Width, 1);
             this._presentationParameters.BackBufferHeight = Math.Max((int)viewportSize.Height, 1);
             this.GraphicsDevice.Reset(this._presentationParameters);
-        }
-
-        /// <inheritdoc />
-        public virtual void Initialize() {
-        }
-
-        /// <inheritdoc
-        public virtual void LoadScene(IGameScene scene) {
-            this._game.LoadScene(scene);
         }
 
         /// <inheritdoc
@@ -171,8 +191,16 @@
         }
 
         /// <inheritdoc />
+        public void ResetScene() {
+            if (this.Scene != null) {
+                this.Game.LoadScene(this.Scene);
+                this.Game.Initialize(this._mouse, this._keyboard);
+            }
+        }
+
+        /// <inheritdoc />
         public void RunFrame() {
-            this._game.RunOneFrame();
+            this.Game.RunOneFrame();
         }
     }
 }
