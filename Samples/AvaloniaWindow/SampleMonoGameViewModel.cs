@@ -9,10 +9,24 @@
 
     public class SampleMonoGameViewModel : MonoGameViewModel {
         private CameraComponent _camera;
+        private string _displayText = @"github.com/Macabresoft/Macabresoft.Macabre2D";
+        private TextRenderComponent _displayTextRenderer;
         private SpriteRenderComponent _skullRenderer;
 
         public SampleMonoGameViewModel() : base() {
             this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        }
+
+        public string DisplayText {
+            get {
+                return this._displayText;
+            }
+
+            set {
+                if (this.Set(ref this._displayText, value) && this._displayTextRenderer != null) {
+                    this._displayTextRenderer.Text = value;
+                }
+            }
         }
 
         public override void Initialize(Window window, Avalonia.Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
@@ -37,11 +51,11 @@
             this.Game.AssetManager.SetMapping(leageMonoId, "League Mono");
 
             var textRenderEntity = this.Game.Scene.AddChild();
-            var textRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
-            textRenderer.Font = new Font(leageMonoId);
-            textRenderer.Text = @"github.com/Macabresoft/Macabresoft.Macabre2D";
-            textRenderer.Color = DefinedColors.MacabresoftYellow;
-            textRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
+            this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
+            this._displayTextRenderer.Font = new Font(leageMonoId);
+            this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
+            this._displayTextRenderer.Text = this.DisplayText;
+            this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             textRenderEntity.LocalScale = new Vector2(0.25f);
             textRenderEntity.LocalPosition = new Vector2(0f, -3.5f);
 

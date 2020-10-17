@@ -3,19 +3,31 @@
 		xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.AvaloniaUI;assembly=Macabre2D.AvaloniaUI"
 		Name="_window"
         x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
-        Title="Macabresoft.Macabre2D.Samples.AvaloniaWindow">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        Title="Macabresoft.Macabre2D.Samples.AvaloniaWindow"
+        Background="{StaticResource GreyBrush}">
+    <Grid ColumnDefinitions="2*, Auto, 8*">
+        <StackPanel Grid.Column="0"
+                    Orientation="Vertical"
+                    Margin="8">
+            <TextBlock Text="Display Text:"
+                       Foreground="{StaticResource WhiteBrush}"
+                       Margin="0,0,0,8" />
+            <TextBox Text="{Binding ViewModel.DisplayText, ElementName=_window, Mode=TwoWay}"
+                     Foreground="{StaticResource WhiteBrush}"
+                     BorderBrush="{StaticResource WhiteBrush}"
+                     Background="{StaticResource BlackBrush}"
+                     Margin="0,0,0,8" />
+        </StackPanel>
 
-        <Border Grid.Column="0"
-				Background="Black"
-				Width="256" />
+        <GridSplitter Grid.Column="1"
+                      ResizeDirection="Columns"
+                      VerticalAlignment="Stretch"
+                      Width="5"
+                      Foreground="{StaticResource WhiteBrush}"
+                      Background="{StaticResource WhiteBrush}" />
 
-        <monoGame:MonoGameControl Grid.Column="1"
-                                  DataContext="{Binding MonoGameViewModel, ElementName=_window, Mode=OneTime}"
+        <monoGame:MonoGameControl Grid.Column="2"
+                                  DataContext="{Binding ViewModel, ElementName=_window, Mode=OneTime}"
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch" />
     </Grid>
