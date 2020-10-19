@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
 
     using Avalonia.Controls;
-    using Macabresoft.Macabre2D.AvaloniaUI;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Components;
     using Microsoft.Xna.Framework;

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.AvaloniaUI {
+﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
 
     using Avalonia.Input;
     using Microsoft.Xna.Framework.Input;

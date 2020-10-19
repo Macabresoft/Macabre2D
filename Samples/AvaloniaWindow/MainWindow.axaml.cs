@@ -2,7 +2,7 @@
 
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.AvaloniaUI;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
 
     public class MainWindow : Window {
 

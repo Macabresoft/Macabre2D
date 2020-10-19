@@ -1,0 +1,13 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Macabresoft.Macabre2D.Editor.UI.ViewModels;assembly=Macabre2D.Editor.Framework"
+        x:Class="Macabresoft.Macabre2D.Editor.UI.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Macabre2D">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+</Window>

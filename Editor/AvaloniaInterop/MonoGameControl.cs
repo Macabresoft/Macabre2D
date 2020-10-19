@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.AvaloniaUI {
+﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
 
     using Avalonia;
     using Avalonia.Controls;
@@ -9,7 +9,7 @@
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
-    using Macabresoft.Macabre2D.AvaloniaUI.Extensions;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
