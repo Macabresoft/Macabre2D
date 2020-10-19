@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Macabresoft.Macabresoft.Macabre2D.Editor.UI.UI.UI</RootNamespace>
-    <AssemblyName>Macabresoft.Macabre2D.Editor.UI.UI.UI</AssemblyName>
+    <RootNamespace>Macabresoft.Macabresoft.Macabre2D.Editor.UI</RootNamespace>
+    <AssemblyName>Macabre2D.Editor.UI.UI.UI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -13,6 +13,7 @@
     <PackageReference Include="Avalonia" Version="0.10.0-preview5" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-preview5" />
+    <PackageReference Include="Unity" Version="5.11.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />

@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Macabresoft.Macabresoft.Macabre2D.Editor.Framework</RootNamespace>
-    <AssemblyName>Macabresoft.Macabre2D.Editor.Framework</AssemblyName>
+    <RootNamespace>Macabresoft.Macabre2D.Editor.Framework</RootNamespace>
+    <AssemblyName>Macabre2D.Editor.Framework</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\CppNet.dll" />
