@@ -6,7 +6,6 @@
     <AssemblyName>Macabre2D.Editor.UI.UI.UI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
