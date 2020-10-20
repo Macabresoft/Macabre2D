@@ -3,11 +3,11 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI"
              x:Class="Macabresoft.Macabre2D.Editor.UI.App">
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
+        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml" />
+        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseDark.xaml" />
     </Application.Styles>
 </Application>

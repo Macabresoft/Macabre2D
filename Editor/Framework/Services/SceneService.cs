@@ -1,7 +1,7 @@
-﻿using Macabresoft.Macabre2D.Framework;
-using ReactiveUI;
+﻿namespace Macabresoft.Macabre2D.Editor.Framework.Services {
 
-namespace Macabresoft.Macabre2D.Editor.Framework.Services {
+    using Macabresoft.Macabre2D.Framework;
+    using ReactiveUI;
 
     /// <summary>
     /// Interface for a service which handles the <see cref="IGameScene" /> open in the editor.
