@@ -22,7 +22,7 @@
         }
 
         public void RaisePropertyChanged(bool forceEvent, [CallerMemberName] string propertyName = "") {
-            if (forceEvent || DefaultGame.Instance.IsDesignMode != false) {
+            if (forceEvent || BaseGame.Instance.IsDesignMode != false) {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }

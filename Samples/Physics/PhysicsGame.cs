@@ -8,7 +8,7 @@
     using System.IO;
 
     [ExcludeFromCodeCoverage]
-    public class PhysicsGame : DefaultGame {
+    public class PhysicsGame : BaseGame {
 
         protected override void ApplyGraphicsSettings() {
             base.ApplyGraphicsSettings();

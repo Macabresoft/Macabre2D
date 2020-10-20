@@ -2,6 +2,6 @@
 
     using Macabresoft.Macabre2D.Framework;
 
-    public class CustomGame : DefaultGame {
+    public class CustomGame : BaseGame {
     }
 }

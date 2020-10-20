@@ -46,7 +46,7 @@
         /// Gets the game currently running this scene.
         /// </summary>
         /// <value>The game.</value>
-        IGame Game { get => DefaultGame.Empty; }
+        IGame Game { get => BaseGame.Empty; }
 
         /// <summary>
         /// Gets the grid.
@@ -210,7 +210,7 @@
         public IReadOnlyCollection<IGameCameraComponent> CameraComponents => this._cameraComponents;
 
         /// <inheritdoc />
-        public IGame Game { get; private set; } = DefaultGame.Empty;
+        public IGame Game { get; private set; } = BaseGame.Empty;
 
         /// <inheritdoc />
         public TileGrid Grid { get; set; } = new TileGrid(Vector2.One);

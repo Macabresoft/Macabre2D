@@ -139,7 +139,7 @@
                     }
                 }
                 else {
-                    this.SetErrorTexture(DefaultGame.Instance.SpriteBatch);
+                    this.SetErrorTexture(BaseGame.Instance.SpriteBatch);
                 }
             }
         }

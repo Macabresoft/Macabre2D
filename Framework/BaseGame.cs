@@ -9,9 +9,9 @@
     using System.ComponentModel;
 
     /// <summary>
-    /// The default game for Macabre2D.
+    /// The base game class for Macabre2D.
     /// </summary>
-    public class DefaultGame : Game, IGame {
+    public class BaseGame : Game, IGame {
 
         /// <summary>
         /// The default empty <see cref="IGame" /> that is present before initialization.
@@ -20,7 +20,7 @@
 
         protected readonly GraphicsDeviceManager _graphics;
         protected SpriteBatch? _spriteBatch;
-        private static IGame _instance = DefaultGame.Empty;
+        private static IGame _instance = BaseGame.Empty;
         private IAssetManager _assetManager = new AssetManager();
         private FrameTime _frameTime;
         private double _gameSpeed = 1d;
@@ -31,18 +31,18 @@
         private Point _viewportSize;
 
         /// <summary>
-        /// Initializes the <see cref="DefaultGame" /> class.
+        /// Initializes the <see cref="BaseGame" /> class.
         /// </summary>
-        static DefaultGame() {
+        static BaseGame() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultGame" /> class.
+        /// Initializes a new instance of the <see cref="BaseGame" /> class.
         /// </summary>
-        public DefaultGame() : base() {
+        public BaseGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            DefaultGame.Instance = this;
+            BaseGame.Instance = this;
         }
 
         /// <inheritdoc />
@@ -57,12 +57,12 @@
         /// <value>The instance.</value>
         public static IGame Instance {
             get {
-                return DefaultGame._instance;
+                return BaseGame._instance;
             }
 
             set {
                 if (value != null) {
-                    DefaultGame._instance = value;
+                    BaseGame._instance = value;
                 }
             }
         }

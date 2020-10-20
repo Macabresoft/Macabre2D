@@ -9,7 +9,7 @@
     using System.IO;
 
     [ExcludeFromCodeCoverage]
-    public class ContentGame : DefaultGame {
+    public class ContentGame : BaseGame {
 
         protected override void LoadContent() {
             this.AssetManager.Initialize(this.Content);
