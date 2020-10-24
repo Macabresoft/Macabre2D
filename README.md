@@ -4,13 +4,20 @@ Common MonoGame functionality used across Macabresoft products. A framework buil
 
 ## Supported Platforms
 
-Macabresoft.Macabre2D.Framework and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of 2020. The only exception is the Avalonia project, which still has a dependency on DirectX.
+Macabresoft.Macabre2D.Framework and its sample projects have been confirmed to run on modern Windows, MacOS, and Linux (Ubuntu) as of October 2020.
 
 ## Git LFS
 
 You must install Git LFS (Large File Storage) to use this repository. [This article](https://help.github.com/en/articles/installing-git-large-file-storage) should assist you.
 
-## Source Code
+## MonoGame Content Builder (MGCB)
+
+You must install the MGCB dotnet tool to run the editor. Full instructions can be found [here](https://docs.monogame.net/articles/tools/mgcb.html); however, here is a brief explanation:
+
+* Make sure the .NET Core SDK is installed
+* In a terminal, run `dotnet tool install -g dotnet-mgcb`
+
+## Building from Source
 
 The full source code is available here from GitHub:
 
