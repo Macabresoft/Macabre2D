@@ -2,19 +2,43 @@
 
     using FluentAssertions;
     using FluentAssertions.Execution;
+    using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Editor.Framework.Models.Content;
     using Macabresoft.Macabre2D.Editor.Framework.Services;
     using NUnit.Framework;
+    using System.IO;
 
     [TestFixture]
     public sealed class ContentServiceTests {
+        private const string BinDirectoryName = "bin";
+        private const string ContentDirectoryName = "Content";
+        private const string ContentFileName = "Content.mgcb";
+        private const string LeagueMonoXnbName = "League Mono.xnb";
+        private const string PlatformName = "DesktopGL";
+        private const string SkullXnbName = "skull.xnb";
 
         [Test]
         [Category("Integration Test")]
         public void Build_ShouldRunMGCB() {
             var service = new ContentService();
+            var contentDirectory = Path.Combine(
+                TestContext.CurrentContext.TestDirectory,
+                PathHelper.GetPathToAncestorDirectory(3),
+                ContentDirectoryName);
+            var contentFile = Path.Combine(contentDirectory, ContentFileName);
+            var binDirectory = Path.Combine(contentDirectory, BinDirectoryName);
+            var buildContentDirectory = Path.Combine(binDirectory, PlatformName);
+            var skullFilePath = Path.Combine(buildContentDirectory, SkullXnbName);
+            var leagueMonoFilePath = Path.Combine(buildContentDirectory, LeagueMonoXnbName);
+
+            if (Directory.Exists(binDirectory)) {
+                Directory.Delete(binDirectory, true);
+            }
 
             using (new AssertionScope()) {
-                service.Build(false).Should().Be(0);
+                service.Build(new BuildContentArguments(contentFile, PlatformName, false)).Should().Be(0);
+                File.Exists(skullFilePath).Should().BeTrue();
+                File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
         }
     }

@@ -22,5 +22,4 @@
     <ProjectReference Include="..\Editor\Framework\Macabre2D.Editor.Framework.csproj" />
     <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
   </ItemGroup>
-
 </Project>

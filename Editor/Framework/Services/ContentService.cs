@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Macabresoft.Macabre2D.Editor.Framework.Models.Content;
+using System.Diagnostics;
+using System.IO;
 
 namespace Macabresoft.Macabre2D.Editor.Framework.Services {
 
@@ -10,9 +12,9 @@ namespace Macabresoft.Macabre2D.Editor.Framework.Services {
         /// <summary>
         /// Builds the content.
         /// </summary>
-        /// <param name="isDebug">if set to <c>true</c>, use debug.</param>
+        /// <param name="args">The arguments.</param>
         /// <returns>The exit code of the MGCB process.</returns>
-        int Build(bool isDebug);
+        int Build(BuildContentArguments args);
     }
 
     /// <summary>
@@ -21,16 +23,16 @@ namespace Macabresoft.Macabre2D.Editor.Framework.Services {
     public sealed class ContentService : IContentService {
 
         /// <inheritdoc />
-        public int Build(bool isDebug) {
+        public int Build(BuildContentArguments args) {
             var exitCode = -1;
 
-            // TODO: replace this with a real call to mgcb and not just a help call
             var startInfo = new ProcessStartInfo() {
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 FileName = "mgcb",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = "--help"
+                Arguments = args.ToConsoleArguments(),
+                WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath)
             };
 
             using (var process = Process.Start(startInfo)) {
