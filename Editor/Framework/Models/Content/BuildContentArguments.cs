@@ -1,4 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework.Models.Content {
+﻿using System.IO;
+using System.Linq;
+
+namespace Macabresoft.Macabre2D.Editor.Framework.Models.Content {
 
     /// <summary>
     /// Arguments for building content using MGCB.
@@ -39,22 +42,20 @@
         /// </summary>
         /// <returns></returns>
         public string ToConsoleArguments() {
-            // TODO: get this other stuff working
-            ////var contentPath = Path.GetDirectoryName(this.ContentFilePath);
-            ////var arguments = new List<string>() {
-            ////    $"/outputDir:\"{Path.Combine(contentPath, "bin", this.Platform)}\"",
-            ////    $"/intermediateDir:\"{Path.Combine(contentPath, "obj", this.Platform)}\"",
-            ////    $"/platform:{this.Platform}",
-            ////    "/config:",
-            ////    "/profile:Reach",
-            ////    "/compress:False",
-            ////    "/rebuild",
-            ////    $"/@:\"{this.ContentFilePath}\""
-            ////};
+            var contentPath = Path.GetDirectoryName(this.ContentFilePath);
 
-            ////return arguments.Aggregate((first, second) => $"{first} {second}");
+            var arguments = new[] {
+                $"/outputDir:\"{Path.Combine(contentPath, "bin", this.Platform)}\"",
+                $"/intermediateDir:\"{Path.Combine(contentPath, "obj", this.Platform)}\"",
+                $"/platform:{this.Platform}",
+                "/config:",
+                "/profile:Reach",
+                $"/compress:{this.PerformCompression}",
+                "/rebuild",
+                $"/@:\"{this.ContentFilePath}\""
+            };
 
-            return $"/@:\"{this.ContentFilePath}\"";
+            return arguments.Aggregate((first, second) => $"{first} {second}");
         }
     }
 }
