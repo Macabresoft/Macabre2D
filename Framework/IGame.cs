@@ -51,6 +51,12 @@
         GraphicsSettings GraphicsSettings { get; }
 
         /// <summary>
+        /// Gets the state of input.
+        /// </summary>
+        /// <value>The state of input.</value>
+        InputState InputState => new InputState();
+
+        /// <summary>
         /// Gets a value indicating whether this game is running in design mode. When the game is
         /// running for real, this value will be false; however, if the game editor is running, it
         /// will be true.

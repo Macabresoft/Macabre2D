@@ -22,10 +22,8 @@
         protected SpriteBatch? _spriteBatch;
         private static IGame _instance = BaseGame.Empty;
         private IAssetManager _assetManager = new AssetManager();
-        private FrameTime _frameTime;
         private double _gameSpeed = 1d;
         private GraphicsSettings _graphicsSettings = new GraphicsSettings();
-        private bool _isInitialized;
         private IGameScene _scene = GameScene.Empty;
         private IGameSettings _settings = new GameSettings();
         private Point _viewportSize;
@@ -122,6 +120,7 @@
             }
         }
 
+        /// <inheritdoc />
         public InputState InputState { get; protected set; } = new InputState();
 
         /// <inheritdoc />
@@ -140,7 +139,7 @@
                 if (this._scene != value) {
                     this._scene = value;
 
-                    if (this._isInitialized) {
+                    if (this.IsInitialized) {
                         this._scene.Initialize(this);
                     }
                 }
@@ -174,6 +173,18 @@
                 return this._viewportSize;
             }
         }
+
+        /// <summary>
+        /// Gets the frame time.
+        /// </summary>
+        /// <value>The frame time.</value>
+        protected FrameTime FrameTime { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        protected bool IsInitialized { get; private set; }
 
         /// <inheritdoc />
         public void LoadScene(string sceneName) {
@@ -230,7 +241,11 @@
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
-            this.Scene.Render(this._frameTime, this.InputState);
+            if (this.GraphicsDevice != null) {
+                this.GraphicsDevice.Clear(this.Scene.BackgroundColor);
+
+                this.Scene.Render(this.FrameTime, this.InputState);
+            }
         }
 
         /// <inheritdoc />
@@ -247,7 +262,7 @@
                 this.GraphicsSettings = this.Settings.DefaultGraphicsSettings.Clone();
             }
 
-            this._isInitialized = true;
+            this.IsInitialized = true;
         }
 
         /// <inheritdoc />
@@ -293,8 +308,8 @@
             }
 
             this.UpdateInputState();
-            this._frameTime = new FrameTime(gameTime, this.GameSpeed);
-            this.Scene.Update(this._frameTime, this.InputState);
+            this.FrameTime = new FrameTime(gameTime, this.GameSpeed);
+            this.Scene.Update(this.FrameTime, this.InputState);
         }
 
         /// <summary>

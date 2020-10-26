@@ -25,7 +25,7 @@
     /// <summary>
     /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
     /// </summary>
-    public sealed class AvaloniaGame : BaseGame, IAvaloniaGame {
+    public class AvaloniaGame : BaseGame, IAvaloniaGame {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.

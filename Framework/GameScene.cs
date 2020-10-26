@@ -152,7 +152,7 @@
     /// A user-created combination of <see cref="IGameSystem" /> and <see cref="IGameEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public sealed class GameScene : GameEntity, IGameScene {
+    public class GameScene : GameEntity, IGameScene {
 
         /// <summary>
         /// The default empty <see cref="IGameScene" /> that is present before initialization.
@@ -160,36 +160,37 @@
         public static readonly new IGameScene Empty = new EmptyGameScene();
 
         private readonly List<Action> _actionsToInvoke = new List<Action>();
+
         private readonly HashSet<IGameComponent> _allComponentsInScene = new HashSet<IGameComponent>();
 
         private readonly FilterSortCollection<IGameCameraComponent> _cameraComponents = new FilterSortCollection<IGameCameraComponent>(
-            c => c.IsEnabled,
-            nameof(IGameComponent.IsEnabled),
-            (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            nameof(IGameCameraComponent.RenderOrder));
+                    c => c.IsEnabled,
+                    nameof(IGameComponent.IsEnabled),
+                    (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
+                    nameof(IGameCameraComponent.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
 
         private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
-            r => r.IsEnabled,
-            nameof(IGameComponent.IsEnabled),
-            (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-            nameof(IPhysicsBody.UpdateOrder));
+                    r => r.IsEnabled,
+                    nameof(IGameComponent.IsEnabled),
+                    (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
+                    nameof(IPhysicsBody.UpdateOrder));
 
         private readonly FilterSortCollection<IGameRenderableComponent> _renderableComponents = new FilterSortCollection<IGameRenderableComponent>(
-            c => c.IsVisible,
-            nameof(IGameRenderableComponent.IsVisible),
-            (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            nameof(IGameRenderableComponent.RenderOrder));
+                    c => c.IsVisible,
+                    nameof(IGameRenderableComponent.IsVisible),
+                    (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
+                    nameof(IGameRenderableComponent.RenderOrder));
 
         [DataMember]
         private readonly ObservableCollection<IGameSystem> _systems = new ObservableCollection<IGameSystem>();
 
         private readonly FilterSortCollection<IGameUpdateableComponent> _updateableComponents = new FilterSortCollection<IGameUpdateableComponent>(
-            c => c.IsEnabled,
-            nameof(IGameUpdateableComponent.IsEnabled),
-            (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IGameUpdateableComponent.UpdateOrder));
+                    c => c.IsEnabled,
+                    nameof(IGameUpdateableComponent.IsEnabled),
+                    (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
+                    nameof(IGameUpdateableComponent.UpdateOrder));
 
         private bool _isInitialized = false;
 
@@ -225,6 +226,17 @@
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
+
+        /// <summary>
+        /// Determines whether the specified scene is null or <see cref="GameScene.Empty" />.
+        /// </summary>
+        /// <param name="scene">The scene.</param>
+        /// <returns>
+        /// <c>true</c> if the specified scene is null or <see cref="GameScene.Empty" />; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNullOrEmpty(IGameScene? scene) {
+            return scene == null || scene == GameScene.Empty;
+        }
 
         /// <inheritdoc />
         public T AddSystem<T>() where T : IGameSystem, new() {
@@ -294,13 +306,9 @@
         }
 
         /// <inheritdoc />
-        public void Render(FrameTime frameTime, InputState inputState) {
-            if (this.Game.GraphicsDevice != null) {
-                this.Game.GraphicsDevice.Clear(this.BackgroundColor);
-
-                foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
-                    system.Update(frameTime, inputState);
-                }
+        public virtual void Render(FrameTime frameTime, InputState inputState) {
+            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
+                system.Update(frameTime, inputState);
             }
         }
 
