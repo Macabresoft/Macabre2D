@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Core {
+﻿namespace Macabresoft.Macabre2D.Tests.Framework {
 
     using Macabresoft.Macabre2D.Framework;
     using System.Threading;

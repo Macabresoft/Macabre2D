@@ -2,13 +2,12 @@
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System.ComponentModel;
 
     /// <summary>
     /// Interface for a camera component which tells the engine where to render any <see
     /// cref="IGameRenderableComponent" />.
     /// </summary>
-    public interface IGameCameraComponent : IEnableable, IBoundable, INotifyPropertyChanged {
+    public interface IGameCameraComponent : IGameComponent, IBoundable {
 
         /// <summary>
         /// Gets the layers to render.
