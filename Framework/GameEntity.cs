@@ -331,11 +331,12 @@
         public bool RemoveComponent(IGameComponent component) {
             var result = false;
 
-            // TODO: unregister components
-
             if (!GameScene.IsNullOrEmpty(this.Scene)) {
                 if (this._components.Contains(component)) {
-                    this.Scene.Invoke(() => this._components.Remove(component));
+                    this.Scene.Invoke(() => {
+                        this._components.Remove(component);
+                        this.Scene.UnregisterComponent(component);
+                    });
                     result = true;
                 }
             }

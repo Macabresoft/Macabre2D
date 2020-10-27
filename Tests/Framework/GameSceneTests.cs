@@ -54,5 +54,31 @@ namespace Macabresoft.Macabre2D.Tests.Framework {
                 scene.CameraComponents.Any(x => x.Id == camera.Id).Should().BeTrue();
             }
         }
+
+        [Test]
+        [Category("Unit Test")]
+        public static void GameScene_UnregistersComponent_WhenRemoved() {
+            var scene = new GameScene();
+            var entity = scene.AddChild();
+            var spriteRenderer = entity.AddComponent<SpriteRenderComponent>();
+            var frameRateComponent = entity.AddComponent<FrameRateComponent>();
+            var camera = entity.AddComponent<CameraComponent>();
+            var animator = entity.AddComponent<SpriteAnimationComponent>();
+
+            scene.Initialize(Substitute.For<IGame>());
+
+            entity.RemoveComponent(spriteRenderer);
+            entity.RemoveComponent(frameRateComponent);
+            entity.RemoveComponent(camera);
+            entity.RemoveComponent(animator);
+
+            using (new AssertionScope()) {
+                scene.RenderableComponents.Any(x => x.Id == spriteRenderer.Id).Should().BeFalse();
+                scene.RenderableComponents.Any(x => x.Id == animator.Id).Should().BeFalse();
+                scene.UpdateableComponents.Any(x => x.Id == animator.Id).Should().BeFalse();
+                scene.UpdateableComponents.Any(x => x.Id == frameRateComponent.Id).Should().BeFalse();
+                scene.CameraComponents.Any(x => x.Id == camera.Id).Should().BeFalse();
+            }
+        }
     }
 }
