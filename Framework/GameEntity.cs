@@ -260,7 +260,12 @@
         public void AddComponent(IGameComponent component) {
             component.Entity.RemoveComponent(component);
             this._components.Add(component);
-            this.Scene.Invoke(() => component.Initialize(this));
+            if (!GameScene.IsNullOrEmpty(this.Scene)) {
+                this.Scene.Invoke(() => {
+                    this.Scene.RegisterComponent(component);
+                    component.Initialize(this);
+                });
+            }
         }
 
         /// <inheritdoc />
@@ -325,7 +330,10 @@
         /// <inheritdoc />
         public bool RemoveComponent(IGameComponent component) {
             var result = false;
-            if (this.Scene != null) {
+
+            // TODO: unregister components
+
+            if (!GameScene.IsNullOrEmpty(this.Scene)) {
                 if (this._components.Contains(component)) {
                     this.Scene.Invoke(() => this._components.Remove(component));
                     result = true;

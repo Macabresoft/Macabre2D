@@ -159,8 +159,6 @@
         /// </summary>
         public static readonly new IGameScene Empty = new EmptyGameScene();
 
-        private readonly List<Action> _actionsToInvoke = new List<Action>();
-
         private readonly HashSet<IGameComponent> _allComponentsInScene = new HashSet<IGameComponent>();
 
         private readonly FilterSortCollection<IGameCameraComponent> _cameraComponents = new FilterSortCollection<IGameCameraComponent>(
@@ -170,6 +168,7 @@
                     nameof(IGameCameraComponent.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
+        private readonly List<Action> _pendingActions = new List<Action>();
 
         private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
                     r => r.IsEnabled,
@@ -192,6 +191,7 @@
                     (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
                     nameof(IGameUpdateableComponent.UpdateOrder));
 
+        private bool _isBusy;
         private bool _isInitialized = false;
 
         /// <inheritdoc />
@@ -260,6 +260,7 @@
         public void Initialize(IGame game) {
             if (!this._isInitialized) {
                 try {
+                    this._isBusy = true;
                     this.Game = game;
                     this.Initialize(this, this);
 
@@ -269,19 +270,21 @@
                 }
                 finally {
                     this._isInitialized = true;
+                    this._isBusy = false;
                 }
 
-                var actions = this._actionsToInvoke.ToList();
-                foreach (var action in actions) {
-                    action();
-                    this._actionsToInvoke.Remove(action);
-                }
+                this.InvokePendingActions();
             }
         }
 
         /// <inheritdoc />
         public void Invoke(Action action) {
-            this._actionsToInvoke.Add(action);
+            if (this._isBusy) {
+                this._pendingActions.Add(action);
+            }
+            else {
+                action();
+            }
         }
 
         /// <inheritdoc />
@@ -307,8 +310,15 @@
 
         /// <inheritdoc />
         public virtual void Render(FrameTime frameTime, InputState inputState) {
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
-                system.Update(frameTime, inputState);
+            try {
+                this._isBusy = true;
+
+                foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
+                    system.Update(frameTime, inputState);
+                }
+            }
+            finally {
+                this._isBusy = false;
             }
         }
 
@@ -346,8 +356,25 @@
 
         /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Update)) {
-                system.Update(frameTime, inputState);
+            try {
+                this._isBusy = true;
+
+                this.InvokePendingActions();
+
+                foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Update)) {
+                    system.Update(frameTime, inputState);
+                }
+            }
+            finally {
+                this._isBusy = false;
+            }
+        }
+
+        private void InvokePendingActions() {
+            var actions = this._pendingActions.ToList();
+            foreach (var action in actions) {
+                action();
+                this._pendingActions.Remove(action);
             }
         }
 
