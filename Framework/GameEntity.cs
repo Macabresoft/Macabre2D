@@ -116,11 +116,15 @@
         bool IsDescendentOf(IGameEntity entity);
 
         /// <summary>
+        /// Called when this instance is removed from the <see cref="IGameScene" /> tree.
+        /// </summary>
+        void OnRemovedFromSceneTree();
+
+        /// <summary>
         /// Removes the child.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        /// <returns>A value indicating whether or not the child was removed.</returns>
-        bool RemoveChild(IGameEntity entity);
+        void RemoveChild(IGameEntity entity);
 
         /// <summary>
         /// Removes the component.
@@ -312,19 +316,26 @@
         }
 
         /// <inheritdoc />
-        public bool RemoveChild(IGameEntity entity) {
-            var result = false;
-            if (this._children.Contains(entity)) {
-                if (this.Scene != null) {
-                    this.Scene.Invoke(() => this._children.Remove(entity));
-                    result = true;
-                }
-                else {
-                    result = this._children.Remove(entity);
-                }
+        public void OnRemovedFromSceneTree() {
+            foreach (var component in this._components) {
+                this.Scene.UnregisterComponent(component);
             }
 
-            return result;
+            foreach (var child in this._children) {
+                child.OnRemovedFromSceneTree();
+            }
+
+            this.Scene = GameScene.Empty;
+        }
+
+        /// <inheritdoc />
+        public void RemoveChild(IGameEntity entity) {
+            if (this.Scene != null) {
+                this.Scene.Invoke(() => this.PerformChildRemoval(entity));
+            }
+            else {
+                this._children.Remove(entity);
+            }
         }
 
         /// <inheritdoc />
@@ -382,6 +393,13 @@
 
         private void OnAddChild(IGameEntity entity) {
             this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
+        }
+
+        private void PerformChildRemoval(IGameEntity entity) {
+            if (this._children.Contains(entity)) {
+                entity.OnRemovedFromSceneTree();
+                this._children.Remove(entity);
+            }
         }
 
         internal class EmptyGameEntity : EmptyTransformable, IGameEntity {
@@ -457,8 +475,12 @@
             }
 
             /// <inheritdoc />
-            public bool RemoveChild(IGameEntity entity) {
-                return false;
+            public void OnRemovedFromSceneTree() {
+                throw new NotSupportedException("An empty entity should never be added to a scene tree, much less removed.");
+            }
+
+            /// <inheritdoc />
+            public void RemoveChild(IGameEntity entity) {
             }
 
             /// <inheritdoc />
