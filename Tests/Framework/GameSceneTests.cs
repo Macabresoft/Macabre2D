@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
-using FluentAssertions.Execution;
-using Macabresoft.Macabre2D.Framework;
-using NSubstitute;
-using NUnit.Framework;
-using System.Linq;
+﻿namespace Macabresoft.Macabre2D.Tests.Framework {
 
-namespace Macabresoft.Macabre2D.Tests.Framework {
+    using FluentAssertions;
+    using FluentAssertions.Execution;
+    using Macabresoft.Macabre2D.Framework;
+    using NSubstitute;
+    using NUnit.Framework;
+    using System.Linq;
 
     [TestFixture]
     public sealed class GameSceneTests {
@@ -13,71 +13,85 @@ namespace Macabresoft.Macabre2D.Tests.Framework {
         [Test]
         [Category("Unit Test")]
         public static void GameScene_RegistersComponent_WhenAddedAfterInitialization() {
-            var scene = new GameScene();
-
-            scene.Initialize(Substitute.For<IGame>());
-
-            var entity = scene.AddChild();
-            var spriteRenderer = entity.AddComponent<SpriteRenderComponent>();
-            var frameRateComponent = entity.AddComponent<FrameRateComponent>();
-            var camera = entity.AddChild().AddComponent<CameraComponent>();
-            var animator = scene.AddChild().AddComponent<SpriteAnimationComponent>();
-
-            using (new AssertionScope()) {
-                scene.Game.Should().NotBe(BaseGame.Empty);
-                scene.RenderableComponents.Any(x => x.Id == spriteRenderer.Id).Should().BeTrue();
-                scene.RenderableComponents.Any(x => x.Id == animator.Id).Should().BeTrue();
-                scene.UpdateableComponents.Any(x => x.Id == animator.Id).Should().BeTrue();
-                scene.UpdateableComponents.Any(x => x.Id == frameRateComponent.Id).Should().BeTrue();
-                scene.CameraComponents.Any(x => x.Id == camera.Id).Should().BeTrue();
-            }
+            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
+            test.AssertExistanceOfComponents(true);
         }
 
         [Test]
         [Category("Unit Test")]
         public static void GameScene_RegistersComponent_WhenInitialized() {
-            var scene = new GameScene();
-            var entity = scene.AddChild();
-            var spriteRenderer = entity.AddComponent<SpriteRenderComponent>();
-            var frameRateComponent = entity.AddComponent<FrameRateComponent>();
-            var camera = entity.AddChild().AddComponent<CameraComponent>();
-            var animator = scene.AddChild().AddComponent<SpriteAnimationComponent>();
-
-            scene.Initialize(Substitute.For<IGame>());
-
-            using (new AssertionScope()) {
-                scene.Game.Should().NotBe(BaseGame.Empty);
-                scene.RenderableComponents.Any(x => x.Id == spriteRenderer.Id).Should().BeTrue();
-                scene.RenderableComponents.Any(x => x.Id == animator.Id).Should().BeTrue();
-                scene.UpdateableComponents.Any(x => x.Id == animator.Id).Should().BeTrue();
-                scene.UpdateableComponents.Any(x => x.Id == frameRateComponent.Id).Should().BeTrue();
-                scene.CameraComponents.Any(x => x.Id == camera.Id).Should().BeTrue();
-            }
+            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
+            test.AssertExistanceOfComponents(true);
         }
 
         [Test]
         [Category("Unit Test")]
         public static void GameScene_UnregistersComponent_WhenRemoved() {
-            var scene = new GameScene();
-            var entity = scene.AddChild();
-            var spriteRenderer = entity.AddComponent<SpriteRenderComponent>();
-            var frameRateComponent = entity.AddComponent<FrameRateComponent>();
-            var camera = entity.AddComponent<CameraComponent>();
-            var animator = entity.AddComponent<SpriteAnimationComponent>();
+            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
 
-            scene.Initialize(Substitute.For<IGame>());
+            test.RenderableEntity.RemoveComponent(test.RenderableComponent);
+            test.UpdateableEntity.RemoveComponent(test.UpdateableComponent);
+            test.CameraEntity.RemoveComponent(test.CameraComponent);
+            test.UpdateableAndRenderableEntity.RemoveComponent(test.UpdateableAndRenderableComponent);
 
-            entity.RemoveComponent(spriteRenderer);
-            entity.RemoveComponent(frameRateComponent);
-            entity.RemoveComponent(camera);
-            entity.RemoveComponent(animator);
+            test.AssertExistanceOfComponents(false);
+        }
 
-            using (new AssertionScope()) {
-                scene.RenderableComponents.Any(x => x.Id == spriteRenderer.Id).Should().BeFalse();
-                scene.RenderableComponents.Any(x => x.Id == animator.Id).Should().BeFalse();
-                scene.UpdateableComponents.Any(x => x.Id == animator.Id).Should().BeFalse();
-                scene.UpdateableComponents.Any(x => x.Id == frameRateComponent.Id).Should().BeFalse();
-                scene.CameraComponents.Any(x => x.Id == camera.Id).Should().BeFalse();
+        private class GameSceneTestContainer {
+
+            public GameSceneTestContainer(InitializationMode initializationMode) {
+                this.Scene = new GameScene();
+
+                if (initializationMode == InitializationMode.Before) {
+                    this.Scene.Initialize(Substitute.For<IGame>());
+                }
+
+                this.RenderableEntity = this.Scene.AddChild();
+                this.RenderableComponent = this.RenderableEntity.AddComponent<SpriteRenderComponent>();
+                this.UpdateableEntity = this.RenderableEntity;
+                this.UpdateableComponent = this.UpdateableEntity.AddComponent<FrameRateComponent>();
+                this.CameraEntity = this.UpdateableEntity.AddChild();
+                this.CameraComponent = this.CameraEntity.AddComponent<CameraComponent>();
+                this.UpdateableAndRenderableEntity = this.Scene.AddChild();
+                this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimationComponent>();
+
+                if (initializationMode == InitializationMode.After) {
+                    this.Scene.Initialize(Substitute.For<IGame>());
+                }
+            }
+
+            internal enum InitializationMode {
+                Before,
+                After,
+                None
+            }
+
+            public IGameComponent CameraComponent { get; }
+
+            public IGameEntity CameraEntity { get; }
+
+            public IGameComponent RenderableComponent { get; }
+
+            public IGameEntity RenderableEntity { get; }
+
+            public IGameScene Scene { get; }
+
+            public IGameComponent UpdateableAndRenderableComponent { get; }
+
+            public IGameEntity UpdateableAndRenderableEntity { get; }
+
+            public IGameComponent UpdateableComponent { get; }
+
+            public IGameEntity UpdateableEntity { get; }
+
+            internal void AssertExistanceOfComponents(bool shouldExist) {
+                using (new AssertionScope()) {
+                    this.Scene.RenderableComponents.Any(x => x.Id == this.RenderableComponent.Id).Should().Be(shouldExist);
+                    this.Scene.RenderableComponents.Any(x => x.Id == this.UpdateableAndRenderableComponent.Id).Should().Be(shouldExist);
+                    this.Scene.UpdateableComponents.Any(x => x.Id == this.UpdateableAndRenderableComponent.Id).Should().Be(shouldExist);
+                    this.Scene.UpdateableComponents.Any(x => x.Id == this.UpdateableComponent.Id).Should().Be(shouldExist);
+                    this.Scene.CameraComponents.Any(x => x.Id == this.CameraComponent.Id).Should().Be(shouldExist);
+                }
             }
         }
     }

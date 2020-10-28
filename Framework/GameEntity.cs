@@ -314,14 +314,14 @@
         /// <inheritdoc />
         public bool RemoveChild(IGameEntity entity) {
             var result = false;
-            if (this.Scene != null) {
-                if (this._children.Contains(entity)) {
+            if (this._children.Contains(entity)) {
+                if (this.Scene != null) {
                     this.Scene.Invoke(() => this._children.Remove(entity));
                     result = true;
                 }
-            }
-            else {
-                result = this._children.Remove(entity);
+                else {
+                    result = this._children.Remove(entity);
+                }
             }
 
             return result;
@@ -331,17 +331,17 @@
         public bool RemoveComponent(IGameComponent component) {
             var result = false;
 
-            if (!GameScene.IsNullOrEmpty(this.Scene)) {
-                if (this._components.Contains(component)) {
+            if (this._components.Contains(component)) {
+                if (!GameScene.IsNullOrEmpty(this.Scene)) {
                     this.Scene.Invoke(() => {
                         this._components.Remove(component);
                         this.Scene.UnregisterComponent(component);
                     });
                     result = true;
                 }
-            }
-            else {
-                result = this._components.Remove(component);
+                else {
+                    result = this._components.Remove(component);
+                }
             }
 
             return result;
