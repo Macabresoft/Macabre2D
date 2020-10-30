@@ -18,13 +18,13 @@
             var scene = new GameScene();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
-            var raycastLayer = Layers.Custom1;
+            var raycastLayer = Layers.Layer12;
 
             gameSettings.Layers.Returns(layerSettings);
             GameSettings.Instance = gameSettings;
 
             if (!layersCompatible) {
-                raycastLayer = Layers.Custom2;
+                raycastLayer = Layers.Layer13;
             }
 
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
@@ -33,7 +33,7 @@
             using var circleBody = circleEntity.AddComponent<SimplePhysicsBody>();
             circleEntity.SetWorldPosition(Vector2.Zero);
             circleBody.Collider = new CircleCollider(1f);
-            circleEntity.Layers = Layers.Custom1;
+            circleEntity.Layers = Layers.Layer12;
             scene.Initialize(Substitute.For<IGame>());
 
             var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
