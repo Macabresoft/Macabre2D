@@ -103,7 +103,7 @@
             }
         }
 
-        private void HandleCollisions(IPhysicsBody body) {
+        private void HandleCollisions(IPhysicsBodyComponent body) {
             if (body.HasCollider && body is IDynamicPhysicsBody dynamicBody) {
                 var collisionsOccured = new List<Guid>();
                 dynamicBody.Entity.SetWorldPosition(dynamicBody.Entity.Transform.Position + dynamicBody.Velocity * this.TimeStep);

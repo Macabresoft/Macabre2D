@@ -56,8 +56,8 @@
             return new SpriteAnimation(steps);
         }
 
-        private static SpriteAnimationComponent CreateAnimator(byte frameRate) {
-            var animator = new SpriteAnimationComponent() {
+        private static SpriteAnimatorComponent CreateAnimator(byte frameRate) {
+            var animator = new SpriteAnimatorComponent() {
                 FrameRate = frameRate
             };
 

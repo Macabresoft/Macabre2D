@@ -40,7 +40,7 @@
         /// Gets the camera components.
         /// </summary>
         /// <value>The camera components.</value>
-        IReadOnlyCollection<IGameCameraComponent> CameraComponents { get => new IGameCameraComponent[0]; }
+        IReadOnlyCollection<ICameraComponent> CameraComponents { get => new ICameraComponent[0]; }
 
         /// <summary>
         /// Gets the game currently running this scene.
@@ -58,7 +58,7 @@
         /// Gets the physics bodies.
         /// </summary>
         /// <value>The physics bodies.</value>
-        IReadOnlyCollection<IPhysicsBody> PhysicsBodies { get => new IPhysicsBody[0]; }
+        IReadOnlyCollection<IPhysicsBodyComponent> PhysicsBodies { get => new IPhysicsBodyComponent[0]; }
 
         /// <summary>
         /// Gets the renderable components.
@@ -161,20 +161,20 @@
 
         private readonly HashSet<IGameComponent> _allComponentsInScene = new HashSet<IGameComponent>();
 
-        private readonly FilterSortCollection<IGameCameraComponent> _cameraComponents = new FilterSortCollection<IGameCameraComponent>(
+        private readonly FilterSortCollection<ICameraComponent> _cameraComponents = new FilterSortCollection<ICameraComponent>(
                     c => c.IsEnabled,
                     nameof(IGameComponent.IsEnabled),
                     (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-                    nameof(IGameCameraComponent.RenderOrder));
+                    nameof(ICameraComponent.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new Dictionary<Type, object>();
         private readonly List<Action> _pendingActions = new List<Action>();
 
-        private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new FilterSortCollection<IPhysicsBody>(
+        private readonly FilterSortCollection<IPhysicsBodyComponent> _physicsBodies = new FilterSortCollection<IPhysicsBodyComponent>(
                     r => r.IsEnabled,
                     nameof(IGameComponent.IsEnabled),
                     (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-                    nameof(IPhysicsBody.UpdateOrder));
+                    nameof(IPhysicsBodyComponent.UpdateOrder));
 
         private readonly FilterSortCollection<IGameRenderableComponent> _renderableComponents = new FilterSortCollection<IGameRenderableComponent>(
                     c => c.IsVisible,
@@ -208,7 +208,7 @@
         public Color BackgroundColor { get; set; } = new Color(30, 15, 15);
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameCameraComponent> CameraComponents => this._cameraComponents;
+        public IReadOnlyCollection<ICameraComponent> CameraComponents => this._cameraComponents;
 
         /// <inheritdoc />
         public IGame Game { get; private set; } = BaseGame.Empty;
@@ -217,7 +217,7 @@
         public TileGrid Grid { get; set; } = new TileGrid(Vector2.One);
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
+        public IReadOnlyCollection<IPhysicsBodyComponent> PhysicsBodies => this._physicsBodies;
 
         public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents => this._renderableComponents;
 

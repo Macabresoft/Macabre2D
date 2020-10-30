@@ -7,7 +7,7 @@
     /// Represents a dynamic physics body, which can be moved and start collisions with other
     /// bodies. It handles interactions with <see cref="Collider" />.
     /// </summary>
-    public interface IDynamicPhysicsBody : IPhysicsBody {
+    public interface IDynamicPhysicsBody : IPhysicsBodyComponent {
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is kinematic.
@@ -31,7 +31,7 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
-    public sealed class DynamicPhysicsBody : SimplePhysicsBody, IDynamicPhysicsBody {
+    public sealed class DynamicPhysicsBodyComponent : SimplePhysicsBody, IDynamicPhysicsBody {
         private bool _isKinematic;
         private float _mass = 1f;
         private Vector2 _velocity;

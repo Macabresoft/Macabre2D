@@ -15,7 +15,7 @@
             float x1, float y1, float x2, float y2,
             float rx1, float ry1, float rx2, float ry2,
             bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using var lineBody = new DynamicPhysicsBody();
+            using var lineBody = new DynamicPhysicsBodyComponent();
             lineBody.Initialize(new GameEntity());
             lineBody.Collider = new LineCollider(new Vector2(x1, y1), new Vector2(x2, y2));
 

@@ -55,7 +55,7 @@
         /// Gets the body that this collider is attached to.
         /// </summary>
         /// <value>The body.</value>
-        public IPhysicsBody? Body { get; private set; }
+        public IPhysicsBodyComponent? Body { get; private set; }
 
         /// <inheritdoc />
         public BoundingArea BoundingArea {
@@ -225,7 +225,7 @@
         /// Initializes the specified body.
         /// </summary>
         /// <param name="body">The body.</param>
-        public void Initialize(IPhysicsBody body) {
+        public void Initialize(IPhysicsBodyComponent body) {
             this.Body = body;
             this.Reset();
         }

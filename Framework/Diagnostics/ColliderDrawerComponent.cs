@@ -8,7 +8,7 @@
     /// Draws a collider.
     /// </summary>
     public sealed class ColliderDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
-        private readonly List<IPhysicsBody> _bodies = new List<IPhysicsBody>();
+        private readonly List<IPhysicsBodyComponent> _bodies = new List<IPhysicsBodyComponent>();
         private BoundingArea _boundingArea;
 
         /// <inheritdoc />
@@ -42,7 +42,7 @@
 
         public void Update(FrameTime frameTime, InputState inputState) {
             this._bodies.Clear();
-            this._bodies.AddRange(this.Entity.Components.OfType<IPhysicsBody>().Where(x => !x.BoundingArea.IsEmpty).ToList());
+            this._bodies.AddRange(this.Entity.Components.OfType<IPhysicsBodyComponent>().Where(x => !x.BoundingArea.IsEmpty).ToList());
             this._boundingArea = BoundingArea.Combine(this._bodies.Select(x => x.BoundingArea).ToArray());
         }
     }

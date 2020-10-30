@@ -45,7 +45,7 @@
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
             var circleEntity = scene.AddChild();
-            var circleBody = circleEntity.AddComponent<DynamicPhysicsBody>();
+            var circleBody = circleEntity.AddComponent<DynamicPhysicsBodyComponent>();
             circleEntity.LocalPosition -= new Vector2(0f, 3f);
             circleBody.IsKinematic = true;
             circleBody.Mass = 3f;
@@ -59,7 +59,7 @@
                 for (var x = 0; x < 4; x++) {
                     var smallCircleEntity = scene.AddChild();
                     smallCircleEntity.Name = $"small circle ({x}, {y})";
-                    var smallCircleBody = smallCircleEntity.AddComponent<DynamicPhysicsBody>();
+                    var smallCircleBody = smallCircleEntity.AddComponent<DynamicPhysicsBodyComponent>();
                     smallCircleEntity.LocalPosition -= new Vector2(-3 + x, -1f + y);
                     smallCircleBody.IsKinematic = true;
                     smallCircleBody.Mass = 1f;
@@ -73,7 +73,7 @@
             }
 
             var rectangleEntity = scene.AddChild();
-            var rectangleBody = rectangleEntity.AddComponent<SimplePhysicsBody>();
+            var rectangleBody = rectangleEntity.AddComponent<SimplePhysicsBodyComponent>();
             rectangleBody.Collider = PolygonCollider.CreateRectangle(10f, 1f);
             rectangleBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             rectangleEntity.LocalPosition -= new Vector2(0f, 4f);
@@ -82,7 +82,7 @@
             rectangleDrawer.LineThickness = 1f;
 
             var angleEntity1 = scene.AddChild();
-            var angleBody1 = angleEntity1.AddComponent<SimplePhysicsBody>();
+            var angleBody1 = angleEntity1.AddComponent<SimplePhysicsBodyComponent>();
             angleBody1.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(-5f, -3.5f));
             angleBody1.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer1 = angleEntity1.AddComponent<ColliderDrawerComponent>();
@@ -90,7 +90,7 @@
             angleDrawer1.LineThickness = 1f;
 
             var angleEntity2 = scene.AddChild();
-            var angleBody2 = angleEntity2.AddComponent<SimplePhysicsBody>();
+            var angleBody2 = angleEntity2.AddComponent<SimplePhysicsBodyComponent>();
             angleBody2.Collider = new LineCollider(new Vector2(8f, 4f), new Vector2(5f, -3.5f));
             angleBody2.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var angleDrawer2 = angleEntity2.AddComponent<ColliderDrawerComponent>();
@@ -98,7 +98,7 @@
             angleDrawer2.LineThickness = 1f;
 
             var lineEntity = scene.AddChild();
-            var lineBody = lineEntity.AddComponent<SimplePhysicsBody>();
+            var lineBody = lineEntity.AddComponent<SimplePhysicsBodyComponent>();
             lineBody.Collider = new LineCollider(new Vector2(-8f, 4f), new Vector2(8f, 4f));
             lineBody.PhysicsMaterial = new PhysicsMaterial(0.5f, 1f);
             var lineDrawer = lineEntity.AddComponent<ColliderDrawerComponent>();
@@ -106,7 +106,7 @@
             lineDrawer.LineThickness = 1f;
 
             var triggerEntity = scene.AddChild();
-            var triggerBody = triggerEntity.AddComponent<SimplePhysicsBody>();
+            var triggerBody = triggerEntity.AddComponent<SimplePhysicsBodyComponent>();
             triggerBody.Collider = PolygonCollider.CreateRectangle(2f, 2f);
             triggerEntity.LocalPosition += new Vector2(2f, 2.5f);
             triggerBody.IsTrigger = true;

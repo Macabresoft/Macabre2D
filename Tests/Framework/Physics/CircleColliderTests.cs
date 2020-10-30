@@ -14,8 +14,8 @@
         [TestCase(-0.5f, 0f, 1f, 0f, 0f, 1f, true, TestName = "Circle to Circle Collision - Left Collision")]
         [TestCase(3f, 3f, 1f, 0f, 0f, 1f, false, TestName = "Circle to Circle Collision - No Collision")]
         public static void CircleCollider_CollidesWithCircleTest(float x1, float y1, float r1, float x2, float y2, float r2, bool collisionOccured) {
-            using var circleBody1 = new DynamicPhysicsBody();
-            using var circleBody2 = new DynamicPhysicsBody();
+            using var circleBody1 = new DynamicPhysicsBodyComponent();
+            using var circleBody2 = new DynamicPhysicsBodyComponent();
             circleBody1.Initialize(new GameEntity());
             circleBody2.Initialize(new GameEntity());
 
@@ -58,8 +58,8 @@
         [TestCase(3f, 3f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Circle to Quad Collision - No Collision")]
         [TestCase(0f, -130f, 50f, 0f, -200f, 500f, 50f, true, TestName = "Circle to Quad Collision - Physics Test Failure")]
         public static void CircleCollider_CollidesWithQuadTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool collisionOccured) {
-            using var circleBody = new DynamicPhysicsBody();
-            using var quadBody = new DynamicPhysicsBody();
+            using var circleBody = new DynamicPhysicsBodyComponent();
+            using var quadBody = new DynamicPhysicsBodyComponent();
             circleBody.Initialize(new GameEntity());
             quadBody.Initialize(new GameEntity());
 
@@ -102,8 +102,8 @@
         [TestCase(0f, 0f, 1f, 3f, 3f, 1f, false, TestName = "Circle Contains Circle - Outside")]
         [TestCase(0f, 0f, 1f, 2f, 0f, 1f, false, TestName = "Circle Contains Circle - Edges Touch")]
         public static void CircleCollider_ContainsCircleTest(float x1, float y1, float r1, float x2, float y2, float r2, bool shouldContain) {
-            using var circleBody1 = new DynamicPhysicsBody();
-            using var circleBody2 = new DynamicPhysicsBody();
+            using var circleBody1 = new DynamicPhysicsBodyComponent();
+            using var circleBody2 = new DynamicPhysicsBodyComponent();
             circleBody1.Initialize(new GameEntity());
             circleBody2.Initialize(new GameEntity());
 
@@ -124,7 +124,7 @@
         [TestCase(0f, 0f, 1f, 1f, 1f, false, TestName = "Circle Contains Point - Point is Outside")]
         [TestCase(0f, 0f, 1f, 100f, 100f, false, TestName = "Circle Contains Point - Point is Way Outside")]
         public static void CircleCollider_ContainsPointTest(float x1, float y1, float r1, float x2, float y2, bool shouldContain) {
-            using var circleBody = new DynamicPhysicsBody();
+            using var circleBody = new DynamicPhysicsBodyComponent();
             circleBody.Initialize(new GameEntity());
             circleBody.Entity.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);
@@ -141,8 +141,8 @@
         [TestCase(0f, 0f, 1f, 3f, 3f, 1f, 1f, false, TestName = "Circle Contains Quad - Outside")]
         [TestCase(0f, 0f, 1f, 2f, 0f, 2f, 2f, false, TestName = "Circle Contains Quad - Edges Touch")]
         public static void CircleCollider_ContainsQuadTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool shouldContain) {
-            using var circleBody = new DynamicPhysicsBody();
-            using var quadBody = new DynamicPhysicsBody();
+            using var circleBody = new DynamicPhysicsBodyComponent();
+            using var quadBody = new DynamicPhysicsBodyComponent();
             circleBody.Initialize(new GameEntity());
             quadBody.Initialize(new GameEntity());
 
@@ -167,7 +167,7 @@
             float cx, float cy, float r,
             float rx, float ry, float directionX, float directionY, float distance,
             bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using var circleBody = new DynamicPhysicsBody();
+            using var circleBody = new DynamicPhysicsBodyComponent();
             circleBody.Entity.SetWorldPosition(new Vector2(cx, cy));
             circleBody.Collider = new CircleCollider(r);
 

@@ -42,7 +42,7 @@
                         firstBody.Velocity = massRatio * firstReflection + averageMagnitude * inverseMassRatio * e.Normal;
                         otherBody.Velocity = inverseMassRatio * otherReflection + averageMagnitude * massRatio * -e.Normal;
                     }
-                    else if (e.SecondCollider.Body is IPhysicsBody secondBody) {
+                    else if (e.SecondCollider.Body is IPhysicsBodyComponent secondBody) {
                         firstBody.Velocity = this.GetNewVelocity(firstBody, secondBody, e.Normal, normalPerpindicular, timeStep);
                     }
                 }
@@ -66,7 +66,7 @@
             return velocity;
         }
 
-        private Vector2 GetNewVelocity(IDynamicPhysicsBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
+        private Vector2 GetNewVelocity(IDynamicPhysicsBody firstBody, IPhysicsBodyComponent otherBody, Vector2 normal, Vector2 normalPerpindicular, float timeStep) {
             if (this._service == null) {
                 return firstBody.Velocity;
             }

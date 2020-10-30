@@ -8,7 +8,7 @@
     /// <summary>
     /// Represents a physics body that handles interactions with <see cref="Collider" />.
     /// </summary>
-    public interface IPhysicsBody : IGameComponent, IBoundable {
+    public interface IPhysicsBodyComponent : IGameComponent, IBoundable {
 
         /// <summary>
         /// Occurs when a collision occurs involving this body.
@@ -57,9 +57,9 @@
     }
 
     /// <summary>
-    /// A base for components that implement <see cref="IPhysicsBody" />.
+    /// A base for components that implement <see cref="IPhysicsBodyComponent" />.
     /// </summary>
-    public abstract class PhysicsBody : GameComponent, IPhysicsBody {
+    public abstract class PhysicsBodyComponent : GameComponent, IPhysicsBodyComponent {
 
         [DataMember]
         private int _updateOrder;

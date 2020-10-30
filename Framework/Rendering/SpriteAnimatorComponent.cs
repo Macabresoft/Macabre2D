@@ -7,9 +7,9 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Animates sprites at the specified framerate;
+    /// Animates sprites at the specified framerate.
     /// </summary>
-    public class SpriteAnimationComponent : SpriteRenderComponent, IGameUpdateableComponent {
+    public class SpriteAnimatorComponent : SpriteRenderComponent, IGameUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
         private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
@@ -20,9 +20,9 @@
         private uint _millisecondsPerFrame;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpriteAnimationComponent" /> class.
+        /// Initializes a new instance of the <see cref="SpriteAnimatorComponent" /> class.
         /// </summary>
-        public SpriteAnimationComponent() : base() {
+        public SpriteAnimatorComponent() : base() {
         }
 
         /// <summary>

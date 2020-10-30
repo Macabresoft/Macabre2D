@@ -3,13 +3,13 @@
     using Macabresoft.Macabre2D.Framework;
 
     public sealed class TriggerListener : Framework.GameComponent {
-        private IPhysicsBody _body;
+        private IPhysicsBodyComponent _body;
         private ColliderDrawerComponent _drawer;
 
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
-            if (this.Entity.TryGetComponent<IPhysicsBody>(out var body) && body != null) {
+            if (this.Entity.TryGetComponent<IPhysicsBodyComponent>(out var body) && body != null) {
                 this._body = body;
             }
 

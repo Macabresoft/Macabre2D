@@ -11,7 +11,7 @@
     /// <summary>
     /// A component which maps <see cref="AutoTileSet" /> onto a <see cref="TileGrid" />.
     /// </summary>
-    public sealed class AutoTileMap : RenderableTileMap, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
+    public sealed class AutoTileMap : RenderableTileMapComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
