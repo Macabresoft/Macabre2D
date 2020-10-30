@@ -23,6 +23,7 @@
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraScroller>();
             var camera = cameraEntity.AddComponent<CameraComponent>();
+            camera.LayersToRender = Layers.Default;
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraEntity.AddComponent<MovingDot>();
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
@@ -81,7 +82,11 @@
             textRendererBoundingArea.Color = Color.Red;
             textRendererBoundingArea.LineThickness = 3f;
 
-            var frameRateDisplayEntity = cameraEntity.AddChild();
+            var secondCameraEntity = scene.AddChild();
+            var secondCamera = secondCameraEntity.AddComponent<CameraComponent>();
+            secondCamera.LayersToRender = Layers.Layer03;
+            var frameRateDisplayEntity = secondCameraEntity.AddChild();
+            frameRateDisplayEntity.Layers = Layers.Layer03;
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
             frameRateDisplay.Font = new Font(fontId);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
