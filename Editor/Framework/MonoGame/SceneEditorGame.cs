@@ -12,7 +12,7 @@
         private IGameScene _sceneToEdit = GameScene.Empty;
 
         /// <inheritdoc />
-        public IGameCameraComponent Camera { get; private set; }
+        public ICameraComponent Camera { get; private set; }
 
         /// <inheritdoc />
         public IGameScene SceneToEdit {

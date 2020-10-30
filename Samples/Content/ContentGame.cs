@@ -44,7 +44,7 @@
             this.AssetManager.SetMapping(whiteSquareId, "WhiteSquare");
 
             var animatedEntity = scene.AddChild();
-            var spriteAnimator = animatedEntity.AddComponent<SpriteAnimationComponent>();
+            var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
             spriteAnimator.FrameRate = 4;
             spriteAnimator.RenderOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -146,7 +146,7 @@
             var binaryTileMapEntity = this.Scene.AddChild();
             var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
             gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
-            var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMap>();
+            var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
@@ -166,7 +166,7 @@
             binaryTileMapBoundingArea.LineThickness = 3f;
 
             foreach (var child in this.Scene.Children) {
-                if (child.TryGetComponent<SpriteAnimationComponent>(out var spriteAnimator)) {
+                if (child.TryGetComponent<SpriteAnimatorComponent>(out var spriteAnimator)) {
                     var spriteAnimation = new SpriteAnimation();
                     var coloredSquaresId = this.AssetManager.GetId("ColoredSquares");
                     var step = spriteAnimation.AddStep();

@@ -11,7 +11,7 @@
     /// <summary>
     /// A tile map that chooses a random tile from the provided collection to display in each active location.
     /// </summary>
-    public sealed class RandomTileMap : RenderableTileMap, IAssetComponent<RandomTileSet>, IAssetComponent<Sprite> {
+    public sealed class RandomTileMapComponent : RenderableTileMapComponent, IAssetComponent<RandomTileSet>, IAssetComponent<Sprite> {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Point, ushort> _activeTileToIndex = new Dictionary<Point, ushort>();
@@ -22,9 +22,9 @@
         private RandomTileSet? _tileSet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RandomTileMap" /> class.
+        /// Initializes a new instance of the <see cref="RandomTileMapComponent" /> class.
         /// </summary>
-        public RandomTileMap() : base() {
+        public RandomTileMapComponent() : base() {
         }
 
         /// <inheritdoc />

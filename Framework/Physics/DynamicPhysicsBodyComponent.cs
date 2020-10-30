@@ -31,7 +31,7 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
-    public sealed class DynamicPhysicsBodyComponent : SimplePhysicsBody, IDynamicPhysicsBody {
+    public sealed class DynamicPhysicsBodyComponent : SimplePhysicsBodyComponent, IDynamicPhysicsBody {
         private bool _isKinematic;
         private float _mass = 1f;
         private Vector2 _velocity;

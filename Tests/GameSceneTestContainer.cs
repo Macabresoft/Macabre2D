@@ -27,7 +27,7 @@
             this.CameraComponent = this.CameraEntity.AddComponent<CameraComponent>();
             this.UpdateableAndRenderableEntity = this.Scene.AddChild();
             this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
-            this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimationComponent>();
+            this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimatorComponent>();
 
             if (initializationMode == InitializationMode.After) {
                 this.Scene.Initialize(Substitute.For<IGame>());

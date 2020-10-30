@@ -13,7 +13,7 @@
         /// Gets the camera.
         /// </summary>
         /// <value>The camera.</value>
-        public IGameCameraComponent Camera { get; }
+        public ICameraComponent Camera { get; }
 
         /// <summary>
         /// Gets or sets the scene to edit.

@@ -6,7 +6,7 @@
     /// <summary>
     /// A base renderable tile map.
     /// </summary>
-    public abstract class RenderableTileMap : TileableComponent, IGameRenderableComponent {
+    public abstract class RenderableTileMapComponent : TileableComponent, IGameRenderableComponent {
 
         [DataMember]
         private bool _isVisible = true;

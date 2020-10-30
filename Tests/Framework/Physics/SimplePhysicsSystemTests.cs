@@ -30,7 +30,7 @@
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var circleEntity = scene.AddChild();
-            using var circleBody = circleEntity.AddComponent<SimplePhysicsBody>();
+            using var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
             circleEntity.SetWorldPosition(Vector2.Zero);
             circleBody.Collider = new CircleCollider(1f);
             circleEntity.Layers = Layers.Layer12;
@@ -53,7 +53,7 @@
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
             var lineEntity = scene.AddChild();
-            using var lineBody = lineEntity.AddComponent<SimplePhysicsBody>();
+            using var lineBody = lineEntity.AddComponent<SimplePhysicsBodyComponent>();
             lineEntity.SetWorldPosition(Vector2.Zero);
             lineBody.Collider = new LineCollider(new Vector2(-1f, 0f), new Vector2(1f, 0f));
             lineEntity.Layers = Layers.Default;

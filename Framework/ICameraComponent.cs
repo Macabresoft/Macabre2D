@@ -7,7 +7,7 @@
     /// Interface for a camera component which tells the engine where to render any <see
     /// cref="IGameRenderableComponent" />.
     /// </summary>
-    public interface IGameCameraComponent : IGameComponent, IBoundable {
+    public interface ICameraComponent : IGameComponent, IBoundable {
 
         /// <summary>
         /// Gets the layers to render.
