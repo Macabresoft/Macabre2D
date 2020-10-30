@@ -9,19 +9,24 @@
     internal class GameSceneTestContainer {
 
         public GameSceneTestContainer(InitializationMode initializationMode) {
-            this.Scene = new GameScene();
+            this.Scene = new GameScene() {
+                Name = "Test Scene"
+            };
 
             if (initializationMode == InitializationMode.Before) {
                 this.Scene.Initialize(Substitute.For<IGame>());
             }
 
             this.RenderableEntity = this.Scene.AddChild();
+            this.RenderableEntity.Name = $"{nameof(this.RenderableEntity)} / {nameof(this.UpdateableEntity)}";
             this.RenderableComponent = this.RenderableEntity.AddComponent<SpriteRenderComponent>();
             this.UpdateableEntity = this.RenderableEntity;
             this.UpdateableComponent = this.UpdateableEntity.AddComponent<FrameRateComponent>();
             this.CameraEntity = this.UpdateableEntity.AddChild();
+            this.CameraEntity.Name = nameof(this.CameraEntity);
             this.CameraComponent = this.CameraEntity.AddComponent<CameraComponent>();
             this.UpdateableAndRenderableEntity = this.Scene.AddChild();
+            this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
             this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimationComponent>();
 
             if (initializationMode == InitializationMode.After) {

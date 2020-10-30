@@ -6,21 +6,21 @@
     public sealed class GameSceneTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void GameScene_RegistersComponent_WhenAddedAfterInitialization() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
             test.AssertExistanceOfComponents(true);
         }
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void GameScene_RegistersComponent_WhenInitialized() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
             test.AssertExistanceOfComponents(true);
         }
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void GameScene_UnregistersComponent_WhenRemoved() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
 

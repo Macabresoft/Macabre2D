@@ -40,6 +40,8 @@
             Assert.AreEqual(raycastHit, result);
         }
 
+        [Test]
+        [Category("Unit Tests")]
         [TestCase(0f, 0.6499903f, 0f, -1f, 0.666667f, true, TestName = "Raycast to Line Collider - Collision #1")]
         public static void RaycastLineTest(float raycastX, float raycastY, float directionX, float directionY, float distance, bool raycastHit) {
             var scene = new GameScene();

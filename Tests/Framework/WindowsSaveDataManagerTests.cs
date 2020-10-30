@@ -13,7 +13,7 @@
         private const string SaveDataFileName = "Test.m2dsave";
 
         [Test]
-        [Category("Integration Test")]
+        [Category("Integration Tests")]
         public static void WindowsSaveDataManager_DeleteTest() {
             var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
@@ -34,7 +34,7 @@
         }
 
         [Test]
-        [Category("Integration Test")]
+        [Category("Integration Tests")]
         public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
             var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
@@ -52,7 +52,7 @@
         }
 
         [Test]
-        [Category("Integration Test")]
+        [Category("Integration Tests")]
         public static void WindowsSaveDataManager_OverwriteSaveTest() {
             var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
@@ -79,7 +79,7 @@
         }
 
         [Test]
-        [Category("Integration Test")]
+        [Category("Integration Tests")]
         public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
             var saveDataManager = new WindowsSaveDataManager();
             ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;

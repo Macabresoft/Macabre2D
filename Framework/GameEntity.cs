@@ -306,26 +306,22 @@
 
         /// <inheritdoc />
         public bool IsDescendentOf(IGameEntity entity) {
-            var result = false;
-
-            if (entity != null) {
-                result = entity == this.Parent || (this.Parent?.IsDescendentOf(entity) == true);
-            }
-
-            return result;
+            return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
         }
 
         /// <inheritdoc />
         public void OnRemovedFromSceneTree() {
+            var scene = this.Scene;
+            this.Scene = GameScene.Empty;
+            this.Parent = GameEntity.Empty;
+
             foreach (var component in this._components) {
-                this.Scene.UnregisterComponent(component);
+                scene.UnregisterComponent(component);
             }
 
             foreach (var child in this._children) {
                 child.OnRemovedFromSceneTree();
             }
-
-            this.Scene = GameScene.Empty;
         }
 
         /// <inheritdoc />

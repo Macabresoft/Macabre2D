@@ -10,7 +10,7 @@
     public static class SerializerTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void Serializer_GameSettingsSerializeTest() {
             var gameSettings = new GameSettings() {
                 ErrorSpritesColor = Color.Red,

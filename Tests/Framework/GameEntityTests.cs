@@ -9,7 +9,16 @@
     public static class GameEntityTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
+        public static void GameEntity_RegistersComponent_WhenMoved() {
+            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
+            test.Scene.RemoveChild(test.RenderableEntity);
+            test.UpdateableAndRenderableEntity.AddChild(test.RenderableEntity);
+            test.AssertExistanceOfComponents(true);
+        }
+
+        [Test]
+        [Category("Unit Tests")]
         public static void GameEntity_UnregistersComponent_WhenRemovedFromSceneTree() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
 

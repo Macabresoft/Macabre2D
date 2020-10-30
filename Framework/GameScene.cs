@@ -378,7 +378,7 @@
             }
         }
 
-        internal class EmptyGameScene : EmptyGameEntity, IGameScene {
+        private class EmptyGameScene : EmptyGameEntity, IGameScene {
 
             /// <inheritdoc />
             public event EventHandler<IGameComponent>? ComponentRegistered;

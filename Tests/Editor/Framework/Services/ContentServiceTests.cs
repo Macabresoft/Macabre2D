@@ -18,7 +18,7 @@
         private const string SkullXnbName = "skull.xnb";
 
         [Test]
-        [Category("Integration Test")]
+        [Category("Integration Tests")]
         public void Build_ShouldRunMGCB() {
             var service = new ContentService();
             var contentDirectory = Path.Combine(

@@ -8,7 +8,7 @@
     public static class VectorExtensionsTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         [TestCase(1f, 0f, 0f, 1f, 90f)]
         [TestCase(1f, 0f, -1f, 0f, 180f)]
         [TestCase(1f, 0f, 0f, -1f, 270f)]

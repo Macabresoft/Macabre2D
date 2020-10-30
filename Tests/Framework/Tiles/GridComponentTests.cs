@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Tiles {
     public static class GridComponentTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void GridComponent_ScaleTest() {
             var entity = new GameEntity();
             using var gridComponent = entity.AddComponent<GridComponent>();

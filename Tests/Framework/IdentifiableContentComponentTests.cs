@@ -8,7 +8,7 @@
     public static class IdentifiableContentComponentTests {
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void IdentifiableContentComponent_AudioPlayerTest() {
             var audioPlayer = new AudioPlayerComponent();
             var audioClip = new AudioClip();
@@ -20,7 +20,7 @@
         }
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void IdentifiableContentComponent_SpriteRendererTest() {
             var spriteRenderer = new SpriteRenderComponent();
             var sprite = new Sprite(Guid.NewGuid());
@@ -32,7 +32,7 @@
         }
 
         [Test]
-        [Category("Unit Test")]
+        [Category("Unit Tests")]
         public static void IdentifiableContentComponent_TextRendererTest() {
             var textRenderer = new TextRenderComponent();
             var font = new Font(Guid.NewGuid());
