@@ -2,11 +2,12 @@
 
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
+    using System.ComponentModel;
 
     /// <summary>
     /// Interface for a service which handles the <see cref="IGameScene" /> open in the editor.
     /// </summary>
-    public interface ISceneService {
+    public interface ISceneService : INotifyPropertyChanged {
 
         /// <summary>
         /// Gets the current scene.
@@ -25,8 +26,6 @@
     /// <summary>
     /// A service which handles the <see cref="IGameScene" /> open in the editor.
     /// </summary>
-    /// <seealso cref="ReactiveUI.ReactiveObject" />
-    /// <seealso cref="Macabresoft.Macabresoft.Macabre2D.Editor.Framework.Services.ISceneService" />
     public sealed class SceneService : ReactiveObject, ISceneService {
         private IGameScene _currentScene;
 

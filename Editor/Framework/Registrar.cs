@@ -27,7 +27,7 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterTypes(this IUnityContainer container) {
-            container.RegisterType<ISceneEditor, SceneEditorGame>(new PerResolveLifetimeManager());
+            container.RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
             return container;
         }
     }
