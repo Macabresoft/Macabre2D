@@ -12,8 +12,10 @@
         public IUnityContainer Container { get; private set; }
 
         public override void Initialize() {
-            this.Container = new UnityContainer();
-            this.Container.RegisterServices();
+            this.Container = new UnityContainer()
+                .RegisterServices()
+                .RegisterTypes();
+
             AvaloniaXamlLoader.Load(this);
         }
 
