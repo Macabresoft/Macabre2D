@@ -4,6 +4,7 @@
     using Avalonia.Controls;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using ReactiveUI;
     using System;
     using System.ComponentModel;
 
@@ -87,7 +88,7 @@
     /// <summary>
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
-    public abstract class MonoGameViewModel : NotifyPropertyChanged, IMonoGameViewModel {
+    public abstract class MonoGameViewModel : ReactiveObject, IMonoGameViewModel {
 
         private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
             BackBufferWidth = 1,

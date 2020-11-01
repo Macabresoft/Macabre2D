@@ -1,9 +1,16 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Macabresoft.Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView">
+             xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.Editor.AvaloniaInterop;assembly=Macabre2D.Editor.AvaloniaInterop"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView"
+             Name="_view">
     <Grid RowDefinitions="Auto, *">
         <Grid Grid.Row="0"
               Height="16">
         </Grid>
+
+        <monoGame:MonoGameControl Grid.Row="1"
+                                  DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch" />
     </Grid>
 </UserControl>

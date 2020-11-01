@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Macabresoft.Macabresoft.Macabre2D.Editor.UI</RootNamespace>
-    <AssemblyName>Macabre2D.Editor.UI.UI.UI</AssemblyName>
+    <RootNamespace>Macabresoft.Macabre2D.Editor.UI</RootNamespace>
+    <AssemblyName>Macabre2D.Editor.UI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />

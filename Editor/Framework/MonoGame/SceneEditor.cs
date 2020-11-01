@@ -24,8 +24,7 @@
     /// Macabre2D editor.
     /// </summary>
     public class SceneEditor : AvaloniaGame, ISceneEditor {
-        public readonly ISceneService _sceneService;
-        private IGameScene _sceneToEdit = GameScene.Empty;
+        private readonly ISceneService _sceneService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
@@ -41,7 +40,7 @@
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
-                if (!GameScene.IsNullOrEmpty(this._sceneToEdit)) {
+                if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                     this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
@@ -66,7 +65,7 @@
 
         private IGameScene CreateScene() {
             var scene = new GameScene();
-            scene.AddSystem<EditorRenderSystem>();
+            scene.AddSystem(new EditorRenderSystem(this._sceneService));
             scene.AddSystem<UpdateSystem>();
             this.Camera = scene.AddChild().AddComponent<CameraComponent>();
             return scene;

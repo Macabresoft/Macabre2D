@@ -29,6 +29,9 @@ bld/
 # VS Code cache/options directory
 .vscode/
 
+# Jet Brains Rider cache/options directory
+.idea/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*

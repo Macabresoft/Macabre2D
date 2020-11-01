@@ -4,7 +4,6 @@
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Editor.Framework;
-    using Macabresoft.Macabre2D.Editor.Framework.ViewModels;
     using Macabresoft.Macabre2D.Editor.UI.Views;
     using Unity;
 
@@ -16,14 +15,14 @@
                 .RegisterServices()
                 .RegisterTypes();
 
+            Resolver.Container = this.Container;
+
             AvaloniaXamlLoader.Load(this);
         }
 
         public override void OnFrameworkInitializationCompleted() {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-                desktop.MainWindow = new MainWindow {
-                    DataContext = new MainWindowViewModel(),
-                };
+                desktop.MainWindow = new MainWindow();
             }
 
             base.OnFrameworkInitializationCompleted();
