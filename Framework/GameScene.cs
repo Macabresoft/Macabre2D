@@ -191,6 +191,7 @@
                     (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
                     nameof(IGameUpdateableComponent.UpdateOrder));
 
+        private Color _backgroundColor = DefinedColors.MacabresoftBlack;
         private bool _isBusy;
         private bool _isInitialized = false;
 
@@ -205,7 +206,15 @@
 
         /// <inheritdoc />
         [DataMember]
-        public Color BackgroundColor { get; set; } = new Color(30, 15, 15);
+        public Color BackgroundColor {
+            get {
+                return this._backgroundColor;
+            }
+
+            set {
+                this.Set(ref this._backgroundColor, value);
+            }
+        }
 
         /// <inheritdoc />
         public IReadOnlyCollection<ICameraComponent> CameraComponents => this._cameraComponents;

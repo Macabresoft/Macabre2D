@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
 
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -32,6 +33,10 @@
         /// <param name="sceneService">The scene service.</param>
         public SceneEditor(ISceneService sceneService) {
             this._sceneService = sceneService;
+
+            // TODO: remove the following code once scene loading exists
+            this._sceneService.CreateNewScene<GameScene>();
+            this._sceneService.CurrentScene.BackgroundColor = DefinedColors.MacabresoftPurple;
         }
 
         /// <inheritdoc />
@@ -41,11 +46,12 @@
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
                 if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                    this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
                     this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
                 else {
-                    this.GraphicsDevice.Clear(Color.Black);
+                    this.GraphicsDevice.Clear(DefinedColors.MacabresoftBlack);
                 }
             }
         }
@@ -67,7 +73,10 @@
             var scene = new GameScene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             scene.AddSystem<UpdateSystem>();
-            this.Camera = scene.AddChild().AddComponent<CameraComponent>();
+            var cameraEntity = scene.AddChild();
+            this.Camera = cameraEntity.AddComponent<CameraComponent>();
+            //cameraEntity.AddComponent<CameraControlComponent>();
+            cameraEntity.AddComponent<EditorGridComponent>();
             return scene;
         }
 

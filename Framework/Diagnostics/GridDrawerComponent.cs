@@ -18,6 +18,38 @@
         /// <value>The grid.</value>
         public TileGrid Grid { get; set; }
 
+        /// <summary>
+        /// Gets the grid positions.
+        /// </summary>
+        /// <param name="lowerLimit">The lower limit.</param>
+        /// <param name="upperLimit">The upper limit.</param>
+        /// <param name="stepSize">Size of the step.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>The grid positions.</returns>
+        public static IEnumerable<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize, float offset) {
+            var result = new List<float>();
+
+            if (stepSize > 0f) {
+                if (offset < lowerLimit) {
+                    while (offset + stepSize < lowerLimit) {
+                        offset += stepSize;
+                    }
+                }
+                else if (offset > lowerLimit) {
+                    while (offset - stepSize > lowerLimit) {
+                        offset -= stepSize;
+                    }
+                }
+
+                while (offset <= upperLimit) {
+                    result.Add(offset);
+                    offset += stepSize;
+                }
+            }
+
+            return result;
+        }
+
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer == null) {
@@ -47,30 +79,6 @@
                         lineThickness);
                 }
             }
-        }
-
-        private static List<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize, float offset) {
-            var result = new List<float>();
-
-            if (stepSize > 0f) {
-                if (offset < lowerLimit) {
-                    while (offset + stepSize < lowerLimit) {
-                        offset += stepSize;
-                    }
-                }
-                else if (offset > lowerLimit) {
-                    while (offset - stepSize > lowerLimit) {
-                        offset -= stepSize;
-                    }
-                }
-
-                while (offset <= upperLimit) {
-                    result.Add(offset);
-                    offset += stepSize;
-                }
-            }
-
-            return result;
         }
     }
 }
