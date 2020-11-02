@@ -3,8 +3,8 @@
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Framework.Models.Content;
-    using Macabresoft.Macabre2D.Editor.Framework.Services;
+    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
     using NUnit.Framework;
     using System.IO;
 

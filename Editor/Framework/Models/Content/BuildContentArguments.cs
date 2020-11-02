@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 
-namespace Macabresoft.Macabre2D.Editor.Framework.Models.Content {
+namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
 
     /// <summary>
     /// Arguments for building content using MGCB.

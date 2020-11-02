@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework {
+﻿namespace Macabresoft.Macabre2D.Editor.Library {
 
-    using Macabresoft.Macabre2D.Editor.Framework.MonoGame;
-    using Macabresoft.Macabre2D.Editor.Framework.Services;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
     using Unity;
     using Unity.Lifetime;
 

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework.Services {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
 
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;

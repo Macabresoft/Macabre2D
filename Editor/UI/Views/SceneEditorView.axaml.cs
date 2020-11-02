@@ -2,7 +2,7 @@
 
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Editor.Framework.ViewModels;
+    using Macabresoft.Macabre2D.Editor.Library.ViewModels;
 
     public class SceneEditorView : UserControl {
 

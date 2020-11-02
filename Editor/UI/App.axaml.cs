@@ -3,7 +3,7 @@
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Editor.Framework;
+    using Macabresoft.Macabre2D.Editor.Library;
     using Macabresoft.Macabre2D.Editor.UI.Views;
     using Unity;
 

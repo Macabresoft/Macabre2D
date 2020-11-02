@@ -1,8 +1,8 @@
-﻿using Macabresoft.Macabre2D.Editor.Framework.Models.Content;
+﻿using Macabresoft.Macabre2D.Editor.Library.Models.Content;
 using System.Diagnostics;
 using System.IO;
 
-namespace Macabresoft.Macabre2D.Editor.Framework.Services {
+namespace Macabresoft.Macabre2D.Editor.Library.Services {
 
     /// <summary>
     /// Interface for a service that handles MonoGame content for the editor.

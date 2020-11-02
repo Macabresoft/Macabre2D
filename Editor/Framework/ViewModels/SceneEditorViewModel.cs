@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework.ViewModels {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
 
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Framework.MonoGame;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
     using System;

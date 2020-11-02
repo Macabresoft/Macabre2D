@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework.MonoGame {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
 
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Framework.Services;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System.ComponentModel;

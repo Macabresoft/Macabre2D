@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.AvaloniaW
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editor", "Editor", "{286A8E80-F4CC-4212-B9BD-54FCC61B7F8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Editor.Framework", "Editor\Framework\Macabre2D.Editor.Framework.csproj", "{A3560F2F-786D-4A53-A2A2-3A6CCE1C891C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Editor.Library", "Editor\Framework\Macabre2D.Editor.Library.csproj", "{A3560F2F-786D-4A53-A2A2-3A6CCE1C891C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Editor.UI", "Editor\UI\Macabre2D.Editor.UI.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
 EndProject

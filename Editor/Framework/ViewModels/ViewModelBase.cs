@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Framework.ViewModels {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
 
     using ReactiveUI;
 
