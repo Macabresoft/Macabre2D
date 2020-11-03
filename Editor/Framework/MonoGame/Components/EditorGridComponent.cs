@@ -10,14 +10,17 @@
     /// Draws a grid for the editor.
     /// </summary>
     public sealed class EditorGridComponent : BaseDrawerComponent {
+        private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
         private CameraComponent _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorGridComponent" /> class.
         /// </summary>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        public EditorGridComponent(ISceneService sceneService) {
+        public EditorGridComponent(IEditorService editorService, ISceneService sceneService) {
+            this._editorService = editorService;
             this._sceneService = sceneService;
         }
 
@@ -45,6 +48,8 @@
                 throw new ArgumentNullException(nameof(this._camera));
             }
 
+            this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
+            this.IsVisible = this._editorService.ShowGrid;
             this.ResetColor();
         }
 
@@ -76,22 +81,48 @@
             var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
             var color = this.Color * alpha;
             foreach (var column in columns) {
-                this.PrimitiveDrawer.DrawLine(
-                    spriteBatch,
-                    new Vector2(column, boundingArea.Minimum.Y),
-                    new Vector2(column, boundingArea.Maximum.Y),
-                    color,
-                    lineThickness);
+                if (column == 0f) {
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch,
+                        new Vector2(column, boundingArea.Minimum.Y),
+                        new Vector2(column, boundingArea.Maximum.Y),
+                        Color.Lerp(this._editorService.YAxisColor, this.Color, 0.25f),
+                        lineThickness);
+                }
+                else {
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch,
+                        new Vector2(column, boundingArea.Minimum.Y),
+                        new Vector2(column, boundingArea.Maximum.Y),
+                        color,
+                        lineThickness);
+                }
             }
 
             var rows = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, gridSize, 0f);
             foreach (var row in rows) {
-                this.PrimitiveDrawer.DrawLine(
-                    spriteBatch,
-                    new Vector2(boundingArea.Minimum.X, row),
-                    new Vector2(boundingArea.Maximum.X, row),
-                    color,
-                    lineThickness);
+                if (row == 0f) {
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch,
+                        new Vector2(boundingArea.Minimum.X, row),
+                        new Vector2(boundingArea.Maximum.X, row),
+                        Color.Lerp(this._editorService.XAxisColor, this.Color, 0.1f),
+                        lineThickness);
+                }
+                else {
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch,
+                        new Vector2(boundingArea.Minimum.X, row),
+                        new Vector2(boundingArea.Maximum.X, row),
+                        color,
+                        lineThickness);
+                }
+            }
+        }
+
+        private void EditorService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IEditorService.ShowGrid)) {
+                this.IsVisible = this._editorService.ShowGrid;
             }
         }
 

@@ -17,6 +17,7 @@
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterServices(this IUnityContainer container) {
             container.RegisterType<IContentService, ContentService>(new SingletonLifetimeManager());
+            container.RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager());
             container.RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager());
             return container;
         }

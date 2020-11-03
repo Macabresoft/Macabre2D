@@ -25,13 +25,15 @@
     /// Macabre2D editor.
     /// </summary>
     public class SceneEditor : AvaloniaGame, ISceneEditor {
+        private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
-        public SceneEditor(ISceneService sceneService) {
+        public SceneEditor(IEditorService editorService, ISceneService sceneService) {
+            this._editorService = editorService;
             this._sceneService = sceneService;
 
             // TODO: remove the following code once scene loading exists
@@ -75,7 +77,7 @@
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             //cameraEntity.AddComponent<CameraControlComponent>();
-            cameraEntity.AddComponent(new EditorGridComponent(this._sceneService));
+            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             return scene;
         }
 
