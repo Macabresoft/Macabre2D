@@ -1,24 +1,43 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
 
+    using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
 
+    /// <summary>
+    /// Draws a grid for the editor.
+    /// </summary>
     public sealed class EditorGridComponent : BaseDrawerComponent {
+        private readonly ISceneService _sceneService;
         private CameraComponent _camera;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorGridComponent" /> class.
+        /// </summary>
+        /// <param name="sceneService">The scene service.</param>
+        public EditorGridComponent(ISceneService sceneService) {
+            this._sceneService = sceneService;
+        }
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea => _camera?.BoundingArea ?? BoundingArea.Empty;
 
+        /// <summary>
+        /// Gets or sets the size of the major grid.
+        /// </summary>
+        /// <value>The size of the major grid.</value>
         public byte MajorGridSize { get; set; } = 5;
+
+        /// <summary>
+        /// Gets or sets the number of divisions between major grid lines.
+        /// </summary>
+        /// <value>The number of divisions.</value>
         public byte NumberOfDivisions { get; set; } = 5;
 
+        /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
-            if (!GameScene.IsNullOrEmpty(this.Entity.Scene)) {
-                this.Entity.Scene.PropertyChanged -= this.Scene_PropertyChanged;
-            }
-
             base.Initialize(entity);
 
             this.UseDynamicLineThickness = true;
@@ -26,10 +45,10 @@
                 throw new ArgumentNullException(nameof(this._camera));
             }
 
-            this.Entity.Scene.PropertyChanged += this.Scene_PropertyChanged;
             this.ResetColor();
         }
 
+        /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer == null) {
                 return;
@@ -37,6 +56,10 @@
 
             if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 if (this.MajorGridSize > 0) {
+                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
+                        this.ResetColor();
+                    }
+
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
                     if (this.NumberOfDivisions > 0) {
@@ -73,7 +96,12 @@
         }
 
         private void ResetColor() {
-            this.Color = this.Entity.Scene.BackgroundColor.GetContrastingBlackOrWhite();
+            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                this.Color = this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
+            }
+            else {
+                this.Color = this.Entity.Scene.BackgroundColor.GetContrastingBlackOrWhite();
+            }
         }
 
         private void Scene_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

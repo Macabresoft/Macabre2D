@@ -46,7 +46,6 @@
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
                 if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
                     this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
@@ -76,7 +75,7 @@
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             //cameraEntity.AddComponent<CameraControlComponent>();
-            cameraEntity.AddComponent<EditorGridComponent>();
+            cameraEntity.AddComponent(new EditorGridComponent(this._sceneService));
             return scene;
         }
 
