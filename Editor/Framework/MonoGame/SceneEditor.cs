@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
-
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -12,7 +11,6 @@
     /// cref="IGameScene" /> easier.
     /// </summary>
     public interface ISceneEditor : IAvaloniaGame {
-
         /// <summary>
         /// Gets the camera.
         /// </summary>
@@ -76,7 +74,7 @@
             scene.AddSystem<UpdateSystem>();
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
-            //cameraEntity.AddComponent<CameraControlComponent>();
+            cameraEntity.AddComponent<CameraControlComponent>();
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             return scene;
         }

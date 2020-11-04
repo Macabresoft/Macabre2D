@@ -1,5 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+﻿using Macabresoft.Macabre2D.Framework;
+using ReactiveUI;
 
+namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
@@ -13,6 +15,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
 
@@ -20,13 +23,18 @@
     /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
     public sealed class MonoGameControl : Border, IDisposable {
+        private readonly Dictionary<StandardCursorType, Cursor> _cursorTypeToCursor = new Dictionary<StandardCursorType, Cursor>() {
+            {StandardCursorType.None, null}
+        };
+
         private readonly GameTime _gameTime = new GameTime();
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private WriteableBitmap _bitmap;
         private Microsoft.Xna.Framework.Color _currentBackground;
+        private bool _isDisposed;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
-        private bool _isResizeProcessing = false;
+        private bool _isResizeProcessing;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
         private IMonoGameViewModel _viewModel;
@@ -44,9 +52,6 @@
         ~MonoGameControl() {
             this.Dispose(false);
         }
-
-        /// <inheritdoc />
-        public bool IsDisposed { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() {
@@ -105,9 +110,11 @@
                     Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
                 }
 
-                Rect viewPort = new Rect(this.Bounds.Size);
+                var viewPort = new Rect(this.Bounds.Size);
+                var source = new Rect(this._bitmap.Size);
                 var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-                context.DrawImage(this._bitmap, viewPort, viewPort, interpolationMode);
+                context.DrawImage(this._bitmap, source, viewPort, interpolationMode);
+                // this._bitmap.Save(@"c:\temp\file.bmp");
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.MaxValue);
@@ -123,9 +130,14 @@
         protected override void OnDataContextChanged(EventArgs e) {
             base.OnDataContextChanged(e);
 
+            if (this._viewModel != null) {
+                this._viewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+            }
+
             this._viewModel = this.DataContext as IMonoGameViewModel;
 
             if (this._viewModel != null) {
+                this._viewModel.PropertyChanged += this.ViewModel_PropertyChanged;
                 this._currentBackground = this._viewModel.Game.Scene.BackgroundColor;
                 this.Background = this._currentBackground.ToAvaloniaBrush();
                 Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
@@ -151,12 +163,12 @@
         }
 
         private void Dispose(bool disposing) {
-            if (!this.IsDisposed) {
+            if (!this._isDisposed) {
                 if (disposing) {
                     this._viewModel?.Dispose();
                 }
 
-                this.IsDisposed = true;
+                this._isDisposed = true;
             }
         }
 
@@ -195,11 +207,11 @@
 
         private bool ShouldPerformResize() {
             return !this._isResizeProcessing &&
-                this.Bounds.Width > 0 &&
-                this.Bounds.Height > 0 &&
-                (this._bitmap == null ||
-                this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) ||
-                this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height));
+                   this.Bounds.Width > 0 &&
+                   this.Bounds.Height > 0 &&
+                   (this._bitmap == null ||
+                    this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) ||
+                    this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height));
         }
 
         private void Start() {
@@ -213,6 +225,17 @@
             window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
             this._stopwatch.Start();
             this._isInitialized = true;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IMonoGameViewModel.CursorType)) {
+                if (!this._cursorTypeToCursor.TryGetValue(this._viewModel.CursorType, out var cursor)) {
+                    cursor = new Cursor(this._viewModel.CursorType);
+                    this._cursorTypeToCursor.Add(this._viewModel.CursorType, cursor);
+                }
+
+                this.Cursor = cursor;
+            }
         }
     }
 }

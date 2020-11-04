@@ -1,13 +1,24 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
-
+    using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// A <see cref="IGame" /> that can run within Avalonia.
     /// </summary>
-    public interface IAvaloniaGame : IGame, IDisposable {
+    public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
+        /// <summary>
+        /// Gets the type of the cursor.
+        /// </summary>
+        /// <value>The type of the cursor.</value>
+        StandardCursorType CursorType { get; set; }
+
+        /// <summary>
+        /// Gets the graphics device manager for this game.
+        /// </summary>
+        public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
         /// <summary>
         /// Initializes the specified mouse.
@@ -26,12 +37,34 @@
     /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
     /// </summary>
     public class AvaloniaGame : BaseGame, IAvaloniaGame {
+        private StandardCursorType _cursorType = StandardCursorType.None;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
         public AvaloniaGame() : base() {
             this.IsFixedTimeStep = false;
+        }
+
+        /// <inheritdoc />
+        public GraphicsDeviceManager GraphicsDeviceManager => this._graphics;
+
+        /// <inheritdoc />
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Gets or sets the type of the cursor.
+        /// </summary>
+        /// <value>The type of the cursor.</value>
+        public StandardCursorType CursorType {
+            get { return this._cursorType; }
+
+            set {
+                if (value != this._cursorType) {
+                    this._cursorType = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CursorType)));
+                }
+            }
         }
 
         /// <inheritdoc />

@@ -1,5 +1,6 @@
-﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
+﻿using ReactiveUI;
 
+namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
     using Avalonia.Controls;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
@@ -18,12 +19,11 @@
         }
 
         public string DisplayText {
-            get {
-                return this._displayText;
-            }
+            get { return this._displayText; }
 
             set {
-                if (this.Set(ref this._displayText, value) && this._displayTextRenderer != null) {
+                this.RaiseAndSetIfChanged(ref this._displayText, value);
+                if (this._displayTextRenderer != null) {
                     this._displayTextRenderer.Text = value;
                 }
             }
@@ -39,9 +39,16 @@
             this.Game.Scene.AddSystem<UpdateSystem>();
             this.Game.Scene.BackgroundColor = DefinedColors.MacabresoftPurple;
 
+            var gridComponent = this.Game.Scene.AddChild().AddComponent<GridDrawerComponent>();
+            gridComponent.Color = DefinedColors.MacabresoftBone * 0.5f;
+            gridComponent.UseDynamicLineThickness = false;
+            gridComponent.Grid = new TileGrid(Vector2.One);
+            gridComponent.RenderOrder = -1;
+
             var skullId = Guid.NewGuid();
             this.Game.AssetManager.SetMapping(skullId, "skull");
             var skullEntity = this.Game.Scene.AddChild();
+            skullEntity.LocalPosition += new Vector2(0f, 0.5f);
             this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
             this._skullRenderer.Sprite = new Sprite(skullId);
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -57,11 +64,11 @@
             this._displayTextRenderer.Text = this.DisplayText;
             this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             textRenderEntity.LocalScale = new Vector2(0.25f);
-            textRenderEntity.LocalPosition = new Vector2(0f, -3.5f);
+            textRenderEntity.LocalPosition = new Vector2(0f, -3f);
 
             var cameraEntity = this.Game.Scene.AddChild();
             this._camera = cameraEntity.AddComponent<CameraComponent>();
-            this._camera.ViewHeight = 6f;
+            this._camera.ViewHeight = 9f;
             var cameraChild = cameraEntity.AddChild();
             var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
             cameraTextRenderer.Font = new Font(leageMonoId);
@@ -70,7 +77,7 @@
             cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
             cameraChild.AddComponent<MouseDebuggerComponent>();
             cameraChild.LocalScale = new Vector2(0.1f);
-            cameraChild.LocalPosition = new Vector2(0f, -3f);
+            cameraChild.LocalPosition = new Vector2(0f, -2.5f);
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
             frameRateDisplay.Font = new Font(leageMonoId);

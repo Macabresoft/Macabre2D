@@ -1,7 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+﻿using Microsoft.Xna.Framework;
 
+namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
     using Avalonia;
     using Avalonia.Controls;
+    using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using ReactiveUI;
@@ -12,6 +14,11 @@
     /// A view model that essentially acts as a pipeline from Avalonia to a <see cref="IGame" />
     /// </summary>
     public interface IMonoGameViewModel : IDisposable, INotifyPropertyChanged {
+        /// <summary>
+        /// Gets or sets the type of the cursor.
+        /// </summary>
+        /// <value>The type of the cursor.</value>
+        public StandardCursorType CursorType { get; }
 
         /// <summary>
         /// Gets the game.
@@ -89,7 +96,6 @@
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
     public abstract class MonoGameViewModel : ReactiveObject, IMonoGameViewModel {
-
         private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
             BackBufferWidth = 1,
             BackBufferHeight = 1,
@@ -102,19 +108,23 @@
         private bool _isDisposed = false;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
+        private IGameScene _scene;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
         /// </summary>
         /// <param name="game">The game.</param>
-        public MonoGameViewModel(IAvaloniaGame game) {
+        protected MonoGameViewModel(IAvaloniaGame game) {
             this.Game = game;
+            this.Game.PropertyChanged += this.Game_PropertyChanged;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
+        /// Gets or sets the type of the cursor.
         /// </summary>
-        public MonoGameViewModel() {
+        /// <value>The type of the cursor.</value>
+        public StandardCursorType CursorType {
+            get { return this.Game.CursorType; }
         }
 
         /// <inheritdoc />
@@ -130,34 +140,41 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        public IGameScene Scene { get; private set; }
+        public IGameScene Scene {
+            get => _scene;
+            private set => _scene = value;
+        }
 
         /// <inheritdoc />
         public void Dispose() {
             if (!this._isDisposed) {
+                this.Game.PropertyChanged -= this.Game_PropertyChanged;
                 this.Game.Dispose();
                 this._isDisposed = true;
             }
-        }
-
-        /// <inheritdoc />
-        public void Exit() {
-            return;
         }
 
         /// <summary>
         /// Initializes the <see cref="GraphicsDevice" /> with the current <see cref="Window" />.
         /// </summary>
         /// <param name="window">The window.</param>
+        /// <param name="viewportSize"></param>
+        /// <param name="mouse"></param>
+        /// <param name="keyboard"></param>
         public virtual void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             this._mouse = mouse;
             this._keyboard = keyboard;
             this.Game.Initialize(mouse, keyboard);
             this.Game.RunOneFrame();
             this.Scene = this.Game.Scene;
+
+            var width = Math.Max((int)viewportSize.Width, 1);
+            var height = Math.Max((int)viewportSize.Height, 1);
             this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
-            this._presentationParameters.BackBufferWidth = Math.Max((int)viewportSize.Width, 1);
-            this._presentationParameters.BackBufferHeight = Math.Max((int)viewportSize.Height, 1);
+            this._presentationParameters.BackBufferWidth = width;
+            this._presentationParameters.BackBufferHeight = height;
+            this.Game.GraphicsDeviceManager.PreferredBackBufferWidth = width;
+            this.Game.GraphicsDeviceManager.PreferredBackBufferHeight = height;
             this.GraphicsDevice.Reset(this._presentationParameters);
         }
 
@@ -184,9 +201,11 @@
             var newHeight = Math.Max(1, height);
 
             if (newWidth != this.GraphicsDevice.PresentationParameters.BackBufferWidth || newHeight != this.GraphicsDevice.PresentationParameters.BackBufferHeight) {
-                this.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
-                this._presentationParameters.BackBufferWidth = Math.Max(width, 1);
-                this._presentationParameters.BackBufferHeight = Math.Max(height, 1);
+                this.Game.GraphicsDeviceManager.PreferredBackBufferWidth = newWidth;
+                this.Game.GraphicsDeviceManager.PreferredBackBufferHeight = newHeight;
+                this.GraphicsDevice.Viewport = new Viewport(0, 0, newWidth, newHeight);
+                this._presentationParameters.BackBufferWidth = newWidth;
+                this._presentationParameters.BackBufferHeight = newHeight;
                 this.GraphicsDevice.Reset(this._presentationParameters);
             }
         }
@@ -202,6 +221,12 @@
         /// <inheritdoc />
         public void RunFrame() {
             this.Game.RunOneFrame();
+        }
+
+        private void Game_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IAvaloniaGame.CursorType)) {
+                this.RaisePropertyChanged(nameof(this.CursorType));
+            }
         }
     }
 }

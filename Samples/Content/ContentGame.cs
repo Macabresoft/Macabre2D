@@ -27,7 +27,7 @@
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraEntity.AddComponent<MovingDot>();
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
-
+            
             this.AssetManager.SetMapping(Guid.NewGuid(), "WhiteSquare");
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
@@ -160,6 +160,12 @@
                     }
                 }
             }
+            
+            var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
+            gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
+            gridDrawer.UseDynamicLineThickness = false;
+            gridDrawer.Grid = new TileGrid(Vector2.One);
+            gridDrawer.RenderOrder = -1;
 
             var binaryTileMapBoundingArea = binaryTileMapEntity.AddComponent<BoundingAreaDrawerComponent>();
             binaryTileMapBoundingArea.Color = Color.Red;
