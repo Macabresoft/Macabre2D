@@ -25,7 +25,7 @@
                     var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
 
                     if (potentialRenderables.Any()) {
-                        this.Scene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.ViewMatrix);
+                        this.Scene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.GetViewMatrix());
 
                         foreach (var component in potentialRenderables) {
                             // As long as it doesn't equal Layers.None, at least one of the layers

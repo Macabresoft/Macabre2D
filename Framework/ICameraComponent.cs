@@ -34,9 +34,8 @@
         Shader? Shader { get; }
 
         /// <summary>
-        /// Gets the view matrix.
+        /// Gets the view matrix for rendering.
         /// </summary>
-        /// <value>The view matrix.</value>
-        Matrix ViewMatrix { get; }
+        Matrix GetViewMatrix();
     }
 }

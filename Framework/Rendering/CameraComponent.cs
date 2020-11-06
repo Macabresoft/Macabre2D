@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +12,6 @@
     /// </summary>
     public sealed class CameraComponent : GameComponent, IBoundable, ICameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private readonly ResettableLazy<Matrix> _matrix;
         private Layers _layersToRender = Layers.All;
         private int _renderOrder;
         private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
@@ -25,29 +23,19 @@
         /// </summary>
         public CameraComponent() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
-            this._matrix = new ResettableLazy<Matrix>(this.CreateViewMatrix);
         }
 
         /// <inheritdoc />
         public BoundingArea BoundingArea {
-            get {
-                return this._boundingArea.Value;
-            }
+            get { return this._boundingArea.Value; }
         }
 
-        /// <summary>
-        /// Gets the layers to render.
-        /// </summary>
-        /// <value>The layers to render.</value>
+        /// <inheritdoc />
         [DataMember(Name = "Layers to Render")]
         public Layers LayersToRender {
-            get {
-                return this._layersToRender;
-            }
+            get { return this._layersToRender; }
 
-            set {
-                this.Set(ref this._layersToRender, value);
-            }
+            set { this.Set(ref this._layersToRender, value); }
         }
 
         /// <summary>
@@ -57,24 +45,14 @@
         [DataMember(Name = "Offset Settings")]
         public OffsetSettings OffsetSettings { get; } = new OffsetSettings(Vector2.Zero, PixelOffsetType.Center);
 
-        /// <summary>
-        /// Gets the render order. A lower number will be rendered first.
-        /// </summary>
-        /// <value>The render order.</value>
+        /// <inheritdoc />
         public int RenderOrder {
-            get {
-                return this._renderOrder;
-            }
+            get { return this._renderOrder; }
 
-            set {
-                this.Set(ref this._renderOrder, value, true);
-            }
+            set { this.Set(ref this._renderOrder, value, true); }
         }
 
-        /// <summary>
-        /// Gets the state of the sampler.
-        /// </summary>
-        /// <value>The state of the sampler.</value>
+        /// <inheritdoc />
         public SamplerState SamplerState { get; private set; } = SamplerState.PointClamp;
 
         /// <summary>
@@ -83,9 +61,7 @@
         /// <value>The type of the sampler state.</value>
         [DataMember(Name = "Sampler State")]
         public SamplerStateType SamplerStateType {
-            get {
-                return this._samplerStateType;
-            }
+            get { return this._samplerStateType; }
 
             set {
                 this.Set(ref this._samplerStateType, value);
@@ -94,10 +70,7 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the shader.
-        /// </summary>
-        /// <value>The shader.</value>
+        /// <inheritdoc />
         [DataMember]
         public Shader? Shader { get; set; }
 
@@ -108,13 +81,11 @@
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
         [DataMember(Name = "Snap to Pixels")]
         public bool SnapToPixels {
-            get {
-                return this._snapToPixels;
-            }
+            get { return this._snapToPixels; }
 
             set {
                 if (this.Set(ref this._snapToPixels, value)) {
-                    this.ResetLazyValues();
+                    this.ResetBoundingArea();
                 }
             }
         }
@@ -125,9 +96,7 @@
         /// <value>The height of the view.</value>
         [DataMember(Name = "View Height")]
         public float ViewHeight {
-            get {
-                return this._viewHeight;
-            }
+            get { return this._viewHeight; }
 
             set {
                 // This is kind of an arbitrary value, but imagine the chaos if we allowed the
@@ -137,18 +106,8 @@
                 }
 
                 if (this.Set(ref this._viewHeight, value)) {
-                    this.ResetLazyValues();
+                    this.ResetBoundingArea();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the view matrix.
-        /// </summary>
-        /// <value>The view matrix.</value>
-        public Matrix ViewMatrix {
-            get {
-                return this._matrix.Value;
             }
         }
 
@@ -169,6 +128,18 @@
 
             return result;
         }
+        
+        /// <inheritdoc />
+        public Matrix GetViewMatrix() {
+            var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
+            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
+            var worldTransform = this.Entity.Transform;
+
+            return
+                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
+                Matrix.CreateScale(zoom, -zoom, 0f) *
+                Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
+        }
 
         /// <summary>
         /// Gets the width of the view.
@@ -184,7 +155,7 @@
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
             this.OffsetSettings.Initialize(this.CreateSize);
-            this.ResetLazyValues();
+            this.ResetBoundingArea();
             this.SamplerState = this._samplerStateType.ToSamplerState();
 
             this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
@@ -222,25 +193,23 @@
         /// </summary>
         /// <param name="boundable">The boundable.</param>
         public void ZoomTo(IBoundable boundable) {
-            if (boundable != null) {
-                var area = boundable.BoundingArea;
-                var difference = area.Maximum - area.Minimum;
-                var origin = area.Minimum + difference * 0.5f;
+            var area = boundable.BoundingArea;
+            var difference = area.Maximum - area.Minimum;
+            var origin = area.Minimum + difference * 0.5f;
 
-                this.Entity.SetWorldPosition(origin);
+            this.Entity.SetWorldPosition(origin);
 
-                this.ViewHeight = difference.Y;
-                var currentViewWidth = this.GetViewWidth();
-                if (currentViewWidth < difference.X) {
-                    this.ViewHeight *= difference.X / currentViewWidth;
-                }
+            this.ViewHeight = difference.Y;
+            var currentViewWidth = this.GetViewWidth();
+            if (currentViewWidth < difference.X) {
+                this.ViewHeight *= difference.X / currentViewWidth;
             }
         }
 
         /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                this.ResetLazyValues();
+                this.ResetBoundingArea();
             }
         }
 
@@ -251,11 +220,11 @@
             var offset = this.OffsetSettings.Offset * ratio;
 
             var points = new List<Vector2> {
-                    this.Entity.GetWorldTransform(offset).Position,
-                    this.Entity.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
-                    this.Entity.GetWorldTransform(offset + new Vector2(width, height)).Position,
-                    this.Entity.GetWorldTransform(offset + new Vector2(0f, height)).Position
-                };
+                this.Entity.GetWorldTransform(offset).Position,
+                this.Entity.GetWorldTransform(offset + new Vector2(width, 0f)).Position,
+                this.Entity.GetWorldTransform(offset + new Vector2(width, height)).Position,
+                this.Entity.GetWorldTransform(offset + new Vector2(0f, height)).Position
+            };
 
             var minimumX = points.Min(x => x.X);
             var minimumY = points.Min(x => x.Y);
@@ -275,32 +244,20 @@
         private Vector2 CreateSize() {
             return new Vector2(this.Entity.Scene.Game.ViewportSize.X, this.Entity.Scene.Game.ViewportSize.Y);
         }
-
-        private Matrix CreateViewMatrix() {
-            var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
-            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
-            var worldTransform = this.Entity.Transform;
-
-            return
-                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
-                Matrix.CreateScale(zoom, -zoom, 0f) *
-                Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
-        }
-
+        
         private void Game_ViewportSizeChanged(object? sender, Point e) {
             this.OffsetSettings.InvalidateSize();
-            this.ResetLazyValues();
+            this.ResetBoundingArea();
         }
 
         private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.OffsetSettings.Offset)) {
-                this._boundingArea.Reset();
+                this.ResetBoundingArea();
             }
         }
 
-        private void ResetLazyValues() {
+        private void ResetBoundingArea() {
             this._boundingArea.Reset();
-            this._matrix.Reset();
         }
     }
 }
