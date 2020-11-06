@@ -14,7 +14,7 @@
         public override SystemLoop Loop => SystemLoop.Render;
 
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Scene.Game.SpriteBatch != null) {
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 this._renderTree.Clear();
 
                 foreach (var component in this.Scene.RenderableComponents) {
@@ -22,20 +22,14 @@
                 }
 
                 foreach (var camera in this.Scene.CameraComponents) {
-                    var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
+                    var potentialRenderables = 
+                        this._renderTree
+                            .RetrievePotentialCollisions(camera.BoundingArea)
+                            .Where(x => (x.Entity.Layers & camera.LayersToRender) != Layers.None)
+                            .ToList();
 
                     if (potentialRenderables.Any()) {
-                        this.Scene.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, camera.SamplerState, null, RasterizerState.CullNone, camera.Shader?.Effect, camera.GetViewMatrix());
-
-                        foreach (var component in potentialRenderables) {
-                            // As long as it doesn't equal Layers.None, at least one of the layers
-                            // defined on the component are also to be rendered by LayersToRender.
-                            if ((component.Entity.Layers & camera.LayersToRender) != Layers.None) {
-                                component.Render(frameTime, camera.BoundingArea);
-                            }
-                        }
-
-                        this.Scene.Game.SpriteBatch.End();
+                        camera.Render(frameTime, spriteBatch, potentialRenderables);
                     }
                 }
             }

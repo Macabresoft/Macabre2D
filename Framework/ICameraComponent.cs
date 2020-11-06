@@ -1,14 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.Collections.Generic;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// Interface for a camera component which tells the engine where to render any <see
-    /// cref="IGameRenderableComponent" />.
+    /// Interface for a camera component which tells the engine where to render any <see cref="IGameRenderableComponent" />.
     /// </summary>
     public interface ICameraComponent : IGameComponent, IBoundable {
-
         /// <summary>
         /// Gets the layers to render.
         /// </summary>
@@ -19,7 +17,7 @@
         /// Gets the render order.
         /// </summary>
         /// <value>The render order.</value>
-        int RenderOrder { get => 0; }
+        int RenderOrder => 0;
 
         /// <summary>
         /// Gets the state of the sampler.
@@ -37,5 +35,13 @@
         /// Gets the view matrix for rendering.
         /// </summary>
         Matrix GetViewMatrix();
+
+        /// <summary>
+        /// Renders the provided components.
+        /// </summary>
+        /// <param name="frameTime">The frame time.</param>
+        /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
+        /// <param name="components">The components to render.</param>
+        void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableComponent> components);
     }
 }

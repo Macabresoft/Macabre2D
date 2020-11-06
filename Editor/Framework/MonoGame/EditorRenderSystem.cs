@@ -1,9 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
-
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System.Linq;
+    using Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Services;
 
     /// <summary>
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
@@ -28,7 +27,7 @@
         public override void Update(FrameTime frameTime, InputState inputState) {
             base.Update(frameTime, inputState);
 
-            if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch != null && sceneEditor.Camera != null) {
+            if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch is SpriteBatch spriteBatch && sceneEditor.Camera is ICameraComponent camera) {
                 this._renderTree.Clear();
 
                 foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
@@ -39,19 +38,9 @@
                     this._renderTree.Insert(component);
                 }
 
-                var potentialRenderables = this._renderTree.RetrievePotentialCollisions(sceneEditor.Camera.BoundingArea);
+                var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
                 if (potentialRenderables.Any()) {
-                    sceneEditor.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, sceneEditor.Camera.SamplerState, null, RasterizerState.CullNone, sceneEditor.Camera.Shader?.Effect, sceneEditor.Camera.GetViewMatrix());
-
-                    foreach (var component in potentialRenderables) {
-                        // As long as it doesn't equal Layers.None, at least one of the layers
-                        // defined on the component are also to be rendered by LayersToRender.
-                        if ((component.Entity.Layers & sceneEditor.Camera.LayersToRender) != Layers.None) {
-                            component.Render(frameTime, sceneEditor.Camera.BoundingArea);
-                        }
-                    }
-
-                    sceneEditor.SpriteBatch.End();
+                    camera.Render(frameTime, spriteBatch, potentialRenderables);
                 }
             }
         }

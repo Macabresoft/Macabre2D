@@ -1,11 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Core;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Represents a camera into the game world.
@@ -25,19 +25,6 @@
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
-        /// <inheritdoc />
-        public BoundingArea BoundingArea {
-            get { return this._boundingArea.Value; }
-        }
-
-        /// <inheritdoc />
-        [DataMember(Name = "Layers to Render")]
-        public Layers LayersToRender {
-            get { return this._layersToRender; }
-
-            set { this.Set(ref this._layersToRender, value); }
-        }
-
         /// <summary>
         /// Gets the offset settings.
         /// </summary>
@@ -45,23 +32,13 @@
         [DataMember(Name = "Offset Settings")]
         public OffsetSettings OffsetSettings { get; } = new OffsetSettings(Vector2.Zero, PixelOffsetType.Center);
 
-        /// <inheritdoc />
-        public int RenderOrder {
-            get { return this._renderOrder; }
-
-            set { this.Set(ref this._renderOrder, value, true); }
-        }
-
-        /// <inheritdoc />
-        public SamplerState SamplerState { get; private set; } = SamplerState.PointClamp;
-
         /// <summary>
         /// Gets or sets the type of the sampler state.
         /// </summary>
         /// <value>The type of the sampler state.</value>
         [DataMember(Name = "Sampler State")]
         public SamplerStateType SamplerStateType {
-            get { return this._samplerStateType; }
+            get => this._samplerStateType;
 
             set {
                 this.Set(ref this._samplerStateType, value);
@@ -70,10 +47,6 @@
             }
         }
 
-        /// <inheritdoc />
-        [DataMember]
-        public Shader? Shader { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether this camera should snap to the pixel ratio
         /// defined in <see cref="IGameSettings" />.
@@ -81,7 +54,7 @@
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
         [DataMember(Name = "Snap to Pixels")]
         public bool SnapToPixels {
-            get { return this._snapToPixels; }
+            get => this._snapToPixels;
 
             set {
                 if (this.Set(ref this._snapToPixels, value)) {
@@ -96,7 +69,7 @@
         /// <value>The height of the view.</value>
         [DataMember(Name = "View Height")]
         public float ViewHeight {
-            get { return this._viewHeight; }
+            get => this._viewHeight;
 
             set {
                 // This is kind of an arbitrary value, but imagine the chaos if we allowed the
@@ -109,6 +82,66 @@
                     this.ResetBoundingArea();
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public BoundingArea BoundingArea => this._boundingArea.Value;
+
+        /// <inheritdoc />
+        [DataMember(Name = "Layers to Render")]
+        public Layers LayersToRender {
+            get => this._layersToRender;
+
+            set => this.Set(ref this._layersToRender, value);
+        }
+
+        /// <inheritdoc />
+        public int RenderOrder {
+            get => this._renderOrder;
+            set => this.Set(ref this._renderOrder, value, true);
+        }
+
+        /// <inheritdoc />
+        public SamplerState SamplerState { get; private set; } = SamplerState.PointClamp;
+
+        /// <inheritdoc />
+        [DataMember]
+        public Shader? Shader { get; set; }
+
+        /// <inheritdoc />
+        public Matrix GetViewMatrix() {
+            var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
+            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
+            var worldTransform = this.Entity.Transform;
+
+            return
+                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
+                Matrix.CreateScale(zoom, -zoom, 0f) *
+                Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
+        }
+
+        /// <inheritdoc />
+        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableComponent> components) {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, this.SamplerState, null, RasterizerState.CullNone, this.Shader?.Effect, this.GetViewMatrix());
+
+            foreach (var component in components) {
+                component.Render(frameTime, this.BoundingArea);
+            }
+
+            spriteBatch.End();
+        }
+
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+            this.OffsetSettings.Initialize(this.CreateSize);
+            this.ResetBoundingArea();
+            this.SamplerState = this._samplerStateType.ToSamplerState();
+
+            this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+            this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
+
+            this.Shader?.Load();
         }
 
         /// <summary>
@@ -128,18 +161,6 @@
 
             return result;
         }
-        
-        /// <inheritdoc />
-        public Matrix GetViewMatrix() {
-            var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
-            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
-            var worldTransform = this.Entity.Transform;
-
-            return
-                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
-                Matrix.CreateScale(zoom, -zoom, 0f) *
-                Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
-        }
 
         /// <summary>
         /// Gets the width of the view.
@@ -149,19 +170,6 @@
             var size = this.OffsetSettings.Size;
             var ratio = size.Y != 0 ? this.ViewHeight / this.OffsetSettings.Size.Y : 0f;
             return size.X * ratio;
-        }
-
-        /// <inheritdoc />
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
-            this.OffsetSettings.Initialize(this.CreateSize);
-            this.ResetBoundingArea();
-            this.SamplerState = this._samplerStateType.ToSamplerState();
-
-            this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
-            this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
-
-            this.Shader?.Load();
         }
 
         /// <summary>
@@ -175,7 +183,7 @@
             var originalViewHeight = this.ViewHeight;
             this.ViewHeight -= zoomAmount;
             var viewHeightRatio = this.ViewHeight / originalViewHeight;
-            this.Entity.SetWorldPosition(worldPosition - (originalDistanceFromCamera * viewHeightRatio));
+            this.Entity.SetWorldPosition(worldPosition - originalDistanceFromCamera * viewHeightRatio);
         }
 
         /// <summary>
@@ -244,7 +252,7 @@
         private Vector2 CreateSize() {
             return new Vector2(this.Entity.Scene.Game.ViewportSize.X, this.Entity.Scene.Game.ViewportSize.Y);
         }
-        
+
         private void Game_ViewportSizeChanged(object? sender, Point e) {
             this.OffsetSettings.InvalidateSize();
             this.ResetBoundingArea();
