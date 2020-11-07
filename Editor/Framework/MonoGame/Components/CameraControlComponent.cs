@@ -24,7 +24,7 @@
                 var keyboardState = inputState.CurrentKeyboardState;
                 var previousMouseState = inputState.PreviousMouseState;
                 if (mouseState.ScrollWheelValue != previousMouseState.ScrollWheelValue) {
-                    var scrollViewChange = (float)(frameTime.SecondsPassed * (previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * Math.Sqrt(this._camera.ViewHeight) * 0.25f);
+                    var scrollViewChange = (float)(frameTime.SecondsPassed * (previousMouseState.ScrollWheelValue - mouseState.ScrollWheelValue) * Math.Sqrt(this._camera.ViewHeight) * 2f);
 
                     var isZoomIn = scrollViewChange < 0;
                     if (isZoomIn) {
