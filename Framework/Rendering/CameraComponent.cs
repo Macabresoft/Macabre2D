@@ -111,7 +111,7 @@
         /// <inheritdoc />
         public Matrix GetViewMatrix() {
             var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
-            var zoom = this.OffsetSettings.Size.Y / (pixelsPerUnit * this.ViewHeight);
+            var zoom = 1f / GameSettings.Instance.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
             var worldTransform = this.Entity.Transform;
 
             return

@@ -11,6 +11,10 @@
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
 
+        public ContentGame() : base() {
+            this.Settings.PixelsPerUnit = 64;
+        }
+        
         protected override void LoadContent() {
             this.AssetManager.Initialize(this.Content);
 

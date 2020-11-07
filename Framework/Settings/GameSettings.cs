@@ -26,13 +26,13 @@
         /// <summary>
         /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
         /// </summary>
-        Color ErrorSpritesColor { get; }
+        Color ErrorSpritesColor { get; set; }
 
         /// <summary>
-        /// Gets the color of the game background when there is no scene opened.
+        /// Gets or sets the color of the game background when there is no scene opened.
         /// </summary>
         /// <value>The fallback background color.</value>
-        Color FallbackBackgroundColor { get; }
+        Color FallbackBackgroundColor { get; set; }
 
         /// <summary>
         /// Gets the inverse of <see cref="PixelsPerUnit" />.
@@ -52,22 +52,22 @@
         LayerSettings Layers { get; }
 
         /// <summary>
-        /// Getsthe pixels per unit. This value is the number of pixels per abritrary game units.
+        /// Gets or sets the pixels per unit. This value is the number of pixels per abritrary game units.
         /// </summary>
         /// <value>The pixel density.</value>
-        int PixelsPerUnit { get; }
+        int PixelsPerUnit { get; set; }
 
         /// <summary>
-        /// Gets the name of the project.
+        /// Gets or sets the name of the project.
         /// </summary>
         /// <value>The name of the project.</value>
-        string ProjectName { get; }
+        string ProjectName { get; set; }
 
         /// <summary>
-        /// Gets the startup scene asset identifier.
+        /// Gets or sets the startup scene asset identifier.
         /// </summary>
         /// <value>The startup scene asset identifier.</value>
-        Guid StartupSceneAssetId { get; }
+        Guid StartupSceneAssetId { get; set; }
 
         /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
