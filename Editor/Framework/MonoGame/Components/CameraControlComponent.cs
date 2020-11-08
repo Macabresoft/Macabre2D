@@ -1,11 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
-
+    using System;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Framework;
+    using AvaloniaInterop;
+    using Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
-    using System;
 
     public sealed class CameraControlComponent : GameUpdateableComponent {
         private CameraComponent _camera;
@@ -35,7 +34,6 @@
                     }
                 }
 
-                ////if (this._game.IsMouseOver) {
                 if (mouseState.MiddleButton == ButtonState.Pressed && previousMouseState.MiddleButton == ButtonState.Pressed) {
                     if (mouseState.Position != previousMouseState.Position) {
                         var oldPosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(previousMouseState.Position);
