@@ -1,15 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
-
-    using Macabresoft.Macabre2D.Framework;
+    using System.ComponentModel;
+    using Framework;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
-    using System.ComponentModel;
 
     /// <summary>
     /// Interface for interacting with the editor and its many gizmos.
     /// </summary>
     public interface IEditorService : INotifyPropertyChanged {
-
         /// <summary>
         /// Gets a value indicating whether [show grid].
         /// </summary>
@@ -17,57 +15,31 @@
         bool ShowGrid { get; }
 
         /// <summary>
-        /// Gets the color of the x axis.
+        /// Gets the color of the x axis and y axis.
         /// </summary>
-        /// <value>The color of the x axis.</value>
-        Color XAxisColor { get; }
-
-        /// <summary>
-        /// Gets the color of the y axis.
-        /// </summary>
-        /// <value>The color of the y axis.</value>
-        Color YAxisColor { get; }
+        /// <value>The color of the x axis and y axis.</value>
+        Color AxisColor { get; }
     }
 
     /// <summary>
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
+        private Color _axisColor = DefinedColors.ZvukostiGreen;
         private bool _showGrid = true;
-        private Color _xAxisColor = DefinedColors.ZvukostiGreen;
-        private Color _yAxisColor = DefinedColors.MacabresoftRed;
 
         /// <inheritdoc />
         public bool ShowGrid {
-            get {
-                return this._showGrid;
-            }
+            get => this._showGrid;
 
-            set {
-                this.RaiseAndSetIfChanged(ref this._showGrid, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
         }
 
         /// <inheritdoc />
-        public Color XAxisColor {
-            get {
-                return this._xAxisColor;
-            }
+        public Color AxisColor {
+            get => this._axisColor;
 
-            set {
-                this.RaiseAndSetIfChanged(ref this._xAxisColor, value);
-            }
-        }
-
-        /// <inheritdoc />
-        public Color YAxisColor {
-            get {
-                return this._yAxisColor;
-            }
-
-            set {
-                this.RaiseAndSetIfChanged(ref this._yAxisColor, value);
-            }
+            set => this.RaiseAndSetIfChanged(ref this._axisColor, value);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
-
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Framework;
+    using System;
+    using System.ComponentModel;
+    using Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
+    using Services;
 
     /// <summary>
     /// Draws a grid for the editor.
@@ -25,7 +25,7 @@
         }
 
         /// <inheritdoc />
-        public override BoundingArea BoundingArea => _camera?.BoundingArea ?? BoundingArea.Empty;
+        public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
 
         /// <summary>
         /// Gets or sets the size of the major grid.
@@ -86,7 +86,7 @@
                         spriteBatch,
                         new Vector2(column, boundingArea.Minimum.Y),
                         new Vector2(column, boundingArea.Maximum.Y),
-                        Color.Lerp(this._editorService.YAxisColor, this.Color, 0.25f),
+                        Color.Lerp(this._editorService.AxisColor, this.Color, 0.25f),
                         lineThickness);
                 }
                 else {
@@ -106,7 +106,7 @@
                         spriteBatch,
                         new Vector2(boundingArea.Minimum.X, row),
                         new Vector2(boundingArea.Maximum.X, row),
-                        Color.Lerp(this._editorService.XAxisColor, this.Color, 0.1f),
+                        Color.Lerp(this._editorService.AxisColor, this.Color, 0.1f),
                         lineThickness);
                 }
                 else {
@@ -120,7 +120,7 @@
             }
         }
 
-        private void EditorService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IEditorService.ShowGrid)) {
                 this.IsVisible = this._editorService.ShowGrid;
             }
@@ -135,7 +135,7 @@
             }
         }
 
-        private void Scene_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Scene_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameScene.BackgroundColor)) {
                 this.ResetColor();
             }
