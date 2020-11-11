@@ -33,7 +33,7 @@
                 foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
                     this._renderTree.Insert(component);
                 }
-
+                
                 foreach (var component in sceneEditor.Scene.RenderableComponents) {
                     this._renderTree.Insert(component);
                 }
