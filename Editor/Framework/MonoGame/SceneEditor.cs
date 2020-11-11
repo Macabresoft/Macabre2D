@@ -25,14 +25,18 @@
     public class SceneEditor : AvaloniaGame, ISceneEditor {
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
+        private readonly IEntitySelectionService _selectionService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
         /// </summary>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        public SceneEditor(IEditorService editorService, ISceneService sceneService) {
+        /// <param name="selectionService">The selection service</param>
+        public SceneEditor(IEditorService editorService, ISceneService sceneService, IEntitySelectionService selectionService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
+            this._selectionService = selectionService;
 
             // TODO: remove the following code once scene loading exists
             this._sceneService.CreateNewScene<GameScene>();
@@ -88,6 +92,7 @@
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
+            cameraEntity.AddComponent(new SelectorComponent(this._selectionService));
             return scene;
         }
 
