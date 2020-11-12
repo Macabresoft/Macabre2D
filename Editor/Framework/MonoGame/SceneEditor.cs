@@ -92,6 +92,7 @@
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
+            cameraEntity.AddComponent(new SelectionDisplayComponent(this._selectionService));
             cameraEntity.AddComponent(new SelectorComponent(this._sceneService, this._selectionService));
             return scene;
         }
