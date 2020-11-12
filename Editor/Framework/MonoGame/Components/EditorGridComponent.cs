@@ -86,7 +86,7 @@
                         spriteBatch,
                         new Vector2(column, boundingArea.Minimum.Y),
                         new Vector2(column, boundingArea.Maximum.Y),
-                        Color.Lerp(this._editorService.AxisColor, this.Color, 0.25f),
+                        Color.Lerp(this._editorService.YAxisColor, this.Color, 0.25f),
                         lineThickness);
                 }
                 else {
@@ -106,7 +106,7 @@
                         spriteBatch,
                         new Vector2(boundingArea.Minimum.X, row),
                         new Vector2(boundingArea.Maximum.X, row),
-                        Color.Lerp(this._editorService.AxisColor, this.Color, 0.1f),
+                        Color.Lerp(this._editorService.XAxisColor, this.Color, 0.1f),
                         lineThickness);
                 }
                 else {

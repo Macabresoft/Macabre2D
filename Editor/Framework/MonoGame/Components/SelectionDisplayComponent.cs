@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+    using System.ComponentModel;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -8,16 +9,26 @@
     /// A component which displays the currently selected <see cref="IGameEntity"/> and <see cref="Framework.IGameComponent"/>.
     /// </summary>
     public class SelectionDisplayComponent : BaseDrawerComponent {
-
+        private readonly IEditorService _editorService;
         private readonly IEntitySelectionService _selectionService;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectionDisplayComponent" /> class.
         /// </summary>
         /// <param name="selectionService">The selection service.</param>
-        public SelectionDisplayComponent(IEntitySelectionService selectionService) : base() {
+        public SelectionDisplayComponent(IEditorService editorService, IEntitySelectionService selectionService) : base() {
             this.UseDynamicLineThickness = true;
+            this._editorService = editorService;
+            this._editorService.PropertyChanged += EditorService_PropertyChanged;
             this._selectionService = selectionService;
+
+            this.Color = this._editorService.SelectionColor;
+        }
+
+        private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IEditorService.SelectionColor)) {
+                this.Color = this._editorService.SelectionColor;
+            }
         }
 
         /// <inheritdoc />

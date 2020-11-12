@@ -9,37 +9,59 @@
     /// </summary>
     public interface IEditorService : INotifyPropertyChanged {
         /// <summary>
-        /// Gets a value indicating whether [show grid].
+        /// Gets or sets a value indicating whether to show the editor grid.
         /// </summary>
-        /// <value><c>true</c> if [show grid]; otherwise, <c>false</c>.</value>
-        bool ShowGrid { get; }
+        bool ShowGrid { get; set; }
 
         /// <summary>
-        /// Gets the color of the x axis and y axis.
+        /// Gets or sets the color of the x axis.
         /// </summary>
-        /// <value>The color of the x axis and y axis.</value>
-        Color AxisColor { get; }
+        Color XAxisColor { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the color of the y axis.
+        /// </summary>
+        Color YAxisColor { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the selection color.
+        /// </summary>
+        Color SelectionColor { get; set; }
     }
 
     /// <summary>
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
-        private Color _axisColor = DefinedColors.ZvukostiGreen;
+
+
+        private Color _selectionColor = DefinedColors.MacabresoftYellow;
         private bool _showGrid = true;
+        private Color _xAxisColor = DefinedColors.ZvukostiGreen;
+        private Color _yAxisColor = DefinedColors.MacabresoftRed;
 
         /// <inheritdoc />
         public bool ShowGrid {
             get => this._showGrid;
-
             set => this.RaiseAndSetIfChanged(ref this._showGrid, value);
         }
 
         /// <inheritdoc />
-        public Color AxisColor {
-            get => this._axisColor;
+        public Color XAxisColor {
+            get => this._xAxisColor;
+            set => this.RaiseAndSetIfChanged(ref this._xAxisColor, value);
+        }
+        
+        /// <inheritdoc />
+        public Color YAxisColor {
+            get => this._yAxisColor;
+            set => this.RaiseAndSetIfChanged(ref this._yAxisColor, value);
+        }
 
-            set => this.RaiseAndSetIfChanged(ref this._axisColor, value);
+        /// <inheritdoc />
+        public Color SelectionColor {
+            get => this._selectionColor;
+            set => this.RaiseAndSetIfChanged(ref this._selectionColor, value);
         }
     }
 }
