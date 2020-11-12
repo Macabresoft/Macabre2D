@@ -1,4 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+    using System;
+    using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -7,20 +9,39 @@
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
     public class SelectorComponent : GameUpdateableComponent {
+        private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
+        private ICameraComponent _camera;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectorComponent" /> class.
         /// </summary>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
-        public SelectorComponent(IEntitySelectionService selectionService) : base() {
+        public SelectorComponent(ISceneService sceneService, IEntitySelectionService selectionService) : base() {
+            this._sceneService = sceneService;
             this._selectionService = selectionService;
         }
-        
+
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            if (!this.Entity.TryGetComponent(out this._camera)) {
+                throw new ArgumentNullException(nameof(this._camera));
+            }
+        }
+
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
+            if (this._camera != null && 
+                !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
+                inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
                 inputState.PreviousMouseState.LeftButton == ButtonState.Released) {
                 
+                var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
+                var selected = this._sceneService.CurrentScene.RenderableComponents.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
+                this._selectionService.Select(selected);
             }
         }
     }

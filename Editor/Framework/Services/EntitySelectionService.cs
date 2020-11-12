@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System.ComponentModel;
+    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -58,12 +59,18 @@
         
         /// <inheritdoc />
         public void Select(IGameEntity entity) {
-            this.SelectedEntity = entity;
+            if (entity != this.SelectedEntity) {
+                this.SelectedEntity = entity;
+                this.SelectedComponent = entity?.Components.FirstOrDefault();
+            }
         }
 
         /// <inheritdoc />
         public void Select(IGameComponent component) {
-            this.SelectedComponent = component;
+            if (this.SelectedComponent != component) {
+                this.SelectedComponent = component;
+                this.SelectedEntity = component?.Entity;
+            }
         }
     }
 }

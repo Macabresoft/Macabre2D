@@ -144,11 +144,7 @@
             this.Shader?.Load();
         }
 
-        /// <summary>
-        /// Converts the point from screen space to world space.
-        /// </summary>
-        /// <param name="point">The point.</param>
-        /// <returns>The world space location of the point.</returns>
+        /// <inheritdoc />
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
             var result = Vector2.Zero;
 

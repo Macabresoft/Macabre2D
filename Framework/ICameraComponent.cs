@@ -32,6 +32,13 @@
         Shader? Shader { get; }
 
         /// <summary>
+        /// Converts the point from screen space to world space.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <returns>The world space location of the point.</returns>
+        Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point);
+
+        /// <summary>
         /// Gets the view matrix for rendering.
         /// </summary>
         Matrix GetViewMatrix();
@@ -43,5 +50,7 @@
         /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
         /// <param name="components">The components to render.</param>
         void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableComponent> components);
+        
+        
     }
 }
