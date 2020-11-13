@@ -78,44 +78,69 @@
         }
 
         private void DrawGrid(SpriteBatch spriteBatch, BoundingArea boundingArea, float gridSize, float lineThickness, float alpha) {
-            var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
-            var color = this.Color * alpha;
-            foreach (var column in columns) {
-                if (column == 0f) {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(column, boundingArea.Minimum.Y),
-                        new Vector2(column, boundingArea.Maximum.Y),
-                        Color.Lerp(this._editorService.YAxisColor, this.Color, 0.25f),
-                        lineThickness);
+            if (this.PrimitiveDrawer != null) {
+                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
+                var verticalShadowOffset = new Vector2(0f, shadowOffset);
+                var color = this.Color * alpha;
+                
+                var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
+                foreach (var column in columns) {
+                    var minimum = new Vector2(column, boundingArea.Minimum.Y);
+                    var maximum = new Vector2(column, boundingArea.Maximum.Y);
+                    
+                    if (column == 0f) {
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch, 
+                            minimum + horizontalShadowOffset,
+                            maximum + horizontalShadowOffset,
+                            this._editorService.DropShadowColor,
+                            lineThickness);
+                        
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch,
+                            minimum,
+                            maximum,
+                            this._editorService.YAxisColor,
+                            lineThickness);
+                    }
+                    else {
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch,
+                            minimum,
+                            maximum,
+                            color,
+                            lineThickness);
+                    }
                 }
-                else {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(column, boundingArea.Minimum.Y),
-                        new Vector2(column, boundingArea.Maximum.Y),
-                        color,
-                        lineThickness);
-                }
-            }
 
-            var rows = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, gridSize, 0f);
-            foreach (var row in rows) {
-                if (row == 0f) {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(boundingArea.Minimum.X, row),
-                        new Vector2(boundingArea.Maximum.X, row),
-                        Color.Lerp(this._editorService.XAxisColor, this.Color, 0.1f),
-                        lineThickness);
-                }
-                else {
-                    this.PrimitiveDrawer.DrawLine(
-                        spriteBatch,
-                        new Vector2(boundingArea.Minimum.X, row),
-                        new Vector2(boundingArea.Maximum.X, row),
-                        color,
-                        lineThickness);
+                var rows = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, gridSize, 0f);
+                foreach (var row in rows) {
+                    var minimum = new Vector2(boundingArea.Minimum.X, row);
+                    var maximum = new Vector2(boundingArea.Maximum.X, row);
+                    
+                    if (row == 0f) {
+                        this.PrimitiveDrawer.DrawLine(spriteBatch, 
+                            minimum + verticalShadowOffset, 
+                            maximum + verticalShadowOffset, 
+                            this._editorService.DropShadowColor, 
+                            lineThickness);
+                        
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch,
+                            minimum,
+                            maximum,
+                            this._editorService.XAxisColor,
+                            lineThickness);
+                    }
+                    else {
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch,
+                            minimum,
+                            maximum,
+                            color,
+                            lineThickness);
+                    }
                 }
             }
         }
@@ -127,18 +152,9 @@
         }
 
         private void ResetColor() {
-            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this.Color = this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite();
-            }
-            else {
-                this.Color = this.Entity.Scene.BackgroundColor.GetContrastingBlackOrWhite();
-            }
-        }
-
-        private void Scene_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IGameScene.BackgroundColor)) {
-                this.ResetColor();
-            }
+            this.Color = !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) ? 
+                this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : 
+                this.Entity.Scene.BackgroundColor.GetContrastingBlackOrWhite();
         }
     }
 }

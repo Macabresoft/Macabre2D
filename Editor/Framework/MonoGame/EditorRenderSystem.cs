@@ -30,14 +30,14 @@
             if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch is SpriteBatch spriteBatch && sceneEditor.Camera is ICameraComponent camera) {
                 this._renderTree.Clear();
 
+                foreach (var component in sceneEditor.Scene.RenderableComponents) {
+                    this._renderTree.Insert(component);
+                }
+                
                 foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
                     this._renderTree.Insert(component);
                 }
                 
-                foreach (var component in sceneEditor.Scene.RenderableComponents) {
-                    this._renderTree.Insert(component);
-                }
-
                 var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
                 if (potentialRenderables.Any()) {
                     camera.Render(frameTime, spriteBatch, potentialRenderables);
