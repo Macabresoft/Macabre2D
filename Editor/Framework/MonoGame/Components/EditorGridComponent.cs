@@ -44,6 +44,7 @@
             base.Initialize(entity);
 
             this.UseDynamicLineThickness = true;
+            
             if (!this.Entity.TryGetComponent(out this._camera)) {
                 throw new ArgumentNullException(nameof(this._camera));
             }

@@ -7,7 +7,8 @@
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// A component which displays the currently selected <see cref="IGameEntity"/> and <see cref="Framework.IGameComponent"/>.
+    /// A component which displays the currently selected <see cref="IGameEntity" /> and
+    /// <see cref="Framework.IGameComponent" />.
     /// </summary>
     public class SelectionDisplayComponent : BaseDrawerComponent {
         private readonly IEditorService _editorService;
@@ -22,16 +23,10 @@
             this.UseDynamicLineThickness = true;
             this.LineThickness = 2f;
             this._editorService = editorService;
-            this._editorService.PropertyChanged += EditorService_PropertyChanged;
+            this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
             this._selectionService = selectionService;
 
             this.Color = this._editorService.SelectionColor;
-        }
-
-        private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IEditorService.SelectionColor)) {
-                this.Color = this._editorService.SelectionColor;
-            }
         }
 
         /// <inheritdoc />
@@ -44,7 +39,7 @@
                 return BoundingArea.Empty;
             }
         }
-        
+
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this.Color == Color.Transparent || this.BoundingArea.Maximum == this.BoundingArea.Minimum) {
@@ -58,12 +53,12 @@
                 if (!this.BoundingArea.IsEmpty) {
                     var minimum = this.BoundingArea.Minimum;
                     var maximum = this.BoundingArea.Maximum;
-                    
-                    var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
-                    
+
+                    var points = new[] {minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y)};
+
                     var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
                     var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
-                    
+
                     this.PrimitiveDrawer.DrawPolygon(spriteBatch, this._editorService.DropShadowColor, lineThickness, shadowPoints);
                     this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, points);
                 }
@@ -76,15 +71,21 @@
                     var right = new Vector2(position.X + crosshairLength, position.Y);
                     var top = new Vector2(position.X, position.Y + crosshairLength);
                     var bottom = new Vector2(position.X, position.Y - crosshairLength);
-                    
+
                     var verticalShadowOffset = new Vector2(0f, shadowOffset);
                     this.PrimitiveDrawer.DrawLine(spriteBatch, left + verticalShadowOffset, right + verticalShadowOffset, this._editorService.DropShadowColor, lineThickness);
                     var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
                     this.PrimitiveDrawer.DrawLine(spriteBatch, top + horizontalShadowOffset, bottom + horizontalShadowOffset, this._editorService.DropShadowColor, lineThickness);
-                    
+
                     this.PrimitiveDrawer.DrawLine(spriteBatch, left, right, this.Color, lineThickness);
                     this.PrimitiveDrawer.DrawLine(spriteBatch, top, bottom, this.Color, lineThickness);
                 }
+            }
+        }
+        
+        private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IEditorService.SelectionColor)) {
+                this.Color = this._editorService.SelectionColor;
             }
         }
     }

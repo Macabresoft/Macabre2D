@@ -10,12 +10,26 @@
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
     public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGameUpdateableComponent {
+        private ICameraComponent _camera;
+
+        /// <summary>
+        /// Represents the axis a gizmo is being operated on.
+        /// </summary>
+        public enum GizmoAxis {
+            X,
+            Y,
+            Neutral,
+            None
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseAxisGizmoComponent" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
         protected BaseAxisGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) {
+            this.UseDynamicLineThickness = true;
+            this.LineThickness = 2f;
             this.EditorService = editorService;
             this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
@@ -24,7 +38,7 @@
         }
 
         /// <inheritdoc />
-        public override BoundingArea BoundingArea => BoundingArea.CreateFromPoints(this.NeutralAxisPosition, this.XAxisPosition, this.YAxisPosition);
+        public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
 
         /// <summary>
         /// The editor service.
@@ -35,6 +49,11 @@
         /// The selection service.
         /// </summary>
         protected IEntitySelectionService SelectionService { get; }
+
+        /// <summary>
+        /// Gets the camera.
+        /// </summary>
+        protected ICameraComponent Camera => this._camera;
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -57,6 +76,21 @@
         protected Vector2 YAxisPosition { get; set; }
 
         /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            this._camera = this.Camera;
+            if (this.Entity.TryGetComponent(out this._camera)) {
+                this.Camera.PropertyChanged += this.Camera_PropertyChanged;
+            }
+            else {
+                throw new ArgumentNullException(nameof(this._camera));
+            }
+
+            this.ResetIsEnabled();
+        }
+
+        /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
@@ -71,10 +105,9 @@
         /// <summary>
         /// Gets the length of an axis line based on the view height.
         /// </summary>
-        /// <param name="viewHeight">The view height of the current camera.</param>
         /// <returns>The length of an axis line.</returns>
-        protected float GetAxisLength(float viewHeight) {
-            return viewHeight * 0.1f;
+        protected float GetAxisLength() {
+            return this._camera.BoundingArea.Height * 0.1f;
         }
 
         /// <summary>
@@ -115,12 +148,15 @@
         /// Resets the end points for each axis of the gizmo.
         /// </summary>
         /// <param name="transformable">The transformable this gizmo is attached to.</param>
-        /// <param name="axisLength">The axis length.</param>
-        protected void ResetEndPoints(ITransformable transformable, float axisLength) {
-            var worldTransform = transformable.Transform;
-            this.NeutralAxisPosition = worldTransform.Position;
-            this.XAxisPosition = worldTransform.Position + new Vector2(axisLength, 0f);
-            this.YAxisPosition = worldTransform.Position + new Vector2(0f, axisLength);
+        protected void ResetEndPoints() {
+            var transformable = this.SelectionService.SelectedEntity;
+            if (transformable != null && this.CurrentAxis == GizmoAxis.None) {
+                var axisLength = this.GetAxisLength();
+                var worldTransform = transformable.Transform;
+                this.NeutralAxisPosition = worldTransform.Position;
+                this.XAxisPosition = worldTransform.Position + new Vector2(axisLength, 0f);
+                this.YAxisPosition = worldTransform.Position + new Vector2(0f, axisLength);
+            }
         }
 
         /// <summary>
@@ -129,17 +165,30 @@
         /// <returns>A value indicating whether or not this should be enabled.</returns>
         protected abstract bool ShouldBeEnabled();
 
+        private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ICameraComponent.ViewHeight)) {
+                this.ResetEndPoints();
+            }
+        }
+
         private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IEditorService.SelectedGizmo)) {
                 this.ResetIsEnabled();
+            }
+            else if (e.PropertyName == nameof(IEditorService.XAxisColor)) {
+                
+            }
+            else if (e.PropertyName == nameof(IEditorService.YAxisColor)) {
+                
             }
         }
 
         private void ResetIsEnabled() {
             this.IsEnabled = this.ShouldBeEnabled();
+            this.IsVisible = this.IsEnabled;
 
-            if (this.IsEnabled) {
-                this.ResetEndPoints(this.SelectionService.SelectedEntity, 1f);
+            if (this.IsVisible) {
+                this.ResetEndPoints();
             }
         }
 
@@ -147,16 +196,6 @@
             if (e.PropertyName == nameof(IEntitySelectionService.SelectedEntity) || e.PropertyName == nameof(IEntitySelectionService.SelectedComponent)) {
                 this.ResetIsEnabled();
             }
-        }
-
-        /// <summary>
-        /// Represents the axis a gizmo is being operated on.
-        /// </summary>
-        protected enum GizmoAxis {
-            X,
-            Y,
-            Neutral,
-            None
         }
     }
 }

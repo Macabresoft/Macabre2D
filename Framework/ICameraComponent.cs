@@ -32,6 +32,11 @@
         Shader? Shader { get; }
 
         /// <summary>
+        /// Gets the view height of the camera in world units (not screen pixels).
+        /// </summary>
+        float ViewHeight { get; }
+
+        /// <summary>
         /// Converts the point from screen space to world space.
         /// </summary>
         /// <param name="point">The point.</param>
@@ -50,7 +55,5 @@
         /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
         /// <param name="components">The components to render.</param>
         void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableComponent> components);
-        
-        
     }
 }
