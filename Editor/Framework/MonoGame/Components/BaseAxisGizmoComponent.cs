@@ -10,6 +10,11 @@
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
     public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGameUpdateableComponent {
+        /// <summary>
+        /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
+        /// </summary>
+        protected const int GizmoPointSize = 32;
+        
         private ICameraComponent _camera;
 
         /// <summary>
