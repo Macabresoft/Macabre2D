@@ -5,21 +5,26 @@
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
-    public class TranslationGizmoComponent : GameUpdateableComponent {
-        private readonly IEditorService _editorService;
-        private readonly IEntitySelectionService _selectionService;
-        
+    public class TranslationGizmoComponent : BaseAxisGizmoComponent {
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
         /// </summary>
-        public TranslationGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) {
-            this._editorService = editorService;
-            this._selectionService = selectionService;
+        public TranslationGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) : base(editorService, selectionService) {
         }
-        
+
+        /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            base.Render(frameTime, viewBoundingArea);
+        }
+
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            throw new System.NotImplementedException();
+        }
+
+
+        /// <inheritdoc />
+        protected override bool ShouldBeEnabled() {
+            return this.SelectionService.SelectedEntity != null && this.EditorService.SelectedGizmo == GizmoKind.Translation;
         }
     }
 }

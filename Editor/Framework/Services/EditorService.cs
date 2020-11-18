@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System.ComponentModel;
-    using Framework;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
 
@@ -12,12 +13,17 @@
         /// Gets or sets the drop shadow color.
         /// </summary>
         Color DropShadowColor { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the selected gizmo.
+        /// </summary>
+        GizmoKind SelectedGizmo { get; set; }
+
         /// <summary>
         /// Gets or sets the selection color.
         /// </summary>
         Color SelectionColor { get; set; }
-        
+
         /// <summary>
         /// Gets or sets a value indicating whether to show the editor grid.
         /// </summary>
@@ -38,8 +44,8 @@
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
-
         private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
+        private GizmoKind _selectedGizmo = GizmoKind.Translation;
         private Color _selectionColor = DefinedColors.MacabresoftYellow;
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
@@ -52,11 +58,17 @@
         }
 
         /// <inheritdoc />
+        public GizmoKind SelectedGizmo {
+            get => this._selectedGizmo;
+            set => this.RaiseAndSetIfChanged(ref this._selectedGizmo, value);
+        }
+
+        /// <inheritdoc />
         public Color SelectionColor {
             get => this._selectionColor;
             set => this.RaiseAndSetIfChanged(ref this._selectionColor, value);
         }
-        
+
         /// <inheritdoc />
         public bool ShowGrid {
             get => this._showGrid;
@@ -68,7 +80,7 @@
             get => this._xAxisColor;
             set => this.RaiseAndSetIfChanged(ref this._xAxisColor, value);
         }
-        
+
         /// <inheritdoc />
         public Color YAxisColor {
             get => this._yAxisColor;

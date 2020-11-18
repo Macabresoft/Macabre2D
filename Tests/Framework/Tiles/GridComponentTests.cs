@@ -1,13 +1,11 @@
-﻿using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Framework.Tiles;
-using Microsoft.Xna.Framework;
-using NUnit.Framework;
-
-namespace Macabresoft.Macabre2D.Tests.Framework.Tiles {
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Tiles {
+    using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.Framework.Tiles;
+    using Microsoft.Xna.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public static class GridComponentTests {
-
         [Test]
         [Category("Unit Tests")]
         public static void GridComponent_ScaleTest() {

@@ -67,6 +67,7 @@
 
             if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 var circleEntity = this._sceneService.CurrentScene.AddChild();
+                circleEntity.LocalPosition += Vector2.One;
 
                 this._sceneService.CurrentScene.Initialize(this);
                 
@@ -94,6 +95,7 @@
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
             cameraEntity.AddComponent(new SelectorComponent(this._sceneService, this._selectionService));
+            cameraEntity.AddComponent(new TranslationGizmoComponent(this._editorService, this._selectionService));
             return scene;
         }
 

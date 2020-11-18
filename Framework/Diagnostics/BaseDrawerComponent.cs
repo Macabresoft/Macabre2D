@@ -81,7 +81,7 @@
         protected float GetLineThickness(float viewHeight) {
             var result = this.LineThickness;
             if (this.UseDynamicLineThickness && this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice device) {
-                result *= GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, device.Viewport.Height);
+                result = LineHelper.GetDynamicLineThickness(result, viewHeight, device);
             }
 
             return result;

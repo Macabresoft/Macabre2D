@@ -1,12 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Editor.Framework.Services {
-
+    using System.IO;
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using NUnit.Framework;
-    using System.IO;
 
     [TestFixture]
     public sealed class ContentServiceTests {

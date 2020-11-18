@@ -1,12 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
-
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using NUnit.Framework;
 
     [TestFixture]
     public static class RaycastTests {
-
         [Test]
         [Category("Unit Tests")]
         [TestCase]
