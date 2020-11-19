@@ -95,7 +95,8 @@
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
             cameraEntity.AddComponent(new SelectorComponent(this._sceneService, this._selectionService));
-            cameraEntity.AddComponent(new TranslationGizmoComponent(this._editorService, this._selectionService));
+            var translationGizmoEntity = cameraEntity.AddChild();
+            translationGizmoEntity.AddComponent(new TranslationGizmoComponent(this._editorService, this._selectionService));
             return scene;
         }
 

@@ -34,7 +34,7 @@
         /// <param name="selectionService">The selection service.</param>
         protected BaseAxisGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) {
             this.UseDynamicLineThickness = true;
-            this.LineThickness = 2f;
+            this.LineThickness = 1f;
             this.EditorService = editorService;
             this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
@@ -84,8 +84,7 @@
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
-            this._camera = this.Camera;
-            if (this.Entity.TryGetComponent(out this._camera)) {
+            if (this.Entity.Parent.TryGetComponent(out this._camera)) {
                 this.Camera.PropertyChanged += this.Camera_PropertyChanged;
             }
             else {
@@ -99,6 +98,10 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
+                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition+ shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition+ shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
             }

@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
     using System.Linq;
     using Framework;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Microsoft.Xna.Framework.Graphics;
     using Services;
 
@@ -30,11 +31,15 @@
             if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch is SpriteBatch spriteBatch && sceneEditor.Camera is ICameraComponent camera) {
                 this._renderTree.Clear();
 
-                foreach (var component in sceneEditor.Scene.RenderableComponents) {
+                foreach (var component in sceneEditor.Scene.RenderableComponents.Where(x => x is EditorGridComponent)) {
                     this._renderTree.Insert(component);
                 }
                 
                 foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
+                    this._renderTree.Insert(component);
+                }
+                
+                foreach (var component in sceneEditor.Scene.RenderableComponents.Where(x => !(x is EditorGridComponent))) {
                     this._renderTree.Insert(component);
                 }
                 
