@@ -13,7 +13,7 @@
         /// <summary>
         /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
         /// </summary>
-        protected const int GizmoPointSize = 32;
+        protected const int GizmoPointSize = 16;
         
         private ICameraComponent _camera;
 
