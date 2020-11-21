@@ -220,7 +220,12 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
 
         /// <inheritdoc />
         public void RunFrame() {
-            this.Game.RunOneFrame();
+            try {
+                this.Game.RunOneFrame();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+            }
         }
 
         private void Game_PropertyChanged(object sender, PropertyChangedEventArgs e) {

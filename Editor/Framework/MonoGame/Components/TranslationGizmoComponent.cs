@@ -1,8 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+    using System;
+    using Avalonia.Input;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using MouseButton = Macabresoft.Macabre2D.Framework.MouseButton;
 
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
@@ -11,6 +15,7 @@
         private Sprite _xAxisArrowSprite;
         private Sprite _neutralAxisTriangleSprite;
         private Sprite _yAxisArrowSprite;
+        private Vector2 _unmovedPosition;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
@@ -29,6 +34,52 @@
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
+            base.Update(frameTime, inputState);
+            
+            var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
+
+            if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
+                var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
+                var radius = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f;
+
+                if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
+                    this.StartDrag(GizmoAxis.X);
+                }
+                else if (Vector2.Distance(this.YAxisPosition, mousePosition) < radius) {
+                    this.StartDrag(GizmoAxis.Y);
+                }
+                else if (Vector2.Distance(this.NeutralAxisPosition, mousePosition) < radius) {
+                    this.StartDrag(GizmoAxis.Neutral);
+                }
+            }
+            else if (this.CurrentAxis != GizmoAxis.None) {
+                if (inputState.IsButtonHeld(MouseButton.Left)) {
+                    // TODO: handle snapped positions
+                    var newPosition = mousePosition;
+                    if (this.CurrentAxis == GizmoAxis.X) {
+                        newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition) - (this.XAxisPosition - this.NeutralAxisPosition);
+                    }
+                    else if (this.CurrentAxis == GizmoAxis.Y) {
+                        newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
+                    }
+                    else {
+                        // snap the current value for newposition.
+                    }
+                    
+                    this.UpdatePosition(newPosition);
+                }
+                else {
+                    // TODO: add to undo service
+                    this.CurrentAxis = GizmoAxis.None;
+                    this.SetCursor(StandardCursorType.None);
+                }
+            }
+        }
+
+        private void StartDrag(GizmoAxis axis) {
+            this._unmovedPosition = this.NeutralAxisPosition;
+            this.CurrentAxis = axis;
+            this.SetCursor(StandardCursorType.DragMove);
         }
 
         /// <inheritdoc />
@@ -58,6 +109,12 @@
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
             return this.SelectionService.SelectedEntity != null && this.EditorService.SelectedGizmo == GizmoKind.Translation;
+        }
+        
+        private void UpdatePosition(Vector2 newPosition) {
+            if (this.SelectionService.SelectedEntity != null) {
+                this.SelectionService.SelectedEntity.SetWorldPosition(newPosition);
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
     using System;
     using System.ComponentModel;
+    using Avalonia.Input;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -11,13 +13,6 @@
     /// </summary>
     public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGameUpdateableComponent {
         /// <summary>
-        /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
-        /// </summary>
-        protected const int GizmoPointSize = 16;
-        
-        private ICameraComponent _camera;
-
-        /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>
         public enum GizmoAxis {
@@ -26,7 +21,14 @@
             Neutral,
             None
         }
-        
+
+        /// <summary>
+        /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
+        /// </summary>
+        protected const int GizmoPointSize = 16;
+
+        private ICameraComponent _camera;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseAxisGizmoComponent" /> class.
         /// </summary>
@@ -46,6 +48,11 @@
         public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
 
         /// <summary>
+        /// Gets the camera.
+        /// </summary>
+        protected ICameraComponent Camera => this._camera;
+
+        /// <summary>
         /// The editor service.
         /// </summary>
         protected IEditorService EditorService { get; }
@@ -54,11 +61,6 @@
         /// The selection service.
         /// </summary>
         protected IEntitySelectionService SelectionService { get; }
-
-        /// <summary>
-        /// Gets the camera.
-        /// </summary>
-        protected ICameraComponent Camera => this._camera;
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -100,15 +102,19 @@
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition+ shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition+ shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
                 this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
             }
         }
 
         /// <inheritdoc />
-        public abstract void Update(FrameTime frameTime, InputState inputState);
+        public virtual void Update(FrameTime frameTime, InputState inputState) {
+            if (this.SelectionService.SelectedEntity != null && this.NeutralAxisPosition != this.SelectionService.SelectedEntity.Transform.Position) {
+                this.ResetEndPoints();
+            }
+        }
 
         /// <summary>
         /// Gets the length of an axis line based on the view height.
@@ -158,12 +164,22 @@
         /// <param name="transformable">The transformable this gizmo is attached to.</param>
         protected void ResetEndPoints() {
             var transformable = this.SelectionService.SelectedEntity;
-            if (transformable != null && this.CurrentAxis == GizmoAxis.None) {
+            if (transformable != null) {
                 var axisLength = this.GetAxisLength();
                 var worldTransform = transformable.Transform;
                 this.NeutralAxisPosition = worldTransform.Position;
                 this.XAxisPosition = worldTransform.Position + new Vector2(axisLength, 0f);
                 this.YAxisPosition = worldTransform.Position + new Vector2(0f, axisLength);
+            }
+        }
+
+        /// <summary>
+        /// Sets the cursor type for the Avalonia window.
+        /// </summary>
+        /// <param name="cursorType">The cursor type.</param>
+        protected void SetCursor(StandardCursorType cursorType) {
+            if (this.Entity.Scene.Game is IAvaloniaGame game) {
+                game.CursorType = cursorType;
             }
         }
 
@@ -184,10 +200,8 @@
                 this.ResetIsEnabled();
             }
             else if (e.PropertyName == nameof(IEditorService.XAxisColor)) {
-                
             }
             else if (e.PropertyName == nameof(IEditorService.YAxisColor)) {
-                
             }
         }
 

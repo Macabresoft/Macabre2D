@@ -37,7 +37,7 @@
             this._editorService = editorService;
             this._sceneService = sceneService;
             this._selectionService = selectionService;
-
+            
             // TODO: remove the following code once scene loading exists
             this._sceneService.CreateNewScene<GameScene>();
             this._sceneService.CurrentScene.BackgroundColor = DefinedColors.MacabresoftPurple;
