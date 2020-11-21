@@ -1,14 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+    using System;
+    using System.ComponentModel;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using ReactiveUI;
-    using System;
-    using System.ComponentModel;
 
     /// <summary>
     /// A view model that essentially acts as a pipeline from Avalonia to a <see cref="IGame" />
@@ -96,7 +94,7 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
     public abstract class MonoGameViewModel : ReactiveObject, IMonoGameViewModel {
-        private readonly PresentationParameters _presentationParameters = new PresentationParameters() {
+        private readonly PresentationParameters _presentationParameters = new PresentationParameters {
             BackBufferWidth = 1,
             BackBufferHeight = 1,
             BackBufferFormat = SurfaceFormat.Color,
@@ -105,10 +103,9 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
             IsFullScreen = false
         };
 
-        private bool _isDisposed = false;
+        private bool _isDisposed;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
-        private IGameScene _scene;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
@@ -123,9 +120,7 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
         /// Gets or sets the type of the cursor.
         /// </summary>
         /// <value>The type of the cursor.</value>
-        public StandardCursorType CursorType {
-            get { return this.Game.CursorType; }
-        }
+        public StandardCursorType CursorType => this.Game.CursorType;
 
         /// <inheritdoc />
         public IAvaloniaGame Game { get; }
@@ -140,10 +135,7 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        public IGameScene Scene {
-            get => _scene;
-            private set => _scene = value;
-        }
+        public IGameScene Scene { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() {
