@@ -21,6 +21,9 @@
         public TranslationGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) : base(editorService, selectionService) {
         }
 
+        /// <inheritdoc />
+        public override GizmoKind GizmoKind => GizmoKind.Translation;
+
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
             if (this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
@@ -55,15 +58,15 @@
         }
 
         /// <inheritdoc />
-        public override void Update(FrameTime frameTime, InputState inputState) {
-            base.Update(frameTime, inputState);
+        public override bool Update(FrameTime frameTime, InputState inputState) {
+            var result = base.Update(frameTime, inputState);
 
             var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
 
             if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
                 var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
                 var radius = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f;
-
+                result = true;
                 if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
                     this.StartDrag(GizmoAxis.X);
                 }
@@ -72,6 +75,9 @@
                 }
                 else if (Vector2.Distance(this.NeutralAxisPosition, mousePosition) < radius) {
                     this.StartDrag(GizmoAxis.Neutral);
+                }
+                else {
+                    result = false;
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
@@ -86,6 +92,7 @@
                     }
 
                     this.UpdatePosition(newPosition);
+                    result = true;
                 }
                 else {
                     // TODO: add to undo service
@@ -93,6 +100,8 @@
                     this.SetCursor(StandardCursorType.None);
                 }
             }
+
+            return result;
         }
 
         /// <inheritdoc />

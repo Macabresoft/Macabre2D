@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems {
     using System.Linq;
     using Framework;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
@@ -8,7 +8,7 @@
     /// <summary>
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
     /// </summary>
-    internal class EditorRenderSystem : UpdateSystem {
+    internal class EditorRenderSystem : GameSystem {
         private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         private readonly ISceneService _sceneService;
@@ -26,8 +26,6 @@
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            base.Update(frameTime, inputState);
-
             if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch is SpriteBatch spriteBatch && sceneEditor.Camera is ICameraComponent camera) {
                 this._renderTree.Clear();
 

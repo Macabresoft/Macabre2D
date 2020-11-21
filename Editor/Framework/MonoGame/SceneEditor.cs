@@ -1,10 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
+    using System.Collections.Generic;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using System.ComponentModel;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems;
 
     /// <summary>
     /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D <see
@@ -16,6 +18,16 @@
         /// </summary>
         /// <value>The camera.</value>
         public ICameraComponent Camera { get; }
+        
+        /// <summary>
+        /// Gets the selector gizmo.
+        /// </summary>
+        public IGizmo SelectorGizmo { get; }
+        
+        /// <summary>
+        /// Gets the translation gizmo.
+        /// </summary>
+        public IGizmo TranslationGizmo { get; }
     }
 
     /// <summary>
@@ -45,6 +57,13 @@
 
         /// <inheritdoc />
         public ICameraComponent Camera { get; private set; }
+
+        /// <inheritdoc />
+        public IGizmo SelectorGizmo { get; private set; }
+        
+        /// <inheritdoc />
+        public IGizmo TranslationGizmo { get; private set; }
+
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
@@ -88,15 +107,19 @@
         private IGameScene CreateScene() {
             var scene = new GameScene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
-            scene.AddSystem<UpdateSystem>();
+            scene.AddSystem(new EditorUpdateSystem(this._editorService));
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
             cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
-            cameraEntity.AddComponent(new SelectorComponent(this._sceneService, this._selectionService));
+            var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
+            cameraEntity.AddComponent(selectorGizmo);
+            this.SelectorGizmo = selectorGizmo;
             var translationGizmoEntity = cameraEntity.AddChild();
-            translationGizmoEntity.AddComponent(new TranslationGizmoComponent(this._editorService, this._selectionService));
+            var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService);
+            translationGizmoEntity.AddComponent(translationGizmo);
+            this.TranslationGizmo = translationGizmo;
             return scene;
         }
 

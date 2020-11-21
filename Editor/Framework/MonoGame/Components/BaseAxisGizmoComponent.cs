@@ -11,7 +11,7 @@
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
-    public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGameUpdateableComponent {
+    public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
         /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>
@@ -46,6 +46,9 @@
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
+
+        /// <inheritdoc />
+        public abstract GizmoKind GizmoKind { get; }
 
         /// <summary>
         /// Gets the camera.
@@ -110,10 +113,12 @@
         }
 
         /// <inheritdoc />
-        public virtual void Update(FrameTime frameTime, InputState inputState) {
+        public virtual bool Update(FrameTime frameTime, InputState inputState) {
             if (this.SelectionService.SelectedEntity != null && this.NeutralAxisPosition != this.SelectionService.SelectedEntity.Transform.Position) {
                 this.ResetEndPoints();
             }
+
+            return false;
         }
 
         /// <summary>

@@ -8,7 +8,7 @@
     /// <summary>
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
-    public class SelectorComponent : GameUpdateableComponent {
+    public class SelectorComponent : GameComponent, IGizmo {
         private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
         private ICameraComponent _camera;
@@ -33,7 +33,11 @@
         }
 
         /// <inheritdoc />
-        public override void Update(FrameTime frameTime, InputState inputState) {
+        public GizmoKind GizmoKind => GizmoKind.Selector;
+        
+        /// <inheritdoc />
+        public bool Update(FrameTime frameTime, InputState inputState) {
+            var result = false;
             if (this._camera != null && 
                 !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
                 inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
@@ -42,7 +46,10 @@
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableComponents.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
                 this._selectionService.Select(selected);
+                result = true;
             }
+
+            return result;
         }
     }
 }
