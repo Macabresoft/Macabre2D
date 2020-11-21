@@ -1,7 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
-    using System;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -12,17 +10,17 @@
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
     public class TranslationGizmoComponent : BaseAxisGizmoComponent {
-        private Sprite _xAxisArrowSprite;
         private Sprite _neutralAxisTriangleSprite;
-        private Sprite _yAxisArrowSprite;
         private Vector2 _unmovedPosition;
-        
+        private Sprite _xAxisArrowSprite;
+        private Sprite _yAxisArrowSprite;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
         /// </summary>
         public TranslationGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) : base(editorService, selectionService) {
         }
-        
+
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
             if (this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
@@ -33,9 +31,33 @@
         }
 
         /// <inheritdoc />
+        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
+                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
+
+                var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Entity.Scene.Game.ViewportSize.Y);
+                var scale = new Vector2(viewRatio);
+                var offset = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
+
+                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
+                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
+                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
+
+                base.Render(frameTime, viewBoundingArea);
+
+                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset), scale, this.EditorService.XAxisColor);
+                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
+                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition + new Vector2(offset), -scale, this.EditorService.XAxisColor);
+                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
+            }
+        }
+
+        /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
             base.Update(frameTime, inputState);
-            
+
             var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
 
             if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
@@ -62,10 +84,7 @@
                     else if (this.CurrentAxis == GizmoAxis.Y) {
                         newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
                     }
-                    else {
-                        // snap the current value for newposition.
-                    }
-                    
+
                     this.UpdatePosition(newPosition);
                 }
                 else {
@@ -76,45 +95,19 @@
             }
         }
 
+        /// <inheritdoc />
+        protected override bool ShouldBeEnabled() {
+            return this.SelectionService.SelectedEntity != null && this.EditorService.SelectedGizmo == GizmoKind.Translation;
+        }
+
         private void StartDrag(GizmoAxis axis) {
             this._unmovedPosition = this.NeutralAxisPosition;
             this.CurrentAxis = axis;
             this.SetCursor(StandardCursorType.DragMove);
         }
 
-        /// <inheritdoc />
-        public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
-                var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
-                var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
-
-                var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Entity.Scene.Game.ViewportSize.Y);
-                var scale = new Vector2(viewRatio);
-                var offset = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
-                
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                
-                base.Render(frameTime, viewBoundingArea);
-                
-                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset), scale, this.EditorService.XAxisColor);
-                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition + new Vector2(offset), -scale, this.EditorService.XAxisColor);
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool ShouldBeEnabled() {
-            return this.SelectionService.SelectedEntity != null && this.EditorService.SelectedGizmo == GizmoKind.Translation;
-        }
-        
         private void UpdatePosition(Vector2 newPosition) {
-            if (this.SelectionService.SelectedEntity != null) {
-                this.SelectionService.SelectedEntity.SetWorldPosition(newPosition);
-            }
+            this.SelectionService.SelectedEntity?.SetWorldPosition(newPosition);
         }
     }
 }
