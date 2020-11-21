@@ -9,10 +9,9 @@
     /// </summary>
     public sealed class ColliderDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
         private readonly List<IPhysicsBodyComponent> _bodies = new List<IPhysicsBodyComponent>();
-        private BoundingArea _boundingArea;
 
         /// <inheritdoc />
-        public override BoundingArea BoundingArea => this._boundingArea;
+        public override BoundingArea BoundingArea => this._bodies.Any() ? BoundingArea.Combine(this._bodies.Select(x => x.BoundingArea).ToArray()) : BoundingArea.Empty;
 
         /// <inheritdoc />
         public int UpdateOrder => 0;
@@ -43,7 +42,6 @@
         public void Update(FrameTime frameTime, InputState inputState) {
             this._bodies.Clear();
             this._bodies.AddRange(this.Entity.Components.OfType<IPhysicsBodyComponent>().Where(x => !x.BoundingArea.IsEmpty).ToList());
-            this._boundingArea = BoundingArea.Combine(this._bodies.Select(x => x.BoundingArea).ToArray());
         }
     }
 }
