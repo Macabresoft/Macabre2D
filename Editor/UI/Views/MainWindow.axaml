@@ -4,5 +4,19 @@
         x:Class="Macabresoft.Macabre2D.Editor.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D">
-    <views:SceneEditorView />
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit"
+                          Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"
+                          Command="{Binding UndoCommand}"/>
+                <MenuItem Header="_Redo"
+                          Command="{Binding RedoCommand}"/>
+            </MenuItem>
+        </Menu>
+        <views:SceneEditorView DockPanel.Dock="Bottom" />
+    </DockPanel>
 </Window>

@@ -23,7 +23,7 @@
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public TranslationGizmoComponent(
-            IEditorService editorService, 
+            IEditorService editorService,
             IEntitySelectionService selectionService,
             IUndoService undoService) : base(editorService, selectionService) {
             this._undoService = undoService;

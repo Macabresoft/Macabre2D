@@ -1,16 +1,17 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
-    using System.Collections.Generic;
+    using System.ComponentModel;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
-    using System.ComponentModel;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems;
 
     /// <summary>
-    /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D <see
-    /// cref="IGameScene" /> easier.
+    /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
+    /// <see
+    ///     cref="IGameScene" />
+    /// easier.
     /// </summary>
     public interface ISceneEditor : IAvaloniaGame {
         /// <summary>
@@ -18,12 +19,12 @@
         /// </summary>
         /// <value>The camera.</value>
         public ICameraComponent Camera { get; }
-        
+
         /// <summary>
         /// Gets the selector gizmo.
         /// </summary>
         public IGizmo SelectorGizmo { get; }
-        
+
         /// <summary>
         /// Gets the translation gizmo.
         /// </summary>
@@ -35,10 +36,10 @@
     /// Macabre2D editor.
     /// </summary>
     public class SceneEditor : AvaloniaGame, ISceneEditor {
-        private readonly IUndoService _undoService;
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
+        private readonly IUndoService _undoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
@@ -49,14 +50,14 @@
         /// <param name="undoService">The undo service.</param>
         public SceneEditor(
             IEditorService editorService,
-            ISceneService sceneService, 
+            ISceneService sceneService,
             IEntitySelectionService selectionService,
             IUndoService undoService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
             this._selectionService = selectionService;
             this._undoService = undoService;
-            
+
             // TODO: remove the following code once scene loading exists
             this._sceneService.CreateNewScene<GameScene>();
             this._sceneService.CurrentScene.BackgroundColor = DefinedColors.MacabresoftPurple;
@@ -67,7 +68,7 @@
 
         /// <inheritdoc />
         public IGizmo SelectorGizmo { get; private set; }
-        
+
         /// <inheritdoc />
         public IGizmo TranslationGizmo { get; private set; }
 
@@ -96,11 +97,11 @@
                 circleEntity.LocalPosition += Vector2.One;
 
                 this._sceneService.CurrentScene.Initialize(this);
-                
+
                 // TODO: remove the following code once scene loading exists
                 var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
-                circleBody.Collider = new CircleCollider() {
-                    Radius = 2f,
+                circleBody.Collider = new CircleCollider {
+                    Radius = 2f
                 };
 
                 var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
