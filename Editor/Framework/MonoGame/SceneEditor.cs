@@ -35,6 +35,7 @@
     /// Macabre2D editor.
     /// </summary>
     public class SceneEditor : AvaloniaGame, ISceneEditor {
+        private readonly IUndoService _undoService;
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
@@ -45,10 +46,16 @@
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service</param>
-        public SceneEditor(IEditorService editorService, ISceneService sceneService, IEntitySelectionService selectionService) {
+        /// <param name="undoService">The undo service.</param>
+        public SceneEditor(
+            IEditorService editorService,
+            ISceneService sceneService, 
+            IEntitySelectionService selectionService,
+            IUndoService undoService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
             this._selectionService = selectionService;
+            this._undoService = undoService;
             
             // TODO: remove the following code once scene loading exists
             this._sceneService.CreateNewScene<GameScene>();
@@ -117,7 +124,7 @@
             cameraEntity.AddComponent(selectorGizmo);
             this.SelectorGizmo = selectorGizmo;
             var translationGizmoEntity = cameraEntity.AddChild();
-            var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService);
+            var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService, this._undoService);
             translationGizmoEntity.AddComponent(translationGizmo);
             this.TranslationGizmo = translationGizmo;
             return scene;

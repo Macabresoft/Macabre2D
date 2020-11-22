@@ -10,6 +10,7 @@
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
     public class TranslationGizmoComponent : BaseAxisGizmoComponent {
+        private readonly IUndoService _undoService;
         private Sprite _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;
         private Sprite _xAxisArrowSprite;
@@ -18,7 +19,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
         /// </summary>
-        public TranslationGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) : base(editorService, selectionService) {
+        /// <param name="editorService">The editor service.</param>
+        /// <param name="selectionService">The selection service.</param>
+        /// <param name="undoService">The undo service.</param>
+        public TranslationGizmoComponent(
+            IEditorService editorService, 
+            IEntitySelectionService selectionService,
+            IUndoService undoService) : base(editorService, selectionService) {
+            this._undoService = undoService;
         }
 
         /// <inheritdoc />
@@ -81,6 +89,7 @@
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
+                var entity = this.SelectionService.SelectedEntity;
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     // TODO: handle snapped positions
                     var newPosition = mousePosition;
@@ -91,13 +100,18 @@
                         newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
                     }
 
-                    this.UpdatePosition(newPosition);
+                    this.UpdatePosition(entity, newPosition);
                     result = true;
                 }
                 else {
-                    // TODO: add to undo service
                     this.CurrentAxis = GizmoAxis.None;
                     this.SetCursor(StandardCursorType.None);
+
+                    var position = entity.Transform.Position;
+                    var unmovedPosition = this._unmovedPosition;
+                    this._undoService.Do(
+                        () => this.UpdatePosition(entity, position),
+                        () => this.UpdatePosition(entity, unmovedPosition));
                 }
             }
 
@@ -115,8 +129,8 @@
             this.SetCursor(StandardCursorType.DragMove);
         }
 
-        private void UpdatePosition(Vector2 newPosition) {
-            this.SelectionService.SelectedEntity?.SetWorldPosition(newPosition);
+        private void UpdatePosition(IGameEntity entity, Vector2 newPosition) {
+            entity?.SetWorldPosition(newPosition);
         }
     }
 }
