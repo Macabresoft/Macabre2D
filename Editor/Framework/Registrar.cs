@@ -20,6 +20,7 @@
             container.RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager());
             container.RegisterType<IEntitySelectionService, EntitySelectionService>(new SingletonLifetimeManager());
             container.RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager());
+            container.RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager());
             return container;
         }
 
