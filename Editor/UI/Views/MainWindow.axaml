@@ -12,9 +12,13 @@
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo"
-                          Command="{Binding UndoCommand}"/>
+                          Command="{Binding UndoCommand}"
+                          InputGesture="Ctrl + Z"
+                          HotKey="Ctrl + Z"/>
                 <MenuItem Header="_Redo"
-                          Command="{Binding RedoCommand}"/>
+                          Command="{Binding RedoCommand}"
+                          InputGesture="Ctrl + Y"
+                          HotKey="Ctrl + Y"/>
             </MenuItem>
         </Menu>
         <views:SceneEditorView DockPanel.Dock="Bottom" />
