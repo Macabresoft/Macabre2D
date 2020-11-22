@@ -2,8 +2,8 @@
     using System;
     using System.Collections.Generic;
     using FluentAssertions;
-    using Macabre2D.Editor.Library.Services;
-    using Macabre2D.Framework;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
     using NUnit.Framework;
 
     [TestFixture]

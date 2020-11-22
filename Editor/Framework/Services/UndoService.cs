@@ -25,7 +25,8 @@
         void Clear();
 
         /// <summary>
-        /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property changed action will also be called.
+        /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property
+        /// changed action will also be called.
         /// </summary>
         /// <param name="action">The action that can be undone.</param>
         /// <param name="undoAction">The action that undoes the changes performed in <see cref="action" />.</param>
@@ -49,7 +50,7 @@
         /// </summary>
         void Undo();
     }
-    
+
     /// <summary>
     /// A service which handles undo/redo operations.
     /// </summary>
@@ -58,18 +59,10 @@
         private readonly Stack<UndoCommand> _undoStack = new Stack<UndoCommand>();
 
         /// <inheritdoc />
-        public bool CanRedo {
-            get {
-                return this._redoStack.Any();
-            }
-        }
+        public bool CanRedo => this._redoStack.Any();
 
         /// <inheritdoc />
-        public bool CanUndo {
-            get {
-                return this._undoStack.Any();
-            }
-        }
+        public bool CanUndo => this._undoStack.Any();
 
         /// <inheritdoc />
         public void Clear() {
@@ -77,7 +70,7 @@
             this._undoStack.Clear();
             this.RaiseProperties();
         }
-        
+
         /// <inheritdoc />
         public void Do(Action action, Action undoAction) {
             this.Do(action, undoAction, null);
