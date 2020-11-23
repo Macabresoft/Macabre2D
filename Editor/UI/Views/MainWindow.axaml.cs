@@ -2,6 +2,7 @@
     using Avalonia.Controls;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Core.Utilities;
     using Macabresoft.Macabre2D.Editor.Library.ViewModels;
 
     public class MainWindow : Window {
@@ -12,6 +13,10 @@
 
         private void Exit_Click(object sender, RoutedEventArgs e) {
             this.Close();
+        }
+        
+        private void ViewSource_Click(object sender, RoutedEventArgs e) {
+            WebHelper.OpenInBrowser("https://github.com/Macabresoft/Macabre2D");
         }
 
         private void InitializeComponent() {

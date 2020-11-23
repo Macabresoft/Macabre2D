@@ -20,7 +20,10 @@
                           InputGesture="Ctrl + Y"
                           HotKey="Ctrl + Y"/>
             </MenuItem>
-        </Menu>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_View Source"
+                          Click="ViewSource_Click"/>
+            </MenuItem>        </Menu>
         <views:SceneEditorView DockPanel.Dock="Bottom" />
     </DockPanel>
 </Window>
