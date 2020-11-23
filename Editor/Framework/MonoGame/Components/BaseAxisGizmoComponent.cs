@@ -130,6 +130,47 @@
         }
 
         /// <summary>
+        /// Gets the axis that is currently under the mouse.
+        /// </summary>
+        /// <param name="mousePosition">The mouse position.</param>
+        /// <returns>The axis currently under the mouse, or none if the mouse is not over an axis.</returns>
+        protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
+            var result = GizmoAxis.None;
+
+            var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
+            var radius = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f;
+            if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
+                result = GizmoAxis.X;
+            }
+            else if (Vector2.Distance(this.YAxisPosition, mousePosition) < radius) {
+                result = GizmoAxis.Y;
+            }
+            else if (Vector2.Distance(this.NeutralAxisPosition, mousePosition) < radius) {
+                result = GizmoAxis.Neutral;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets a position along this gizmo's current axis that is in line with the mouse position.
+        /// </summary>
+        /// <param name="mousePosition">The mouse position.</param>
+        /// <returns>A position along this gizmo's current axis that is in line with the mouse position.</returns>
+        protected Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition) {
+            // TODO: handle snapped positions when holding ctrl.
+            var newPosition = mousePosition;
+            if (this.CurrentAxis == GizmoAxis.X) {
+                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition) - (this.XAxisPosition - this.NeutralAxisPosition);
+            }
+            else if (this.CurrentAxis == GizmoAxis.Y) {
+                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
+            }
+
+            return newPosition;
+        }
+
+        /// <summary>
         /// Moves the end positions of the gizmo along the axis appropriately. Basically, this makes sure the drag operation is all
         /// good.
         /// </summary>
@@ -192,7 +233,9 @@
         /// A check that gets called when the selected gizmo, selected entity, or selected component changes.
         /// </summary>
         /// <returns>A value indicating whether or not this should be enabled.</returns>
-        protected abstract bool ShouldBeEnabled();
+        protected virtual bool ShouldBeEnabled() {
+            return this.GizmoKind == this.EditorService.SelectedGizmo;
+        }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ICameraComponent.ViewHeight)) {

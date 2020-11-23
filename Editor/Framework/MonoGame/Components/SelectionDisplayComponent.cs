@@ -63,7 +63,7 @@
                     this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, points);
                 }
 
-                if (this._selectionService.SelectedEntity != null) {
+                if (this._selectionService.SelectedEntity != null && this._editorService.SelectedGizmo == GizmoKind.Selector) {
                     var position = this._selectionService.SelectedEntity.Transform.Position;
 
                     var crosshairLength = viewBoundingArea.Height * 0.01f;
