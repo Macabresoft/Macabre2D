@@ -38,6 +38,18 @@
         /// Gets or sets the color of the y axis.
         /// </summary>
         Color YAxisColor { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the size of the major grid.
+        /// </summary>
+        /// <value>The size of the major grid.</value>
+        public byte MajorGridSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of divisions between major grid lines.
+        /// </summary>
+        /// <value>The number of divisions.</value>
+        public byte MinorGridDivisions { get; set; }
     }
 
     /// <summary>
@@ -50,6 +62,8 @@
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
+        private byte _minorGridDivisions = 5;
+        private byte _majorGridSize = 5;
 
         /// <inheritdoc />
         public Color DropShadowColor {
@@ -61,6 +75,18 @@
         public GizmoKind SelectedGizmo {
             get => this._selectedGizmo;
             set => this.RaiseAndSetIfChanged(ref this._selectedGizmo, value);
+        }
+
+        /// <inheritdoc />
+        public byte MajorGridSize {
+            get => this._majorGridSize;
+            set => this.RaiseAndSetIfChanged(ref this._majorGridSize, value);
+        }
+
+        /// <inheritdoc />
+        public byte MinorGridDivisions {
+            get => this._minorGridDivisions;
+            set => this.RaiseAndSetIfChanged(ref this._minorGridDivisions, value);
         }
 
         /// <inheritdoc />

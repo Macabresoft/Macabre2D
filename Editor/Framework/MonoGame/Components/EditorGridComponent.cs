@@ -27,17 +27,7 @@
         /// <inheritdoc />
         public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
 
-        /// <summary>
-        /// Gets or sets the size of the major grid.
-        /// </summary>
-        /// <value>The size of the major grid.</value>
-        public byte MajorGridSize { get; set; } = 5;
 
-        /// <summary>
-        /// Gets or sets the number of divisions between major grid lines.
-        /// </summary>
-        /// <value>The number of divisions.</value>
-        public byte NumberOfDivisions { get; set; } = 5;
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
@@ -60,20 +50,20 @@
                 return;
             }
 
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
-                if (this.MajorGridSize > 0) {
+            if (this.Entity.Scene.Game.SpriteBatch is { } spriteBatch) {
+                if (this._editorService.MajorGridSize > 0) {
                     if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
                         this.ResetColor();
                     }
 
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
-                    if (this.NumberOfDivisions > 0) {
-                        var minorGridSize = this.MajorGridSize / this.NumberOfDivisions;
+                    if (this._editorService.MinorGridDivisions > 0) {
+                        var minorGridSize = this._editorService.MajorGridSize / this._editorService.MinorGridDivisions;
                         this.DrawGrid(spriteBatch, viewBoundingArea, minorGridSize, lineThickness, 0.2f);
                     }
 
-                    this.DrawGrid(spriteBatch, viewBoundingArea, this.MajorGridSize, lineThickness, 0.5f);
+                    this.DrawGrid(spriteBatch, viewBoundingArea, this._editorService.MajorGridSize, lineThickness, 0.5f);
                 }
             }
         }
