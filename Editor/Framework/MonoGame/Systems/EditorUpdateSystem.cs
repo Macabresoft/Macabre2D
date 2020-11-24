@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems {
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
 
@@ -7,13 +8,16 @@
     /// </summary>
     public class EditorUpdateSystem : UpdateSystem {
         private readonly IEditorService _editorService;
+        private readonly IGizmo _selectorGizmo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorUpdateSystem" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        public EditorUpdateSystem(IEditorService editorService) {
+        /// <param name="selectorGizmo">The selector gizmo.</param>
+        public EditorUpdateSystem(IEditorService editorService, IGizmo selectorGizmo) {
             this._editorService = editorService;
+            this._selectorGizmo = selectorGizmo;
         }
 
         /// <inheritdoc />
@@ -24,15 +28,12 @@
             if (this.Scene.Game is ISceneEditor sceneEditor) {
                 var performedActions = false;
 
-                if (this._editorService.SelectedGizmo == GizmoKind.Translation) {
-                    performedActions = sceneEditor.TranslationGizmo.Update(frameTime, inputState);
-                }
-                else if (this._editorService.SelectedGizmo == GizmoKind.Scale) {
-                    // TODO: scale
+                if (sceneEditor.SelectedGizmo is IGizmo gizmo) {
+                    performedActions = gizmo.Update(frameTime, inputState);
                 }
 
                 if (!performedActions) {
-                    sceneEditor.SelectorGizmo.Update(frameTime, inputState);
+                    this._selectorGizmo.Update(frameTime, inputState);
                 }
             }
 

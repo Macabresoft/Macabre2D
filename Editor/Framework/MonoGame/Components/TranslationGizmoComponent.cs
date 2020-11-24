@@ -9,7 +9,7 @@
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
-    public class TranslationGizmoComponent : BaseAxisGizmoComponent {
+    public sealed class TranslationGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
         private Sprite _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;
@@ -32,6 +32,7 @@
         /// <inheritdoc />
         public override GizmoKind GizmoKind => GizmoKind.Translation;
 
+        /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
             if (this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
@@ -82,6 +83,7 @@
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
                     this.UpdatePosition(entity, newPosition);
+                    this.ResetEndPoints();
                     result = true;
                 }
                 else {

@@ -1,5 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems;
@@ -9,8 +12,7 @@
 
     /// <summary>
     /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
-    /// <see
-    ///     cref="IGameScene" />
+    /// <see cref="IGameScene" />
     /// easier.
     /// </summary>
     public interface ISceneEditor : IAvaloniaGame {
@@ -19,16 +21,11 @@
         /// </summary>
         /// <value>The camera.</value>
         public ICameraComponent Camera { get; }
-
+        
         /// <summary>
-        /// Gets the selector gizmo.
+        /// Gets the selected gizmo.
         /// </summary>
-        public IGizmo SelectorGizmo { get; }
-
-        /// <summary>
-        /// Gets the translation gizmo.
-        /// </summary>
-        public IGizmo TranslationGizmo { get; }
+        IGizmo SelectedGizmo { get; }
     }
 
     /// <summary>
@@ -40,6 +37,7 @@
         private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
         private readonly IUndoService _undoService;
+        private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
@@ -67,10 +65,7 @@
         public ICameraComponent Camera { get; private set; }
 
         /// <inheritdoc />
-        public IGizmo SelectorGizmo { get; private set; }
-
-        /// <inheritdoc />
-        public IGizmo TranslationGizmo { get; private set; }
+        public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
 
 
         /// <inheritdoc />
@@ -101,7 +96,8 @@
                 // TODO: remove the following code once scene loading exists
                 var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
                 circleBody.Collider = new CircleCollider {
-                    Radius = 2f
+                    Radius = 2f,
+                    RadiusScalingType = RadiusScalingType.Average
                 };
 
                 var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
@@ -115,7 +111,6 @@
         private IGameScene CreateScene() {
             var scene = new GameScene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
-            scene.AddSystem(new EditorUpdateSystem(this._editorService));
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
@@ -123,11 +118,19 @@
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
             var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
             cameraEntity.AddComponent(selectorGizmo);
-            this.SelectorGizmo = selectorGizmo;
+
             var translationGizmoEntity = cameraEntity.AddChild();
             var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService, this._undoService);
             translationGizmoEntity.AddComponent(translationGizmo);
-            this.TranslationGizmo = translationGizmo;
+            this._gizmos.Add(translationGizmo);
+            
+            // TODO: add the scale gizmo back when you fix it.
+            // var scaleGizmoEntity = cameraEntity.AddChild();
+            // var scaleGizmo = new ScaleGizmoComponent(this._editorService, this._selectionService, this._undoService);
+            // scaleGizmoEntity.AddComponent(scaleGizmo);
+            // this._gizmos.Add(scaleGizmo);
+            
+            scene.AddSystem(new EditorUpdateSystem(this._editorService, selectorGizmo));
             return scene;
         }
 

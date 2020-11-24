@@ -114,7 +114,7 @@
 
         /// <inheritdoc />
         public virtual bool Update(FrameTime frameTime, InputState inputState) {
-            if (this.SelectionService.SelectedEntity != null && this.NeutralAxisPosition != this.SelectionService.SelectedEntity.Transform.Position) {
+            if (this.SelectionService.SelectedEntity != null && this.NeutralAxisPosition != this.SelectionService.SelectedEntity.Transform.Position && this.CurrentAxis == GizmoAxis.None) {
                 this.ResetEndPoints();
             }
 
