@@ -1,22 +1,40 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.Editor.AvaloniaInterop;assembly=Macabre2D.Editor.AvaloniaInterop"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
+             xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.Editor.Library.MonoGame;assembly=Macabre2D.Editor.Library"
+             xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.Editor.AvaloniaInterop;assembly=Macabre2D.Editor.AvaloniaInterop"
              x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView"
              Name="_view">
-    <Grid RowDefinitions="Auto, *">
+    <UserControl.Resources>
+        <converters:EqualityToBoolConverter x:Key="_equalityToBoolConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, *"
+          DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}">
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, Auto, *">
-              <ToggleButton Grid.Column="0">
-                Selection
+              <ToggleButton Grid.Column="0"
+                            Content="Selection">
+                  <ToggleButton.IsChecked>
+                      <Binding Path="EditorService.SelectedGizmo"
+                               Converter="{StaticResource _equalityToBoolConverter}"
+                               ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
+                               Mode="TwoWay" />
+                  </ToggleButton.IsChecked>
               </ToggleButton>
-              <ToggleButton Grid.Column="1">
-                Translation
+              <ToggleButton Grid.Column="1"
+                            Content="Translation">
+                  <ToggleButton.IsChecked>
+                      <Binding Path="EditorService.SelectedGizmo"
+                               Converter="{StaticResource _equalityToBoolConverter}"
+                               ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
+                               Mode="TwoWay"/>
+                  </ToggleButton.IsChecked>
               </ToggleButton>
         </Grid>
 
-        <monoGame:MonoGameControl Grid.Row="1"
-                                  DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Stretch" />
+        <monoGameInterop:MonoGameControl Grid.Row="1"
+                                         DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch" />
     </Grid>
 </UserControl>

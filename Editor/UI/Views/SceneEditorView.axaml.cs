@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Views {
 
     using Avalonia.Controls;
+    using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Editor.Library.ViewModels;
 
