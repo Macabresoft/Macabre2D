@@ -186,7 +186,7 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <param name="sprite">The sprite.</param>
         /// <returns>A vaue indicating whether or not the sprite was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite sprite) {
+        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
             sprite = this._indexToSprites.Values.FirstOrDefault(x => x?.Id == spriteId);
             return sprite != null;
         }

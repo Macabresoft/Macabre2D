@@ -249,10 +249,10 @@
         }
 
         private Vector2 CreateSize() {
-            return this.Font?.SpriteFont != null ? this.Font.SpriteFont.MeasureString(this.Text) : Vector2.Zero;
+            return Font?.SpriteFont?.MeasureString(this.Text) ?? Vector2.Zero;
         }
 
-        private void RenderSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
                 this._pixelTransform.Reset();
                 this._rotatableTransform.Reset();

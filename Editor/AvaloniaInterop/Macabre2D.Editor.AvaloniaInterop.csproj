@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>Macabresoft.Macabre2D.Editor.AvaloniaInterop</RootNamespace>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\CppNet.dll" />

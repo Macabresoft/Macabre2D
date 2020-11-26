@@ -238,7 +238,7 @@
             return result;
         }
 
-        private void RenderSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
                 this._pixelTransform.Reset();
                 this._rotatableTransform.Reset();

@@ -267,7 +267,7 @@
             return result;
         }
 
-        private void GridComponent_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void GridComponent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(GridComponent.WorldGrid)) {
                 this.ResetBoundingAreas();
             }

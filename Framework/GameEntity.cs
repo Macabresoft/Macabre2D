@@ -377,7 +377,7 @@
         /// <param name="e">
         /// The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
         /// </param>
-        protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        protected virtual void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.Parent)) {
                 this.HandleMatrixOrTransformChanged();
             }

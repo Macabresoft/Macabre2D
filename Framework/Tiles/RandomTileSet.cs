@@ -180,7 +180,7 @@
             return sprite != null;
         }
 
-        private void Tile_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Tile_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (this._isLoaded && e.PropertyName == nameof(WeightedTile.Sprite) && sender is WeightedTile tile) {
                 tile.Sprite?.Load();
                 var index = (ushort)this._tiles.IndexOf(tile);

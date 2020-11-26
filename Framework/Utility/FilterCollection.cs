@@ -316,7 +316,7 @@
             this._shouldRebuildCache = true;
         }
 
-        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == this._filterPropertyName) {
                 this.InvalidateCache();
             }

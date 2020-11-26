@@ -329,18 +329,19 @@
             this._shouldRebuildCache = true;
         }
 
-        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == this._sortPropertyName) {
-                var item = (T)sender;
-                var index = this._items.IndexOf(item);
+        private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == this._sortPropertyName && sender is T item) {
+                lock (this._lock) {
+                    var index = this._items.IndexOf(item);
 
-                this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
-                this._removeJournal.Add(index);
+                    this._addJournal.Add(new AddJournalEntry(this._addJournal.Count, item));
+                    this._removeJournal.Add(index);
 
-                // Until the item is back in place, we don't care about its events. We will
-                // re-subscribe when this._addJournal is processed.
-                this.UnsubscribeFromItemEvents(item);
-                this.InvalidateCache();
+                    // Until the item is back in place, we don't care about its events. We will
+                    // re-subscribe when this._addJournal is processed.
+                    this.UnsubscribeFromItemEvents(item);
+                    this.InvalidateCache();
+                }
             }
             else if (e.PropertyName == this._filterPropertyName) {
                 this.InvalidateCache();

@@ -114,7 +114,7 @@
             return;
         }
 
-        private void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Entity_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.IsEnabled)) {
                 if (this._isEnabled) {
                     this.RaisePropertyChanged(nameof(this.IsEnabled));
@@ -124,7 +124,7 @@
             this.OnEntityPropertyChanged(e);
         }
 
-        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Self_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             this.OnPropertyChanged(e);
         }
 
