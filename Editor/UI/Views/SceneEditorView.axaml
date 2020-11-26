@@ -5,7 +5,13 @@
              Name="_view">
     <Grid RowDefinitions="Auto, *">
         <Grid Grid.Row="0"
-              Height="16">
+              ColumnDefinitions="Auto, Auto, *">
+              <ToggleButton Grid.Column="0">
+                Selection
+              </ToggleButton>
+              <ToggleButton Grid.Column="1">
+                Translation
+              </ToggleButton>
         </Grid>
 
         <monoGame:MonoGameControl Grid.Row="1"
