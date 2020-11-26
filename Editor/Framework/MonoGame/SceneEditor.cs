@@ -87,7 +87,7 @@
 
             base.Initialize();
 
-            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this._sceneService.CurrentScene.Children.Count == 0) {
                 var circleEntity = this._sceneService.CurrentScene.AddChild();
                 circleEntity.LocalPosition += Vector2.One;
 
