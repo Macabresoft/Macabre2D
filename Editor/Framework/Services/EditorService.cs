@@ -43,13 +43,13 @@
         /// Gets or sets the size of the major grid.
         /// </summary>
         /// <value>The size of the major grid.</value>
-        public byte MajorGridSize { get; set; }
+        byte MajorGridSize { get; set; }
 
         /// <summary>
         /// Gets or sets the number of divisions between major grid lines.
         /// </summary>
         /// <value>The number of divisions.</value>
-        public byte MinorGridDivisions { get; set; }
+        byte MinorGridDivisions { get; set; }
     }
 
     /// <summary>

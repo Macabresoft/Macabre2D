@@ -10,24 +10,29 @@
     </UserControl.Resources>
     <Grid RowDefinitions="Auto, *"
           DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}">
-        <Grid Grid.Row="0"
+        <Grid Name="_gizmoGrid"
+              Grid.Row="0"
               ColumnDefinitions="Auto, Auto, *">
               <ToggleButton Grid.Column="0"
-                            Content="Selection">
+                            Content="Selection"
+                            Tag="{x:Static monoGame:GizmoKind.Selector}">
                   <ToggleButton.IsChecked>
                       <Binding Path="EditorService.SelectedGizmo"
                                Converter="{StaticResource _equalityToBoolConverter}"
                                ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
-                               Mode="TwoWay" />
+                               Mode="TwoWay"
+                               TargetNullValue="False" />
                   </ToggleButton.IsChecked>
               </ToggleButton>
               <ToggleButton Grid.Column="1"
-                            Content="Translation">
+                            Content="Translation"
+                            Tag="{x:Static monoGame:GizmoKind.Translation}">
                   <ToggleButton.IsChecked>
                       <Binding Path="EditorService.SelectedGizmo"
                                Converter="{StaticResource _equalityToBoolConverter}"
                                ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
-                               Mode="TwoWay"/>
+                               Mode="TwoWay"
+                               TargetNullValue="False" />
                   </ToggleButton.IsChecked>
               </ToggleButton>
         </Grid>
