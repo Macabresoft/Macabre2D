@@ -1,13 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
-
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
-    using Microsoft.Xna.Framework;
-    using ReactiveUI;
     using System;
     using System.Reactive;
     using System.Windows.Input;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Microsoft.Xna.Framework;
+    using ReactiveUI;
 
     /// <summary>
     /// A view model that holds a <see cref="ISceneEditor" /> and handles interactions with it from
@@ -23,12 +22,8 @@
         public SceneEditorViewModel(IEditorService editorService, ISceneEditor sceneEditor) : base(sceneEditor) {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.CenterCameraCommand = ReactiveCommand.Create(this.CenterCamera);
+            this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind, Unit>(this.SetSelectedGizmo);
         }
-        
-        /// <summary>
-        /// Gets the editor service.
-        /// </summary>
-        public IEditorService EditorService { get; }
 
         /// <summary>
         /// Gets a command that centers the <see cref="ISceneEditor" /> camera.
@@ -37,17 +32,28 @@
         public ICommand CenterCameraCommand { get; }
 
         /// <summary>
+        /// Gets the editor service.
+        /// </summary>
+        public IEditorService EditorService { get; }
+
+        /// <summary>
         /// Gets the scene editor.
         /// </summary>
         /// <value>The scene editor.</value>
-        public ISceneEditor SceneEditor {
-            get {
-                return this.Game as ISceneEditor;
-            }
-        }
+        public ISceneEditor SceneEditor => this.Game as ISceneEditor;
+
+        /// <summary>
+        /// Gets a command to set the selected gizmo.
+        /// </summary>
+        public ICommand SetSelectedGizmoCommand { get; }
 
         private void CenterCamera() {
             this.SceneEditor.Camera.Entity.LocalPosition = Vector2.Zero;
+        }
+
+        private Unit SetSelectedGizmo(GizmoKind kind) {
+            this.EditorService.SelectedGizmo = kind;
+            return Unit.Default;
         }
     }
 }

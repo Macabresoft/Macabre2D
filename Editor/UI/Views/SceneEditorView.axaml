@@ -6,35 +6,52 @@
              x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView"
              Name="_view">
     <UserControl.Resources>
-        <converters:EqualityToBoolConverter x:Key="_equalityToBoolConverter" />
+        <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="Auto, *"
           DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}">
         <Grid Name="_gizmoGrid"
               Grid.Row="0"
-              ColumnDefinitions="Auto, Auto, *">
-              <ToggleButton Grid.Column="0"
-                            Content="Selection"
-                            Tag="{x:Static monoGame:GizmoKind.Selector}">
-                  <ToggleButton.IsChecked>
-                      <Binding Path="EditorService.SelectedGizmo"
-                               Converter="{StaticResource _equalityToBoolConverter}"
-                               ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
-                               Mode="TwoWay"
-                               TargetNullValue="False" />
-                  </ToggleButton.IsChecked>
-              </ToggleButton>
-              <ToggleButton Grid.Column="1"
-                            Content="Translation"
-                            Tag="{x:Static monoGame:GizmoKind.Translation}">
-                  <ToggleButton.IsChecked>
-                      <Binding Path="EditorService.SelectedGizmo"
-                               Converter="{StaticResource _equalityToBoolConverter}"
-                               ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
-                               Mode="TwoWay"
-                               TargetNullValue="False" />
-                  </ToggleButton.IsChecked>
-              </ToggleButton>
+              ColumnDefinitions="Auto, Auto, Auto, *">
+            <ToggleButton Grid.Column="0"
+                          Content="Selection"
+                          Tag="{x:Static monoGame:GizmoKind.Selector}"
+                          Command="{Binding SetSelectedGizmoCommand}"
+                          CommandParameter="{x:Static monoGame:GizmoKind.Selector}">
+                <ToggleButton.IsChecked>
+                    <Binding Path="EditorService.SelectedGizmo"
+                             Converter="{StaticResource GizmoKindToBoolConverter}"
+                             ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
+                             Mode="OneWay"
+                             TargetNullValue="False" />
+                </ToggleButton.IsChecked>
+            </ToggleButton>
+            <ToggleButton Grid.Column="1"
+                          Content="Translation"
+                          Tag="{x:Static monoGame:GizmoKind.Translation}"
+                          Command="{Binding SetSelectedGizmoCommand}"
+                          CommandParameter="{x:Static monoGame:GizmoKind.Translation}">
+                <ToggleButton.IsChecked>
+                    <Binding Path="EditorService.SelectedGizmo"
+                             Converter="{StaticResource GizmoKindToBoolConverter}"
+                             ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
+                             Mode="OneWay"
+                             TargetNullValue="False" />
+                </ToggleButton.IsChecked>
+            </ToggleButton>
+            <ToggleButton Grid.Column="2"
+                          Content="Scale"
+                          Tag="{x:Static monoGame:GizmoKind.Scale}"
+                          Command="{Binding SetSelectedGizmoCommand}"
+                          CommandParameter="{x:Static monoGame:GizmoKind.Scale}">
+                <ToggleButton.IsChecked>
+                    <Binding Path="EditorService.SelectedGizmo"
+                             Converter="{StaticResource GizmoKindToBoolConverter}"
+                             ConverterParameter="{x:Static monoGame:GizmoKind.Scale}"
+                             Mode="OneWay"
+                             TargetNullValue="False" />
+                </ToggleButton.IsChecked>
+            </ToggleButton>
         </Grid>
 
         <monoGameInterop:MonoGameControl Grid.Row="1"

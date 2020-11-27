@@ -124,11 +124,10 @@
             translationGizmoEntity.AddComponent(translationGizmo);
             this._gizmos.Add(translationGizmo);
             
-            // TODO: add the scale gizmo back when you fix it.
-            // var scaleGizmoEntity = cameraEntity.AddChild();
-            // var scaleGizmo = new ScaleGizmoComponent(this._editorService, this._selectionService, this._undoService);
-            // scaleGizmoEntity.AddComponent(scaleGizmo);
-            // this._gizmos.Add(scaleGizmo);
+            var scaleGizmoEntity = cameraEntity.AddChild();
+            var scaleGizmo = new ScaleGizmoComponent(this._editorService, this._selectionService, this._undoService);
+            scaleGizmoEntity.AddComponent(scaleGizmo);
+            this._gizmos.Add(scaleGizmo);
             
             scene.AddSystem(new EditorUpdateSystem(this._editorService, selectorGizmo));
             return scene;
