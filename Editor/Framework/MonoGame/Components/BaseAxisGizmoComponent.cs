@@ -12,6 +12,9 @@
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
     public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
+
+        private const float FloatingPointTolerance = 0.0001f;
+        
         /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>
@@ -179,11 +182,11 @@
         /// <param name="moveToPosition">The position to move to (typically the mouse position).</param>
         /// <returns>The new position the dragged end position should be.</returns>
         protected Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
-            var slope = end.X != start.X ? (end.Y - start.Y) / (end.X - start.X) : 1f;
+            var slope = Math.Abs(end.X - start.X) > FloatingPointTolerance ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
             Vector2 newPosition;
             if (Math.Abs(slope) <= 0.5f) {
-                if (slope == 0f) {
+                if (Math.Abs(slope) < FloatingPointTolerance) {
                     newPosition = new Vector2(moveToPosition.X, end.Y);
                 }
                 else {
@@ -192,7 +195,7 @@
                 }
             }
             else {
-                if (Math.Abs(slope) == 1f) {
+                if (Math.Abs(Math.Abs(slope) - 1f) < FloatingPointTolerance) {
                     newPosition = new Vector2(end.X, moveToPosition.Y);
                 }
                 else {

@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+    using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -11,7 +12,6 @@
     /// </summary>
     public sealed class ScaleGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
-        private float _defaultLineLength;
         private Sprite _squareSprite;
         private Vector2 _unmovedScale;
 
@@ -75,21 +75,27 @@
             else if (this.CurrentAxis != GizmoAxis.None) {
                 var entity = this.SelectionService.SelectedEntity;
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
-                    var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
-                    var newLineLength = Vector2.Distance(newPosition, this.NeutralAxisPosition) + this._defaultLineLength;
-                    var multiplier = this.GetScaleSign(newPosition) * newLineLength / this._defaultLineLength;
+                    var lineLength = this.GetAxisLength();
+                    var newPosition = mousePosition;
+
+                    if (this.CurrentAxis == GizmoAxis.X) {
+                        newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition);
+                        this.XAxisPosition = newPosition;
+                    }
+                    else if (this.CurrentAxis == GizmoAxis.Y) {
+                        newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition);
+                        this.YAxisPosition = newPosition;
+                    }
+                    
+                    var newLineLength = Vector2.Distance(newPosition, this.NeutralAxisPosition);
+                    Console.WriteLine(newPosition);
+                    
+                    var multiplier = (this.GetScaleSign(newPosition, lineLength) * newLineLength) / lineLength;
+                    
                     // TODO: handle holding shift down to scale both sides at once.
                     var newScale = this.CurrentAxis == GizmoAxis.X ? 
                         new Vector2(this._unmovedScale.X * multiplier, this._unmovedScale.Y) : 
                         new Vector2(this._unmovedScale.X, this._unmovedScale.Y * multiplier);
-
-                    if (this.CurrentAxis == GizmoAxis.X) {
-                        this.XAxisPosition = newPosition;
-                    }
-                    else if (this.CurrentAxis == GizmoAxis.Y) {
-                        this.YAxisPosition = newPosition;
-                    }
-                    
                     this.UpdateScale(entity, newScale);
                     result = true;
                 }
@@ -107,6 +113,7 @@
             else {
                 var axis = this.GetAxisUnderMouse(mousePosition);
                 this.SetCursor(axis == GizmoAxis.None || axis == GizmoAxis.Neutral ? StandardCursorType.None : StandardCursorType.Hand);
+                base.Update(frameTime, inputState);
             }
 
             return result;
@@ -117,15 +124,14 @@
             return this.SelectionService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
-        private float GetScaleSign(Vector2 dragPosition) {
-            var dragStartPoint = this.NeutralAxisPosition + (this.CurrentAxis == GizmoAxis.X ? new Vector2(this._defaultLineLength, 0f) : new Vector2(0f, this._defaultLineLength));
+        private float GetScaleSign(Vector2 dragPosition, float lineLength) {
+            var dragStartPoint = this.NeutralAxisPosition + (this.CurrentAxis == GizmoAxis.X ? new Vector2(lineLength, 0f) : new Vector2(0f, lineLength));
             var dragDistanceFromComponent = Vector2.Distance(dragPosition, this.NeutralAxisPosition);
             var totalDragDistance = Vector2.Distance(dragPosition, dragStartPoint);
-            return totalDragDistance > this._defaultLineLength && dragDistanceFromComponent < totalDragDistance ? -1f : 1f;
+            return totalDragDistance > lineLength && dragDistanceFromComponent < totalDragDistance ? -1f : 1f;
         }
 
         private void StartDrag(GizmoAxis axis) {
-            this._defaultLineLength = this.GetAxisLength();
             this._unmovedScale = this.SelectionService.SelectedEntity.Transform.Scale;
             this.CurrentAxis = axis;
 

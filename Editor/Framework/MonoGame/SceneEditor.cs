@@ -38,6 +38,7 @@
         private readonly IEntitySelectionService _selectionService;
         private readonly IUndoService _undoService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
+        private bool _isInitialized;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
@@ -83,29 +84,38 @@
 
         /// <inheritdoc />
         protected override void Initialize() {
-            this.LoadScene(this.CreateScene());
+            if (!this._isInitialized) {
+                try {
+                    this.LoadScene(this.CreateScene());
 
-            base.Initialize();
+                    base.Initialize();
 
-            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this._sceneService.CurrentScene.Children.Count == 0) {
-                var circleEntity = this._sceneService.CurrentScene.AddChild();
-                circleEntity.LocalPosition += Vector2.One;
+                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this._sceneService.CurrentScene.Children.Count == 0) {
+                        var circleEntity = this._sceneService.CurrentScene.AddChild();
+                        circleEntity.LocalPosition += Vector2.One;
 
-                this._sceneService.CurrentScene.Initialize(this);
+                        this._sceneService.CurrentScene.Initialize(this);
 
-                // TODO: remove the following code once scene loading exists
-                var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
-                circleBody.Collider = new CircleCollider {
-                    Radius = 2f,
-                    RadiusScalingType = RadiusScalingType.Average
-                };
+                        // TODO: remove the following code once scene loading exists
+                        var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
+                        circleBody.Collider = new CircleCollider {
+                            Radius = 2f,
+                            RadiusScalingType = RadiusScalingType.Average
+                        };
 
-                var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
-                circleDrawer.Update(new FrameTime(), new InputState());
-                circleDrawer.LineThickness = 5f;
+                        var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
+                        circleDrawer.Update(new FrameTime(), new InputState());
+                        circleDrawer.LineThickness = 5f;
+                    }
+
+                    this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
+                }
+                finally {
+                    this._isInitialized = true;
+                }
             }
 
-            this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
+
         }
 
         private IGameScene CreateScene() {
