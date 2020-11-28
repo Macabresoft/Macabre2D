@@ -1,10 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
-    using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
     using MouseButton = Macabresoft.Macabre2D.Framework.MouseButton;
 
     /// <summary>
@@ -86,17 +86,19 @@
                         newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition);
                         this.YAxisPosition = newPosition;
                     }
-                    
+
                     var newLineLength = Vector2.Distance(newPosition, this.NeutralAxisPosition);
-                    Console.WriteLine(newPosition);
-                    
-                    var multiplier = (this.GetScaleSign(newPosition, lineLength) * newLineLength) / lineLength;
-                    
-                    // TODO: handle holding shift down to scale both sides at once.
-                    var newScale = this.CurrentAxis == GizmoAxis.X ? 
-                        new Vector2(this._unmovedScale.X * multiplier, this._unmovedScale.Y) : 
-                        new Vector2(this._unmovedScale.X, this._unmovedScale.Y * multiplier);
-                    this.UpdateScale(entity, newScale);
+                    var multiplier = this.GetScaleSign(newPosition, lineLength) * newLineLength / lineLength;
+                    var newScale = this._unmovedScale;
+
+                    if (inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftShift)) {
+                        newScale *= multiplier;
+                    }
+                    else {
+                        newScale = this.CurrentAxis == GizmoAxis.X ? new Vector2(newScale.X * multiplier, newScale.Y) : new Vector2(newScale.X, newScale.Y * multiplier);
+                    }
+
+                    UpdateScale(entity, newScale);
                     result = true;
                 }
                 else {
@@ -106,14 +108,13 @@
                     var scale = entity.Transform.Scale;
                     var unmovedScale = this._unmovedScale;
                     this._undoService.Do(
-                        () => this.UpdateScale(entity, scale),
-                        () => this.UpdateScale(entity, unmovedScale));
+                        () => UpdateScale(entity, scale),
+                        () => UpdateScale(entity, unmovedScale));
                 }
             }
             else {
                 var axis = this.GetAxisUnderMouse(mousePosition);
                 this.SetCursor(axis == GizmoAxis.None || axis == GizmoAxis.Neutral ? StandardCursorType.None : StandardCursorType.Hand);
-                base.Update(frameTime, inputState);
             }
 
             return result;
@@ -143,7 +144,7 @@
             }
         }
 
-        private void UpdateScale(IGameEntity entity, Vector2 newScale) {
+        private static void UpdateScale(ITransformable entity, Vector2 newScale) {
             entity.SetWorldScale(newScale);
         }
     }

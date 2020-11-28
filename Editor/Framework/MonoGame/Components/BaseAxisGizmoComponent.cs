@@ -12,9 +12,6 @@
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
     public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
-
-        private const float FloatingPointTolerance = 0.0001f;
-        
         /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>
@@ -29,6 +26,8 @@
         /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
         /// </summary>
         protected const int GizmoPointSize = 16;
+
+        private const float FloatingPointTolerance = 0.0001f;
 
         private ICameraComponent _camera;
 
@@ -96,7 +95,7 @@
                 this.Camera.PropertyChanged += this.Camera_PropertyChanged;
             }
             else {
-                throw new ArgumentNullException(nameof(this._camera));
+                throw new NullReferenceException(nameof(this._camera));
             }
 
             this.ResetIsEnabled();
@@ -117,7 +116,7 @@
 
         /// <inheritdoc />
         public virtual bool Update(FrameTime frameTime, InputState inputState) {
-            if (this.SelectionService.SelectedEntity != null && this.NeutralAxisPosition != this.SelectionService.SelectedEntity.Transform.Position && this.CurrentAxis == GizmoAxis.None) {
+            if (this.SelectionService.SelectedEntity != null && this.CurrentAxis == GizmoAxis.None) {
                 this.ResetEndPoints();
             }
 

@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -21,7 +20,7 @@
         /// </summary>
         /// <value>The camera.</value>
         public ICameraComponent Camera { get; }
-        
+
         /// <summary>
         /// Gets the selected gizmo.
         /// </summary>
@@ -34,10 +33,10 @@
     /// </summary>
     public class SceneEditor : AvaloniaGame, ISceneEditor {
         private readonly IEditorService _editorService;
+        private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly ISceneService _sceneService;
         private readonly IEntitySelectionService _selectionService;
         private readonly IUndoService _undoService;
-        private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private bool _isInitialized;
 
         /// <summary>
@@ -63,10 +62,10 @@
         }
 
         /// <inheritdoc />
-        public ICameraComponent Camera { get; private set; }
+        public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
 
         /// <inheritdoc />
-        public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
+        public ICameraComponent Camera { get; private set; }
 
 
         /// <inheritdoc />
@@ -100,7 +99,7 @@
                         var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
                         circleBody.Collider = new CircleCollider {
                             Radius = 2f,
-                            RadiusScalingType = RadiusScalingType.Average
+                            RadiusScalingType = RadiusScalingType.X
                         };
 
                         var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
@@ -114,8 +113,6 @@
                     this._isInitialized = true;
                 }
             }
-
-
         }
 
         private IGameScene CreateScene() {
@@ -133,12 +130,12 @@
             var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService, this._undoService);
             translationGizmoEntity.AddComponent(translationGizmo);
             this._gizmos.Add(translationGizmo);
-            
+
             var scaleGizmoEntity = cameraEntity.AddChild();
             var scaleGizmo = new ScaleGizmoComponent(this._editorService, this._selectionService, this._undoService);
             scaleGizmoEntity.AddComponent(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
-            
+
             scene.AddSystem(new EditorUpdateSystem(this._editorService, selectorGizmo));
             return scene;
         }
