@@ -25,11 +25,17 @@
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(ISceneService sceneService) {
+        public SceneTreeViewModel(ISceneService sceneService, IEntitySelectionService selectionService) {
             this._sceneService = sceneService;
+            this.SelectionService = selectionService;
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
         }
+        
+        /// <summary>
+        /// Gets the selection service.
+        /// </summary>
+        public IEntitySelectionService SelectionService { get; }
 
         /// <summary>
         /// Gets the root of the scene tree.

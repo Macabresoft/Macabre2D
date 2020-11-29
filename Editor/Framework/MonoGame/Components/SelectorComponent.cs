@@ -45,7 +45,12 @@
                 
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableComponents.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
-                this._selectionService.Select(selected);
+                this._selectionService.SelectedComponent = selected;
+
+                if (selected == null) {
+                    this._selectionService.SelectedEntity = null;
+                }
+                
                 result = true;
             }
 

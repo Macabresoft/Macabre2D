@@ -7,6 +7,7 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using IGameComponent = Microsoft.Xna.Framework.IGameComponent;
 
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
@@ -218,7 +219,7 @@
         /// </summary>
         /// <returns>A value indicating whether or not this should be enabled.</returns>
         protected virtual bool ShouldBeEnabled() {
-            return this.GizmoKind == this.EditorService.SelectedGizmo;
+            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.SelectionService.SelectedEntity is IGameScene);
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {

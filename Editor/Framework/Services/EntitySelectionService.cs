@@ -10,26 +10,14 @@
     public interface IEntitySelectionService : INotifyPropertyChanged {
         
         /// <summary>
-        /// Gets the selected component.
+        /// Gets or sets the selected component.
         /// </summary>
-        IGameComponent SelectedComponent { get; }
+        IGameComponent SelectedComponent { get; set; }
         
         /// <summary>
-        /// Gets the selected entity.
+        /// Gets or sets the selected entity.
         /// </summary>
-        IGameEntity SelectedEntity { get; }
-
-        /// <summary>
-        /// Selects the provided <see cref="IGameEntity"/> and alerts all other services of the change.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        void Select(IGameEntity entity);
-
-        /// <summary>
-        /// Selects the provided <see cref="IGameComponent"/> and alerts all other services of the change.
-        /// </summary>
-        /// <param name="component"></param>
-        void Select(IGameComponent component);
+        IGameEntity SelectedEntity { get; set; }
     }
     
     /// <summary>
@@ -40,36 +28,28 @@
         private IGameComponent _selectedComponent;
         private IGameEntity _selectedEntity;
 
-
         /// <inheritdoc />
         public IGameComponent SelectedComponent {
             get => this._selectedComponent;
-            private set {
-                this.RaiseAndSetIfChanged(ref this._selectedComponent, value);
+            set {
+                if (value != this._selectedComponent) {
+                    this.RaiseAndSetIfChanged(ref this._selectedComponent, value);
+                    
+                    if (this._selectedComponent != null) {
+                        this.SelectedEntity = this._selectedComponent.Entity;
+                    }
+                }
             }
         }
 
         /// <inheritdoc />
         public IGameEntity SelectedEntity {
             get => this._selectedEntity;
-            private set {
-                this.RaiseAndSetIfChanged(ref this._selectedEntity, value);
-            }
-        }
-        
-        /// <inheritdoc />
-        public void Select(IGameEntity entity) {
-            if (entity != this.SelectedEntity) {
-                this.SelectedEntity = entity;
-                this.SelectedComponent = entity?.Components.FirstOrDefault();
-            }
-        }
-
-        /// <inheritdoc />
-        public void Select(IGameComponent component) {
-            if (this.SelectedComponent != component) {
-                this.SelectedComponent = component;
-                this.SelectedEntity = component?.Entity;
+            set {
+                if (value != this._selectedEntity) {
+                    this.RaiseAndSetIfChanged(ref this._selectedEntity, value);
+                    this.SelectedComponent = this._selectedEntity?.Components.FirstOrDefault();
+                }
             }
         }
     }
