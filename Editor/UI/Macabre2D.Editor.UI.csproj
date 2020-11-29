@@ -20,4 +20,10 @@
     <ProjectReference Include="..\AvaloniaInterop\Macabre2D.Editor.AvaloniaInterop.csproj" />
     <ProjectReference Include="..\Framework\Macabre2D.Editor.Library.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\SceneTreeView.axaml.cs">
+      <DependentUpon>SceneTreeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

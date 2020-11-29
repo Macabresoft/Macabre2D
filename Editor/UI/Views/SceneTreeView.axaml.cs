@@ -3,9 +3,9 @@
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Editor.Library.ViewModels;
 
-    public class SceneEditorView : UserControl {
-        public SceneEditorView() {
-            this.DataContext = Resolver.Resolve<SceneEditorViewModel>();
+    public class SceneTreeView : UserControl {
+        public SceneTreeView() {
+            this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
             this.InitializeComponent();
         }
 
