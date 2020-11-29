@@ -3,13 +3,15 @@
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
              xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.Editor.Library.MonoGame;assembly=Macabre2D.Editor.Library"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.Editor.AvaloniaInterop;assembly=Macabre2D.Editor.AvaloniaInterop"
-             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView"
-             Name="_view">
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView">
+    <Design.DataContext>
+        <viewModels:SceneEditorViewModel />
+    </Design.DataContext>
     <UserControl.Resources>
         <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>
-    <Grid RowDefinitions="Auto, *"
-          DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}">
+    <Grid RowDefinitions="Auto, *">
         <Grid Name="_gizmoGrid"
               Grid.Row="0"
               ColumnDefinitions="Auto, Auto, Auto, *">
@@ -55,7 +57,6 @@
         </Grid>
 
         <monoGameInterop:MonoGameControl Grid.Row="1"
-                                         DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}"
                                          HorizontalAlignment="Stretch"
                                          VerticalAlignment="Stretch" />
     </Grid>

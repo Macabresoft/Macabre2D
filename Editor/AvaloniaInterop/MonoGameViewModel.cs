@@ -94,7 +94,7 @@
     /// A MonoGame view model that acts as a go-between of Avalonia and a MonoGame <see cref="IGame" />.
     /// </summary>
     public abstract class MonoGameViewModel : ReactiveObject, IMonoGameViewModel {
-        private readonly PresentationParameters _presentationParameters = new PresentationParameters {
+        private readonly PresentationParameters _presentationParameters = new() {
             BackBufferWidth = 1,
             BackBufferHeight = 1,
             BackBufferFormat = SurfaceFormat.Color,
@@ -106,6 +106,13 @@
         private bool _isDisposed;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.
+        /// </summary>
+        /// <remarks>This constructor only exists for design time XAML.</remarks>
+        protected MonoGameViewModel() {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameViewModel" /> class.

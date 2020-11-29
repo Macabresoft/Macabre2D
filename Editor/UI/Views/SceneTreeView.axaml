@@ -1,9 +1,12 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneTreeView"
-             Name="_view">
-    <Grid RowDefinitions="Auto, *"
-          DataContext="{Binding DataContext, ElementName=_view, Mode=OneTime}">
-       
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneTreeView">
+    <Design.DataContext>
+        <viewModels:SceneTreeViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Row="0"
+                Background="Black" />
     </Grid>
 </UserControl>

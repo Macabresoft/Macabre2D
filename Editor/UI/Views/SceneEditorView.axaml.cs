@@ -8,7 +8,7 @@
             this.DataContext = Resolver.Resolve<SceneEditorViewModel>();
             this.InitializeComponent();
         }
-
+        
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }

@@ -1,5 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library {
-
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Unity;
@@ -30,6 +30,7 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterTypes(this IUnityContainer container) {
+            container.RegisterType<IAvaloniaGame, SceneEditor>(new PerResolveLifetimeManager());
             container.RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
             return container;
         }
