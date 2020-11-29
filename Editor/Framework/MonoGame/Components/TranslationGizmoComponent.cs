@@ -105,10 +105,22 @@
             return result;
         }
 
-
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
             return this.SelectionService.SelectedEntity != null && base.ShouldBeEnabled();
+        }
+
+        private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition) {
+            // TODO: handle snapped positions when holding ctrl.
+            var newPosition = mousePosition;
+            if (this.CurrentAxis == GizmoAxis.X) {
+                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition) - (this.XAxisPosition - this.NeutralAxisPosition);
+            }
+            else if (this.CurrentAxis == GizmoAxis.Y) {
+                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
+            }
+
+            return newPosition;
         }
 
         private void StartDrag(GizmoAxis axis) {

@@ -153,25 +153,7 @@
 
             return result;
         }
-
-        /// <summary>
-        /// Gets a position along this gizmo's current axis that is in line with the mouse position.
-        /// </summary>
-        /// <param name="mousePosition">The mouse position.</param>
-        /// <returns>A position along this gizmo's current axis that is in line with the mouse position.</returns>
-        protected Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition) {
-            // TODO: handle snapped positions when holding ctrl.
-            var newPosition = mousePosition;
-            if (this.CurrentAxis == GizmoAxis.X) {
-                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition) - (this.XAxisPosition - this.NeutralAxisPosition);
-            }
-            else if (this.CurrentAxis == GizmoAxis.Y) {
-                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
-            }
-
-            return newPosition;
-        }
-
+        
         /// <summary>
         /// Moves the end positions of the gizmo along the axis appropriately. Basically, this makes sure the drag operation is all
         /// good.
