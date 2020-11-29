@@ -5,25 +5,43 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D">
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top"
+              BorderBrush="{StaticResource ThemeBorderLowBrush}"
+              BorderThickness="0,0,0,1"
+              Padding="0,2">
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit"
-                          Click="Exit_Click"/>
+                          Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo"
                           Command="{Binding UndoCommand}"
                           InputGesture="Ctrl + Z"
-                          HotKey="Ctrl + Z"/>
+                          HotKey="Ctrl + Z" />
                 <MenuItem Header="_Redo"
                           Command="{Binding RedoCommand}"
                           InputGesture="Ctrl + Y"
-                          HotKey="Ctrl + Y"/>
+                          HotKey="Ctrl + Y" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_View Source"
-                          Click="ViewSource_Click"/>
-            </MenuItem>        </Menu>
-        <views:SceneEditorView DockPanel.Dock="Bottom" />
+                          Click="ViewSource_Click" />
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Bottom"
+              ColumnDefinitions="0.15*, Auto, 0.7*, Auto, 0.15*">
+            <views:SceneTreeView Grid.Column="0" />
+
+            <GridSplitter Width="3"
+                          Grid.Column="1" />
+
+            <views:SceneEditorView Grid.Column="2" />
+
+            <GridSplitter Width="3"
+                          Grid.Column="3" />
+
+            <Border Grid.Column="4"
+                    Background="Black" />
+        </Grid>
     </DockPanel>
 </Window>
