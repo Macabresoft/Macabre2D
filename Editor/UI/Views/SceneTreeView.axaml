@@ -9,7 +9,9 @@
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <Button Command="{Binding AddEntityCommand, Mode=OneWay}">Add</Button>
+            <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectionService.SelectedEntity}"
+                    Content="Add" />
             <Button>Delete</Button>
         </StackPanel>
 
