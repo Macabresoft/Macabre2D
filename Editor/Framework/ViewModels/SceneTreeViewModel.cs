@@ -3,6 +3,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Reactive;
+    using System.Runtime.CompilerServices;
     using System.Windows.Input;
     using DynamicData.Binding;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -17,6 +18,7 @@
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IGameEntity> _treeRoot = new();
         private readonly ReactiveCommand<IGameEntity, Unit> _addEntityCommand;
+        private readonly IUndoService _undoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
@@ -29,15 +31,18 @@
         /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
+        /// <param name="selectionService">The selection service.</param>
+        /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(ISceneService sceneService, IEntitySelectionService selectionService) {
+        public SceneTreeViewModel(ISceneService sceneService, IEntitySelectionService selectionService, IUndoService undoService) {
             this._sceneService = sceneService;
             this.SelectionService = selectionService;
+            this._undoService = undoService;
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
             this._addEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
-                AddEntity,
+                this.AddEntity,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
         }
 
@@ -56,9 +61,17 @@
         /// </summary>
         public IEntitySelectionService SelectionService { get; }
 
-        private static Unit AddEntity(IGameEntity parent) {
-            var child = parent.AddChild();
-            child.Name = "Unnamed Entity";
+        private Unit AddEntity(IGameEntity parent) {
+            var child = new GameEntity {
+                Name = "Unnamed Entity"
+            };
+
+            this._undoService.Do(() => {
+                parent.AddChild(child);
+            }, () => {
+                parent.RemoveChild(child);
+            });
+            
             return Unit.Default;
         }
 
