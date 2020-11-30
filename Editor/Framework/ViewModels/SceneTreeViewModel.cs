@@ -3,9 +3,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Reactive;
-    using System.Runtime.CompilerServices;
     using System.Windows.Input;
-    using DynamicData.Binding;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
@@ -15,9 +13,10 @@
     /// A view model for the scene tree.
     /// </summary>
     public class SceneTreeViewModel : ViewModelBase {
+        private readonly ReactiveCommand<IGameEntity, Unit> _addEntityCommand;
+        private readonly ReactiveCommand<IGameEntity, Unit> _removeEntityCommand;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IGameEntity> _treeRoot = new();
-        private readonly ReactiveCommand<IGameEntity, Unit> _addEntityCommand;
         private readonly IUndoService _undoService;
 
         /// <summary>
@@ -44,12 +43,21 @@
             this._addEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
                 this.AddEntity,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
+
+            this._removeEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
+                this.RemoveEntity,
+                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
         }
 
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
         public ICommand AddEntityCommand => this._addEntityCommand;
+
+        /// <summary>
+        /// Gets a command to remove an entity.
+        /// </summary>
+        public ICommand RemoveEntityCommand => this._removeEntityCommand;
 
         /// <summary>
         /// Gets the root of the scene tree.
@@ -68,10 +76,25 @@
 
             this._undoService.Do(() => {
                 parent.AddChild(child);
+                this.SelectionService.SelectedEntity = child;
             }, () => {
                 parent.RemoveChild(child);
+                this.SelectionService.SelectedEntity = parent;
             });
-            
+
+            return Unit.Default;
+        }
+
+        private Unit RemoveEntity(IGameEntity entity) {
+            var parent = entity.Parent;
+            this._undoService.Do(() => {
+                parent.RemoveChild(entity);
+                this.SelectionService.SelectedEntity = null;
+            }, () => {
+                parent.AddChild(entity);
+                this.SelectionService.SelectedEntity = entity;
+            });
+
             return Unit.Default;
         }
 

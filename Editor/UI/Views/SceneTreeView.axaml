@@ -12,7 +12,9 @@
             <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding SelectionService.SelectedEntity}"
                     Content="Add" />
-            <Button>Delete</Button>
+            <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectionService.SelectedEntity}"
+                    Content="Remove" />
         </StackPanel>
 
         <TreeView Grid.Row="1"
