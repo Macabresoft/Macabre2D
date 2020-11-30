@@ -38,7 +38,7 @@
 
             this._addEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
                 AddEntity,
-                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y != null));
+                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
         }
 
         /// <summary>
