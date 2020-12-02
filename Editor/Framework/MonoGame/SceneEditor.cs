@@ -35,7 +35,7 @@
         private readonly IEditorService _editorService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly ISceneService _sceneService;
-        private readonly IEntitySelectionService _selectionService;
+        private readonly ISelectionService _selectionService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
@@ -49,7 +49,7 @@
         public SceneEditor(
             IEditorService editorService,
             ISceneService sceneService,
-            IEntitySelectionService selectionService,
+            ISelectionService selectionService,
             IUndoService undoService) {
             this._editorService = editorService;
             this._sceneService = sceneService;

@@ -23,7 +23,7 @@
         /// <param name="undoService">The undo service.</param>
         public ScaleGizmoComponent(
             IEditorService editorService,
-            IEntitySelectionService selectionService,
+            ISelectionService selectionService,
             IUndoService undoService) : base(editorService, selectionService) {
             this._undoService = undoService;
         }

@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
-        protected BaseAxisGizmoComponent(IEditorService editorService, IEntitySelectionService selectionService) {
+        protected BaseAxisGizmoComponent(IEditorService editorService, ISelectionService selectionService) {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 1f;
             this.EditorService = editorService;
@@ -66,7 +66,7 @@
         /// <summary>
         /// The selection service.
         /// </summary>
-        protected IEntitySelectionService SelectionService { get; }
+        protected ISelectionService SelectionService { get; }
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -248,7 +248,7 @@
         }
 
         private void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IEntitySelectionService.SelectedEntity) || e.PropertyName == nameof(IEntitySelectionService.SelectedComponent)) {
+            if (e.PropertyName == nameof(ISelectionService.SelectedEntity) || e.PropertyName == nameof(ISelectionService.SelectedComponent)) {
                 this.ResetIsEnabled();
             }
         }

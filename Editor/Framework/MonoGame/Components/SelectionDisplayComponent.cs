@@ -12,14 +12,14 @@
     /// </summary>
     public class SelectionDisplayComponent : BaseDrawerComponent {
         private readonly IEditorService _editorService;
-        private readonly IEntitySelectionService _selectionService;
+        private readonly ISelectionService _selectionService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectionDisplayComponent" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
-        public SelectionDisplayComponent(IEditorService editorService, IEntitySelectionService selectionService) : base() {
+        public SelectionDisplayComponent(IEditorService editorService, ISelectionService selectionService) : base() {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 2f;
             this._editorService = editorService;

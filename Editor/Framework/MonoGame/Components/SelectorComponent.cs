@@ -10,7 +10,7 @@
     /// </summary>
     public class SelectorComponent : GameComponent, IGizmo {
         private readonly ISceneService _sceneService;
-        private readonly IEntitySelectionService _selectionService;
+        private readonly ISelectionService _selectionService;
         private ICameraComponent _camera;
 
         /// <summary>
@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
-        public SelectorComponent(ISceneService sceneService, IEntitySelectionService selectionService) : base() {
+        public SelectorComponent(ISceneService sceneService, ISelectionService selectionService) : base() {
             this._sceneService = sceneService;
             this._selectionService = selectionService;
         }

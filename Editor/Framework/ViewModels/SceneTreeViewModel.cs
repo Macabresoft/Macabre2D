@@ -33,7 +33,7 @@
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(ISceneService sceneService, IEntitySelectionService selectionService, IUndoService undoService) {
+        public SceneTreeViewModel(ISceneService sceneService, ISelectionService selectionService, IUndoService undoService) {
             this._sceneService = sceneService;
             this.SelectionService = selectionService;
             this._undoService = undoService;
@@ -67,7 +67,7 @@
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public IEntitySelectionService SelectionService { get; }
+        public ISelectionService SelectionService { get; }
 
         private Unit AddEntity(IGameEntity parent) {
             var child = new GameEntity {
