@@ -114,10 +114,9 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
                 var source = new Rect(this._bitmap.Size);
                 var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
                 context.DrawImage(this._bitmap, source, viewPort, interpolationMode);
-                // this._bitmap.Save(@"c:\temp\file.bmp");
             }
 
-            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.MaxValue);
+            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
         }
 
         /// <inheritdoc />
