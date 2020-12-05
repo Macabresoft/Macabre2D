@@ -40,8 +40,9 @@
             <GridSplitter Width="3"
                           Grid.Column="3" />
 
-            <Border Grid.Column="4"
-                    Background="Black" />
+            <Grid Grid.Column="4">
+                <views:EntityEditorView />
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

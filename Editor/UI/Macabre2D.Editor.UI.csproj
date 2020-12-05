@@ -25,5 +25,9 @@
       <DependentUpon>SceneTreeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\EntityEditorView.axaml.cs">
+      <DependentUpon>ComponentListView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

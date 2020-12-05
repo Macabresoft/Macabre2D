@@ -1,0 +1,12 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.EntityEditorView">
+    <Design.DataContext>
+        <viewModels:EntityEditorViewModel />
+    </Design.DataContext>
+    <Grid>
+
+    </Grid>
+</UserControl>
