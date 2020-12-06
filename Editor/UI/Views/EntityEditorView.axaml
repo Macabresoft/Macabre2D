@@ -6,7 +6,13 @@
     <Design.DataContext>
         <viewModels:EntityEditorViewModel />
     </Design.DataContext>
-    <Grid>
-
+    <Grid RowDefinitions="Auto, *">
+        <HeaderedContentControl Grid.Row="0"
+                                Classes="GroupBox"
+                                Header="Transform">
+            <Border Background="Black">
+                <TextBlock>This is only a test.</TextBlock>
+            </Border>
+        </HeaderedContentControl>
     </Grid>
 </UserControl>

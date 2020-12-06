@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Editor\AvaloniaInterop\Macabre2D.Editor.AvaloniaInterop.csproj" />
-    <ProjectReference Include="..\Editor\Framework\Macabre2D.Editor.Library.csproj" />
+    <ProjectReference Include="..\Editor\Library\Macabre2D.Editor.Library.csproj" />
     <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
   </ItemGroup>
 </Project>
