@@ -1,18 +1,16 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls"
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
              x:Class="Macabresoft.Macabre2D.Editor.UI.Views.EntityEditorView">
     <Design.DataContext>
         <viewModels:EntityEditorViewModel />
     </Design.DataContext>
     <Grid RowDefinitions="Auto, *">
-        <HeaderedContentControl Grid.Row="0"
-                                Classes="GroupBox"
-                                Header="Transform">
+        <controls:GroupBox Header="Transform">
             <Border Background="Black">
                 <TextBlock>This is only a test.</TextBlock>
             </Border>
-        </HeaderedContentControl>
+        </controls:GroupBox>
     </Grid>
 </UserControl>
