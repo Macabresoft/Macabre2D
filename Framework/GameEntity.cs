@@ -170,12 +170,11 @@
         [DataMember]
         private readonly ObservableCollection<IGameComponent> _components = new ObservableCollection<IGameComponent>();
 
-        [DataMember]
+        
         private bool _isEnabled = true;
 
         private Layers _layers = Layers.Default;
-
-        [DataMember]
+        
         private string _name = string.Empty;
 
         /// <summary>
@@ -192,6 +191,7 @@
         public IReadOnlyCollection<IGameComponent> Components => this._components;
 
         /// <inheritdoc />
+        [DataMember]
         public bool IsEnabled {
             get {
                 return this._isEnabled;
@@ -215,6 +215,7 @@
         }
 
         /// <inheritdoc />
+        [DataMember]
         public string Name {
             get {
                 return this._name;
