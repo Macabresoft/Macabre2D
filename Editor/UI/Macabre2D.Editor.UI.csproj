@@ -13,6 +13,7 @@
     <PackageReference Include="Avalonia" Version="0.10.0-preview6" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview6" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-preview6" />
+    <PackageReference Include="Macabresoft.Core" Version="1.0.6" />
     <PackageReference Include="Unity" Version="5.11.9" />
   </ItemGroup>
   <ItemGroup>
