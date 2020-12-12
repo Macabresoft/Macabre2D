@@ -1,16 +1,18 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls"
+             xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
              x:Class="Macabresoft.Macabre2D.Editor.UI.Views.EntityEditorView">
     <Design.DataContext>
         <viewModels:EntityEditorViewModel />
     </Design.DataContext>
     <Grid RowDefinitions="Auto, *">
-        <controls:GroupBox Header="Transform">
-            <Border Background="Black">
-                <TextBlock>This is only a test.</TextBlock>
-            </Border>
+        <controls:GroupBox Header="Entity">
+            <StackPanel Orientation="Vertical">
+                <valueEditors:StringEditor Title="Name"
+                                           Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}"/>
+            </StackPanel>
         </controls:GroupBox>
     </Grid>
 </UserControl>

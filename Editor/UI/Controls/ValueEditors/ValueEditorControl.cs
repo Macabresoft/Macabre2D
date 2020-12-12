@@ -2,9 +2,9 @@
     using System;
     using Avalonia;
     using Avalonia.Controls;
+    using Avalonia.Markup.Xaml;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
 
     public abstract class ValueEditorControl<T> : UserControl, IValueEditor<T> {
         public static readonly StyledProperty<object> OwnerProperty =
@@ -13,14 +13,21 @@
         public static readonly StyledProperty<T> ValueProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging);
 
+        public static readonly StyledProperty<string> TitleProperty =
+            AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
+
+
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
-
-        public event EventHandler<ValueChangedEventArgs<T>> ValueChanged; 
         
         public object Owner {
             get => this.GetValue(OwnerProperty);
             set => this.SetValue(OwnerProperty, value);
+        }
+
+        public string Title {
+            get => this.GetValue(TitleProperty);
+            set => this.SetValue(TitleProperty, value);
         }
 
         public T Value {
@@ -32,10 +39,14 @@
             get => this.GetValue(ValuePropertyNameProperty);
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
-        
+
+        private void OnValueChanged(T originalValue, T updatedValue) {
+            this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<T>(originalValue, updatedValue));
+        }
+
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ValueEditorControl<T> valueEditor && 
-                valueEditor.Owner != null && 
+            if (!isBeforeChange && control is ValueEditorControl<T> valueEditor &&
+                valueEditor.Owner != null &&
                 !string.IsNullOrWhiteSpace(valueEditor.ValuePropertyName)) {
                 var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
 
@@ -44,9 +55,7 @@
                 }
             }
         }
-        
-        private void OnValueChanged(T originalValue, T updatedValue) {
-            this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<T>(originalValue, updatedValue));
-        }
+
+        public event EventHandler<ValueChangedEventArgs<T>> ValueChanged;
     }
 }

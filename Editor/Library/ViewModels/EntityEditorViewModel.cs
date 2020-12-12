@@ -3,14 +3,15 @@
     using Unity;
 
     public class EntityEditorViewModel : ViewModelBase {
-        private readonly ISelectionService _selectionService;
 
         public EntityEditorViewModel() {
         }
 
         [InjectionConstructor]
         public EntityEditorViewModel(ISelectionService selectionService) {
-            this._selectionService = selectionService;
+            this.SelectionService = selectionService;
         }
+        
+        public ISelectionService SelectionService { get; }
     }
 }

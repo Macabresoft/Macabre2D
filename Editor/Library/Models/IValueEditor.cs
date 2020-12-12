@@ -12,6 +12,11 @@
         /// Gets or sets the owner of the value. This is only required if not directly binding to the value.
         /// </summary>
         object Owner { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
+        string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the value.
