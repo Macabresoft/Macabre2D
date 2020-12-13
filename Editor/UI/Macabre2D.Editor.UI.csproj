@@ -24,4 +24,10 @@
   <ItemGroup>
     <UpToDateCheckInput Remove="Controls\GroupBoxControl.axaml" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Controls\ValueEditors\Vector2Editor.axaml.cs">
+      <DependentUpon>VectorEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

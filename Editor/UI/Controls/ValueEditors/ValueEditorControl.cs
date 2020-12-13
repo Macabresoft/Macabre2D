@@ -2,6 +2,7 @@
     using System;
     using Avalonia;
     using Avalonia.Controls;
+    using Avalonia.Data;
     using Avalonia.Interactivity;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
@@ -11,7 +12,7 @@
             AvaloniaProperty.Register<ValueEditorControl<T>, object>(nameof(Owner));
 
         public static readonly StyledProperty<T> ValueProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging);
+            AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly DirectProperty<ValueEditorControl<T>, T> IntermediaryValueProperty =
             AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, T>(

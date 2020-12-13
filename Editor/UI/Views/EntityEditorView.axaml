@@ -12,6 +12,8 @@
             <StackPanel Orientation="Vertical">
                 <valueEditors:StringEditor Title="Name"
                                            Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}"/>
+                <valueEditors:Vector2Editor Title="Position"
+                                            Value="{Binding SelectionService.SelectedEntity.LocalPosition}" />
             </StackPanel>
         </controls:GroupBox>
     </Grid>

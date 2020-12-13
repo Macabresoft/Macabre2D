@@ -1,0 +1,30 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:system="clr-namespace:System;assembly=mscorlib"
+                          x:TypeArguments="system:String"
+                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.Vector2Editor"
+                          UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding $parent[local:Vector2Editor].Title}"
+                   VerticalAlignment="Center" />
+        
+        <TextBlock Grid.Column="1"
+                   Text="X: "
+                   VerticalAlignment="Center" />
+
+        <TextBox Grid.Column="2"
+                 Text="{Binding $parent[local:Vector2Editor].XDisplay}"
+                 LostFocus="XDisplay_OnLostFocus"/>
+
+        <TextBlock Grid.Column="3"
+                   Text="Y: "
+                   VerticalAlignment="Center" />
+
+        <TextBox Grid.Column="4"
+                 Text="{Binding $parent[local:Vector2Editor].YDisplay}"
+                 LostFocus="YDisplay_OnLostFocus"/>
+    </Grid>
+</local:ValueEditorControl>
