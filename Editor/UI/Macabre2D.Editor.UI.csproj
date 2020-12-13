@@ -22,9 +22,6 @@
     <ProjectReference Include="..\Library\Macabre2D.Editor.Library.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Styles" />
-  </ItemGroup>
-  <ItemGroup>
     <UpToDateCheckInput Remove="Controls\GroupBoxControl.axaml" />
   </ItemGroup>
 </Project>
