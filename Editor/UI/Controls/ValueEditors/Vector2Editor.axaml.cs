@@ -114,13 +114,13 @@
 
 
         private void XDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            var calculatedValue = this.GetCalculatedValue(this.XDisplay, this.IntermediaryValue.X);
-            this.IntermediaryValue = new Vector2(calculatedValue, this.IntermediaryValue.Y);
+            var calculatedValue = this.GetCalculatedValue(this.XDisplay, this.Value.X);
+            this.Value = new Vector2(calculatedValue, this.Value.Y);
         }
 
         private void YDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            var calculatedValue = this.GetCalculatedValue(this.YDisplay, this.IntermediaryValue.Y);
-            this.IntermediaryValue = new Vector2(this.IntermediaryValue.X, calculatedValue);
+            var calculatedValue = this.GetCalculatedValue(this.YDisplay, this.Value.Y);
+            this.Value = new Vector2(this.Value.X, calculatedValue);
         }
     }
 }

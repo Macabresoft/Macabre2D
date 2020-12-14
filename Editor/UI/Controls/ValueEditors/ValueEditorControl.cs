@@ -3,7 +3,6 @@
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
-    using Avalonia.Interactivity;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
 
@@ -14,13 +13,6 @@
         public static readonly StyledProperty<T> ValueProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly DirectProperty<ValueEditorControl<T>, T> IntermediaryValueProperty =
-            AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, T>(
-                nameof(IntermediaryValue),
-                editor => editor.IntermediaryValue,
-                (editor, value) => editor.IntermediaryValue = value);
-
-
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
@@ -29,19 +21,6 @@
 
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
-
-        private T _intermediaryValue;
-
-        public T IntermediaryValue {
-            get => this._intermediaryValue;
-            set {
-                if (!this.UpdateOnLostFocus) {
-                    this.SetValue(this.Value, value);
-                }
-
-                this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, value);
-            }
-        }
 
         public object Owner {
             get => this.GetValue(OwnerProperty);
@@ -68,28 +47,17 @@
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
 
-        private bool HasValueChanged() {
-            if (this.Value != null) {
-                return !this.Value.Equals(this.IntermediaryValue);
-            }
-
-            return this.IntermediaryValue != null;
+        protected virtual void OnValueChanged(T newValue) {
         }
 
-        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ValueEditorControl<T> valueEditor && valueEditor.HasValueChanged()) {
-                valueEditor.SetAndRaise(IntermediaryValueProperty, ref valueEditor._intermediaryValue, valueEditor.Value);
-            }
-        }
-
-        private void SetValue(T originalValue, T updatedValue) {
+        protected void SetValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
             this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<T>(originalValue, updatedValue));
         }
 
-        protected void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
-            if (this.UpdateOnLostFocus && this.HasValueChanged()) {
-                this.SetValue(this.Value, this.IntermediaryValue);
+        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
+            if (!isBeforeChange && control is ValueEditorControl<T> valueEditor) {
+                valueEditor.OnValueChanged(valueEditor.Value);
             }
         }
 

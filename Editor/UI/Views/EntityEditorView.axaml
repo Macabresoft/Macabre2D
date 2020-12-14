@@ -14,6 +14,8 @@
                                            Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}"/>
                 <valueEditors:Vector2Editor Title="Position"
                                             Value="{Binding SelectionService.SelectedEntity.LocalPosition}" />
+                <valueEditors:Vector2Editor Title="Scale"
+                                            Value="{Binding SelectionService.SelectedEntity.LocalScale}" />
             </StackPanel>
         </controls:GroupBox>
     </Grid>
