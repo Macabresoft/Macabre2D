@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
     using System;
     using System.Linq;
+    using Avalonia.Threading;
+    using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;
@@ -45,12 +47,16 @@
                 
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableComponents.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
-                this._selectionService.SelectedComponent = selected;
 
-                if (selected == null) {
-                    this._selectionService.SelectedEntity = null;
+                if (this._selectionService.SelectedComponent != selected) {
+                    if (selected == null) {
+                        Dispatcher.UIThread.Post(() => this._selectionService.SelectedEntity = null);
+                    }
+                    else {
+                        Dispatcher.UIThread.Post(() => this._selectionService.SelectedComponent = selected);
+                    }
                 }
-                
+
                 result = true;
             }
 

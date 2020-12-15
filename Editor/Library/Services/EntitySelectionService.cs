@@ -52,9 +52,12 @@
                 if (value != this._selectedComponent) {
                     this.RaiseAndSetIfChanged(ref this._selectedComponent, value);
 
-                    if (this._selectedComponent != null) {
+                    if (this._selectedComponent != null && this.SelectedEntity != this._selectedComponent.Entity) {
                         this.SelectedEntity = this._selectedComponent.Entity;
                     }
+                    
+                    this.RaisePropertyChanged(nameof(this.MostRecentlySelectedKind));
+                    this.RaisePropertyChanged(nameof(this.SelectedEntity));
                 }
             }
         }
@@ -71,7 +74,7 @@
                     this.MostRecentlySelectedKind = EntitySelectionKind.Scene;
                 }
                 else if (value != null) {
-                    if (value != this._selectedEntity) {
+                    if (value != this._selectedEntity && this._selectedComponent?.Entity != value) {
                         this.SelectedComponent = value.Components.FirstOrDefault();
                     }
 
