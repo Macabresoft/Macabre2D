@@ -106,7 +106,7 @@
             }
         }
 
-        private void SceneService_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ISceneService.CurrentScene)) {
                 this.ResetRoot();
             }

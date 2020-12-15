@@ -1,17 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System.ComponentModel;
     using System.Linq;
+    using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
-
-    /// <summary>
-    /// The kind of selection.
-    /// </summary>
-    public enum EntitySelectionKind {
-        None,
-        Entity,
-        Scene
-    }
 
     /// <summary>
     /// An interface for a service which handles the selection of entities and their components.
