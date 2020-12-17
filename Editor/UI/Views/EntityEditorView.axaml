@@ -7,22 +7,51 @@
     <Design.DataContext>
         <viewModels:EntityEditorViewModel />
     </Design.DataContext>
-    <Grid RowDefinitions="Auto, *">
-        <controls:GroupBox Header="Entity">
-            <StackPanel Orientation="Vertical">
-                <valueEditors:StringEditor Title="Name"
-                                           Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}"/>
+    <Grid RowDefinitions="Auto, Auto, Auto *">
+        
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *"
+              Margin="{StaticResource StandardMarginAll}">
+
+            <valueEditors:BoolEditor Grid.Column="0"
+                                     Value="{Binding SelectionService.SelectedEntity.IsEnabled, Mode=TwoWay}"
+                                     Margin="{StaticResource DoubleMarginHorizontal}"/>
+            
+            <valueEditors:StringEditor Grid.Column="1"
+                                       Title="Name"
+                                       Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}" />
+        </Grid>
+        
+        <controls:GroupBox Grid.Row="1"
+                           Header="Transform">
+            <Grid ColumnDefinitions="Auto, *"
+                  RowDefinitions="Auto, Auto">
+                <TextBlock Grid.Column="0"
+                           Grid.Row="0"
+                           FontWeight="Bold"
+                           Text="Position"
+                           VerticalAlignment="Center" />
                 
-                <valueEditors:BoolEditor Title="Is Enabled"
-                                         Value="{Binding SelectionService.SelectedEntity.IsEnabled, Mode=TwoWay}"/>
-                
-                <valueEditors:Vector2Editor Title="Position"
+                <valueEditors:Vector2Editor Grid.Column="1"
+                                            Grid.Row="0"
                                             Value="{Binding SelectionService.SelectedEntity.LocalPosition}" />
+
+                <TextBlock Grid.Column="0"
+                           Grid.Row="1"
+                           FontWeight="Bold"
+                           Text="Scale"
+                           VerticalAlignment="Center" />
                 
-                <valueEditors:Vector2Editor Title="Scale"
+                <valueEditors:Vector2Editor Grid.Column="1"
+                                            Grid.Row="1"
                                             Value="{Binding SelectionService.SelectedEntity.LocalScale}" />
-                
-                <valueEditors:LayersEditor Value="{Binding SelectionService.SelectedEntity.Layers}"/>
+            </Grid>
+        </controls:GroupBox>
+
+        <controls:GroupBox Grid.Row="2"
+                           Header="Layers">
+            <StackPanel Orientation="Vertical">
+                <valueEditors:LayersEditor Value="{Binding SelectionService.SelectedEntity.Layers}" />
             </StackPanel>
         </controls:GroupBox>
     </Grid>
