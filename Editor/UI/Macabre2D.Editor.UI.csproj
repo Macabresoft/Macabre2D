@@ -33,5 +33,9 @@
       <DependentUpon>LayersEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\BoolEditor.axaml.cs">
+      <DependentUpon>BoolEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
