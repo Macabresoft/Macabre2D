@@ -33,7 +33,7 @@
             }
         }
 
-        protected void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
+        private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
             if (this.UpdateOnLostFocus && this.HasValueChanged()) {
                 this.SetValue(this.Value, this.IntermediaryValue);
             }

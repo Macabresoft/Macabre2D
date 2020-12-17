@@ -1,0 +1,23 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:system="clr-namespace:System;assembly=mscorlib"
+                          x:TypeArguments="system:String"
+                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.LayersEditor">
+    <Grid ColumnDefinitions="Auto, *">
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding $parent[local:LayersEditor].Title}"
+                   VerticalAlignment="Top" />
+
+        <ItemsControl Grid.Column="1"
+                      Name="_layersItemsControl">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+            
+    </Grid>
+</local:ValueEditorControl>

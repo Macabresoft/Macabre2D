@@ -16,6 +16,7 @@
                                             Value="{Binding SelectionService.SelectedEntity.LocalPosition}" />
                 <valueEditors:Vector2Editor Title="Scale"
                                             Value="{Binding SelectionService.SelectedEntity.LocalScale}" />
+                <valueEditors:LayersEditor Value="{Binding SelectionService.SelectedEntity.Layers}"/>
             </StackPanel>
         </controls:GroupBox>
     </Grid>
