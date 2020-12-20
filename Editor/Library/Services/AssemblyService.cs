@@ -8,23 +8,44 @@
     using Macabresoft.Macabre2D.Framework;
     using Mono.Cecil;
 
+    /// <summary>
+    /// Interface for a service which loads types from assemblies.
+    /// </summary>
     public interface IAssemblyService {
+        /// <summary>
+        /// Loads assemblies from files in the specified directory.
+        /// </summary>
+        /// <param name="directory">The directory.</param>
+        /// <returns>A task.</returns>
+        Task LoadAssemblies(string directory);
 
-        Task LoadAssemblies(string path);
-
+        /// <summary>
+        /// Loads the first type of the specified type with the specified base type in the current application domain.
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <returns></returns>
         Task<Type> LoadFirstType(Type baseType);
 
+        /// <summary>
+        /// Loads all types that implement the specified base type in the current application domain.
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <returns>A list of types.</returns>
         Task<IList<Type>> LoadTypes(Type baseType);
     }
 
+    /// <summary>
+    /// A service which loads types from assemblies.
+    /// </summary>
     public sealed class AssemblyService : IAssemblyService {
-        private bool _hasLoaded = false;
+        private bool _hasLoaded;
 
-        public async Task LoadAssemblies(string path) {
-            if (!this._hasLoaded && Directory.Exists(path)) {
+        /// <inheritdoc />
+        public async Task LoadAssemblies(string directory) {
+            if (!this._hasLoaded && Directory.Exists(directory)) {
                 try {
                     await Task.Run(() => {
-                        var assemblyPaths = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
+                        var assemblyPaths = Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
                         foreach (var assemblyPath in assemblyPaths) {
                             try {
                                 if (assemblyPath.HasObjectsOfType<IGameComponent>() || assemblyPath.HasObjectsOfType<IGameSystem>()) {
@@ -44,6 +65,7 @@
             }
         }
 
+        /// <inheritdoc />
         public async Task<Type> LoadFirstType(Type baseType) {
             return await Task.Run(() => {
                 Type resultType = null;
@@ -69,6 +91,7 @@
             });
         }
 
+        /// <inheritdoc />
         public async Task<IList<Type>> LoadTypes(Type baseType) {
             return await Task.Run(() => {
                 var types = new List<Type>();
@@ -101,7 +124,6 @@
     }
 
     internal static class AssemblyExtensions {
-
         internal static bool HasObjectsOfType<T>(this string assemblyPath) {
             var definition = AssemblyDefinition.ReadAssembly(assemblyPath);
             var result = false;

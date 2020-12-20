@@ -20,6 +20,15 @@
         /// Gets or sets the value's property name. This is only required if not directly binding to the value.
         /// </summary>
         string ValuePropertyName { get; set; }
+
+        /// <summary>
+        /// Initializes the value editor.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="owner">The owner.</param>
+        /// <param name="valuePropertyName">The name of the value's property/field on the owner object.</param>
+        /// <param name="title">The title of this control.</param>
+        void Initialize(object value, object owner, string valuePropertyName, string title);
     }
 
     /// <summary>

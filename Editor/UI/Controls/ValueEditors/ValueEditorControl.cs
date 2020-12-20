@@ -47,6 +47,16 @@
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
 
+        public void Initialize(object value, object owner, string valuePropertyName, string title) {
+            if (value is T typedValue) {
+                this.Value = typedValue;
+            }
+
+            this.Owner = owner;
+            this.ValuePropertyName = valuePropertyName;
+            this.Title = title;
+        }
+
         protected virtual void OnValueChanged(T newValue) {
         }
 
