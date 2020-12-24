@@ -1,11 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
     /// <summary>
@@ -21,12 +23,26 @@
         /// <param name="typesToIgnore"></param>
         /// <returns></returns>
         Task<IReadOnlyCollection<IValueEditor>> CreateEditors(object editableObject, params Type[] typesToIgnore);
+
+        /// <summary>
+        /// Gets component editors for the provided <see cref="IGameEntity"/>.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity);
+
+        /// <summary>
+        /// Returns the editors to a cache to be reused. Waste not, want not!
+        /// </summary>
+        /// <param name="editorCollections"></param>
+        void ReturnEditors(IEnumerable<ValueEditorCollection> editorCollections);
     }
 
     /// <summary>
     /// A service which produces value editor controls given an object that contains a <see cref="DataContractAttribute" />.
     /// </summary>
     public class ValueEditorService : ReactiveObject, IValueEditorService {
+        private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new Dictionary<Type, IList<IValueEditor>>();
         private readonly IAssemblyService _assemblyService;
 
         /// <summary>
@@ -40,6 +56,19 @@
         /// <inheritdoc />
         public async Task<IReadOnlyCollection<IValueEditor>> CreateEditors(object editableObject, params Type[] typesToIgnore) {
             return await this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
+        }
+
+        public IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity) {
+            var editors = new List<ValueEditorCollection>();
+            foreach (var component in entity.Components) {
+                
+            }
+
+            return editors;
+        }
+
+        public void ReturnEditors(IEnumerable<ValueEditorCollection> editorCollections) {
+            throw new NotImplementedException();
         }
 
         private async Task<IReadOnlyCollection<IValueEditor>> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
