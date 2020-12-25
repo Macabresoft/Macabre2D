@@ -16,15 +16,23 @@
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
+        public static readonly StyledProperty<Type> ValueTypeProperty =
+            AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
+        
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-
+        
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
 
         public object Owner {
             get => this.GetValue(OwnerProperty);
             set => this.SetValue(OwnerProperty, value);
+        }
+        
+        public Type ValueType {
+            get => this.GetValue(ValueTypeProperty);
+            set => this.SetValue(ValueTypeProperty, value);
         }
 
         public string Title {
@@ -47,7 +55,7 @@
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
 
-        public void Initialize(object value, object owner, string valuePropertyName, string title) {
+        public void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             if (value is T typedValue) {
                 this.Value = typedValue;
             }
@@ -62,7 +70,7 @@
 
         protected void SetValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
-            this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<T>(originalValue, updatedValue));
+            this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
         }
 
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
@@ -71,6 +79,6 @@
             }
         }
 
-        public event EventHandler<ValueChangedEventArgs<T>> ValueChanged;
+        public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
     }
 }

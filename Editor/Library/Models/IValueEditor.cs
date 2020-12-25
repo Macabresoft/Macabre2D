@@ -7,6 +7,11 @@
     /// </summary>
     public interface IValueEditor : IAvaloniaObject {
         /// <summary>
+        /// Called when the value changes.
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
+
+        /// <summary>
         /// Gets or sets the owner of the value. This is only required if not directly binding to the value.
         /// </summary>
         object Owner { get; set; }
@@ -22,13 +27,19 @@
         string ValuePropertyName { get; set; }
 
         /// <summary>
+        /// Gets or sets the value's type.
+        /// </summary>
+        Type ValueType { get; set; }
+
+        /// <summary>
         /// Initializes the value editor.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="owner">The owner.</param>
+        /// <param name="valueType"></param>
         /// <param name="valuePropertyName">The name of the value's property/field on the owner object.</param>
         /// <param name="title">The title of this control.</param>
-        void Initialize(object value, object owner, string valuePropertyName, string title);
+        /// <param name="owner">The owner.</param>
+        void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner);
     }
 
     /// <summary>
@@ -40,10 +51,5 @@
         /// Gets or sets the value.
         /// </summary>
         T Value { get; set; }
-
-        /// <summary>
-        /// Called when the value changes if value is not
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs<T>> ValueChanged;
     }
 }

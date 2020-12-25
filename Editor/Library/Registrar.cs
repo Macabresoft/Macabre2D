@@ -16,11 +16,13 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterServices(this IUnityContainer container) {
+            container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager());
             container.RegisterType<IContentService, ContentService>(new SingletonLifetimeManager());
             container.RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager());
             container.RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager());
             container.RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager());
             container.RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager());
+            container.RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());
             return container;
         }
 
