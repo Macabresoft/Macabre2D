@@ -27,7 +27,9 @@
             }
         }
 
-        protected override void OnValueChanged(string newValue) {
+        protected override void OnValueChanged(string updatedValue) {
+            base.OnValueChanged(updatedValue);
+            
             if (this.HasValueChanged()) {
                 this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, this.Value);
             }

@@ -40,6 +40,12 @@
         /// <param name="title">The title of this control.</param>
         /// <param name="owner">The owner.</param>
         void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner);
+
+        /// <summary>
+        /// Sets the value.
+        /// </summary>
+        /// <param name="newValue">The new value.</param>
+        void SetValue(object newValue);
     }
 
     /// <summary>

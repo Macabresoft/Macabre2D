@@ -16,23 +16,21 @@
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
-        public static readonly StyledProperty<Type> ValueTypeProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
-        
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-        
+
+
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
+
+        public static readonly StyledProperty<Type> ValueTypeProperty =
+            AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
+
+        public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
         public object Owner {
             get => this.GetValue(OwnerProperty);
             set => this.SetValue(OwnerProperty, value);
-        }
-        
-        public Type ValueType {
-            get => this.GetValue(ValueTypeProperty);
-            set => this.SetValue(ValueTypeProperty, value);
         }
 
         public string Title {
@@ -55,6 +53,11 @@
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
 
+        public Type ValueType {
+            get => this.GetValue(ValueTypeProperty);
+            set => this.SetValue(ValueTypeProperty, value);
+        }
+
         public void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             if (value is T typedValue) {
                 this.Value = typedValue;
@@ -65,7 +68,17 @@
             this.Title = title;
         }
 
-        protected virtual void OnValueChanged(T newValue) {
+        public void SetValue(object newValue) {
+            if (newValue is T typedNewValue) {
+                this.Value = typedNewValue;
+            }
+        }
+
+        protected virtual void OnValueChanged(T updatedValue) {
+            if (this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
+                var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
+                this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
+            }
         }
 
         protected void SetValue(T originalValue, T updatedValue) {
@@ -78,7 +91,5 @@
                 valueEditor.OnValueChanged(valueEditor.Value);
             }
         }
-
-        public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
     }
 }

@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System.ComponentModel;
     using System.Runtime.Serialization;
 
@@ -7,7 +6,6 @@
     /// Interface for a component which can be rendered.
     /// </summary>
     public interface IGameRenderableComponent : IBoundable, IGameComponent {
-
         /// <summary>
         /// Gets a value indicating whether this instance is visible.
         /// </summary>
@@ -18,7 +16,7 @@
         /// Gets the render order.
         /// </summary>
         /// <value>The render order.</value>
-        int RenderOrder { get => 0; }
+        int RenderOrder => 0;
 
         /// <summary>
         /// Renders this instance.
@@ -29,39 +27,29 @@
     }
 
     /// <summary>
-    /// A <see cref="IGameComponent" /> which has a default implementation of <see
-    /// cref="IGameRenderableComponent" />.
+    /// A <see cref="IGameComponent" /> which has a default implementation of
+    /// <see cref="IGameRenderableComponent" />.
     /// </summary>
     public abstract class GameRenderableComponent : GameComponent, IGameRenderableComponent {
-
-        [DataMember]
         private bool _isVisible = true;
-
         private int _renderOrder;
 
         /// <inheritdoc />
         public abstract BoundingArea BoundingArea { get; }
 
         /// <inheritdoc />
+        [DataMember]
         public bool IsVisible {
-            get {
-                return this._isVisible && this.Entity.IsEnabled;
-            }
+            get => this._isVisible && this.Entity.IsEnabled;
 
-            set {
-                this.Set(ref this._isVisible, value, this.Entity.IsEnabled);
-            }
+            set => this.Set(ref this._isVisible, value, this.Entity.IsEnabled);
         }
 
         /// <inheritdoc />
         public int RenderOrder {
-            get {
-                return this._renderOrder;
-            }
+            get => this._renderOrder;
 
-            set {
-                this.Set(ref this._renderOrder, value);
-            }
+            set => this.Set(ref this._renderOrder, value);
         }
 
         /// <inheritdoc />

@@ -100,10 +100,35 @@
             if (this.SelectionService.SelectedEntity is IGameScene scene) {
             }
             else if (this.SelectionService.SelectedEntity is IGameEntity entity) {
-                var editorCollections = await this._valueEditorService.GetComponentEditors(entity, this._removeComponentCommand);
-
+                var editorCollections = (await this._valueEditorService.GetComponentEditors(entity, this._removeComponentCommand)).ToList();
+                
                 lock (this._editorsLock) {
+                    foreach (var componentEditor in this._componentEditors) {
+                        componentEditor.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+                    }
+                    
+                    foreach (var editorCollection in editorCollections) {
+                        editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+                    }
+                    
                     this._componentEditors.Reset(editorCollections);
+                }
+            }
+        }
+
+        private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            if (sender is IValueEditor valueEditor && valueEditor.Owner != null && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+                var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
+                var newValue = e.UpdatedValue;
+
+                if (originalValue != newValue) {
+                    this._undoService.Do(() => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                        valueEditor.SetValue(newValue);
+                    }, () => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                        valueEditor.SetValue(originalValue);
+                    });
                 }
             }
         }
