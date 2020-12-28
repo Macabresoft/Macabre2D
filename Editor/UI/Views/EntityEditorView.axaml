@@ -7,17 +7,17 @@
     <Design.DataContext>
         <viewModels:EntityEditorViewModel />
     </Design.DataContext>
-    <Grid RowDefinitions="Auto, Auto, Auto *">
+    <Grid RowDefinitions="Auto, Auto, Auto *"
+          Margin="{StaticResource DoubleMarginAll}">
         
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, *"
-              Margin="{StaticResource StandardMarginAll}">
+              ColumnDefinitions="Auto, *">
 
             <valueEditors:BoolEditor Grid.Column="0"
-                                     Value="{Binding SelectionService.SelectedEntity.IsEnabled, Mode=TwoWay}"
-                                     Margin="{StaticResource DoubleMarginHorizontal}"/>
+                                     Value="{Binding SelectionService.SelectedEntity.IsEnabled, Mode=TwoWay}" />
             
             <valueEditors:StringEditor Grid.Column="1"
+                                       Margin="{StaticResource StandardMarginHorizontal}"
                                        Title="Name"
                                        Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}" />
         </Grid>

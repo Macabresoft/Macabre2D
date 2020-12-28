@@ -5,28 +5,20 @@
         <ControlTemplate>
             <Grid RowDefinitions="Auto, *"
                   Margin="{StaticResource DoubleMarginAll}">
-                <Grid Grid.Row="0"
-                      ColumnDefinitions="Auto, *, Auto, Auto">
-                    <Separator Grid.Column="0"
-                               Grid.ColumnSpan="4"
-                               HorizontalAlignment="Stretch"
-                               VerticalAlignment="Center"
-                               BorderBrush="{StaticResource ThemeBorderHighBrush}"
-                               BorderThickness="0,1,0,0" />
 
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*, Auto, Auto"
+                      Margin="{StaticResource DoubleMarginVertical}">
                     <TextBlock Grid.Column="0"
-                               Margin="{StaticResource DoubleMarginHorizontal}"
-                               Padding="{StaticResource DoubleMarginHorizontal}"
-                               Background="{StaticResource ThemeBackgroundBrush}"
-                               FontWeight="Bold"
+                               ToolTip.Tip="{TemplateBinding Header}"
+                               FontSize="{StaticResource FontSizeLarge}"
+                               Margin="0"
                                Text="{TemplateBinding Header}"
-                               VerticalAlignment="Center" />
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Bottom" />
 
                     <ToggleButton Grid.Row="0"
-                                  Grid.Column="2"
-                                  Background="{StaticResource ThemeControlMidBrush}"
-                                  BorderBrush="{StaticResource ThemeBorderLowBrush}"
-                                  Foreground="{StaticResource ThemeForegroundBrush}"
+                                  Grid.Column="1"
                                   Margin="{StaticResource StandardMarginHorizontal}"
                                   FontSize="{StaticResource FontSizeSmall}"
                                   IsChecked="{TemplateBinding ShowContent}"
@@ -58,7 +50,7 @@
                                        Text="v" />
                         </Panel>
                     </ToggleButton>
-                    <Button Grid.Column="3"
+                    <Button Grid.Column="2"
                             Margin="{StaticResource StandardMarginHorizontal}"
                             FontSize="{StaticResource FontSizeSmall}"
                             IsVisible="{TemplateBinding CloseCommand, Converter={x:Static ObjectConverters.IsNotNull}}"
@@ -68,12 +60,11 @@
                 </Grid>
 
                 <Border Grid.Row="1"
+                        Padding="{StaticResource DoubleMarginAll}"
                         BorderBrush="{StaticResource ThemeBorderLowBrush}"
-                        BorderThickness="1,0,1,1"
-                        IsVisible="{TemplateBinding ShowContent}"
-                        Padding="{StaticResource DoubleMarginHorizontal}">
+                        BorderThickness="{StaticResource ThemeBorderThickness}">
                     <ContentPresenter Content="{TemplateBinding Content}"
-                                      Margin="{StaticResource StandardMarginAll}"/>
+                                      IsVisible="{TemplateBinding ShowContent}" />
                 </Border>
             </Grid>
         </ControlTemplate>
