@@ -18,8 +18,7 @@
 
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-
-
+        
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
 
@@ -83,7 +82,11 @@
 
         protected void SetValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
-            this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
+            this.RaiseValueChanged(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
+        }
+
+        protected void RaiseValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            this.ValueChanged.SafeInvoke(sender, e);
         }
 
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {

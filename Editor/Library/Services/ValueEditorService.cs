@@ -64,7 +64,7 @@
         public async Task<IEnumerable<ValueEditorCollection>> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand) {
             var editors = new List<ValueEditorCollection>();
             foreach (var component in entity.Components) {
-                var componentEditors = await this.CreateEditors(string.Empty, component, component);
+                var componentEditors = await this.CreateEditors(component);
                 if (componentEditors.Any()) {
                     var editorCollection = new ValueEditorCollection(componentEditors, component, component.GetType().Name, deleteComponentCommand);
                     editors.Add(editorCollection);
@@ -133,6 +133,10 @@
 
             if (result != null) {
                 result.Initialize(value, memberType, propertyPath, memberName, originalObject);
+
+                if (result is IParentValueEditor parentValueEditor) {
+                    await parentValueEditor.Initialize(this, this._assemblyService);
+                }
             }
             // else if (memberType.IsEnum) {
             //     var enumEditor = new EnumEditor();
