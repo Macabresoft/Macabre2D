@@ -21,7 +21,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
         /// </summary>
-        private RectangleCollider() : base() {
+        public RectangleCollider() : this(1f, 1f) {
         }
 
         /// <summary>

@@ -21,7 +21,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="LineCollider" /> class.
         /// </summary>
-        private LineCollider() : base() {
+        public LineCollider() : this(Vector2.Zero, Vector2.One) {
         }
 
         /// <summary>

@@ -41,7 +41,7 @@
     /// <seealso cref="Collider" />
     public sealed class CircleCollider : Collider {
         private readonly ResettableLazy<float> _scaledRadius;
-        private float _radius;
+        private float _radius = 1f;
         private RadiusScalingType _radiusScalingType = RadiusScalingType.None;
 
         /// <summary>

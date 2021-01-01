@@ -43,13 +43,14 @@
             get => this._selectedType;
             set {
                 this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
-
-                if (value != null) {
-                    this.SetValue(this.Value, Activator.CreateInstance(value) as Collider);
-                }
-                else {
-                    this.SetValue(this.Value, null);
-                }
+                Dispatcher.UIThread.Post(() => {
+                    if (value != null) {
+                        this.SetValue(this.Value, Activator.CreateInstance(value) as Collider);
+                    }
+                    else {
+                        this.SetValue(this.Value, null);
+                    }
+                });
             }
         }
 
@@ -58,9 +59,10 @@
 
             var types = assemblyService.LoadTypes(typeof(Collider));
             this._derivedTypes.Reset(types);
+            this._derivedTypes.Remove(typeof(PolygonCollider));
 
             if (this.Value != null) {
-                this.SelectedType = this.Value.GetType();
+                this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, this.Value.GetType());
                 this.CreateEditors();
             }
         }
