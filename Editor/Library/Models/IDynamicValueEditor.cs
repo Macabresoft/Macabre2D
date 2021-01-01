@@ -17,7 +17,6 @@
         /// </summary>
         /// <param name="valueEditorService"></param>
         /// <param name="assemblyService"></param>
-        /// <returns>A task.</returns>
-        Task Initialize(IValueEditorService valueEditorService, IAssemblyService assemblyService);
+        void Initialize(IValueEditorService valueEditorService, IAssemblyService assemblyService);
     }
 }

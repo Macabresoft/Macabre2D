@@ -4,5 +4,9 @@
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:String"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.ColliderEditor">
-
+    <Grid RowDefinitions="Auto, *">
+        <ComboBox Grid.Row="0"
+                  Items="{Binding $parent[local:ColliderEditor].DerivedTypes}"
+                  SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}" />
+    </Grid>
 </local:ValueEditorControl>

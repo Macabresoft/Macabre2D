@@ -1,10 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Threading.Tasks;
     using System.Windows.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
@@ -23,15 +21,15 @@
         /// <param name="editableObject">The editable object for which to make editors..</param>
         /// <param name="typesToIgnore"></param>
         /// <returns>The value editors.</returns>
-        Task<IReadOnlyCollection<IValueEditor>> CreateEditors(object editableObject, params Type[] typesToIgnore);
+        IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore);
 
         /// <summary>
-        /// Gets component editors for the provided <see cref="IGameEntity"/>.
+        /// Gets component editors for the provided <see cref="IGameEntity" />.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="deleteComponentCommand">A command to delete a component from the entity.</param>
         /// <returns>Value editor collections for each component on the entity.</returns>
-        Task<IEnumerable<ValueEditorCollection>> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
+        IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
 
         /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
@@ -44,8 +42,8 @@
     /// A service which produces value editor controls given an object that contains a <see cref="DataContractAttribute" />.
     /// </summary>
     public class ValueEditorService : ReactiveObject, IValueEditorService {
-        private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new Dictionary<Type, IList<IValueEditor>>();
         private readonly IAssemblyService _assemblyService;
+        private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueEditorService" /> class.
@@ -56,15 +54,15 @@
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<IValueEditor>> CreateEditors(object editableObject, params Type[] typesToIgnore) {
-            return await this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
+        public IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore) {
+            return this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ValueEditorCollection>> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand) {
+        public IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand) {
             var editors = new List<ValueEditorCollection>();
             foreach (var component in entity.Components) {
-                var componentEditors = await this.CreateEditors(component);
+                var componentEditors = this.CreateEditors(component);
                 if (componentEditors.Any()) {
                     var editorCollection = new ValueEditorCollection(componentEditors, component, component.GetType().Name, deleteComponentCommand);
                     editors.Add(editorCollection);
@@ -82,19 +80,19 @@
                         valueEditorCache.Add(valueEditor);
                     }
                     else {
-                        var newEditorCache = new List<IValueEditor>() {
+                        var newEditorCache = new List<IValueEditor> {
                             valueEditor
                         };
 
                         this._editorCache[valueEditor.ValueType] = newEditorCache;
                     }
                 }
-                
+
                 editorCollection.Dispose();
             }
         }
 
-        private async Task<IReadOnlyCollection<IValueEditor>> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
+        private IReadOnlyCollection<IValueEditor> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
             var editors = new List<IValueEditor>();
             var members = typesToIgnore != null ? editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
 
@@ -107,7 +105,7 @@
                 var memberType = member.MemberInfo.GetMemberReturnType();
                 var value = member.MemberInfo.GetValue(editableObject);
                 var name = string.IsNullOrEmpty(member.Attribute.Name) ? member.MemberInfo.Name : member.Attribute.Name;
-                var editor = await this.GetEditorForType(originalObject, value, memberType, propertyPath, name);
+                var editor = this.GetEditorForType(originalObject, value, memberType, propertyPath, name);
 
                 if (editor != null) {
                     editors.Add(editor);
@@ -117,15 +115,15 @@
             return editors;
         }
 
-        private async Task<IValueEditor> GetEditorForType(object originalObject, object value, Type memberType, string propertyPath, string memberName) {
+        private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, string propertyPath, string memberName) {
             IValueEditor result = null;
 
-            if (_editorCache.TryGetValue(memberType, out var editorList)) {
+            if (this._editorCache.TryGetValue(memberType, out var editorList)) {
                 result = editorList.FirstOrDefault();
             }
 
             if (result == null) {
-                var editorType = await this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
+                var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
                 if (editorType != null && Activator.CreateInstance(editorType) is IValueEditor editor) {
                     result = editor;
                 }
@@ -135,7 +133,7 @@
                 result.Initialize(value, memberType, propertyPath, memberName, originalObject);
 
                 if (result is IParentValueEditor parentValueEditor) {
-                    await parentValueEditor.Initialize(this, this._assemblyService);
+                    parentValueEditor.Initialize(this, this._assemblyService);
                 }
             }
             // else if (memberType.IsEnum) {

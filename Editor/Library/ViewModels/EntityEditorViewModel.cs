@@ -3,7 +3,6 @@
     using System.ComponentModel;
     using System.Linq;
     using System.Reactive;
-    using System.Threading.Tasks;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -61,6 +60,23 @@
         /// </summary>
         public ISelectionService SelectionService { get; }
 
+        private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            if (sender is IValueEditor valueEditor && valueEditor.Owner != null && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+                var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
+                var newValue = e.UpdatedValue;
+
+                if (originalValue != newValue) {
+                    this._undoService.Do(() => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                        valueEditor.SetValue(newValue);
+                    }, () => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                        valueEditor.SetValue(originalValue);
+                    });
+                }
+            }
+        }
+
         private Unit RemoveComponent(IGameComponent component) {
             if (component != null) {
                 lock (this._editorsLock) {
@@ -96,46 +112,29 @@
             return Unit.Default;
         }
 
-        private async Task ResetComponentEditors() {
+        private void ResetComponentEditors() {
             if (this.SelectionService.SelectedEntity is IGameScene scene) {
             }
             else if (this.SelectionService.SelectedEntity is IGameEntity entity) {
-                var editorCollections = (await this._valueEditorService.GetComponentEditors(entity, this._removeComponentCommand)).ToList();
-                
+                var editorCollections = this._valueEditorService.GetComponentEditors(entity, this._removeComponentCommand).ToList();
+
                 lock (this._editorsLock) {
                     foreach (var componentEditor in this._componentEditors) {
                         componentEditor.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
                     }
-                    
+
                     foreach (var editorCollection in editorCollections) {
                         editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
                     }
-                    
+
                     this._componentEditors.Reset(editorCollections);
                 }
             }
         }
 
-        private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
-            if (sender is IValueEditor valueEditor && valueEditor.Owner != null && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
-                var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
-                var newValue = e.UpdatedValue;
-
-                if (originalValue != newValue) {
-                    this._undoService.Do(() => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                        valueEditor.SetValue(newValue);
-                    }, () => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                        valueEditor.SetValue(originalValue);
-                    });
-                }
-            }
-        }
-
-        private async void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ISelectionService.SelectedEntity)) {
-                await this.ResetComponentEditors();
+                this.ResetComponentEditors();
             }
         }
     }

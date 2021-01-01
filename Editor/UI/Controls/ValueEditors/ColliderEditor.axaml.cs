@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Avalonia;
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
@@ -29,7 +28,6 @@
 
         private readonly ObservableCollectionExtended<IValueEditor> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
-        private object _lock = new();
         private Type _selectedType;
         private IValueEditorService _valueEditorService;
 
@@ -45,20 +43,36 @@
             get => this._selectedType;
             set {
                 this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
-#pragma warning disable 4014
-                this.CreateEditors();
-#pragma warning restore 4014
+
+                if (value != null) {
+                    this.SetValue(this.Value, Activator.CreateInstance(value) as Collider);
+                }
+                else {
+                    this.SetValue(this.Value, null);
+                }
             }
         }
 
-        public async Task Initialize(IValueEditorService valueEditorService, IAssemblyService assemblyService) {
+        public void Initialize(IValueEditorService valueEditorService, IAssemblyService assemblyService) {
             this._valueEditorService = valueEditorService;
 
-            var types = await assemblyService.LoadTypes(typeof(Collider));
+            var types = assemblyService.LoadTypes(typeof(Collider));
             this._derivedTypes.Reset(types);
 
             if (this.Value != null) {
-                await this.CreateEditors();
+                this.SelectedType = this.Value.GetType();
+                this.CreateEditors();
+            }
+        }
+
+        protected override void OnValueChanged(Collider updatedValue) {
+            base.OnValueChanged(updatedValue);
+
+            if (updatedValue != null) {
+                this.CreateEditors();
+            }
+            else {
+                this.ClearEditors();
             }
         }
 
@@ -66,26 +80,25 @@
             this.RaiseValueChanged(sender, e);
         }
 
-        private async Task CreateEditors() {
-            lock (this._lock) {
-                foreach (var editor in this._childEditors) {
-                    editor.ValueChanged -= this.ChildEditor_ValueChanged;
-                }
-
-                this._childEditors.Clear();
+        private void ClearEditors() {
+            foreach (var editor in this._childEditors) {
+                editor.ValueChanged -= this.ChildEditor_ValueChanged;
             }
 
+            this._childEditors.Clear();
+        }
+
+        private void CreateEditors() {
+            this.ClearEditors();
 
             if (this.Value is Collider value && this._valueEditorService != null) {
-                var childEditors = await this._valueEditorService.CreateEditors(value);
+                var childEditors = this._valueEditorService.CreateEditors(value);
 
-                lock (this._lock) {
-                    foreach (var editor in childEditors) {
-                        editor.ValueChanged += this.ChildEditor_ValueChanged;
-                    }
-
-                    Dispatcher.UIThread.Post(() => this._childEditors.Reset(childEditors), DispatcherPriority.Normal);
+                foreach (var editor in childEditors) {
+                    editor.ValueChanged += this.ChildEditor_ValueChanged;
                 }
+
+                Dispatcher.UIThread.Post(() => this._childEditors.Reset(childEditors));
             }
         }
 
