@@ -8,11 +8,11 @@
     <Grid ColumnDefinitions="Auto, *">
         <TextBlock Grid.Column="0"
                    FontWeight="Bold"
-                   Text="{Binding $parent[local:Vector2Editor].Title}"
+                   Text="{Binding $parent[local:FloatEditor].Title}"
                    VerticalAlignment="Center" />
 
         <TextBox Grid.Column="1"
-                 Text="{Binding $parent[local:Vector2Editor].XDisplay}"
+                 Text="{Binding $parent[local:FloatEditor].ValueDisplay}"
                  LostFocus="ValueDisplay_OnLostFocus"/>
     </Grid>
 </local:ValueEditorControl>

@@ -1,31 +1,23 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
-    using System;
-    using System.Data;
     using Avalonia;
     using Avalonia.Data;
-    using Avalonia.Interactivity;
     using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
+    using Avalonia.Threading;
     using Microsoft.Xna.Framework;
 
     public class Vector2Editor : ValueEditorControl<Vector2> {
-        public static readonly DirectProperty<Vector2Editor, string> XDisplayProperty =
-            AvaloniaProperty.RegisterDirect<Vector2Editor, string>(
-                nameof(XDisplay),
-                editor => editor.XDisplay,
-                (editor, value) => editor.XDisplay = value);
-
         public static readonly StyledProperty<float> XMaximumProperty =
             AvaloniaProperty.Register<Vector2Editor, float>(nameof(XMaximum), float.MaxValue);
 
         public static readonly StyledProperty<float> XMinimumProperty =
             AvaloniaProperty.Register<Vector2Editor, float>(nameof(XMinimum), float.MinValue);
 
-        public static readonly DirectProperty<Vector2Editor, string> YDisplayProperty =
-            AvaloniaProperty.RegisterDirect<Vector2Editor, string>(
-                nameof(YDisplay),
-                editor => editor.YDisplay,
-                (editor, value) => editor.YDisplay = value);
+        public static readonly DirectProperty<Vector2Editor, float> XValueProperty =
+            AvaloniaProperty.RegisterDirect<Vector2Editor, float>(
+                nameof(XValue),
+                editor => editor.XValue,
+                (editor, value) => editor.XValue = value);
 
         public static readonly StyledProperty<float> YMaximumProperty =
             AvaloniaProperty.Register<Vector2Editor, float>(nameof(YMaximum), float.MaxValue);
@@ -33,19 +25,18 @@
         public static readonly StyledProperty<float> YMinimumProperty =
             AvaloniaProperty.Register<Vector2Editor, float>(nameof(YMinimum), float.MinValue);
 
-        private readonly DataTable _calculator = new();
-        private string _xDisplay;
-        private string _yDisplay;
+        public static readonly DirectProperty<Vector2Editor, float> YValueProperty =
+            AvaloniaProperty.RegisterDirect<Vector2Editor, float>(
+                nameof(YValue),
+                editor => editor.YValue,
+                (editor, value) => editor.YValue = value);
+
+        private float _xValue;
+        private float _yValue;
 
         public Vector2Editor() {
             this.InitializeComponent();
         }
-
-        public string XDisplay {
-            get => this._xDisplay;
-            set => this.SetAndRaise(XDisplayProperty, ref this._xDisplay, value);
-        }
-
 
         public float XMaximum {
             get => this.GetValue(XMaximumProperty);
@@ -57,9 +48,9 @@
             set => this.SetValue(XMinimumProperty, value);
         }
 
-        public string YDisplay {
-            get => this._yDisplay;
-            set => this.SetAndRaise(YDisplayProperty, ref this._yDisplay, value);
+        public float XValue {
+            get => this._xValue;
+            set => this.SetAndRaise(XValueProperty, ref this._xValue, value);
         }
 
         public float YMaximum {
@@ -72,11 +63,15 @@
             set => this.SetValue(YMinimumProperty, value);
         }
 
+        public float YValue {
+            get => this._yValue;
+            set => this.SetAndRaise(YValueProperty, ref this._yValue, value);
+        }
+
         protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e) {
             base.OnAttachedToLogicalTree(e);
             this.UpdateDisplayValues();
         }
-
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
             base.OnPropertyChanged(change);
@@ -84,21 +79,12 @@
             if (change.Property.Name == nameof(this.Value)) {
                 this.UpdateDisplayValues();
             }
-        }
-
-        private float GetCalculatedValue(string expression, float fallBack) {
-            var result = fallBack;
-            var newValue = this._calculator.Compute(expression, null);
-            try {
-                var floatValue = Convert.ToSingle(newValue);
-                result = floatValue;
+            else if (change.Property.Name == nameof(this.XValue)) {
+                Dispatcher.UIThread.Post(() => this.SetValue(ValueProperty, new Vector2(this.XValue, this.Value.Y)));
             }
-            catch {
-                // The user can type whatever they want into the display fields.
-                // This is a fallback if that gibberish can't be computed and converted into a float.
+            else if (change.Property.Name == nameof(this.YValue)) {
+                Dispatcher.UIThread.Post(() => this.SetValue(ValueProperty, new Vector2(this.Value.X, this.YValue)));
             }
-
-            return result;
         }
 
         private void InitializeComponent() {
@@ -106,21 +92,12 @@
         }
 
         private void UpdateDisplayValues() {
-            this._xDisplay = this.Value.X.ToString();
-            this._yDisplay = this.Value.Y.ToString();
-            this.RaisePropertyChanged(XDisplayProperty, Optional<string>.Empty, this._xDisplay);
-            this.RaisePropertyChanged(YDisplayProperty, Optional<string>.Empty, this._yDisplay);
-        }
-
-
-        private void XDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            var calculatedValue = this.GetCalculatedValue(this.XDisplay, this.Value.X);
-            this.Value = new Vector2(calculatedValue, this.Value.Y);
-        }
-
-        private void YDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            var calculatedValue = this.GetCalculatedValue(this.YDisplay, this.Value.Y);
-            this.Value = new Vector2(this.Value.X, calculatedValue);
+            this._xValue = this.Value.X;
+            this._yValue = this.Value.Y;
+            Dispatcher.UIThread.Post(() => {
+                this.RaisePropertyChanged(XValueProperty, Optional<float>.Empty, this.XValue);
+                this.RaisePropertyChanged(YValueProperty, Optional<float>.Empty, this.YValue);
+            });
         }
     }
 }

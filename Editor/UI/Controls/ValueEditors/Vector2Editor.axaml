@@ -15,16 +15,18 @@
                    Text="X: "
                    VerticalAlignment="Center" />
 
-        <TextBox Grid.Column="2"
-                 Text="{Binding $parent[local:Vector2Editor].XDisplay}"
-                 LostFocus="XDisplay_OnLostFocus"/>
+        <local:FloatEditor Grid.Column="2"
+                           Value="{Binding $parent[local:Vector2Editor].XValue}"
+                           ValueMinimum="{Binding $parent[local:Vector2Editor].XMinimum}"
+                           ValueMaximum="{Binding $parent[local:Vector2Editor].XMaximum}" />
 
         <TextBlock Grid.Column="3"
                    Text="Y: "
                    VerticalAlignment="Center" />
 
-        <TextBox Grid.Column="4"
-                 Text="{Binding $parent[local:Vector2Editor].YDisplay}"
-                 LostFocus="YDisplay_OnLostFocus"/>
+        <local:FloatEditor Grid.Column="4"
+                           Value="{Binding $parent[local:Vector2Editor].YValue}"
+                           ValueMinimum="{Binding $parent[local:Vector2Editor].YMinimum}"
+                           ValueMaximum="{Binding $parent[local:Vector2Editor].YMaximum}" />
     </Grid>
 </local:ValueEditorControl>

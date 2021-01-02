@@ -8,7 +8,7 @@
     using Avalonia.Markup.Xaml;
 
     public class FloatEditor : ValueEditorControl<float> {
-        public static readonly StyledProperty<float> MaximumProperty =
+        public static readonly StyledProperty<float> ValueMaximumProperty =
             AvaloniaProperty.Register<FloatEditor, float>(nameof(ValueMaximum), float.MaxValue);
 
         public static readonly DirectProperty<FloatEditor, string> ValueDisplayProperty =
@@ -17,7 +17,7 @@
                 editor => editor.ValueDisplay,
                 (editor, value) => editor.ValueDisplay = value);
 
-        public static readonly StyledProperty<float> XMinimumProperty =
+        public static readonly StyledProperty<float> ValueMinimumProperty =
             AvaloniaProperty.Register<FloatEditor, float>(nameof(ValueMinimum), float.MinValue);
 
         private readonly DataTable _calculator = new();
@@ -33,13 +33,13 @@
         }
 
         public float ValueMaximum {
-            get => this.GetValue(MaximumProperty);
-            set => this.SetValue(MaximumProperty, value);
+            get => this.GetValue(ValueMaximumProperty);
+            set => this.SetValue(ValueMaximumProperty, value);
         }
 
         public float ValueMinimum {
-            get => this.GetValue(XMinimumProperty);
-            set => this.SetValue(XMinimumProperty, value);
+            get => this.GetValue(ValueMinimumProperty);
+            set => this.SetValue(ValueMinimumProperty, value);
         }
 
         protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e) {
@@ -80,8 +80,7 @@
         }
 
         private void ValueDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            var calculatedValue = this.GetCalculatedValue(this.ValueDisplay, this.Value);
-            this.Value = calculatedValue;
+            this.Value = this.GetCalculatedValue(this.ValueDisplay, this.Value);
         }
     }
 }
