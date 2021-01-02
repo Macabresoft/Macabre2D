@@ -1,8 +1,8 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
-                          xmlns:system="clr-namespace:System;assembly=mscorlib"
-                          x:TypeArguments="system:String"
+                          x:TypeArguments="framework:Layers"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.LayersEditor">
     <Grid ColumnDefinitions="Auto, *">
         <TextBlock Grid.Column="0"

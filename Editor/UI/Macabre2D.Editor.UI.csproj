@@ -41,5 +41,9 @@
       <DependentUpon>ColliderEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\FloatEditor.axaml.cs">
+      <DependentUpon>FloatEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
