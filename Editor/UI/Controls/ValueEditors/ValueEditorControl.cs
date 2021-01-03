@@ -57,7 +57,7 @@
             set => this.SetValue(ValueTypeProperty, value);
         }
 
-        public void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
+        public virtual void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             if (value is T typedValue) {
                 this.Value = typedValue;
             }

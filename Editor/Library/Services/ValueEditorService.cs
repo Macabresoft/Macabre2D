@@ -32,6 +32,12 @@
         IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
 
         /// <summary>
+        /// Initializes the value editor service.
+        /// </summary>
+        /// <param name="enumEditorType">The type of the enum editor.</param>
+        void Initialize(Type enumEditorType);
+
+        /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
         /// <param name="editorCollections">The editor collections to return.</param>
@@ -44,6 +50,7 @@
     public class ValueEditorService : ReactiveObject, IValueEditorService {
         private readonly IAssemblyService _assemblyService;
         private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new();
+        private Type _enumEditorType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueEditorService" /> class.
@@ -70,6 +77,10 @@
             }
 
             return editors;
+        }
+
+        public void Initialize(Type enumEditorType) {
+            this._enumEditorType = enumEditorType;
         }
 
         /// <inheritdoc />
@@ -123,9 +134,16 @@
             }
 
             if (result == null) {
-                var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
-                if (editorType != null && Activator.CreateInstance(editorType) is IValueEditor editor) {
-                    result = editor;
+                if (memberType.IsEnum) {
+                    if (this._enumEditorType != null && Activator.CreateInstance(this._enumEditorType) is IValueEditor editor) {
+                        result = editor;
+                    }
+                }
+                else {
+                    var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
+                    if (editorType != null && Activator.CreateInstance(editorType) is IValueEditor editor) {
+                        result = editor;
+                    }
                 }
             }
 
@@ -136,14 +154,6 @@
                     parentValueEditor.Initialize(this, this._assemblyService);
                 }
             }
-            // else if (memberType.IsEnum) {
-            //     var enumEditor = new EnumEditor();
-            //     await enumEditor.Initialize(value, memberType, originalObject, propertyPath, memberName);
-            //     result = enumEditor;
-            // }
-            // else {
-            //     result = await this.GetSpecializedEditor(originalObject, value, memberType, propertyPath, memberName, declaringType);
-            // }
 
             return result;
         }

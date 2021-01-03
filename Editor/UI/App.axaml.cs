@@ -4,6 +4,8 @@
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Editor.Library;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors;
     using Macabresoft.Macabre2D.Editor.UI.Views;
     using Unity;
 
@@ -16,6 +18,9 @@
                 .RegisterTypes();
 
             Resolver.Container = this.Container;
+
+            var valueEditorService = Resolver.Resolve<IValueEditorService>();
+            valueEditorService.Initialize(typeof(EnumEditor));
 
             AvaloniaXamlLoader.Load(this);
         }

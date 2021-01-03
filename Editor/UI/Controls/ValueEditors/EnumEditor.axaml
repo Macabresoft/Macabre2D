@@ -1,0 +1,23 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:system="clr-namespace:System;assembly=mscorlib"
+                          x:TypeArguments="system:Object"
+                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.EnumEditor">
+    <local:ValueEditorControl.Resources>
+        <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter"></converters:EnumTypeToValuesConverter>
+        <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
+    </local:ValueEditorControl.Resources>
+    <Grid ColumnDefinitions="Auto, *">
+        <TextBlock Grid.Column="0"
+                   FontWeight="Bold"
+                   Text="{Binding $parent[local:EnumEditor].Title}"
+                   VerticalAlignment="Center"
+                   IsVisible="{Binding $parent[local:EnumEditor].Title, Converter={StaticResource InverseIsStringNullOrEmptyConverter}}"/>
+
+        <ComboBox Grid.Column="1"
+                  Items="{Binding $parent[local:EnumEditor].EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
+                  SelectedItem="{Binding $parent[local:EnumEditor].Value}" />
+    </Grid>
+</local:ValueEditorControl>

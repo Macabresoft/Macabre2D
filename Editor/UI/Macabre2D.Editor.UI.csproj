@@ -49,5 +49,9 @@
       <DependentUpon>VerticalGrouping.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\EnumEditor.axaml.cs">
+      <DependentUpon>EnumEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
