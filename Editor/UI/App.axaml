@@ -12,6 +12,7 @@
         
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/Margins.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/CheckBox.axaml" />
+        <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/ComboBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/TextBlock.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/TextBox.axaml" />
     </Application.Styles>

@@ -45,5 +45,9 @@
       <DependentUpon>FloatEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\VerticalGrouping.axaml.cs">
+      <DependentUpon>VerticalGrouping.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -4,8 +4,17 @@
 		<Thickness x:Key="StandardMarginAll">2</Thickness>
 		<Thickness x:Key="StandardMarginHorizontal">2,0</Thickness>
 		<Thickness x:Key="StandardMarginVertical">0,2</Thickness>
+		<Thickness x:Key="StandardMarginRight">0,0,2,0</Thickness>
+		<Thickness x:Key="StandardMarginLeft">2,0,0,0</Thickness>
+		<Thickness x:Key="StandardMarginTop">0,2,0,0</Thickness>
+		<Thickness x:Key="StandardMarginBottom">0,0,0,2</Thickness>
+		
 		<Thickness x:Key="DoubleMarginAll">4</Thickness>
 		<Thickness x:Key="DoubleMarginHorizontal">4,0</Thickness>
 		<Thickness x:Key="DoubleMarginVertical">0,4</Thickness>
+		<Thickness x:Key="DoubleMarginRight">0,0,4,0</Thickness>
+		<Thickness x:Key="DoubleMarginLeft">4,0,0,0</Thickness>
+		<Thickness x:Key="DoubleMarginTop">0,4,0,0</Thickness>
+		<Thickness x:Key="DoubleMarginBottom">0,0,0,4</Thickness>
 	</Style.Resources>
 </Style>

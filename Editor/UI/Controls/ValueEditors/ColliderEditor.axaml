@@ -1,15 +1,18 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:controls="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                           x:TypeArguments="framework:Collider"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.ColliderEditor">
-    <Grid RowDefinitions="Auto, *">
-        <ComboBox Grid.Row="0"
-                  Items="{Binding $parent[local:ColliderEditor].DerivedTypes}"
-                  SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}" />
+    <controls:VerticalGrouping Header="{Binding $parent[local:ColliderEditor].Title}">
+        <Grid RowDefinitions="Auto, *">
+            <ComboBox Grid.Row="0"
+                      Items="{Binding $parent[local:ColliderEditor].DerivedTypes}"
+                      SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}" />
         
-        <ItemsControl Grid.Row="1"
-                      Items="{Binding $parent[local:ColliderEditor].ChildEditors}" />
-    </Grid>
+            <ItemsControl Grid.Row="1"
+                          Items="{Binding $parent[local:ColliderEditor].ChildEditors}" />
+        </Grid>
+    </controls:VerticalGrouping>
 </local:ValueEditorControl>
