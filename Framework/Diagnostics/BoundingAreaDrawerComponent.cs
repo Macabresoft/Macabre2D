@@ -3,11 +3,13 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
 
     /// <summary>
     /// Draws bounding areas from colliders for debugging purposes.
     /// </summary>
+    [Display(Name = "Bounding Area Drawer (Diagnostics)")]
     public class BoundingAreaDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
         private readonly List<BoundingArea> _boundingAreas = new List<BoundingArea>();
         private BoundingArea _boundingArea;

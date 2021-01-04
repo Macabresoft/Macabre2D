@@ -3,6 +3,7 @@
     using Macabresoft.Core;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -59,6 +60,7 @@
     /// <summary>
     /// A base for components that implement <see cref="IPhysicsBodyComponent" />.
     /// </summary>
+    [Display(Name = "Physics Body")]
     public abstract class PhysicsBodyComponent : GameComponent, IPhysicsBodyComponent {
 
         [DataMember]

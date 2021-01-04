@@ -1,5 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel.DataAnnotations;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Runtime.Serialization;
@@ -7,6 +7,7 @@
     /// <summary>
     /// Draws a line.
     /// </summary>
+    [Display(Name = "Line Drawer (Diagnostics)")]
     public sealed class LineDrawerComponent : BaseDrawerComponent {
         private Vector2 _endPoint;
         private Vector2 _startPoint;

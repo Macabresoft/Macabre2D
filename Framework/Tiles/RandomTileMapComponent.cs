@@ -5,12 +5,14 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A tile map that chooses a random tile from the provided collection to display in each active location.
     /// </summary>
+    [Display(Name = "Random Tile Map")]
     public sealed class RandomTileMapComponent : RenderableTileMapComponent, IAssetComponent<RandomTileSet>, IAssetComponent<Sprite> {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]

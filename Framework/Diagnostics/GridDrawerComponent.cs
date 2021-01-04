@@ -3,10 +3,12 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Draws a grid for the specified camera.
     /// </summary>
+    [Display(Name = "Grid Drawer (Diagnostics)")]
     public sealed class GridDrawerComponent : BaseDrawerComponent {
 
         /// <inheritdoc />

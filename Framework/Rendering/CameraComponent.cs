@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
     using Core;
@@ -10,6 +11,7 @@
     /// <summary>
     /// Represents a camera into the game world.
     /// </summary>
+    [Display(Name = "Camera")]
     public sealed class CameraComponent : GameComponent, IBoundable, ICameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private Layers _layersToRender = Layers.All;

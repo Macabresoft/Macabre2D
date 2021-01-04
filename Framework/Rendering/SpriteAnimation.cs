@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,11 +8,9 @@
     /// An animation that explicitly uses sprites.
     /// </summary>
     public sealed class SpriteAnimation : BaseIdentifiable, IAsset {
+        [DataMember] private readonly List<SpriteAnimationStep> _steps = new();
 
-        [DataMember]
-        private readonly List<SpriteAnimationStep> _steps = new List<SpriteAnimationStep>();
-
-        private bool _isLoaded = false;
+        private bool _isLoaded;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
@@ -30,6 +27,12 @@
             this._steps.AddRange(steps);
         }
 
+        /// <summary>
+        /// Gets the steps.
+        /// </summary>
+        /// <value>The steps.</value>
+        public IReadOnlyCollection<SpriteAnimationStep> Steps => this._steps;
+
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; }
@@ -37,16 +40,6 @@
         /// <inheritdoc />
         [DataMember]
         public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the steps.
-        /// </summary>
-        /// <value>The steps.</value>
-        public IReadOnlyCollection<SpriteAnimationStep> Steps {
-            get {
-                return this._steps;
-            }
-        }
 
         /// <summary>
         /// Adds the step.

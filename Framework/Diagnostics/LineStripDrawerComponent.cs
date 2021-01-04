@@ -3,11 +3,13 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
 
     /// <summary>
     /// Draws a line strip.
     /// </summary>
+    [Display(Name = "Line Strip Drawer (Diagnostics)")]
     public sealed class LineStripDrawerComponent : BaseDrawerComponent {
         private readonly List<Vector2> _points = new List<Vector2>();
         private BoundingArea _boundingArea;

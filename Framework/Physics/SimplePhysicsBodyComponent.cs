@@ -2,12 +2,13 @@
 
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A body to be used by the physics engine.
     /// </summary>
-    /// <seealso cref="BaseComponent" />
+    [Display(Name = "Simple Physics Body")]
     public class SimplePhysicsBodyComponent : PhysicsBodyComponent, IPhysicsBodyComponent {
         private Collider? _collider;
 

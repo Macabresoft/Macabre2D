@@ -5,12 +5,14 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A component which will render a single sprite.
     /// </summary>
+    [Display(Name = "Sprite Renderer")]
     public class SpriteRenderComponent : GameRenderableComponent, IAssetComponent<Sprite>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;

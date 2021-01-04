@@ -3,12 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Animates sprites at the specified framerate.
     /// </summary>
+    [Display(Name = "Sprite Animator")]
     public class SpriteAnimatorComponent : SpriteRenderComponent, IGameUpdateableComponent {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
         private QueueableSpriteAnimation? _currentAnimation;

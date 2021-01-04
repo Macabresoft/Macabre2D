@@ -2,10 +2,12 @@
 using System.Runtime.Serialization;
 
 namespace Macabresoft.Macabre2D.Framework {
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Draws a circle.
     /// </summary>
+    [Display(Name = "Circle Drawer (Diagnostics)")]
     public sealed class CircleDrawerComponent : BaseDrawerComponent {
         private int _complexity;
 

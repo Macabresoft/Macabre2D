@@ -1,11 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws a collider.
     /// </summary>
+    [Display(Name = "Collider Drawer (Diagnostics)")]
     public sealed class ColliderDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
         private readonly List<IPhysicsBodyComponent> _bodies = new();
 

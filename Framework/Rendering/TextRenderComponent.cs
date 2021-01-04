@@ -5,12 +5,14 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A component which will render the specified text.
     /// </summary>
+    [Display(Name = "Text Renderer")]
     public class TextRenderComponent : GameRenderableComponent, IAssetComponent<Font>, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;

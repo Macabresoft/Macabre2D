@@ -71,7 +71,8 @@
             foreach (var component in entity.Components) {
                 var componentEditors = this.CreateEditors(component);
                 if (componentEditors.Any()) {
-                    var editorCollection = new ValueEditorCollection(componentEditors, component, component.GetType().Name, deleteComponentCommand);
+                    var name = component.GetType().GetTypeDisplayName();
+                    var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
                     editors.Add(editorCollection);
                 }
             }
@@ -115,8 +116,7 @@
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var memberType = member.MemberInfo.GetMemberReturnType();
                 var value = member.MemberInfo.GetValue(editableObject);
-                var name = string.IsNullOrEmpty(member.Attribute.Name) ? member.MemberInfo.Name : member.Attribute.Name;
-                var editor = this.GetEditorForType(originalObject, value, memberType, propertyPath, name);
+                var editor = this.GetEditorForType(originalObject, value, memberType, propertyPath);
 
                 if (editor != null) {
                     editors.Add(editor);
@@ -126,7 +126,7 @@
             return editors;
         }
 
-        private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, string propertyPath, string memberName) {
+        private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, string propertyPath) {
             IValueEditor result = null;
 
             if (this._editorCache.TryGetValue(memberType, out var editorList)) {
@@ -148,7 +148,8 @@
             }
 
             if (result != null) {
-                result.Initialize(value, memberType, propertyPath, memberName, originalObject);
+                var title = memberType.GetTypeDisplayName();
+                result.Initialize(value, memberType, propertyPath, title, originalObject);
 
                 if (result is IParentValueEditor parentValueEditor) {
                     parentValueEditor.Initialize(this, this._assemblyService);

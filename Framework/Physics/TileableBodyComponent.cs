@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -12,6 +13,7 @@
     /// A <see cref="PhysicsBodyComponent" /> which reacts to a <see cref="IGameTileableComponent" /> parent
     /// and creates colliders based on the available grid.
     /// </summary>
+    [Display(Name = "Tileable Body")]
     public sealed class TileableBodyComponent : PhysicsBodyComponent {
         private readonly List<Collider> _colliders = new List<Collider>();
 
