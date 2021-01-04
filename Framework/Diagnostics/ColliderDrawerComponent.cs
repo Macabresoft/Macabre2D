@@ -1,20 +1,26 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws a collider.
     /// </summary>
     public sealed class ColliderDrawerComponent : BaseDrawerComponent, IGameUpdateableComponent {
-        private readonly List<IPhysicsBodyComponent> _bodies = new List<IPhysicsBodyComponent>();
+        private readonly List<IPhysicsBodyComponent> _bodies = new();
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea => this._bodies.Any() ? BoundingArea.Combine(this._bodies.Select(x => x.BoundingArea).ToArray()) : BoundingArea.Empty;
 
         /// <inheritdoc />
         public int UpdateOrder => 0;
+
+        /// <inheritdoc />
+        public override void Initialize(IGameEntity entity) {
+            base.Initialize(entity);
+
+            this.ResetBodies();
+        }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
@@ -39,7 +45,12 @@
             }
         }
 
+        /// <inheritdoc />
         public void Update(FrameTime frameTime, InputState inputState) {
+            this.ResetBodies();
+        }
+
+        private void ResetBodies() {
             this._bodies.Clear();
             this._bodies.AddRange(this.Entity.Components.OfType<IPhysicsBodyComponent>().Where(x => !x.BoundingArea.IsEmpty).ToList());
         }

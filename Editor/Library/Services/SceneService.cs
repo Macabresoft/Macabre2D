@@ -1,14 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
-
-    using Macabresoft.Macabre2D.Framework;
-    using ReactiveUI;
     using System.ComponentModel;
+    using Macabresoft.Macabre2D.Framework;
+    using Microsoft.Xna.Framework;
+    using ReactiveUI;
 
     /// <summary>
     /// Interface for a service which handles the <see cref="IGameScene" /> open in the editor.
     /// </summary>
     public interface ISceneService : INotifyPropertyChanged {
-
         /// <summary>
         /// Gets the current scene.
         /// </summary>
@@ -31,18 +30,32 @@
 
         /// <inheritdoc />
         public IGameScene CurrentScene {
-            get {
-                return this._currentScene;
-            }
+            get => this._currentScene;
 
-            private set {
-                this.RaiseAndSetIfChanged(ref this._currentScene, value);
-            }
+            private set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
         }
 
         /// <inheritdoc />
         public T CreateNewScene<T>() where T : IGameScene, new() {
             var scene = new T();
+
+            // TODO: remove the following code once scene loading exists
+            scene.Name = "Test Scene";
+            var circleEntity = scene.AddChild();
+            circleEntity.Name = "Circle";
+            circleEntity.LocalPosition += Vector2.One;
+
+            var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
+            circleBody.Collider = new CircleCollider {
+                Radius = 2f,
+                RadiusScalingType = RadiusScalingType.X
+            };
+
+            var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
+            circleDrawer.Update(new FrameTime(), new InputState());
+            circleDrawer.LineThickness = 5f;
+            // end remove code
+
             this.CurrentScene = scene;
             return scene;
         }

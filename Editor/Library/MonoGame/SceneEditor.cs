@@ -86,29 +86,11 @@
             if (!this._isInitialized) {
                 try {
                     this.LoadScene(this.CreateScene());
-
                     base.Initialize();
-
-                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this._sceneService.CurrentScene.Children.Count == 0) {
-                        this._sceneService.CurrentScene.Name = "Test Scene";
-                        var circleEntity = this._sceneService.CurrentScene.AddChild();
-                        circleEntity.Name = "Circle";
-                        circleEntity.LocalPosition += Vector2.One;
-
-                        this._sceneService.CurrentScene.Initialize(this);
-
-                        // TODO: remove the following code once scene loading exists
-                        var circleBody = circleEntity.AddComponent<SimplePhysicsBodyComponent>();
-                        circleBody.Collider = new CircleCollider {
-                            Radius = 2f,
-                            RadiusScalingType = RadiusScalingType.X
-                        };
-
-                        var circleDrawer = circleEntity.AddComponent<ColliderDrawerComponent>();
-                        circleDrawer.Update(new FrameTime(), new InputState());
-                        circleDrawer.LineThickness = 5f;
+                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                        this._sceneService.CurrentScene.Initialize(this);    
                     }
-
+                    
                     this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
                 }
                 finally {
