@@ -1,21 +1,21 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Collider representing a rectangle to be used by the physics engine.
     /// </summary>
+    [Display(Name = "Rectangle Collider")]
     public sealed class RectangleCollider : PolygonCollider {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        public RectangleCollider(float width, float height) : base(RectangleCollider.CreatePoints(width, height)) {
+        public RectangleCollider(float width, float height) : base(CreatePoints(width, height)) {
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
                 if (value != this.Height && value > 0) {
                     var width = this.Width;
                     this._points.Clear();
-                    this._points.AddRange(RectangleCollider.CreatePoints(width, value));
+                    this._points.AddRange(CreatePoints(width, value));
                     this.Reset();
                     this.RaisePropertyChanged();
                 }
@@ -67,7 +67,7 @@
                 if (value != this.Width && value > 0) {
                     var height = this.Height;
                     this._points.Clear();
-                    this._points.AddRange(RectangleCollider.CreatePoints(value, height));
+                    this._points.AddRange(CreatePoints(value, height));
                     this.Reset();
                     this.RaisePropertyChanged();
                 }

@@ -4,6 +4,7 @@
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -22,11 +23,13 @@
         /// <summary>
         /// The circle's radius will scale on the body's X scale value.
         /// </summary>
+        [Display(Name = "X Axis")]
         X = 1,
 
         /// <summary>
         /// The circle's radius will scale on the body's Y scale value.
         /// </summary>
+        [Display(Name = "Y Axis")]
         Y = 2,
 
         /// <summary>
@@ -39,6 +42,7 @@
     /// Collider representing a circle to be used by the physics engine.
     /// </summary>
     /// <seealso cref="Collider" />
+    [Display(Name = "Circle Collider")]
     public sealed class CircleCollider : Collider {
         private readonly ResettableLazy<float> _scaledRadius;
         private float _radius = 1f;

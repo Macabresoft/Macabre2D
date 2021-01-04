@@ -2,12 +2,14 @@
 
     using Microsoft.Xna.Framework;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Collider representing a line defined by a start and end point to be used by the physics engine.
     /// </summary>
+    [Display(Name = "Line Collider")]
     public sealed class LineCollider : PolygonCollider {
 
         /// <summary>

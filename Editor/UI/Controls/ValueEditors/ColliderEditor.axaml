@@ -1,16 +1,29 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:controls="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls"
+                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                           x:TypeArguments="framework:Collider"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.ColliderEditor">
+    <local:ValueEditorControl.Resources>
+        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
+    </local:ValueEditorControl.Resources>
     <controls:VerticalGrouping Header="{Binding $parent[local:ColliderEditor].Title}">
         <Grid RowDefinitions="Auto, *">
             <ComboBox Grid.Row="0"
                       Items="{Binding $parent[local:ColliderEditor].DerivedTypes}"
-                      SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}" />
-        
+                      SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Stretch"
+                                   Text="{Binding Converter={StaticResource ToDisplayNameConverter}}"
+                                   TextAlignment="Left"
+                                   ToolTip.Tip="{Binding}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
             <ItemsControl Grid.Row="1"
                           Items="{Binding $parent[local:ColliderEditor].ChildEditors}" />
         </Grid>

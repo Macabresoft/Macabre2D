@@ -6,8 +6,9 @@
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.EnumEditor">
     <local:ValueEditorControl.Resources>
-        <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter"></converters:EnumTypeToValuesConverter>
+        <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
         <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
+        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *">
         <TextBlock Grid.Column="0"
@@ -18,6 +19,15 @@
 
         <ComboBox Grid.Column="1"
                   Items="{Binding $parent[local:EnumEditor].EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
-                  SelectedItem="{Binding $parent[local:EnumEditor].Value}" />
+                  SelectedItem="{Binding $parent[local:EnumEditor].Value}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Stretch"
+                                   Text="{Binding Converter={StaticResource ToDisplayNameConverter}}"
+                                   TextAlignment="Left"
+                                   ToolTip.Tip="{Binding}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
     </Grid>
 </local:ValueEditorControl>
