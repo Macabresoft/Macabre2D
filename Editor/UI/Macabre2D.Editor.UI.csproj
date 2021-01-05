@@ -53,5 +53,9 @@
       <DependentUpon>EnumEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\GenericValueEditor.axaml.cs">
+      <DependentUpon>GenericValueEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

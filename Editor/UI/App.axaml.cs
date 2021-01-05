@@ -20,7 +20,7 @@
             Resolver.Container = this.Container;
 
             var valueEditorService = Resolver.Resolve<IValueEditorService>();
-            valueEditorService.Initialize(typeof(EnumEditor));
+            valueEditorService.Initialize(typeof(EnumEditor), typeof(GenericValueEditor));
 
             AvaloniaXamlLoader.Load(this);
         }
