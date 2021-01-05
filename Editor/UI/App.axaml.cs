@@ -8,19 +8,18 @@
     using Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors;
     using Macabresoft.Macabre2D.Editor.UI.Views;
     using Unity;
+    using Unity.Resolution;
 
     public class App : Application {
         public IUnityContainer Container { get; private set; }
 
         public override void Initialize() {
             this.Container = new UnityContainer()
+                .RegisterMappers()
                 .RegisterServices()
                 .RegisterTypes();
 
             Resolver.Container = this.Container;
-
-            var valueEditorService = Resolver.Resolve<IValueEditorService>();
-            valueEditorService.Initialize(typeof(EnumEditor), typeof(GenericValueEditor));
 
             AvaloniaXamlLoader.Load(this);
         }

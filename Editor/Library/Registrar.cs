@@ -16,14 +16,13 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterServices(this IUnityContainer container) {
-            container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager());
-            container.RegisterType<IContentService, ContentService>(new SingletonLifetimeManager());
-            container.RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager());
-            container.RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager());
-            container.RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager());
-            container.RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager());
-            container.RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());
-            return container;
+            return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
+                .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
+                .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
+                .RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager())
+                .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
+                .RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager())
+                .RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());
         }
 
         /// <summary>
@@ -32,9 +31,8 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterTypes(this IUnityContainer container) {
-            container.RegisterType<IAvaloniaGame, SceneEditor>(new PerResolveLifetimeManager());
-            container.RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
-            return container;
+            return container.RegisterType<IAvaloniaGame, SceneEditor>(new PerResolveLifetimeManager())
+                .RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
         }
     }
 }

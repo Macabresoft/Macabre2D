@@ -6,6 +6,7 @@
     using System.Runtime.Serialization;
     using System.Windows.Input;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Editor.Library.Mappers;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
@@ -33,13 +34,6 @@
         IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
 
         /// <summary>
-        /// Initializes the value editor service.
-        /// </summary>
-        /// <param name="enumEditorType">The type for an enum editor.</param>
-        /// <param name="genericEditorType">The type for a generic value editor.</param>
-        void Initialize(Type enumEditorType, Type genericEditorType);
-
-        /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
         /// <param name="editorCollections">The editor collections to return.</param>
@@ -52,15 +46,16 @@
     public class ValueEditorService : ReactiveObject, IValueEditorService {
         private readonly IAssemblyService _assemblyService;
         private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new();
-        private Type _enumEditorType;
-        private Type _genericEditorType;
+        private readonly IValueEditorTypeMapper _typeMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueEditorService" /> class.
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
-        public ValueEditorService(IAssemblyService assemblyService) {
+        /// <param name="typeMapper">The value editor type mapper.</param>
+        public ValueEditorService(IAssemblyService assemblyService, IValueEditorTypeMapper typeMapper) {
             this._assemblyService = assemblyService;
+            this._typeMapper = typeMapper;
         }
 
         /// <inheritdoc />
@@ -81,18 +76,6 @@
             }
 
             return editors;
-        }
-
-        public void Initialize(Type enumEditorType, Type genericEditorType) {
-            if (!typeof(IValueEditor).IsAssignableFrom(enumEditorType)) {
-                throw new NotSupportedException($"'{nameof(enumEditorType)}' must be of type '{nameof(IValueEditor)}'");
-            }
-            else if (!typeof(IValueEditor).IsAssignableFrom(genericEditorType)) {
-                throw new NotSupportedException($"'{nameof(genericEditorType)}' must be of type '{nameof(IValueEditor)}'");
-            }
-            
-            this._enumEditorType = enumEditorType;
-            this._genericEditorType = genericEditorType;
         }
 
         /// <inheritdoc />
@@ -152,12 +135,14 @@
                     }
                 }
                 else if (memberType.IsEnum) {
-                    if (this._enumEditorType != null) {
-                        result = Activator.CreateInstance(this._enumEditorType) as IValueEditor;
+                    if (this._typeMapper.EnumEditorType != null) {
+                        // TODO: pull from cache
+                        result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
                     }
                 }
-                else if (!memberType.IsValueType && this._genericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
-                    result = Activator.CreateInstance(this._genericEditorType) as IValueEditor;
+                else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
+                    // TODO: pull from cache
+                    result = Activator.CreateInstance(this._typeMapper.GenericEditorType) as IValueEditor;
                 }
             }
 
