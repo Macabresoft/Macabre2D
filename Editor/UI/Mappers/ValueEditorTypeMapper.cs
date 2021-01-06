@@ -12,7 +12,7 @@
         public Type EnumEditorType => typeof(EnumEditor);
 
         /// <inheritdoc />
-        public Type FlagsEnumEditorType => throw new NotImplementedException();
+        public Type FlagsEnumEditorType => typeof(FlagsEnumEditor);
         
         /// <inheritdoc />
         public Type GenericEditorType => typeof(GenericValueEditor);

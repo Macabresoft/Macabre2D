@@ -21,7 +21,6 @@
 
         public FlagsEnumEditor() {
             this._toggleValueCommand = ReactiveCommand.Create<object, Unit>(this.ToggleValue);
-
             this.InitializeComponent();
         }
 

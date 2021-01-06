@@ -135,10 +135,20 @@
                     }
                 }
                 else if (memberType.IsEnum) {
-                    if (this._typeMapper.EnumEditorType != null) {
-                        // TODO: pull from cache
-                        result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
+                    if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
+                        if (this._typeMapper.FlagsEnumEditorType != null) {
+                            // TODO: pull from cache
+                            result = Activator.CreateInstance(this._typeMapper.FlagsEnumEditorType) as IValueEditor;
+                        }
                     }
+                    else {
+                        if (this._typeMapper.EnumEditorType != null) {
+                            // TODO: pull from cache
+                            result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
+                        }
+                    }
+                    
+
                 }
                 else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
                     // TODO: pull from cache
