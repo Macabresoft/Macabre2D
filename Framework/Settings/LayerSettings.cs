@@ -22,10 +22,9 @@
         public LayerSettings() {
             this._layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().ToList();
             this._layers.Remove(Layers.None);
-            this._layers.Remove(Layers.All);
 
             foreach (var layer in this._layers) {
-                this._layerToCollisionMask[layer] = Layers.All;
+                this._layerToCollisionMask[layer] = ~Layers.None;
             }
         }
 

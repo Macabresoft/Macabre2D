@@ -14,7 +14,7 @@
     [Display(Name = "Camera")]
     public sealed class CameraComponent : GameComponent, IBoundable, ICameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
-        private Layers _layersToRender = Layers.All;
+        private Layers _layersToRender = ~Layers.None;
         private int _renderOrder;
         private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
         private bool _snapToPixels;

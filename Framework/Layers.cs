@@ -23,7 +23,6 @@
         Layer12 = 1 << 12,
         Layer13 = 1 << 13,
         Layer14 = 1 << 14,
-        Layer15 = 1 << 15,
-        All = ushort.MaxValue
+        Layer15 = 1 << 15
     }
 }

@@ -20,7 +20,7 @@
             get => this._intermediaryValue;
             set {
                 if (!this.UpdateOnLostFocus) {
-                    this.SetValue(this.Value, value);
+                    this.SetEditorValue(this.Value, value);
                 }
 
                 this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, value);
@@ -37,7 +37,7 @@
 
         private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
             if (this.UpdateOnLostFocus && this.HasValueChanged()) {
-                this.SetValue(this.Value, this.IntermediaryValue);
+                this.SetEditorValue(this.Value, this.IntermediaryValue);
             }
         }
 

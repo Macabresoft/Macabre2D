@@ -45,10 +45,10 @@
                 this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
                 Dispatcher.UIThread.Post(() => {
                     if (value != null) {
-                        this.SetValue(this.Value, Activator.CreateInstance(value) as Collider);
+                        this.SetEditorValue(this.Value, Activator.CreateInstance(value) as Collider);
                     }
                     else {
-                        this.SetValue(this.Value, null);
+                        this.SetEditorValue(this.Value, null);
                     }
                 });
             }

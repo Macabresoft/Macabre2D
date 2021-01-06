@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using Avalonia.Data.Converters;
 
     /// <summary>
@@ -11,11 +12,20 @@
 
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            var result = new List<object>();
+            
             if (value is Type enumType && enumType.IsEnum) {
-                return Enum.GetValues(enumType);
+                var values = Enum.GetValues(enumType);
+                var intValues = values.Cast<Enum>().Select(System.Convert.ToInt32).ToList();
+                
+                for (var i = 0; i < values.Length; i++) {
+                    if (intValues[i] != 0) {
+                        result.Add(values.GetValue(i));
+                    }
+                }
             }
 
-            return new List<object>();
+            return result;
         }
 
         /// <inheritdoc />

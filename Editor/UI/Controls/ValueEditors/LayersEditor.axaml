@@ -10,14 +10,18 @@
                    Text="{Binding $parent[local:LayersEditor].Title}"
                    VerticalAlignment="Top" />
 
-        <ItemsControl Grid.Column="1"
-                      Name="_layersItemsControl">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+        <local:FlagsEnumEditor Grid.Column="1"
+                               EnumType="{x:Type framework:Layers}"
+                               Value="{Binding $parent[local:LayersEditor].Value, Mode=TwoWay}"/>
+        
+        <!-- <ItemsControl Grid.Column="1" -->
+        <!--               Name="_layersItemsControl"> -->
+        <!--     <ItemsControl.ItemsPanel> -->
+        <!--         <ItemsPanelTemplate> -->
+        <!--             <WrapPanel Orientation="Horizontal" /> -->
+        <!--         </ItemsPanelTemplate> -->
+        <!--     </ItemsControl.ItemsPanel> -->
+        <!-- </ItemsControl> -->
             
     </Grid>
 </local:ValueEditorControl>

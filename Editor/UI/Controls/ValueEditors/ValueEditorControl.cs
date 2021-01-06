@@ -80,7 +80,7 @@
             }
         }
 
-        protected void SetValue(T originalValue, T updatedValue) {
+        protected void SetEditorValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
             this.RaiseValueChanged(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
         }
