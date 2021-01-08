@@ -1,11 +1,38 @@
 ﻿<HeaderedContentControl xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.GroupBox">
+    <HeaderedContentControl.Styles>
+        <Style Selector="Button.groupBoxButton">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
+            <Setter Property="Margin" Value="{StaticResource StandardMarginHorizontal}" />
+            <Setter Property="Padding" Value="{StaticResource StandardMarginHorizontal}" />
+        </Style>
+        <Style Selector="ToggleButton.groupBoxButton">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
+            <Setter Property="Margin" Value="{StaticResource StandardMarginHorizontal}" />
+            <Setter Property="Padding" Value="{StaticResource StandardMarginHorizontal}" />
+        </Style>
+        
+        <Style Selector="Button.groupBoxButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeBorderMidBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.groupBoxButton:checked:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeBorderMidBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.groupBoxButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeBorderMidBrush}" />
+        </Style>
+    </HeaderedContentControl.Styles>
     <HeaderedContentControl.Template>
         <ControlTemplate>
             <Grid RowDefinitions="Auto, *"
                   Margin="{StaticResource DoubleMarginAll}">
-
                 <Grid Grid.Row="0"
                       ColumnDefinitions="*, Auto, Auto"
                       Margin="{StaticResource DoubleMarginVertical}">
@@ -19,35 +46,33 @@
 
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="1"
-                                  Margin="{StaticResource StandardMarginHorizontal}"
-                                  FontSize="{StaticResource FontSizeSmall}"
-                                  IsChecked="{TemplateBinding ShowContent}"
-                                  Command="{TemplateBinding ToggleContentCommand}">
+                                  Classes="groupBoxButton"
+                                  Command="{TemplateBinding ToggleContentCommand}"
+                                  IsChecked="{TemplateBinding ShowContent}">
                         <ToggleButton.Styles>
-                            <Style Selector="ToggleButton TextBlock.CheckedToggleButtonContent">
+                            <Style Selector="ToggleButton TextBlock#CheckedToggleButtonContent">
                                 <Setter Property="IsVisible" Value="False" />
                             </Style>
-                            <Style Selector="ToggleButton:checked TextBlock.CheckedToggleButtonContent">
+                            <Style Selector="ToggleButton:checked TextBlock#CheckedToggleButtonContent">
                                 <Setter Property="IsVisible" Value="True" />
                             </Style>
-                            <Style Selector="ToggleButton TextBlock.UncheckedToggleButtonContent">
+                            <Style Selector="ToggleButton TextBlock#UncheckedToggleButtonContent">
                                 <Setter Property="IsVisible" Value="True" />
                             </Style>
-                            <Style Selector="ToggleButton:checked TextBlock.UncheckedToggleButtonContent">
+                            <Style Selector="ToggleButton:checked TextBlock#UncheckedToggleButtonContent">
                                 <Setter Property="IsVisible" Value="False" />
                             </Style>
                             <Style Selector="ToggleButton:checked /template/ ContentPresenter">
-                                <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
-                                <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}"/>
+                                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
                             </Style>
                         </ToggleButton.Styles>
                         <Panel>
-                            <TextBlock Classes="UncheckedToggleButtonContent"
+                            <TextBlock Name="UncheckedToggleButtonContent"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{StaticResource FontSizeSmall}"
                                        Text="{StaticResource TriangleLeftCharacter}" />
-                            <TextBlock Classes="CheckedToggleButtonContent"
+                            <TextBlock Name="CheckedToggleButtonContent"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{StaticResource FontSizeSmall}"
@@ -55,12 +80,11 @@
                         </Panel>
                     </ToggleButton>
                     <Button Grid.Column="2"
-                            Margin="{StaticResource StandardMarginHorizontal}"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            IsVisible="{TemplateBinding CloseCommand, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Classes="groupBoxButton"
                             Command="{TemplateBinding CloseCommand}"
                             CommandParameter="{TemplateBinding CloseCommandParameter}"
-                            Content="{StaticResource XCharacter}" />
+                            Content="{StaticResource XCharacter}"
+                            IsVisible="{TemplateBinding CloseCommand, Converter={x:Static ObjectConverters.IsNotNull}}" />
                 </Grid>
 
                 <Border Grid.Row="1"
