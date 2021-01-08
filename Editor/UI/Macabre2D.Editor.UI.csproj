@@ -58,4 +58,7 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Theme" />
+  </ItemGroup>
 </Project>

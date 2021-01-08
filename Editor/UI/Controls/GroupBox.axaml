@@ -36,18 +36,22 @@
                             <Style Selector="ToggleButton:checked TextBlock.UncheckedToggleButtonContent">
                                 <Setter Property="IsVisible" Value="False" />
                             </Style>
+                            <Style Selector="ToggleButton:checked /template/ ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}"/>
+                            </Style>
                         </ToggleButton.Styles>
                         <Panel>
                             <TextBlock Classes="UncheckedToggleButtonContent"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{StaticResource FontSizeSmall}"
-                                       Text="&lt;" />
+                                       Text="{StaticResource TriangleLeftCharacter}" />
                             <TextBlock Classes="CheckedToggleButtonContent"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{StaticResource FontSizeSmall}"
-                                       Text="v" />
+                                       Text="{StaticResource TriangleDownCharacter}" />
                         </Panel>
                     </ToggleButton>
                     <Button Grid.Column="2"
@@ -56,7 +60,7 @@
                             IsVisible="{TemplateBinding CloseCommand, Converter={x:Static ObjectConverters.IsNotNull}}"
                             Command="{TemplateBinding CloseCommand}"
                             CommandParameter="{TemplateBinding CloseCommandParameter}"
-                            Content="x" />
+                            Content="{StaticResource XCharacter}" />
                 </Grid>
 
                 <Border Grid.Row="1"

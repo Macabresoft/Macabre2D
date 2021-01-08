@@ -5,7 +5,7 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-
+    
     <Application.Styles>
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml" />
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseDark.xaml" />
@@ -13,6 +13,7 @@
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/Margins.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/CheckBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/ComboBox.axaml" />
+        <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/SpecialCharacters.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/TextBlock.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/TextBox.axaml" />
     </Application.Styles>

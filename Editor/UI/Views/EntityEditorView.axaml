@@ -12,7 +12,28 @@
                   VerticalScrollBarVisibility="Visible">
         <Grid RowDefinitions="Auto, Auto *"
               Margin="{StaticResource DoubleMarginAll}">
-            <controls:GroupBox Grid.Row="0"
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="Pink" 
+                                Width="16"
+                                Height="16"/>
+                        <GridSplitter VerticalAlignment="Stretch"
+                                      IsEnabled="False"/>
+                        <Menu>
+                            <MenuItem>
+                                <MenuItem Header="One" />
+                                <MenuItem Header="Two" />
+                                <MenuItem Header="Three" />  
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            
+            <controls:GroupBox Grid.Row="1"
                                Header="Entity">
                 <Grid ColumnDefinitions="Auto, *"
                       RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
@@ -72,7 +93,7 @@
                 </Grid>
             </controls:GroupBox>
 
-            <ItemsControl Grid.Row="1"
+            <ItemsControl Grid.Row="2"
                           Items="{Binding ComponentEditors}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
