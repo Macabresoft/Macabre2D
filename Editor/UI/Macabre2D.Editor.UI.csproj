@@ -61,8 +61,9 @@
       <DependentUpon>DropDownButton.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Dialogs" />
+    <Compile Update="Views\Dialogs\TypeSelectionDialog.axaml.cs">
+      <DependentUpon>MainWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

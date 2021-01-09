@@ -1,0 +1,61 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
+        x:Class="Macabresoft.Macabre2D.Editor.UI.Views.TypeSelectionWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Make a Selection">
+    <Design.DataContext>
+        <viewModels:TypeSelectionViewModel />
+    </Design.DataContext>
+    <Grid Margin="{StaticResource DoubleMarginAll}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:CollectionFilterBox Grid.Row="0"
+                                      x:Name="_filterBox"
+                                      ItemsSource="{Binding Types, Mode=OneWay}"
+                                      FilterFunc="{Binding FilterFunc, Mode=OneTime}" />
+
+        <ListBox Grid.Row="1"
+                 Margin="{StaticResource DoubleMarginTB}"
+                 ItemsSource="{Binding FilteredItems, ElementName=_filterBox, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedType}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name, Mode=OneTime}" />
+                        <TextBlock>
+                        <Run Text=" (" />
+                        <Run Text="{Binding FullName, Mode=OneTime}" />
+                        <Run Text=") " />
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <valueEditors:StringEditor Grid.Row="2"
+                                   Visibility="{Binding ShowNameTextBox, ElementName=_selectTypeDialog, Converter={StaticResource _boolToVisibilityConverter}}"
+                                   Title="Name"
+                                   Value="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="3"
+                    Margin="{StaticResource StandardMarginAll}">
+            <Button Content="_OK"
+                    Command="{Binding OKCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True"
+                    Width="65" />
+            <Button Content="_Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True"
+                    Width="65" />
+        </StackPanel>
+</Window>
