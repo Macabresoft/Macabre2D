@@ -1,19 +1,13 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:String"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.StringEditor">
-    <local:ValueEditorControl.Resources>
-        <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
-    </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *">
         <TextBlock Grid.Column="0"
-                   FontWeight="Bold"
-                   Text="{Binding $parent[local:StringEditor].Title}"
-                   VerticalAlignment="Center"
-                   IsVisible="{Binding $parent[local:StringEditor].Title, Converter={StaticResource InverseIsStringNullOrEmptyConverter}}"/>
+                   Classes="ValueEditorLabel"
+                   Text="{Binding $parent[local:StringEditor].Title}" />
 
         <TextBox Grid.Column="1"
                  LostFocus="ValueEditor_OnLostFocus"

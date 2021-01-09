@@ -9,11 +9,8 @@
                       Margin="{StaticResource DoubleMarginVertical}">
                     <TextBlock Grid.Column="0"
                                ToolTip.Tip="{TemplateBinding Header}"
-                               FontSize="{StaticResource FontSizeNormal}"
-                               FontWeight="Bold"
-                               Text="{TemplateBinding Header}"
-                               TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Center" />
+                               Classes="ValueEditorLabel"
+                               Text="{TemplateBinding Header}" />
 
                     <GridSplitter Grid.Column="1"
                                   IsEnabled="False"
@@ -29,7 +26,7 @@
                               IsEnabled="False"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Center"
-                              Margin="{StaticResource DoubleMarginVertical}"/>
+                              Margin="{StaticResource DoubleMarginVertical}" />
             </Grid>
         </ControlTemplate>
     </HeaderedContentControl.Template>

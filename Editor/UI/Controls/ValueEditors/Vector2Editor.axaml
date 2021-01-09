@@ -1,21 +1,15 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                           x:TypeArguments="monoGame:Vector2"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.Vector2Editor"
                           UpdateOnLostFocus="False">
-    <local:ValueEditorControl.Resources>
-        <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
-    </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
         <TextBlock Grid.Column="0"
-                   FontWeight="Bold"
-                   Text="{Binding $parent[local:Vector2Editor].Title}"
-                   VerticalAlignment="Center"
-                   IsVisible="{Binding $parent[local:Vector2Editor].Title, Converter={StaticResource InverseIsStringNullOrEmptyConverter}}"/>
-        
+                   Classes="ValueEditorLabel"
+                   Text="{Binding $parent[local:Vector2Editor].Title}" />
+
         <TextBlock Grid.Column="1"
                    Text="X: "
                    VerticalAlignment="Center" />

@@ -8,15 +8,12 @@
     <local:ValueEditorControl.Resources>
         <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
         <converters:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
-        <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *">
         <TextBlock Grid.Column="0"
-                   FontWeight="Bold"
-                   Text="{Binding $parent[local:FlagsEnumEditor].Title}"
-                   VerticalAlignment="Center"
-                   IsVisible="{Binding $parent[local:FlagsEnumEditor].Title, Converter={StaticResource InverseIsStringNullOrEmptyConverter}}"/>
+                   Classes="ValueEditorLabel"
+                   Text="{Binding $parent[local:FlagsEnumEditor].Title}" />
 
         <ComboBox Grid.Column="1"
                   Items="{Binding $parent[local:FlagsEnumEditor].EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
@@ -26,7 +23,7 @@
                   ToolTip.Tip="{Binding $parent[local:FlagsEnumEditor].Value}">
             <ComboBox.Styles>
                 <Style Selector="ComboBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ComboBox.Styles>
             <ComboBox.ItemTemplate>
@@ -39,7 +36,7 @@
                         <CheckBox.IsChecked>
                             <MultiBinding Converter="{StaticResource FlagsEnumToBoolConverter}">
                                 <Binding Path="$parent[local:FlagsEnumEditor].Value"
-                                         Mode="TwoWay"/>
+                                         Mode="TwoWay" />
                                 <Binding />
                             </MultiBinding>
                         </CheckBox.IsChecked>

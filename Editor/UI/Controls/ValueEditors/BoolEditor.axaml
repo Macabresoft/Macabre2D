@@ -5,5 +5,5 @@
                           x:TypeArguments="system:Boolean"
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.BoolEditor">
     <CheckBox Content="{Binding $parent[local:BoolEditor].Title}"
-              IsChecked="{Binding $parent[local:BoolEditor].Value}"/>
+              IsChecked="{Binding $parent[local:BoolEditor].Value}" />
 </local:ValueEditorControl>
