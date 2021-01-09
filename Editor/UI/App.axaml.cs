@@ -17,7 +17,8 @@
             this.Container = new UnityContainer()
                 .RegisterMappers()
                 .RegisterServices()
-                .RegisterTypes();
+                .RegisterLibraryServices()
+                .RegisterLibraryTypes();
 
             Resolver.Container = this.Container;
 

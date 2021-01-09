@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Reactive;
+    using System.Windows.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -11,7 +13,9 @@
     using Unity;
 
     public class EntityEditorViewModel : ViewModelBase {
+        private readonly ReactiveCommand<Type, Unit> _addComponentCommand;
         private readonly ObservableCollectionExtended<ValueEditorCollection> _componentEditors = new();
+        private readonly IDialogService _dialogService;
         private readonly object _editorsLock = new();
         private readonly ReactiveCommand<IGameComponent, Unit> _removeComponentCommand;
         private readonly IUndoService _undoService;
@@ -26,23 +30,32 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityEditorViewModel" /> class.
         /// </summary>
+        /// <param name="dialogService">The dialog service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         /// <param name="valueEditorService">The value editor service.</param>
         [InjectionConstructor]
         public EntityEditorViewModel(
+            IDialogService dialogService,
             ISelectionService selectionService,
             IUndoService undoService,
             IValueEditorService valueEditorService) {
+            this._dialogService = dialogService;
             this.SelectionService = selectionService;
             this._undoService = undoService;
             this._valueEditorService = valueEditorService;
             this.SelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
 
+            this._addComponentCommand = ReactiveCommand.Create<Type, Unit>(
+                this.AddComponent,
+                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
+
             this._removeComponentCommand = ReactiveCommand.Create<IGameComponent, Unit>(
                 this.RemoveComponent,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
         }
+
+        public ICommand AddComponentCommand => this._addComponentCommand;
 
         /// <summary>
         /// Gets the component editors.
@@ -59,6 +72,22 @@
         /// Gets the selection service.
         /// </summary>
         public ISelectionService SelectionService { get; }
+
+        private Unit AddComponent(Type type) {
+            if (this.SelectionService.SelectedEntity is IGameEntity entity) {
+                if (type == null) {
+                    type = this._dialogService.OpenTypeSelectionDialog(typeof(IGameComponent));
+                }
+
+                if (type != null) {
+                    if (Activator.CreateInstance(type) is IGameComponent component) {
+                        entity.AddComponent(component);
+                    }
+                }
+            }
+
+            return Unit.Default;
+        }
 
         private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
             if (sender is IValueEditor valueEditor && valueEditor.Owner != null && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {

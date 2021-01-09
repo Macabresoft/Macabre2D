@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
-        public static IUnityContainer RegisterServices(this IUnityContainer container) {
+        public static IUnityContainer RegisterLibraryServices(this IUnityContainer container) {
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
                 .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
-        public static IUnityContainer RegisterTypes(this IUnityContainer container) {
+        public static IUnityContainer RegisterLibraryTypes(this IUnityContainer container) {
             return container.RegisterType<IAvaloniaGame, SceneEditor>(new PerResolveLifetimeManager())
                 .RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
         }

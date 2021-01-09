@@ -63,6 +63,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Theme" />
+    <Folder Include="Views\Dialogs" />
   </ItemGroup>
 </Project>

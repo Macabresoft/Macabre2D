@@ -15,7 +15,9 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
-
+                <Button Command="{Binding AddComponentCommand}"
+                        CommandParameter="{x:Null}"
+                        Content="{StaticResource PlusCharacter}" />
             </StackPanel>
             
             <controls:GroupBox Grid.Row="1"
