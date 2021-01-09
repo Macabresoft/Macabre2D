@@ -15,22 +15,7 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <Button>
-                    <StackPanel Orientation="Horizontal">
-                        <Border Background="Pink" 
-                                Width="16"
-                                Height="16"/>
-                        <GridSplitter VerticalAlignment="Stretch"
-                                      IsEnabled="False"/>
-                        <Menu>
-                            <MenuItem>
-                                <MenuItem Header="One" />
-                                <MenuItem Header="Two" />
-                                <MenuItem Header="Three" />  
-                            </MenuItem>
-                        </Menu>
-                    </StackPanel>
-                </Button>
+
             </StackPanel>
             
             <controls:GroupBox Grid.Row="1"

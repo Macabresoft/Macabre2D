@@ -57,6 +57,10 @@
       <DependentUpon>FlagsEnumEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\DropDownButton.axaml.cs">
+      <DependentUpon>DropDownButton.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Theme" />
