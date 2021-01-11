@@ -10,7 +10,7 @@
     /// <summary>
     /// A gizmo/component that allows the user to scale entities in the editor.
     /// </summary>
-    public sealed class ScaleGizmoComponent : BaseAxisGizmoComponent {
+    internal sealed class ScaleGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
         private Sprite _squareSprite;
         private Vector2 _unmovedScale;

@@ -108,11 +108,11 @@
         }
 
         private bool CheckIfTypeMatch(Type baseType, Type testingType) {
-            return baseType != testingType && !testingType.IsAbstract && baseType.IsAssignableFrom(testingType);
+            return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && baseType.IsAssignableFrom(testingType);
         }
 
         private bool CheckIfTypeMatchGeneric(Type baseType, Type testingType) {
-            return baseType != testingType && !testingType.IsAbstract && testingType.BaseType?.IsGenericType == true && testingType.BaseType.GetGenericTypeDefinition() == baseType;
+            return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && testingType.BaseType?.IsGenericType == true && testingType.BaseType.GetGenericTypeDefinition() == baseType;
         }
     }
 

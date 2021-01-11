@@ -4,7 +4,9 @@
     using System.ComponentModel;
     using System.Linq;
     using System.Reactive;
+    using System.Threading.Tasks;
     using System.Windows.Input;
+    using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -45,11 +47,11 @@
             this._undoService = undoService;
             this._valueEditorService = valueEditorService;
             this.SelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
-
-            this._addComponentCommand = ReactiveCommand.Create<Type, Unit>(
-                this.AddComponent,
+            
+            this._addComponentCommand = ReactiveCommand.CreateFromTask<Type>(
+                async x => await this.AddComponent(x), 
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
-
+            
             this._removeComponentCommand = ReactiveCommand.Create<IGameComponent, Unit>(
                 this.RemoveComponent,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
@@ -73,20 +75,31 @@
         /// </summary>
         public ISelectionService SelectionService { get; }
 
-        private Unit AddComponent(Type type) {
+        private async Task AddComponent(Type type) {
             if (this.SelectionService.SelectedEntity is IGameEntity entity) {
                 if (type == null) {
-                    type = this._dialogService.OpenTypeSelectionDialog(typeof(IGameComponent));
+                    type = await this._dialogService.OpenTypeSelectionDialog(typeof(IGameComponent));
                 }
 
                 if (type != null) {
                     if (Activator.CreateInstance(type) is IGameComponent component) {
-                        entity.AddComponent(component);
+                        this._undoService.Do(() => {
+                            Dispatcher.UIThread.Post(() => {
+                                var valueEditorCollection = this._valueEditorService.GetComponentEditor(component, this._removeComponentCommand);
+                                entity.AddComponent(component);
+                                this._componentEditors.Add(valueEditorCollection);
+                            });
+
+                        }, () => {
+                            Dispatcher.UIThread.Post(() => {
+                                var valueEditorCollection = this._componentEditors.FirstOrDefault(x => x.Owner == component);
+                                entity.RemoveComponent(component);
+                                this._componentEditors.Remove(valueEditorCollection);
+                            });
+                        });
                     }
                 }
             }
-
-            return Unit.Default;
         }
 
         private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {

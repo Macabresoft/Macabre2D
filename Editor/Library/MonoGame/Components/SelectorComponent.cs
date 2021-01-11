@@ -10,7 +10,7 @@
     /// <summary>
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
-    public class SelectorComponent : GameComponent, IGizmo {
+    internal class SelectorComponent : GameComponent, IGizmo {
         private readonly ISceneService _sceneService;
         private readonly ISelectionService _selectionService;
         private ICameraComponent _camera;

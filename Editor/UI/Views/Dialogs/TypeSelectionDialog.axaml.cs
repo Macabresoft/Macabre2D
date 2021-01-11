@@ -1,23 +1,25 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Views {
     using Avalonia.Controls;
-    using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.ViewModels;
+    using Unity;
 
-    public class TypeSelectionWindow : Window {
-        public TypeSelectionWindow() {
-            this.DataContext = Resolver.Resolve<TypeSelectionViewModel>();
+    public class TypeSelectionDialog : Window {
+        public TypeSelectionDialog() {
+        }
+        
+        [InjectionConstructor]
+        public TypeSelectionDialog(TypeSelectionViewModel viewModel) {
+            this.DataContext = viewModel;
+            viewModel.CloseRequested += OnCloseRequested;
             this.InitializeComponent();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e) {
-            this.Close();
+        private void OnCloseRequested(object sender, bool e) {
+            this.Close(e);
         }
-        
-        private void ViewSource_Click(object sender, RoutedEventArgs e) {
-            WebHelper.OpenInBrowser("https://github.com/Macabresoft/Macabre2D");
-        }
+
+        public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

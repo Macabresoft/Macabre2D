@@ -6,7 +6,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class CameraControlComponent : GameUpdateableComponent {
+    internal sealed class CameraControlComponent : GameUpdateableComponent {
         private CameraComponent _camera;
 
         public override void Initialize(IGameEntity entity) {

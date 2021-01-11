@@ -1,5 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel.DataAnnotations;
     using Microsoft.Xna.Framework;
     using System.Runtime.Serialization;
 
@@ -31,6 +31,7 @@
     /// <summary>
     /// A dynamic body.
     /// </summary>
+    [Display(Name = "Dynamic Physics Body")]
     public sealed class DynamicPhysicsBodyComponent : SimplePhysicsBodyComponent, IDynamicPhysicsBody {
         private bool _isKinematic;
         private float _mass = 1f;

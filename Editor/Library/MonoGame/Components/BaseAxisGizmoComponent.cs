@@ -12,7 +12,7 @@
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
-    public abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
+    internal abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
         /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>

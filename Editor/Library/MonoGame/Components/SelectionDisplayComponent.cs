@@ -10,7 +10,7 @@
     /// A component which displays the currently selected <see cref="IGameEntity" /> and
     /// <see cref="Framework.IGameComponent" />.
     /// </summary>
-    public class SelectionDisplayComponent : BaseDrawerComponent {
+    internal class SelectionDisplayComponent : BaseDrawerComponent {
         private readonly IEditorService _editorService;
         private readonly ISelectionService _selectionService;
 

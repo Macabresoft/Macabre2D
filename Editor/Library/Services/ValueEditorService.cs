@@ -26,13 +26,21 @@
         IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore);
 
         /// <summary>
+        /// Gets the component editor for the provided <see cref="IGameComponent"/>.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <param name="deleteComponentCommand">A command to delete a component from the entity.</param>
+        /// <returns>A value editor collection for a single component.</returns>
+        ValueEditorCollection GetComponentEditor(IGameComponent component, ICommand deleteComponentCommand);
+        
+        /// <summary>
         /// Gets component editors for the provided <see cref="IGameEntity" />.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="deleteComponentCommand">A command to delete a component from the entity.</param>
         /// <returns>Value editor collections for each component on the entity.</returns>
         IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
-
+        
         /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
@@ -68,14 +76,20 @@
             var editors = new List<ValueEditorCollection>();
             foreach (var component in entity.Components) {
                 var componentEditors = this.CreateEditors(component);
-                if (componentEditors.Any()) {
-                    var name = component.GetType().GetTypeDisplayName();
-                    var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
-                    editors.Add(editorCollection);
-                }
+                var name = component.GetType().GetTypeDisplayName();
+                var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
+                editors.Add(editorCollection);
             }
 
             return editors;
+        }
+        
+        /// <inheritdoc />
+        public ValueEditorCollection GetComponentEditor(IGameComponent component, ICommand deleteComponentCommand) {
+            var componentEditors = this.CreateEditors(component);
+            var name = component.GetType().GetTypeDisplayName();
+            var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
+            return editorCollection;
         }
 
         /// <inheritdoc />

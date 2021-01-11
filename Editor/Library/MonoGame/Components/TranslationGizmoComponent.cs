@@ -9,7 +9,7 @@
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
-    public sealed class TranslationGizmoComponent : BaseAxisGizmoComponent {
+    internal sealed class TranslationGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
         private Sprite _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;

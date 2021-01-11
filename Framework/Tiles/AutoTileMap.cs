@@ -5,12 +5,14 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A component which maps <see cref="AutoTileSet" /> onto a <see cref="TileGrid" />.
     /// </summary>
+    [Display(Name = "Auto Tile Map")]
     public sealed class AutoTileMap : RenderableTileMapComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]

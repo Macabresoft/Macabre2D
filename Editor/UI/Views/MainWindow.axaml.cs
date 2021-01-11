@@ -6,21 +6,17 @@
     using Macabresoft.Macabre2D.Editor.Library.ViewModels;
 
     public class MainWindow : Window {
-        public MainWindow() {
+        internal void InitializeComponent() {
             this.DataContext = Resolver.Resolve<MainWindowViewModel>();
-            this.InitializeComponent();
+            AvaloniaXamlLoader.Load(this);
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e) {
             this.Close();
         }
-        
+
         private void ViewSource_Click(object sender, RoutedEventArgs e) {
             WebHelper.OpenInBrowser("https://github.com/Macabresoft/Macabre2D");
-        }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

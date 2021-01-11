@@ -1,61 +1,55 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
-        x:Class="Macabresoft.Macabre2D.Editor.UI.Views.TypeSelectionWindow"
+        x:Class="Macabresoft.Macabre2D.Editor.UI.Views.TypeSelectionDialog"
+        Height="480"
+        Width="640"
+        CanResize="False"
         Icon="/Assets/avalonia-logo.ico"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
         Title="Make a Selection">
+    <Window.Resources>
+        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
+    </Window.Resources>
     <Design.DataContext>
         <viewModels:TypeSelectionViewModel />
     </Design.DataContext>
-    <Grid Margin="{StaticResource DoubleMarginAll}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <controls:CollectionFilterBox Grid.Row="0"
-                                      x:Name="_filterBox"
-                                      ItemsSource="{Binding Types, Mode=OneWay}"
-                                      FilterFunc="{Binding FilterFunc, Mode=OneTime}" />
-
+    <Grid Margin="{StaticResource DoubleMarginAll}" 
+          RowDefinitions="Auto,*,Auto,Auto">
         <ListBox Grid.Row="1"
-                 Margin="{StaticResource DoubleMarginTB}"
-                 ItemsSource="{Binding FilteredItems, ElementName=_filterBox, Mode=OneWay}"
+                 Margin="{StaticResource StandardMarginAll}"
+                 Items="{Binding Types, Mode=OneWay}"
                  SelectedItem="{Binding SelectedType}"
-                 SelectionMode="Single">
+                 SelectionMode="Single"
+                 VirtualizationMode="None">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name, Mode=OneTime}" />
-                        <TextBlock>
-                        <Run Text=" (" />
-                        <Run Text="{Binding FullName, Mode=OneTime}" />
-                        <Run Text=") " />
-                        </TextBlock>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="{StaticResource StandardMarginAll}">
+                        <TextBlock FontWeight="Bold"
+                                   Text="{Binding Converter={StaticResource ToDisplayNameConverter}, Mode=OneTime}" />
+                        <TextBlock FontStyle="Italic"
+                                   Text="{Binding FullName, StringFormat={}({0}), Mode=OneTime}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <valueEditors:StringEditor Grid.Row="2"
-                                   Visibility="{Binding ShowNameTextBox, ElementName=_selectTypeDialog, Converter={StaticResource _boolToVisibilityConverter}}"
-                                   Title="Name"
-                                   Value="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Grid.Row="3"
-                    Margin="{StaticResource StandardMarginAll}">
-            <Button Content="_OK"
-                    Command="{Binding OKCommand}"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
                     HorizontalAlignment="Right"
                     IsDefault="True"
-                    Width="65" />
-            <Button Content="_Cancel"
+                    Width="50" />
+            <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
                     IsCancel="True"
-                    Width="65" />
+                    Width="50" />
         </StackPanel>
+    </Grid>
 </Window>

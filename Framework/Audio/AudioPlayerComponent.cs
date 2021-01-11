@@ -5,11 +5,13 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Plays a <see cref="AudioClip" />.
     /// </summary>
+    [Display(Name = "Audio Player")]
     public sealed class AudioPlayerComponent : GameComponent, IAssetComponent<AudioClip> {
         private AudioClip? _audioClip;
         private float _pan;

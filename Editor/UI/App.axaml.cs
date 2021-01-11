@@ -27,7 +27,10 @@
 
         public override void OnFrameworkInitializationCompleted() {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-                desktop.MainWindow = new MainWindow();
+                var mainWindow = new MainWindow();
+                Resolver.Container.RegisterInstance(mainWindow);
+                mainWindow.InitializeComponent();
+                desktop.MainWindow = mainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();

@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
+    using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -11,6 +12,6 @@
         /// </summary>
         /// <param name="baseType">The base type.</param>
         /// <returns>A type that inherits from <see cref="IGameComponent"/>.</returns>
-        Type OpenTypeSelectionDialog(Type baseType);
+        Task<Type> OpenTypeSelectionDialog(Type baseType);
     }
 }

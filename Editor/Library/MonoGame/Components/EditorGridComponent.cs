@@ -9,7 +9,7 @@
     /// <summary>
     /// Draws a grid for the editor.
     /// </summary>
-    public sealed class EditorGridComponent : BaseDrawerComponent {
+    internal sealed class EditorGridComponent : BaseDrawerComponent {
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
         private CameraComponent _camera;

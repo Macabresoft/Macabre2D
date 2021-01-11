@@ -1,11 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel.DataAnnotations;
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
 
     /// <summary>
     /// A component which displays frame rate in the top right corner of the screen.
     /// </summary>
+    [Display(Name = "Frame Rate Display")]
     public sealed class FrameRateDisplayComponent : TextRenderComponent, IGameUpdateableComponent {
         private readonly RollingMeanFloat _rollingAverage = new RollingMeanFloat(10);
         private CameraComponent? _camera;

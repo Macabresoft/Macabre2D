@@ -1,10 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel.DataAnnotations;
     using Macabresoft.Core;
 
     /// <summary>
     /// A component which measures frame rate.
     /// </summary>
+    [Display(Name = "Frame Rate Component")]
     public class FrameRateComponent : GameUpdateableComponent {
         private readonly RollingMeanFloat _rollingAverage = new RollingMeanFloat(10);
 
