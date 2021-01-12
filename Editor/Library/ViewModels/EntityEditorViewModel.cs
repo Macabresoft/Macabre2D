@@ -127,26 +127,31 @@
                     var valueEditorCollection = this._componentEditors.FirstOrDefault(x => x.Owner == component);
                     var index = this._componentEditors.IndexOf(valueEditorCollection);
                     this._undoService.Do(() => {
-                        entity.RemoveComponent(component);
-                        this._componentEditors.Remove(valueEditorCollection);
+                        Dispatcher.UIThread.Post(() => {
+                            entity.RemoveComponent(component);
+                            this._componentEditors.Remove(valueEditorCollection);
 
-                        if (this.SelectionService.SelectedComponent == component) {
-                            this.SelectionService.SelectedComponent = null;
-                            selectComponent = true;
-                        }
+                            if (this.SelectionService.SelectedComponent == component) {
+                                this.SelectionService.SelectedComponent = null;
+                                selectComponent = true;
+                            }
+                        });
                     }, () => {
-                        entity.AddComponent(component);
+                        Dispatcher.UIThread.Post(() => {
+                            var newValueEditorCollection = this._valueEditorService.GetComponentEditor(component, this._removeComponentCommand);
+                            entity.AddComponent(component);
 
-                        if (this._componentEditors.Count > index) {
-                            this._componentEditors.Insert(index, valueEditorCollection);
-                        }
-                        else {
-                            this._componentEditors.Add(valueEditorCollection);
-                        }
+                            if (this._componentEditors.Count > index) {
+                                this._componentEditors.Insert(index, newValueEditorCollection);
+                            }
+                            else {
+                                this._componentEditors.Add(newValueEditorCollection);
+                            }
 
-                        if (selectComponent) {
-                            this.SelectionService.SelectedComponent = component;
-                        }
+                            if (selectComponent) {
+                                this.SelectionService.SelectedComponent = component;
+                            }
+                        });
                     });
                 }
             }

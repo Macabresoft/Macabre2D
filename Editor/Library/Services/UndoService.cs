@@ -55,8 +55,9 @@
     /// A service which handles undo/redo operations.
     /// </summary>
     public class UndoService : ReactiveObject, IUndoService {
-        private readonly Stack<UndoCommand> _redoStack = new Stack<UndoCommand>();
-        private readonly Stack<UndoCommand> _undoStack = new Stack<UndoCommand>();
+        private readonly Stack<UndoCommand> _redoStack = new();
+        private readonly Stack<UndoCommand> _undoStack = new();
+        private readonly object _lock = new();
 
         /// <inheritdoc />
         public bool CanRedo => this._redoStack.Any();
@@ -79,29 +80,35 @@
         /// <inheritdoc />
         public void Do(Action action, Action undoAction, Action propertyChangedAction) {
             var undoCommand = new UndoCommand(action, undoAction, propertyChangedAction);
-            undoCommand.Do();
-            this._undoStack.Push(undoCommand);
-            this._redoStack.Clear();
-            this.RaiseProperties();
-        }
-
-        /// <inheritdoc />
-        public void Redo() {
-            if (this.CanRedo) {
-                var command = this._redoStack.Pop();
-                command.Do();
-                this._undoStack.Push(command);
+            lock (this._lock) {
+                undoCommand.Do();
+                this._undoStack.Push(undoCommand);
+                this._redoStack.Clear();
                 this.RaiseProperties();
             }
         }
 
         /// <inheritdoc />
+        public void Redo() {
+            lock (this._lock) {
+                if (this.CanRedo) {
+                    var command = this._redoStack.Pop();
+                    command.Do();
+                    this._undoStack.Push(command);
+                    this.RaiseProperties();
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public void Undo() {
-            if (this.CanUndo) {
-                var command = this._undoStack.Pop();
-                command.Undo();
-                this._redoStack.Push(command);
-                this.RaiseProperties();
+            lock (this._lock) {
+                if (this.CanUndo) {
+                    var command = this._undoStack.Pop();
+                    command.Undo();
+                    this._redoStack.Push(command);
+                    this.RaiseProperties();
+                }
             }
         }
 
