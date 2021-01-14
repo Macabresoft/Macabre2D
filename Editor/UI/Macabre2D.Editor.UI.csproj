@@ -65,5 +65,40 @@
       <DependentUpon>MainWindow.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\ByteEditor.axaml.cs">
+      <DependentUpon>ByteEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\BaseNumericEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\DoubleEditor.axaml.cs">
+      <DependentUpon>DoubleEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\IntEditor.axaml.cs">
+      <DependentUpon>IntEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\UIntEditor.axaml.cs">
+      <DependentUpon>UIntEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\ShortEditor.axaml.cs">
+      <DependentUpon>ShortEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\UShortEditor.axaml.cs">
+      <DependentUpon>UShortEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\LongEditor.axaml.cs">
+      <DependentUpon>LongEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\ULongEditor.axaml.cs">
+      <DependentUpon>ULongEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

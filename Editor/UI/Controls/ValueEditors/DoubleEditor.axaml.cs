@@ -2,13 +2,13 @@
     using System;
     using Avalonia.Markup.Xaml;
 
-    public class FloatEditor : BaseNumericEditor<float> {
-        public FloatEditor() {
+    public class DoubleEditor : BaseNumericEditor<double> {
+        public DoubleEditor() {
             this.InitializeComponent();
         }
 
-        protected override float ConvertValue(object calculatedValue) {
-            return Convert.ToSingle(calculatedValue);
+        protected override double ConvertValue(object calculatedValue) {
+            return Convert.ToDouble(calculatedValue);
         }
 
         private void InitializeComponent() {

@@ -1,4 +1,4 @@
-﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+﻿<local:BaseNumericEditor xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -6,4 +6,4 @@
                           x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.BoolEditor">
     <CheckBox Content="{Binding $parent[local:BoolEditor].Title}"
               IsChecked="{Binding $parent[local:BoolEditor].Value}" />
-</local:ValueEditorControl>
+</local:BaseNumericEditor>
