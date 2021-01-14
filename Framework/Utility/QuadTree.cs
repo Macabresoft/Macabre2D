@@ -9,17 +9,19 @@
     /// </summary>
     public sealed class QuadTree<T> where T : IBoundable {
         private readonly Vector2 _bottomLeftBounds;
-        private readonly List<T> _boundables = new List<T>();
+        private readonly List<T> _boundables = new();
         private readonly int _depth;
         private readonly QuadTree<T>[] _nodes = new QuadTree<T>[4];
         private readonly Vector2 _topRightBounds;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QuadTree"/> class.
+        /// Initializes a new instance of the <see cref="QuadTree{T}"/> class.
         /// </summary>
         /// <param name="depth">The depth.</param>
-        /// <param name="bottomLeft">The bottom left bounds.</param>
-        /// <param name="topRight">The top right bounds.</param>
+        /// <param name="x">The left most position of the tree's bounds.</param>
+        /// <param name="y">The bottom most position of the tree's bounds.</param>
+        /// <param name="width">The width of the tree's bounds.</param>
+        /// <param name="height">The height of the tree's bounds.</param>
         public QuadTree(int depth, float x, float y, float width, float height) {
             this._depth = depth;
             this._bottomLeftBounds = new Vector2(x, y);
@@ -127,7 +129,7 @@
         public List<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
             var potentialCollisions = new List<T>(this._boundables);
             var quadrant = this.GetQuadrant(boundingArea);
-            if (quadrant != Quadrant.None && this._nodes[0] != null) {
+            if (quadrant != Quadrant.None) {
                 potentialCollisions.AddRange(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
             }
 
