@@ -31,6 +31,15 @@
         void Initialize(ContentManager contentManager);
 
         /// <summary>
+        /// Resolves an asset reference and loads required content.
+        /// </summary>
+        /// <param name="assetReference">The asset reference to resolve.</param>
+        /// <typeparam name="TAsset">The type of asset.</typeparam>
+        /// <typeparam name="TContent">The type of content.</typeparam>
+        /// <returns>A value indicating whether or not the asset was resolved.</returns>
+        bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
+
+        /// <summary>
         /// Sets the mapping.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -50,6 +59,7 @@
         /// </summary>
         /// <typeparam name="T">The type of asset to load.</typeparam>
         /// <param name="path">The path.</param>
+        /// <param name="loaded">The loaded content.</param>
         /// <returns>The asset.</returns>
         bool TryLoad<T>(string path, out T? loaded) where T : class;
 
@@ -57,7 +67,8 @@
         /// Loads the asset with the specified identifier.
         /// </summary>
         /// <typeparam name="T">The type of asset to load.</typeparam>
-        /// <param name="Id">The identifier.</param>
+        /// <param name="id">The identifier.</param>
+        /// <param name="loaded">The loaded content.</param>
         /// <returns>The asset.</returns>
         bool TryLoad<T>(Guid id, out T? loaded) where T : class;
 
@@ -72,16 +83,16 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-
-        /// <summary>
-        /// The content file name for <see cref="AssetManager" />.
-        /// </summary>
-        public const string ContentFileName = "AssetManager";
-
         private static IAssetManager _instance = new AssetManager();
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Guid, string> _idToPathMapping = new Dictionary<Guid, string>();
+        private readonly Dictionary<Guid, string> _idToPathMapping = new();
+
+        [DataMember]
+        private readonly List<IAssetPackage> _packages = new();
+
+        [DataMember]
+        private readonly List<IAsset> _assets = new();
 
         private ContentManager? _contentManager;
 
@@ -94,9 +105,7 @@
             }
 
             set {
-                if (value != null) {
-                    AssetManager._instance = value;
-                }
+                AssetManager._instance = value;
             }
         }
 
@@ -114,6 +123,40 @@
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
             AssetManager.Instance = this;
+
+            foreach (var package in this._packages) {
+                package.Initialize();
+            }
+        }
+
+        /// <inheritdoc />
+        public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
+            var result = false;
+
+            if (this._assets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetReference.AssetId) is TAsset asset) {
+                if (asset is IContentAsset<TContent> contentAsset && 
+                    contentAsset.ContentId != Guid.Empty &&
+                    this.TryLoad<TContent>(contentAsset.ContentId, out var content) && 
+                    content != null) {
+                    contentAsset.Initialize(content);
+                }
+                
+                assetReference.Initialize(asset);
+                result = true;
+            }
+            else {
+                foreach (var package in this._packages.OfType<IAssetPackage<TAsset, TContent>>()) {
+                    if (package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
+                        if (package.Content == null && this.TryLoad<TContent>(package.ContentId, out var content) && content != null) {
+                            package.LoadContent(content);
+                        }
+
+                        assetReference.Initialize(packagedAsset);
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <inheritdoc />

@@ -1,11 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
 
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// Interface for an object that is an asset.
     /// </summary>
-    public interface IAsset {
+    public interface IAsset : INotifyPropertyChanged {
 
         /// <summary>
         /// Gets or sets the asset identifier.

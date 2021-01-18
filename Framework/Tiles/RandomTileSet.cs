@@ -10,40 +10,17 @@
     /// <summary>
     /// A tile set that will display a random single tile in every active location in the tile map.
     /// </summary>
-    public sealed class RandomTileSet : BaseIdentifiable, IAsset {
+    public sealed class RandomTileSet : BaseAsset, IPackagedAsset<SpriteSheet> {
 
         [DataMember]
         private readonly List<WeightedTile> _tiles = new List<WeightedTile>();
-
+        private SpriteSheet? _spriteSheet;
         private bool _isLoaded = false;
-        private string _name = string.Empty;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RandomTileSet" /> class.
-        /// </summary>
-        public RandomTileSet() {
-        }
 
         /// <summary>
         /// Occurs when a sprite changes for a particular index.
         /// </summary>
         public event EventHandler<ushort>? SpriteChanged;
-
-        /// <inheritdoc />
-        [DataMember]
-        public Guid AssetId { get; set; }
-
-        /// <inheritdoc />
-        [DataMember]
-        public string Name {
-            get {
-                return this._name;
-            }
-
-            set {
-                this.Set(ref this._name, value);
-            }
-        }
 
         /// <summary>
         /// Gets the tiles.
@@ -103,7 +80,7 @@
         /// <returns>The sprite identifiers.</returns>
         public IEnumerable<Guid> GetSpriteIds() {
 #nullable disable
-            return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.Id).ToList();
+            return this._tiles.Where(x => x.Sprite != null).Select(x => x.Sprite.AssetId).ToList();
 #nullable enable
         }
 
@@ -113,34 +90,7 @@
         /// <param name="spriteId">The sprite identifier.</param>
         /// <returns><c>true</c> if the specified sprite identifier has sprite; otherwise, <c>false</c>.</returns>
         public bool HasSprite(Guid spriteId) {
-            return this._tiles.Any(x => x?.Sprite?.Id == spriteId);
-        }
-
-        /// <summary>
-        /// Loads this instance.
-        /// </summary>
-        public void Load() {
-            try {
-                foreach (var tile in this._tiles) {
-                    tile?.Sprite?.Load();
-                }
-            }
-            finally {
-                this._isLoaded = true;
-            }
-        }
-
-        /// <summary>
-        /// Refreshes the sprite.
-        /// </summary>
-        /// <param name="sprite">The sprite.</param>
-        public void RefreshSprite(Sprite sprite) {
-            if (sprite != null) {
-                var tilesForRefresh = this._tiles.Where(x => x.Sprite?.Id == sprite.Id).ToList();
-                foreach (var tile in tilesForRefresh) {
-                    tile.Sprite = sprite;
-                }
-            }
+            return this._tiles.Any(x => x?.Sprite?.AssetId == spriteId);
         }
 
         /// <summary>
@@ -150,7 +100,7 @@
         /// <returns>A value indicating whether or not the sprite was successfully removed.</returns>
         public bool RemoveSprite(Guid spriteId) {
             var result = false;
-            var tiles = this._tiles.Where(x => x.Sprite?.Id == spriteId).ToList();
+            var tiles = this._tiles.Where(x => x.Sprite?.AssetId == spriteId).ToList();
 
             foreach (var tile in tiles) {
                 tile.Sprite = null;
@@ -176,16 +126,20 @@
         /// <param name="sprite">The sprite.</param>
         /// <returns>A value indicating whether or not the value was found.</returns>
         public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
-            sprite = this.Tiles.Select(x => x.Sprite).FirstOrDefault(x => x?.Id == spriteId);
+            sprite = this.Tiles.Select(x => x.Sprite).FirstOrDefault(x => x?.AssetId == spriteId);
             return sprite != null;
         }
 
         private void Tile_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (this._isLoaded && e.PropertyName == nameof(WeightedTile.Sprite) && sender is WeightedTile tile) {
-                tile.Sprite?.Load();
                 var index = (ushort)this._tiles.IndexOf(tile);
                 this.SpriteChanged?.SafeInvoke(this, index);
             }
+        }
+
+        /// <inheritdoc />
+        public void Initialize(SpriteSheet owningPackage) {
+            this._spriteSheet = owningPackage;
         }
     }
 }

@@ -1,18 +1,20 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents a sprite that can be loaded as content.
     /// </summary>
-    public sealed class Sprite : BaseIdentifiable, IAsset, IDisposable {
-        private bool _disposedValue = false;
-        private Point _location;
+    public sealed class Sprite : NotifyPropertyChanged, IPackagedAsset<SpriteSheet>, IDisposable {
         private string _name = string.Empty;
-        private Point _size;
+        private SpriteSheet? _spriteSheet;
+        private byte _row;
+        private byte _column;
+        private byte _width = 1;
+        private byte _height = 1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sprite" /> class.
@@ -20,7 +22,6 @@
         /// <param name="assetId">The asset identifier.</param>
         public Sprite(Guid assetId) {
             this.AssetId = assetId;
-            this.Load();
         }
 
         /// <summary>
@@ -32,32 +33,9 @@
         /// </param>
         /// <param name="size">The size of this specific sprite on the <see cref="Texture2D" />.</param>
         public Sprite(Guid assetId, Point location, Point size) {
-            this.Id = Guid.NewGuid();
             this.AssetId = assetId;
-            this.SetLocationAndSize(location, size);
-            this.Load();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite" /> class.
-        /// </summary>
-        /// <param name="texture">The texture.</param>
-        /// <remarks>
-        /// This constructor should be used for dynamic sprite creation and will not be properly
-        /// saved to a scene as there will be no content path.
-        /// </remarks>
-        public Sprite(Texture2D texture) : this(texture, Point.Zero, new Point(texture.Width, texture.Height)) {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sprite" /> class.
-        /// </summary>
-        /// <param name="texture">The texture.</param>
-        /// <param name="location">The location.</param>
-        /// <param name="size">The size.</param>
-        public Sprite(Texture2D texture, Point location, Point size) {
-            this.Texture = texture;
-            this.SetLocationAndSize(location, size);
+            this.Location = location;
+            this.Size = size;
         }
 
         /// <summary>
@@ -66,24 +44,73 @@
         private Sprite() {
         }
 
+        /// <summary>
+        /// Gets the texture.
+        /// </summary>
+        /// <value>The texture.</value>
+        public Texture2D? Texture => this._spriteSheet?.Content;
+
         /// <inheritdoc />
         [DataMember]
         public Guid AssetId { get; set; } = Guid.Empty;
 
         /// <summary>
-        /// Gets the location.
+        /// Gets or sets the row on the <see cref="SpriteSheet"/> that this sprite starts on from the top of the sheet.
         /// </summary>
-        /// <value>The location.</value>
         [DataMember]
-        public Point Location {
-            get {
-                return this._location;
-            }
-
+        public byte Row {
+            get => this._row;
             set {
-                this.Set(ref this._location, value);
+                if (this.Set(ref this._row, value)) {
+                    this.InvalidateSprite();
+                }
             }
         }
+        
+        /// <summary>
+        /// Gets or sets the column on the <see cref="SpriteSheet"/> that this sprite starts on from the left side of the sheet.
+        /// </summary>
+        [DataMember]
+        public byte Column {
+            get => this._column;
+            set {
+                if (this.Set(ref this._column, value)) {
+                    this.InvalidateSprite();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the number of tiles wide this sprite is on the <see cref="SpriteSheet"/>.
+        /// </summary>
+        [DataMember]
+        public byte Width {
+            get => this._width;
+            set {
+                if (this.Set(ref this._width, value)) {
+                    this.InvalidateSprite();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets or sets the number of tiles tall this sprite is on the <see cref="SpriteSheet"/>.
+        /// </summary>
+        [DataMember]
+        public byte Height {
+            get => this._height;
+            set {
+                if (this.Set(ref this._height, value)) {
+                    this.InvalidateSprite();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the location of this sprite in pixels on the <see cref="Texture2D"/>.
+        /// </summary>
+        /// <value>The location.</value>
+        public Point Location { get; private set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -91,90 +118,47 @@
         /// <value>The name.</value>
         [DataMember]
         public string Name {
-            get {
-                return this._name;
-            }
-
-            set {
-                this.Set(ref this._name, value);
-            }
+            get => this._name;
+            set => this.Set(ref this._name, value);
         }
 
         /// <summary>
-        /// Gets the size.
+        /// Gets the size of this sprite in pixels on the <see cref="Texture2D"/>.
         /// </summary>
         /// <value>The size.</value>
-        [DataMember]
-        public Point Size {
-            get {
-                return this._size;
-            }
+        public Point Size { get; private set; }
 
-            set {
-                this.Set(ref this._size, value);
+        /// <inheritdoc />
+        public void Initialize(SpriteSheet owningPackage) {
+            if (this._spriteSheet != null) {
+                this._spriteSheet.PropertyChanged -= this.SpriteSheet_PropertyChanged;
             }
+            
+            this._spriteSheet = owningPackage;
+            this.InvalidateSprite();
+            this._spriteSheet.PropertyChanged += this.SpriteSheet_PropertyChanged;
         }
 
-        /// <summary>
-        /// Gets the texture.
-        /// </summary>
-        /// <value>The texture.</value>
-        public Texture2D? Texture { get; set; }
+        private void SpriteSheet_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SpriteSheet.Content) || e.PropertyName == nameof(SpriteSheet.Columns) || e.PropertyName == nameof(SpriteSheet.Rows)) {
+                this.InvalidateSprite();
+            }
+        }
 
         /// <inheritdoc />
         public void Dispose() {
-            this.Dispose(true);
-        }
-
-        /// <summary>
-        /// Loads the content.
-        /// </summary>
-        public void Load() {
-            if (this.AssetId != Guid.Empty) {
-                if (AssetManager.Instance.TryLoad<Texture2D>(this.AssetId, out var texture) && texture != null) {
-                    this.Texture = texture;
-
-                    if (this.Size == Point.Zero) {
-                        this.SetLocationAndSize(Point.Zero, new Point(this.Texture.Width, this.Texture.Height));
-                    }
-                }
-                else {
-                    this.SetErrorTexture(BaseGame.Instance.SpriteBatch);
-                }
+            if (this._spriteSheet != null) {
+                this._spriteSheet.PropertyChanged -= this.SpriteSheet_PropertyChanged;
             }
         }
 
-        /// <summary>
-        /// Sets the error texture.
-        /// </summary>
-        /// <param name="spriteBatch">The sprite batch.</param>
-        public void SetErrorTexture(SpriteBatch? spriteBatch) {
-            if (this.Size.X != 0 && this.Size.Y != 0 && spriteBatch != null) {
-                var errorTexture = new Texture2D(spriteBatch.GraphicsDevice, this.Size.X, this.Size.Y, false, SurfaceFormat.Color);
-                var pixels = new Color[this.Size.X * this.Size.Y];
-
-                for (var i = 0; i < pixels.Length; i++) {
-                    pixels[i] = GameSettings.Instance.ErrorSpritesColor;
-                }
-
-                errorTexture.SetData(pixels);
-                this.Texture = errorTexture;
+        private void InvalidateSprite() {
+            if (this._spriteSheet != null) {
+                var (location, size) = this._spriteSheet.GetLocationAndSize(this.Column, this.Row, this.Width, this.Height);
+                this.Location = location;
+                this.Size = size;
+                this.RaisePropertyChanged(nameof(this.Location));
             }
-        }
-
-        private void Dispose(bool disposing) {
-            if (!this._disposedValue) {
-                if (disposing) {
-                    this.Texture?.Dispose();
-                }
-
-                this._disposedValue = true;
-            }
-        }
-
-        private void SetLocationAndSize(Point location, Point size) {
-            this.Location = location;
-            this.Size = size;
         }
     }
 }

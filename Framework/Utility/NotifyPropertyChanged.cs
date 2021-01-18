@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
@@ -7,7 +6,6 @@
     /// A base class that implements <see cref="INotifyPropertyChanged" />
     /// </summary>
     public class NotifyPropertyChanged : INotifyPropertyChanged {
-
         /// <summary>
         /// Occurs when a property changes.
         /// </summary>
@@ -21,10 +19,24 @@
             this.RaisePropertyChanged(false, propertyName);
         }
 
+        /// <summary>
+        /// Raises the property changed event.
+        /// </summary>
+        /// <param name="forceEvent">A value indicating whether or not the event should be forced.</param>
+        /// <param name="propertyName">The property name.</param>
         public void RaisePropertyChanged(bool forceEvent, [CallerMemberName] string propertyName = "") {
-            if (forceEvent || BaseGame.Instance.IsDesignMode != false) {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (forceEvent || BaseGame.Instance.IsDesignMode) {
+                this.RaisePropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        /// <summary>
+        /// Raises the property changed event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The arguments.</param>
+        public void RaisePropertyChanged(object sender, PropertyChangedEventArgs args) {
+            this.PropertyChanged?.Invoke(sender, args);
         }
 
         /// <summary>
@@ -59,7 +71,7 @@
         /// <returns>A value indicating whether or not the value was successfully set.</returns>
         protected virtual bool Set<T>(ref T field, T value, bool forcePropertyChangedEvent, [CallerMemberName] string propertyName = "") {
             var result = false;
-            if (!object.Equals(field, value)) {
+            if (!Equals(field, value)) {
                 field = value;
                 this.RaisePropertyChanged(forcePropertyChangedEvent, propertyName);
                 result = true;
