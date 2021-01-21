@@ -8,14 +8,14 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Base class for easy and generic implementations of <see cref="IAutoTileSet" />.
+    /// A tile set which automatically provides the correct sprite given its relationship to surrounding tiles.
     /// </summary>
     public sealed class AutoTileSet : BaseIdentifiable, IAsset {
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<byte, Sprite> _indexToSprites = new Dictionary<byte, Sprite>();
+        private readonly Dictionary<byte, Sprite> _indexToSprites = new();
 
         private bool _isLoaded = false;
         private string _name = string.Empty;

@@ -8,7 +8,7 @@
     /// </summary>
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]
-    public sealed class AssetReference<TAsset> : NotifyPropertyChanged, IDisposable where TAsset : class, IAsset {
+    public class AssetReference<TAsset> : NotifyPropertyChanged, IDisposable where TAsset : class, IAsset {
         private Guid _assetId;
 
         /// <summary>

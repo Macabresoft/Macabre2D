@@ -12,17 +12,18 @@
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteSheet">The sprite sheet.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="rotation">The rotation.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, float rotation, Color color, SpriteEffects orientation) {
-            if (sprite.Texture != null) {
+        public static void Draw(this SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Transform transform, float rotation, Color color, SpriteEffects orientation) {
+            if (spriteSheet.Content != null && spriteSheet.SpriteSize != Point.Zero) {
                 spriteBatch.Draw(
-                    sprite.Texture,
+                    spriteSheet.Content,
                     transform.Position * GameSettings.Instance.PixelsPerUnit,
-                    new Rectangle(sprite.Location, sprite.Size),
+                    new Rectangle(spriteSheet.GetSpriteLocation(spriteIndex), spriteSheet.SpriteSize),
                     color,
                     rotation,
                     Vector2.Zero,
@@ -36,18 +37,19 @@
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteSheet">The sprite sheet.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="rotation">The rotation.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, float rotation, Color color, SpriteEffects orientation) {
-            if (sprite.Texture != null) {
+        public static void Draw(this SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Vector2 position, Vector2 scale, float rotation, Color color, SpriteEffects orientation) {
+            if (spriteSheet.Content != null && spriteSheet.SpriteSize != Point.Zero) {
                 spriteBatch.Draw(
-                    sprite.Texture,
+                    spriteSheet.Content,
                     position * GameSettings.Instance.PixelsPerUnit,
-                    new Rectangle(sprite.Location, sprite.Size),
+                    new Rectangle(spriteSheet.GetSpriteLocation(spriteIndex), spriteSheet.SpriteSize),
                     color,
                     rotation,
                     Vector2.Zero,
@@ -61,35 +63,38 @@
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteSheet">The sprite sheet.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="color">The color.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Vector2 position, Vector2 scale, Color color) {
-            spriteBatch.Draw(sprite, position, scale, 0f, color, SpriteEffects.FlipVertically);
+        public static void Draw(this SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Vector2 position, Vector2 scale, Color color) {
+            spriteBatch.Draw(spriteSheet, spriteIndex, position, scale, 0f, color, SpriteEffects.FlipVertically);
         }
 
         /// <summary>
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteSheet">The sprite sheet.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color) {
-            spriteBatch.Draw(sprite, transform, transform.Rotation, color, SpriteEffects.FlipVertically);
+        public static void Draw(this SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Transform transform, Color color) {
+            spriteBatch.Draw(spriteSheet, spriteIndex, transform, transform.Rotation, color, SpriteEffects.FlipVertically);
         }
 
         /// <summary>
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteSheet">The sprite sheet.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
-        public static void Draw(this SpriteBatch spriteBatch, Sprite sprite, Transform transform, Color color, SpriteEffects orientation) {
-            spriteBatch.Draw(sprite, transform, transform.Rotation, color, orientation);
+        public static void Draw(this SpriteBatch spriteBatch, SpriteSheet spriteSheet, byte spriteIndex, Transform transform, Color color, SpriteEffects orientation) {
+            spriteBatch.Draw(spriteSheet, spriteIndex, transform, transform.Rotation, color, orientation);
         }
 
         /// <summary>

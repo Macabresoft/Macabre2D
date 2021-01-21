@@ -19,7 +19,7 @@
 
         [DataMember(Order = 0)]
         [Display(Name = "Sprite")]
-        private readonly AssetReference<Sprite> _spriteReference = new();
+        private readonly SpriteReference _spriteReference = new();
 
         private Color _color = Color.White;
         private float _rotation;
@@ -98,28 +98,28 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<Sprite, Texture2D>(this._spriteReference);
+            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this._spriteReference);
+            this._spriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this._spriteReference.Asset is Sprite sprite) {
-                this.Entity.Scene.Game.SpriteBatch?.Draw(
-                    sprite,
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                this._spriteReference.Asset?.Draw(
+                    spriteBatch,
+                    this._spriteReference.SpriteIndex,
                     this._snapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value,
                     this.Color,
                     this.RenderSettings.Orientation);
             }
         }
 
+        /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                this.RenderSettings.InvalidateSize();
-                this._boundingArea.Reset();
-                this._pixelTransform.Reset();
-                this._rotatableTransform.Reset();
+                this.Reset();
             }
             else if (e.PropertyName == nameof(IGameEntity.IsEnabled)) {
                 this.RaisePropertyChanged(nameof(this.IsVisible));
@@ -128,9 +128,9 @@
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this._spriteReference.Asset is Sprite sprite) {
-                var width = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
-                var height = sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+            if (this._spriteReference.Asset is SpriteSheet spriteSheet) {
+                var width = spriteSheet.SpriteSize.X * GameSettings.Instance.InversePixelsPerUnit;
+                var height = spriteSheet.SpriteSize.Y * GameSettings.Instance.InversePixelsPerUnit;
                 var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
 
                 var points = new List<Vector2> {
@@ -172,8 +172,8 @@
 
         private Vector2 CreateSize() {
             var result = Vector2.Zero;
-            if (this._spriteReference.Asset is Sprite sprite) {
-                return new Vector2(sprite.Size.X, sprite.Size.Y);
+            if (this._spriteReference.Asset is SpriteSheet spriteSheet) {
+                return new Vector2(spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
             }
 
             return result;
@@ -187,10 +187,16 @@
             }
         }
 
-        private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (sender is Sprite && e.PropertyName == nameof(Sprite.Location)) {
-                this._boundingArea.Reset();
-                this.RenderSettings.InvalidateSize();
+        private void Reset() {
+            this.RenderSettings.InvalidateSize();
+            this._boundingArea.Reset();
+            this._pixelTransform.Reset();
+            this._rotatableTransform.Reset();
+        }
+
+        private void SpriteReference_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+                this.Reset();
             }
         }
     }

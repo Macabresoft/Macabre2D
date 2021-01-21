@@ -8,11 +8,11 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Animates sprites at the specified framerate.
+    /// Animates sprites at the specified frame rate.
     /// </summary>
     [Display(Name = "Sprite Animator")]
     public class SpriteAnimatorComponent : SpriteRenderComponent, IGameUpdateableComponent {
-        private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new Queue<QueueableSpriteAnimation>();
+        private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
         private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
         private uint _currentStepIndex;

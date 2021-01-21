@@ -89,9 +89,6 @@
         private readonly Dictionary<Guid, string> _idToPathMapping = new();
 
         [DataMember]
-        private readonly List<IAssetPackage> _packages = new();
-
-        [DataMember]
         private readonly List<IAsset> _assets = new();
 
         private ContentManager? _contentManager;
@@ -124,7 +121,7 @@
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
             AssetManager.Instance = this;
 
-            foreach (var package in this._packages) {
+            foreach (var package in this._assets.OfType<IAssetPackage>()) {
                 package.Initialize();
             }
         }
@@ -145,7 +142,7 @@
                 result = true;
             }
             else {
-                foreach (var package in this._packages.OfType<IAssetPackage<TAsset, TContent>>()) {
+                foreach (var package in this._assets.OfType<IAssetPackage<TAsset, TContent>>()) {
                     if (package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
                         if (package.Content == null && this.TryLoad<TContent>(package.ContentId, out var content) && content != null) {
                             package.LoadContent(content);
