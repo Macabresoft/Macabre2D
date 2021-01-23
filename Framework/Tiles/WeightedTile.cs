@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Runtime.Serialization;
 
@@ -8,7 +7,7 @@
     /// </summary>
     [DataContract]
     public sealed class WeightedTile : NotifyPropertyChanged {
-        private Sprite? _sprite;
+        private byte _spriteIndex;
         private ushort _weight = 1;
 
         /// <summary>
@@ -20,26 +19,22 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="WeightedTile" /> class.
         /// </summary>
-        /// <param name="sprite">The sprite.</param>
+        /// <param name="spriteIndex">The sprite.</param>
         /// <param name="weight">The weight.</param>
-        internal WeightedTile(Sprite sprite, ushort weight) {
-            this.Sprite = sprite;
+        internal WeightedTile(byte spriteIndex, ushort weight) {
+            this.SpriteIndex = spriteIndex;
             this.Weight = weight;
         }
 
         /// <summary>
-        /// Gets or sets the sprite.
+        /// Gets or sets the sprite index for this tile.
         /// </summary>
-        /// <value>The sprite.</value>
+        /// <value>The sprite index.</value>
         [DataMember]
-        public Sprite? Sprite {
-            get {
-                return this._sprite;
-            }
+        public byte SpriteIndex {
+            get => this._spriteIndex;
 
-            set {
-                this.Set(ref this._sprite, value, true);
-            }
+            set => this.Set(ref this._spriteIndex, value, true);
         }
 
         /// <summary>
@@ -48,13 +43,9 @@
         /// <value>The weight.</value>
         [DataMember]
         public ushort Weight {
-            get {
-                return this._weight;
-            }
+            get => this._weight;
 
-            set {
-                this.Set(ref this._weight, Math.Max((ushort)1, value));
-            }
+            set => this.Set(ref this._weight, Math.Max((ushort)1, value));
         }
     }
 }

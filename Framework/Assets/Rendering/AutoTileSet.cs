@@ -1,25 +1,20 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.Serialization;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// A tile set which automatically provides the correct sprite given its relationship to surrounding tiles.
     /// </summary>
-    public sealed class AutoTileSet : BaseIdentifiable, IAsset {
+    public sealed class AutoTileSet : BaseSpriteSheetAsset {
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<byte, Sprite> _indexToSprites = new();
+        private readonly Dictionary<byte, byte> _tileIndexToSpriteIndex = new();
 
-        private bool _isLoaded = false;
-        private string _name = string.Empty;
-        private bool _useIntermediateDirections = false;
+        private bool _useIntermediateDirections;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
@@ -36,35 +31,10 @@
         }
 
         /// <summary>
-        /// Occurs when a sprite changes for a particular index.
-        /// </summary>
-        public event EventHandler<byte>? SpriteChanged;
-
-        /// <inheritdoc />
-        [DataMember]
-        public Guid AssetId { get; set; }
-
-        /// <inheritdoc />
-        [DataMember]
-        public string Name {
-            get {
-                return this._name;
-            }
-
-            set {
-                this.Set(ref this._name, value);
-            }
-        }
-
-        /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>
-        public int Size {
-            get {
-                return this.UseIntermediateDirections ? AutoTileSet.IntermediateSize : AutoTileSet.CardinalSize;
-            }
-        }
+        public int Size => this.UseIntermediateDirections ? IntermediateSize : CardinalSize;
 
         /// <summary>
         /// Gets or sets a value indicating whether this should use intermediate directions when
@@ -76,14 +46,12 @@
         /// </value>
         [DataMember(Name = "Use Intermediate Directions")]
         public bool UseIntermediateDirections {
-            get {
-                return this._useIntermediateDirections;
-            }
+            get => this._useIntermediateDirections;
 
             set {
                 if (this.Set(ref this._useIntermediateDirections, value)) {
                     this._useIntermediateDirections = value;
-                    this._indexToSprites.Clear();
+                    this._tileIndexToSpriteIndex.Clear();
                 }
             }
         }
@@ -91,104 +59,30 @@
         /// <summary>
         /// Gets the sprite at the specified index.
         /// </summary>
-        /// <param name="index">The index.</param>
+        /// <param name="tileIndex">The index.</param>
         /// <returns>The sprite at the specified index.</returns>
-        public Sprite? GetSprite(byte index) {
-            this._indexToSprites.TryGetValue(index, out var sprite);
-            return sprite;
-        }
-
-        /// <summary>
-        /// Gets the sprite ids.
-        /// </summary>
-        /// <returns>The sprite identifiers.</returns>
-        public IEnumerable<Guid> GetSpriteIds() {
-            return this._indexToSprites.Values.Where(x => x != null).Select(x => x.Id).ToList();
-        }
-
-        /// <summary>
-        /// Determines whether the specified sprite identifier has sprite.
-        /// </summary>
-        /// <param name="spriteId">The sprite identifier.</param>
-        /// <returns><c>true</c> if the specified sprite identifier has sprite; otherwise, <c>false</c>.</returns>
-        public bool HasSprite(Guid spriteId) {
-            return this._indexToSprites.Values.Any(x => x?.Id == spriteId);
-        }
-
-        /// <summary>
-        /// Loads this instance.
-        /// </summary>
-        public void Load() {
-            try {
-                foreach (var sprite in this._indexToSprites.Values) {
-                    sprite?.Load();
-                }
-            }
-            finally {
-                this._isLoaded = true;
-            }
-        }
-
-        /// <summary>
-        /// Refreshes the sprite.
-        /// </summary>
-        /// <param name="sprite">The sprite.</param>
-        public void RefreshSprite(Sprite sprite) {
-            if (sprite != null) {
-                var indexToSpritesForRefresh = this._indexToSprites.Where(x => x.Value?.Id == sprite.Id).Select(x => new Tuple<byte, Sprite>(x.Key, x.Value)).ToList();
-                foreach (var indexToSprite in indexToSpritesForRefresh) {
-                    this._indexToSprites[indexToSprite.Item1] = sprite;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Removes the sprite.
-        /// </summary>
-        /// <param name="spriteId">The sprite identifier.</param>
-        /// <returns>A value indicating whether or not the sprite was removed.</returns>
-        public bool RemoveSprite(Guid spriteId) {
-            var result = false;
-            var indexes = this._indexToSprites.Where(x => x.Value?.Id == spriteId).Select(x => x.Key).ToList();
-
-            foreach (var index in indexes) {
-                this.SetSprite(null, index);
-                result = true;
-            }
-
-            return result;
+        public byte GetSpriteIndex(byte tileIndex) {
+            this._tileIndexToSpriteIndex.TryGetValue(tileIndex, out var spriteIndex);
+            return spriteIndex;
         }
 
         /// <summary>
         /// Sets the sprite at the specified index.
         /// </summary>
-        /// <param name="sprite">The sprite.</param>
-        /// <param name="index">The index.</param>
-        public void SetSprite(Sprite? sprite, byte index) {
-            if (index < this.Size) {
-                if (sprite != null) {
-                    this._indexToSprites[index] = sprite;
-                    this.SpriteChanged.SafeInvoke(this, index);
-
-                    if (this._isLoaded) {
-                        sprite?.Load();
-                    }
-                }
-                else {
-                    this._indexToSprites.Remove(index);
-                }
+        /// <param name="spriteIndex">The sprite.</param>
+        /// <param name="tileIndex">The index.</param>
+        public void SetSprite(byte spriteIndex, byte tileIndex) {
+            if (tileIndex < this.Size) {
+                this._tileIndexToSpriteIndex[tileIndex] = spriteIndex;
             }
         }
 
         /// <summary>
-        /// Tries the get sprite.
+        /// Removes the sprite index for the given tile index, effectively blanking it out.
         /// </summary>
-        /// <param name="spriteId">The sprite identifier.</param>
-        /// <param name="sprite">The sprite.</param>
-        /// <returns>A vaue indicating whether or not the sprite was found.</returns>
-        public bool TryGetSprite(Guid spriteId, out Sprite? sprite) {
-            sprite = this._indexToSprites.Values.FirstOrDefault(x => x?.Id == spriteId);
-            return sprite != null;
+        /// <param name="tileIndex">The tile index.</param>
+        public void UnsetSprite(byte tileIndex) {
+            this._tileIndexToSpriteIndex.Remove(tileIndex);
         }
     }
 }

@@ -135,7 +135,7 @@
             foreach (var activeTileToIndex in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
                 if (boundingArea.Overlaps(viewBoundingArea)) {
-                    if (this.TileSet?.GetSprite(activeTileToIndex.Value) is Sprite sprite) {
+                    if (this.TileSet?.GetSpriteIndex(activeTileToIndex.Value) is Sprite sprite) {
                         this.Entity.Scene.Game.SpriteBatch?.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
                     }
                 }
@@ -247,14 +247,14 @@
                 this._spriteScales = new Vector2[this.TileSet.Tiles.Count];
 
                 for (byte i = 0; i < this._spriteScales.Length; i++) {
-                    var sprite = this.TileSet.GetSprite(i);
+                    var sprite = this.TileSet.GetSpriteIndex(i);
                     this._spriteScales[i] = this.GetTileScale(sprite);
                 }
             }
         }
 
         private void TileSet_SpriteChanged(object? sender, ushort e) {
-            var sprite = this.TileSet?.GetSprite(e);
+            var sprite = this.TileSet?.GetSpriteIndex(e);
             this._spriteScales[e] = this.GetTileScale(sprite);
         }
     }
