@@ -1,60 +1,41 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// A component which maps <see cref="AutoTileSet" /> onto a <see cref="TileGrid" />.
     /// </summary>
     [Display(Name = "Auto Tile Map")]
-    public sealed class AutoTileMap : RenderableTileMapComponent, IAssetComponent<AutoTileSet>, IAssetComponent<Sprite> {
-
+    public sealed class AutoTileMap : RenderableTileMapComponent {
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Point, byte> _activeTileToIndex = new Dictionary<Point, byte>();
+        private readonly Dictionary<Point, byte> _activeTileToIndex = new();
 
         private Color _color = Color.White;
         private Vector2 _previousWorldScale;
-        private Vector2[] _spriteScales = new Vector2[0];
-        private AutoTileSet? _tileSet;
+        private Vector2 _spriteScale = Vector2.One;
 
         /// <summary>
-        /// Represents four directions from a single tile.
+        /// Initializes a new instance of the <see cref="AutoTileMap" /> class.
         /// </summary>
-        [Flags]
-        private enum IntermediateDirections : byte {
-            None = 0,
-
-            NorthWest = 1 << 0,
-
-            North = 1 << 1,
-
-            NorthEast = 1 << 2,
-
-            West = 1 << 3,
-
-            East = 1 << 4,
-
-            SouthWest = 1 << 5,
-
-            South = 1 << 6,
-
-            SouthEast = 1 << 7,
-
-            All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
+        public AutoTileMap() : base() {
+            this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
         }
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<Point> ActiveTiles {
-            get {
-                return this._activeTileToIndex.Keys;
-            }
-        }
+        public override IReadOnlyCollection<Point> ActiveTiles => this._activeTileToIndex.Keys;
+
+        /// <summary>
+        /// Gets the animation reference.
+        /// </summary>
+        [DataMember(Order = 0, Name = "Tile Set")]
+        public SpriteSheetAssetReference<AutoTileSet> TileSetReference { get; } = new();
 
         /// <summary>
         /// Gets or sets the color.
@@ -62,48 +43,8 @@
         /// <value>The color.</value>
         [DataMember(Order = 1)]
         public Color Color {
-            get {
-                return this._color;
-            }
-
-            set {
-                this.Set(ref this._color, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the tile set.
-        /// </summary>
-        /// <value>The tile set.</value>
-        [DataMember(Order = 0, Name = "Tile Set")]
-        public AutoTileSet? TileSet {
-            get {
-                return this._tileSet;
-            }
-
-            set {
-                if (this._tileSet != null) {
-                    this._tileSet.SpriteChanged -= this.TileSet_SpriteChanged;
-                }
-
-                if (this.Set(ref this._tileSet, value)) {
-                    this.ReloadTileSet();
-                }
-
-                if (this._tileSet != null) {
-                    this._tileSet.SpriteChanged += this.TileSet_SpriteChanged;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        IEnumerable<Guid> IAssetComponent<AutoTileSet>.GetOwnedAssetIds() {
-            return this.TileSet == null ? new Guid[0] : new[] { this.TileSet.Id };
-        }
-
-        /// <inheritdoc />
-        IEnumerable<Guid> IAssetComponent<Sprite>.GetOwnedAssetIds() {
-            return this.TileSet == null ? Enumerable.Empty<Guid>() : this.TileSet.GetSpriteIds();
+            get => this._color;
+            set => this.Set(ref this._color, value);
         }
 
         /// <inheritdoc />
@@ -112,88 +53,30 @@
         }
 
         /// <inheritdoc />
-        public bool HasAsset(Guid id) {
-            return this.TileSet?.Id == id || this.TileSet?.HasSprite(id) == true;
-        }
-
-        /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
             this._previousWorldScale = this.Entity.Transform.Scale;
-            // I think maybe I don't need this.
-            ////this.TileSet.SpriteChanged += this.TileSet_SpriteChanged;
-            this.TileSet?.Load();
             this.ReevaluateIndexes();
-            this.ResetSpriteScales();
-        }
-
-        /// <inheritdoc />
-        void IAssetComponent<AutoTileSet>.RefreshAsset(AutoTileSet newInstance) {
-            if (newInstance != null && this.TileSet?.Id == newInstance.Id) {
-                this.TileSet = newInstance;
-            }
-        }
-
-        /// <inheritdoc />
-        void IAssetComponent<Sprite>.RefreshAsset(Sprite newInstance) {
-            this.TileSet?.RefreshSprite(newInstance);
-        }
-
-        /// <inheritdoc />
-        public bool RemoveAsset(Guid id) {
-            var result = false;
-            if (this.TileSet != null) {
-                if (this.TileSet.Id == id) {
-                    this.TileSet = null;
-                    result = true;
-                }
-                else {
-                    result = this.TileSet.RemoveSprite(id);
-                }
-            }
-
-            return result;
+            this.ResetSpriteScale();
         }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.TileSet != null) {
-                foreach (var activeTileToIndex in this._activeTileToIndex) {
-                    var boundingArea = this.GetTileBoundingArea(activeTileToIndex.Key);
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.Asset is AutoTileSet tileSet && tileSet.SpriteSheet is SpriteSheet spriteSheet) {
+                foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
+                    var boundingArea = this.GetTileBoundingArea(activeTile);
                     if (boundingArea.Overlaps(viewBoundingArea)) {
-                        if (this.TileSet.GetSpriteIndex(activeTileToIndex.Value) is Sprite sprite) {
-                            this.Entity.Scene.Game.SpriteBatch?.Draw(sprite, boundingArea.Minimum, this._spriteScales[activeTileToIndex.Value], this.Color);
-                        }
+                        var spriteIndex = tileSet.GetSpriteIndex(tileIndex);
+                        spriteBatch.Draw(
+                            spriteSheet,
+                            spriteIndex,
+                            boundingArea.Minimum,
+                            this._spriteScale,
+                            this.Color);
                     }
                 }
             }
-        }
-
-        /// <inheritdoc />
-        bool IAssetComponent<AutoTileSet>.TryGetAsset(Guid id, out AutoTileSet? asset) {
-            var result = false;
-            if (this.TileSet?.Id == id) {
-                asset = this.TileSet;
-                result = true;
-            }
-            else {
-                asset = null;
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc />
-        bool IAssetComponent<Sprite>.TryGetAsset(Guid id, out Sprite? asset) {
-            if (this.TileSet != null) {
-                this.TileSet.TryGetSprite(id, out asset);
-            }
-            else {
-                asset = null;
-            }
-
-            return asset != null;
         }
 
         /// <inheritdoc />
@@ -203,12 +86,12 @@
 
         /// <inheritdoc />
         protected override Point GetMaximumTile() {
-            return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
+            return new(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
         }
 
         /// <inheritdoc />
         protected override Point GetMinimumTile() {
-            return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
+            return new(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
         }
 
         /// <inheritdoc />
@@ -221,14 +104,14 @@
 
             if (e.PropertyName == nameof(this.Entity.Transform) && this.Entity.Transform.Scale != this._previousWorldScale) {
                 this._previousWorldScale = this.Entity.Transform.Scale;
-                this.ResetSpriteScales();
+                this.ResetSpriteScale();
             }
         }
 
         /// <inheritdoc />
         protected override void ResetBoundingAreas() {
             base.ResetBoundingAreas();
-            this.ResetSpriteScales();
+            this.ResetSpriteScale();
         }
 
         /// <inheritdoc />
@@ -256,7 +139,7 @@
 
         private byte GetIndex(Point tile) {
             byte index;
-            if (this.TileSet?.UseIntermediateDirections == true) {
+            if (this.TileSetReference.Asset?.UseIntermediateDirections == true) {
                 var direction = IntermediateDirections.None;
                 if (this.HasActiveTileAt(tile + new Point(0, 1))) {
                     direction |= IntermediateDirections.North;
@@ -337,27 +220,42 @@
             }
         }
 
-        /// <inheritdoc />
-        private void ReloadTileSet() {
-            this.TileSet?.Load();
-            this.ReevaluateIndexes();
-            this.ResetSpriteScales();
-        }
-
-        private void ResetSpriteScales() {
-            if (this.TileSet != null) {
-                this._spriteScales = new Vector2[this.TileSet.Size];
-
-                for (byte i = 0; i < this._spriteScales.Length; i++) {
-                    var sprite = this.TileSet.GetSpriteIndex(i);
-                    this._spriteScales[i] = this.GetTileScale(sprite);
-                }
+        private void ResetSpriteScale() {
+            if (this.TileSetReference.SpriteSheet is SpriteSheet spriteSheet) {
+                this._spriteScale = this.GetTileScale(spriteSheet.SpriteSize);
             }
         }
 
-        private void TileSet_SpriteChanged(object? sender, byte e) {
-            var sprite = this.TileSet?.GetSpriteIndex(e);
-            this._spriteScales[e] = this.GetTileScale(sprite);
+        private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+                this.ResetBoundingAreas();
+            }
+        }
+
+        /// <summary>
+        /// Represents four directions from a single tile.
+        /// </summary>
+        [Flags]
+        private enum IntermediateDirections : byte {
+            None = 0,
+
+            NorthWest = 1 << 0,
+
+            North = 1 << 1,
+
+            NorthEast = 1 << 2,
+
+            West = 1 << 3,
+
+            East = 1 << 4,
+
+            SouthWest = 1 << 5,
+
+            South = 1 << 6,
+
+            SouthEast = 1 << 7,
+
+            All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
         }
     }
 }

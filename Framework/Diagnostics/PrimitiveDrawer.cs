@@ -29,7 +29,7 @@
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
         /// <returns>A filled circle sprite.</returns>
-        public static Sprite CreateCircleSprite(GraphicsDevice graphicsDevice, int size) {
+        public static Texture2D CreateCircleSprite(GraphicsDevice graphicsDevice, int size) {
             return PrimitiveDrawer.CreateCircleSprite(graphicsDevice, size, Color.White);
         }
 
@@ -40,7 +40,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>A filled circle sprite.</returns>
-        public static Sprite CreateCircleSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+        public static Texture2D CreateCircleSprite(GraphicsDevice graphicsDevice, int size, Color color) {
             var texture = new Texture2D(graphicsDevice, size, size);
             var pixels = new Color[size * size];
             var radius = size / 2;
@@ -61,7 +61,7 @@
             }
 
             texture.SetData(pixels);
-            return new Sprite(texture);
+            return texture;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) {
+        public static Texture2D CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) {
             return PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, size, Color.White);
         }
 
@@ -82,7 +82,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+        public static Texture2D CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
             var texture = new Texture2D(graphicsDevice, size, size);
             var pixels = new Color[size * size];
 
@@ -106,7 +106,7 @@
             }
 
             texture.SetData(pixels);
-            return new Sprite(texture);
+            return texture;
         }
 
         /// <summary>
@@ -117,7 +117,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The quad sprite.</returns>
-        public static Sprite CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) {
+        public static Texture2D CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) {
             return PrimitiveDrawer.CreateQuadSprite(graphicsDevice, size, Color.White);
         }
 
@@ -128,12 +128,12 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The quad sprite.</returns>
-        public static Sprite CreateQuadSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
+        public static Texture2D CreateQuadSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
             var texture = new Texture2D(graphicsDevice, size.X, size.Y);
             var pixels = new Color[size.X * size.Y];
             pixels.Populate(color);
             texture.SetData(pixels);
-            return new Sprite(texture);
+            return texture;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
         /// <returns>The right triangle sprite.</returns>
-        public static Sprite CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
+        public static Texture2D CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
             return PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
         }
 
@@ -153,7 +153,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The right triangle sprite.</returns>
-        public static Sprite CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
+        public static Texture2D CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size, Color color) {
             var texture = new Texture2D(graphicsDevice, size.X, size.Y);
             var pixels = new Color[size.X * size.Y];
 
@@ -173,7 +173,7 @@
             }
 
             texture.SetData(pixels);
-            return new Sprite(texture);
+            return texture;
         }
 
         /// <summary>
@@ -183,7 +183,7 @@
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
         /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) {
+        public static Texture2D CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) {
             return PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
         }
 
@@ -194,7 +194,7 @@
         /// <param name="size">The size.</param>
         /// <param name="color">The color.</param>
         /// <returns>The arrow sprite.</returns>
-        public static Sprite CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
+        public static Texture2D CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size, Color color) {
             var texture = new Texture2D(graphicsDevice, size, size);
             var pixels = new Color[size * size];
 
@@ -223,7 +223,7 @@
             }
 
             texture.SetData(pixels);
-            return new Sprite(texture);
+            return texture;
         }
 
         /// <summary>

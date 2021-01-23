@@ -14,8 +14,9 @@
     public class SpriteSheet :
         BaseAsset,
         IAssetPackage<SpriteAnimation, Texture2D>,
-        IAssetPackage<AutoTileSet, Texture2D>,
-        IAssetPackage<RandomTileSet, Texture2D> {
+        IAssetPackage<AutoTileSet, Texture2D> {
+        private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
+
         [DataMember]
         private ObservableCollection<AutoTileSet> _autoTileSets = new();
 
@@ -23,15 +24,10 @@
         private Texture2D? _content;
         private bool _isInitialized;
 
-        [DataMember]
-        private ObservableCollection<RandomTileSet> _randomTileSets = new();
-
         private byte _rows = 1;
 
         [DataMember]
         private ObservableCollection<SpriteAnimation> _spriteAnimations = new();
-
-        private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
 
         private Point _spriteSize;
 
@@ -94,9 +90,6 @@
             get => this._spriteSize;
             private set => this.Set(ref this._spriteSize, value);
         }
-
-        /// <inheritdoc />
-        IReadOnlyCollection<RandomTileSet> IAssetPackage<RandomTileSet>.Assets => this._randomTileSets;
 
         /// <inheritdoc />
         IReadOnlyCollection<AutoTileSet> IAssetPackage<AutoTileSet>.Assets => this._autoTileSets;
@@ -185,7 +178,12 @@
         /// <inheritdoc />
         public void Initialize() {
             if (!this._isInitialized) {
-                foreach (var randomTileSet in this._randomTileSets) {
+                foreach (var spriteAnimation in this._spriteAnimations) {
+                    spriteAnimation.Initialize(this);
+                }
+
+                foreach (var autoTileSet in this._autoTileSets) {
+                    autoTileSet.Initialize(this);
                 }
 
                 this._isInitialized = true;
@@ -197,10 +195,6 @@
             this.Content = content;
         }
 
-        /// <inheritdoc />
-        public bool RemoveAsset(RandomTileSet asset) {
-            return this._randomTileSets.Remove(asset);
-        }
 
         /// <inheritdoc />
         public bool RemoveAsset(AutoTileSet asset) {
@@ -212,11 +206,7 @@
             return this._spriteAnimations.Remove(asset);
         }
 
-        public bool TryGetAsset(Guid id, out RandomTileSet? asset) {
-            asset = this._randomTileSets.FirstOrDefault(x => x.AssetId == id);
-            return asset != null;
-        }
-
+        /// <inheritdoc />
         public bool TryGetAsset(Guid id, out AutoTileSet? asset) {
             asset = this._autoTileSets.FirstOrDefault(x => x.AssetId == id);
             return asset != null;
@@ -229,24 +219,12 @@
         }
 
         /// <inheritdoc />
-        RandomTileSet IAssetPackage<RandomTileSet>.AddAsset() {
-            var asset = new RandomTileSet();
-            this._randomTileSets.Add(asset);
-            return asset;
-        }
-
-        /// <inheritdoc />
         AutoTileSet IAssetPackage<AutoTileSet>.AddAsset() {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         SpriteAnimation IAssetPackage<SpriteAnimation>.AddAsset() {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        bool IAssetPackage<RandomTileSet>.RemoveAsset(Guid assetId) {
             throw new NotImplementedException();
         }
 

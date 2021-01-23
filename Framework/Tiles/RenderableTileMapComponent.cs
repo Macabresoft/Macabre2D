@@ -13,7 +13,6 @@
         [DataMember]
         public bool IsVisible {
             get => this._isVisible && this.Entity.IsEnabled;
-
             set => this.Set(ref this._isVisible, value, this.Entity.IsEnabled);
         }
 

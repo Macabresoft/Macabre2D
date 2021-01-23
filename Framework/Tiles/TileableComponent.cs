@@ -194,16 +194,16 @@
         /// <summary>
         /// Gets the tile scale for the specified sprite.
         /// </summary>
-        /// <param name="sprite">The sprite.</param>
-        /// <returns></returns>
-        protected Vector2 GetTileScale(Sprite? sprite) {
+        /// <param name="spriteSize">The sprite size.</param>
+        /// <returns>The scale for the sprite to fit within the tile grid.</returns>
+        protected Vector2 GetTileScale(Point spriteSize) {
             var result = Vector2.One;
 
             if (this._gridComponent != null) {
                 result = this._gridComponent.WorldGrid.TileSize;
-                if (sprite != null && sprite.Size.X != 0 && sprite.Size.Y != 0) {
-                    var spriteWidth = sprite.Size.X * GameSettings.Instance.InversePixelsPerUnit;
-                    var spriteHeight = sprite.Size.Y * GameSettings.Instance.InversePixelsPerUnit;
+                if (spriteSize.X != 0 && spriteSize.Y != 0) {
+                    var spriteWidth = spriteSize.X * GameSettings.Instance.InversePixelsPerUnit;
+                    var spriteHeight = spriteSize.Y * GameSettings.Instance.InversePixelsPerUnit;
                     result = new Vector2(result.X / spriteWidth, result.Y / spriteHeight);
                 }
             }

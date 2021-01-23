@@ -1,17 +1,15 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework.Content;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework.Content;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Interface to manage assets.
     /// </summary>
     public interface IAssetManager {
-
         /// <summary>
         /// Clears the mappings.
         /// </summary>
@@ -83,13 +81,18 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-        private static IAssetManager _instance = new AssetManager();
+        /// <summary>
+        /// The content file name for <see cref="AssetManager" />.
+        /// </summary>
+        public const string ContentFileName = "AssetManager";
 
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Guid, string> _idToPathMapping = new();
+        private static IAssetManager _instance = new AssetManager();
 
         [DataMember]
         private readonly List<IAsset> _assets = new();
+
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        private readonly Dictionary<Guid, string> _idToPathMapping = new();
 
         private ContentManager? _contentManager;
 
@@ -97,13 +100,9 @@
         /// Gets the singleton instance of an asset manager.
         /// </summary>
         public static IAssetManager Instance {
-            get {
-                return AssetManager._instance;
-            }
+            get => _instance;
 
-            set {
-                AssetManager._instance = value;
-            }
+            set => _instance = value;
         }
 
         /// <inheritdoc />
@@ -119,7 +118,7 @@
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
-            AssetManager.Instance = this;
+            Instance = this;
 
             foreach (var package in this._assets.OfType<IAssetPackage>()) {
                 package.Initialize();
@@ -131,13 +130,13 @@
             var result = false;
 
             if (this._assets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetReference.AssetId) is TAsset asset) {
-                if (asset is IContentAsset<TContent> contentAsset && 
+                if (asset is IContentAsset<TContent> contentAsset &&
                     contentAsset.ContentId != Guid.Empty &&
-                    this.TryLoad<TContent>(contentAsset.ContentId, out var content) && 
+                    this.TryLoad<TContent>(contentAsset.ContentId, out var content) &&
                     content != null) {
                     contentAsset.Initialize(content);
                 }
-                
+
                 assetReference.Initialize(asset);
                 result = true;
             }

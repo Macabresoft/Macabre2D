@@ -2,6 +2,7 @@
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// A component which will render a single sprite.
@@ -28,7 +29,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset(this._spriteReference);
+            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this._spriteReference);
             this._spriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 
