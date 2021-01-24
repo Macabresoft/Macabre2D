@@ -8,20 +8,23 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// A component which will render the specified text.
     /// </summary>
     [Display(Name = "Text Renderer")]
-    public class TextRenderComponent : GameRenderableComponent, IAssetComponent<Font>, IRotatable {
+    public class TextRenderComponent : GameRenderableComponent, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
         private Color _color = Color.Black;
-        private Font? _font;
         private float _rotation;
         private bool _snapToPixels;
         private string _text = string.Empty;
+        
+        [DataMember(Order = 0)]
+        private readonly AssetReference<Font> _fontReference = new AssetReference<Font>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextRenderComponent" /> class.
@@ -53,26 +56,7 @@
                 this.Set(ref this._color, value);
             }
         }
-
-        /// <summary>
-        /// Gets or sets the font.
-        /// </summary>
-        /// <value>The font.</value>
-        [DataMember(Order = 0)]
-        public Font? Font {
-            get {
-                return this._font;
-            }
-
-            set {
-                if (this.Set(ref this._font, value)) {
-                    this.Font?.Load();
-                    this._boundingArea.Reset();
-                    this.RenderSettings.InvalidateSize();
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Gets the render settings.
         /// </summary>
@@ -132,10 +116,6 @@
             }
 
             set {
-                if (value == null) {
-                    value = string.Empty;
-                }
-
                 if (this.Set(ref this._text, value)) {
                     this._boundingArea.Reset();
                     this.RenderSettings.InvalidateSize();
@@ -144,74 +124,38 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<Guid> GetOwnedAssetIds() {
-            return this.Font != null ? new[] { this.Font.Id } : new Guid[0];
-        }
-
-        /// <inheritdoc />
-        public bool HasAsset(Guid id) {
-            return this._font?.Id == id;
-        }
-
-        /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this.Font?.Load();
+            AssetManager.Instance.ResolveAsset<Font, SpriteFont>(this._fontReference);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
 
         /// <inheritdoc />
-        public void RefreshAsset(Font newInstance) {
-            if (this.Font == null || this.Font.Id == newInstance?.Id) {
-                this.Font = newInstance;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool RemoveAsset(Guid id) {
-            var result = this.HasAsset(id);
-            if (result) {
-                this.Font = null;
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Font?.SpriteFont != null && this.Text != null) {
-                if (this.SnapToPixels) {
-                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Font, this.Text, this._pixelTransform.Value, this.Color, this.RenderSettings.Orientation);
-                }
-                else {
-                    this.Entity.Scene.Game.SpriteBatch?.Draw(this.Font, this.Text, this._rotatableTransform.Value, this.Color, this.RenderSettings.Orientation);
-                }
+            if (!string.IsNullOrEmpty(this.Text) && this._fontReference.Asset is Font font && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                spriteBatch.Draw(
+                    font, 
+                    this.Text, 
+                    this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value, 
+                    this.Color, 
+                    this.RenderSettings.Orientation);
             }
         }
-
-        /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out Font? asset) {
-            var result = this.Font?.Id == id;
-            asset = result ? this.Font : null;
-            return result;
-        }
-
+        
         /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                this._boundingArea.Reset();
-                this._pixelTransform.Reset();
-                this._rotatableTransform.Reset();
+                this.Reset();
             }
         }
 
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
-            if (this.Font != null && this.Entity.LocalScale.X != 0f && this.Entity.LocalScale.Y != 0f) {
-                var size = this.RenderSettings.Size;
-                var width = size.X * GameSettings.Instance.InversePixelsPerUnit;
-                var height = size.Y * GameSettings.Instance.InversePixelsPerUnit;
+            if (this.Entity.LocalScale.X != 0f && this.Entity.LocalScale.Y != 0f) {
+                var (x, y) = this.RenderSettings.Size;
+                var width = x * GameSettings.Instance.InversePixelsPerUnit;
+                var height = y * GameSettings.Instance.InversePixelsPerUnit;
                 var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
                 var points = new List<Vector2> {
                     this.Entity.GetWorldTransform(offset, this.Rotation).Position,
@@ -220,10 +164,10 @@
                     this.Entity.GetWorldTransform(offset + new Vector2(0f, height), this.Rotation).Position
                 };
 
-                var minimumX = points.Min(x => x.X);
-                var minimumY = points.Min(x => x.Y);
-                var maximumX = points.Max(x => x.X);
-                var maximumY = points.Max(x => x.Y);
+                var minimumX = points.Min(point => point.X);
+                var minimumY = points.Min(point => point.Y);
+                var maximumX = points.Max(point => point.X);
+                var maximumY = points.Max(point => point.Y);
 
                 if (this.SnapToPixels) {
                     minimumX = minimumX.ToPixelSnappedValue();
@@ -251,15 +195,19 @@
         }
 
         private Vector2 CreateSize() {
-            return Font?.SpriteFont?.MeasureString(this.Text) ?? Vector2.Zero;
+            return this._fontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
         }
 
         private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.RenderSettings.Offset)) {
-                this._pixelTransform.Reset();
-                this._rotatableTransform.Reset();
-                this._boundingArea.Reset();
+                this.Reset();
             }
+        }
+
+        private void Reset() {
+            this._pixelTransform.Reset();
+            this._rotatableTransform.Reset();
+            this._boundingArea.Reset();
         }
     }
 }

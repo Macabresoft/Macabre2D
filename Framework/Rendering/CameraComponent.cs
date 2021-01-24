@@ -12,7 +12,7 @@
     /// Represents a camera into the game world.
     /// </summary>
     [Display(Name = "Camera")]
-    public sealed class CameraComponent : GameComponent, IBoundable, ICameraComponent {
+    public sealed class CameraComponent : GameComponent, ICameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private Layers _layersToRender = ~Layers.None;
         private int _renderOrder;
