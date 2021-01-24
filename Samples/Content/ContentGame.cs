@@ -1,20 +1,16 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Content {
-
-    using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.Framework.Tiles;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
-    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using Macabresoft.Macabre2D.Framework;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
-
         public ContentGame() : base() {
             this.Settings.PixelsPerUnit = 64;
         }
-        
+
         protected override void LoadContent() {
             this.AssetManager.Initialize(this.Content);
 
@@ -32,21 +28,27 @@
             cameraEntity.AddComponent<MovingDot>();
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
-            var spriteSheet = new SpriteSheet();
-            this.AssetManager.SetContentMapping(spriteSheet.ContentId, "WhiteSquare");
+            var whiteSquare = new SpriteSheet();
+            this.AssetManager.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
+            this.AssetManager.AddAsset(whiteSquare);
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
-            spriteRenderer.SpriteReference.AssetId = spriteSheet.AssetId;
+            spriteRenderer.SpriteReference.AssetId = whiteSquare.AssetId;
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             this.PreLoadAudioStuff(scene);
 
-            var fontId = Guid.NewGuid();
-            this.AssetManager.SetContentMapping(fontId, "League Mono");
-            var coloredSquaresId = Guid.NewGuid();
-            this.AssetManager.SetContentMapping(coloredSquaresId, "ColoredSquares");
-            var whiteSquareId = Guid.NewGuid();
-            this.AssetManager.SetContentMapping(whiteSquareId, "WhiteSquare");
+            var font = new Font();
+            this.AssetManager.SetContentMapping(font.ContentId, "League Mono");
+            this.AssetManager.AddAsset(font);
+
+            var coloredSquares = new SpriteSheet {
+                Rows = 2,
+                Columns = 2
+            };
+
+            this.AssetManager.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
+            this.AssetManager.AddAsset(coloredSquares);
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -54,12 +56,23 @@
             spriteAnimator.RenderOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
 
+            if (coloredSquares is IAssetPackage<SpriteAnimation> animationPackage) {
+                var spriteAnimation = animationPackage.AddAsset();
+                for (byte i = 0; i < 4; i++) {
+                    var step = spriteAnimation.AddStep();
+                    step.SpriteIndex = i;
+                    step.Frames = 2;
+                }
+
+                spriteAnimator.AnimationReference.AssetId = spriteAnimation.AssetId;
+            }
+
             var scalerEntity1 = scene.AddChild();
             scalerEntity1.AddComponent<Scaler>();
             scalerEntity1.LocalPosition -= new Vector2(2f, 0);
             var spriteRenderer3 = scalerEntity1.AddComponent<SpriteRenderComponent>();
             spriteRenderer3.RenderOrder = -200;
-            spriteRenderer3.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
+            spriteRenderer3.SpriteReference.AssetId = whiteSquare.AssetId;
             spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
             var middleSpinningDotBoundingArea = scalerEntity1.AddComponent<BoundingAreaDrawerComponent>();
             middleSpinningDotBoundingArea.Color = Color.Red;
@@ -70,7 +83,7 @@
             scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
             var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();
             spriteRenderer4.RenderOrder = 100;
-            spriteRenderer4.Sprite = new Sprite(whiteSquareId, Point.Zero, new Point(32, 32));
+            spriteRenderer4.SpriteReference.AssetId = whiteSquare.AssetId;
             spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
             var outwardSpinningDotBoundingArea = scalerEntity2.AddComponent<BoundingAreaDrawerComponent>();
             outwardSpinningDotBoundingArea.Color = Color.Red;
@@ -79,7 +92,7 @@
             var textEntity = scene.AddChild();
             var textRenderer = textEntity.AddComponent<TextRenderComponent>();
             textRenderer.Text = "Hello, World";
-            textRenderer.Font = new Font(fontId);
+            textRenderer.FontReference.AssetId = font.AssetId;
             textRenderer.Color = Color.DarkMagenta;
             textEntity.LocalScale = new Vector2(0.5f, 0.5f);
             textEntity.LocalPosition -= new Vector2(5f, 5f);
@@ -93,7 +106,7 @@
             var frameRateDisplayEntity = secondCameraEntity.AddChild();
             frameRateDisplayEntity.Layers = Layers.Layer03;
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.Font = new Font(fontId);
+            frameRateDisplay.FontReference.AssetId = font.AssetId;
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
@@ -109,7 +122,7 @@
         }
 
         private void PostLoadRenderingStuff() {
-            var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
+            /*var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
             var arrowSpriteEntity1 = this.Scene.AddChild();
             var arrowSpriteRenderer1 = arrowSpriteEntity1.AddComponent<SpriteRenderComponent>();
             arrowSpriteRenderer1.Sprite = arrowSprite1;
@@ -175,38 +188,18 @@
             var binaryTileMapBoundingArea = binaryTileMapEntity.AddComponent<BoundingAreaDrawerComponent>();
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;
-
-            foreach (var child in this.Scene.Children) {
-                if (child.TryGetComponent<SpriteAnimatorComponent>(out var spriteAnimator)) {
-                    var spriteAnimation = new SpriteAnimation();
-                    var coloredSquaresId = this.AssetManager.GetContentId("ColoredSquares");
-                    var step = spriteAnimation.AddStep();
-                    step.Sprite = new Sprite(coloredSquaresId, Point.Zero, new Point(64, 64));
-                    step.Frames = 2;
-                    step = spriteAnimation.AddStep();
-                    step.Sprite = new Sprite(coloredSquaresId, new Point(0, 64), new Point(64, 64));
-                    step.Frames = 2;
-                    step = spriteAnimation.AddStep();
-                    step.Sprite = new Sprite(coloredSquaresId, new Point(64, 64), new Point(64, 64));
-                    step.Frames = 2;
-                    step = spriteAnimation.AddStep();
-                    step.Sprite = new Sprite(coloredSquaresId, new Point(64, 0), new Point(64, 64));
-                    step.Frames = 2;
-                    spriteAnimator.Enqueue(spriteAnimation, true);
-                }
-            }
+            */
         }
 
         private void PreLoadAudioStuff(GameScene scene) {
-            var lasterId = Guid.NewGuid();
-            this.AssetManager.SetContentMapping(lasterId, "laser");
+            var laser = new AudioClip();
+            this.AssetManager.SetContentMapping(laser.ContentId, "laser");
+            this.AssetManager.AddAsset(laser);
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();
             audioPlayer.Volume = 0.5f;
-            audioPlayer.AudioClip = new AudioClip {
-                Id = lasterId
-            };
+            audioPlayer.AudioClipReference.AssetId = laser.AssetId;
             audioEntity.AddComponent<VolumeController>();
         }
     }

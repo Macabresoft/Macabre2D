@@ -16,9 +16,9 @@
         TContent? Content { get; }
 
         /// <summary>
-        /// Initializes the asset with its content.
+        /// Loads content for this asset.
         /// </summary>
         /// <param name="content">The content.</param>
-        void Initialize(TContent content);
+        void LoadContent(TContent content);
     }
 }

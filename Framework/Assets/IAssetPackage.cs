@@ -7,18 +7,13 @@
     /// </summary>
     public interface IAssetPackage {
         /// <summary>
-        /// Gets the content identifier for which this package is responsible.
-        /// </summary>
-        Guid ContentId { get; }
-
-        /// <summary>
         /// Initializes this asset package.
         /// </summary>
         void Initialize();
     }
 
     /// <summary>
-    /// A definition of <see cref="IAssetPackage"/> which has the asset defined.
+    /// A definition of <see cref="IAssetPackage" /> which has the asset defined.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
     public interface IAssetPackage<TAsset> : IAssetPackage where TAsset : IAsset {
@@ -57,27 +52,10 @@
     }
 
     /// <summary>
-    /// A definition of <see cref="IAssetPackage"/> which has the content defined.
-    /// </summary>
-    /// <typeparam name="TContent">The type of content.</typeparam>
-    public interface IAssetPackageWithContent<TContent> : IAssetPackage where TContent : class {
-        /// <summary>
-        /// Gets the content for which this package is responsible.
-        /// </summary>
-        TContent? Content { get; }
-
-        /// <summary>
-        /// Loads the content.
-        /// </summary>
-        /// <param name="content">The content.</param>
-        void LoadContent(TContent content);
-    }
-
-    /// <summary>
-    /// A definition of a <see cref="IAssetPackage"/> which has both the asset and content defined.
+    /// A definition of a <see cref="IAssetPackage" /> which has both the asset and content defined.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
     /// <typeparam name="TContent">The type of content.</typeparam>
-    public interface IAssetPackage<TAsset, TContent> : IAssetPackage<TAsset>, IAssetPackageWithContent<TContent> where TAsset : IAsset where TContent : class {
+    public interface IAssetPackage<TAsset, TContent> : IAssetPackage<TAsset>, IContentAsset<TContent> where TAsset : IAsset where TContent : class {
     }
 }

@@ -106,7 +106,6 @@
         private readonly Dictionary<Guid, string> _idToPathMapping = new();
 
         private ContentManager? _contentManager;
-        private bool _isInitialized;
 
         /// <summary>
         /// Gets the singleton instance of an asset manager.
@@ -155,7 +154,12 @@
                         contentAsset.ContentId != Guid.Empty &&
                         this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) &&
                         content != null) {
-                        contentAsset.Initialize(content);
+                        contentAsset.LoadContent(content);
+                    }
+                    else if (asset is IAssetPackage<TAsset, TContent> {Content: null} package &&
+                             this.TryLoadContent<TContent>(package.ContentId, out var packageContent) && 
+                             packageContent != null) {
+                        package.LoadContent(packageContent);
                     }
 
                     assetReference.Initialize(asset);
@@ -193,7 +197,7 @@
 
             if (this._contentManager != null) {
                 try {
-                    loaded = this._contentManager.Load<T>(contentPath);
+                    loaded = this._contentManager.Load<T?>(contentPath);
                 }
                 catch (ContentLoadException) {
                 }
@@ -206,9 +210,9 @@
         public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
             if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
                 try {
-                    loaded = this._contentManager.Load<T>(path);
+                    loaded = this._contentManager.Load<T?>(path);
                 }
-                catch {
+                catch(Exception e) {
                     loaded = null;
                 }
             }

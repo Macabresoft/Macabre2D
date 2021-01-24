@@ -9,13 +9,13 @@
     public class BaseContentAsset<TContent> : BaseAsset, IContentAsset<TContent> where TContent : class {
         /// <inheritdoc />
         [DataMember]
-        public Guid ContentId { get; set; }
+        public Guid ContentId { get; set; } = Guid.NewGuid();
         
         /// <inheritdoc />
         public TContent? Content { get; private set; }
         
         /// <inheritdoc />
-        public virtual void Initialize(TContent content) {
+        public virtual void LoadContent(TContent content) {
             this.Content = content;
         }
     }

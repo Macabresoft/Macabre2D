@@ -5,20 +5,27 @@
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    public sealed class AudioClip : BaseContentAsset<SoundEffectInstance>, IDisposable {
-        
+    public sealed class AudioClip : BaseContentAsset<SoundEffect>, IDisposable {
         /// <summary>
-        /// Initializes the <see cref="SoundEffectInstance"/> with volume, pan, and pitch.
+        /// Gets a sound effect instance.
         /// </summary>
         /// <param name="volume">The volume.</param>
-        /// <param name="pan">The pan.</param>
+        /// <param name="pan">The panning.</param>
         /// <param name="pitch">The pitch.</param>
-        public void Initialize(float volume, float pan, float pitch) {
-            if (this.Content is SoundEffectInstance instance) {
+        /// <returns>A sound effect instance.</returns>
+        public SoundEffectInstance? GetSoundEffectInstance(float volume, float pan, float pitch) {
+            SoundEffectInstance? instance;
+            if (this.Content is SoundEffect soundEffect) {
+                instance = soundEffect.CreateInstance();
                 instance.Volume = volume;
                 instance.Pan = pan;
                 instance.Pitch = pitch;
             }
+            else {
+                instance = null;
+            }
+
+            return instance;
         }
         
         

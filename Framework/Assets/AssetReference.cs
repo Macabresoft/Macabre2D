@@ -63,8 +63,8 @@
             }
         }
         
-        private void Asset_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            this.RaisePropertyChanged(sender, e);
+        private void Asset_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            this.RaisePropertyChanged(sender ?? this, e);
         }
     }
 }

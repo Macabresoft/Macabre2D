@@ -29,7 +29,7 @@
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 
-            var leagueMonoFont = new Font { ContentId = Guid.NewGuid() };
+            var leagueMonoFont = new Font();
             this.AssetManager.SetContentMapping(leagueMonoFont.ContentId, "League Mono");
             this.AssetManager.AddAsset(leagueMonoFont);
 
