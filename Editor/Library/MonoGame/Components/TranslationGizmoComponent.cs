@@ -11,10 +11,10 @@
     /// </summary>
     internal sealed class TranslationGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
-        private Sprite _neutralAxisTriangleSprite;
+        private Texture2D _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;
-        private Sprite _xAxisArrowSprite;
-        private Sprite _yAxisArrowSprite;
+        private Texture2D _xAxisArrowSprite;
+        private Texture2D _yAxisArrowSprite;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
@@ -53,16 +53,56 @@
                 var scale = new Vector2(viewRatio);
                 var offset = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
 
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
+                spriteBatch.Draw(
+                    this._neutralAxisTriangleSprite, 
+                    this.NeutralAxisPosition - new Vector2(offset) + shadowOffsetVector, 
+                    scale,
+                    0f,
+                    this.EditorService.DropShadowColor);
+                
+                spriteBatch.Draw(
+                    this._xAxisArrowSprite, 
+                    this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, 
+                    scale, 
+                    0f,
+                    this.EditorService.DropShadowColor);
+                
+                spriteBatch.Draw(
+                    this._yAxisArrowSprite, 
+                    this.YAxisPosition - new Vector2(offset) + shadowOffsetVector,
+                    scale, 
+                    0f,
+                    this.EditorService.DropShadowColor);
 
                 base.Render(frameTime, viewBoundingArea);
 
-                spriteBatch.Draw(this._xAxisArrowSprite, this.XAxisPosition - new Vector2(offset), scale, this.EditorService.XAxisColor);
-                spriteBatch.Draw(this._yAxisArrowSprite, this.YAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition + new Vector2(offset), -scale, this.EditorService.XAxisColor);
-                spriteBatch.Draw(this._neutralAxisTriangleSprite, this.NeutralAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
+                spriteBatch.Draw(
+                    this._xAxisArrowSprite, 
+                    this.XAxisPosition - new Vector2(offset), 
+                    scale, 
+                    0f,
+                    this.EditorService.XAxisColor);
+                
+                spriteBatch.Draw(
+                    this._yAxisArrowSprite, 
+                    this.YAxisPosition - new Vector2(offset),
+                    scale, 
+                    0f,
+                    this.EditorService.YAxisColor);
+                
+                spriteBatch.Draw(
+                    this._neutralAxisTriangleSprite, 
+                    this.NeutralAxisPosition + new Vector2(offset), 
+                    -scale,
+                    0f,
+                    this.EditorService.XAxisColor);
+                
+                spriteBatch.Draw(
+                    this._neutralAxisTriangleSprite, 
+                    this.NeutralAxisPosition - new Vector2(offset), 
+                    scale,
+                    0f,
+                    this.EditorService.YAxisColor);
             }
         }
 

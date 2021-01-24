@@ -12,7 +12,7 @@
     /// </summary>
     internal sealed class ScaleGizmoComponent : BaseAxisGizmoComponent {
         private readonly IUndoService _undoService;
-        private Sprite _squareSprite;
+        private Texture2D _squareSprite;
         private Vector2 _unmovedScale;
 
         /// <summary>
@@ -50,16 +50,38 @@
                 var scale = new Vector2(viewRatio);
                 var offset = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
 
-                spriteBatch.Draw(this._squareSprite, this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
-                spriteBatch.Draw(this._squareSprite, this.YAxisPosition - new Vector2(offset) + shadowOffsetVector, scale, this.EditorService.DropShadowColor);
+                spriteBatch.Draw(
+                    this._squareSprite, 
+                    this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, 
+                    scale, 
+                    0f, 
+                    this.EditorService.DropShadowColor);
+                
+                spriteBatch.Draw(
+                    this._squareSprite, 
+                    this.YAxisPosition - new Vector2(offset) + shadowOffsetVector,
+                    scale,
+                    0f,
+                    this.EditorService.DropShadowColor);
 
                 base.Render(frameTime, viewBoundingArea);
 
-                spriteBatch.Draw(this._squareSprite, this.XAxisPosition - new Vector2(offset), scale, this.EditorService.XAxisColor);
-                spriteBatch.Draw(this._squareSprite, this.YAxisPosition - new Vector2(offset), scale, this.EditorService.YAxisColor);
+                spriteBatch.Draw(
+                    this._squareSprite, 
+                    this.XAxisPosition - new Vector2(offset), 
+                    scale,
+                    0f,
+                    this.EditorService.XAxisColor);
+                
+                spriteBatch.Draw(
+                    this._squareSprite, 
+                    this.YAxisPosition - new Vector2(offset), 
+                    scale,
+                    0f,
+                    this.EditorService.YAxisColor);
             }
         }
-
+        
         /// <inheritdoc />
         public override bool Update(FrameTime frameTime, InputState inputState) {
             var result = base.Update(frameTime, inputState);

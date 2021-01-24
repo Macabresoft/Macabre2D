@@ -60,6 +60,38 @@
         }
 
         /// <summary>
+        /// Draws the specified <see cref="Texture2D"/>.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="texture">The texture.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="rotation">The rotation.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="orientation">The orientation.</param>
+        public static void Draw(
+            this SpriteBatch spriteBatch,
+            Texture2D? texture,
+            Vector2 position,
+            Vector2 scale,
+            float rotation,
+            Color color,
+            SpriteEffects orientation = SpriteEffects.None) {
+            if (texture != null && !texture.Bounds.IsEmpty) {
+                spriteBatch.Draw(
+                    texture,
+                    position * GameSettings.Instance.PixelsPerUnit,
+                    texture.Bounds,
+                    color,
+                    rotation,
+                    Vector2.Zero,
+                    scale,
+                    orientation,
+                    0f);
+            }
+        }
+
+        /// <summary>
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>

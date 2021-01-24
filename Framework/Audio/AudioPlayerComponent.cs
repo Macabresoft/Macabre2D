@@ -1,44 +1,28 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Audio;
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Plays a <see cref="AudioClip" />.
     /// </summary>
     [Display(Name = "Audio Player")]
-    public sealed class AudioPlayerComponent : GameComponent, IAssetComponent<AudioClip> {
-        private AudioClip? _audioClip;
+    public sealed class AudioPlayerComponent : GameComponent {
+        [DataMember(Order = 0, Name = "Audio Clip")]
+        private readonly AssetReference<AudioClip> _audioClipReference = new();
+
         private float _pan;
         private float _pitch;
         private bool _shouldLoop;
         private float _volume = 1f;
 
         /// <summary>
-        /// Gets or sets the audio clip.
+        /// Gets the state.
         /// </summary>
-        /// <value>The audio clip.</value>
-        [DataMember(Order = 0, Name = "Audio Clip")]
-        public AudioClip? AudioClip {
-            get {
-                return this._audioClip;
-            }
-
-            set {
-                if (!this.Entity.Scene.Game.IsDesignMode) {
-                    this._audioClip?.SoundEffectInstance?.Stop(true);
-                }
-
-                if (this.Set(ref this._audioClip, value) && !this.Entity.Scene.Game.IsDesignMode) {
-                    this.AudioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
-                }
-            }
-        }
+        /// <value>The state.</value>
+        public SoundState State => this._audioClipReference.Asset?.Content?.State ?? SoundState.Stopped;
 
         /// <summary>
         /// Gets or sets the pan.
@@ -46,13 +30,12 @@
         /// <value>The pan.</value>
         [DataMember(Order = 3, Name = "Pan")]
         public float Pan {
-            get {
-                return this._pan;
-            }
+            get => this._pan;
 
             set {
-                if (this.Set(ref this._pan, MathHelper.Clamp(value, -1f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.Pan = this._pan;
+                if (this.Set(ref this._pan, MathHelper.Clamp(value, -1f, 1f)) &&
+                    this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                    soundEffectInstance.Pan = this._pan;
                 }
             }
         }
@@ -63,13 +46,12 @@
         /// <value>The pitch.</value>
         [DataMember(Order = 4, Name = "Pitch")]
         public float Pitch {
-            get {
-                return this._pitch;
-            }
+            get => this._pitch;
 
             set {
-                if (this.Set(ref this._pitch, MathHelper.Clamp(value, -1f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.Pitch = this._pitch;
+                if (this.Set(ref this._pitch, MathHelper.Clamp(value, -1f, 1f)) &&
+                    this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                    soundEffectInstance.Pitch = this._pitch;
                 }
             }
         }
@@ -80,24 +62,13 @@
         /// <value><c>true</c> if should loop; otherwise, <c>false</c>.</value>
         [DataMember(Order = 1, Name = "Should Loop")]
         public bool ShouldLoop {
-            get {
-                return this._shouldLoop;
-            }
+            get => this._shouldLoop;
 
             set {
-                if (this.Set(ref this._shouldLoop, value) && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.IsLooped = this._shouldLoop;
+                if (this.Set(ref this._shouldLoop, value) &&
+                    this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                    soundEffectInstance.IsLooped = this._shouldLoop;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the state.
-        /// </summary>
-        /// <value>The state.</value>
-        public SoundState State {
-            get {
-                return this._audioClip?.SoundEffectInstance?.State ?? SoundState.Stopped;
             }
         }
 
@@ -107,35 +78,25 @@
         /// <value>The volume.</value>
         [DataMember(Order = 2, Name = "Volume")]
         public float Volume {
-            get {
-                return this._volume;
-            }
+            get => this._volume;
 
             set {
-                if (this.Set(ref this._volume, MathHelper.Clamp(value, 0f, 1f)) && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.Volume = this._volume;
+                if (this.Set(ref this._volume, MathHelper.Clamp(value, 0f, 1f)) &&
+                    this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                    soundEffectInstance.Volume = this._volume;
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<Guid> GetOwnedAssetIds() {
-            return this.AudioClip != null ? new[] { this.AudioClip.Id } : new Guid[0];
-        }
-
-        /// <inheritdoc />
-        public bool HasAsset(Guid id) {
-            return this.AudioClip?.Id == id;
         }
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
 
-            this._audioClip?.LoadSoundEffect(this.Volume, this.Pan, this.Pitch);
+            AssetManager.Instance.ResolveAsset<AudioClip, SoundEffectInstance>(this._audioClipReference);
+            this._audioClipReference.Asset?.Initialize(this.Volume, this.Pan, this.Pitch);
 
-            if (this._shouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
-                this._audioClip.SoundEffectInstance.IsLooped = true;
+            if (this._shouldLoop && this.Entity.IsEnabled && this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                soundEffectInstance.IsLooped = true;
                 this.Play();
             }
         }
@@ -144,8 +105,8 @@
         /// Pause this instance.
         /// </summary>
         public void Pause() {
-            if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State == SoundState.Playing) {
-                this._audioClip.SoundEffectInstance.Pause();
+            if (this._audioClipReference.Asset?.Content is SoundEffectInstance {State: SoundState.Playing} soundEffectInstance) {
+                soundEffectInstance.Pause();
             }
         }
 
@@ -153,36 +114,17 @@
         /// Play this instance.
         /// </summary>
         public void Play() {
-            if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Playing) {
-                this._audioClip.SoundEffectInstance.Volume = this.Volume;
-                this._audioClip.SoundEffectInstance.Pan = this.Pan;
-                this._audioClip.SoundEffectInstance.Pitch = this.Pitch;
-                this._audioClip.SoundEffectInstance.Play();
+            if (this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance && soundEffectInstance.State != SoundState.Playing) {
+                this._audioClipReference.Asset.Initialize(this.Volume, this.Pan, this.Pitch);
+                soundEffectInstance.Play();
             }
-        }
-
-        /// <inheritdoc />
-        public void RefreshAsset(AudioClip newInstance) {
-            this.AudioClip = newInstance;
-        }
-
-        /// <inheritdoc />
-        public bool RemoveAsset(Guid id) {
-            var result = this.HasAsset(id);
-            if (result) {
-                this._audioClip = null;
-            }
-
-            return result;
         }
 
         /// <summary>
         /// Stop this instance.
         /// </summary>
         public void Stop() {
-            if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Stopped) {
-                this._audioClip.SoundEffectInstance.Stop(true);
-            }
+            this.Stop(true);
         }
 
         /// <summary>
@@ -190,22 +132,15 @@
         /// </summary>
         /// <param name="isImmediate">If set to <c>true</c> is immediate.</param>
         public void Stop(bool isImmediate) {
-            if (this._audioClip?.SoundEffectInstance != null && this._audioClip.SoundEffectInstance.State != SoundState.Stopped) {
-                this._audioClip.SoundEffectInstance.Stop(isImmediate);
+            if (this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance && soundEffectInstance.State != SoundState.Stopped) {
+                soundEffectInstance.Stop(isImmediate);
             }
-        }
-
-        /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out AudioClip? asset) {
-            var result = this.AudioClip?.Id == id;
-            asset = result ? this.AudioClip : null;
-            return result;
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(this.IsEnabled)) {
-                if (this.ShouldLoop && this.Entity.IsEnabled && this._audioClip?.SoundEffectInstance != null) {
-                    this._audioClip.SoundEffectInstance.IsLooped = true;
+                if (this.ShouldLoop && this.Entity.IsEnabled && this._audioClipReference.Asset?.Content is SoundEffectInstance soundEffectInstance) {
+                    soundEffectInstance.IsLooped = true;
                     this.Play();
                 }
                 else if (!this.Entity.IsEnabled) {
