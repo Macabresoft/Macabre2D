@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
+﻿/*namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
 
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -64,4 +64,4 @@
             return animator;
         }
     }
-}
+}*/

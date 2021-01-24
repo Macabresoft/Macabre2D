@@ -14,6 +14,9 @@
     [Display(Name = "Camera")]
     public sealed class CameraComponent : GameComponent, ICameraComponent {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
+        
+        [DataMember]
+        private readonly AssetReference<Shader> _shaderReference = new();
         private Layers _layersToRender = ~Layers.None;
         private int _renderOrder;
         private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
@@ -107,10 +110,6 @@
         public SamplerState SamplerState { get; private set; } = SamplerState.PointClamp;
 
         /// <inheritdoc />
-        [DataMember]
-        public Shader? Shader { get; set; }
-
-        /// <inheritdoc />
         public Matrix GetViewMatrix() {
             var pixelsPerUnit = this.Entity.Scene.Game.Settings.PixelsPerUnit;
             var zoom = 1f / GameSettings.Instance.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
@@ -124,7 +123,14 @@
 
         /// <inheritdoc />
         public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableComponent> components) {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, this.SamplerState, null, RasterizerState.CullNone, this.Shader?.Effect, this.GetViewMatrix());
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred, 
+                BlendState.AlphaBlend, 
+                this.SamplerState, 
+                null,
+                RasterizerState.CullNone,
+                this._shaderReference.Asset?.Content, 
+                this.GetViewMatrix());
 
             foreach (var component in components) {
                 component.Render(frameTime, this.BoundingArea);
@@ -143,7 +149,7 @@
             this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
             this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
 
-            this.Shader?.Load();
+            AssetManager.Instance.ResolveAsset<Shader, Effect>(this._shaderReference);
         }
 
         /// <inheritdoc />

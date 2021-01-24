@@ -26,12 +26,6 @@
         SamplerState SamplerState { get; }
 
         /// <summary>
-        /// Gets the shader.
-        /// </summary>
-        /// <value>The shader.</value>
-        Shader? Shader { get; }
-
-        /// <summary>
         /// Gets the view height of the camera in world units (not screen pixels).
         /// </summary>
         float ViewHeight { get; }
