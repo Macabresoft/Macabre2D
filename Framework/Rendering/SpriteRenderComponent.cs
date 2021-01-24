@@ -9,28 +9,31 @@
     /// </summary>
     [Display(Name = "Sprite Renderer")]
     public sealed class SpriteRenderComponent : BaseSpriteComponent {
-        [DataMember(Order = 0)]
-        [Display(Name = "Sprite")]
-        private readonly SpriteReference _spriteReference = new();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderComponent" /> class.
         /// </summary>
         public SpriteRenderComponent() : base() {
-            this._spriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
+            this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 
-        /// <inheritdoc />
-        protected override byte SpriteIndex => this._spriteReference.SpriteIndex;
+        /// <summary>
+        /// Gets the sprite reference this component will render.
+        /// </summary>
+        [DataMember(Order = 0)]
+        [Display(Name = "Sprite")]
+        public SpriteReference SpriteReference { get; } = new();
 
         /// <inheritdoc />
-        protected override SpriteSheet? SpriteSheet => this._spriteReference.Asset;
+        protected override byte SpriteIndex => this.SpriteReference.SpriteIndex;
+
+        /// <inheritdoc />
+        protected override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this._spriteReference);
-            this._spriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
+            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+            this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 
         private void SpriteReference_PropertyChanged(object sender, PropertyChangedEventArgs e) {
