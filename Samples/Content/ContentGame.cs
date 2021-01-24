@@ -32,20 +32,20 @@
             cameraEntity.AddComponent<MovingDot>();
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
             
-            this.AssetManager.SetMapping(Guid.NewGuid(), "WhiteSquare");
+            this.AssetManager.SetContentMapping(Guid.NewGuid(), "WhiteSquare");
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
-            spriteRenderer.Sprite = new Sprite(this.AssetManager.GetId("WhiteSquare"), Point.Zero, new Point(32, 32));
+            spriteRenderer.Sprite = new Sprite(this.AssetManager.GetContentId("WhiteSquare"), Point.Zero, new Point(32, 32));
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             this.PreLoadAudioStuff(scene);
 
             var fontId = Guid.NewGuid();
-            this.AssetManager.SetMapping(fontId, "League Mono");
+            this.AssetManager.SetContentMapping(fontId, "League Mono");
             var coloredSquaresId = Guid.NewGuid();
-            this.AssetManager.SetMapping(coloredSquaresId, "ColoredSquares");
+            this.AssetManager.SetContentMapping(coloredSquaresId, "ColoredSquares");
             var whiteSquareId = Guid.NewGuid();
-            this.AssetManager.SetMapping(whiteSquareId, "WhiteSquare");
+            this.AssetManager.SetContentMapping(whiteSquareId, "WhiteSquare");
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -178,7 +178,7 @@
             foreach (var child in this.Scene.Children) {
                 if (child.TryGetComponent<SpriteAnimatorComponent>(out var spriteAnimator)) {
                     var spriteAnimation = new SpriteAnimation();
-                    var coloredSquaresId = this.AssetManager.GetId("ColoredSquares");
+                    var coloredSquaresId = this.AssetManager.GetContentId("ColoredSquares");
                     var step = spriteAnimation.AddStep();
                     step.Sprite = new Sprite(coloredSquaresId, Point.Zero, new Point(64, 64));
                     step.Frames = 2;
@@ -198,7 +198,7 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var lasterId = Guid.NewGuid();
-            this.AssetManager.SetMapping(lasterId, "laser");
+            this.AssetManager.SetContentMapping(lasterId, "laser");
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

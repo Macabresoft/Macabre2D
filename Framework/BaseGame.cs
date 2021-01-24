@@ -188,7 +188,7 @@
 
         /// <inheritdoc />
         public void LoadScene(string sceneName) {
-            if (this.AssetManager.TryLoad<GameScene>(sceneName, out var scene) && scene != null) {
+            if (this.AssetManager.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
             else {
@@ -276,11 +276,11 @@
 
             this.AssetManager.Initialize(this.Content);
 
-            if (this.AssetManager.TryLoad<GameSettings>(GameSettings.ContentFileName, out var gameSettings) && gameSettings != null) {
+            if (this.AssetManager.TryLoadContent<GameSettings>(GameSettings.ContentFileName, out var gameSettings) && gameSettings != null) {
                 this.Settings = gameSettings;
             }
 
-            if (this.AssetManager.TryLoad<GameScene>(this.Settings.StartupSceneAssetId, out var scene) && scene != null) {
+            if (this.AssetManager.TryLoadContent<GameScene>(this.Settings.StartupSceneAssetId, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
 

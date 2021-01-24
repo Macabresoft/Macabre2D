@@ -11,6 +11,12 @@
     /// </summary>
     public interface IAssetManager {
         /// <summary>
+        /// Adds an asset.
+        /// </summary>
+        /// <param name="asset">The asset to add.</param>
+        void AddAsset(IAsset asset);
+
+        /// <summary>
         /// Clears the mappings.
         /// </summary>
         void ClearMappings();
@@ -20,13 +26,20 @@
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>The identifier associated with the path provided.</returns>
-        Guid GetId(string path);
+        Guid GetContentId(string path);
 
         /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="contentManager">The content manager.</param>
         void Initialize(ContentManager contentManager);
+
+        /// <summary>
+        /// Removes an asset.
+        /// </summary>
+        /// <param name="asset">The asset to remove.</param>
+        /// <returns>A value indicating whether or not the asset was removed.</returns>
+        bool RemoveAsset(IAsset asset);
 
         /// <summary>
         /// Resolves an asset reference and loads required content.
@@ -40,26 +53,26 @@
         /// <summary>
         /// Sets the mapping.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="contentId">The identifier.</param>
         /// <param name="contentPath">The content path.</param>
-        void SetMapping(Guid id, string contentPath);
+        void SetContentMapping(Guid contentId, string contentPath);
 
         /// <summary>
         /// Gets the path.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="contentId">The identifier.</param>
         /// <param name="path">The path.</param>
         /// <returns>A value indicating whether or not the path was found.</returns>
-        bool TryGetPath(Guid id, out string? path);
+        bool TryGetContentPath(Guid contentId, out string? path);
 
         /// <summary>
         /// Loads the asset at the specified path.
         /// </summary>
         /// <typeparam name="T">The type of asset to load.</typeparam>
-        /// <param name="path">The path.</param>
+        /// <param name="contentPath">The path.</param>
         /// <param name="loaded">The loaded content.</param>
         /// <returns>The asset.</returns>
-        bool TryLoad<T>(string path, out T? loaded) where T : class;
+        bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class;
 
         /// <summary>
         /// Loads the asset with the specified identifier.
@@ -68,7 +81,7 @@
         /// <param name="id">The identifier.</param>
         /// <param name="loaded">The loaded content.</param>
         /// <returns>The asset.</returns>
-        bool TryLoad<T>(Guid id, out T? loaded) where T : class;
+        bool TryLoadContent<T>(Guid id, out T? loaded) where T : class;
 
         /// <summary>
         /// Unloads the content manager.
@@ -86,8 +99,6 @@
         /// </summary>
         public const string ContentFileName = "AssetManager";
 
-        private static IAssetManager _instance = new AssetManager();
-
         [DataMember]
         private readonly List<IAsset> _assets = new();
 
@@ -95,14 +106,18 @@
         private readonly Dictionary<Guid, string> _idToPathMapping = new();
 
         private ContentManager? _contentManager;
+        private bool _isInitialized;
 
         /// <summary>
         /// Gets the singleton instance of an asset manager.
         /// </summary>
-        public static IAssetManager Instance {
-            get => _instance;
+        public static IAssetManager Instance { get; set; } = new AssetManager();
 
-            set => _instance = value;
+        /// <inheritdoc />
+        public void AddAsset(IAsset asset) {
+            if (this._assets.All(x => x.AssetId != asset.AssetId)) {
+                this._assets.Add(asset);
+            }
         }
 
         /// <inheritdoc />
@@ -111,7 +126,7 @@
         }
 
         /// <inheritdoc />
-        public Guid GetId(string path) {
+        public Guid GetContentId(string path) {
             return this._idToPathMapping.FirstOrDefault(x => x.Value == path).Key;
         }
 
@@ -126,52 +141,59 @@
         }
 
         /// <inheritdoc />
+        public bool RemoveAsset(IAsset asset) {
+            return this._assets.Remove(asset);
+        }
+
+        /// <inheritdoc />
         public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
             var result = false;
 
-            if (this._assets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetReference.AssetId) is TAsset asset) {
-                if (asset is IContentAsset<TContent> contentAsset &&
-                    contentAsset.ContentId != Guid.Empty &&
-                    this.TryLoad<TContent>(contentAsset.ContentId, out var content) &&
-                    content != null) {
-                    contentAsset.Initialize(content);
+            if (assetReference.AssetId != Guid.Empty) {
+                if (this._assets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetReference.AssetId) is TAsset asset) {
+                    if (asset is IContentAsset<TContent> contentAsset &&
+                        contentAsset.ContentId != Guid.Empty &&
+                        this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) &&
+                        content != null) {
+                        contentAsset.Initialize(content);
+                    }
+
+                    assetReference.Initialize(asset);
+                    result = true;
                 }
+                else {
+                    foreach (var package in this._assets.OfType<IAssetPackage<TAsset, TContent>>()) {
+                        if (package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
+                            if (package.Content == null && this.TryLoadContent<TContent>(package.ContentId, out var content) && content != null) {
+                                package.LoadContent(content);
+                            }
 
-                assetReference.Initialize(asset);
-                result = true;
-            }
-            else {
-                foreach (var package in this._assets.OfType<IAssetPackage<TAsset, TContent>>()) {
-                    if (package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
-                        if (package.Content == null && this.TryLoad<TContent>(package.ContentId, out var content) && content != null) {
-                            package.LoadContent(content);
+                            assetReference.Initialize(packagedAsset);
                         }
-
-                        assetReference.Initialize(packagedAsset);
                     }
                 }
             }
-
+            
             return result;
         }
 
         /// <inheritdoc />
-        public void SetMapping(Guid id, string contentPath) {
-            this._idToPathMapping[id] = contentPath;
+        public void SetContentMapping(Guid contentId, string contentPath) {
+            this._idToPathMapping[contentId] = contentPath;
         }
 
         /// <inheritdoc />
-        public bool TryGetPath(Guid id, out string? path) {
-            return this._idToPathMapping.TryGetValue(id, out path);
+        public bool TryGetContentPath(Guid contentId, out string? path) {
+            return this._idToPathMapping.TryGetValue(contentId, out path);
         }
 
         /// <inheritdoc />
-        public bool TryLoad<T>(string path, out T? loaded) where T : class {
+        public bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class {
             loaded = null;
 
             if (this._contentManager != null) {
                 try {
-                    loaded = this._contentManager.Load<T>(path);
+                    loaded = this._contentManager.Load<T>(contentPath);
                 }
                 catch (ContentLoadException) {
                 }
@@ -181,7 +203,7 @@
         }
 
         /// <inheritdoc />
-        public bool TryLoad<T>(Guid id, out T? loaded) where T : class {
+        public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
             if (this._contentManager != null && this._idToPathMapping.TryGetValue(id, out var path)) {
                 try {
                     loaded = this._contentManager.Load<T>(path);

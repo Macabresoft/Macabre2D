@@ -46,7 +46,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             gridComponent.RenderOrder = -1;
 
             var skullId = Guid.NewGuid();
-            this.Game.AssetManager.SetMapping(skullId, "skull");
+            this.Game.AssetManager.SetContentMapping(skullId, "skull");
             var skullEntity = this.Game.Scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
             this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
@@ -55,7 +55,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             skullEntity.AddComponent<SampleInputComponent>();
 
             var leageMonoId = Guid.NewGuid();
-            this.Game.AssetManager.SetMapping(leageMonoId, "League Mono");
+            this.Game.AssetManager.SetContentMapping(leageMonoId, "League Mono");
 
             var textRenderEntity = this.Game.Scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();

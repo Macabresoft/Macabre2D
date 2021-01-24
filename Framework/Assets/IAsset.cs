@@ -9,10 +9,10 @@
     public interface IAsset : INotifyPropertyChanged {
 
         /// <summary>
-        /// Gets or sets the asset identifier.
+        /// Gets the asset identifier.
         /// </summary>
         /// <value>The asset identifier.</value>
-        Guid AssetId { get; set; }
+        Guid AssetId { get; }
 
         /// <summary>
         /// Gets the name.

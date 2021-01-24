@@ -11,7 +11,7 @@
 
         /// <inheritdoc />
         [DataMember]
-        public Guid AssetId { get; set; }
+        public Guid AssetId { get; } = Guid.NewGuid();
 
         /// <inheritdoc />
         [DataMember]

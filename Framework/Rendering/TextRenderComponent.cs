@@ -23,8 +23,11 @@
         private bool _snapToPixels;
         private string _text = string.Empty;
         
+        /// <summary>
+        /// Gets the font reference.
+        /// </summary>
         [DataMember(Order = 0)]
-        private readonly AssetReference<Font> _fontReference = new AssetReference<Font>();
+        public AssetReference<Font> FontReference { get; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextRenderComponent" /> class.
@@ -126,14 +129,14 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<Font, SpriteFont>(this._fontReference);
+            AssetManager.Instance.ResolveAsset<Font, SpriteFont>(this.FontReference);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (!string.IsNullOrEmpty(this.Text) && this._fontReference.Asset is Font font && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is Font font && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 spriteBatch.Draw(
                     font, 
                     this.Text, 
@@ -195,7 +198,7 @@
         }
 
         private Vector2 CreateSize() {
-            return this._fontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
+            return this.FontReference.Asset?.Content?.MeasureString(this.Text) ?? Vector2.Zero;
         }
 
         private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

@@ -9,11 +9,7 @@
 
     [ExcludeFromCodeCoverage]
     public class PhysicsGame : BaseGame {
-
-        protected override void ApplyGraphicsSettings() {
-            base.ApplyGraphicsSettings();
-        }
-
+        
         protected override void Initialize() {
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.PreferredBackBufferWidth = 1920;
@@ -33,14 +29,15 @@
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 
-            var leageMonoId = Guid.NewGuid();
-            this.AssetManager.SetMapping(leageMonoId, "League Mono");
+            var leagueMonoFont = new Font { ContentId = Guid.NewGuid() };
+            this.AssetManager.SetContentMapping(leagueMonoFont.ContentId, "League Mono");
+            this.AssetManager.AddAsset(leagueMonoFont);
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.Font = new Font(leageMonoId);
+            frameRateDisplay.FontReference.AssetId = leagueMonoFont.AssetId;
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 

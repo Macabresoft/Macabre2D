@@ -23,14 +23,6 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
-        /// </summary>
-        /// <param name="assetId">The asset identifier.</param>
-        public AutoTileSet(Guid assetId) : this() {
-            this.AssetId = assetId;
-        }
-
-        /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>

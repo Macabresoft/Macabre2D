@@ -9,7 +9,7 @@
     public class BaseContentAsset<TContent> : BaseAsset, IContentAsset<TContent> where TContent : class {
         /// <inheritdoc />
         [DataMember]
-        public Guid ContentId { get; private set; }
+        public Guid ContentId { get; set; }
         
         /// <inheritdoc />
         public TContent? Content { get; private set; }
