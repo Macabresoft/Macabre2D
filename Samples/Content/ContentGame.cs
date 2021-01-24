@@ -31,11 +31,12 @@
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
             cameraEntity.AddComponent<MovingDot>();
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
-            
-            this.AssetManager.SetContentMapping(Guid.NewGuid(), "WhiteSquare");
+
+            var spriteSheet = new SpriteSheet();
+            this.AssetManager.SetContentMapping(spriteSheet.ContentId, "WhiteSquare");
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
-            spriteRenderer.Sprite = new Sprite(this.AssetManager.GetContentId("WhiteSquare"), Point.Zero, new Point(32, 32));
+            spriteRenderer.SpriteReference.AssetId = spriteSheet.AssetId;
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             this.PreLoadAudioStuff(scene);

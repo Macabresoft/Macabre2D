@@ -12,6 +12,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
         /// </summary>
+        public SpriteAnimation() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
+        /// </summary>
         /// <param name="steps">The steps.</param>
         public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps) {
             this._steps.AddRange(steps);
@@ -54,7 +60,7 @@
                 this._steps.Insert(index, step);
             }
         }
-        
+
         /// <summary>
         /// Removes the step.
         /// </summary>

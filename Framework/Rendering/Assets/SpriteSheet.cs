@@ -63,7 +63,7 @@
 
         /// <inheritdoc />
         [DataMember]
-        public Guid ContentId { get; private set; }
+        public Guid ContentId { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets the number of rows in this sprite sheet.
@@ -220,22 +220,38 @@
 
         /// <inheritdoc />
         AutoTileSet IAssetPackage<AutoTileSet>.AddAsset() {
-            throw new NotImplementedException();
+            var asset = new AutoTileSet();
+            this._autoTileSets.Add(asset);
+            asset.Initialize(this);
+            return asset;
         }
 
         /// <inheritdoc />
         SpriteAnimation IAssetPackage<SpriteAnimation>.AddAsset() {
-            throw new NotImplementedException();
+            var asset = new SpriteAnimation();
+            this._spriteAnimations.Add(asset);
+            asset.Initialize(this);
+            return asset;
         }
 
         /// <inheritdoc />
         bool IAssetPackage<AutoTileSet>.RemoveAsset(Guid assetId) {
-            throw new NotImplementedException();
+            var result = false;
+            if (this._autoTileSets.FirstOrDefault(x => x.AssetId == assetId) is AutoTileSet asset) {
+                result = this._autoTileSets.Remove(asset);
+            }
+
+            return result;
         }
 
         /// <inheritdoc />
         bool IAssetPackage<SpriteAnimation>.RemoveAsset(Guid assetId) {
-            throw new NotImplementedException();
+            var result = false;
+            if (this._spriteAnimations.FirstOrDefault(x => x.AssetId == assetId) is SpriteAnimation asset) {
+                result = this._spriteAnimations.Remove(asset);
+            }
+
+            return result;
         }
 
         private void ResetColumnWidth() {
