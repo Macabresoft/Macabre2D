@@ -195,6 +195,12 @@
             this.Content = content;
         }
 
+        /// <summary>
+        /// Unloads the content.
+        /// </summary>
+        public void UnloadContent() {
+            this.Content = null;
+        }
 
         /// <inheritdoc />
         public bool RemoveAsset(AutoTileSet asset) {

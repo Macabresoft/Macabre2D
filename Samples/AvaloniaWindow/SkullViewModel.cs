@@ -45,21 +45,24 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             gridComponent.Grid = new TileGrid(Vector2.One);
             gridComponent.RenderOrder = -1;
 
-            var skullId = Guid.NewGuid();
-            this.Game.AssetManager.SetContentMapping(skullId, "skull");
+            var skull = new SpriteSheet();
+            this.Game.AssetManager.SetContentMapping(skull.ContentId, "skull");
+            this.Game.AssetManager.AddAsset(skull);
+            
             var skullEntity = this.Game.Scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
             this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
-            this._skullRenderer.Sprite = new Sprite(skullId);
+            this._skullRenderer.SpriteReference.AssetId = skull.AssetId;
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             skullEntity.AddComponent<SampleInputComponent>();
 
-            var leageMonoId = Guid.NewGuid();
-            this.Game.AssetManager.SetContentMapping(leageMonoId, "League Mono");
+            var leageMono = new Font();
+            this.Game.AssetManager.SetContentMapping(leageMono.ContentId, "League Mono");
+            this.Game.AssetManager.AddAsset(leageMono);
 
             var textRenderEntity = this.Game.Scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
-            this._displayTextRenderer.Font = new Font(leageMonoId);
+            this._displayTextRenderer.FontReference.AssetId = leageMono.AssetId;
             this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
             this._displayTextRenderer.Text = this.DisplayText;
             this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -71,7 +74,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             this._camera.ViewHeight = 9f;
             var cameraChild = cameraEntity.AddChild();
             var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
-            cameraTextRenderer.Font = new Font(leageMonoId);
+            cameraTextRenderer.FontReference.AssetId = leageMono.AssetId;
             cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
             cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
@@ -80,7 +83,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             cameraChild.LocalPosition = new Vector2(0f, -2.5f);
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.Font = new Font(leageMonoId);
+            frameRateDisplay.FontReference.AssetId = leageMono.AssetId;
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 

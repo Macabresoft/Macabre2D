@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
-namespace Macabresoft.Macabre2D.Framework.Tiles {
+﻿namespace Macabresoft.Macabre2D.Framework {
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// A component that holds a grid.
@@ -12,12 +11,12 @@ namespace Macabresoft.Macabre2D.Framework.Tiles {
         private TileGrid _grid = TileGrid.Empty;
         private TileGrid _worldGrid = TileGrid.Empty;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the grid.
+        /// </summary>
         [DataMember]
         public TileGrid Grid {
-            get {
-                return this._grid;
-            }
+            get => this._grid;
 
             set {
                 if (this.Set(ref this._grid, value)) {
@@ -26,15 +25,13 @@ namespace Macabresoft.Macabre2D.Framework.Tiles {
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the grid in world space.
+        /// </summary>
         public TileGrid WorldGrid {
-            get {
-                return this._worldGrid;
-            }
+            get => this._worldGrid;
 
-            private set {
-                this.Set(ref this._worldGrid, value);
-            }
+            private set => this.Set(ref this._worldGrid, value);
         }
 
         /// <inheritdoc />

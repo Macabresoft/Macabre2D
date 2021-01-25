@@ -122,49 +122,49 @@
         }
 
         private void PostLoadRenderingStuff() {
-            /*var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
+            var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
             var arrowSpriteEntity1 = this.Scene.AddChild();
-            var arrowSpriteRenderer1 = arrowSpriteEntity1.AddComponent<SpriteRenderComponent>();
-            arrowSpriteRenderer1.Sprite = arrowSprite1;
+            var arrowSpriteRenderer1 = arrowSpriteEntity1.AddComponent<Texture2DRenderComponent>();
+            arrowSpriteRenderer1.Texture = arrowSprite1;
             arrowSpriteEntity1.LocalPosition += new Vector2(2f, -2f);
 
             var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
             var arrowSpriteEntity2 = this.Scene.AddChild();
-            var arrowSpriteRenderer2 = arrowSpriteEntity2.AddComponent<SpriteRenderComponent>();
+            var arrowSpriteRenderer2 = arrowSpriteEntity2.AddComponent<Texture2DRenderComponent>();
             arrowSpriteRenderer2.Color = Color.LawnGreen;
-            arrowSpriteRenderer2.Sprite = arrowSprite2;
+            arrowSpriteRenderer2.Texture = arrowSprite2;
             arrowSpriteEntity2.LocalPosition += new Vector2(3f, -1f);
             arrowSpriteEntity2.LocalScale = new Vector2(0.75f, 2f);
 
             var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
             var quadEntity1 = this.Scene.AddChild();
-            var quadSpriteRenderer1 = quadEntity1.AddComponent<SpriteRenderComponent>();
-            quadSpriteRenderer1.Sprite = quadSprite1;
+            var quadSpriteRenderer1 = quadEntity1.AddComponent<Texture2DRenderComponent>();
+            quadSpriteRenderer1.Texture = quadSprite1;
             quadEntity1.LocalPosition += new Vector2(3f, 2f);
 
             var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
             var quadEntity2 = this.Scene.AddChild();
-            var quadSpriteRenderer2 = quadEntity2.AddComponent<SpriteRenderComponent>();
+            var quadSpriteRenderer2 = quadEntity2.AddComponent<Texture2DRenderComponent>();
             quadSpriteRenderer2.Color = Color.Khaki;
-            quadSpriteRenderer2.Sprite = quadSprite2;
+            quadSpriteRenderer2.Texture = quadSprite2;
             quadEntity2.LocalPosition += new Vector2(3f, 1f);
 
             var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
             var rightTriangleEntity = this.Scene.AddChild();
-            var rightTriangleSpriteRenderer1 = rightTriangleEntity.AddComponent<SpriteRenderComponent>();
-            rightTriangleSpriteRenderer1.Sprite = rightTriangleSprite1;
+            var rightTriangleSpriteRenderer1 = rightTriangleEntity.AddComponent<Texture2DRenderComponent>();
+            rightTriangleSpriteRenderer1.Texture = rightTriangleSprite1;
             rightTriangleEntity.LocalPosition = new Vector2(-3f, 3f);
 
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
             var circleEntity = this.Scene.AddChild();
-            var circleSpriteRenderer = circleEntity.AddComponent<SpriteRenderComponent>();
-            circleSpriteRenderer.Sprite = circleSprite;
+            var circleSpriteRenderer = circleEntity.AddComponent<Texture2DRenderComponent>();
+            circleSpriteRenderer.Texture = circleSprite;
             circleEntity.LocalPosition = new Vector2(-5f, 3f);
 
             var binaryTileMapEntity = this.Scene.AddChild();
             var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
             gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
-            var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
+            /*var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
@@ -177,7 +177,7 @@
                         binaryTileMap.AddTile(new Point(x, y));
                     }
                 }
-            }
+            }*/
             
             var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
             gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
@@ -188,7 +188,7 @@
             var binaryTileMapBoundingArea = binaryTileMapEntity.AddComponent<BoundingAreaDrawerComponent>();
             binaryTileMapBoundingArea.Color = Color.Red;
             binaryTileMapBoundingArea.LineThickness = 3f;
-            */
+            
         }
 
         private void PreLoadAudioStuff(GameScene scene) {

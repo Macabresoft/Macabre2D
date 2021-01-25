@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
 
-    using Macabresoft.Macabre2D.Framework.Tiles;
     using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
