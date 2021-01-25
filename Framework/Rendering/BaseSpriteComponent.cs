@@ -31,6 +31,16 @@
         public override BoundingArea BoundingArea => this._boundingArea.Value;
 
         /// <summary>
+        /// Gets the sprite index.
+        /// </summary>
+        public abstract byte SpriteIndex { get; }
+
+        /// <summary>
+        /// Gets the sprite sheet.
+        /// </summary>
+        public abstract SpriteSheet? SpriteSheet { get; }
+
+        /// <summary>
         /// Gets or sets the color.
         /// </summary>
         /// <value>The color.</value>
@@ -85,16 +95,6 @@
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the sprite index.
-        /// </summary>
-        protected abstract byte SpriteIndex { get; }
-
-        /// <summary>
-        /// Gets the sprite sheet.
-        /// </summary>
-        protected abstract SpriteSheet? SpriteSheet { get; }
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {

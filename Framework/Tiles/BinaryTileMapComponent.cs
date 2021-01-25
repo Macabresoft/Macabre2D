@@ -15,10 +15,6 @@
         [DataMember]
         private readonly HashSet<Point> _activeTiles = new();
 
-        [DataMember(Order = 0)]
-        [Display(Name = "Sprite")]
-        private readonly SpriteReference _spriteReference = new();
-
         private Color _color = Color.White;
         private Vector2 _tileScale;
 
@@ -26,11 +22,18 @@
         /// Initializes a new instance of the <see cref="BinaryTileMapComponent" /> class.
         /// </summary>
         public BinaryTileMapComponent() : base() {
-            this._spriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
+            this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 
         /// <inheritdoc />
         public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
+
+        /// <summary>
+        /// Gets the sprite reference.
+        /// </summary>
+        [DataMember(Order = 0)]
+        [Display(Name = "Sprite")]
+        public SpriteReference SpriteReference { get; } = new();
 
         /// <summary>
         /// Gets or sets the color.
@@ -39,7 +42,6 @@
         [DataMember(Order = 1)]
         public Color Color {
             get => this._color;
-
             set => this.Set(ref this._color, value);
         }
 
@@ -52,22 +54,20 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
+            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
             this.ResetSpriteScale();
         }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this._spriteReference.Asset is SpriteSheet spriteSheet && this._activeTiles.Any()) {
-                foreach (var tile in this._activeTiles) {
-                    var boundingArea = this.GetTileBoundingArea(tile);
-                    if (boundingArea.Overlaps(viewBoundingArea)) {
-                        spriteBatch.Draw(
-                            spriteSheet,
-                            this._spriteReference.SpriteIndex,
-                            boundingArea.Minimum,
-                            this._tileScale,
-                            this.Color);
-                    }
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheet spriteSheet && this._activeTiles.Any()) {
+                foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
+                    spriteBatch.Draw(
+                        spriteSheet,
+                        this.SpriteReference.SpriteIndex,
+                        boundingArea.Minimum,
+                        this._tileScale,
+                        this.Color);
                 }
             }
         }
@@ -96,7 +96,7 @@
             base.OnEntityPropertyChanged(e);
 
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
-                if (this._spriteReference.Asset is SpriteSheet spriteSheet) {
+                if (this.SpriteReference.Asset is SpriteSheet spriteSheet) {
                     this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
                 }
             }
@@ -119,7 +119,7 @@
         }
 
         private void ResetSpriteScale() {
-            if (this._spriteReference.Asset is SpriteSheet spriteSheet) {
+            if (this.SpriteReference.Asset is SpriteSheet spriteSheet) {
                 this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
             }
         }

@@ -36,6 +36,24 @@
             spriteRenderer.SpriteReference.AssetId = whiteSquare.AssetId;
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
+            var binaryTileMapEntity = scene.AddChild();
+            var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
+            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
+            var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
+            binaryTileMap.RenderOrder = -300;
+            binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
+            binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
+            binaryTileMap.SpriteReference.AssetId = whiteSquare.AssetId;
+            binaryTileMap.Color = Color.DarkGray;
+
+            for (var x = 0; x < 5; x++) {
+                for (var y = 0; y < 10; y++) {
+                    if ((x + y) % 2 == 0) {
+                        binaryTileMap.AddTile(new Point(x, y));
+                    }
+                }
+            }
+            
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
@@ -160,24 +178,6 @@
             var circleSpriteRenderer = circleEntity.AddComponent<Texture2DRenderComponent>();
             circleSpriteRenderer.Texture = circleSprite;
             circleEntity.LocalPosition = new Vector2(-5f, 3f);
-
-            var binaryTileMapEntity = this.Scene.AddChild();
-            var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
-            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
-            /*var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
-            binaryTileMap.RenderOrder = -300;
-            binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
-            binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
-            binaryTileMap.Sprite = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(64, 64));
-            binaryTileMap.Color = Color.DarkGray;
-
-            for (var x = 0; x < 5; x++) {
-                for (var y = 0; y < 10; y++) {
-                    if ((x + y) % 2 == 0) {
-                        binaryTileMap.AddTile(new Point(x, y));
-                    }
-                }
-            }*/
             
             var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
             gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
@@ -185,10 +185,12 @@
             gridDrawer.Grid = new TileGrid(Vector2.One);
             gridDrawer.RenderOrder = -1;
 
-            var binaryTileMapBoundingArea = binaryTileMapEntity.AddComponent<BoundingAreaDrawerComponent>();
-            binaryTileMapBoundingArea.Color = Color.Red;
-            binaryTileMapBoundingArea.LineThickness = 3f;
-            
+            if (this.Scene.TryGetComponent<BinaryTileMapComponent>(out var binaryTileMapComponent) && binaryTileMapComponent != null) {
+                var binaryTileMapBoundingArea = binaryTileMapComponent.Entity.AddComponent<BoundingAreaDrawerComponent>();
+                binaryTileMapBoundingArea.Color = Color.Red;
+                binaryTileMapBoundingArea.LineThickness = 3f;
+            }
+
         }
 
         private void PreLoadAudioStuff(GameScene scene) {

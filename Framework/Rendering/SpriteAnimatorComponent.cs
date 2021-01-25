@@ -35,6 +35,12 @@
         public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
 
         /// <inheritdoc />
+        public override byte SpriteIndex => this._currentSpriteIndex;
+
+        /// <inheritdoc />
+        public override SpriteSheet? SpriteSheet => this.AnimationReference.SpriteSheet;
+
+        /// <inheritdoc />
         public int UpdateOrder => 0;
 
         /// <summary>
@@ -51,12 +57,6 @@
                 }
             }
         }
-
-        /// <inheritdoc />
-        protected override byte SpriteIndex => this._currentSpriteIndex;
-
-        /// <inheritdoc />
-        protected override SpriteSheet? SpriteSheet => this.AnimationReference.SpriteSheet;
 
         /// <summary>
         /// Enqueues the specified animation.

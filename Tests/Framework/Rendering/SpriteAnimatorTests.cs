@@ -1,19 +1,17 @@
-﻿/*namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
-
-    using Macabresoft.Macabre2D.Framework;
-    using Microsoft.Xna.Framework;
-    using NUnit.Framework;
+﻿namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Macabresoft.Macabre2D.Framework;
+    using Microsoft.Xna.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public static class SpriteAnimatorTests {
-
         [Test]
         [Category("Unit Tests")]
         public static void SpriteAnimator_LoopingTest() {
-            var numberOfSteps = 3;
+            byte numberOfSteps = 3;
             var animation = CreateAnimation(numberOfSteps);
             var animator = CreateAnimator(1);
             animator.Initialize(new GameEntity());
@@ -25,15 +23,14 @@
             var frameTime = new FrameTime(gameTime, 1f);
 
             animator.Play(animation, true);
-            Assert.IsNull(animator.Sprite);
             animator.Update(frameTime, default);
-            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
+            Assert.AreEqual(animation.Steps.ElementAt(0).SpriteIndex, animator.SpriteIndex);
 
-            for (var i = 1; i < numberOfSteps; i++) {
+            for (byte i = 1; i < numberOfSteps; i++) {
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
                 frameTime = new FrameTime(gameTime, 1f);
                 animator.Update(frameTime, default);
-                Assert.AreEqual(animation.Steps.ElementAt(i).Sprite.Id, animator.Sprite.Id);
+                Assert.AreEqual(animation.Steps.ElementAt(i).SpriteIndex, animator.SpriteIndex);
             }
 
             gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
@@ -41,15 +38,15 @@
 
             // Should loop here.
             animator.Update(frameTime, default);
-            Assert.AreEqual(animation.Steps.ElementAt(0).Sprite.Id, animator.Sprite.Id);
+            Assert.AreEqual(animation.Steps.ElementAt(0).SpriteIndex, animator.SpriteIndex);
         }
 
-        private static SpriteAnimation CreateAnimation(int numberOfSteps) {
+        private static SpriteAnimation CreateAnimation(byte numberOfSteps) {
             var steps = new List<SpriteAnimationStep>();
-            for (var i = 0; i < numberOfSteps; i++) {
+            for (byte i = 0; i < numberOfSteps; i++) {
                 steps.Add(new SpriteAnimationStep {
                     Frames = 1,
-                    Sprite = new Sprite(Guid.NewGuid())
+                    SpriteIndex = i
                 });
             }
 
@@ -57,11 +54,11 @@
         }
 
         private static SpriteAnimatorComponent CreateAnimator(byte frameRate) {
-            var animator = new SpriteAnimatorComponent() {
+            var animator = new SpriteAnimatorComponent {
                 FrameRate = frameRate
             };
 
             return animator;
         }
     }
-}*/
+}

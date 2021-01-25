@@ -16,6 +16,9 @@
             this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 
+        /// <inheritdoc />
+        public override byte SpriteIndex => this.SpriteReference.SpriteIndex;
+
         /// <summary>
         /// Gets the sprite reference this component will render.
         /// </summary>
@@ -24,10 +27,7 @@
         public SpriteReference SpriteReference { get; } = new();
 
         /// <inheritdoc />
-        protected override byte SpriteIndex => this.SpriteReference.SpriteIndex;
-
-        /// <inheritdoc />
-        protected override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
+        public override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
