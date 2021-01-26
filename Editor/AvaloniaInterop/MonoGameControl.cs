@@ -71,6 +71,7 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
 
                 if (this._isFirstLoad) {
                     if (this.GetVisualRoot() is Window window) {
+                        this._viewModel.RunFrame();
                         this._viewModel.Initialize(window, this.Bounds.Size, this._mouse, this._keyboard);
                         this._isFirstLoad = false;
                     }

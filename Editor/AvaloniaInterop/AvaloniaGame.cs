@@ -90,7 +90,9 @@
 
         /// <inheritdoc />
         protected override void UpdateInputState() {
-            this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
+            if (this.Mouse != null && this.Keyboard != null) {
+                this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
+            }
         }
     }
 }

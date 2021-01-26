@@ -85,6 +85,11 @@
         /// <param name="settingValue">The setting value.</param>
         /// <returns>A value indicating whether or not the custom setting was found.</returns>
         bool TryGetCustomSetting(string settingName, out string? settingValue);
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        void Initialize();
     }
 
     /// <summary>
@@ -101,7 +106,7 @@
         private static IGameSettings _instance = new GameSettings();
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<string, string> _customSettings = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _customSettings = new();
 
         private int _pixelsPerUnit = 32;
 
@@ -114,26 +119,7 @@
         /// <summary>
         /// Gets the singleton instance of game settings.
         /// </summary>
-        /// <remarks>
-        /// Honestly, I'm not a huge fan of singletons. They feel like bad design to me. But there
-        /// are objects in a tight loop, like <see cref="Sprite" /> that need access to some
-        /// settings, but <see cref="Sprite" /> was written to not know a whole lot about anything
-        /// else. I think it should stay that way. I created a readonly interface of <see
-        /// cref="GameSettings" /> called <see cref="IGameSettings" /> to alleviate some of the
-        /// grossness of this. The setter is internal, so only <see cref="MacabreGame" /> should
-        /// ever set it.
-        /// </remarks>
-        public static IGameSettings Instance {
-            get {
-                return GameSettings._instance;
-            }
-
-            set {
-                if (value != null) {
-                    GameSettings._instance = value;
-                }
-            }
-        }
+        public static IGameSettings Instance { get; internal set; } = new GameSettings();
 
         /// <inheritdoc />
         [DataMember]
@@ -200,6 +186,11 @@
         /// <inheritdoc />
         public bool TryGetCustomSetting(string settingName, out string? settingValue) {
             return this._customSettings.TryGetValue(settingName, out settingValue);
+        }
+
+        /// <inheritdoc />
+        public void Initialize() {
+            Instance = this;
         }
     }
 }

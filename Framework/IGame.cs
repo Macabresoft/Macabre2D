@@ -1,15 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
 
     /// <summary>
     /// Interface for the base object running the update loop for a game.
     /// </summary>
     public interface IGame {
-
         /// <summary>
         /// Occurs when the game speed has changed.
         /// </summary>
@@ -21,22 +19,10 @@
         event EventHandler<Point> ViewportSizeChanged;
 
         /// <summary>
-        /// Gets the asset manager.
-        /// </summary>
-        /// <value>The asset manager.</value>
-        IAssetManager AssetManager { get; }
-
-        /// <summary>
         /// Gets the content manager.
         /// </summary>
         /// <value>The content manager.</value>
         ContentManager? Content { get; }
-
-        /// <summary>
-        /// Gets or sets the game speed.
-        /// </summary>
-        /// <value>The game speed.</value>
-        double GameSpeed { get; set; }
 
         /// <summary>
         /// Gets the graphics device.
@@ -54,7 +40,7 @@
         /// Gets the state of input.
         /// </summary>
         /// <value>The state of input.</value>
-        InputState InputState => new InputState();
+        InputState InputState => new();
 
         /// <summary>
         /// Gets a value indicating whether this game is running in design mode. When the game is
@@ -63,6 +49,12 @@
         /// </summary>
         /// <value><c>true</c> if this game is in design mode; otherwise, <c>false</c>.</value>
         bool IsDesignMode { get; }
+
+        /// <summary>
+        /// Gets the project.
+        /// </summary>
+        /// <value>The project.</value>
+        IGameProject Project { get; }
 
         /// <summary>
         /// Gets the save data manager.
@@ -77,12 +69,6 @@
         IGameScene Scene { get; }
 
         /// <summary>
-        /// Gets the game settings.
-        /// </summary>
-        /// <value>The game settings.</value>
-        IGameSettings Settings { get; }
-
-        /// <summary>
         /// Gets the sprite batch.
         /// </summary>
         /// <value>The sprite batch.</value>
@@ -93,6 +79,12 @@
         /// </summary>
         /// <value>The size of the viewport.</value>
         Point ViewportSize { get; }
+
+        /// <summary>
+        /// Gets or sets the game speed.
+        /// </summary>
+        /// <value>The game speed.</value>
+        double GameSpeed { get; set; }
 
         /// <summary>
         /// Exits thie game.
@@ -115,5 +107,10 @@
         /// Saves the applies graphics settings.
         /// </summary>
         void SaveAndApplyGraphicsSettings();
+
+        /// <summary>
+        /// Saves the current graphics settings.
+        /// </summary>
+        void SaveGraphicsSettings();
     }
 }

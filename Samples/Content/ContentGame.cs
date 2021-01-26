@@ -8,11 +8,11 @@
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
         public ContentGame() : base() {
-            this.Settings.PixelsPerUnit = 64;
         }
 
         protected override void LoadContent() {
-            this.AssetManager.Initialize(this.Content);
+            this.Project.Initialize(this.Content);
+            GameSettings.Instance.PixelsPerUnit = 64;
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new GameScene();
@@ -29,8 +29,8 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.AssetManager.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
-            this.AssetManager.AddAsset(whiteSquare);
+            AssetManager.Instance.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
+            AssetManager.Instance.AddAsset(whiteSquare);
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.AssetId = whiteSquare.AssetId;
@@ -57,16 +57,16 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            this.AssetManager.SetContentMapping(font.ContentId, "League Mono");
-            this.AssetManager.AddAsset(font);
+            AssetManager.Instance.SetContentMapping(font.ContentId, "League Mono");
+            AssetManager.Instance.AddAsset(font);
 
             var coloredSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            this.AssetManager.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
-            this.AssetManager.AddAsset(coloredSquares);
+            AssetManager.Instance.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
+            AssetManager.Instance.AddAsset(coloredSquares);
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -195,8 +195,8 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            this.AssetManager.SetContentMapping(laser.ContentId, "laser");
-            this.AssetManager.AddAsset(laser);
+            AssetManager.Instance.SetContentMapping(laser.ContentId, "laser");
+            AssetManager.Instance.AddAsset(laser);
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

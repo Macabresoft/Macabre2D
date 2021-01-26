@@ -29,7 +29,7 @@
         private DisplayModes _displayMode = DisplayModes.Windowed;
 
         [DataMember]
-        private Point _resolution = new Point(1920, 1080);
+        private Point _resolution = new(1920, 1080);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphicsSettings" /> class.
@@ -86,8 +86,12 @@
             }
         }
 
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns>A clone of this instance.</returns>
         public GraphicsSettings Clone() {
-            return new GraphicsSettings(this.DisplayMode, this.Resolution);
+            return new(this.DisplayMode, this.Resolution);
         }
     }
 }

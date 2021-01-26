@@ -94,11 +94,6 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-        /// <summary>
-        /// The content file name for <see cref="AssetManager" />.
-        /// </summary>
-        public const string ContentFileName = "AssetManager";
-
         [DataMember]
         private readonly List<IAsset> _assets = new();
 

@@ -13,10 +13,6 @@
         }
 
         public override void Initialize(Window window, Avalonia.Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            if (this.Game.Settings is GameSettings settings) {
-                settings.PixelsPerUnit = 64;
-            }
-
             this.Game.LoadScene(new GameScene());
             this.Game.Scene.AddSystem<RenderSystem>();
             this.Game.Scene.AddSystem<UpdateSystem>();

@@ -1,18 +1,16 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System;
+    using System.ComponentModel;
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
-    using System;
-    using System.ComponentModel;
 
     /// <summary>
     /// The base game class for Macabre2D.
     /// </summary>
     public class BaseGame : Game, IGame {
-
         /// <summary>
         /// The default empty <see cref="IGame" /> that is present before initialization.
         /// </summary>
@@ -20,13 +18,19 @@
 
         protected readonly GraphicsDeviceManager _graphics;
         protected SpriteBatch? _spriteBatch;
-        private static IGame _instance = BaseGame.Empty;
         private IAssetManager _assetManager = new AssetManager();
         private double _gameSpeed = 1d;
-        private GraphicsSettings _graphicsSettings = new GraphicsSettings();
+        private GraphicsSettings _graphicsSettings = new();
+        private IGameProject _project = new GameProject();
         private IGameScene _scene = GameScene.Empty;
         private IGameSettings _settings = new GameSettings();
         private Point _viewportSize;
+
+        /// <inheritdoc />
+        public event EventHandler<double>? GameSpeedChanged;
+
+        /// <inheritdoc />
+        public event EventHandler<Point>? ViewportSizeChanged;
 
         /// <summary>
         /// Initializes the <see cref="BaseGame" /> class.
@@ -37,49 +41,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseGame" /> class.
         /// </summary>
-        public BaseGame() : base() {
+        protected BaseGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            BaseGame.Instance = this;
-        }
-
-        /// <inheritdoc />
-        public event EventHandler<double>? GameSpeedChanged;
-
-        /// <inheritdoc />
-        public event EventHandler<Point>? ViewportSizeChanged;
-
-        /// <summary>
-        /// Gets the singleton instance of <see cref="IGame" /> for the current session.
-        /// </summary>
-        /// <value>The instance.</value>
-        public static IGame Instance {
-            get {
-                return BaseGame._instance;
-            }
-
-            set {
-                if (value != null) {
-                    BaseGame._instance = value;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public IAssetManager AssetManager {
-            get {
-                return this._assetManager;
-            }
-
-            set {
-                if (value != null) {
-                    this._assetManager = value;
-
-                    if (this.Content != null) {
-                        this._assetManager.Initialize(this.Content);
-                    }
-                }
-            }
+            Instance = this;
         }
 
         /// <summary>
@@ -88,17 +53,23 @@
         /// <value>The components.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("This is a function of MonoGame not used by MacabreGame.", true)]
-        public new GameComponentCollection Components {
-            get {
-                return base.Components;
-            }
-        }
+        public new GameComponentCollection Components => base.Components;
+
+        /// <inheritdoc />
+        public virtual bool IsDesignMode => false;
+
+        /// <inheritdoc />
+        public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
+
+        /// <inheritdoc />
+        public SpriteBatch? SpriteBatch => this._spriteBatch;
+
+        /// <inheritdoc />
+        public Point ViewportSize => this._viewportSize;
 
         /// <inheritdoc />
         public double GameSpeed {
-            get {
-                return this._gameSpeed;
-            }
+            get => this._gameSpeed;
 
             set {
                 if (value >= 0f && this._gameSpeed != value) {
@@ -110,9 +81,7 @@
 
         /// <inheritdoc />
         public GraphicsSettings GraphicsSettings {
-            get {
-                return this._graphicsSettings;
-            }
+            get => this._graphicsSettings;
 
             set {
                 this._graphicsSettings = value;
@@ -121,19 +90,31 @@
         }
 
         /// <inheritdoc />
-        public InputState InputState { get; protected set; } = new InputState();
+        public InputState InputState { get; protected set; }
+
+        /// <summary>
+        /// Gets the singleton instance of <see cref="IGame" /> for the current session.
+        /// </summary>
+        /// <value>The instance.</value>
+        public static IGame Instance { get; private set; } = Empty;
 
         /// <inheritdoc />
-        public virtual bool IsDesignMode => false;
+        public IGameProject Project {
+            get => this._project;
 
-        /// <inheritdoc />
-        public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
+            set {
+                this._project = value;
+                this.ApplyGraphicsSettings();
+
+                if (this.Content != null) {
+                    this._project.Assets.Initialize(this.Content);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public IGameScene Scene {
-            get {
-                return this._scene;
-            }
+            get => this._scene;
 
             private set {
                 if (this._scene != value) {
@@ -143,34 +124,6 @@
                         this._scene.Initialize(this);
                     }
                 }
-            }
-        }
-
-        /// <inheritdoc />
-        public IGameSettings Settings {
-            get {
-                return this._settings;
-            }
-
-            set {
-                if (value != null) {
-                    this._settings = value;
-                    GameSettings.Instance = this._settings;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public SpriteBatch? SpriteBatch {
-            get {
-                return this._spriteBatch;
-            }
-        }
-
-        /// <inheritdoc />
-        public Point ViewportSize {
-            get {
-                return this._viewportSize;
             }
         }
 
@@ -188,7 +141,7 @@
 
         /// <inheritdoc />
         public void LoadScene(string sceneName) {
-            if (this.AssetManager.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
+            if (this.Project.Assets.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
             else {
@@ -203,40 +156,13 @@
 
         /// <inheritdoc />
         public void SaveAndApplyGraphicsSettings() {
-            this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
+            this.SaveGraphicsSettings();
             this.ApplyGraphicsSettings();
         }
 
         /// <inheritdoc />
         public void SaveGraphicsSettings() {
             this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
-        }
-
-        /// <summary>
-        /// Applies the graphics settings.
-        /// </summary>
-        protected virtual void ApplyGraphicsSettings() {
-            if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
-                this._graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-                this._graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-                this.Window.IsBorderless = true;
-                this._graphics.IsFullScreen = false;
-            }
-            else {
-                this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
-                this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
-
-                if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
-                    this.Window.IsBorderless = false;
-                    this._graphics.IsFullScreen = true;
-                }
-                else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
-                    this.Window.IsBorderless = false;
-                    this._graphics.IsFullScreen = false;
-                }
-            }
-
-            this._graphics.ApplyChanges();
         }
 
         /// <inheritdoc />
@@ -259,7 +185,7 @@
                 this.GraphicsSettings = graphicsSettings;
             }
             else {
-                this.GraphicsSettings = this.Settings.DefaultGraphicsSettings.Clone();
+                this.GraphicsSettings = this.Project.Settings.DefaultGraphicsSettings.Clone();
             }
 
             this.IsInitialized = true;
@@ -269,18 +195,17 @@
         protected override void LoadContent() {
             base.LoadContent();
             try {
-                this.AssetManager = this.Content.Load<AssetManager>(Framework.AssetManager.ContentFileName);
+                var project = this.Content.Load<GameProject?>(GameProject.ContentFileName);
+                if (project != null) {
+                    this.Project = project;
+                }
             }
             catch (ContentLoadException) {
             }
 
-            this.AssetManager.Initialize(this.Content);
+            this.Project.Initialize(this.Content);
 
-            if (this.AssetManager.TryLoadContent<GameSettings>(GameSettings.ContentFileName, out var gameSettings) && gameSettings != null) {
-                this.Settings = gameSettings;
-            }
-
-            if (this.AssetManager.TryLoadContent<GameScene>(this.Settings.StartupSceneAssetId, out var scene) && scene != null) {
+            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.Settings.StartupSceneAssetId, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
 
@@ -319,8 +244,31 @@
             this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), this.InputState);
         }
 
-        private sealed class EmptyGame : IGame {
+        private void ApplyGraphicsSettings() {
+            if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
+                this._graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                this._graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                this.Window.IsBorderless = true;
+                this._graphics.IsFullScreen = false;
+            }
+            else {
+                this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
+                this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
 
+                if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
+                    this.Window.IsBorderless = false;
+                    this._graphics.IsFullScreen = true;
+                }
+                else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
+                    this.Window.IsBorderless = false;
+                    this._graphics.IsFullScreen = false;
+                }
+            }
+
+            this._graphics.ApplyChanges();
+        }
+
+        private sealed class EmptyGame : IGame {
             /// <inheritdoc />
             public event EventHandler<double>? GameSpeedChanged;
 
@@ -332,28 +280,16 @@
 
             public ContentManager? Content => null;
 
-            /// <inheritdoc />
-            public double GameSpeed {
-                get {
-                    return 1f;
-                }
-
-                set {
-                    this.GameSpeedChanged.SafeInvoke(this, 1f);
-                }
-            }
-
             public GraphicsDevice? GraphicsDevice => null;
 
             /// <inheritdoc />
-            public GraphicsSettings GraphicsSettings { get; } = new GraphicsSettings();
+            public GraphicsSettings GraphicsSettings { get; } = new();
 
             /// <inheritdoc />
-            public bool IsDesignMode {
-                get {
-                    return true;
-                }
-            }
+            public bool IsDesignMode => true;
+
+            /// <inheritdoc />
+            public IGameProject Project => GameProject.Instance;
 
             /// <inheritdoc />
             public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
@@ -362,24 +298,18 @@
             public IGameScene Scene => GameScene.Empty;
 
             /// <inheritdoc />
-            public IGameSettings Settings {
-                get {
-                    return GameSettings.Instance;
-                }
-            }
-
-            /// <inheritdoc />
             public SpriteBatch? SpriteBatch => null;
 
             /// <inheritdoc />
-            public Point ViewportSize {
-                get {
-                    return default;
-                }
+            public double GameSpeed {
+                get => 1f;
+                set => this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
 
-                set {
-                    this.ViewportSizeChanged.SafeInvoke(this, default);
-                }
+            /// <inheritdoc />
+            public Point ViewportSize {
+                get => default;
+                set => this.ViewportSizeChanged.SafeInvoke(this, default);
             }
 
             public void Exit() {
@@ -388,17 +318,18 @@
 
             /// <inheritdoc />
             public void LoadScene(string sceneName) {
-                return;
             }
 
             /// <inheritdoc />
             public void LoadScene(IGameScene scene) {
-                return;
             }
 
             /// <inheritdoc />
             public void SaveAndApplyGraphicsSettings() {
-                return;
+            }
+
+            /// <inheritdoc />
+            public void SaveGraphicsSettings() {
             }
         }
     }
