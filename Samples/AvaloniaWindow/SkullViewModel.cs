@@ -30,7 +30,7 @@
         }
 
         public override void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            GameSettings.Instance.PixelsPerUnit = 32;
+            this.Game.Project.Settings.PixelsPerUnit = 32;
 
             var scene = new GameScene();
             scene.AddSystem<RenderSystem>();
@@ -44,8 +44,8 @@
             gridComponent.RenderOrder = -1;
 
             var skull = new SpriteSheet();
-            AssetManager.Instance.SetContentMapping(skull.ContentId, "skull");
-            AssetManager.Instance.AddAsset(skull);
+            this.Game.Project.Assets.SetContentMapping(skull.ContentId, "skull");
+            this.Game.Project.Assets.AddAsset(skull);
 
             var skullEntity = scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
@@ -55,8 +55,8 @@
             skullEntity.AddComponent<SampleInputComponent>();
 
             var leageMono = new Font();
-            AssetManager.Instance.SetContentMapping(leageMono.ContentId, "League Mono");
-            AssetManager.Instance.AddAsset(leageMono);
+            this.Game.Project.Assets.SetContentMapping(leageMono.ContentId, "League Mono");
+            this.Game.Project.Assets.AddAsset(leageMono);
 
             var textRenderEntity = scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();

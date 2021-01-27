@@ -199,10 +199,11 @@
             var result = Vector2.One;
 
             if (this._gridComponent != null) {
+                var inversePixelsPerUnit = this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 result = this._gridComponent.WorldGrid.TileSize;
                 if (spriteSize.X != 0 && spriteSize.Y != 0) {
-                    var spriteWidth = spriteSize.X * GameSettings.Instance.InversePixelsPerUnit;
-                    var spriteHeight = spriteSize.Y * GameSettings.Instance.InversePixelsPerUnit;
+                    var spriteWidth = spriteSize.X * inversePixelsPerUnit;
+                    var spriteHeight = spriteSize.Y * inversePixelsPerUnit;
                     result = new Vector2(result.X / spriteWidth, result.Y / spriteHeight);
                 }
             }

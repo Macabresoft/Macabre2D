@@ -9,9 +9,10 @@
         /// <param name="staticLineThickness">The line thickness before being scaled to the view height.</param>
         /// <param name="viewHeight">Height of the view.</param>
         /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="settings">The settings.</param>
         /// <returns>The appropriate line thickness for this drawer.</returns>
-        public static float GetDynamicLineThickness(float staticLineThickness, float viewHeight, GraphicsDevice graphicsDevice) {
-            return staticLineThickness * GameSettings.Instance.GetPixelAgnosticRatio(viewHeight, graphicsDevice.Viewport.Height);
+        public static float GetDynamicLineThickness(float staticLineThickness, float viewHeight, GraphicsDevice graphicsDevice, IGameSettings settings) {
+            return staticLineThickness * settings.GetPixelAgnosticRatio(viewHeight, graphicsDevice.Viewport.Height);
         }
     }
 }

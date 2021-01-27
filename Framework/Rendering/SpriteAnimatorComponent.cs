@@ -90,7 +90,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<SpriteAnimation, Texture2D>(this.AnimationReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<SpriteAnimation, Texture2D>(this.AnimationReference);
 
             this._millisecondsPerFrame = 1000u / this._frameRate;
             if (this.AnimationReference.Asset is SpriteAnimation animation) {

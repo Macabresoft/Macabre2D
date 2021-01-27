@@ -11,8 +11,8 @@
         }
 
         protected override void LoadContent() {
-            this.Project.Initialize(this.Content);
-            GameSettings.Instance.PixelsPerUnit = 64;
+            this.Project.Assets.Initialize(this.Content);
+            this.Project.Settings.PixelsPerUnit = 64;
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             var scene = new GameScene();
@@ -29,8 +29,8 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            AssetManager.Instance.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
-            AssetManager.Instance.AddAsset(whiteSquare);
+            this.Project.Assets.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
+            this.Project.Assets.AddAsset(whiteSquare);
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.AssetId = whiteSquare.AssetId;
@@ -38,7 +38,7 @@
 
             var binaryTileMapEntity = scene.AddChild();
             var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
-            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * GameSettings.Instance.InversePixelsPerUnit);
+            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * this.Project.Settings.InversePixelsPerUnit);
             var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
@@ -57,16 +57,16 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            AssetManager.Instance.SetContentMapping(font.ContentId, "League Mono");
-            AssetManager.Instance.AddAsset(font);
+            this.Project.Assets.SetContentMapping(font.ContentId, "League Mono");
+            this.Project.Assets.AddAsset(font);
 
             var coloredSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            AssetManager.Instance.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
-            AssetManager.Instance.AddAsset(coloredSquares);
+            this.Project.Assets.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
+            this.Project.Assets.AddAsset(coloredSquares);
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -195,8 +195,8 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            AssetManager.Instance.SetContentMapping(laser.ContentId, "laser");
-            AssetManager.Instance.AddAsset(laser);
+            this.Project.Assets.SetContentMapping(laser.ContentId, "laser");
+            this.Project.Assets.AddAsset(laser);
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

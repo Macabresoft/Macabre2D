@@ -1,13 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
@@ -22,12 +20,6 @@
         private float _rotation;
         private bool _snapToPixels;
         private string _text = string.Empty;
-        
-        /// <summary>
-        /// Gets the font reference.
-        /// </summary>
-        [DataMember(Order = 0)]
-        public AssetReference<Font> FontReference { get; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextRenderComponent" /> class.
@@ -39,11 +31,13 @@
         }
 
         /// <inheritdoc />
-        public override BoundingArea BoundingArea {
-            get {
-                return this._boundingArea.Value;
-            }
-        }
+        public override BoundingArea BoundingArea => this._boundingArea.Value;
+
+        /// <summary>
+        /// Gets the font reference.
+        /// </summary>
+        [DataMember(Order = 0)]
+        public AssetReference<Font> FontReference { get; } = new();
 
         /// <summary>
         /// Gets or sets the color.
@@ -51,28 +45,22 @@
         /// <value>The color.</value>
         [DataMember(Order = 1)]
         public Color Color {
-            get {
-                return this._color;
-            }
+            get => this._color;
 
-            set {
-                this.Set(ref this._color, value);
-            }
+            set => this.Set(ref this._color, value);
         }
-        
+
         /// <summary>
         /// Gets the render settings.
         /// </summary>
         /// <value>The render settings.</value>
         [DataMember(Order = 4, Name = "Render Settings")]
-        public RenderSettings RenderSettings { get; private set; } = new RenderSettings();
+        public RenderSettings RenderSettings { get; private set; } = new();
 
         /// <inheritdoc />
         [DataMember(Order = 5)]
         public float Rotation {
-            get {
-                return this._snapToPixels ? 0f : this._rotation;
-            }
+            get => this._snapToPixels ? 0f : this._rotation;
 
             set {
                 if (this.Set(ref this._rotation, value.NormalizeAngle()) && !this._snapToPixels) {
@@ -90,9 +78,7 @@
         /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
         [DataMember(Order = 3)]
         public bool SnapToPixels {
-            get {
-                return this._snapToPixels;
-            }
+            get => this._snapToPixels;
 
             set {
                 if (this.Set(ref this._snapToPixels, value)) {
@@ -114,9 +100,7 @@
         /// <value>The text.</value>
         [DataMember(Order = 2)]
         public string Text {
-            get {
-                return this._text;
-            }
+            get => this._text;
 
             set {
                 if (this.Set(ref this._text, value)) {
@@ -129,7 +113,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<Font, SpriteFont>(this.FontReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<Font, SpriteFont>(this.FontReference);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
@@ -138,14 +122,15 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is Font font && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 spriteBatch.Draw(
-                    font, 
-                    this.Text, 
-                    this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value, 
-                    this.Color, 
+                    this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
+                    font,
+                    this.Text,
+                    this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value,
+                    this.Color,
                     this.RenderSettings.Orientation);
             }
         }
-        
+
         /// <inheritdoc />
         protected override void OnEntityPropertyChanged(PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.Transform)) {
@@ -156,10 +141,11 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.Entity.LocalScale.X != 0f && this.Entity.LocalScale.Y != 0f) {
+                var inversePixelsPerUnit = this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var (x, y) = this.RenderSettings.Size;
-                var width = x * GameSettings.Instance.InversePixelsPerUnit;
-                var height = y * GameSettings.Instance.InversePixelsPerUnit;
-                var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
+                var width = x * inversePixelsPerUnit;
+                var height = y * inversePixelsPerUnit;
+                var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
                 var points = new List<Vector2> {
                     this.Entity.GetWorldTransform(offset, this.Rotation).Position,
                     this.Entity.GetWorldTransform(offset + new Vector2(width, 0f), this.Rotation).Position,
@@ -173,10 +159,10 @@
                 var maximumY = points.Max(point => point.Y);
 
                 if (this.SnapToPixels) {
-                    minimumX = minimumX.ToPixelSnappedValue();
-                    minimumY = minimumY.ToPixelSnappedValue();
-                    maximumX = maximumX.ToPixelSnappedValue();
-                    maximumY = maximumY.ToPixelSnappedValue();
+                    minimumX = minimumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    minimumY = minimumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    maximumX = maximumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    maximumY = maximumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
                 }
 
                 result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -189,12 +175,12 @@
         }
 
         private Transform CreatePixelTransform() {
-            var worldTransform = this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit);
-            return worldTransform.ToPixelSnappedValue();
+            var worldTransform = this.Entity.GetWorldTransform(this.RenderSettings.Offset * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit);
+            return worldTransform.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
         }
 
         private Transform CreateRotatableTransform() {
-            return this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation);
+            return this.Entity.GetWorldTransform(this.RenderSettings.Offset * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
         }
 
         private Vector2 CreateSize() {

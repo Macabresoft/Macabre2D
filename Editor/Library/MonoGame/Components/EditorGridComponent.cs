@@ -70,19 +70,21 @@
 
         private void DrawGrid(SpriteBatch spriteBatch, BoundingArea boundingArea, float gridSize, float lineThickness, float alpha) {
             if (this.PrimitiveDrawer != null) {
-                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
                 var verticalShadowOffset = new Vector2(0f, shadowOffset);
                 var color = this.Color * alpha;
                 
                 var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
+                var pixelsPerUnit = this.Entity.Scene.Game.Project.Settings.PixelsPerUnit;
                 foreach (var column in columns) {
                     var minimum = new Vector2(column, boundingArea.Minimum.Y);
                     var maximum = new Vector2(column, boundingArea.Maximum.Y);
                     
                     if (column == 0f) {
                         this.PrimitiveDrawer.DrawLine(
-                            spriteBatch, 
+                            spriteBatch,
+                            pixelsPerUnit,
                             minimum + horizontalShadowOffset,
                             maximum + horizontalShadowOffset,
                             this._editorService.DropShadowColor,
@@ -90,6 +92,7 @@
                         
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
+                            pixelsPerUnit,
                             minimum,
                             maximum,
                             this._editorService.YAxisColor,
@@ -98,6 +101,7 @@
                     else {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
+                            pixelsPerUnit,
                             minimum,
                             maximum,
                             color,
@@ -111,7 +115,9 @@
                     var maximum = new Vector2(boundingArea.Maximum.X, row);
                     
                     if (row == 0f) {
-                        this.PrimitiveDrawer.DrawLine(spriteBatch, 
+                        this.PrimitiveDrawer.DrawLine(
+                            spriteBatch,
+                            pixelsPerUnit,
                             minimum + verticalShadowOffset, 
                             maximum + verticalShadowOffset, 
                             this._editorService.DropShadowColor, 
@@ -119,6 +125,7 @@
                         
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
+                            pixelsPerUnit,
                             minimum,
                             maximum,
                             this._editorService.XAxisColor,
@@ -127,6 +134,7 @@
                     else {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
+                            pixelsPerUnit,
                             minimum,
                             maximum,
                             color,

@@ -54,7 +54,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
             this.ResetSpriteScale();
         }
 
@@ -63,6 +63,7 @@
             if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheet spriteSheet && this._activeTiles.Any()) {
                 foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
                     spriteBatch.Draw(
+                        this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
                         spriteSheet,
                         this.SpriteReference.SpriteIndex,
                         boundingArea.Minimum,
@@ -124,7 +125,7 @@
             }
         }
 
-        private void SpriteReference_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
                 this.ResetBoundingAreas();
             }

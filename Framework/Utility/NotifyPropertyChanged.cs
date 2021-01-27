@@ -35,7 +35,7 @@
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="args">The arguments.</param>
-        public void RaisePropertyChanged(object sender, PropertyChangedEventArgs args) {
+        public void RaisePropertyChanged(object? sender, PropertyChangedEventArgs args) {
             this.PropertyChanged?.Invoke(sender, args);
         }
 

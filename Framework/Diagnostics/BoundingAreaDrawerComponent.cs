@@ -32,8 +32,13 @@
                     var maximum = boundingArea.Maximum;
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
-                    var points = new Vector2[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, points);
+                    var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
+                    this.PrimitiveDrawer.DrawPolygon(
+                        spriteBatch, 
+                        this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, 
+                        this.Color, 
+                        lineThickness,
+                        points);
                 }
             }
         }

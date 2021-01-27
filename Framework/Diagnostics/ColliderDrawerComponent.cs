@@ -34,13 +34,31 @@
 
                     foreach (var collider in colliders) {
                         if (collider is CircleCollider circle) {
-                            this.PrimitiveDrawer.DrawCircle(spriteBatch, circle.ScaledRadius, circle.Center, 50, this.Color, lineThickness);
+                            this.PrimitiveDrawer.DrawCircle(
+                                spriteBatch,
+                                this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
+                                circle.ScaledRadius,
+                                circle.Center,
+                                50, 
+                                this.Color,
+                                lineThickness);
                         }
                         else if (collider is LineCollider line) {
-                            this.PrimitiveDrawer.DrawLine(spriteBatch, line.WorldPoints.First(), line.WorldPoints.Last(), this.Color, lineThickness);
+                            this.PrimitiveDrawer.DrawLine(
+                                spriteBatch, 
+                                this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
+                                line.WorldPoints.First(), 
+                                line.WorldPoints.Last(), 
+                                this.Color, 
+                                lineThickness);
                         }
                         else if (collider is PolygonCollider polygon) {
-                            this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, polygon.WorldPoints);
+                            this.PrimitiveDrawer.DrawPolygon(
+                                spriteBatch, 
+                                this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, 
+                                this.Color, 
+                                lineThickness, 
+                                polygon.WorldPoints);
                         }
                     }
                 }

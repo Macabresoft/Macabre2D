@@ -162,7 +162,7 @@
 
         /// <inheritdoc />
         public void SaveGraphicsSettings() {
-            this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.GraphicsSettings);
+            this.SaveDataManager.Save(GraphicsSettings.SettingsFileName, this.Project.Name, this.GraphicsSettings);
         }
 
         /// <inheritdoc />
@@ -181,7 +181,7 @@
             this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.Scene?.Initialize(this);
 
-            if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, out var graphicsSettings) && graphicsSettings != null) {
+            if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
                 this.GraphicsSettings = graphicsSettings;
             }
             else {
@@ -203,7 +203,7 @@
             catch (ContentLoadException) {
             }
 
-            this.Project.Initialize(this.Content);
+            this.Project.Assets.Initialize(this.Content);
 
             if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.Settings.StartupSceneAssetId, out var scene) && scene != null) {
                 this.LoadScene(scene);
@@ -276,10 +276,9 @@
             public event EventHandler<Point>? ViewportSizeChanged;
 
             /// <inheritdoc />
-            public IAssetManager AssetManager { get; } = new AssetManager();
-
             public ContentManager? Content => null;
 
+            /// <inheritdoc />
             public GraphicsDevice? GraphicsDevice => null;
 
             /// <inheritdoc />
@@ -289,7 +288,7 @@
             public bool IsDesignMode => true;
 
             /// <inheritdoc />
-            public IGameProject Project => GameProject.Instance;
+            public IGameProject Project { get; } = new GameProject();
 
             /// <inheritdoc />
             public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();

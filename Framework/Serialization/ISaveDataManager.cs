@@ -9,7 +9,7 @@
         /// Deletes the specified save data.
         /// </summary>
         /// <param name="fileName">Name of the file.</param>
-        void Delete(string fileName);
+        void Delete(string fileName, string projectName);
 
         /// <summary>
         /// Gets the path to the data directory.
@@ -23,16 +23,16 @@
         /// <typeparam name="T">Versioned data.</typeparam>
         /// <param name="fileName">Name of the file.</param>
         /// <param name="saveData">The save data.</param>
-        void Save<T>(string fileName, T saveData) where T : IVersionedData;
+        void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData;
 
         /// <summary>
         /// Tries to load the specified data.
         /// </summary>
         /// <typeparam name="T">The type of data.</typeparam>
         /// <param name="fileName">Name of the file.</param>
-        /// <param name="loadedData">The loaded data.</param>
+        /// <param name="data">The loaded data.</param>
         /// <returns>A value indicating whether or not the data was found.</returns>
-        bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData;
+        bool TryLoad<T>(string fileName, string projectName, out T? data) where T : class, IVersionedData;
     }
 
     /// <summary>

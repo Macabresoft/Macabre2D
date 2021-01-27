@@ -108,6 +108,7 @@
             if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteSheet is SpriteSheet spriteSheet) {
                 spriteSheet.Draw(
                     spriteBatch,
+                    this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit,
                     this.SpriteIndex,
                     this.GetRenderTransform(),
                     this.Color,
@@ -138,9 +139,10 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.SpriteSheet is SpriteSheet spriteSheet) {
-                var width = spriteSheet.SpriteSize.X * GameSettings.Instance.InversePixelsPerUnit;
-                var height = spriteSheet.SpriteSize.Y * GameSettings.Instance.InversePixelsPerUnit;
-                var offset = this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit;
+                var inversePixelsPerUnit = this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
+                var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
+                var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
+                var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
 
                 var points = new List<Vector2> {
                     this.Entity.GetWorldTransform(offset, this.Rotation).Position,
@@ -155,10 +157,10 @@
                 var maximumY = points.Max(x => x.Y);
 
                 if (this.SnapToPixels) {
-                    minimumX = minimumX.ToPixelSnappedValue();
-                    minimumY = minimumY.ToPixelSnappedValue();
-                    maximumX = maximumX.ToPixelSnappedValue();
-                    maximumY = maximumY.ToPixelSnappedValue();
+                    minimumX = minimumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    minimumY = minimumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    maximumX = maximumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                    maximumY = maximumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
                 }
 
                 result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -171,12 +173,14 @@
         }
 
         private Transform CreatePixelTransform() {
-            var worldTransform = this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit).ToPixelSnappedValue();
+            var worldTransform = this.Entity
+                .GetWorldTransform(this.RenderSettings.Offset * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit)
+                .ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
             return worldTransform;
         }
 
         private Transform CreateRotatableTransform() {
-            return this.Entity.GetWorldTransform(this.RenderSettings.Offset * GameSettings.Instance.InversePixelsPerUnit, this.Rotation);
+            return this.Entity.GetWorldTransform(this.RenderSettings.Offset * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
         }
 
         private Vector2 CreateSize() {

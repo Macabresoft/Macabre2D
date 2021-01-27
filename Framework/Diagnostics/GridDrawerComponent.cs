@@ -61,6 +61,7 @@
                 foreach (var column in columns) {
                     this.PrimitiveDrawer.DrawLine(
                         spriteBatch,
+                        this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
                         new Vector2(column, viewBoundingArea.Minimum.Y),
                         new Vector2(column, viewBoundingArea.Maximum.Y),
                         this.Color,
@@ -71,6 +72,7 @@
                 foreach (var row in rows) {
                     this.PrimitiveDrawer.DrawLine(
                         spriteBatch,
+                        this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
                         new Vector2(viewBoundingArea.Minimum.X, row),
                         new Vector2(viewBoundingArea.Maximum.X, row),
                         this.Color,

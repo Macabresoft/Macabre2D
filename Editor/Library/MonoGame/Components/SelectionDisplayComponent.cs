@@ -46,9 +46,10 @@
                 return;
             }
 
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                var settings = this.Entity.Scene.Game.Project.Settings;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
 
                 if (!this.BoundingArea.IsEmpty) {
                     var minimum = this.BoundingArea.Minimum;
@@ -59,8 +60,8 @@
                     var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
                     var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
 
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, this._editorService.DropShadowColor, lineThickness, shadowPoints);
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, this.Color, lineThickness, points);
+                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadowPoints);
+                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this.Color, lineThickness, points);
                 }
 
                 if (this._selectionService.SelectedEntity != null && this._editorService.SelectedGizmo == GizmoKind.Selector) {
@@ -73,12 +74,25 @@
                     var bottom = new Vector2(position.X, position.Y - crosshairLength);
 
                     var verticalShadowOffset = new Vector2(0f, shadowOffset);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, left + verticalShadowOffset, right + verticalShadowOffset, this._editorService.DropShadowColor, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch, 
+                        settings.PixelsPerUnit, 
+                        left + verticalShadowOffset,
+                        right + verticalShadowOffset, 
+                        this._editorService.DropShadowColor,
+                        lineThickness);
+                    
                     var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, top + horizontalShadowOffset, bottom + horizontalShadowOffset, this._editorService.DropShadowColor, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(
+                        spriteBatch, 
+                        settings.PixelsPerUnit, 
+                        top + horizontalShadowOffset, 
+                        bottom + horizontalShadowOffset, 
+                        this._editorService.DropShadowColor,
+                        lineThickness);
 
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, left, right, this.Color, lineThickness);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, top, bottom, this.Color, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this.Color, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this.Color, lineThickness);
                 }
             }
         }

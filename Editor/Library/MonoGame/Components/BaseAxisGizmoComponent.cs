@@ -106,12 +106,13 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * GameSettings.Instance.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
+                var pixelsPerUnit = this.Entity.Scene.Game.Project.Settings.PixelsPerUnit;
+                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
             }
         }
 
@@ -140,8 +141,8 @@
         protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
             var result = GizmoAxis.None;
 
-            var viewRatio = GameSettings.Instance.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
-            var radius = viewRatio * GizmoPointSize * GameSettings.Instance.InversePixelsPerUnit * 0.5f;
+            var viewRatio = this.Entity.Scene.Game.Project.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
+            var radius = viewRatio * GizmoPointSize * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit * 0.5f;
             if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
                 result = GizmoAxis.X;
             }
@@ -192,7 +193,6 @@
         /// <summary>
         /// Resets the end points for each axis of the gizmo.
         /// </summary>
-        /// <param name="transformable">The transformable this gizmo is attached to.</param>
         protected void ResetEndPoints() {
             var transformable = this.SelectionService.SelectedEntity;
             if (transformable != null) {

@@ -6,7 +6,7 @@
     internal class EmptySaveDataManager : ISaveDataManager {
 
         /// <inheritdoc />
-        public void Delete(string fileName) {
+        public void Delete(string fileName, string projectName) {
             return;
         }
 
@@ -16,12 +16,12 @@
         }
 
         /// <inheritdoc />
-        public void Save<T>(string fileName, T saveData) where T : IVersionedData {
+        public void Save<T>(string fileName, string projectName, T saveData) where T : IVersionedData {
             return;
         }
 
         /// <inheritdoc />
-        public bool TryLoad<T>(string fileName, out T? data) where T : class, IVersionedData {
+        public bool TryLoad<T>(string fileName, string projectName, out T? data) where T : class, IVersionedData {
             data = default;
             return false;
         }

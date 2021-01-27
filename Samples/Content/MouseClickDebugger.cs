@@ -2,6 +2,7 @@
 
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     public sealed class MouseClickDebugger : BaseDrawerComponent, IGameUpdateableComponent {
         private CameraComponent _camera;
@@ -20,7 +21,16 @@
         }
 
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            this.PrimitiveDrawer?.DrawCircle(this.Entity.Scene.Game.SpriteBatch, 1f, this.Entity.Transform.Position, 50, this.Color, 3f);
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                this.PrimitiveDrawer?.DrawCircle(
+                    spriteBatch, 
+                    this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, 
+                    1f, 
+                    this.Entity.Transform.Position, 
+                    50, 
+                    this.Color, 
+                    3f);
+            }
         }
 
         public void Update(FrameTime frameTime, InputState inputState) {

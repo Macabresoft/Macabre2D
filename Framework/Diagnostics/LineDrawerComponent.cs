@@ -53,7 +53,7 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, this.StartPoint, this.EndPoint, this.Color, lineThickness);
+                this.PrimitiveDrawer.DrawLine(spriteBatch, this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, this.StartPoint, this.EndPoint, this.Color, lineThickness);
             }
         }
     }

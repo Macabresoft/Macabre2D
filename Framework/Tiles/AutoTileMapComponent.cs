@@ -69,6 +69,7 @@
                     if (boundingArea.Overlaps(viewBoundingArea)) {
                         var spriteIndex = tileSet.GetSpriteIndex(tileIndex);
                         spriteBatch.Draw(
+                            this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
                             spriteSheet,
                             spriteIndex,
                             boundingArea.Minimum,

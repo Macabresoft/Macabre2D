@@ -114,7 +114,7 @@
 
                 foreach (var collider in body.GetColliders()) {
                     var potentials = this.ColliderTree.RetrievePotentialCollisions(collider);
-                    foreach (var otherCollider in potentials.Where(c => c != collider && GameSettings.Instance.Layers.GetShouldCollide(c.Layers, collider.Layers))) {
+                    foreach (var otherCollider in potentials.Where(c => c != collider && this.Scene.Game.Project.Settings.Layers.GetShouldCollide(c.Layers, collider.Layers))) {
                         if (otherCollider.Body != null) {
                             var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
                                 collisions.Contains(body.Id);

@@ -1,11 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework {
-
-    using Macabresoft.Macabre2D.Framework;
-    using NUnit.Framework;
     using System;
-    using System.IO;
     using System.Runtime.Serialization;
     using System.Threading;
+    using FluentAssertions;
+    using FluentAssertions.Execution;
+    using Macabresoft.Macabre2D.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public static class WindowsSaveDataManagerTests {
@@ -16,91 +16,89 @@
         [Category("Integration Tests")]
         public static void WindowsSaveDataManager_DeleteTest() {
             var saveDataManager = new WindowsSaveDataManager();
-            ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
-            saveDataManager.Save(SaveDataFileName, new TestSaveData());
+            saveDataManager.Save(SaveDataFileName, ProjectName, new TestSaveData());
 
-            Assert.NotNull(saveDataManager.Load<TestSaveData>(SaveDataFileName));
-            saveDataManager.Delete(SaveDataFileName);
+            var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
 
-            var hadException = false;
-            try {
-                saveDataManager.Load<TestSaveData>(SaveDataFileName);
+            using (new AssertionScope()) {
+                found.Should().BeTrue();
+                loadedData.Should().NotBeNull();
+                saveDataManager.Delete(SaveDataFileName, ProjectName);
+
+                found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out loadedData);
+                found.Should().BeFalse();
+                loadedData.Should().BeNull();
             }
-            catch (FileNotFoundException) {
-                hadException = true;
-            }
-
-            Assert.True(hadException);
         }
 
         [Test]
         [Category("Integration Tests")]
         public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
             var saveDataManager = new WindowsSaveDataManager();
-            ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
-            saveDataManager.Delete(SaveDataFileName);
+            saveDataManager.Delete(SaveDataFileName, ProjectName);
 
-            var hadException = false;
-            try {
-                saveDataManager.Load<TestSaveData>(SaveDataFileName);
-            }
-            catch (FileNotFoundException) {
-                hadException = true;
-            }
+            var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
 
-            Assert.True(hadException);
+            using (new AssertionScope()) {
+                found.Should().BeFalse();
+                loadedData.Should().BeNull();
+            }
         }
 
         [Test]
         [Category("Integration Tests")]
         public static void WindowsSaveDataManager_OverwriteSaveTest() {
             var saveDataManager = new WindowsSaveDataManager();
-            ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();
-            saveDataManager.Save(SaveDataFileName, saveData1);
+            saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
 
-            var loadedData1 = saveDataManager.Load<TestSaveData>(SaveDataFileName);
-            Assert.AreEqual(saveData1.Id, loadedData1.Id);
-            Assert.AreEqual(saveData1.RandomNumber, loadedData1.RandomNumber);
+            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData1);
+            if (loadedData1 != null) {
+                using (new AssertionScope()) {
+                    loadedData1.Id.Should().Be(saveData1.Id);
+                    loadedData1.RandomNumber.Should().Be(saveData1.RandomNumber);
 
-            Thread.Sleep(100);
+                    Thread.Sleep(100);
 
-            var saveData2 = new TestSaveData();
-            Assert.AreNotEqual(saveData1.Id, saveData2.Id);
-            Assert.AreNotEqual(saveData1.RandomNumber, saveData2.RandomNumber);
-            saveDataManager.Save(SaveDataFileName, saveData2);
+                    var saveData2 = new TestSaveData();
+                    saveDataManager.Save(SaveDataFileName, ProjectName, saveData2);
 
-            var loadedData2 = saveDataManager.Load<TestSaveData>(SaveDataFileName);
-            Assert.AreNotEqual(loadedData1.Id, loadedData2.Id);
-            Assert.AreNotEqual(loadedData1.RandomNumber, loadedData2.RandomNumber);
+                    saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData2);
+                    loadedData2?.Id.Should().Be(loadedData1.Id);
+                    loadedData2?.RandomNumber.Should().Be(loadedData1.RandomNumber);
+                }
+            }
+            else {
+                throw new NullReferenceException(nameof(loadedData1));
+            }
 
-            saveDataManager.Delete(SaveDataFileName);
+            saveDataManager.Delete(SaveDataFileName, ProjectName);
         }
 
         [Test]
         [Category("Integration Tests")]
         public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
             var saveDataManager = new WindowsSaveDataManager();
-            ((GameSettings)GameSettings.Instance).ProjectName = ProjectName;
 
             var saveData1 = new TestSaveData();
-            saveDataManager.Save(SaveDataFileName, saveData1);
+            saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
 
-            var loadedData = saveDataManager.Load<TestSaveData>(SaveDataFileName);
-            Assert.AreEqual(saveData1.Id, loadedData.Id);
-            Assert.AreEqual(saveData1.RandomNumber, loadedData.RandomNumber);
+            using (new AssertionScope()) {
+                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+                loadedData?.Id.Should().Be(saveData1.Id);
+                loadedData?.RandomNumber.Should().Be(saveData1.RandomNumber);
 
-            var versionedLoadedData = saveDataManager.Load<VersionedData>(SaveDataFileName);
-            Assert.AreEqual(loadedData.TypeName, versionedLoadedData.TypeName);
-            Assert.AreNotEqual(loadedData.GetType(), versionedLoadedData.GetType());
+                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out VersionedData versionedLoadedData);
+                loadedData?.TypeName.Should().Be(versionedLoadedData?.TypeName);
+                loadedData?.GetType().Should().Be(versionedLoadedData?.GetType());
+            }
 
-            saveDataManager.Delete(SaveDataFileName);
+            saveDataManager.Delete(SaveDataFileName, ProjectName);
         }
 
         [DataContract]
         private sealed class TestSaveData : VersionedData {
-
             public TestSaveData() : base() {
                 var rand = new Random();
                 this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);

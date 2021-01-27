@@ -111,12 +111,13 @@
 
         /// <inheritdoc />
         public Matrix GetViewMatrix() {
-            var pixelsPerUnit = GameSettings.Instance.PixelsPerUnit;
-            var zoom = 1f / GameSettings.Instance.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
+            var settings = this.Entity.Scene.Game.Project.Settings;
+            var pixelsPerUnit = settings.PixelsPerUnit;
+            var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
             var worldTransform = this.Entity.Transform;
 
             return
-                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue() * pixelsPerUnit, 0f)) *
+                Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings) * pixelsPerUnit, 0f)) *
                 Matrix.CreateScale(zoom, -zoom, 0f) *
                 Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
         }
@@ -149,7 +150,7 @@
             this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
             this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
 
-            AssetManager.Instance.ResolveAsset<Shader, Effect>(this._shaderReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<Shader, Effect>(this._shaderReference);
         }
 
         /// <inheritdoc />
@@ -244,10 +245,10 @@
             var maximumY = points.Max(x => x.Y);
 
             if (this.SnapToPixels) {
-                minimumX = minimumX.ToPixelSnappedValue();
-                minimumY = minimumY.ToPixelSnappedValue();
-                maximumX = maximumX.ToPixelSnappedValue();
-                maximumY = maximumY.ToPixelSnappedValue();
+                minimumX = minimumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                minimumY = minimumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                maximumX = maximumX.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
+                maximumY = maximumY.ToPixelSnappedValue(this.Entity.Scene.Game.Project.Settings);
             }
 
             return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));

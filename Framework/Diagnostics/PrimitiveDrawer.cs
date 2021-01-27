@@ -230,12 +230,13 @@
         /// Draws the circle.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="radius">The radius.</param>
         /// <param name="center">The center.</param>
         /// <param name="complexity">The complexity.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
-        public void DrawCircle(SpriteBatch spriteBatch, float radius, Vector2 center, int complexity, Color color, float thickness) {
+        public void DrawCircle(SpriteBatch spriteBatch, ushort pixelsPerUnit, float radius, Vector2 center, int complexity, Color color, float thickness) {
             var points = new Vector2[complexity];
             var step = MathHelper.TwoPi / complexity;
             var theta = 0f;
@@ -247,28 +248,29 @@
                 theta += step;
             }
 
-            this.DrawPolygon(spriteBatch, color, thickness, points);
+            this.DrawPolygon(spriteBatch, pixelsPerUnit, color, thickness, points);
         }
 
         /// <summary>
         /// Draws a line given two points.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="point1">The point1.</param>
         /// <param name="point2">The point2.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
-        public void DrawLine(SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness) {
+        public void DrawLine(SpriteBatch spriteBatch, ushort pixelsPerUnit, Vector2 point1, Vector2 point2, Color color, float thickness) {
             var length = Vector2.Distance(point1, point2);
             var angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
             spriteBatch.Draw(
                 this._pixel,
-                point1 * GameSettings.Instance.PixelsPerUnit,
+                point1 * pixelsPerUnit,
                 null,
                 color,
                 angle,
                 Vector2.Zero,
-                new Vector2(length * GameSettings.Instance.PixelsPerUnit, thickness),
+                new Vector2(length * pixelsPerUnit, thickness),
                 SpriteEffects.None,
                 0);
         }
@@ -277,19 +279,20 @@
         /// Draws a line strip given a series of points.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
         /// <param name="points">The points.</param>
         /// <exception cref="NotSupportedException">
         /// A line strip must contain at least two points.
         /// </exception>
-        public void DrawLineStrip(SpriteBatch spriteBatch, Color color, float thickness, params Vector2[] points) {
+        public void DrawLineStrip(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, params Vector2[] points) {
             if (points.Length < 2) {
                 throw new NotSupportedException("A line strip must contain at least two points.");
             }
 
             for (var i = 1; i < points.Length; i++) {
-                this.DrawLine(spriteBatch, points[i - 1], points[i], color, thickness);
+                this.DrawLine(spriteBatch, pixelsPerUnit, points[i - 1], points[i], color, thickness);
             }
         }
 
@@ -297,10 +300,11 @@
         /// Draws a polygon given a series of points. The first and last point will connect.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
         /// <param name="points">The points.</param>
-        public void DrawPolygon(SpriteBatch spriteBatch, Color color, float thickness, IEnumerable<Vector2> points) {
+        public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, IEnumerable<Vector2> points) {
             if (points.Count() < 3) {
                 throw new NotSupportedException("A polygon must contain at least three points.");
             }
@@ -308,7 +312,7 @@
             var previousPoint = points.LastOrDefault();
 
             foreach (var point in points) {
-                this.DrawLine(spriteBatch, previousPoint, point, color, thickness);
+                this.DrawLine(spriteBatch, pixelsPerUnit, previousPoint, point, color, thickness);
                 previousPoint = point;
             }
         }

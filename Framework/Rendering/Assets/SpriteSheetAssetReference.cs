@@ -43,7 +43,7 @@
             }
         }
 
-        private void SpriteSheet_OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void SpriteSheet_OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             this.RaisePropertyChanged(sender, e);
         }
     }

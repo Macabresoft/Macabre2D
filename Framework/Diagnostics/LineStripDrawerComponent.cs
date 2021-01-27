@@ -49,7 +49,7 @@
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this._points.Any()) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Color, lineThickness, this.Points.ToArray());
+                this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, this.Color, lineThickness, this.Points.ToArray());
             }
         }
 

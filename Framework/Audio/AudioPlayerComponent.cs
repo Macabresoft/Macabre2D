@@ -95,7 +95,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            AssetManager.Instance.ResolveAsset<AudioClip, SoundEffect>(this.AudioClipReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<AudioClip, SoundEffect>(this.AudioClipReference);
 
             if (this._shouldLoop && this.Entity.IsEnabled) {
                 this.Play();

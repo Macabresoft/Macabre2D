@@ -102,11 +102,6 @@
 
         private ContentManager? _contentManager;
 
-        /// <summary>
-        /// Gets the singleton instance of an asset manager.
-        /// </summary>
-        public static IAssetManager Instance { get; set; } = new AssetManager();
-
         /// <inheritdoc />
         public void AddAsset(IAsset asset) {
             if (this._assets.All(x => x.AssetId != asset.AssetId)) {
@@ -127,7 +122,6 @@
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
-            Instance = this;
 
             foreach (var package in this._assets.OfType<IAssetPackage>()) {
                 package.Initialize();
@@ -207,7 +201,7 @@
                 try {
                     loaded = this._contentManager.Load<T?>(path);
                 }
-                catch(Exception e) {
+                catch(Exception) {
                     loaded = null;
                 }
             }

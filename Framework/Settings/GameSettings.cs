@@ -55,7 +55,7 @@
         /// Gets or sets the pixels per unit. This value is the number of pixels per abritrary game units.
         /// </summary>
         /// <value>The pixel density.</value>
-        int PixelsPerUnit { get; set; }
+        ushort PixelsPerUnit { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the project.
@@ -85,11 +85,6 @@
         /// <param name="settingValue">The setting value.</param>
         /// <returns>A value indicating whether or not the custom setting was found.</returns>
         bool TryGetCustomSetting(string settingName, out string? settingValue);
-
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        void Initialize();
     }
 
     /// <summary>
@@ -102,25 +97,12 @@
         /// The content file name for <see cref="GameSettings" />.
         /// </summary>
         public const string ContentFileName = "Settings";
-
-        private static IGameSettings _instance = new GameSettings();
-
+        
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<string, string> _customSettings = new();
 
-        private int _pixelsPerUnit = 32;
-
-        /// <summary>
-        /// Initializes the <see cref="GameSettings" /> class.
-        /// </summary>
-        static GameSettings() {
-        }
-
-        /// <summary>
-        /// Gets the singleton instance of game settings.
-        /// </summary>
-        public static IGameSettings Instance { get; internal set; } = new GameSettings();
-
+        private ushort _pixelsPerUnit = 32;
+        
         /// <inheritdoc />
         [DataMember]
         public GraphicsSettings DefaultGraphicsSettings { get; } = new GraphicsSettings();
@@ -146,7 +128,7 @@
 
         /// <inheritdoc />
         [DataMember]
-        public int PixelsPerUnit {
+        public ushort PixelsPerUnit {
             get {
                 return this._pixelsPerUnit;
             }
@@ -186,11 +168,6 @@
         /// <inheritdoc />
         public bool TryGetCustomSetting(string settingName, out string? settingValue) {
             return this._customSettings.TryGetValue(settingName, out settingValue);
-        }
-
-        /// <inheritdoc />
-        public void Initialize() {
-            Instance = this;
         }
     }
 }
