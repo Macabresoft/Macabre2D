@@ -108,7 +108,7 @@
             if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteSheet is SpriteSheet spriteSheet) {
                 spriteSheet.Draw(
                     spriteBatch,
-                    this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit,
+                    this.Entity.Scene.Game.Project.Settings.PixelsPerUnit,
                     this.SpriteIndex,
                     this.GetRenderTransform(),
                     this.Color,

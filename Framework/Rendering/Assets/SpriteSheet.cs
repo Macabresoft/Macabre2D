@@ -101,7 +101,7 @@
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="inversePixelsPerUnit">The inverse pixels per unit.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="position">The position.</param>
         /// <param name="scale">The scale.</param>
@@ -110,7 +110,7 @@
         /// <param name="orientation">The orientation.</param>
         public void Draw(
             SpriteBatch spriteBatch,
-            float inversePixelsPerUnit,
+            ushort pixelsPerUnit,
             byte spriteIndex,
             Vector2 position,
             Vector2 scale,
@@ -120,7 +120,7 @@
             if (this.Content != null && this.SpriteSize != Point.Zero) {
                 spriteBatch.Draw(
                     this.Content,
-                    position * inversePixelsPerUnit,
+                    position * pixelsPerUnit,
                     new Rectangle(this.GetSpriteLocation(spriteIndex), this.SpriteSize),
                     color,
                     rotation,
@@ -135,7 +135,7 @@
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="inversePixelsPerUnit">The inverse pixels per unit.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="rotation">The rotation.</param>
@@ -143,32 +143,32 @@
         /// <param name="orientation">The orientation.</param>
         public void Draw(
             SpriteBatch spriteBatch,
-            float inversePixelsPerUnit,
+            ushort pixelsPerUnit,
             byte spriteIndex,
             Transform transform,
             float rotation,
             Color color,
             SpriteEffects orientation) {
-            this.Draw(spriteBatch, inversePixelsPerUnit, spriteIndex, transform.Position, transform.Scale, rotation, color, orientation);
+            this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform.Position, transform.Scale, rotation, color, orientation);
         }
 
         /// <summary>
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="inversePixelsPerUnit">The inverse pixels per unit.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
         /// <param name="spriteIndex">The sprite index.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public void Draw(
             SpriteBatch spriteBatch, 
-            float inversePixelsPerUnit, 
+            ushort pixelsPerUnit, 
             byte spriteIndex, 
             Transform transform,
             Color color, 
             SpriteEffects orientation) {
-            this.Draw(spriteBatch, inversePixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
+            this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
         }
 
         /// <summary>
