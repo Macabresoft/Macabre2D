@@ -181,7 +181,7 @@
             
             var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
             gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
-            gridDrawer.UseDynamicLineThickness = false;
+            gridDrawer.UseDynamicLineThickness = true;
             gridDrawer.Grid = new TileGrid(Vector2.One);
             gridDrawer.RenderOrder = -1;
 
