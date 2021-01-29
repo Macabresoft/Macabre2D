@@ -11,7 +11,7 @@
     /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IScene" /> which
     /// holds a collection of <see cref="IGameComponent" />.
     /// </summary>
-    public interface IGameEntity : ITransformable, INotifyPropertyChanged {
+    public interface IGameEntity : IEnableable, ITransformable, INotifyPropertyChanged {
 
         /// <summary>
         /// Gets the children.
@@ -24,12 +24,6 @@
         /// </summary>
         /// <value>The components.</value>
         IReadOnlyCollection<IGameComponent> Components { get => new IGameComponent[0]; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is enabled.
-        /// </summary>
-        /// <value><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</value>
-        bool IsEnabled { get; set; }
 
         /// <summary>
         /// Gets the layers.

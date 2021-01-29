@@ -65,8 +65,8 @@
                     saveDataManager.Save(SaveDataFileName, ProjectName, saveData2);
 
                     saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData2);
-                    loadedData2?.Id.Should().Be(loadedData1.Id);
-                    loadedData2?.RandomNumber.Should().Be(loadedData1.RandomNumber);
+                    loadedData2?.Id.Should().Be(saveData2.Id);
+                    loadedData2?.RandomNumber.Should().Be(saveData2.RandomNumber);
                 }
             }
             else {
@@ -91,7 +91,7 @@
 
                 saveDataManager.TryLoad(SaveDataFileName, ProjectName, out VersionedData versionedLoadedData);
                 loadedData?.TypeName.Should().Be(versionedLoadedData?.TypeName);
-                loadedData?.GetType().Should().Be(versionedLoadedData?.GetType());
+                typeof(VersionedData).IsAssignableFrom(loadedData?.GetType()).Should().BeTrue();
             }
 
             saveDataManager.Delete(SaveDataFileName, ProjectName);
