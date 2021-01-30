@@ -5,6 +5,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -268,11 +269,6 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetComponents<T>() {
-            return this.Components.OfType<T>();
-        }
-
-        /// <inheritdoc />
         public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
             if (this.TryGetComponent<T>(out var component) && component != null) {
                 return component;
@@ -321,7 +317,7 @@
 
         /// <inheritdoc />
         public void RemoveChild(IGameEntity entity) {
-            if (this.Scene != null) {
+            if (!GameScene.IsNullOrEmpty(this.Scene)) {
                 this.Scene.Invoke(() => this.PerformChildRemoval(entity));
             }
             else {
@@ -379,7 +375,7 @@
         }
 
         private bool CanAddChild(IGameEntity entity) {
-            return entity != this && !this.Children.Any(x => x == entity) && !this.IsDescendentOf(entity);
+            return entity != this && this.Children.All(x => x != entity) && !this.IsDescendentOf(entity);
         }
 
         private void OnAddChild(IGameEntity entity) {
@@ -397,27 +393,23 @@
 
             /// <inheritdoc />
             public event PropertyChangedEventHandler? PropertyChanged;
-
+            
             /// <inheritdoc />
             public bool IsEnabled {
                 get => false;
-                set {
-                    return;
-                }
+                set { }
             }
 
             /// <inheritdoc />
             public Layers Layers {
                 get => Layers.None;
-                set { return; }
+                set { }
             }
 
             /// <inheritdoc />
             public string Name {
                 get => "Empty";
-                set {
-                    return;
-                }
+                set { }
             }
 
             /// <inheritdoc />
@@ -444,12 +436,7 @@
             public void AddComponent(IGameComponent component) {
                 throw new NotSupportedException("Initialization has not occured.");
             }
-
-            /// <inheritdoc />
-            public IEnumerable<T> GetComponents<T>() {
-                return new T[0];
-            }
-
+            
             /// <inheritdoc />
             public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
                 throw new NotSupportedException("Initialization has not occured.");
@@ -457,7 +444,7 @@
 
             /// <inheritdoc />
             public void Initialize(IGameScene scene, IGameEntity parent) {
-                throw new NotSupportedException("An empty entity cannot be intialized.");
+                throw new NotSupportedException("An empty entity cannot be initialized.");
             }
 
             /// <inheritdoc />
