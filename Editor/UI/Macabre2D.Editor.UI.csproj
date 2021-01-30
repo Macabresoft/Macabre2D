@@ -10,11 +10,11 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-rc1" />
+    <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
     <PackageReference Include="Macabresoft.Core" Version="1.0.8" />
-    <PackageReference Include="Unity" Version="5.11.9" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />

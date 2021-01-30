@@ -21,11 +21,11 @@
     <Content Remove="C:\Users\brett\.nuget\packages\monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-rc1" />
+    <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.3" />
-    <PackageReference Include="Unity" Version="5.11.9" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AvaloniaInterop\Macabre2D.Editor.AvaloniaInterop.csproj" />
