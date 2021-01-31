@@ -38,12 +38,13 @@
     /// </summary>
     public class AvaloniaGame : BaseGame, IAvaloniaGame {
         private StandardCursorType _cursorType = StandardCursorType.None;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
         public AvaloniaGame() : base() {
             this.IsFixedTimeStep = false;
+            BaseGame.IsDesignMode = true;
         }
 
         /// <inheritdoc />
@@ -66,9 +67,6 @@
                 }
             }
         }
-
-        /// <inheritdoc />
-        public override bool IsDesignMode => true;
 
         /// <summary>
         /// Gets the keyboard.

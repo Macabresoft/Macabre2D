@@ -16,14 +16,16 @@
         /// </summary>
         public static readonly IGame Empty = new EmptyGame();
 
+        // ReSharper disable once InconsistentNaming
         protected readonly GraphicsDeviceManager _graphics;
+
+        // ReSharper disable once InconsistentNaming
         protected SpriteBatch? _spriteBatch;
-        private IAssetManager _assetManager = new AssetManager();
+
         private double _gameSpeed = 1d;
         private GraphicsSettings _graphicsSettings = new();
         private IGameProject _project = new GameProject();
         private IGameScene _scene = GameScene.Empty;
-        private IGameSettings _settings = new GameSettings();
         private Point _viewportSize;
 
         /// <inheritdoc />
@@ -44,7 +46,6 @@
         protected BaseGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            Instance = this;
         }
 
         /// <summary>
@@ -54,9 +55,6 @@
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("This is a function of MonoGame not used by MacabreGame.", true)]
         public new GameComponentCollection Components => base.Components;
-
-        /// <inheritdoc />
-        public virtual bool IsDesignMode => false;
 
         /// <inheritdoc />
         public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
@@ -82,8 +80,7 @@
         /// <inheritdoc />
         public GraphicsSettings GraphicsSettings {
             get => this._graphicsSettings;
-
-            set {
+            private set {
                 this._graphicsSettings = value;
                 this.ApplyGraphicsSettings();
             }
@@ -93,16 +90,14 @@
         public InputState InputState { get; protected set; }
 
         /// <summary>
-        /// Gets the singleton instance of <see cref="IGame" /> for the current session.
+        /// Gets a value which indicates whether or not the game is running in design mode.
         /// </summary>
-        /// <value>The instance.</value>
-        public static IGame Instance { get; private set; } = Empty;
+        public static bool IsDesignMode { get; protected set; }
 
         /// <inheritdoc />
         public IGameProject Project {
             get => this._project;
-
-            set {
+            private set {
                 this._project = value;
                 this.ApplyGraphicsSettings();
 
@@ -179,7 +174,7 @@
             base.Initialize();
 
             this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.Scene?.Initialize(this);
+            this.Scene.Initialize(this);
 
             if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
                 this.GraphicsSettings = graphicsSettings;
@@ -220,7 +215,7 @@
 
         /// <inheritdoc />
         protected override void Update(GameTime gameTime) {
-            if (!this.IsDesignMode) {
+            if (!IsDesignMode) {
                 var keyboardState = Keyboard.GetState();
                 if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)) && keyboardState.IsKeyDown(Keys.F4)) {
                     this.Exit();
@@ -285,9 +280,6 @@
             public GraphicsSettings GraphicsSettings { get; } = new();
 
             /// <inheritdoc />
-            public bool IsDesignMode => true;
-
-            /// <inheritdoc />
             public IGameProject Project { get; } = new GameProject();
 
             /// <inheritdoc />
@@ -300,19 +292,22 @@
             public SpriteBatch? SpriteBatch => null;
 
             /// <inheritdoc />
+            public Point ViewportSize => default;
+
+            /// <inheritdoc />
             public double GameSpeed {
                 get => 1f;
-                set => this.GameSpeedChanged.SafeInvoke(this, 1f);
+                set {
+                    if (value <= 0) {
+                        throw new ArgumentOutOfRangeException(nameof(value));
+                    }
+
+                    this.GameSpeedChanged.SafeInvoke(this, 1f);
+                }
             }
 
             /// <inheritdoc />
-            public Point ViewportSize {
-                get => default;
-                set => this.ViewportSizeChanged.SafeInvoke(this, default);
-            }
-
             public void Exit() {
-                throw new NotImplementedException();
             }
 
             /// <inheritdoc />

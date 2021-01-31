@@ -25,7 +25,7 @@
         /// <param name="forceEvent">A value indicating whether or not the event should be forced.</param>
         /// <param name="propertyName">The property name.</param>
         public void RaisePropertyChanged(bool forceEvent, [CallerMemberName] string propertyName = "") {
-            if (forceEvent || BaseGame.Instance.IsDesignMode) {
+            if (forceEvent || BaseGame.IsDesignMode) {
                 this.RaisePropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }

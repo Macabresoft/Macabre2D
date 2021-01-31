@@ -43,14 +43,6 @@
         InputState InputState => new();
 
         /// <summary>
-        /// Gets a value indicating whether this game is running in design mode. When the game is
-        /// running for real, this value will be false; however, if the game editor is running, it
-        /// will be true.
-        /// </summary>
-        /// <value><c>true</c> if this game is in design mode; otherwise, <c>false</c>.</value>
-        bool IsDesignMode { get; }
-
-        /// <summary>
         /// Gets the project.
         /// </summary>
         /// <value>The project.</value>
