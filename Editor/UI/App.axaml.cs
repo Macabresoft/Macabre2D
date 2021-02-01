@@ -18,7 +18,8 @@
                 .RegisterMappers()
                 .RegisterServices()
                 .RegisterLibraryServices()
-                .RegisterLibraryTypes();
+                .RegisterLibraryTypes()
+                .RegisterFrameworkTypes();
 
             Resolver.Container = this.Container;
 

@@ -6,6 +6,9 @@
     using Unity;
     using Unity.Lifetime;
 
+    /// <summary>
+    /// Registers required types to the <see cref="IUnityContainer"/>.
+    /// </summary>
     public static class Registrar {
         /// <summary>
         /// Registers the required types.

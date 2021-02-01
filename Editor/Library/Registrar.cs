@@ -2,6 +2,7 @@
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
     using Unity;
     using Unity.Lifetime;
 
@@ -9,6 +10,14 @@
     /// Registers services and instances to a <see cref="IUnityContainer" />.
     /// </summary>
     public static class Registrar {
+        /// <summary>
+        /// Registers the required framework types.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <returns>The container.</returns>
+        public static IUnityContainer RegisterFrameworkTypes(this IUnityContainer container) {
+            return container.RegisterType<ISerializer, Serializer>(new SingletonLifetimeManager());
+        }
 
         /// <summary>
         /// Registers the services.
@@ -19,6 +28,7 @@
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
                 .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
+                .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
                 .RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager())
                 .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
                 .RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager())
@@ -26,7 +36,7 @@
         }
 
         /// <summary>
-        /// Registers the required types.
+        /// Registers the required library types.
         /// </summary>
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
