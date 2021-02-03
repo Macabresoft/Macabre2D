@@ -9,7 +9,7 @@
     /// </summary>
     public abstract class ContentFile : ContentNode {
         /// <inheritdoc />
-        protected ContentFile(string name) : base(name) {
+        public ContentFile(string name) : base(name) {
         }
 
         /// <summary>

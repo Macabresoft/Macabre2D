@@ -106,7 +106,7 @@
         /// </param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e) {
         }
-        
+
         private void Entity_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IGameEntity.IsEnabled)) {
                 if (this._isEnabled) {
@@ -128,14 +128,12 @@
             /// <inheritdoc />
             public Guid Id {
                 get => Guid.Empty;
-
                 set { }
             }
 
             /// <inheritdoc />
             public bool IsEnabled {
                 get => false;
-
                 set { }
             }
 

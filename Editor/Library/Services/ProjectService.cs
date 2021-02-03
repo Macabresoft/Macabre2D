@@ -1,5 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+    using System;
     using System.IO;
+    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -74,6 +76,27 @@
 
         private static IGameProject CreateGameProject() {
             return new GameProject();
+        }
+
+        private class RootContentNode : NotifyPropertyChanged, IContentNode {
+            private readonly string _contentDirectoryPath;
+            
+            public RootContentNode(string projectFilePath) {
+                this._contentDirectoryPath = new FileInfo(projectFilePath).Directory?.FullName ?? throw new NotSupportedException();
+            }
+            
+            public string Name {
+                get => string.Empty;
+                // ReSharper disable once ValueParameterNotUsed
+                set => this.RaisePropertyChanged(true);
+            }
+            public string GetContentPath() {
+                return string.Empty;
+            }
+
+            public string GetPath() {
+                return this._contentDirectoryPath;
+            }
         }
     }
 }

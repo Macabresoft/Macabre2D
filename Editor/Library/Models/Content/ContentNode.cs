@@ -1,30 +1,46 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
-    using System;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
+    /// Interface for a node in the content tree.
+    /// </summary>
+    public interface IContentNode {
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
+        /// Gets the content path to this file or directory, which assumes a root of the project content directory.
+        /// </summary>
+        /// <returns>The content path.</returns>
+        string GetContentPath();
+    }
+
+    /// <summary>
     /// A node in the content tree.
     /// </summary>
-    public abstract class ContentNode : NotifyPropertyChanged {
-        private ContentDirectory _parent;
+    public abstract class ContentNode : NotifyPropertyChanged, IContentNode {
         private string _name;
+        private IContentDirectory? _parent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        protected ContentNode(string name) {
-            if (string.IsNullOrWhiteSpace(name)) {
-                throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
-            }
-            
-            this._name = name;
+        protected ContentNode(string name) : this(name, null) {
         }
 
         /// <summary>
-        /// Gets the name.
+        /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
+        /// <param name="name">The name.</param>
+        protected ContentNode(string name, IContentDirectory? parent) {
+            this._name = name;
+        }
+
+        /// <inheritdoc />
         public string Name {
             get => this._name;
             set {
@@ -37,25 +53,10 @@
             }
         }
 
-        /// <summary>
-        /// Gets the content path to this file, which assumes a root of the project content directory.
-        /// </summary>
-        /// <returns>The content path.</returns>
+        /// <inheritdoc />
         public string GetContentPath() {
             if (this._parent != null && !string.IsNullOrEmpty(this.Name)) {
                 return Path.Combine(this._parent.GetContentPath(), this.Name);
-            }
-
-            return this.Name ?? string.Empty;
-        }
-
-        /// <summary>
-        /// Gets the full path to this piece of content.
-        /// </summary>
-        /// <returns>The file path.</returns>
-        public string GetPath() {
-            if (this._parent != null && !string.IsNullOrEmpty(this.Name)) {
-                return Path.Combine(this._parent.GetPath(), this.Name);
             }
 
             return this.Name ?? string.Empty;

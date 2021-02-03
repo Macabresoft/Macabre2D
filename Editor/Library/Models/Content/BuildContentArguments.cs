@@ -1,16 +1,15 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
-
+﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using System.IO;
+    using System.Linq;
+    
     /// <summary>
     /// Arguments for building content using MGCB.
     /// </summary>
     public class BuildContentArguments {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BuildContentArguments" /> struct.
         /// </summary>
+        /// <param name="contentFilePath">The content file path.</param>
         /// <param name="platform">The platform.</param>
         /// <param name="performCompression">if set to <c>true</c> MGCB will perform compression.</param>
         public BuildContentArguments(string contentFilePath, string platform, bool performCompression) {
