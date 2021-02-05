@@ -5,7 +5,7 @@
     /// <summary>
     /// An animation that explicitly uses sprites.
     /// </summary>
-    public sealed class SpriteAnimation : BaseSpriteSheetAsset {
+    public sealed class SpriteAnimation : SpriteSheetAsset {
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new();
 

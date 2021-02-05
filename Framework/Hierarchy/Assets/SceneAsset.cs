@@ -3,7 +3,7 @@
     /// <summary>
     /// An asset which contains a <see cref="IGameScene"/>.
     /// </summary>
-    public class SceneAsset : BaseContentAsset<GameScene> {
+    public class SceneAsset : ContentAsset<GameScene> {
         
         /// <summary>
         /// The file extension for a serialized <see cref="GameScene"/>.

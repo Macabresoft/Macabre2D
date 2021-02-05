@@ -50,7 +50,7 @@
             var skullEntity = scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
             this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
-            this._skullRenderer.SpriteReference.AssetId = skull.AssetId;
+            this._skullRenderer.SpriteReference.Initialize(skull);
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             skullEntity.AddComponent<SampleInputComponent>();
 
@@ -60,7 +60,7 @@
 
             var textRenderEntity = scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
-            this._displayTextRenderer.FontReference.AssetId = leageMono.AssetId;
+            this._displayTextRenderer.FontReference.Initialize(leageMono);
             this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
             this._displayTextRenderer.Text = this.DisplayText;
             this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -72,7 +72,7 @@
             this._camera.ViewHeight = 9f;
             var cameraChild = cameraEntity.AddChild();
             var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
-            cameraTextRenderer.FontReference.AssetId = leageMono.AssetId;
+            cameraTextRenderer.FontReference.Initialize(leageMono);
             cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
             cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
@@ -81,7 +81,7 @@
             cameraChild.LocalPosition = new Vector2(0f, -2.5f);
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.FontReference.AssetId = leageMono.AssetId;
+            frameRateDisplay.FontReference.Initialize(leageMono);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 

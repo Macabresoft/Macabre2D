@@ -1,19 +1,16 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Physics {
-
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
 
     [ExcludeFromCodeCoverage]
     public class PhysicsGame : BaseGame {
-        
         protected override void Initialize() {
-            _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.PreferredBackBufferWidth = 1920;
-            _graphics.ApplyChanges();
+            this._graphics.PreferredBackBufferHeight = 1080;
+            this._graphics.PreferredBackBufferWidth = 1920;
+            this._graphics.ApplyChanges();
             this.IsFixedTimeStep = false;
             base.Initialize();
         }
@@ -37,7 +34,7 @@
             cameraEntity.AddComponent<CameraComponent>();
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.FontReference.AssetId = leagueMonoFont.AssetId;
+            frameRateDisplay.FontReference.Initialize(leagueMonoFont);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 

@@ -7,7 +7,7 @@
     /// <summary>
     /// A tile set which automatically provides the correct sprite given its relationship to surrounding tiles.
     /// </summary>
-    public sealed class AutoTileSet : BaseSpriteSheetAsset {
+    public sealed class AutoTileSet : SpriteSheetAsset {
         private const byte CardinalSize = 16;
         private const byte IntermediateSize = 48;
 

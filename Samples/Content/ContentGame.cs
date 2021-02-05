@@ -33,7 +33,7 @@
             this.Project.Assets.AddAsset(whiteSquare);
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
-            spriteRenderer.SpriteReference.AssetId = whiteSquare.AssetId;
+            spriteRenderer.SpriteReference.Initialize(whiteSquare);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             var binaryTileMapEntity = scene.AddChild();
@@ -43,7 +43,7 @@
             binaryTileMap.RenderOrder = -300;
             binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
-            binaryTileMap.SpriteReference.AssetId = whiteSquare.AssetId;
+            binaryTileMap.SpriteReference.Initialize(whiteSquare);
             binaryTileMap.Color = Color.DarkGray;
 
             for (var x = 0; x < 5; x++) {
@@ -82,7 +82,7 @@
                     step.Frames = 2;
                 }
 
-                spriteAnimator.AnimationReference.AssetId = spriteAnimation.AssetId;
+                spriteAnimator.AnimationReference.Initialize(spriteAnimation);
             }
 
             var scalerEntity1 = scene.AddChild();
@@ -90,7 +90,7 @@
             scalerEntity1.LocalPosition -= new Vector2(2f, 0);
             var spriteRenderer3 = scalerEntity1.AddComponent<SpriteRenderComponent>();
             spriteRenderer3.RenderOrder = -200;
-            spriteRenderer3.SpriteReference.AssetId = whiteSquare.AssetId;
+            spriteRenderer3.SpriteReference.Initialize(whiteSquare);
             spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
             var middleSpinningDotBoundingArea = scalerEntity1.AddComponent<BoundingAreaDrawerComponent>();
             middleSpinningDotBoundingArea.Color = Color.Red;
@@ -101,7 +101,7 @@
             scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
             var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();
             spriteRenderer4.RenderOrder = 100;
-            spriteRenderer4.SpriteReference.AssetId = whiteSquare.AssetId;
+            spriteRenderer4.SpriteReference.Initialize(whiteSquare);
             spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
             var outwardSpinningDotBoundingArea = scalerEntity2.AddComponent<BoundingAreaDrawerComponent>();
             outwardSpinningDotBoundingArea.Color = Color.Red;
@@ -110,7 +110,7 @@
             var textEntity = scene.AddChild();
             var textRenderer = textEntity.AddComponent<TextRenderComponent>();
             textRenderer.Text = "Hello, World";
-            textRenderer.FontReference.AssetId = font.AssetId;
+            textRenderer.FontReference.Initialize(font);
             textRenderer.Color = Color.DarkMagenta;
             textEntity.LocalScale = new Vector2(0.5f, 0.5f);
             textEntity.LocalPosition -= new Vector2(5f, 5f);
@@ -124,7 +124,7 @@
             var frameRateDisplayEntity = secondCameraEntity.AddChild();
             frameRateDisplayEntity.Layers = Layers.Layer03;
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.FontReference.AssetId = font.AssetId;
+            frameRateDisplay.FontReference.Initialize(font);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
@@ -201,7 +201,7 @@
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();
             audioPlayer.Volume = 0.5f;
-            audioPlayer.AudioClipReference.AssetId = laser.AssetId;
+            audioPlayer.AudioClipReference.Initialize(laser);
             audioEntity.AddComponent<VolumeController>();
         }
     }

@@ -6,7 +6,7 @@
     /// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
-    public class SpriteSheetAssetReference<TAsset> : AssetReference<TAsset> where TAsset : BaseSpriteSheetAsset {
+    public class SpriteSheetAssetReference<TAsset> : AssetReference<TAsset> where TAsset : SpriteSheetAsset {
         /// <summary>
         /// Gets the sprite sheet.
         /// </summary>
@@ -22,24 +22,6 @@
 
             if (this.Asset?.SpriteSheet is SpriteSheet newSpriteSheet) {
                 newSpriteSheet.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnAssetIdChanged() {
-            base.OnAssetIdChanged();
-
-            if (this.AssetId != Guid.Empty && this.SpriteSheet is SpriteSheet spriteSheet) {
-                if (this.Type.IsAssignableFrom(typeof(SpriteAnimation))) {
-                    if (spriteSheet.TryGetAsset(this.AssetId, out SpriteAnimation? animation)) {
-                        this.Asset = animation as TAsset;
-                    }
-                }
-                else if (this.Type.IsAssignableFrom(typeof(AutoTileSet))) {
-                    if (spriteSheet.TryGetAsset(this.AssetId, out AutoTileSet? autoTileSet)) {
-                        this.Asset = autoTileSet as TAsset;
-                    }
-                }
             }
         }
 

@@ -5,6 +5,6 @@
     /// <summary>
     /// A font to be used by the <see cref="TextRenderComponent" />.
     /// </summary>
-    public sealed class Font : BaseContentAsset<SpriteFont> {
+    public sealed class Font : ContentAsset<SpriteFont> {
     }
 }

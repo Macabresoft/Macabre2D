@@ -12,7 +12,7 @@
     /// </summary>
     [DataContract]
     public class SpriteSheet :
-        BaseAsset,
+        Asset,
         IAssetPackage<SpriteAnimation, Texture2D>,
         IAssetPackage<AutoTileSet, Texture2D> {
         private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();

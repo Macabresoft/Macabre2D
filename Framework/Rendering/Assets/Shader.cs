@@ -7,7 +7,7 @@
     /// <summary>
     /// A shader that wraps around <see cref="Effect" />.
     /// </summary>
-    public sealed class Shader : BaseContentAsset<Effect>, IAsset, IDisposable {
+    public sealed class Shader : ContentAsset<Effect>, IAsset, IDisposable {
         
         /// <inheritdoc />
         public void Dispose() {
