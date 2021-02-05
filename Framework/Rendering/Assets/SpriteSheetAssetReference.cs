@@ -1,12 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-    using System;
     using System.ComponentModel;
 
     /// <summary>
     /// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
-    public class SpriteSheetAssetReference<TAsset> : AssetReference<TAsset> where TAsset : SpriteSheetAsset {
+    public class SpriteSheetAssetReference<TAsset> : PackagedAssetReference<SpriteSheet, TAsset> where TAsset : SpriteSheetAsset {
         /// <summary>
         /// Gets the sprite sheet.
         /// </summary>
