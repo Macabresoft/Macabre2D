@@ -63,7 +63,7 @@
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.Asset is AutoTileSet tileSet && tileSet.SpriteSheet is SpriteSheet spriteSheet) {
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.Asset is AutoTileSet tileSet && tileSet.Package is SpriteSheet spriteSheet) {
                 foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                     var boundingArea = this.GetTileBoundingArea(activeTile);
                     if (boundingArea.Overlaps(viewBoundingArea)) {

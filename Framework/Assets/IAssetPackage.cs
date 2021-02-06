@@ -1,22 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
-
+    
     /// <summary>
-    /// An asset package. Contains a single piece of content that many assets access.
-    /// </summary>
-    public interface IAssetPackage {
-        /// <summary>
-        /// Initializes this asset package.
-        /// </summary>
-        void Initialize();
-    }
-
-    /// <summary>
-    /// A definition of <see cref="IAssetPackage" /> which has the asset defined.
+    /// A package that contains other assets.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
-    public interface IAssetPackage<TAsset> : IAssetPackage where TAsset : IAsset {
+    public interface IAssetPackage<TAsset> where TAsset : IAsset {
         /// <summary>
         /// Gets the assets owned by this package.
         /// </summary>
@@ -52,7 +42,7 @@
     }
 
     /// <summary>
-    /// A definition of a <see cref="IAssetPackage" /> which has both the asset and content defined.
+    /// A definition of a <see cref="IAssetPackage{TAsset}" /> which has both the asset and content defined.
     /// </summary>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
     /// <typeparam name="TContent">The type of content.</typeparam>

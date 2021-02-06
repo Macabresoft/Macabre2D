@@ -45,7 +45,7 @@
 
             var skull = new SpriteSheet();
             this.Game.Project.Assets.SetContentMapping(skull.ContentId, "skull");
-            this.Game.Project.Assets.AddAsset(skull);
+            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(skull));
 
             var skullEntity = scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
@@ -54,13 +54,13 @@
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             skullEntity.AddComponent<SampleInputComponent>();
 
-            var leageMono = new Font();
-            this.Game.Project.Assets.SetContentMapping(leageMono.ContentId, "League Mono");
-            this.Game.Project.Assets.AddAsset(leageMono);
+            var leagueMono = new Font();
+            this.Game.Project.Assets.SetContentMapping(leagueMono.ContentId, "League Mono");
+            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(leagueMono));
 
             var textRenderEntity = scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
-            this._displayTextRenderer.FontReference.Initialize(leageMono);
+            this._displayTextRenderer.FontReference.Initialize(leagueMono);
             this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
             this._displayTextRenderer.Text = this.DisplayText;
             this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -72,7 +72,7 @@
             this._camera.ViewHeight = 9f;
             var cameraChild = cameraEntity.AddChild();
             var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
-            cameraTextRenderer.FontReference.Initialize(leageMono);
+            cameraTextRenderer.FontReference.Initialize(leagueMono);
             cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
             cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
@@ -81,12 +81,11 @@
             cameraChild.LocalPosition = new Vector2(0f, -2.5f);
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.FontReference.Initialize(leageMono);
+            frameRateDisplay.FontReference.Initialize(leagueMono);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
             this.Game.LoadScene(scene);
-
             base.Initialize(window, viewportSize, mouse, keyboard);
         }
 

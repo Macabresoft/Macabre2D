@@ -4,13 +4,17 @@
     /// <summary>
     /// An asset which is packaged.
     /// </summary>
-    public interface IPackagedAsset<in TPackage> : IAsset where TPackage : IAssetPackage  {
-        
+    public interface IPackagedAsset<TPackage> {
+        /// <summary>
+        /// Gets the package.
+        /// </summary>
+        TPackage? Package { get; }
+
         /// <summary>
         /// Gets the package identifier.
         /// </summary>
         Guid PackageId { get; }
-        
+
         /// <summary>
         /// Initializes this asset with its owning package.
         /// </summary>

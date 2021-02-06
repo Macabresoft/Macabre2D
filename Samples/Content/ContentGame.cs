@@ -7,9 +7,6 @@
 
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
-        public ContentGame() : base() {
-        }
-
         protected override void LoadContent() {
             this.Project.Assets.Initialize(this.Content);
             this.Project.Settings.PixelsPerUnit = 64;
@@ -30,7 +27,7 @@
 
             var whiteSquare = new SpriteSheet();
             this.Project.Assets.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
-            this.Project.Assets.AddAsset(whiteSquare);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(whiteSquare));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -53,12 +50,12 @@
                     }
                 }
             }
-            
+
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
             this.Project.Assets.SetContentMapping(font.ContentId, "League Mono");
-            this.Project.Assets.AddAsset(font);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(font));
 
             var coloredSquares = new SpriteSheet {
                 Rows = 2,
@@ -66,7 +63,7 @@
             };
 
             this.Project.Assets.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
-            this.Project.Assets.AddAsset(coloredSquares);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(coloredSquares));
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -82,6 +79,7 @@
                     step.Frames = 2;
                 }
 
+                spriteAnimation.Initialize(coloredSquares);
                 spriteAnimator.AnimationReference.Initialize(spriteAnimation);
             }
 
@@ -133,9 +131,9 @@
             var filePath = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, filePath);
             scene = Serializer.Instance.Deserialize<GameScene>(filePath);
-            this.LoadScene(scene);
             File.Delete(filePath);
 
+            this.LoadScene(scene);
             this.PostLoadRenderingStuff();
         }
 
@@ -178,7 +176,7 @@
             var circleSpriteRenderer = circleEntity.AddComponent<Texture2DRenderComponent>();
             circleSpriteRenderer.Texture = circleSprite;
             circleEntity.LocalPosition = new Vector2(-5f, 3f);
-            
+
             var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
             gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
             gridDrawer.UseDynamicLineThickness = true;
@@ -190,13 +188,12 @@
                 binaryTileMapBoundingArea.Color = Color.Red;
                 binaryTileMapBoundingArea.LineThickness = 3f;
             }
-
         }
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
             this.Project.Assets.SetContentMapping(laser.ContentId, "laser");
-            this.Project.Assets.AddAsset(laser);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(laser));
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

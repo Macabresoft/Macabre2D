@@ -67,7 +67,7 @@
         /// animation has been queued.
         /// </param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
-            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.SpriteSheet?.AssetId) {
+            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.Package?.AssetId) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
             }
         }
@@ -82,7 +82,7 @@
         /// </param>
         /// <param name="numberOfLoops">The number of loops.</param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
-            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.SpriteSheet?.AssetId) {
+            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.Package?.AssetId) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
             }
         }

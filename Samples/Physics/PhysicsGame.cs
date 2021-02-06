@@ -28,15 +28,16 @@
 
             var leagueMonoFont = new Font();
             this.Project.Assets.SetContentMapping(leagueMonoFont.ContentId, "League Mono");
-            this.Project.Assets.AddAsset(leagueMonoFont);
+            this.Project.Assets.SetAssetMapping(leagueMonoFont.AssetId, leagueMonoFont.ContentId);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoFont));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();
             var frameRateDisplayEntity = cameraEntity.AddChild();
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
-            frameRateDisplay.FontReference.Initialize(leagueMonoFont);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
+            frameRateDisplay.FontReference.Initialize(leagueMonoFont);
 
             var circleEntity = scene.AddChild();
             var circleBody = circleEntity.AddComponent<DynamicPhysicsBodyComponent>();
@@ -115,6 +116,7 @@
             Serializer.Instance.Serialize(scene, fileName);
             scene = Serializer.Instance.Deserialize<GameScene>(fileName);
             File.Delete(fileName);
+
             this.LoadScene(scene);
         }
     }

@@ -9,17 +9,17 @@
         /// <summary>
         /// Gets the sprite sheet.
         /// </summary>
-        public SpriteSheet? SpriteSheet => this.Asset?.SpriteSheet;
+        public SpriteSheet? SpriteSheet => this.Asset?.Package;
 
         /// <inheritdoc />
         public override void Initialize(TAsset asset) {
-            if (this.Asset?.SpriteSheet is SpriteSheet originalSpriteSheet) {
+            if (this.Asset?.Package is SpriteSheet originalSpriteSheet) {
                 originalSpriteSheet.PropertyChanged -= this.SpriteSheet_OnPropertyChanged;
             }
 
             base.Initialize(asset);
 
-            if (this.Asset?.SpriteSheet is SpriteSheet newSpriteSheet) {
+            if (this.Asset?.Package is SpriteSheet newSpriteSheet) {
                 newSpriteSheet.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
             }
         }

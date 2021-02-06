@@ -8,7 +8,7 @@
     /// <typeparam name="TAssetPackage">The asset package.</typeparam>
     /// <typeparam name="TPackagedAsset">The packaged asset.</typeparam>
     public class PackagedAssetReference<TPackagedAsset, TAssetPackage> : AssetReference<TPackagedAsset>
-        where TAssetPackage : class, IAsset, IAssetPackage
+        where TAssetPackage : class, IAsset
         where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage> {
         /// <summary>
         /// Gets or sets the asset identifier.

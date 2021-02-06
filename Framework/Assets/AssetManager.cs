@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework.Content;
@@ -10,12 +11,6 @@
     /// Interface to manage assets.
     /// </summary>
     public interface IAssetManager {
-        /// <summary>
-        /// Adds an asset.
-        /// </summary>
-        /// <param name="asset">The asset to add.</param>
-        void AddAsset(IAsset asset);
-
         /// <summary>
         /// Clears the mappings.
         /// </summary>
@@ -35,11 +30,10 @@
         void Initialize(ContentManager contentManager);
 
         /// <summary>
-        /// Removes an asset.
+        /// Loads the content meta data into the cache.
         /// </summary>
-        /// <param name="asset">The asset to remove.</param>
-        /// <returns>A value indicating whether or not the asset was removed.</returns>
-        bool RemoveAsset(IAsset asset);
+        /// <param name="metadata">The metadata.</param>
+        void LoadMetadata(ContentMetadata metadata);
 
         /// <summary>
         /// Resets asset mappings by clearing out the current mappings and replacing them with the newly provided mappings.
@@ -132,17 +126,8 @@
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Guid, string> _contentIdToPathMapping = new();
 
-        [DataMember]
-        private readonly List<IAsset> _loadedAssets = new();
-
+        private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
-
-        /// <inheritdoc />
-        public void AddAsset(IAsset asset) {
-            if (this._loadedAssets.All(x => x.AssetId != asset.AssetId)) {
-                this._loadedAssets.Add(asset);
-            }
-        }
 
         /// <inheritdoc />
         public void ClearMappings() {
@@ -157,15 +142,11 @@
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
-
-            foreach (var package in this._loadedAssets.OfType<IAssetPackage>()) {
-                package.Initialize();
-            }
         }
 
         /// <inheritdoc />
-        public bool RemoveAsset(IAsset asset) {
-            return this._loadedAssets.Remove(asset);
+        public void LoadMetadata(ContentMetadata metadata) {
+            this._loadedMetadata.Add(metadata);
         }
 
         /// <inheritdoc />
@@ -204,16 +185,15 @@
             where TAssetPackage : class, IAsset, IAssetPackage<TPackagedAsset>
             where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage>
             where TContent : class {
-            var result = false;
-
-            var package = this.GetAsset<TAssetPackage>(assetReference.PackageId);
-            if (package != null && package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
+            var asset = assetReference.Asset;
+            var package = asset?.Package ?? this.GetAsset<TAssetPackage>(assetReference.PackageId);
+            if (package != null && (asset != null || (package.TryGetAsset(assetReference.AssetId, out asset) && asset != null))) {
                 this.LoadContentForAsset<TContent>(package);
-                assetReference.Initialize(packagedAsset);
-                result = true;
+                assetReference.Initialize(asset);
+                asset.Initialize(package);
             }
-
-            return result;
+            
+            return asset != null;
         }
 
         /// <inheritdoc />
@@ -271,13 +251,24 @@
         private TAsset? GetAsset<TAsset>(Guid assetId) where TAsset : class, IAsset {
             TAsset? result = null;
             if (assetId != Guid.Empty) {
-                if (this._loadedAssets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetId) is TAsset asset) {
+                if (this._loadedMetadata.SelectMany(x => x.Assets).OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetId) is TAsset asset) {
                     result = asset;
+                }
+                else if (this._assetIdToContentIdMapping.TryGetValue(assetId, out var contentId) &&
+                         contentId != Guid.Empty &&
+                         this.TryGetContentPath(contentId, out var path) &&
+                         !string.IsNullOrWhiteSpace(path)) {
+                    var metadataPath = Path.Combine(path, ContentMetadata.FileExtension);
+                    if (this.TryLoadContent<ContentMetadata>(metadataPath, out var metadata) && metadata != null) {
+                        this._loadedMetadata.Add(metadata);
+                        result = metadata.Assets.FirstOrDefault(x => x.AssetId == assetId) as TAsset;
+                    }
                 }
             }
 
             return result;
         }
+
 
         private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
             if (asset is IContentAsset<TContent> {Content: null} contentAsset && this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) && content != null) {
