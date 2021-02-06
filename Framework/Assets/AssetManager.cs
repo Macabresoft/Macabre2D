@@ -51,6 +51,19 @@
         bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
 
         /// <summary>
+        /// Resolves a packaged asset reference and loads required content.
+        /// </summary>
+        /// <param name="assetReference">The asset reference to resolve.</param>
+        /// <typeparam name="TPackagedAsset">The type of asset being requested from an asset package.</typeparam>
+        /// <typeparam name="TAssetPackage">The type of package the asset belongs to.</typeparam>
+        /// <typeparam name="TContent">The type of content.</typeparam>
+        /// <returns>A value indicating whether or not the asset was resolved.</returns>
+        bool ResolveAsset<TPackagedAsset, TAssetPackage, TContent>(PackagedAssetReference<TPackagedAsset, TAssetPackage> assetReference)
+            where TAssetPackage : class, IAsset, IAssetPackage<TPackagedAsset>
+            where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage>
+            where TContent : class;
+
+        /// <summary>
         /// Sets the mapping.
         /// </summary>
         /// <param name="contentId">The identifier.</param>
@@ -94,11 +107,11 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-        [DataMember]
-        private readonly List<IAsset> _loadedAssets = new();
-
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Guid, string> _contentIdToPathMapping = new();
+
+        [DataMember]
+        private readonly List<IAsset> _loadedAssets = new();
 
         private ContentManager? _contentManager;
 
@@ -134,39 +147,32 @@
         }
 
         /// <inheritdoc />
-        public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
+        public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference)
+            where TAsset : class, IAsset
+            where TContent : class {
+            var asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.AssetId);
+            if (asset != null) {
+                this.LoadContentForAsset<TContent>(asset);
+                assetReference.Initialize(asset);
+            }
+
+            return asset != null;
+        }
+
+        /// <inheritdoc />
+        public bool ResolveAsset<TPackagedAsset, TAssetPackage, TContent>(PackagedAssetReference<TPackagedAsset, TAssetPackage> assetReference)
+            where TAssetPackage : class, IAsset, IAssetPackage<TPackagedAsset>
+            where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage>
+            where TContent : class {
             var result = false;
 
-            if (assetReference.AssetId != Guid.Empty) {
-                if (this._loadedAssets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetReference.AssetId) is TAsset asset) {
-                    if (asset is IContentAsset<TContent> contentAsset &&
-                        contentAsset.ContentId != Guid.Empty &&
-                        this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) &&
-                        content != null) {
-                        contentAsset.LoadContent(content);
-                    }
-                    else if (asset is IAssetPackage<TAsset, TContent> {Content: null} package &&
-                             this.TryLoadContent<TContent>(package.ContentId, out var packageContent) && 
-                             packageContent != null) {
-                        package.LoadContent(packageContent);
-                    }
-
-                    assetReference.Initialize(asset);
-                    result = true;
-                }
-                else {
-                    foreach (var package in this._loadedAssets.OfType<IAssetPackage<TAsset, TContent>>()) {
-                        if (package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
-                            if (package.Content == null && this.TryLoadContent<TContent>(package.ContentId, out var content) && content != null) {
-                                package.LoadContent(content);
-                            }
-
-                            assetReference.Initialize(packagedAsset);
-                        }
-                    }
-                }
+            var package = this.GetAsset<TAssetPackage>(assetReference.PackageId);
+            if (package != null && package.TryGetAsset(assetReference.AssetId, out var packagedAsset) && packagedAsset != null) {
+                this.LoadContentForAsset<TContent>(package);
+                assetReference.Initialize(packagedAsset);
+                result = true;
             }
-            
+
             return result;
         }
 
@@ -201,7 +207,7 @@
                 try {
                     loaded = this._contentManager.Load<T?>(path);
                 }
-                catch(Exception) {
+                catch (Exception) {
                     loaded = null;
                 }
             }
@@ -215,6 +221,23 @@
         /// <inheritdoc />
         public void Unload() {
             this._contentManager?.Unload();
+        }
+
+        private TAsset? GetAsset<TAsset>(Guid assetId) where TAsset : class, IAsset {
+            TAsset? result = null;
+            if (assetId != Guid.Empty) {
+                if (this._loadedAssets.OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetId) is TAsset asset) {
+                    result = asset;
+                }
+            }
+
+            return result;
+        }
+
+        private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
+            if (asset is IContentAsset<TContent> {Content: null} contentAsset && this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) && content != null) {
+                contentAsset.LoadContent(content);
+            }
         }
     }
 }
