@@ -42,6 +42,18 @@
         bool RemoveAsset(IAsset asset);
 
         /// <summary>
+        /// Resets asset mappings by clearing out the current mappings and replacing them with the newly provided mappings.
+        /// </summary>
+        /// <param name="assetIdToContentIdMapping">A map of asset identifiers to their corresponding content identifier.</param>
+        void ResetAssetMappings(IEnumerable<(Guid AssetId, Guid ContentId)> assetIdToContentIdMapping);
+
+        /// <summary>
+        /// Resets content mappings by clearing out the current mappings and replacing them with the newly provided mappings.
+        /// </summary>
+        /// <param name="contentIdToPathMapping">A map of content identifiers to their path.</param>
+        void ResetContentMappings(IEnumerable<(Guid ContentId, string ContentPath)> contentIdToPathMapping);
+
+        /// <summary>
         /// Resolves an asset reference and loads required content.
         /// </summary>
         /// <param name="assetReference">The asset reference to resolve.</param>
@@ -64,9 +76,16 @@
             where TContent : class;
 
         /// <summary>
-        /// Sets the mapping.
+        /// Sets the asset mapping.
         /// </summary>
-        /// <param name="contentId">The identifier.</param>
+        /// <param name="assetId">The asset identifier.</param>
+        /// <param name="contentId">The content identifier.</param>
+        void SetAssetMapping(Guid assetId, Guid contentId);
+
+        /// <summary>
+        /// Sets the content mapping.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
         /// <param name="contentPath">The content path.</param>
         void SetContentMapping(Guid contentId, string contentPath);
 
@@ -108,6 +127,9 @@
     [DataContract]
     public sealed class AssetManager : IAssetManager {
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        private readonly Dictionary<Guid, Guid> _assetIdToContentIdMapping = new();
+
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Guid, string> _contentIdToPathMapping = new();
 
         [DataMember]
@@ -147,6 +169,24 @@
         }
 
         /// <inheritdoc />
+        public void ResetAssetMappings(IEnumerable<(Guid AssetId, Guid ContentId)> assetIdToContentIdMapping) {
+            this._contentIdToPathMapping.Clear();
+
+            foreach (var (contentId, contentPath) in assetIdToContentIdMapping) {
+                this.SetAssetMapping(contentId, contentPath);
+            }
+        }
+
+        /// <inheritdoc />
+        public void ResetContentMappings(IEnumerable<(Guid ContentId, string ContentPath)> contentIdToPathMapping) {
+            this._contentIdToPathMapping.Clear();
+
+            foreach (var (contentId, contentPath) in contentIdToPathMapping) {
+                this.SetContentMapping(contentId, contentPath);
+            }
+        }
+
+        /// <inheritdoc />
         public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference)
             where TAsset : class, IAsset
             where TContent : class {
@@ -174,6 +214,11 @@
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        public void SetAssetMapping(Guid assetId, Guid contentId) {
+            this._assetIdToContentIdMapping[assetId] = contentId;
         }
 
         /// <inheritdoc />
