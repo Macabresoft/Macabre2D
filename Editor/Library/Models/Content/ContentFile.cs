@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
     using System;
     using System.Collections.Generic;
-    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -9,13 +8,19 @@
     /// </summary>
     public abstract class ContentFile : ContentNode {
         /// <inheritdoc />
-        public ContentFile(string name) : base(name) {
+        protected ContentFile(string name, ContentMetadata metadata) : base(name) {
+            this.Metadata = metadata;
         }
 
         /// <summary>
         /// Gets the assets.
         /// </summary>
         public abstract IReadOnlyCollection<IAsset> Assets { get; }
+
+        /// <summary>
+        /// The metadata.
+        /// </summary>
+        protected ContentMetadata Metadata { get; }
 
         /// <summary>
         /// Adds an asset based on type.
@@ -43,21 +48,19 @@
     /// </summary>
     /// <typeparam name="TContent">The type of content.</typeparam>
     public abstract class ContentFile<TContent> : ContentFile where TContent : class {
-        private readonly ObservableCollectionExtended<IContentAsset<TContent>> _assets = new();
-
         /// <inheritdoc />
-        protected ContentFile(string name) : base(name) {
+        protected ContentFile(string name, ContentMetadata metadata) : base(name, metadata) {
         }
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<IContentAsset<TContent>> Assets => this._assets;
+        public override IReadOnlyCollection<IAsset> Assets => this.Metadata.Assets;
 
         /// <inheritdoc />
         public override bool RemoveAsset(IAsset asset) {
             var result = false;
 
             if (asset is IContentAsset<TContent> contentAsset) {
-                result = this._assets.Remove(contentAsset);
+                result = this.Metadata.RemoveAsset(contentAsset);
             }
 
             return result;
@@ -68,7 +71,7 @@
         /// </summary>
         /// <param name="asset">The asset.</param>
         protected void AddAsset(IContentAsset<TContent> asset) {
-            this._assets.Add(asset);
+            this.Metadata.AddAsset(asset);
         }
     }
 }
