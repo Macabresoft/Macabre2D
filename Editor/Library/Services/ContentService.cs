@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// Interface for a service that handles MonoGame content for the editor.
@@ -13,12 +15,37 @@
         /// <param name="args">The arguments.</param>
         /// <returns>The exit code of the MGCB process.</returns>
         int Build(BuildContentArguments args);
+        
+        /// <summary>
+        /// Gets the root content directory.
+        /// </summary>
+        IContentDirectory RootContentDirectory { get; }
+
+        /// <summary>
+        /// Moves the content to a new folder.
+        /// </summary>
+        /// <param name="contentToMove">The content to move.</param>
+        /// <param name="newParent">The new parent.</param>
+        void MoveContent(ContentNode contentToMove, ContentDirectory newParent);
+
+        /// <summary>
+        /// Initializes the service with a directory and the asset manager so it can construct a tree of content.
+        /// </summary>
+        /// <param name="pathToContentDirectory">The path to the content directory.</param>
+        /// <param name="assetManager">The asset manager.</param>
+        void Initialize(string pathToContentDirectory, IAssetManager assetManager);
     }
 
     /// <summary>
     /// A service that handles MonoGame content for the editor.
     /// </summary>
     public sealed class ContentService : IContentService {
+        private RootContentDirectory _rootContentDirectory;
+        private IAssetManager _assetManager;
+
+        /// <inheritdoc />
+        public IContentDirectory RootContentDirectory => this._rootContentDirectory;
+
         /// <inheritdoc />
         public int Build(BuildContentArguments args) {
             var exitCode = -1;
@@ -40,6 +67,29 @@
             }
 
             return exitCode;
+        }
+
+        /// <inheritdoc />
+        public void MoveContent(ContentNode contentToMove, ContentDirectory newParent) {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public void Initialize(string pathToContentDirectory, IAssetManager assetManager) {
+            this._assetManager = assetManager;
+
+            if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && Directory.Exists(pathToContentDirectory)) {
+                this._rootContentDirectory = new RootContentDirectory(pathToContentDirectory);
+                var contentFiles = this.ResolveContentFiles(this._rootContentDirectory);
+                // reset asset manager based on the content files found.
+            }
+        }
+
+        private IList<ContentFile> ResolveContentFiles(IContentDirectory directory) {
+            var contentFiles = new List<ContentFile>();
+            // TODO: find all directories under this and recursively resolve their content files
+            // TODO: then find all files and create ContentFiles and fill them with metadata.
+            return contentFiles;
         }
     }
 }

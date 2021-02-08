@@ -29,7 +29,7 @@
             var leagueMonoFont = new Font();
             this.Project.Assets.SetContentMapping(leagueMonoFont.ContentId, "League Mono");
             this.Project.Assets.SetAssetMapping(leagueMonoFont.AssetId, leagueMonoFont.ContentId);
-            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoFont));
+            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoFont.ContentId, leagueMonoFont));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();

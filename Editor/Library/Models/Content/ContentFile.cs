@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -16,7 +17,7 @@
         /// Gets the assets.
         /// </summary>
         public abstract IReadOnlyCollection<IAsset> Assets { get; }
-
+        
         /// <summary>
         /// The metadata.
         /// </summary>

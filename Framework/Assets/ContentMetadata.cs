@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
+    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
@@ -18,14 +19,23 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
         /// </summary>
-        public ContentMetadata() {
+        public ContentMetadata() : this(Guid.NewGuid()) {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
         /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        public ContentMetadata(Guid contentId) {
+            this.ContentId = contentId;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
         /// <param name="assets">The assets which belong to this content.</param>
-        public ContentMetadata(params IAsset[] assets) : this() {
+        public ContentMetadata(Guid contentId, params IAsset[] assets) : this(contentId) {
             foreach (var asset in assets) {
                 this._assets.Add(asset);
             }
@@ -35,6 +45,12 @@
         /// Gets the assets associated with this content.
         /// </summary>
         public IReadOnlyCollection<IAsset> Assets => this._assets;
+
+        /// <summary>
+        /// Gets the content identifier.
+        /// </summary>
+        [DataMember]
+        public Guid ContentId { get; }
 
         /// <summary>
         /// Adds an asset.

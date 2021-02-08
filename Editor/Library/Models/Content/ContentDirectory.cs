@@ -41,6 +41,9 @@
         public IReadOnlyCollection<ContentNode> Children => this._children;
 
         /// <inheritdoc />
+        public override string NameWithoutExtension => this.Name;
+
+        /// <inheritdoc />
         public void AddChild(ContentNode node) {
             this._children.Add(node);
             node.Initialize(this);

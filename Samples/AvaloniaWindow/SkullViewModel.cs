@@ -45,7 +45,7 @@
 
             var skull = new SpriteSheet();
             this.Game.Project.Assets.SetContentMapping(skull.ContentId, "skull");
-            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(skull));
+            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(skull.ContentId, skull));
 
             var skullEntity = scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
@@ -56,7 +56,7 @@
 
             var leagueMono = new Font();
             this.Game.Project.Assets.SetContentMapping(leagueMono.ContentId, "League Mono");
-            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(leagueMono));
+            this.Game.Project.Assets.LoadMetadata(new ContentMetadata(leagueMono.ContentId, leagueMono));
 
             var textRenderEntity = scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
