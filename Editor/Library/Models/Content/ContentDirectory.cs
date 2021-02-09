@@ -34,7 +34,8 @@
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public ContentDirectory(string name) : base(name) {
+        /// <param name="parent">The parent content directory.</param>
+        public ContentDirectory(string name, IContentDirectory parent) : base(name, parent) {
         }
 
         /// <inheritdoc />

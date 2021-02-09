@@ -2,6 +2,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
 
@@ -87,9 +88,34 @@
 
         private IList<ContentFile> ResolveContentFiles(IContentDirectory directory) {
             var contentFiles = new List<ContentFile>();
-            // TODO: find all directories under this and recursively resolve their content files
-            // TODO: then find all files and create ContentFiles and fill them with metadata.
+            var path = directory.GetFullPath();
+            if (Directory.Exists(path)) {
+                var subdirectories = Directory.GetDirectories(path);
+                foreach (var subdirectory in subdirectories) {
+                    var subContentDirectory = new ContentDirectory(Path.GetDirectoryName(subdirectory), directory);
+                    contentFiles.AddRange(this.ResolveContentFiles(subContentDirectory));
+                }
+
+                var files = Directory.GetFiles(path);
+                foreach (var file in files.Where(x => !x.EndsWith(ContentFile.FileExtension))) {
+                    if (this.TryGetContentFile(file, out var contentFile) && contentFile != null) {
+                        
+                    }
+                }
+
+
+                // TODO: find all directories under this and recursively resolve their content files
+                // TODO: then find all files and create ContentFiles and fill them with metadata.
+            }
+            
+
             return contentFiles;
+        }
+
+        private bool TryGetContentFile(string filePath, out ContentFile contentFile) {
+            contentFile = null;
+
+            return contentFile != null;
         }
     }
 }

@@ -9,7 +9,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RootContentDirectory" /> class.
         /// </summary>
-        public RootContentDirectory(string pathToContentDirectory) : base(ContentNodeName) {
+        public RootContentDirectory(string pathToContentDirectory) : base(ContentNodeName, null) {
             this._pathToContentDirectory = pathToContentDirectory;
         }
 

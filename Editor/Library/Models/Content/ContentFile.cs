@@ -8,6 +8,12 @@
     /// A content file for the project.
     /// </summary>
     public abstract class ContentFile : ContentNode {
+        /// <summary>
+        /// The file extension placed on metadata files before being compiled. Replaced with .xnb during content build.
+        /// </summary>
+        public const string FileExtension = ".m2d";
+        
+        
         /// <inheritdoc />
         protected ContentFile(string name, ContentMetadata metadata) : base(name) {
             this.Metadata = metadata;
