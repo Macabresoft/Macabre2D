@@ -22,8 +22,6 @@
 
         private byte _columns = 1;
         private Texture2D? _content;
-        private bool _isInitialized;
-
         private byte _rows = 1;
 
         [DataMember]
@@ -60,10 +58,6 @@
                 }
             }
         }
-
-        /// <inheritdoc />
-        [DataMember]
-        public Guid ContentId { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets the number of rows in this sprite sheet.
@@ -184,21 +178,6 @@
             }
 
             return location;
-        }
-
-        /// <inheritdoc />
-        public void Initialize() {
-            if (!this._isInitialized) {
-                foreach (var spriteAnimation in this._spriteAnimations) {
-                    spriteAnimation.Initialize(this);
-                }
-
-                foreach (var autoTileSet in this._autoTileSets) {
-                    autoTileSet.Initialize(this);
-                }
-
-                this._isInitialized = true;
-            }
         }
 
         /// <inheritdoc />

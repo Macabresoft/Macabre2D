@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Physics {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;
@@ -27,9 +28,10 @@
             physicsService.TimeStep = 1f / 60f;
 
             var leagueMonoFont = new Font();
-            this.Project.Assets.SetContentMapping(leagueMonoFont.ContentId, "League Mono");
-            this.Project.Assets.SetAssetMapping(leagueMonoFont.AssetId, leagueMonoFont.ContentId);
-            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoFont.ContentId, leagueMonoFont));
+            var leagueMonoContentId = Guid.NewGuid();
+            this.Project.Assets.SetContentMapping(leagueMonoContentId, "League Mono");
+            this.Project.Assets.SetAssetMapping(leagueMonoFont.AssetId, leagueMonoContentId);
+            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoContentId, leagueMonoFont));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();

@@ -147,6 +147,10 @@
         /// <inheritdoc />
         public void LoadMetadata(ContentMetadata metadata) {
             this._loadedMetadata.Add(metadata);
+
+            foreach (var asset in metadata.Assets) {
+                this._assetIdToContentIdMapping[asset.AssetId] = metadata.ContentId;
+            }
         }
 
         /// <inheritdoc />
@@ -271,7 +275,10 @@
 
 
         private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
-            if (asset is IContentAsset<TContent> {Content: null} contentAsset && this.TryLoadContent<TContent>(contentAsset.ContentId, out var content) && content != null) {
+            if (asset is IContentAsset<TContent> {Content: null} contentAsset && 
+                this._assetIdToContentIdMapping.TryGetValue(contentAsset.AssetId, out var contentId) &&
+                this.TryLoadContent<TContent>(contentId, out var content) && 
+                content != null) {
                 contentAsset.LoadContent(content);
             }
         }

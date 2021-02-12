@@ -12,9 +12,17 @@
         /// The file extension placed on metadata files before being compiled. Replaced with .xnb during content build.
         /// </summary>
         public const string FileExtension = ".m2d";
-        
-        
+
         /// <inheritdoc />
+        protected ContentFile(string name) : this(name, new ContentMetadata()) {
+            
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentNode" /> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="metadata">The metadata.</param>
         protected ContentFile(string name, ContentMetadata metadata) : base(name) {
             this.Metadata = metadata;
         }
@@ -22,7 +30,7 @@
         /// <summary>
         /// Gets the assets.
         /// </summary>
-        public abstract IReadOnlyCollection<IAsset> Assets { get; }
+        public IReadOnlyCollection<IAsset> Assets => this.Metadata?.Assets;
         
         /// <summary>
         /// The metadata.
@@ -58,9 +66,6 @@
         /// <inheritdoc />
         protected ContentFile(string name, ContentMetadata metadata) : base(name, metadata) {
         }
-
-        /// <inheritdoc />
-        public override IReadOnlyCollection<IAsset> Assets => this.Metadata.Assets;
 
         /// <inheritdoc />
         public override bool RemoveAsset(IAsset asset) {

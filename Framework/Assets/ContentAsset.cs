@@ -10,12 +10,7 @@
         /// Gets the content.
         /// </summary>
         TContent? Content { get; }
-
-        /// <summary>
-        /// Gets the identifier for the content that this asset contains.
-        /// </summary>
-        Guid ContentId { get; }
-
+        
         /// <summary>
         /// Loads content for this asset.
         /// </summary>
@@ -28,9 +23,6 @@
     /// </summary>
     /// <typeparam name="TContent">The type of content.</typeparam>
     public class ContentAsset<TContent> : Asset, IContentAsset<TContent> where TContent : class {
-        /// <inheritdoc />
-        [DataMember]
-        public Guid ContentId { get; } = Guid.NewGuid();
 
         /// <inheritdoc />
         public TContent? Content { get; private set; }

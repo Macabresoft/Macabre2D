@@ -98,7 +98,7 @@
 
                 var files = Directory.GetFiles(path);
                 foreach (var file in files.Where(x => !x.EndsWith(ContentFile.FileExtension))) {
-                    if (this.TryGetContentFile(file, out var contentFile) && contentFile != null) {
+                    if (this.TryGetContentFile(file, directory, out var contentFile) && contentFile != null) {
                         
                     }
                 }
@@ -112,7 +112,7 @@
             return contentFiles;
         }
 
-        private bool TryGetContentFile(string filePath, out ContentFile contentFile) {
+        private bool TryGetContentFile(string filePath, IContentDirectory parent, out ContentFile contentFile) {
             contentFile = null;
 
             return contentFile != null;

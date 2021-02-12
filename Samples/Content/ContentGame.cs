@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Content {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;
@@ -26,8 +27,9 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.Project.Assets.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(whiteSquare.ContentId, whiteSquare));
+            var whiteSquareContentId = Guid.NewGuid();
+            this.Project.Assets.SetContentMapping(whiteSquareContentId, "WhiteSquare");
+            this.Project.Assets.LoadMetadata(new ContentMetadata(whiteSquareContentId, whiteSquare));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -54,16 +56,18 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            this.Project.Assets.SetContentMapping(font.ContentId, "League Mono");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(font.ContentId, font));
+            var fontContentId = Guid.NewGuid();
+            this.Project.Assets.SetContentMapping(fontContentId, "League Mono");
+            this.Project.Assets.LoadMetadata(new ContentMetadata(fontContentId, font));
 
             var coloredSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            this.Project.Assets.SetContentMapping(coloredSquares.ContentId, "ColoredSquares");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(coloredSquares.ContentId, coloredSquares));
+            var coloredSquaresContentId = Guid.NewGuid();
+            this.Project.Assets.SetContentMapping(coloredSquaresContentId, "ColoredSquares");
+            this.Project.Assets.LoadMetadata(new ContentMetadata(coloredSquaresContentId, coloredSquares));
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -192,8 +196,9 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            this.Project.Assets.SetContentMapping(laser.ContentId, "laser");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(laser.ContentId, laser));
+            var lasterContentId = Guid.NewGuid();
+            this.Project.Assets.SetContentMapping(lasterContentId, "laser");
+            this.Project.Assets.LoadMetadata(new ContentMetadata(lasterContentId, laser));
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();
