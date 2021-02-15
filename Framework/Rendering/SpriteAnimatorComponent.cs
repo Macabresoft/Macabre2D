@@ -38,7 +38,7 @@
         public override byte SpriteIndex => this._currentSpriteIndex;
 
         /// <inheritdoc />
-        public override SpriteSheet? SpriteSheet => this.AnimationReference.SpriteSheet;
+        public override SpriteSheet? SpriteSheet => this.AnimationReference.Asset;
 
         /// <inheritdoc />
         public int UpdateOrder => 0;
@@ -67,7 +67,7 @@
         /// animation has been queued.
         /// </param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
-            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.Package?.AssetId) {
+            if (this.AnimationReference.Asset is SpriteSheet spriteSheet && spriteSheet.HasPackagedAsset(animation.Id)) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
             }
         }
@@ -82,7 +82,7 @@
         /// </param>
         /// <param name="numberOfLoops">The number of loops.</param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
-            if (this.AnimationReference.SpriteSheet is SpriteSheet spriteSheet && spriteSheet.AssetId == animation.Package?.AssetId) {
+            if (this.AnimationReference.Asset is SpriteSheet spriteSheet && spriteSheet.HasPackagedAsset(animation.Id)) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
             }
         }
@@ -90,10 +90,10 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this.Entity.Scene.Game.Project.Assets.ResolveAsset<SpriteAnimation, SpriteSheet, Texture2D>(this.AnimationReference);
+            this.Entity.Scene.Game.Project.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.AnimationReference);
 
             this._millisecondsPerFrame = 1000u / this._frameRate;
-            if (this.AnimationReference.Asset is SpriteAnimation animation) {
+            if (this.AnimationReference.PackagedAsset is SpriteAnimation animation) {
                 this.Play(animation, true);
 
                 var step = animation.Steps.FirstOrDefault();

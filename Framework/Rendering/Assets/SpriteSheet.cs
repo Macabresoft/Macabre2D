@@ -2,7 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -11,17 +10,13 @@
     /// A sprite sheet tied to a single <see cref="Texture2D" /> which also defines sprites, animations, and tile sets.
     /// </summary>
     [DataContract]
-    public class SpriteSheet :
-        Asset,
-        IAssetPackage<SpriteAnimation, Texture2D>,
-        IAssetPackage<AutoTileSet, Texture2D> {
+    public class SpriteSheet : AssetPackage<Texture2D> {
         private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
 
         [DataMember]
         private ObservableCollection<AutoTileSet> _autoTileSets = new();
 
         private byte _columns = 1;
-        private Texture2D? _content;
         private byte _rows = 1;
 
         [DataMember]
@@ -43,18 +38,6 @@
                 if (this.Set(ref this._columns, value)) {
                     this._spriteIndexToLocation.Clear();
                     this.ResetColumnWidth();
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public Texture2D? Content {
-            get => this._content;
-            private set {
-                if (this.Set(ref this._content, value)) {
-                    this._spriteIndexToLocation.Clear();
-                    this.ResetColumnWidth();
-                    this.ResetRowHeight();
                 }
             }
         }
@@ -84,12 +67,6 @@
             get => this._spriteSize;
             private set => this.Set(ref this._spriteSize, value);
         }
-
-        /// <inheritdoc />
-        IReadOnlyCollection<AutoTileSet> IAssetPackage<AutoTileSet>.Assets => this._autoTileSets;
-
-        /// <inheritdoc />
-        IReadOnlyCollection<SpriteAnimation> IAssetPackage<SpriteAnimation>.Assets => this._spriteAnimations;
 
         /// <summary>
         /// Draws the specified sprite.
@@ -156,11 +133,11 @@
         /// <param name="color">The color.</param>
         /// <param name="orientation">The orientation.</param>
         public void Draw(
-            SpriteBatch spriteBatch, 
-            ushort pixelsPerUnit, 
-            byte spriteIndex, 
+            SpriteBatch spriteBatch,
+            ushort pixelsPerUnit,
+            byte spriteIndex,
             Transform transform,
-            Color color, 
+            Color color,
             SpriteEffects orientation) {
             this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
         }
@@ -181,8 +158,11 @@
         }
 
         /// <inheritdoc />
-        public void LoadContent(Texture2D content) {
-            this.Content = content;
+        public override void LoadContent(Texture2D content) {
+            base.LoadContent(content);
+            this._spriteIndexToLocation.Clear();
+            this.ResetColumnWidth();
+            this.ResetRowHeight();
         }
 
         /// <summary>
@@ -190,64 +170,6 @@
         /// </summary>
         public void UnloadContent() {
             this.Content = null;
-        }
-
-        /// <inheritdoc />
-        public bool RemoveAsset(AutoTileSet asset) {
-            return this._autoTileSets.Remove(asset);
-        }
-
-        /// <inheritdoc />
-        public bool RemoveAsset(SpriteAnimation asset) {
-            return this._spriteAnimations.Remove(asset);
-        }
-
-        /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out AutoTileSet? asset) {
-            asset = this._autoTileSets.FirstOrDefault(x => x.AssetId == id);
-            return asset != null;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetAsset(Guid id, out SpriteAnimation? asset) {
-            asset = this._spriteAnimations.FirstOrDefault(x => x.AssetId == id);
-            return asset != null;
-        }
-
-        /// <inheritdoc />
-        AutoTileSet IAssetPackage<AutoTileSet>.AddAsset() {
-            var asset = new AutoTileSet();
-            this._autoTileSets.Add(asset);
-            asset.Initialize(this);
-            return asset;
-        }
-
-        /// <inheritdoc />
-        SpriteAnimation IAssetPackage<SpriteAnimation>.AddAsset() {
-            var asset = new SpriteAnimation();
-            this._spriteAnimations.Add(asset);
-            asset.Initialize(this);
-            return asset;
-        }
-
-        /// <inheritdoc />
-        bool IAssetPackage<AutoTileSet>.RemoveAsset(Guid assetId) {
-            var result = false;
-            if (this._autoTileSets.FirstOrDefault(x => x.AssetId == assetId) is AutoTileSet asset) {
-                result = this._autoTileSets.Remove(asset);
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc />
-        bool IAssetPackage<SpriteAnimation>.RemoveAsset(Guid assetId) {
-            var result = false;
-            if (this._spriteAnimations.FirstOrDefault(x => x.AssetId == assetId) is SpriteAnimation asset) {
-                result = this._spriteAnimations.Remove(asset);
-            }
-
-            return result;
         }
 
         private void ResetColumnWidth() {

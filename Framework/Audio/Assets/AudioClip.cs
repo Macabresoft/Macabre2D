@@ -5,7 +5,7 @@
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    public sealed class AudioClip : ContentAsset<SoundEffect>, IDisposable {
+    public sealed class AudioClip : Asset<SoundEffect>, IDisposable {
         /// <summary>
         /// Gets a sound effect instance.
         /// </summary>

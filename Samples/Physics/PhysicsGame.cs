@@ -27,11 +27,9 @@
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 
-            var leagueMonoFont = new Font();
-            var leagueMonoContentId = Guid.NewGuid();
-            this.Project.Assets.SetContentMapping(leagueMonoContentId, "League Mono");
-            this.Project.Assets.SetAssetMapping(leagueMonoFont.AssetId, leagueMonoContentId);
-            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMonoContentId, leagueMonoFont));
+            var leagueMono = new Font();
+            this.Project.Assets.SetContentMapping(leagueMono.ContentId, "League Mono");
+            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMono.ContentId, leagueMono));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();
@@ -39,7 +37,7 @@
             var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
-            frameRateDisplay.FontReference.Initialize(leagueMonoFont);
+            frameRateDisplay.FontReference.Initialize(leagueMono);
 
             var circleEntity = scene.AddChild();
             var circleBody = circleEntity.AddComponent<DynamicPhysicsBodyComponent>();

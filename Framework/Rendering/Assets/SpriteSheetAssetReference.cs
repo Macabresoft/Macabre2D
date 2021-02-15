@@ -1,26 +1,51 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
+    using System;
     using System.ComponentModel;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
     /// </summary>
-    /// <typeparam name="TAsset">The type of asset.</typeparam>
-    public class SpriteSheetAssetReference<TAsset> : PackagedAssetReference<TAsset, SpriteSheet> where TAsset : SpriteSheetAsset {
+    /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
+    public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet> where TPackagedAsset : SpriteSheetAsset {
+        private Guid _packagedAssetId;
+
         /// <summary>
-        /// Gets the sprite sheet.
+        /// Gets the packaged asset.
         /// </summary>
-        public SpriteSheet? SpriteSheet => this.Asset?.Package;
+        public TPackagedAsset? PackagedAsset { get; private set; }
+
+        /// <summary>
+        /// Gets the packaged asset identifier.
+        /// </summary>
+        [DataMember]
+        public Guid PackagedAssetId {
+            get => this._packagedAssetId;
+            set {
+                if (this.Set(ref this._packagedAssetId, value)) {
+                    this.ResolvePackagedAsset();
+                }
+            }
+        }
 
         /// <inheritdoc />
-        public override void Initialize(TAsset asset) {
-            if (this.Asset?.Package is SpriteSheet originalSpriteSheet) {
-                originalSpriteSheet.PropertyChanged -= this.SpriteSheet_OnPropertyChanged;
-            }
-
+        public override void Initialize(SpriteSheet asset) {
             base.Initialize(asset);
 
-            if (this.Asset?.Package is SpriteSheet newSpriteSheet) {
-                newSpriteSheet.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
+            if (this.PackagedAsset is TPackagedAsset originalPackagedAsset) {
+                originalPackagedAsset.PropertyChanged -= this.SpriteSheet_OnPropertyChanged;
+            }
+
+            this.ResolvePackagedAsset();
+
+            if (this.PackagedAsset is TPackagedAsset newPackagedAsset) {
+                newPackagedAsset.PropertyChanged += this.SpriteSheet_OnPropertyChanged;
+            }
+        }
+
+        private void ResolvePackagedAsset() {
+            if (this.Asset != null && this.Asset.TryGetPackaged<TPackagedAsset>(this.PackagedAssetId, out var packagedAsset)) {
+                this.PackagedAsset = packagedAsset;
             }
         }
 

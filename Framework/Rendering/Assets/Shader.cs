@@ -7,12 +7,6 @@
     /// <summary>
     /// A shader that wraps around <see cref="Effect" />.
     /// </summary>
-    public sealed class Shader : ContentAsset<Effect>, IAsset, IDisposable {
-        
-        /// <inheritdoc />
-        public void Dispose() {
-            this.Content?.Dispose();
-            this.DisposePropertyChanged();
-        }
+    public sealed class Shader : Asset<Effect> {
     }
 }

@@ -36,12 +36,6 @@
         void LoadMetadata(ContentMetadata metadata);
 
         /// <summary>
-        /// Resets asset mappings by clearing out the current mappings and replacing them with the newly provided mappings.
-        /// </summary>
-        /// <param name="assetIdToContentIdMapping">A map of asset identifiers to their corresponding content identifier.</param>
-        void ResetAssetMappings(IEnumerable<(Guid AssetId, Guid ContentId)> assetIdToContentIdMapping);
-
-        /// <summary>
         /// Resets content mappings by clearing out the current mappings and replacing them with the newly provided mappings.
         /// </summary>
         /// <param name="contentIdToPathMapping">A map of content identifiers to their path.</param>
@@ -55,34 +49,14 @@
         /// <typeparam name="TContent">The type of content.</typeparam>
         /// <returns>A value indicating whether or not the asset was resolved.</returns>
         bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
-
-        /// <summary>
-        /// Resolves a packaged asset reference and loads required content.
-        /// </summary>
-        /// <param name="assetReference">The asset reference to resolve.</param>
-        /// <typeparam name="TPackagedAsset">The type of asset being requested from an asset package.</typeparam>
-        /// <typeparam name="TAssetPackage">The type of package the asset belongs to.</typeparam>
-        /// <typeparam name="TContent">The type of content.</typeparam>
-        /// <returns>A value indicating whether or not the asset was resolved.</returns>
-        bool ResolveAsset<TPackagedAsset, TAssetPackage, TContent>(PackagedAssetReference<TPackagedAsset, TAssetPackage> assetReference)
-            where TAssetPackage : class, IAsset, IAssetPackage<TPackagedAsset>
-            where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage>
-            where TContent : class;
-
-        /// <summary>
-        /// Sets the asset mapping.
-        /// </summary>
-        /// <param name="assetId">The asset identifier.</param>
-        /// <param name="contentId">The content identifier.</param>
-        void SetAssetMapping(Guid assetId, Guid contentId);
-
+        
         /// <summary>
         /// Sets the content mapping.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="contentPath">The content path.</param>
         void SetContentMapping(Guid contentId, string contentPath);
-
+        
         /// <summary>
         /// Gets the path.
         /// </summary>
@@ -121,9 +95,6 @@
     [DataContract]
     public sealed class AssetManager : IAssetManager {
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Guid, Guid> _assetIdToContentIdMapping = new();
-
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Guid, string> _contentIdToPathMapping = new();
 
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
@@ -147,21 +118,8 @@
         /// <inheritdoc />
         public void LoadMetadata(ContentMetadata metadata) {
             this._loadedMetadata.Add(metadata);
-
-            foreach (var asset in metadata.Assets) {
-                this._assetIdToContentIdMapping[asset.AssetId] = metadata.ContentId;
-            }
         }
-
-        /// <inheritdoc />
-        public void ResetAssetMappings(IEnumerable<(Guid AssetId, Guid ContentId)> assetIdToContentIdMapping) {
-            this._contentIdToPathMapping.Clear();
-
-            foreach (var (contentId, contentPath) in assetIdToContentIdMapping) {
-                this.SetAssetMapping(contentId, contentPath);
-            }
-        }
-
+        
         /// <inheritdoc />
         public void ResetContentMappings(IEnumerable<(Guid ContentId, string ContentPath)> contentIdToPathMapping) {
             this._contentIdToPathMapping.Clear();
@@ -175,34 +133,13 @@
         public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference)
             where TAsset : class, IAsset
             where TContent : class {
-            var asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.AssetId);
+            var asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.ContentId);
             if (asset != null) {
                 this.LoadContentForAsset<TContent>(asset);
                 assetReference.Initialize(asset);
             }
 
             return asset != null;
-        }
-
-        /// <inheritdoc />
-        public bool ResolveAsset<TPackagedAsset, TAssetPackage, TContent>(PackagedAssetReference<TPackagedAsset, TAssetPackage> assetReference)
-            where TAssetPackage : class, IAsset, IAssetPackage<TPackagedAsset>
-            where TPackagedAsset : class, IAsset, IPackagedAsset<TAssetPackage>
-            where TContent : class {
-            var asset = assetReference.Asset;
-            var package = asset?.Package ?? this.GetAsset<TAssetPackage>(assetReference.PackageId);
-            if (package != null && (asset != null || (package.TryGetAsset(assetReference.AssetId, out asset) && asset != null))) {
-                this.LoadContentForAsset<TContent>(package);
-                assetReference.Initialize(asset);
-                asset.Initialize(package);
-            }
-            
-            return asset != null;
-        }
-
-        /// <inheritdoc />
-        public void SetAssetMapping(Guid assetId, Guid contentId) {
-            this._assetIdToContentIdMapping[assetId] = contentId;
         }
 
         /// <inheritdoc />
@@ -252,20 +189,18 @@
             this._contentManager?.Unload();
         }
 
-        private TAsset? GetAsset<TAsset>(Guid assetId) where TAsset : class, IAsset {
+        private TAsset? GetAsset<TAsset>(Guid contentId) where TAsset : class, IAsset {
             TAsset? result = null;
-            if (assetId != Guid.Empty) {
-                if (this._loadedMetadata.SelectMany(x => x.Assets).OfType<TAsset>().FirstOrDefault(x => x.AssetId == assetId) is TAsset asset) {
+            if (contentId != Guid.Empty) {
+                if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId)?.Asset is TAsset asset) {
                     result = asset;
                 }
-                else if (this._assetIdToContentIdMapping.TryGetValue(assetId, out var contentId) &&
-                         contentId != Guid.Empty &&
-                         this.TryGetContentPath(contentId, out var path) &&
+                else if (this.TryGetContentPath(contentId, out var path) &&
                          !string.IsNullOrWhiteSpace(path)) {
                     var metadataPath = Path.Combine(path, ContentMetadata.FileExtension);
                     if (this.TryLoadContent<ContentMetadata>(metadataPath, out var metadata) && metadata != null) {
                         this._loadedMetadata.Add(metadata);
-                        result = metadata.Assets.FirstOrDefault(x => x.AssetId == assetId) as TAsset;
+                        result = metadata.Asset as TAsset;
                     }
                 }
             }
@@ -275,9 +210,8 @@
 
 
         private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
-            if (asset is IContentAsset<TContent> {Content: null} contentAsset && 
-                this._assetIdToContentIdMapping.TryGetValue(contentAsset.AssetId, out var contentId) &&
-                this.TryLoadContent<TContent>(contentId, out var content) && 
+            if (asset is IAsset<TContent> {Content: null} contentAsset && 
+                this.TryLoadContent<TContent>(asset.ContentId, out var content) && 
                 content != null) {
                 contentAsset.LoadContent(content);
             }

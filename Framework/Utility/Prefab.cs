@@ -22,7 +22,7 @@
         /// <param name="assetId">The asset identifier.</param>
         /// <param name="component">The component.</param>
         public Prefab(Guid assetId, IGameEntity component) {
-            this.AssetId = assetId;
+            this.ContentId = assetId;
             this.Entity = component;
             this.Name = this.Entity.Name;
         }
@@ -32,7 +32,7 @@
         /// </summary>
         /// <value>The asset identifier.</value>
         [DataMember]
-        public Guid AssetId { get; set; }
+        public Guid ContentId { get; set; }
 
         /// <summary>
         /// Gets or sets the component this is a prefab for.

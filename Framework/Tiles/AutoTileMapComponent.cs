@@ -63,7 +63,7 @@
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.Asset is AutoTileSet tileSet && tileSet.Package is SpriteSheet spriteSheet) {
+            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.PackagedAsset is AutoTileSet tileSet && this.TileSetReference.Asset is SpriteSheet spriteSheet) {
                 foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                     var boundingArea = this.GetTileBoundingArea(activeTile);
                     if (boundingArea.Overlaps(viewBoundingArea)) {
@@ -140,7 +140,7 @@
 
         private byte GetIndex(Point tile) {
             byte index;
-            if (this.TileSetReference.Asset?.UseIntermediateDirections == true) {
+            if (this.TileSetReference.PackagedAsset?.UseIntermediateDirections == true) {
                 var direction = IntermediateDirections.None;
                 if (this.HasActiveTileAt(tile + new Point(0, 1))) {
                     direction |= IntermediateDirections.North;
@@ -222,7 +222,7 @@
         }
 
         private void ResetSpriteScale() {
-            if (this.TileSetReference.SpriteSheet is SpriteSheet spriteSheet) {
+            if (this.TileSetReference.Asset is SpriteSheet spriteSheet) {
                 this._spriteScale = this.GetTileScale(spriteSheet.SpriteSize);
             }
         }

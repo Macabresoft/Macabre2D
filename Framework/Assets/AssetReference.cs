@@ -9,7 +9,6 @@
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]
     public class AssetReference<TAsset> : NotifyPropertyChanged, IDisposable where TAsset : class, IAsset {
-
         /// <summary>
         /// Gets the asset.
         /// </summary>
@@ -19,7 +18,7 @@
         /// Gets or sets the asset identifier.
         /// </summary>
         [DataMember]
-        public Guid AssetId { get; private set; }
+        public Guid ContentId { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() {
@@ -39,7 +38,7 @@
 
             this.Asset = asset;
             this.Asset.PropertyChanged += this.Asset_PropertyChanged;
-            this.AssetId = this.Asset.AssetId;
+            this.ContentId = this.Asset.ContentId;
         }
 
         private void Asset_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
