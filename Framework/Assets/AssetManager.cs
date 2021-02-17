@@ -1,28 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework.Content;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Interface to manage assets.
     /// </summary>
     public interface IAssetManager {
-        /// <summary>
-        /// Clears the mappings.
-        /// </summary>
-        void ClearMappings();
-
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>The identifier associated with the path provided.</returns>
-        Guid GetContentId(string path);
-
         /// <summary>
         /// Initializes this instance.
         /// </summary>
@@ -30,16 +16,10 @@
         void Initialize(ContentManager contentManager);
 
         /// <summary>
-        /// Loads the content meta data into the cache.
+        /// Registers the content meta data into the cache.
         /// </summary>
         /// <param name="metadata">The metadata.</param>
-        void LoadMetadata(ContentMetadata metadata);
-
-        /// <summary>
-        /// Resets content mappings by clearing out the current mappings and replacing them with the newly provided mappings.
-        /// </summary>
-        /// <param name="contentIdToPathMapping">A map of content identifiers to their path.</param>
-        void ResetContentMappings(IEnumerable<(Guid ContentId, string ContentPath)> contentIdToPathMapping);
+        void RegisterMetadata(ContentMetadata metadata);
 
         /// <summary>
         /// Resolves an asset reference and loads required content.
@@ -49,21 +29,6 @@
         /// <typeparam name="TContent">The type of content.</typeparam>
         /// <returns>A value indicating whether or not the asset was resolved.</returns>
         bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
-        
-        /// <summary>
-        /// Sets the content mapping.
-        /// </summary>
-        /// <param name="contentId">The content identifier.</param>
-        /// <param name="contentPath">The content path.</param>
-        void SetContentMapping(Guid contentId, string contentPath);
-        
-        /// <summary>
-        /// Gets the path.
-        /// </summary>
-        /// <param name="contentId">The identifier.</param>
-        /// <param name="path">The path.</param>
-        /// <returns>A value indicating whether or not the path was found.</returns>
-        bool TryGetContentPath(Guid contentId, out string? path);
 
         /// <summary>
         /// Loads the asset at the specified path.
@@ -94,21 +59,9 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Guid, string> _contentIdToPathMapping = new();
-
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
 
-        /// <inheritdoc />
-        public void ClearMappings() {
-            this._contentIdToPathMapping.Clear();
-        }
-
-        /// <inheritdoc />
-        public Guid GetContentId(string path) {
-            return this._contentIdToPathMapping.FirstOrDefault(x => x.Value == path).Key;
-        }
 
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
@@ -116,17 +69,8 @@
         }
 
         /// <inheritdoc />
-        public void LoadMetadata(ContentMetadata metadata) {
+        public void RegisterMetadata(ContentMetadata metadata) {
             this._loadedMetadata.Add(metadata);
-        }
-        
-        /// <inheritdoc />
-        public void ResetContentMappings(IEnumerable<(Guid ContentId, string ContentPath)> contentIdToPathMapping) {
-            this._contentIdToPathMapping.Clear();
-
-            foreach (var (contentId, contentPath) in contentIdToPathMapping) {
-                this.SetContentMapping(contentId, contentPath);
-            }
         }
 
         /// <inheritdoc />
@@ -140,16 +84,6 @@
             }
 
             return asset != null;
-        }
-
-        /// <inheritdoc />
-        public void SetContentMapping(Guid contentId, string contentPath) {
-            this._contentIdToPathMapping[contentId] = contentPath;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetContentPath(Guid contentId, out string? path) {
-            return this._contentIdToPathMapping.TryGetValue(contentId, out path);
         }
 
         /// <inheritdoc />
@@ -169,7 +103,7 @@
 
         /// <inheritdoc />
         public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
-            if (this._contentManager != null && this._contentIdToPathMapping.TryGetValue(id, out var path)) {
+            if (this._contentManager != null && this.TryGetContentPath(id, out var path)) {
                 try {
                     loaded = this._contentManager.Load<T?>(path);
                 }
@@ -195,13 +129,8 @@
                 if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId)?.Asset is TAsset asset) {
                     result = asset;
                 }
-                else if (this.TryGetContentPath(contentId, out var path) &&
-                         !string.IsNullOrWhiteSpace(path)) {
-                    var metadataPath = Path.Combine(path, ContentMetadata.FileExtension);
-                    if (this.TryLoadContent<ContentMetadata>(metadataPath, out var metadata) && metadata != null) {
-                        this._loadedMetadata.Add(metadata);
-                        result = metadata.Asset as TAsset;
-                    }
+                else if (this.TryGetContentMetadata(contentId, out var metadata) && metadata != null) {
+                    result = metadata.Asset as TAsset;
                 }
             }
 
@@ -210,11 +139,37 @@
 
 
         private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
-            if (asset is IAsset<TContent> {Content: null} contentAsset && 
-                this.TryLoadContent<TContent>(asset.ContentId, out var content) && 
+            if (asset is IAsset<TContent> {Content: null} contentAsset &&
+                this.TryLoadContent<TContent>(asset.ContentId, out var content) &&
                 content != null) {
                 contentAsset.LoadContent(content);
             }
+        }
+
+        private bool TryGetContentMetadata(Guid contentId, out ContentMetadata? metadata) {
+            if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId) is ContentMetadata cachedMetadata) {
+                metadata = cachedMetadata;
+            }
+            else if (this.TryLoadContent(ContentMetadata.GetMetadataPath(contentId), out ContentMetadata? foundMetadata) && foundMetadata != null) {
+                metadata = foundMetadata;
+                this.RegisterMetadata(foundMetadata);
+            }
+            else {
+                metadata = null;
+            }
+
+            return metadata != null;
+        }
+
+        private bool TryGetContentPath(Guid contentId, out string? contentPath) {
+            if (this.TryGetContentMetadata(contentId, out var metadata) && metadata != null) {
+                contentPath = metadata.ContentPath;
+            }
+            else {
+                contentPath = null;
+            }
+
+            return !string.IsNullOrEmpty(contentPath);
         }
     }
 }

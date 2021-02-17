@@ -26,8 +26,7 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.Project.Assets.SetContentMapping(whiteSquare.ContentId, "WhiteSquare");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(whiteSquare.ContentId, whiteSquare));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, "WhiteSquare"));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -54,16 +53,14 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            this.Project.Assets.SetContentMapping(font.ContentId, "League Mono");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(font.ContentId, font));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(font, "League Mono"));
 
             var colorfulSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            this.Project.Assets.SetContentMapping(colorfulSquares.ContentId, "ColoredSquares");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(colorfulSquares.ContentId, colorfulSquares));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, "ColoredSquares"));
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -191,8 +188,7 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            this.Project.Assets.SetContentMapping(laser.ContentId, "laser");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(laser.ContentId, laser));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(laser, "laser"));
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

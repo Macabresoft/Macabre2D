@@ -28,8 +28,7 @@
             physicsService.TimeStep = 1f / 60f;
 
             var leagueMono = new Font();
-            this.Project.Assets.SetContentMapping(leagueMono.ContentId, "League Mono");
-            this.Project.Assets.LoadMetadata(new ContentMetadata(leagueMono.ContentId, leagueMono));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(leagueMono, "League Mono"));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();

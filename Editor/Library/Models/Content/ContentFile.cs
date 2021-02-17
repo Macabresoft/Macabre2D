@@ -12,10 +12,6 @@
         /// The file extension placed on metadata files before being compiled. Replaced with .xnb during content build.
         /// </summary>
         public const string FileExtension = ".m2d";
-
-        /// <inheritdoc />
-        protected ContentFile(string name, IAsset asset) : this(name, new ContentMetadata(Guid.NewGuid(), asset)) {
-        }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
