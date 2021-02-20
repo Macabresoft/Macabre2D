@@ -19,6 +19,11 @@
         public const string MetadataDirectoryName = ".metadata";
 
         /// <summary>
+        /// The directory name for archived metadata.
+        /// </summary>
+        public const string ArchiveDirectoryName = ".archive";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
         /// </summary>
         /// <remarks>This constructor should only be used when metadata is being deserialized.</remarks>

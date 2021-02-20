@@ -62,7 +62,6 @@
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
 
-
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));

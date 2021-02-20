@@ -1,5 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
     using Macabresoft.Core;
 
     /// <summary>
@@ -22,6 +24,11 @@
         /// </summary>
         /// <param name="node">The child node to remove.</param>
         void RemoveChild(ContentNode node);
+
+        /// <summary>
+        /// Loads the child directories under this node.
+        /// </summary>
+        void LoadChildDirectories();
     }
 
     /// <summary>
@@ -53,6 +60,25 @@
         /// <inheritdoc />
         public void RemoveChild(ContentNode node) {
             this._children.Remove(node);
+        }
+
+        /// <inheritdoc />
+        public void LoadChildDirectories() {
+            var currentDirectoryPath = this.GetFullPath();
+
+            if (Directory.Exists(currentDirectoryPath)) {
+                var directories = Directory.GetDirectories(currentDirectoryPath).Where(x => Path.GetDirectoryName(x)?.StartsWith('.') == false);
+
+                foreach (var directory in directories) {
+                    this.LoadDirectory(directory);
+                }
+            }
+        }
+        
+        private void LoadDirectory(string path) {
+            var node = new ContentDirectory(path, this);
+            this.AddChild(node);
+            node.LoadChildDirectories();
         }
     }
 }

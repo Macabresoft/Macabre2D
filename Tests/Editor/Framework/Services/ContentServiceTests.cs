@@ -5,6 +5,7 @@
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
     using NUnit.Framework;
 
     [TestFixture]
@@ -19,7 +20,7 @@
         [Test]
         [Category("Integration Tests")]
         public void Build_ShouldRunMGCB() {
-            var service = new ContentService();
+            var service = new ContentService(new Serializer());
             var contentDirectory = Path.Combine(
                 TestContext.CurrentContext.TestDirectory,
                 PathHelper.GetPathToAncestorDirectory(3),

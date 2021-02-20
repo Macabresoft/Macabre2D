@@ -4,10 +4,11 @@
     using Microsoft.Xna.Framework.Graphics;
 
     public class ImageContentFile : ContentFile<Texture2D> {
-        private static readonly Type[] AvailableAssetTypes = {
-            typeof(SpriteSheet)
-        };
 
+        public ImageContentFile(string name, string contentPath) : this(name, new ContentMetadata(new SpriteSheet(), contentPath)) {
+            
+        }
+        
         public ImageContentFile(string name, ContentMetadata metadata) : base(name, metadata) {
         }
     }

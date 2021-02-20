@@ -41,9 +41,18 @@
     /// A service that handles MonoGame content for the editor.
     /// </summary>
     public sealed class ContentService : IContentService {
+        private readonly ISerializer _serializer;
         private RootContentDirectory _rootContentDirectory;
         private IAssetManager _assetManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentService" /> class.
+        /// </summary>
+        /// <param name="serializer">The serializer.</param>
+        public ContentService(ISerializer serializer) {
+            this._serializer = serializer;
+        }
+        
         /// <inheritdoc />
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
@@ -81,19 +90,53 @@
 
             if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && Directory.Exists(pathToContentDirectory)) {
                 this._rootContentDirectory = new RootContentDirectory(pathToContentDirectory);
-                var contentFiles = this.ResolveContentFiles(this._rootContentDirectory);
+                this.LoadAssets();
                 // reset asset manager based on the content files found.
             }
         }
 
-        private IList<ContentFile> ResolveContentFiles(IContentDirectory directory) {
+        private void LoadAssets() {
+            var metadatas = this.GetMetadata();
+
+            foreach (var metadata in metadatas) {
+                
+            }
+            
+            var newMetadata = new List<ContentMetadata>();
+            var contentFiles = this.ResolveContentFiles(this._rootContentDirectory, metadatas, newMetadata);
+        }
+
+        private IList<ContentMetadata> GetMetadata() {
+            var metadata = new List<ContentMetadata>();
+            var metaDataDirectory = Path.Combine(this._rootContentDirectory.GetFullPath(), ContentMetadata.MetadataDirectoryName);
+            if (Directory.Exists(metaDataDirectory)) {
+                var files = Directory.GetFiles(metaDataDirectory, $"*{ContentMetadata.FileExtension}");
+                foreach (var file in files) {
+                    try {
+                        var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
+                        metadata.Add(contentMetadata);
+                    }
+                    catch {
+                        // Archive the file since it can't seem to deserialize.
+                        File.Move(file, Path.Combine(metaDataDirectory, "..", ContentMetadata.ArchiveDirectoryName, Path.GetFileName(file)));
+                    }
+                }
+            }
+
+            return metadata;
+        }
+        
+        private IList<ContentFile> ResolveContentFiles(
+            IContentDirectory directory,
+            IList<ContentMetadata> unresolvedMetadata,
+            IList<ContentMetadata> newMetadata) {
             var contentFiles = new List<ContentFile>();
             var path = directory.GetFullPath();
             if (Directory.Exists(path)) {
                 var subdirectories = Directory.GetDirectories(path);
                 foreach (var subdirectory in subdirectories) {
                     var subContentDirectory = new ContentDirectory(Path.GetDirectoryName(subdirectory), directory);
-                    contentFiles.AddRange(this.ResolveContentFiles(subContentDirectory));
+                    contentFiles.AddRange(this.ResolveContentFiles(subContentDirectory, unresolvedMetadata, newMetadata));
                 }
 
                 var files = Directory.GetFiles(path);
@@ -108,7 +151,6 @@
                 // TODO: then find all files and create ContentFiles and fill them with metadata.
             }
             
-
             return contentFiles;
         }
 
