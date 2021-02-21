@@ -41,5 +41,11 @@
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
         }
+
+        [Test]
+        [Category("Integration Tests")]
+        public void Initialize_ShouldBuildContentHierarchy() {
+            
+        }
     }
 }
