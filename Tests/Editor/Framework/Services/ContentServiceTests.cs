@@ -20,7 +20,7 @@
         [Test]
         [Category("Integration Tests")]
         public void Build_ShouldRunMGCB() {
-            var service = new ContentService(new Serializer());
+            var service = new ContentService(new FileSystemService(), new Serializer());
             var contentDirectory = Path.Combine(
                 TestContext.CurrentContext.TestDirectory,
                 PathHelper.GetPathToAncestorDirectory(3),

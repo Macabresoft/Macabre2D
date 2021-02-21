@@ -1,4 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using Macabresoft.Macabre2D.Editor.Library.Services;
+
     /// <summary>
     /// The root of the content directory tree.
     /// </summary>
@@ -9,9 +11,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RootContentDirectory" /> class.
         /// </summary>
-        public RootContentDirectory(string pathToContentDirectory) : base(ContentNodeName, null) {
+        /// <param name="fileSystemService">The file service.</param>
+        /// <param name="pathToContentDirectory">The path to the content directory.</param>
+        public RootContentDirectory(IFileSystemService fileSystemService, string pathToContentDirectory) : base(ContentNodeName, null) {
             this._pathToContentDirectory = pathToContentDirectory;
-            this.LoadChildDirectories();
+            this.LoadChildDirectories(fileSystemService);
         }
 
         /// <inheritdoc />

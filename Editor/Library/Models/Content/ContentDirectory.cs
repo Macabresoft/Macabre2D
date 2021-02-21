@@ -3,6 +3,7 @@
     using System.IO;
     using System.Linq;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
 
     /// <summary>
     /// Interface for a directory content node.
@@ -28,7 +29,8 @@
         /// <summary>
         /// Loads the child directories under this node.
         /// </summary>
-        void LoadChildDirectories();
+        /// <param name="fileSystemService">The file service.</param>
+        void LoadChildDirectories(IFileSystemService fileSystemService);
     }
 
     /// <summary>
@@ -63,22 +65,22 @@
         }
 
         /// <inheritdoc />
-        public void LoadChildDirectories() {
+        public void LoadChildDirectories(IFileSystemService fileSystemService) {
             var currentDirectoryPath = this.GetFullPath();
 
-            if (Directory.Exists(currentDirectoryPath)) {
-                var directories = Directory.GetDirectories(currentDirectoryPath).Where(x => Path.GetDirectoryName(x)?.StartsWith('.') == false);
+            if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
+                var directories = fileSystemService.GetDirectories(currentDirectoryPath).Where(x => Path.GetDirectoryName(x)?.StartsWith('.') == false);
 
                 foreach (var directory in directories) {
-                    this.LoadDirectory(directory);
+                    this.LoadDirectory(fileSystemService, directory);
                 }
             }
         }
         
-        private void LoadDirectory(string path) {
+        private void LoadDirectory(IFileSystemService fileSystemService, string path) {
             var node = new ContentDirectory(path, this);
             this.AddChild(node);
-            node.LoadChildDirectories();
+            node.LoadChildDirectories(fileSystemService);
         }
     }
 }
