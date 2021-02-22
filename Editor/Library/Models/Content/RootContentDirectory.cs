@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using System.IO;
     using Macabresoft.Macabre2D.Editor.Library.Services;
 
     /// <summary>
