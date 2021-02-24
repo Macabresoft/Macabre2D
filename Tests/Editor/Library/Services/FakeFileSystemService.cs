@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Editor.Framework.Services {
+﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
     using System;
     using System.Collections.Generic;
     using System.IO;
