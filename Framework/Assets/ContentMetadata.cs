@@ -1,6 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -23,21 +26,26 @@
         /// </summary>
         public const string ArchiveDirectoryName = ".archive";
 
+        [DataMember]
+        private readonly string[] _splitContentPath;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
         /// </summary>
         /// <remarks>This constructor should only be used when metadata is being deserialized.</remarks>
-        internal ContentMetadata() : this(null, string.Empty) {
+        internal ContentMetadata() : this(null, Enumerable.Empty<string>(),  string.Empty) {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
         /// </summary>
         /// <param name="asset">The asses which manages this content.</param>
-        /// <param name="contentPath">The path to the content file without its extension.</param>
-        public ContentMetadata(IAsset? asset, string contentPath) {
+        /// <param name="splitContentPath">The split path to the content file without its extension.</param>
+        /// <param name="contentFileExtension"></param>
+        public ContentMetadata(IAsset? asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
             this.Asset = asset;
-            this.ContentPath = contentPath;
+            this.ContentFileExtension = contentFileExtension;
+            this._splitContentPath = splitContentPath.ToArray();
         }
 
         /// <summary>
@@ -54,8 +62,21 @@
         /// <summary>
         /// Gets the content's path.
         /// </summary>
+        public IReadOnlyCollection<string> SplitContentPath => this._splitContentPath;
+        
+        /// <summary>
+        /// Gets the content file's extension, including the period.
+        /// </summary>
         [DataMember]
-        public string ContentPath { get; }
+        public string ContentFileExtension { get; }
+
+        /// <summary>
+        /// Gets the content path.
+        /// </summary>
+        /// <returns>The split content path.</returns>
+        public string GetContentPath() {
+            return Path.Combine(this._splitContentPath);
+        }
 
         /// <summary>
         /// Gets the metadata path from a given identifier.

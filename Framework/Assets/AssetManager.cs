@@ -162,7 +162,7 @@
 
         private bool TryGetContentPath(Guid contentId, out string? contentPath) {
             if (this.TryGetContentMetadata(contentId, out var metadata) && metadata != null) {
-                contentPath = metadata.ContentPath;
+                contentPath = metadata.GetContentPath();
             }
             else {
                 contentPath = null;

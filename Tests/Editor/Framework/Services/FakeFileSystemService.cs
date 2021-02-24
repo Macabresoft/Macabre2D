@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
 
     public class FakeFileSystemService : IFileSystemService {
@@ -17,7 +16,7 @@
 
         public bool DoesDirectoryExist(string path) {
             var result = false;
-            var splitPath = path.Split('\\');
+            var splitPath = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
 
             if (splitPath.Length == 1) {
                 result = this.DirectoryToChildrenMap.ContainsKey(path);
@@ -46,7 +45,7 @@
         public IEnumerable<string> GetDirectories(string directoryPath) {
             var result = new List<string>();
             if (this.DoesDirectoryExist(directoryPath)) {
-                var split = directoryPath.Split('\\');
+                var split = directoryPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
                 if (this.DirectoryToChildrenMap.TryGetValue(split.Last(), out var children)) {
                     result.AddRange(children);
                 }

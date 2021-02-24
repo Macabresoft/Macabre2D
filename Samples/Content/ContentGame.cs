@@ -26,7 +26,7 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, "WhiteSquare"));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new [] { "WhiteSquare" }, ".png"));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -53,14 +53,14 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(font, "League Mono"));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(font, new[] { "League Mono" }, ".spritefont"));
 
             var colorfulSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, "ColoredSquares"));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -188,7 +188,7 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(laser, "laser"));
+            this.Project.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

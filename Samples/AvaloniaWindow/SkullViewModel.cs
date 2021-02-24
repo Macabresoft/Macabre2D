@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
-    using System;
     using Avalonia;
     using Avalonia.Controls;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
@@ -45,7 +44,7 @@
             gridComponent.RenderOrder = -1;
 
             var skull = new SpriteSheet();
-            this.Game.Project.Assets.RegisterMetadata(new ContentMetadata(skull, "skull"));
+            this.Game.Project.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
 
             var skullEntity = scene.AddChild();
             skullEntity.LocalPosition += new Vector2(0f, 0.5f);
@@ -55,7 +54,7 @@
             skullEntity.AddComponent<SampleInputComponent>();
 
             var leagueMono = new Font();
-            this.Game.Project.Assets.RegisterMetadata(new ContentMetadata(leagueMono, "League Mono"));
+            this.Game.Project.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
 
             var textRenderEntity = scene.AddChild();
             this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();

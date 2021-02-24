@@ -120,13 +120,24 @@
         }
 
         private void LoadAssets() {
-            var metadatas = this.GetMetadata();
+            var metadata = this.GetMetadata();
 
-            foreach (var metadata in metadatas) {
+            foreach (var singleMetadata in metadata) {
+                this.ResolveContentFile(singleMetadata);
+                
+ 
             }
 
             var newMetadata = new List<ContentMetadata>();
-            var contentFiles = this.ResolveContentFiles(this._rootContentDirectory, metadatas, newMetadata);
+            var contentFiles = this.ResolveContentFiles(this._rootContentDirectory, metadata, newMetadata);
+        }
+
+        private void ResolveContentFile(ContentMetadata metadata) {
+            var splitPath = metadata.SplitContentPath;
+
+            if (this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray(), out var parent) && parent is IContentDirectory parentDirectory) {
+                // TODO: add file
+            }            
         }
 
         private IList<ContentFile> ResolveContentFiles(

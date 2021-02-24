@@ -12,7 +12,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ColoredSquares.png
+#begin ColorfulSquares.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -22,7 +22,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:ColoredSquares.png
+/build:ColorfulSquares.png
 
 #begin laser.wav
 /importer:WavImporter
