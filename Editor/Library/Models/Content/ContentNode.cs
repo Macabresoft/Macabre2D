@@ -40,13 +40,6 @@
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        protected ContentNode(string name) : this(name, null) {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContentNode" /> class.
-        /// </summary>
-        /// <param name="name">The name.</param>
         /// <param name="parent">The parent.</param>
         protected ContentNode(string name, IContentDirectory parent) {
             this._name = name;

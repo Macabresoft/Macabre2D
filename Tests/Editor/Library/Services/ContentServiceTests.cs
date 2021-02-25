@@ -1,13 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
     using System.IO;
-    using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
-    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]

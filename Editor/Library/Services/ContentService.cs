@@ -124,8 +124,6 @@
 
             foreach (var singleMetadata in metadata) {
                 this.ResolveContentFile(singleMetadata);
-                
- 
             }
 
             var newMetadata = new List<ContentMetadata>();
@@ -137,7 +135,7 @@
 
             if (this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray(), out var parent) && parent is IContentDirectory parentDirectory) {
                 // TODO: add file
-            }            
+            }
         }
 
         private IList<ContentFile> ResolveContentFiles(

@@ -6,6 +6,7 @@
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.Tests.Editor.Library.Services;
     using NSubstitute;
     using NUnit.Framework;
@@ -22,14 +23,14 @@
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
-            var firstC = new ContentDirectory(Guid.NewGuid().ToString(), root);
+            var firstC = new ContentFile(Guid.NewGuid().ToString(), root, new ContentMetadata());
             var secondA = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
             var secondB = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
-            var secondC = new ContentDirectory(Guid.NewGuid().ToString(), firstC);
+            var secondC = new ContentFile(Guid.NewGuid().ToString(), firstB, new ContentMetadata());
             var thirdA = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
             var thirdB = new ContentDirectory(Guid.NewGuid().ToString(), secondB);
-            var thirdC = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
-            var fourth = new ContentDirectory(Guid.NewGuid().ToString(), thirdA);
+            var thirdC = new ContentFile(Guid.NewGuid().ToString(), secondA, new ContentMetadata());
+            var fourth = new ContentFile(Guid.NewGuid().ToString(), thirdA, new ContentMetadata());
 
             using (new AssertionScope()) {
                 firstA.GetContentPath().Should().Be(firstA.Name);
@@ -37,7 +38,7 @@
                 firstC.GetContentPath().Should().Be(firstC.Name);
                 secondA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name));
                 secondB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name));
-                secondC.GetContentPath().Should().Be(Path.Combine(firstC.Name, secondC.Name));
+                secondC.GetContentPath().Should().Be(Path.Combine(firstB.Name, secondC.Name));
                 thirdA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name));
                 thirdB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name, thirdB.Name));
                 thirdC.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdC.Name));
