@@ -11,6 +11,11 @@
     /// </summary>
     [DataContract]
     public class SpriteSheet : AssetPackage<Texture2D> {
+        /// <summary>
+        /// The valid file extensions for a <see cref="Texture2D" />.
+        /// </summary>
+        public static readonly string[] ValidFileExtensions = { ".jpg", ".png" };
+
         private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
 
         [DataMember]

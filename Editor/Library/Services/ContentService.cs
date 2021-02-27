@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
@@ -43,8 +42,14 @@
     /// A service that handles MonoGame content for the editor.
     /// </summary>
     public sealed class ContentService : IContentService {
+        private static readonly IReadOnlyDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type> {
+            { ".jpg", typeof(SpriteSheet) },
+            { ".png", typeof(SpriteSheet) }
+        };
+
         private readonly IFileSystemService _fileSystemSystemService;
         private readonly ISerializer _serializer;
+
         private IAssetManager _assetManager;
         private RootContentDirectory _rootContentDirectory;
 
@@ -90,11 +95,11 @@
 
             if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && this._fileSystemSystemService.DoesDirectoryExist(pathToContentDirectory)) {
                 this._rootContentDirectory = new RootContentDirectory(this._fileSystemSystemService, pathToContentDirectory);
-                
+
                 foreach (var metadata in this.GetMetadata()) {
                     this.ResolveContentFile(metadata);
                 }
-            
+
                 this.ResolveNewContentFiles(this._rootContentDirectory);
             }
         }
@@ -102,6 +107,27 @@
         /// <inheritdoc />
         public void MoveContent(ContentNode contentToMove, ContentDirectory newParent) {
             throw new NotImplementedException();
+        }
+
+        private ContentFile CreateContentFile(IContentDirectory parent, string fileName) {
+            ContentFile contentFile;
+            var extension = Path.GetExtension(fileName);
+
+            if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
+                var parentPath = parent.GetContentPath();
+                var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
+                splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
+                var asset = Activator.CreateInstance(assetType) as IAsset;
+                var metadata = new ContentMetadata(asset, splitPath, extension);
+                this.SaveMetadata(metadata);
+                contentFile = new ContentFile(parent, metadata);
+                this._assetManager.RegisterMetadata(metadata);
+            }
+            else {
+                contentFile = null;
+            }
+
+            return contentFile;
         }
 
         private IEnumerable<ContentMetadata> GetMetadata() {
@@ -123,7 +149,7 @@
 
             return metadata;
         }
-        
+
         private void ResolveContentFile(ContentMetadata metadata) {
             ContentFile contentNode = null;
             var splitPath = metadata.SplitContentPath;
@@ -151,13 +177,16 @@
                 var moveTo = Path.Combine(rootContentDirectoryPath, ContentMetadata.ArchiveDirectoryName, fileName);
                 this._fileSystemSystemService.MoveFile(current, moveTo);
             }
+            else {
+                this._assetManager.RegisterMetadata(metadata);
+            }
         }
 
         private void ResolveNewContentFiles(IContentDirectory currentDirectory) {
             var currentPath = currentDirectory.GetFullPath();
             var files = this._fileSystemSystemService.GetFiles(currentPath);
             var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
-            
+
             foreach (var file in files) {
                 var fileName = Path.GetFileName(file);
                 if (currentContentFiles.All(x => x.Name != Path.GetFileName(file))) {
@@ -171,9 +200,12 @@
             }
         }
 
-        private void CreateContentFile(IContentDirectory parent, string fileName) {
-            // TODO: create metadata, save the metadata, and then create the content file
-            throw new NotImplementedException();
+        private void SaveMetadata(ContentMetadata metadata) {
+            var fullDirectoryPath = Path.Combine(this._rootContentDirectory.GetFullPath(), ContentMetadata.MetadataDirectoryName);
+
+            if (this._fileSystemSystemService.DoesDirectoryExist(fullDirectoryPath)) {
+                this._serializer.Serialize(metadata, Path.Combine(fullDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
+            }
         }
     }
 }
