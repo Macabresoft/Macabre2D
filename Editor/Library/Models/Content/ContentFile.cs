@@ -13,10 +13,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
-        /// <param name="name">The name.</param>
         /// <param name="parent"></param>
         /// <param name="metadata">The metadata.</param>
-        public ContentFile(string name, IContentDirectory parent, ContentMetadata metadata) : base(name, parent) {
+        public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata.GetFileNameWithoutExtension(), parent) {
             this.Metadata = metadata;
         }
 

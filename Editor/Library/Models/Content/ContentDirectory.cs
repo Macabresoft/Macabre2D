@@ -33,7 +33,14 @@
         void RemoveChild(ContentNode node);
 
         /// <summary>
-        /// Finds a content node.
+        /// Finds a content node if it exists.
+        /// </summary>
+        /// <param name="splitContentPath"></param>
+        /// <returns>The content node or null.</returns>
+        IContentNode FindNode(string[] splitContentPath);
+
+        /// <summary>
+        /// Tries to find a content node.
         /// </summary>
         /// <param name="splitContentPath">The split content path.</param>
         /// <param name="node">The found content node.</param>
@@ -85,8 +92,8 @@
         }
 
         /// <inheritdoc />
-        public bool TryFindNode(string[] splitContentPath, out IContentNode node) {
-            node = null;
+        public IContentNode FindNode(string[] splitContentPath) {
+            IContentNode node = null;
             if (splitContentPath.Length == 1) {
                 node = this.Children.FirstOrDefault(x => x.NameWithoutExtension == splitContentPath[0]);
             }
@@ -102,6 +109,12 @@
                 }
             }
 
+            return node;
+        }
+
+        /// <inheritdoc />
+        public bool TryFindNode(string[] splitContentPath, out IContentNode node) {
+            node = this.FindNode(splitContentPath);
             return node != null;
         }
 

@@ -23,14 +23,14 @@
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
-            var firstC = new ContentFile(Guid.NewGuid().ToString(), root, new ContentMetadata());
+            var firstC = new ContentFile(root, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
             var secondA = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
             var secondB = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
-            var secondC = new ContentFile(Guid.NewGuid().ToString(), firstB, new ContentMetadata());
+            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
             var thirdA = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
             var thirdB = new ContentDirectory(Guid.NewGuid().ToString(), secondB);
-            var thirdC = new ContentFile(Guid.NewGuid().ToString(), secondA, new ContentMetadata());
-            var fourth = new ContentFile(Guid.NewGuid().ToString(), thirdA, new ContentMetadata());
+            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
+            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
 
             using (new AssertionScope()) {
                 firstA.GetContentPath().Should().Be(firstA.Name);

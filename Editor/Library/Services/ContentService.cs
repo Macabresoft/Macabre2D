@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
@@ -89,8 +90,12 @@
 
             if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && this._fileSystemSystemService.DoesDirectoryExist(pathToContentDirectory)) {
                 this._rootContentDirectory = new RootContentDirectory(this._fileSystemSystemService, pathToContentDirectory);
-                this.LoadAssets();
-                // reset asset manager based on the content files found.
+                
+                foreach (var metadata in this.GetMetadata()) {
+                    this.ResolveContentFile(metadata);
+                }
+            
+                this.ResolveNewContentFiles(this._rootContentDirectory);
             }
         }
 
@@ -99,7 +104,7 @@
             throw new NotImplementedException();
         }
 
-        private IList<ContentMetadata> GetMetadata() {
+        private IEnumerable<ContentMetadata> GetMetadata() {
             var metadata = new List<ContentMetadata>();
             var metaDataDirectory = Path.Combine(this._rootContentDirectory.GetFullPath(), ContentMetadata.MetadataDirectoryName);
             if (this._fileSystemSystemService.DoesDirectoryExist(metaDataDirectory)) {
@@ -118,57 +123,57 @@
 
             return metadata;
         }
-
-        private void LoadAssets() {
-            var metadata = this.GetMetadata();
-
-            foreach (var singleMetadata in metadata) {
-                this.ResolveContentFile(singleMetadata);
-            }
-
-            var newMetadata = new List<ContentMetadata>();
-            var contentFiles = this.ResolveContentFiles(this._rootContentDirectory, metadata, newMetadata);
-        }
-
+        
         private void ResolveContentFile(ContentMetadata metadata) {
+            ContentFile contentNode = null;
             var splitPath = metadata.SplitContentPath;
-
-            if (this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray(), out var parent) && parent is IContentDirectory parentDirectory) {
-                // TODO: add file
-            }
-        }
-
-        private IList<ContentFile> ResolveContentFiles(
-            IContentDirectory directory,
-            IList<ContentMetadata> unresolvedMetadata,
-            IList<ContentMetadata> newMetadata) {
-            var contentFiles = new List<ContentFile>();
-            var path = directory.GetFullPath();
-            if (Directory.Exists(path)) {
-                var subdirectories = Directory.GetDirectories(path);
-                foreach (var subdirectory in subdirectories) {
-                    var subContentDirectory = new ContentDirectory(Path.GetDirectoryName(subdirectory), directory);
-                    contentFiles.AddRange(this.ResolveContentFiles(subContentDirectory, unresolvedMetadata, newMetadata));
+            if (splitPath.Any()) {
+                IContentDirectory parentDirectory;
+                if (splitPath.Count == 1) {
+                    parentDirectory = this._rootContentDirectory;
+                }
+                else {
+                    parentDirectory = this._rootContentDirectory.FindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
                 }
 
-                var files = this._fileSystemSystemService.GetFiles(path);
-                foreach (var file in files.Where(x => !x.EndsWith(ContentFile.FileExtension))) {
-                    if (this.TryGetContentFile(file, directory, out var contentFile) && contentFile != null) {
+                if (parentDirectory != null) {
+                    var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
+                    if (this._fileSystemSystemService.DoesFileExist(contentFilePath)) {
+                        contentNode = new ContentFile(parentDirectory, metadata);
                     }
                 }
-
-
-                // TODO: find all directories under this and recursively resolve their content files
-                // TODO: then find all files and create ContentFiles and fill them with metadata.
             }
 
-            return contentFiles;
+            if (contentNode == null) {
+                var rootContentDirectoryPath = this._rootContentDirectory.GetFullPath();
+                var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
+                var current = Path.Combine(rootContentDirectoryPath, ContentMetadata.MetadataDirectoryName, fileName);
+                var moveTo = Path.Combine(rootContentDirectoryPath, ContentMetadata.ArchiveDirectoryName, fileName);
+                this._fileSystemSystemService.MoveFile(current, moveTo);
+            }
         }
 
-        private bool TryGetContentFile(string filePath, IContentDirectory parent, out ContentFile contentFile) {
-            contentFile = null;
+        private void ResolveNewContentFiles(IContentDirectory currentDirectory) {
+            var currentPath = currentDirectory.GetFullPath();
+            var files = this._fileSystemSystemService.GetFiles(currentPath);
+            var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
+            
+            foreach (var file in files) {
+                var fileName = Path.GetFileName(file);
+                if (currentContentFiles.All(x => x.Name != Path.GetFileName(file))) {
+                    this.CreateContentFile(currentDirectory, fileName);
+                }
+            }
 
-            return contentFile != null;
+            var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
+            foreach (var child in currentContentDirectories) {
+                this.ResolveNewContentFiles(child);
+            }
+        }
+
+        private void CreateContentFile(IContentDirectory parent, string fileName) {
+            // TODO: create metadata, save the metadata, and then create the content file
+            throw new NotImplementedException();
         }
     }
 }
