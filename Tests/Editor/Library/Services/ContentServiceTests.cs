@@ -48,41 +48,15 @@
         [Test]
         [Category("Unit Tests")]
         public void Initialize_ShouldResolveExistingMetadata() {
-            var assetManager = Substitute.For<IAssetManager>();
-            var serializer = Substitute.For<ISerializer>();
-            var fileSystemService = Substitute.For<IFileSystemService>();
-            var rootPath = "Content";
-            var metadataPath = Path.Combine(rootPath, ContentMetadata.MetadataDirectoryName);
-            var archivePath = Path.Combine(rootPath, ContentMetadata.ArchiveDirectoryName);
+            var existing = new[] {
+                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
+            };
 
-            var contentFileName = Guid.NewGuid().ToString();
-            var spriteSheet = new SpriteSheet();
-            var metadata = new ContentMetadata(spriteSheet, new[] { contentFileName }, ".jpg");
-            var metadataFileName = $"{spriteSheet.ContentId.ToString()}{ContentMetadata.FileExtension}";
-            var metadataFilePath = Path.Combine(metadataPath, metadataFileName);
-            var contentFilePath = Path.Combine(rootPath, metadata.GetFileName());
-
-            fileSystemService.GetDirectories(rootPath).Returns(Enumerable.Empty<string>());
-            fileSystemService.GetFiles(metadataPath, ContentMetadata.MetadataSearchPattern).Returns(new[] { metadataFilePath });
-            fileSystemService.DoesFileExist(contentFilePath).Returns(true);
-            fileSystemService.DoesDirectoryExist(rootPath).Returns(true);
-            fileSystemService.DoesDirectoryExist(metadataPath).Returns(true);
-            fileSystemService.DoesDirectoryExist(archivePath).Returns(true);
-            serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-
-            var contentService = new ContentService(fileSystemService, serializer);
-            contentService.Initialize(rootPath, assetManager);
-
-            using (new AssertionScope()) {
-                assetManager.Received().RegisterMetadata(metadata);
-                contentService.RootContentDirectory.Children.Count.Should().Be(1);
-
-                var contentFile = contentService.RootContentDirectory.Children.First();
-                contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
-                contentFile.Name.Should().Be(metadata.GetFileName());
-                contentFile.GetContentPath().Should().Be(metadata.GetFileNameWithoutExtension());
-                contentFile.GetFullPath().Should().Be(contentFilePath);
-            }
+            var container = new ContentServiceContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
+            container.RunTest();
         }
     }
 }
