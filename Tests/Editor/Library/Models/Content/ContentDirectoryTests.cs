@@ -48,6 +48,12 @@
 
         [Test]
         [Category("Unit Tests")]
+        public void Initialize_ShouldResolveExistingMetadata() {
+            
+        }
+
+        [Test]
+        [Category("Unit Tests")]
         public void RootContentDirectory_ShouldBuildContentHierarchy() {
             var fileSystemService = new FakeFileSystemService();
 
