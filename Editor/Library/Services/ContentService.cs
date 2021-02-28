@@ -42,10 +42,16 @@
     /// A service that handles MonoGame content for the editor.
     /// </summary>
     public sealed class ContentService : IContentService {
-        private static readonly IReadOnlyDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type> {
-            { ".jpg", typeof(SpriteSheet) },
-            { ".png", typeof(SpriteSheet) }
-        };
+        private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
+
+        /// <summary>
+        /// Static constructor for <see cref="ContentService"/>.
+        /// </summary>
+        static ContentService() {
+            foreach (var extension in SpriteSheet.ValidFileExtensions) {
+                FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
+            }
+        }
 
         private readonly IFileSystemService _fileSystemSystemService;
         private readonly ISerializer _serializer;
