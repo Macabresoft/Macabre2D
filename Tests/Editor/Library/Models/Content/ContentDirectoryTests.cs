@@ -35,23 +35,17 @@
             using (new AssertionScope()) {
                 firstA.GetContentPath().Should().Be(firstA.Name);
                 firstB.GetContentPath().Should().Be(firstB.Name);
-                firstC.GetContentPath().Should().Be(firstC.Name);
+                firstC.GetContentPath().Should().Be(firstC.NameWithoutExtension);
                 secondA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name));
                 secondB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name));
-                secondC.GetContentPath().Should().Be(Path.Combine(firstB.Name, secondC.Name));
+                secondC.GetContentPath().Should().Be(Path.Combine(firstB.Name, secondC.NameWithoutExtension));
                 thirdA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name));
                 thirdB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name, thirdB.Name));
-                thirdC.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdC.Name));
-                fourth.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name, fourth.Name));
+                thirdC.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdC.NameWithoutExtension));
+                fourth.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name, fourth.NameWithoutExtension));
             }
         }
-
-        [Test]
-        [Category("Unit Tests")]
-        public void Initialize_ShouldResolveExistingMetadata() {
-            
-        }
-
+        
         [Test]
         [Category("Unit Tests")]
         public void RootContentDirectory_ShouldBuildContentHierarchy() {

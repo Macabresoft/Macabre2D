@@ -25,6 +25,11 @@
         /// </summary>
         public const string MetadataDirectoryName = ".metadata";
 
+        /// <summary>
+        /// The search pattern for metadata files.
+        /// </summary>
+        public const string MetadataSearchPattern = "*" + ContentMetadata.FileExtension;
+
         [DataMember]
         private readonly string[] _splitContentPath;
 

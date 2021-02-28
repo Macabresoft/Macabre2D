@@ -44,20 +44,20 @@
     public sealed class ContentService : IContentService {
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
+        private readonly IFileSystemService _fileSystemSystemService;
+        private readonly ISerializer _serializer;
+
+        private IAssetManager _assetManager;
+        private RootContentDirectory _rootContentDirectory;
+
         /// <summary>
-        /// Static constructor for <see cref="ContentService"/>.
+        /// Static constructor for <see cref="ContentService" />.
         /// </summary>
         static ContentService() {
             foreach (var extension in SpriteSheet.ValidFileExtensions) {
                 FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
             }
         }
-
-        private readonly IFileSystemService _fileSystemSystemService;
-        private readonly ISerializer _serializer;
-
-        private IAssetManager _assetManager;
-        private RootContentDirectory _rootContentDirectory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentService" /> class.
@@ -138,9 +138,9 @@
 
         private IEnumerable<ContentMetadata> GetMetadata() {
             var metadata = new List<ContentMetadata>();
-            var metaDataDirectory = Path.Combine(this._rootContentDirectory.GetFullPath(), ContentMetadata.MetadataDirectoryName);
-            if (this._fileSystemSystemService.DoesDirectoryExist(metaDataDirectory)) {
-                var files = this._fileSystemSystemService.GetFiles(metaDataDirectory, $"*{ContentMetadata.FileExtension}");
+            var metadataDirectory = Path.Combine(this._rootContentDirectory.GetFullPath(), ContentMetadata.MetadataDirectoryName);
+            if (this._fileSystemSystemService.DoesDirectoryExist(metadataDirectory)) {
+                var files = this._fileSystemSystemService.GetFiles(metadataDirectory, ContentMetadata.MetadataSearchPattern);
                 foreach (var file in files) {
                     try {
                         var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
@@ -148,7 +148,7 @@
                     }
                     catch {
                         // Archive the file since it can't seem to deserialize.
-                        this._fileSystemSystemService.MoveFile(file, Path.Combine(metaDataDirectory, "..", ContentMetadata.ArchiveDirectoryName, Path.GetFileName(file)));
+                        this._fileSystemSystemService.MoveFile(file, Path.Combine(metadataDirectory, "..", ContentMetadata.ArchiveDirectoryName, Path.GetFileName(file)));
                     }
                 }
             }
