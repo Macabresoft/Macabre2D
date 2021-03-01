@@ -12,9 +12,9 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
         private const string ContentPath = "Content";
         private static readonly string MetadataDirectoryPath = Path.Combine(ContentPath, ContentMetadata.MetadataDirectoryName);
         private static readonly string ArchiveDirectoryPath = Path.Combine(ContentPath, ContentMetadata.ArchiveDirectoryName);
-        private readonly IList<string> _contentFilePaths = new List<string>();
-
         private readonly IList<string> _metadataFilePaths = new List<string>();
+        private readonly IDictionary<string, IList<string>> _pathToFileList = new Dictionary<string, IList<string>>();
+        private readonly IDictionary<string, IList<string>> _pathToDirectoryList = new Dictionary<string, IList<string>>();
 
         public ContentServiceContainer(
             IEnumerable<ContentMetadata> existingMetadata,
@@ -33,9 +33,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.SetupNewContentFiles();
 
             this.FileSysstem.GetFiles(MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
-            this.FileSysstem.GetFiles(ContentPath).Returns(this._contentFilePaths);
-            this.FileSysstem.GetDirectories(ContentPath).Returns(Enumerable.Empty<string>());
-
             this.ContentService = new ContentService(this.FileSysstem, this.Serializer);
         }
 
@@ -46,15 +43,65 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 foreach (var metadata in this.ExistingMetadata) {
                     this.AssetManager.Received().RegisterMetadata(metadata);
 
-                    var contentFile = this.ContentService.RootContentDirectory.Children.First(x => x.Name == metadata.GetFileName());
+                    var contentFile = this.ContentService.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
                     contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
                     contentFile.Name.Should().Be(metadata.GetFileName());
-                    contentFile.GetContentPath().Should().Be(metadata.GetFileNameWithoutExtension());
-                    contentFile.GetFullPath().Should().Be(Path.Combine(ContentPath, metadata.GetFileName()));
+                    contentFile.GetContentPath().Should().Be(metadata.GetContentPath());
+                    contentFile.GetFullPath().Should().Be(Path.Combine(ContentPath, $"{metadata.GetContentPath()}{Path.GetExtension(metadata.GetFileName())}"));
                 }
             }
         }
 
+        private void AddDirectoryToDirectory(string directoryPath, string newDirectoryName) {
+            var newDirectoryPath = Path.Combine(directoryPath, newDirectoryName);
+            if (this._pathToDirectoryList.TryGetValue(directoryPath, out var directories)) {
+                directories.Add(newDirectoryPath);
+            }
+            else {
+                directories = new List<string>() { newDirectoryPath };
+                this._pathToDirectoryList[directoryPath] = directories;
+                this.FileSysstem.GetDirectories(directoryPath).Returns(directories);
+            }
+
+            this.FileSysstem.DoesDirectoryExist(newDirectoryName).Returns(true);
+        }
+
+        private void AddFileToDirectory(string directoryPath, string fileName) {
+            var splitDirectoryPath = directoryPath.Split(Path.DirectorySeparatorChar);
+            if (splitDirectoryPath.Length > 1) {
+                for (int i = 1; i < splitDirectoryPath.Length; i++) {
+                    this.AddDirectoryToDirectory(Path.Combine(splitDirectoryPath.Take(i).ToArray()), splitDirectoryPath[i]);
+                }
+            }
+            
+            var filePath = Path.Combine(directoryPath, fileName);
+            if (this._pathToFileList.TryGetValue(directoryPath, out var files)) {
+                files.Add(filePath);
+            }
+            else {
+                files = new List<string>() { filePath };
+                this._pathToFileList[directoryPath] = files;
+                this.FileSysstem.GetFiles(directoryPath).Returns(files);
+            }
+
+            this.FileSysstem.DoesFileExist(filePath).Returns(true);
+        }
+
+        private void RegisterContent(ContentMetadata metadata, bool contentShouldExist) {
+            var directorySplitPath = metadata.SplitContentPath.Take(metadata.SplitContentPath.Count - 1).ToList();
+            directorySplitPath.Insert(0, ContentPath);
+            var fileName = metadata.GetFileName();
+
+            if (contentShouldExist) {
+                var directoryPath = Path.Combine(directorySplitPath.ToArray());
+                this.AddFileToDirectory(directoryPath, fileName);
+            }
+            else {
+                directorySplitPath.Add(fileName);
+                this.FileSysstem.DoesFileExist(Path.Combine(directorySplitPath.ToArray())).Returns(false);
+            }
+        }
+        
         public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
 
         public IContentService ContentService { get; }
@@ -71,14 +118,11 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
         private void SetupExistingMetadata() {
             foreach (var metadata in this.ExistingMetadata) {
-                var metadataFilePath = Path.Combine(MetadataDirectoryPath, metadata.GetFileName());
-                var contentFilePath = Path.Combine(ContentPath, metadata.GetFileName());
+                var metadataFilePath = Path.Combine(MetadataDirectoryPath, $"{metadata.ContentId.ToString()}{ContentMetadata.FileExtension}");
                 this._metadataFilePaths.Add(metadataFilePath);
-                this._contentFilePaths.Add(contentFilePath);
 
                 this.Serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-                this.FileSysstem.DoesFileExist(metadataFilePath).Returns(true);
-                this.FileSysstem.DoesFileExist(contentFilePath).Returns(true);
+                this.RegisterContent(metadata, true);
             }
         }
 

@@ -8,7 +8,6 @@
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
-    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -49,10 +48,10 @@
         [Category("Unit Tests")]
         public void Initialize_ShouldResolveExistingMetadata() {
             var existing = new[] {
-                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] {Guid.NewGuid().ToString()}, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var container = new ContentServiceContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
