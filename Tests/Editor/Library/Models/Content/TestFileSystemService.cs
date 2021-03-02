@@ -1,13 +1,13 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Models.Content {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Services;
 
-    public class FakeFileSystemService : IFileSystemService {
-        public FakeFileSystemService() {
-            this.FillFakeDirectoryStructure();
+    internal class TestFileSystemService : IFileSystemService {
+        public TestFileSystemService() {
+            this.FillDirectoryStructure();
         }
 
         public IDictionary<string, IEnumerable<string>> DirectoryToChildrenMap { get; } = new Dictionary<string, IEnumerable<string>>();
@@ -70,7 +70,7 @@
         }
 
 
-        private void FillFakeDirectoryStructure() {
+        private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();
             var directories = new List<string>();
             this.DirectoryToChildrenMap[this.PathToContentDirectory] = directories;

@@ -1,20 +1,22 @@
 namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
-    using FluentAssertions;
-    using FluentAssertions.Execution;
-    using Macabre2D.Editor.Library.Services;
-    using Macabre2D.Framework;
-    using NSubstitute;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using FluentAssertions;
+    using FluentAssertions.Execution;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
+    using NSubstitute;
 
     public class ContentServiceContainer {
         private const string ContentPath = "Content";
         private static readonly string MetadataDirectoryPath = Path.Combine(ContentPath, ContentMetadata.MetadataDirectoryName);
         private static readonly string ArchiveDirectoryPath = Path.Combine(ContentPath, ContentMetadata.ArchiveDirectoryName);
+
+
         private readonly IList<string> _metadataFilePaths = new List<string>();
-        private readonly IDictionary<string, IList<string>> _pathToFileList = new Dictionary<string, IList<string>>();
-        private readonly IDictionary<string, IList<string>> _pathToDirectoryList = new Dictionary<string, IList<string>>();
+        private readonly IDictionary<string, HashSet<string>> _pathToDirectoryList = new Dictionary<string, HashSet<string>>();
+        private readonly IDictionary<string, HashSet<string>> _pathToFileList = new Dictionary<string, HashSet<string>>();
 
         public ContentServiceContainer(
             IEnumerable<ContentMetadata> existingMetadata,
@@ -35,6 +37,20 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.FileSysstem.GetFiles(MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
             this.ContentService = new ContentService(this.FileSysstem, this.Serializer);
         }
+
+        public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
+
+        public IContentService ContentService { get; }
+
+        public IReadOnlyCollection<ContentMetadata> ExistingMetadata { get; }
+
+        public IFileSystemService FileSysstem { get; } = Substitute.For<IFileSystemService>();
+
+        public IReadOnlyCollection<ContentMetadata> MetadataToArchive { get; }
+
+        public IReadOnlyCollection<string> NewContentFiles { get; }
+
+        public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
         public void RunTest() {
             this.ContentService.Initialize(ContentPath, this.AssetManager);
@@ -58,28 +74,28 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 directories.Add(newDirectoryPath);
             }
             else {
-                directories = new List<string>() { newDirectoryPath };
+                directories = new HashSet<string> { newDirectoryPath };
                 this._pathToDirectoryList[directoryPath] = directories;
                 this.FileSysstem.GetDirectories(directoryPath).Returns(directories);
             }
 
-            this.FileSysstem.DoesDirectoryExist(newDirectoryName).Returns(true);
+            this.FileSysstem.DoesDirectoryExist(newDirectoryPath).Returns(true);
         }
 
         private void AddFileToDirectory(string directoryPath, string fileName) {
             var splitDirectoryPath = directoryPath.Split(Path.DirectorySeparatorChar);
             if (splitDirectoryPath.Length > 1) {
-                for (int i = 1; i < splitDirectoryPath.Length; i++) {
+                for (var i = 1; i < splitDirectoryPath.Length; i++) {
                     this.AddDirectoryToDirectory(Path.Combine(splitDirectoryPath.Take(i).ToArray()), splitDirectoryPath[i]);
                 }
             }
-            
+
             var filePath = Path.Combine(directoryPath, fileName);
             if (this._pathToFileList.TryGetValue(directoryPath, out var files)) {
                 files.Add(filePath);
             }
             else {
-                files = new List<string>() { filePath };
+                files = new HashSet<string> { filePath };
                 this._pathToFileList[directoryPath] = files;
                 this.FileSysstem.GetFiles(directoryPath).Returns(files);
             }
@@ -101,20 +117,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 this.FileSysstem.DoesFileExist(Path.Combine(directorySplitPath.ToArray())).Returns(false);
             }
         }
-        
-        public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
-
-        public IContentService ContentService { get; }
-
-        public IReadOnlyCollection<ContentMetadata> ExistingMetadata { get; }
-
-        public IReadOnlyCollection<ContentMetadata> MetadataToArchive { get; }
-
-        public IReadOnlyCollection<string> NewContentFiles { get; }
-
-        public IFileSystemService FileSysstem { get; } = Substitute.For<IFileSystemService>();
-
-        public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
         private void SetupExistingMetadata() {
             foreach (var metadata in this.ExistingMetadata) {
@@ -129,12 +131,10 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
         private void SetupMetadataToArchive() {
             foreach (var metadata in this.MetadataToArchive) {
                 var metadataFilePath = Path.Combine(MetadataDirectoryPath, metadata.GetFileName());
-                var contentFilePath = Path.Combine(ContentPath, metadata.GetFileName());
                 this._metadataFilePaths.Add(metadataFilePath);
 
                 this.Serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-                this.FileSysstem.DoesFileExist(metadataFilePath).Returns(true);
-                this.FileSysstem.DoesFileExist(contentFilePath).Returns(false);
+                this.RegisterContent(metadata, false);
             }
         }
 

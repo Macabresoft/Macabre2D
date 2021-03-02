@@ -49,7 +49,7 @@
         [Test]
         [Category("Unit Tests")]
         public void RootContentDirectory_ShouldBuildContentHierarchy() {
-            var fileSystemService = new FakeFileSystemService();
+            var fileSystemService = new TestFileSystemService();
 
             // Root calls LoadChildDirectories when constructed.
             var root = new RootContentDirectory(fileSystemService, fileSystemService.PathToContentDirectory);
@@ -61,7 +61,7 @@
             }
         }
 
-        private int AssertDirectoryMatches(FakeFileSystemService fileSystemService, IContentDirectory parent, string name) {
+        private int AssertDirectoryMatches(TestFileSystemService fileSystemService, IContentDirectory parent, string name) {
             var currentDirectory = parent.Children.OfType<IContentDirectory>().First(x => x.Name == name);
             currentDirectory.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[name].Count());
             return 1 + currentDirectory.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, currentDirectory, child.Name));
