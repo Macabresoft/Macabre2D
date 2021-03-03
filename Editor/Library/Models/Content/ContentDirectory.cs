@@ -77,18 +77,16 @@
         /// <inheritdoc />
         public IContentNode FindNode(string[] splitContentPath) {
             IContentNode node = null;
-
             var parentDepth = splitContentPath.Length - 1;
             var currentDepth = this.GetDepth();
+
             if (currentDepth == parentDepth) {
                 node = this.Children.FirstOrDefault(x => x.GetContentPath() == Path.Combine(splitContentPath));
             }
             else if (currentDepth < parentDepth) {
-                // TODO: this could be optimized by only checking directories which actually match the split content path.
-                foreach (var child in this._children.OfType<IContentDirectory>()) {
-                    if (child.TryFindNode(splitContentPath, out node)) {
-                        break;
-                    }
+                var name = splitContentPath[currentDepth];
+                if (this._children.FirstOrDefault(x => x.Name == name) is IContentDirectory child) {
+                    node = child.FindNode(splitContentPath);
                 }
             }
 
