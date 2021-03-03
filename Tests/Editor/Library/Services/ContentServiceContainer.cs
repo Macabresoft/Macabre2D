@@ -1,9 +1,12 @@
 namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
+    using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using NSubstitute;
@@ -58,6 +61,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             using (new AssertionScope()) {
                 this.AssertExistingMetadata();
                 this.AssertMetadataToArchive();
+                this.AssertNewContentFiles();
             }
         }
 
@@ -95,12 +99,27 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             this.FileSysstem.DoesFileExist(filePath).Returns(true);
         }
+        
+        private void AssertNewContentFiles() {
+            foreach (var file in this.NewContentFiles) {
+                var splitContentPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
+                splitContentPath[^1] = Path.GetFileNameWithoutExtension(splitContentPath[^1]);
+                var contentFile = this.ContentService.RootContentDirectory.FindNode(splitContentPath.ToArray()) as ContentFile;
+                contentFile.Should().NotBeNull();
+
+                if (contentFile != null) {
+                    this.AssetManager.Received().RegisterMetadata(contentFile.Metadata);
+                    this.Serializer.Received().Serialize(contentFile.Metadata, Path.Combine(ContentPath, ContentMetadata.GetMetadataPath(contentFile.Metadata.ContentId)));
+                }
+            }
+        }
 
         private void AssertExistingMetadata() {
             foreach (var metadata in this.ExistingMetadata) {
                 this.AssetManager.Received().RegisterMetadata(metadata);
 
                 var contentFile = this.ContentService.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
+                contentFile.Should().NotBeNull();
                 contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
                 contentFile.Name.Should().Be(metadata.GetFileName());
                 contentFile.GetContentPath().Should().Be(metadata.GetContentPath());
@@ -110,13 +129,12 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
         private void AssertMetadataToArchive() {
             foreach (var metadata in this.MetadataToArchive) {
-                var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
-                var current = Path.Combine(ContentPath, ContentMetadata.MetadataDirectoryName, fileName);
-                var moveTo = Path.Combine(ContentPath, ContentMetadata.ArchiveDirectoryName, fileName);
+                var current = Path.Combine(ContentPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
+                var moveTo = Path.Combine(ContentPath, ContentMetadata.GetArchivePath(metadata.ContentId));
                 this.FileSysstem.Received().MoveFile(current, moveTo);
-
                 this.AssetManager.DidNotReceive().RegisterMetadata(metadata);
                 this.ContentService.RootContentDirectory.TryFindNode(metadata.SplitContentPath.ToArray(), out var node).Should().BeFalse();
+                node.Should().BeNull();
             }
         }
 
@@ -157,6 +175,11 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
         private void SetupNewContentFiles() {
             foreach (var file in this.NewContentFiles) {
+                var splitPath = file.Split(Path.DirectorySeparatorChar);
+                var fileName = splitPath.Last();
+                var splitDirectoryPath = splitPath.Take(splitPath.Length - 1).ToList();
+                splitDirectoryPath.Insert(0, ContentPath);
+                this.AddFileToDirectory(Path.Combine(splitDirectoryPath.ToArray()), fileName);
                 this.FileSysstem.DoesFileExist(Path.Combine(ContentPath, file)).Returns(true);
             }
         }

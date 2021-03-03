@@ -28,7 +28,7 @@
         /// <summary>
         /// The search pattern for metadata files.
         /// </summary>
-        public const string MetadataSearchPattern = "*" + ContentMetadata.FileExtension;
+        public const string MetadataSearchPattern = "*" + FileExtension;
 
         [DataMember]
         private readonly string[] _splitContentPath;
@@ -73,6 +73,15 @@
         /// Gets the content's path.
         /// </summary>
         public IReadOnlyCollection<string> SplitContentPath => this._splitContentPath;
+
+        /// <summary>
+        /// Gets the archive path from a given identifier.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns>The archive path.</returns>
+        public static string GetArchivePath(Guid contentId) {
+            return Path.Combine(ArchiveDirectoryName, $"{contentId.ToString()}{FileExtension}");
+        }
 
         /// <summary>
         /// Gets the content path.

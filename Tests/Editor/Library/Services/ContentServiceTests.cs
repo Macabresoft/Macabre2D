@@ -43,10 +43,10 @@
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
         }
-        
+
         [Test]
         [Category("Unit Tests")]
-        public void Initialize_ArchiveMetadataWithMissingContent() {
+        public void Initialize_Should_ArchiveMetadataWithMissingContent() {
             var folder1 = "Folder1";
             var folder2 = "Folder2";
             var folder1A = "Folder1A";
@@ -63,7 +63,24 @@
 
         [Test]
         [Category("Unit Tests")]
-        public void Initialize_ShouldResolveExistingMetadata() {
+        public void Initialize_Should_CreateMetadataForNewContent() {
+            var folder1 = "Folder1";
+            var folder2 = "Folder2";
+            var folder1A = "Folder1A";
+            var newContentFiles = new[] {
+                Path.Combine(folder1, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(folder2, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(folder1, folder1A, $"{Guid.NewGuid()}.jpg"),
+                $"{Guid.NewGuid()}.jpg"
+            };
+
+            var container = new ContentServiceContainer(Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<ContentMetadata>(), newContentFiles);
+            container.RunTest();
+        }
+
+        [Test]
+        [Category("Unit Tests")]
+        public void Initialize_Should_ResolveExistingMetadata() {
             var folder1 = "Folder1";
             var folder2 = "Folder2";
             var folder1A = "Folder1A";
