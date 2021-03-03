@@ -76,18 +76,17 @@
 
         /// <inheritdoc />
         public IContentNode FindNode(string[] splitContentPath) {
-            // TODO: allow content files to figure out their current depth and optimize this based on that. If the current depth matches the length of splitContentLength, you know you should be checking all children. Otherwise...
             IContentNode node = null;
-            if (splitContentPath.Length == 1) {
+
+            var parentDepth = splitContentPath.Length - 1;
+            var currentDepth = this.GetDepth();
+            if (currentDepth == parentDepth) {
                 node = this.Children.FirstOrDefault(x => x.GetContentPath() == Path.Combine(splitContentPath));
             }
-            if (splitContentPath.Any()) {
-                foreach (var child in this._children) {
-                    if (child.GetContentPath() == Path.Combine(splitContentPath)) {
-                        node = child;
-                        break;
-                    }
-                    else if (child is IContentDirectory directory && directory.TryFindNode(splitContentPath, out node)) {
+            else if (currentDepth < parentDepth) {
+                // TODO: this could be optimized by only checking directories which actually match the split content path.
+                foreach (var child in this._children.OfType<IContentDirectory>()) {
+                    if (child.TryFindNode(splitContentPath, out node)) {
                         break;
                     }
                 }

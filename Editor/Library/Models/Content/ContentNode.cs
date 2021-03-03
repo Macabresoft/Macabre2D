@@ -23,6 +23,12 @@
         string GetContentPath();
 
         /// <summary>
+        /// Gets the depth of this node in the content hierarchy. The root is 0 and each directory deeper is 1.
+        /// </summary>
+        /// <returns>The depth.</returns>
+        int GetDepth();
+
+        /// <summary>
         /// Gets the full path to this file or directory.
         /// </summary>
         /// <returns>The full path.</returns>
@@ -70,6 +76,11 @@
             }
 
             return this.NameWithoutExtension ?? string.Empty;
+        }
+
+        /// <inheritdoc />
+        public int GetDepth() {
+            return _parent?.GetDepth() + 1 ?? 0;
         }
 
         /// <inheritdoc />
