@@ -43,6 +43,23 @@
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
         }
+        
+        [Test]
+        [Category("Unit Tests")]
+        public void Initialize_ArchiveMetadataWithMissingContent() {
+            var folder1 = "Folder1";
+            var folder2 = "Folder2";
+            var folder1A = "Folder1A";
+            var metadataToArchive = new[] {
+                new ContentMetadata(new SpriteSheet(), new[] { folder1, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { folder1, folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+            };
+
+            var container = new ContentServiceContainer(Enumerable.Empty<ContentMetadata>(), metadataToArchive, Enumerable.Empty<string>());
+            container.RunTest();
+        }
 
         [Test]
         [Category("Unit Tests")]

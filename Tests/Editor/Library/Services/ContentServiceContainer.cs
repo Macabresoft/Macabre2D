@@ -56,15 +56,8 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.ContentService.Initialize(ContentPath, this.AssetManager);
 
             using (new AssertionScope()) {
-                foreach (var metadata in this.ExistingMetadata) {
-                    this.AssetManager.Received().RegisterMetadata(metadata);
-
-                    var contentFile = this.ContentService.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
-                    contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
-                    contentFile.Name.Should().Be(metadata.GetFileName());
-                    contentFile.GetContentPath().Should().Be(metadata.GetContentPath());
-                    contentFile.GetFullPath().Should().Be(Path.Combine(ContentPath, $"{metadata.GetContentPath()}{Path.GetExtension(metadata.GetFileName())}"));
-                }
+                this.AssertExistingMetadata();
+                this.AssertMetadataToArchive();
             }
         }
 
@@ -101,6 +94,30 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             }
 
             this.FileSysstem.DoesFileExist(filePath).Returns(true);
+        }
+
+        private void AssertExistingMetadata() {
+            foreach (var metadata in this.ExistingMetadata) {
+                this.AssetManager.Received().RegisterMetadata(metadata);
+
+                var contentFile = this.ContentService.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
+                contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
+                contentFile.Name.Should().Be(metadata.GetFileName());
+                contentFile.GetContentPath().Should().Be(metadata.GetContentPath());
+                contentFile.GetFullPath().Should().Be(Path.Combine(ContentPath, $"{metadata.GetContentPath()}{Path.GetExtension(metadata.GetFileName())}"));
+            }
+        }
+
+        private void AssertMetadataToArchive() {
+            foreach (var metadata in this.MetadataToArchive) {
+                var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
+                var current = Path.Combine(ContentPath, ContentMetadata.MetadataDirectoryName, fileName);
+                var moveTo = Path.Combine(ContentPath, ContentMetadata.ArchiveDirectoryName, fileName);
+                this.FileSysstem.Received().MoveFile(current, moveTo);
+
+                this.AssetManager.DidNotReceive().RegisterMetadata(metadata);
+                this.ContentService.RootContentDirectory.TryFindNode(metadata.SplitContentPath.ToArray(), out var node).Should().BeFalse();
+            }
         }
 
         private void RegisterContent(ContentMetadata metadata, bool contentShouldExist) {
