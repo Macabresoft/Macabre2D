@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.Editor.Library.Models;assembly=Macabre2D.Editor.Library"
-        xmlns:views="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Views"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
+        xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Views.Scene"
         x:Class="Macabresoft.Macabre2D.Editor.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D">
@@ -42,25 +42,25 @@
             <GridSplitter Width="3"
                           Grid.Column="1" />
 
-            <views:SceneEditorView Grid.Column="2" />
+            <scene:SceneEditorView Grid.Column="2" />
 
             <GridSplitter Width="3"
                           Grid.Column="3" />
 
             <Grid Grid.Column="4"
                   RowDefinitions="0.4*, Auto, 0.6*">
-                <views:SceneTreeView Grid.Row="0" />
+                <scene:SceneTreeView Grid.Row="0" />
 
                 <GridSplitter Height="3"
                               Grid.Row="1" />
                 
-                <views:EntityEditorView Grid.Row="2">
-                    <views:EntityEditorView.IsVisible>
+                <scene:EntityEditorView Grid.Row="2">
+                    <scene:EntityEditorView.IsVisible>
                         <Binding Path="SelectionService.MostRecentlySelectedKind"
                                  Converter="{StaticResource EntitySelectionKindToBoolConverter}"
                                  ConverterParameter="{x:Static models:EntitySelectionKind.Entity}" />
-                    </views:EntityEditorView.IsVisible>
-                </views:EntityEditorView>
+                    </scene:EntityEditorView.IsVisible>
+                </scene:EntityEditorView>
             </Grid>
         </Grid>
     </DockPanel>

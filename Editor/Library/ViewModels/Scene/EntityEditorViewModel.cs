@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

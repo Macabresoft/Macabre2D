@@ -104,5 +104,17 @@
       <DependentUpon>PointEditor - Copy.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Scene\EntityEditorView.axaml.cs">
+      <DependentUpon>EntityEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Scene\SceneEditorView.axaml.cs">
+      <DependentUpon>SceneEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Scene\SceneTreeView.axaml.cs">
+      <DependentUpon>SceneTreeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

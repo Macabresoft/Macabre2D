@@ -6,6 +6,7 @@
     using System.Windows.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;
     using ReactiveUI;
     using Unity;
 

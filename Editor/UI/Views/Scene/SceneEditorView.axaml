@@ -4,9 +4,10 @@
              xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.Editor.Library.MonoGame;assembly=Macabre2D.Editor.Library"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.Editor.AvaloniaInterop;assembly=Macabre2D.Editor.AvaloniaInterop"
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
-             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.SceneEditorView">
+             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;assembly=Macabre2D.Editor.Library"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.Scene.SceneEditorView">
     <Design.DataContext>
-        <viewModels:SceneEditorViewModel />
+        <scene:SceneEditorViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />

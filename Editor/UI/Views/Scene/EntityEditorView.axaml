@@ -4,9 +4,10 @@
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
-             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.EntityEditorView">
+             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;assembly=Macabre2D.Editor.Library"
+             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.Scene.EntityEditorView">
     <Design.DataContext>
-        <viewModels:EntityEditorViewModel />
+        <scene:EntityEditorViewModel />
     </Design.DataContext>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">

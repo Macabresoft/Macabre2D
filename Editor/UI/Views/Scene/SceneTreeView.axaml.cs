@@ -1,10 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Views {
-    using System.Linq;
-    using Avalonia;
+﻿namespace Macabresoft.Macabre2D.Editor.UI.Views.Scene {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Avalonia.VisualTree;
-    using Macabresoft.Macabre2D.Editor.Library.ViewModels;
+    using Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;
 
     public class SceneTreeView : UserControl {
         public SceneTreeView() {
