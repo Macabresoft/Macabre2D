@@ -18,6 +18,7 @@
         </StackPanel>
 
         <TreeView Grid.Row="1"
+                  BorderThickness="0"
                   Name="_treeView"
                   Items="{Binding Root, Mode=OneWay}"
                   SelectedItem="{Binding SelectionService.SelectedEntity, Mode=TwoWay}">

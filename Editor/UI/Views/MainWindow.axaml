@@ -39,8 +39,6 @@
         </Menu>
         <Grid DockPanel.Dock="Bottom"
               ColumnDefinitions="0.15*, Auto, 0.7*, Auto, 0.15*">
-            <views:SceneTreeView Grid.Column="0" />
-
             <GridSplitter Width="3"
                           Grid.Column="1" />
 
@@ -49,8 +47,14 @@
             <GridSplitter Width="3"
                           Grid.Column="3" />
 
-            <Grid Grid.Column="4">
-                <views:EntityEditorView>
+            <Grid Grid.Column="4"
+                  RowDefinitions="0.4*, Auto, 0.6*">
+                <views:SceneTreeView Grid.Row="0" />
+
+                <GridSplitter Height="3"
+                              Grid.Row="1" />
+                
+                <views:EntityEditorView Grid.Row="2">
                     <views:EntityEditorView.IsVisible>
                         <Binding Path="SelectionService.MostRecentlySelectedKind"
                                  Converter="{StaticResource EntitySelectionKindToBoolConverter}"
