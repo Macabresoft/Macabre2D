@@ -19,7 +19,7 @@
         /// Adds the child node.
         /// </summary>
         /// <param name="node">The child node to add.</param>
-        void AddChild(ContentNode node);
+        bool AddChild(ContentNode node);
 
         /// <summary>
         /// Finds a content node if it exists.
@@ -38,7 +38,7 @@
         /// Removes the child node.
         /// </summary>
         /// <param name="node">The child node to remove.</param>
-        void RemoveChild(ContentNode node);
+        bool RemoveChild(ContentNode node);
 
         /// <summary>
         /// Tries to find a content node.
@@ -70,8 +70,16 @@
         public override string NameWithoutExtension => this.Name;
 
         /// <inheritdoc />
-        public void AddChild(ContentNode node) {
-            this._children.Add(node);
+        public bool AddChild(ContentNode node) {
+            var result = false;
+            if (node != null && !this._children.Contains(node)) {
+                if (!(node is IContentDirectory directory && this.IsDescendentOf(directory))) {
+                    this._children.Add(node);
+                    result = true;
+                }
+            }
+
+            return result;
         }
 
         /// <inheritdoc />
@@ -107,8 +115,8 @@
         }
 
         /// <inheritdoc />
-        public void RemoveChild(ContentNode node) {
-            this._children.Remove(node);
+        public bool RemoveChild(ContentNode node) {
+            return this._children.Remove(node);
         }
 
         /// <inheritdoc />
