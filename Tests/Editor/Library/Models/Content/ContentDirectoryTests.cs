@@ -12,6 +12,7 @@
 
     [TestFixture]
     public class ContentDirectoryTests {
+        
         [Test]
         [Category("Unit Tests")]
         public void GetContentPath_ShouldReturnPath() {

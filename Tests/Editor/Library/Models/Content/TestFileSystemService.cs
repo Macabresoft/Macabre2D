@@ -66,6 +66,9 @@
             return Enumerable.Empty<string>();
         }
 
+        public void MoveDirectory(string originalPath, string newPath) {
+        }
+
         public void MoveFile(string originalPath, string newPath) {
         }
 

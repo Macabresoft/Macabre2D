@@ -19,6 +19,12 @@
             this.Metadata = metadata;
         }
 
+        /// <inheritdoc />
+        protected override void OnPathChanged(string originalPath) {
+            base.OnPathChanged(originalPath);
+            this.Metadata?.SetContentPath(this.GetContentPath());
+        }
+
         /// <summary>
         /// Gets the asset.
         /// </summary>

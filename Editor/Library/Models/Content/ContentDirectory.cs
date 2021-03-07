@@ -13,13 +13,13 @@
         /// <summary>
         /// Gets the children of this directory.
         /// </summary>
-        IReadOnlyCollection<ContentNode> Children { get; }
+        IReadOnlyCollection<IContentNode> Children { get; }
 
         /// <summary>
         /// Adds the child node.
         /// </summary>
         /// <param name="node">The child node to add.</param>
-        bool AddChild(ContentNode node);
+        bool AddChild(IContentNode node);
 
         /// <summary>
         /// Finds a content node if it exists.
@@ -38,7 +38,7 @@
         /// Removes the child node.
         /// </summary>
         /// <param name="node">The child node to remove.</param>
-        bool RemoveChild(ContentNode node);
+        bool RemoveChild(IContentNode node);
 
         /// <summary>
         /// Tries to find a content node.
@@ -53,7 +53,7 @@
     /// A directory content node.
     /// </summary>
     public class ContentDirectory : ContentNode, IContentDirectory {
-        private readonly ObservableCollectionExtended<ContentNode> _children = new();
+        private readonly ObservableCollectionExtended<IContentNode> _children = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
@@ -64,23 +64,25 @@
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ContentNode> Children => this._children;
+        public IReadOnlyCollection<IContentNode> Children => this._children;
 
         /// <inheritdoc />
         public override string NameWithoutExtension => this.Name;
 
         /// <inheritdoc />
-        public bool AddChild(ContentNode node) {
+        public bool AddChild(IContentNode node) {
             var result = false;
             if (node != null && !this._children.Contains(node)) {
                 if (!(node is IContentDirectory directory && this.IsDescendentOf(directory))) {
                     this._children.Add(node);
+                    node.PathChanged += this.Child_PathChanged;
                     result = true;
                 }
             }
 
             return result;
         }
+
 
         /// <inheritdoc />
         public IContentNode FindNode(string[] splitContentPath) {
@@ -115,7 +117,7 @@
         }
 
         /// <inheritdoc />
-        public bool RemoveChild(ContentNode node) {
+        public bool RemoveChild(IContentNode node) {
             return this._children.Remove(node);
         }
 
@@ -123,6 +125,10 @@
         public bool TryFindNode(string[] splitContentPath, out IContentNode node) {
             node = this.FindNode(splitContentPath);
             return node != null;
+        }
+
+        private void Child_PathChanged(object sender, ValueChangedEventArgs<string> e) {
+            this.RaisePathChanged(sender, e);
         }
 
         private void LoadDirectory(IFileSystemService fileSystemService, string path) {

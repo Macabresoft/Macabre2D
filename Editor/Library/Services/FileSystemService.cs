@@ -57,6 +57,13 @@
         /// <param name="originalPath">The original path.</param>
         /// <param name="newPath">The new path.</param>
         void MoveFile(string originalPath, string newPath);
+
+        /// <summary>
+        /// Moves a directory from the original path to the new path.
+        /// </summary>
+        /// <param name="originalPath">The original path.</param>
+        /// <param name="newPath">The new path.</param>
+        void MoveDirectory(string originalPath, string newPath);
     }
 
     /// <summary>
@@ -96,6 +103,11 @@
         /// <inheritdoc />
         public void MoveFile(string originalPath, string newPath) {
             File.Move(originalPath, newPath);
+        }
+
+        /// <inheritdoc />
+        public void MoveDirectory(string originalPath, string newPath) {
+            Directory.Move(originalPath, newPath);
         }
     }
 }

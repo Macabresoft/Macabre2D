@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
 
@@ -35,7 +36,7 @@
         /// </summary>
         /// <param name="contentToMove">The content to move.</param>
         /// <param name="newParent">The new parent.</param>
-        void MoveContent(ContentNode contentToMove, ContentDirectory newParent);
+        void MoveContent(IContentNode contentToMove, IContentDirectory newParent);
     }
 
     /// <summary>
@@ -46,6 +47,7 @@
 
         private readonly IFileSystemService _fileSystemSystemService;
         private readonly ISerializer _serializer;
+        private readonly IUndoService _undoService;
 
         private IAssetManager _assetManager;
         private RootContentDirectory _rootContentDirectory;
@@ -64,9 +66,11 @@
         /// </summary>
         /// <param name="fileSystemSystemService">The file service.</param>
         /// <param name="serializer">The serializer.</param>
-        public ContentService(IFileSystemService fileSystemSystemService, ISerializer serializer) {
+        /// <param name="undoService">The undo service.</param>
+        public ContentService(IFileSystemService fileSystemSystemService, ISerializer serializer, IUndoService undoService) {
             this._fileSystemSystemService = fileSystemSystemService;
             this._serializer = serializer;
+            this._undoService = undoService;
         }
 
         /// <inheritdoc />
@@ -100,7 +104,12 @@
             this._assetManager = assetManager;
 
             if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && this._fileSystemSystemService.DoesDirectoryExist(pathToContentDirectory)) {
+                if (this._rootContentDirectory != null) {
+                    this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
+                }
+
                 this._rootContentDirectory = new RootContentDirectory(this._fileSystemSystemService, pathToContentDirectory);
+                this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
                 foreach (var metadata in this.GetMetadata()) {
                     this.ResolveContentFile(metadata);
@@ -111,12 +120,23 @@
         }
 
         /// <inheritdoc />
-        public void MoveContent(ContentNode contentToMove, ContentDirectory newParent) {
-            throw new NotImplementedException();
+        public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
+            var originalParent = contentToMove.Parent;
+            this._undoService.Do(() => { contentToMove.ChangeParent(newParent); }, () => { contentToMove.ChangeParent(originalParent); });
         }
 
-        private ContentFile CreateContentFile(IContentDirectory parent, string fileName) {
-            ContentFile contentFile;
+        private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
+            switch (sender) {
+                case IContentDirectory:
+                    this._fileSystemSystemService.MoveDirectory(e.OriginalValue, e.UpdatedValue);
+                    break;
+                case ContentFile:
+                    this._fileSystemSystemService.MoveFile(e.OriginalValue, e.UpdatedValue);
+                    break;
+            }
+        }
+
+        private void CreateContentFile(IContentDirectory parent, string fileName) {
             var extension = Path.GetExtension(fileName);
 
             if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
@@ -126,14 +146,9 @@
                 var asset = Activator.CreateInstance(assetType) as IAsset;
                 var metadata = new ContentMetadata(asset, splitPath, extension);
                 this.SaveMetadata(metadata);
-                contentFile = new ContentFile(parent, metadata);
-                this._assetManager.RegisterMetadata(metadata);
+                var contentFile = new ContentFile(parent, metadata);
+                this._assetManager.RegisterMetadata(contentFile.Metadata);
             }
-            else {
-                contentFile = null;
-            }
-
-            return contentFile;
         }
 
         private IEnumerable<ContentMetadata> GetMetadata() {

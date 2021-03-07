@@ -31,7 +31,7 @@
         public const string MetadataSearchPattern = "*" + FileExtension;
 
         [DataMember]
-        private readonly string[] _splitContentPath;
+        private string[] _splitContentPath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
@@ -105,6 +105,14 @@
         /// <returns>The name of the content file.</returns>
         public string GetFileNameWithoutExtension() {
             return this._splitContentPath.Any() ? this._splitContentPath.Last() : string.Empty;
+        }
+
+        /// <summary>
+        /// Sets the content path to a new value.
+        /// </summary>
+        /// <param name="contentPath">The content path.</param>
+        public void SetContentPath(string contentPath) {
+            this._splitContentPath = contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>

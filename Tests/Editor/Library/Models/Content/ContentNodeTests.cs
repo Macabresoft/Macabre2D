@@ -1,10 +1,38 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Models.Content {
+    using System.IO;
     using FluentAssertions;
+    using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public sealed class ContentNodeTests {
+        private const string ContentPath = "Content";
+
+        [Test]
+        [Category("Unit Tests")]
+        public void ChangeParent_ShouldChangePaths() {
+            var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), ContentPath);
+            var directory1 = new ContentDirectory("D1", root);
+            var directory2 = new ContentDirectory("D2", root);
+
+            var fileName = "File";
+            var fileExtension = ".jpg";
+            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { directory1.Name, fileName }, fileExtension));
+            file.ChangeParent(directory2);
+
+            using (new AssertionScope()) {
+                var expectedContentPath = Path.Combine(directory2.Name, fileName);
+                file.GetContentPath().Should().Be(expectedContentPath);
+
+                var expectedFullPath = Path.Combine(ContentPath, $"{expectedContentPath}{fileExtension}");
+                file.GetFullPath().Should().Be(expectedFullPath);
+            }
+        }
+
         [Test]
         [Category("Unit Tests")]
         public void IsDescendentOf_ShouldReturnTrue_WhenDirectParent() {

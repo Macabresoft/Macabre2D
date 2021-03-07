@@ -1,11 +1,18 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using System;
     using System.IO;
+    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// Interface for a node in the content tree.
     /// </summary>
     public interface IContentNode {
+        /// <summary>
+        /// Occurs when the path to this file has changed.
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs<string>> PathChanged;
+
         /// <summary>
         /// Gets the name.
         /// </summary>
@@ -15,6 +22,17 @@
         /// Gets the name without an extension.
         /// </summary>
         string NameWithoutExtension { get; }
+
+        /// <summary>
+        /// Gets the parent.
+        /// </summary>
+        IContentDirectory Parent { get; }
+
+        /// <summary>
+        /// Changes the parent of this node.
+        /// </summary>
+        /// <param name="newParent">The new parent.</param>
+        void ChangeParent(IContentDirectory newParent);
 
         /// <summary>
         /// Gets the content path to this file or directory, which assumes a root of the project content directory.
@@ -46,8 +64,10 @@
     /// A node in the content tree.
     /// </summary>
     public abstract class ContentNode : NotifyPropertyChanged, IContentNode {
-        private readonly IContentDirectory _parent;
         private string _name;
+
+        /// <inheritdoc />
+        public event EventHandler<ValueChangedEventArgs<string>> PathChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
@@ -56,30 +76,44 @@
         /// <param name="parent">The parent.</param>
         protected ContentNode(string name, IContentDirectory parent) {
             this._name = name;
-            this._parent = parent;
-            this._parent?.AddChild(this);
+            this.ChangeParent(parent);
         }
 
         /// <inheritdoc />
         public virtual string NameWithoutExtension => Path.GetFileNameWithoutExtension(this.Name);
 
         /// <inheritdoc />
+        public IContentDirectory Parent { get; private set; }
+
+        /// <inheritdoc />
         public string Name {
             get => this._name;
             set {
+                var originalPath = this.GetFullPath();
                 if (string.IsNullOrEmpty(value)) {
                     this.RaisePropertyChanged(nameof(this.Name));
                 }
-                else {
-                    this.Set(ref this._name, value, true);
+                else if (this.Set(ref this._name, value, true)) {
+                    this.OnPathChanged(originalPath);
                 }
             }
         }
 
         /// <inheritdoc />
+        public void ChangeParent(IContentDirectory newParent) {
+            var originalPath = this.GetFullPath();
+
+            if (newParent?.AddChild(this) == true) {
+                this.Parent?.RemoveChild(this);
+                this.Parent = newParent;
+                this.OnPathChanged(originalPath);
+            }
+        }
+
+        /// <inheritdoc />
         public virtual string GetContentPath() {
-            if (this._parent != null && !string.IsNullOrEmpty(this.NameWithoutExtension)) {
-                return Path.Combine(this._parent.GetContentPath(), this.NameWithoutExtension);
+            if (this.Parent != null && !string.IsNullOrEmpty(this.NameWithoutExtension)) {
+                return Path.Combine(this.Parent.GetContentPath(), this.NameWithoutExtension);
             }
 
             return this.NameWithoutExtension ?? string.Empty;
@@ -87,13 +121,13 @@
 
         /// <inheritdoc />
         public int GetDepth() {
-            return this._parent?.GetDepth() + 1 ?? 0;
+            return this.Parent?.GetDepth() + 1 ?? 0;
         }
 
         /// <inheritdoc />
         public virtual string GetFullPath() {
-            if (this._parent != null && !string.IsNullOrEmpty(this.Name)) {
-                return Path.Combine(this._parent.GetFullPath(), this.Name);
+            if (this.Parent != null && !string.IsNullOrEmpty(this.Name)) {
+                return Path.Combine(this.Parent.GetFullPath(), this.Name);
             }
 
             return this.Name ?? string.Empty;
@@ -102,11 +136,28 @@
         /// <inheritdoc />
         public bool IsDescendentOf(IContentDirectory directory) {
             var isDescendent = false;
-            if (this._parent != null) {
-                isDescendent = this._parent == directory || this._parent.IsDescendentOf(directory);
+            if (this.Parent != null) {
+                isDescendent = this.Parent == directory || this.Parent.IsDescendentOf(directory);
             }
 
             return isDescendent;
+        }
+
+        /// <summary>
+        /// Called when the path changes.
+        /// </summary>
+        /// <param name="originalPath">The original path from before the change.</param>
+        protected virtual void OnPathChanged(string originalPath) {
+            this.RaisePathChanged(this, new ValueChangedEventArgs<string>(originalPath, this.GetFullPath()));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="PathChanged" /> event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
+        protected void RaisePathChanged(object sender, ValueChangedEventArgs<string> e) {
+            this.PathChanged.SafeInvoke(sender, e);
         }
     }
 }
