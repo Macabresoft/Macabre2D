@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="metadata">The metadata.</param>
-        public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata.GetFileName(), parent) {
+        public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
             this.Metadata = metadata;
         }
 

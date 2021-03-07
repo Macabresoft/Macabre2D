@@ -33,6 +33,13 @@
         /// </summary>
         /// <returns>The full path.</returns>
         string GetFullPath();
+
+        /// <summary>
+        /// Checks whether or not this node is a descendent of the provided directory.
+        /// </summary>
+        /// <param name="directory">The directory.</param>
+        /// <returns>A value indicating whether or not this node is a descendent of the provided directory.</returns>
+        bool IsDescendentOf(IContentDirectory directory);
     }
 
     /// <summary>
@@ -80,7 +87,7 @@
 
         /// <inheritdoc />
         public int GetDepth() {
-            return _parent?.GetDepth() + 1 ?? 0;
+            return this._parent?.GetDepth() + 1 ?? 0;
         }
 
         /// <inheritdoc />
@@ -90,6 +97,16 @@
             }
 
             return this.Name ?? string.Empty;
+        }
+
+        /// <inheritdoc />
+        public bool IsDescendentOf(IContentDirectory directory) {
+            var isDescendent = false;
+            if (this._parent != null) {
+                isDescendent = this._parent == directory || this._parent.IsDescendentOf(directory);
+            }
+
+            return isDescendent;
         }
     }
 }

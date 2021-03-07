@@ -7,7 +7,6 @@
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.Tests.Editor.Library.Services;
     using NSubstitute;
     using NUnit.Framework;
 
@@ -23,14 +22,14 @@
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
-            var firstC = new ContentFile(root, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
+            var firstC = new ContentFile(root, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
             var secondA = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
             var secondB = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
-            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
+            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
             var thirdA = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
             var thirdB = new ContentDirectory(Guid.NewGuid().ToString(), secondB);
-            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
-            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] {Guid.NewGuid().ToString()}, ".m2d"));
+            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
 
             using (new AssertionScope()) {
                 firstA.GetContentPath().Should().Be(firstA.Name);
@@ -45,7 +44,7 @@
                 fourth.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name, fourth.NameWithoutExtension));
             }
         }
-        
+
         [Test]
         [Category("Unit Tests")]
         public void RootContentDirectory_ShouldBuildContentHierarchy() {
