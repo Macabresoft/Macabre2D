@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
     using System.IO;
-    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -20,6 +19,13 @@
         bool HasChanges { get; set; }
 
         /// <summary>
+        /// Creates a project at the specified path.
+        /// </summary>
+        /// <param name="projectDirectoryPath">Path to the directory where the project should be created.</param>
+        /// <returns>The created project.</returns>
+        IGameProject CreateProject(string projectDirectoryPath);
+
+        /// <summary>
         /// Loads the project at the specified path.
         /// </summary>
         /// <param name="projectFilePath">The project file path.</param>
@@ -36,6 +42,8 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
+        public const string ProjectFileExtension = ".m2dproj";
+        private readonly IFileSystemService _fileSystem;
         private readonly ISerializer _serializer;
         private IGameProject _currentProject;
         private bool _hasChanges;
@@ -44,7 +52,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
-        public ProjectService(ISerializer serializer) : base() {
+        /// <param name="fileSystem">The file system service.</param>
+        /// <param name="serializer">The serializer.</param>
+        public ProjectService(IFileSystemService fileSystem, ISerializer serializer) : base() {
+            this._fileSystem = fileSystem;
             this._serializer = serializer;
         }
 
@@ -61,10 +72,19 @@
         }
 
         /// <inheritdoc />
+        public IGameProject CreateProject(string projectDirectoryPath) {
+            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileExtension);
+            this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? throw new NotSupportedException() : projectFilePath;
+            this.CurrentProject = new GameProject();
+            this._serializer.Serialize(this.CurrentProject, projectFilePath);
+            return this.CurrentProject;
+        }
+
+        /// <inheritdoc />
         public IGameProject LoadProject(string projectFilePath) {
             this._projectFilePath = projectFilePath;
-            var project = File.Exists(projectFilePath) ? this._serializer.Deserialize<GameProject>(projectFilePath) : CreateGameProject();
-            return project;
+            this.CurrentProject = this._fileSystem.DoesFileExist(projectFilePath) ? this._serializer.Deserialize<GameProject>(projectFilePath) : throw new NotSupportedException();
+            return this.CurrentProject;
         }
 
         /// <inheritdoc />
