@@ -42,7 +42,6 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
-        public const string ProjectFileExtension = ".m2dproj";
         private readonly IFileSystemService _fileSystem;
         private readonly ISerializer _serializer;
         private IGameProject _currentProject;
@@ -73,17 +72,17 @@
 
         /// <inheritdoc />
         public IGameProject CreateProject(string projectDirectoryPath) {
-            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileExtension);
+            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
             this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? throw new NotSupportedException() : projectFilePath;
             this.CurrentProject = new GameProject();
-            this._serializer.Serialize(this.CurrentProject, projectFilePath);
+            this.SaveProject();
             return this.CurrentProject;
         }
 
         /// <inheritdoc />
         public IGameProject LoadProject(string projectFilePath) {
-            this._projectFilePath = projectFilePath;
-            this.CurrentProject = this._fileSystem.DoesFileExist(projectFilePath) ? this._serializer.Deserialize<GameProject>(projectFilePath) : throw new NotSupportedException();
+            this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? projectFilePath : throw new NotSupportedException();
+            this.CurrentProject = this._serializer.Deserialize<GameProject>(projectFilePath);
             return this.CurrentProject;
         }
 
@@ -92,10 +91,6 @@
             if (this.CurrentProject != null && !string.IsNullOrWhiteSpace(this._projectFilePath)) {
                 this._serializer.Serialize(this.CurrentProject, this._projectFilePath);
             }
-        }
-
-        private static IGameProject CreateGameProject() {
-            return new GameProject();
         }
     }
 }

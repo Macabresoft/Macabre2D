@@ -28,10 +28,12 @@
     /// </summary>
     [DataContract]
     public class GameProject : IGameProject {
+        
         /// <summary>
-        /// The content file name for <see cref="GameProject" />.
+        /// The project file extension.
         /// </summary>
-        public const string ContentFileName = "GameProject";
+        public const string ProjectFileName = ".m2dproj";
+
         
         /// <summary>
         /// Gets the asset manager for this project.

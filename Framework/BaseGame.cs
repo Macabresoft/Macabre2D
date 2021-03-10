@@ -190,7 +190,7 @@
         protected override void LoadContent() {
             base.LoadContent();
             try {
-                var project = this.Content.Load<GameProject?>(GameProject.ContentFileName);
+                var project = this.Content.Load<GameProject?>(GameProject.ProjectFileName);
                 if (project != null) {
                     this.Project = project;
                 }
