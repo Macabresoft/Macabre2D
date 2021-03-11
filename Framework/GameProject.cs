@@ -1,6 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
+    using System;
     using System.Runtime.Serialization;
-    using Microsoft.Xna.Framework.Content;
 
     /// <summary>
     /// Interface for a single project in the engine.
@@ -12,15 +12,19 @@
         IAssetManager Assets { get; }
 
         /// <summary>
-        /// Gets the game settings for this project.
-        /// </summary>
-        IGameSettings Settings { get; }
-        
-        /// <summary>
         /// Gets the name for this project.
         /// </summary>
         string Name { get; }
-        
+
+        /// <summary>
+        /// Gets the game settings for this project.
+        /// </summary>
+        IGameSettings Settings { get; }
+
+        /// <summary>
+        /// Gets the content identifier of the scene loaded on startup.
+        /// </summary>
+        Guid StartupSceneContentId { get; }
     }
 
     /// <summary>
@@ -28,13 +32,11 @@
     /// </summary>
     [DataContract]
     public class GameProject : IGameProject {
-        
         /// <summary>
         /// The project file extension.
         /// </summary>
         public const string ProjectFileName = ".m2dproj";
 
-        
         /// <summary>
         /// Gets the asset manager for this project.
         /// </summary>
@@ -48,5 +50,9 @@
         /// <inheritdoc />
         [DataMember]
         public string Name { get; set; } = "Macabre2D Project";
+
+        /// <inheritdoc />
+        [DataMember]
+        public Guid StartupSceneContentId { get; set; }
     }
 }

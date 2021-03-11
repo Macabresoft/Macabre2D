@@ -75,6 +75,13 @@
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
             this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? throw new NotSupportedException() : projectFilePath;
             this.CurrentProject = new GameProject();
+
+            // TODO: create scene, save it, and place it in the content hierarchy
+            /*var startupScene = new GameScene();
+            var sceneAsset = new SceneAsset();
+            sceneAsset.LoadContent(startupScene);
+            this.CurrentProject.Assets.*/
+            
             this.SaveProject();
             return this.CurrentProject;
         }
