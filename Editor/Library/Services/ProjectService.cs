@@ -42,6 +42,7 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
+        private readonly IContentService _contentService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISerializer _serializer;
         private IGameProject _currentProject;
@@ -51,9 +52,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
+        /// <param name="contentService">The content service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="serializer">The serializer.</param>
-        public ProjectService(IFileSystemService fileSystem, ISerializer serializer) : base() {
+        public ProjectService(IContentService contentService, IFileSystemService fileSystem, ISerializer serializer) : base() {
+            this._contentService = contentService;
             this._fileSystem = fileSystem;
             this._serializer = serializer;
         }
@@ -73,8 +76,12 @@
         /// <inheritdoc />
         public IGameProject CreateProject(string projectDirectoryPath) {
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
-            this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? throw new NotSupportedException() : projectFilePath;
-            this.CurrentProject = new GameProject();
+
+            if (this._fileSystem.DoesFileExist(projectFilePath)) {
+                throw new NotSupportedException();
+            }
+
+            var project = new GameProject();
 
             // TODO: create scene, save it, and place it in the content hierarchy
             /*var startupScene = new GameScene();
@@ -82,21 +89,26 @@
             sceneAsset.LoadContent(startupScene);
             this.CurrentProject.Assets.*/
             
-            this.SaveProject();
-            return this.CurrentProject;
+            this.SaveProjectFile(project, projectFilePath);
+            return this.LoadProject(projectFilePath);
         }
 
         /// <inheritdoc />
         public IGameProject LoadProject(string projectFilePath) {
             this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? projectFilePath : throw new NotSupportedException();
             this.CurrentProject = this._serializer.Deserialize<GameProject>(projectFilePath);
+            this._contentService.Initialize(Path.GetDirectoryName(projectFilePath), this.CurrentProject.Assets);
             return this.CurrentProject;
         }
 
         /// <inheritdoc />
         public void SaveProject() {
-            if (this.CurrentProject != null && !string.IsNullOrWhiteSpace(this._projectFilePath)) {
-                this._serializer.Serialize(this.CurrentProject, this._projectFilePath);
+            this.SaveProjectFile(this.CurrentProject, this._projectFilePath);
+        }
+
+        private void SaveProjectFile(IGameProject project, string projectFilePath) {
+            if (project != null && !string.IsNullOrWhiteSpace(projectFilePath)) {
+                this._serializer.Serialize(project, projectFilePath);
             }
         }
     }

@@ -27,9 +27,9 @@
         /// <summary>
         /// Initializes the service with a directory and the asset manager so it can construct a tree of content.
         /// </summary>
-        /// <param name="pathToContentDirectory">The path to the content directory.</param>
+        /// <param name="contentDirectoryPath">The path to the content directory.</param>
         /// <param name="assetManager">The asset manager.</param>
-        void Initialize(string pathToContentDirectory, IAssetManager assetManager);
+        void Initialize(string contentDirectoryPath, IAssetManager assetManager);
 
         /// <summary>
         /// Moves the content to a new folder.
@@ -100,15 +100,15 @@
         }
 
         /// <inheritdoc />
-        public void Initialize(string pathToContentDirectory, IAssetManager assetManager) {
+        public void Initialize(string contentDirectoryPath, IAssetManager assetManager) {
             this._assetManager = assetManager;
 
-            if (!string.IsNullOrWhiteSpace(pathToContentDirectory) && this._fileSystemSystemService.DoesDirectoryExist(pathToContentDirectory)) {
+            if (!string.IsNullOrWhiteSpace(contentDirectoryPath) && this._fileSystemSystemService.DoesDirectoryExist(contentDirectoryPath)) {
                 if (this._rootContentDirectory != null) {
                     this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
                 }
 
-                this._rootContentDirectory = new RootContentDirectory(this._fileSystemSystemService, pathToContentDirectory);
+                this._rootContentDirectory = new RootContentDirectory(this._fileSystemSystemService, contentDirectoryPath);
                 this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
 
                 foreach (var metadata in this.GetMetadata()) {
