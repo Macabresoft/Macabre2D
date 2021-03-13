@@ -22,15 +22,11 @@
             fileSystem.DoesFileExist(filePath).Returns(false);
 
             var sceneService = new SceneService(fileSystem, serializer);
-            var receivedPropertyChanged = false;
-            sceneService.PropertyChanged += (_, args) => { receivedPropertyChanged |= args.PropertyName == nameof(ISceneService.CurrentScene); };
             var scene = sceneService.CreateNewScene<GameScene>(directoryPath, sceneName);
 
             using (new AssertionScope()) {
-                receivedPropertyChanged.Should().BeTrue();
                 scene.Should().NotBeNull();
                 scene.Name.Should().Be(sceneName);
-                sceneService.CurrentScene.Should().Be(scene);
                 serializer.Received().Serialize(scene, filePath);
             }
         }

@@ -8,14 +8,9 @@
     /// Interface for a service which handles the <see cref="IGameScene" /> open in the editor.
     /// </summary>
     public interface ISceneService : INotifyPropertyChanged {
-        /// <summary>
-        /// Gets the current scene.
-        /// </summary>
-        /// <value>The current scene.</value>
-        public IGameScene CurrentScene { get; }
 
         /// <summary>
-        /// Creates the new scene and assigns it to <see cref="CurrentScene" />.
+        /// Creates the new scene and serializes it.
         /// </summary>
         /// <typeparam name="T">The type of scene.</typeparam>
         /// <param name="parentDirectoryPath">The scene content file's parent directory path.</param>
@@ -30,7 +25,6 @@
     public sealed class SceneService : ReactiveObject, ISceneService {
         private readonly IFileSystemService _fileSystem;
         private readonly ISerializer _serializer;
-        private IGameScene _currentScene;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneService" /> class.
@@ -41,13 +35,7 @@
             this._fileSystem = fileSystem;
             this._serializer = serializer;
         }
-
-        /// <inheritdoc />
-        public IGameScene CurrentScene {
-            get => this._currentScene;
-            private set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
-        }
-
+        
         /// <inheritdoc />
         public T CreateNewScene<T>(string parentDirectoryPath, string sceneName) where T : IGameScene, new() {
             if (!this._fileSystem.DoesDirectoryExist(parentDirectoryPath)) {
@@ -71,7 +59,6 @@
             
             // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
 
-            this.CurrentScene = scene;
             return scene;
         }
     }

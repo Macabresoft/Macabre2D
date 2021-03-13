@@ -34,7 +34,7 @@
     public class SceneEditor : AvaloniaGame, ISceneEditor {
         private readonly IEditorService _editorService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
-        private readonly ISceneService _sceneService;
+        private readonly IProjectService _projectService;
         private readonly ISelectionService _selectionService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
@@ -43,16 +43,16 @@
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        /// <param name="sceneService">The scene service.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="selectionService">The selection service</param>
         /// <param name="undoService">The undo service.</param>
         public SceneEditor(
             IEditorService editorService,
-            ISceneService sceneService,
+            IProjectService projectService,
             ISelectionService selectionService,
             IUndoService undoService) {
             this._editorService = editorService;
-            this._sceneService = sceneService;
+            this._projectService = projectService;
             this._selectionService = selectionService;
             this._undoService = undoService;
         }
@@ -67,8 +67,8 @@
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
-                if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
+                if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
+                    this.GraphicsDevice.Clear(this._projectService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
                 else {
@@ -83,11 +83,11 @@
                 try {
                     this.LoadScene(this.CreateScene());
                     base.Initialize();
-                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                        this._sceneService.CurrentScene.Initialize(this);    
+                    if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
+                        this._projectService.CurrentScene.Initialize(this);    
                     }
                     
-                    this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
+                    this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
                 }
                 finally {
                     this._isInitialized = true;
@@ -97,13 +97,13 @@
 
         private IGameScene CreateScene() {
             var scene = new GameScene();
-            scene.AddSystem(new EditorRenderSystem(this._sceneService));
+            scene.AddSystem(new EditorRenderSystem(this._projectService));
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
-            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
+            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._projectService));
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
-            var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
+            var selectorGizmo = new SelectorComponent(this._projectService, this._selectionService);
             cameraEntity.AddComponent(selectorGizmo);
 
             var translationGizmoEntity = cameraEntity.AddChild();
@@ -120,10 +120,10 @@
             return scene;
         }
 
-        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ISceneService.CurrentScene)) {
-                if (this.IsInitialized && !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this._sceneService.CurrentScene.Initialize(this);
+        private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IProjectService.CurrentScene)) {
+                if (this.IsInitialized && !GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
+                    this._projectService.CurrentScene.Initialize(this);
                 }
             }
         }

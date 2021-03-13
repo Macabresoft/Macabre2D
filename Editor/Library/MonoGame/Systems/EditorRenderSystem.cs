@@ -9,16 +9,16 @@
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
     /// </summary>
     internal class EditorRenderSystem : GameSystem {
-        private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+        private readonly QuadTree<IGameRenderableComponent> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
-        private readonly ISceneService _sceneService;
+        private readonly IProjectService _projectService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorRenderSystem" /> class.
         /// </summary>
-        /// <param name="sceneService">The scene service.</param>
-        public EditorRenderSystem(ISceneService sceneService) {
-            this._sceneService = sceneService;
+        /// <param name="projectService">The project service.</param>
+        public EditorRenderSystem(IProjectService projectService) {
+            this._projectService = projectService;
         }
 
         /// <inheritdoc />
@@ -26,14 +26,14 @@
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Scene.Game is ISceneEditor sceneEditor && sceneEditor.SpriteBatch is SpriteBatch spriteBatch && sceneEditor.Camera is ICameraComponent camera) {
+            if (this.Scene.Game is ISceneEditor { SpriteBatch: SpriteBatch spriteBatch, Camera: ICameraComponent camera } sceneEditor) {
                 this._renderTree.Clear();
 
                 foreach (var component in sceneEditor.Scene.RenderableComponents.Where(x => x is EditorGridComponent)) {
                     this._renderTree.Insert(component);
                 }
                 
-                foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
+                foreach (var component in this._projectService.CurrentScene.RenderableComponents) {
                     this._renderTree.Insert(component);
                 }
                 

@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
+    using System.ComponentModel;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
@@ -7,11 +8,17 @@
     /// <summary>
     /// Interface for a service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
-    public interface IProjectService {
+    public interface IProjectService : INotifyPropertyChanged {
         /// <summary>
         /// Gets the currently loaded project.
         /// </summary>
         IGameProject CurrentProject { get; }
+        
+        /// <summary>
+        /// Gets the current scene.
+        /// </summary>
+        /// <value>The current scene.</value>
+        public IGameScene CurrentScene { get; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether or not the project has changes which require saving.
@@ -46,6 +53,7 @@
         private readonly IFileSystemService _fileSystem;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
+        private IGameScene _currentScene;
         private IGameProject _currentProject;
         private bool _hasChanges;
         private string _projectFilePath;
@@ -73,6 +81,12 @@
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
         }
+        
+        /// <inheritdoc />
+        public IGameScene CurrentScene {
+            get => this._currentScene;
+            private set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
+        }
 
         /// <inheritdoc />
         public bool HasChanges {
@@ -89,7 +103,7 @@
             }
 
             var project = new GameProject();
-            this._sceneService.CreateNewScene<GameScene>(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
+            this.CurrentScene = this._sceneService.CreateNewScene<GameScene>(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
 
             // TODO: create scene, save it, and place it in the content hierarchy
             /*var startupScene = new GameScene();
