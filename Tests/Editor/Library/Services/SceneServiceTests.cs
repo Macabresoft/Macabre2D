@@ -29,6 +29,7 @@
             using (new AssertionScope()) {
                 receivedPropertyChanged.Should().BeTrue();
                 scene.Should().NotBeNull();
+                scene.Name.Should().Be(sceneName);
                 sceneService.CurrentScene.Should().Be(scene);
                 serializer.Received().Serialize(scene, filePath);
             }

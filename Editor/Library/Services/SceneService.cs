@@ -54,19 +54,22 @@
                 throw new DirectoryNotFoundException();
             }
 
+            T scene;
             var filePath = Path.Combine(parentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
-                // Override warning.
+                // TODO: Override warning.
+                scene = this._serializer.Deserialize<T>(filePath);
             }
+            else {
+                scene = new T {
+                    BackgroundColor = DefinedColors.MacabresoftPurple,
+                    Name = sceneName
+                };
 
-            var scene = new T {
-                BackgroundColor = DefinedColors.MacabresoftPurple,
-                Name = sceneName
-            };
+                this._serializer.Serialize(scene, filePath);
+            }
             
-            this._serializer.Serialize(scene, filePath);
-
-            // Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
+            // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
 
             this.CurrentScene = scene;
             return scene;
