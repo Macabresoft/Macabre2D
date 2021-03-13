@@ -38,6 +38,11 @@
         public const string ProjectFileName = ".m2dproj";
 
         /// <summary>
+        /// The content directory name.
+        /// </summary>
+        public const string ContentDirectoryName = "Content";
+
+        /// <summary>
         /// Gets the asset manager for this project.
         /// </summary>
         [DataMember]

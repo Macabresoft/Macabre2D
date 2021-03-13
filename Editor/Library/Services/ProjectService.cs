@@ -44,6 +44,7 @@
     public sealed class ProjectService : ReactiveObject, IProjectService {
         private readonly IContentService _contentService;
         private readonly IFileSystemService _fileSystem;
+        private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
         private IGameProject _currentProject;
         private bool _hasChanges;
@@ -54,10 +55,16 @@
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="fileSystem">The file system service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
-        public ProjectService(IContentService contentService, IFileSystemService fileSystem, ISerializer serializer) : base() {
+        public ProjectService(
+            IContentService contentService,
+            IFileSystemService fileSystem,
+            ISceneService sceneService,
+            ISerializer serializer) : base() {
             this._contentService = contentService;
             this._fileSystem = fileSystem;
+            this._sceneService = sceneService;
             this._serializer = serializer;
         }
 
@@ -82,13 +89,14 @@
             }
 
             var project = new GameProject();
+            this._sceneService.CreateNewScene<GameScene>(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
 
             // TODO: create scene, save it, and place it in the content hierarchy
             /*var startupScene = new GameScene();
             var sceneAsset = new SceneAsset();
             sceneAsset.LoadContent(startupScene);
             this.CurrentProject.Assets.*/
-            
+
             this.SaveProjectFile(project, projectFilePath);
             return this.LoadProject(projectFilePath);
         }

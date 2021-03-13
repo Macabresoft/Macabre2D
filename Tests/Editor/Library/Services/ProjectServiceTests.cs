@@ -15,8 +15,9 @@
         public void CreateProject_ShouldCreateProject_WhenFileDoesNotExist() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
@@ -45,8 +46,9 @@
         public void CreateProject_ShouldThrow_WhenFileExists() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
@@ -65,8 +67,9 @@
         public void LoadProject_ShouldLoad_WhenFileExists() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
@@ -89,8 +92,9 @@
         public void LoadProject_ShouldNotLoad_WhenFileDoesNotExist() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileName);
             fileSystem.DoesFileExist(projectFilePath).Returns(false);
@@ -109,8 +113,9 @@
         public void SaveProject_ShouldNotSave_WhenProjectDoesNotExist() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileName);
             projectService.SaveProject();
@@ -125,8 +130,9 @@
         public void SaveProject_ShouldSave_WhenProjectExists() {
             var contentService = Substitute.For<IContentService>();
             var fileSystem = Substitute.For<IFileSystemService>();
+            var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
-            var projectService = new ProjectService(contentService, fileSystem, serializer);
+            var projectService = new ProjectService(contentService, fileSystem, sceneService, serializer);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileName);
             fileSystem.DoesFileExist(projectFilePath).Returns(true);
