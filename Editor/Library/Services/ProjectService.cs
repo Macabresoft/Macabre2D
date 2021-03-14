@@ -13,7 +13,7 @@
         /// Gets the currently loaded project.
         /// </summary>
         IGameProject CurrentProject { get; }
-        
+
         /// <summary>
         /// Gets the current scene.
         /// </summary>
@@ -53,8 +53,8 @@
         private readonly IFileSystemService _fileSystem;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
-        private IGameScene _currentScene;
         private IGameProject _currentProject;
+        private IGameScene _currentScene;
         private bool _hasChanges;
         private string _projectFilePath;
 
@@ -81,7 +81,7 @@
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
         }
-        
+
         /// <inheritdoc />
         public IGameScene CurrentScene {
             get => this._currentScene;
@@ -103,7 +103,7 @@
             }
 
             var project = new GameProject();
-            this.CurrentScene = this._sceneService.CreateNewScene<GameScene>(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
+            this.CurrentScene = this._sceneService.CreateNewScene(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
 
             // TODO: create scene, save it, and place it in the content hierarchy
             /*var startupScene = new GameScene();
