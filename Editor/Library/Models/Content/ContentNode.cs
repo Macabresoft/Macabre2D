@@ -101,12 +101,16 @@
 
         /// <inheritdoc />
         public void ChangeParent(IContentDirectory newParent) {
-            var originalPath = this.GetFullPath();
+            var originalParent = this.Parent;
+            var originalPath = originalParent != null ? this.GetFullPath() : string.Empty;
 
             if (newParent?.AddChild(this) == true) {
                 this.Parent?.RemoveChild(this);
                 this.Parent = newParent;
-                this.OnPathChanged(originalPath);
+
+                if (originalParent != null) {
+                    this.OnPathChanged(originalPath);
+                }
             }
         }
 
@@ -121,7 +125,7 @@
 
         /// <inheritdoc />
         public int GetDepth() {
-            return this.Parent?.GetDepth() + 1 ?? 0;
+            return this.Parent?.GetDepth() + 1 ?? 1;
         }
 
         /// <inheritdoc />

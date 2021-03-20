@@ -10,36 +10,25 @@
 
     [TestFixture]
     public sealed class ContentNodeTests {
-        private const string ContentPath = "Content";
-
         [Test]
         [Category("Unit Tests")]
         public void ChangeParent_ShouldChangePaths() {
-            var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), ContentPath);
+            var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), ProjectPath);
             var directory1 = new ContentDirectory("D1", root);
             var directory2 = new ContentDirectory("D2", root);
 
             var fileName = "File";
             var fileExtension = ".jpg";
-            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { directory1.Name, fileName }, fileExtension));
+            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, directory1.Name, fileName }, fileExtension));
             file.ChangeParent(directory2);
 
             using (new AssertionScope()) {
-                var expectedContentPath = Path.Combine(directory2.Name, fileName);
+                var expectedContentPath = Path.Combine(ProjectService.ContentDirectory, directory2.Name, fileName);
                 file.GetContentPath().Should().Be(expectedContentPath);
 
-                var expectedFullPath = Path.Combine(ContentPath, $"{expectedContentPath}{fileExtension}");
+                var expectedFullPath = Path.Combine(ProjectPath, $"{expectedContentPath}{fileExtension}");
                 file.GetFullPath().Should().Be(expectedFullPath);
             }
-        }
-
-        [Test]
-        [Category("Unit Tests")]
-        public void IsDescendentOf_ShouldReturnTrue_WhenDirectParent() {
-            var parent = new ContentDirectory(string.Empty, null);
-            var node = new ContentFile(parent, null);
-            var result = node.IsDescendentOf(parent);
-            result.Should().BeTrue();
         }
 
         [Test]
@@ -50,6 +39,15 @@
             var node = new ContentFile(parent, null);
             var result = node.IsDescendentOf(otherDirectory);
             result.Should().BeFalse();
+        }
+
+        [Test]
+        [Category("Unit Tests")]
+        public void IsDescendentOf_ShouldReturnTrue_WhenDirectParent() {
+            var parent = new ContentDirectory(string.Empty, null);
+            var node = new ContentFile(parent, null);
+            var result = node.IsDescendentOf(parent);
+            result.Should().BeTrue();
         }
 
         [Test]
@@ -73,5 +71,7 @@
             var result = node.IsDescendentOf(root);
             result.Should().BeTrue();
         }
+
+        private const string ProjectPath = "Content";
     }
 }

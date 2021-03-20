@@ -64,12 +64,6 @@
         string ProjectName { get; set; }
 
         /// <summary>
-        /// Gets or sets the startup scene asset identifier.
-        /// </summary>
-        /// <value>The startup scene asset identifier.</value>
-        Guid StartupSceneAssetId { get; set; }
-
-        /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
         /// screen regardless of the current view size.
         /// </summary>

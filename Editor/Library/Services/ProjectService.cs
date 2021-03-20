@@ -1,7 +1,12 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
+    using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -15,15 +20,27 @@
         IGameProject CurrentProject { get; }
 
         /// <summary>
-        /// Gets the current scene.
+        /// Gets the root content directory.
+        /// </summary>
+        IContentDirectory RootContentDirectory { get; }
+
+        /// <summary>
+        /// Gets or sets the current scene.
         /// </summary>
         /// <value>The current scene.</value>
-        public IGameScene CurrentScene { get; }
+        public IGameScene CurrentScene { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether or not the project has changes which require saving.
         /// </summary>
         bool HasChanges { get; set; }
+
+        /// <summary>
+        /// Builds the content.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The exit code of the MGCB process.</returns>
+        int Build(BuildContentArguments args);
 
         /// <summary>
         /// Creates a project at the specified path.
@@ -33,11 +50,23 @@
         IGameProject CreateProject(string projectDirectoryPath);
 
         /// <summary>
+        /// Gets the project directory path.
+        /// </summary>
+        string GetProjectDirectoryPath();
+
+        /// <summary>
         /// Loads the project at the specified path.
         /// </summary>
         /// <param name="projectFilePath">The project file path.</param>
         /// <returns>The loaded project.</returns>
         IGameProject LoadProject(string projectFilePath);
+
+        /// <summary>
+        /// Moves the content to a new folder.
+        /// </summary>
+        /// <param name="contentToMove">The content to move.</param>
+        /// <param name="newParent">The new parent.</param>
+        void MoveContent(IContentNode contentToMove, IContentDirectory newParent);
 
         /// <summary>
         /// Saves the currently opened project.
@@ -49,32 +78,63 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
-        private readonly IContentService _contentService;
+        public const string ContentDirectory = "content";
+        private const string CompiledContentDirectory = ".compiled";
+        private const string SourceDirectory = "src";
+
+        public static readonly string[] ReservedDirectories = {
+            ContentMetadata.MetadataDirectoryName,
+            ContentMetadata.ArchiveDirectoryName,
+            ContentDirectory,
+            SourceDirectory,
+            CompiledContentDirectory
+        };
+
+        private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
+
         private readonly IFileSystemService _fileSystem;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
+
+        private readonly IUndoService _undoService;
         private IGameProject _currentProject;
         private IGameScene _currentScene;
         private bool _hasChanges;
         private string _projectFilePath;
+        private RootContentDirectory _rootContentDirectory;
+
+        /// <summary>
+        /// Static constructor for <see cref="ProjectService" />.
+        /// </summary>
+        static ProjectService() {
+            FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
+
+            foreach (var extension in SpriteSheet.ValidFileExtensions) {
+                FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
-        /// <param name="contentService">The content service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="undoService"></param>
         public ProjectService(
-            IContentService contentService,
             IFileSystemService fileSystem,
             ISceneService sceneService,
-            ISerializer serializer) : base() {
-            this._contentService = contentService;
+            ISerializer serializer,
+            IUndoService undoService) : base() {
             this._fileSystem = fileSystem;
             this._sceneService = sceneService;
             this._serializer = serializer;
+            this._undoService = undoService;
         }
+
+
+        /// <inheritdoc />
+        public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
         /// <inheritdoc />
         public IGameProject CurrentProject {
@@ -85,7 +145,7 @@
         /// <inheritdoc />
         public IGameScene CurrentScene {
             get => this._currentScene;
-            private set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
+            set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
         }
 
         /// <inheritdoc />
@@ -95,37 +155,199 @@
         }
 
         /// <inheritdoc />
+        public int Build(BuildContentArguments args) {
+            var exitCode = -1;
+            if (!string.IsNullOrWhiteSpace(args.ContentFilePath) && this._fileSystem.DoesFileExist(args.ContentFilePath)) {
+                var startInfo = new ProcessStartInfo {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    FileName = "mgcb",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    Arguments = args.ToConsoleArguments(),
+                    WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
+                };
+
+                using var process = Process.Start(startInfo);
+                if (process != null) {
+                    process.WaitForExit();
+                    exitCode = process.ExitCode;
+                }
+            }
+
+            return exitCode;
+        }
+
+        /// <inheritdoc />
         public IGameProject CreateProject(string projectDirectoryPath) {
-            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileName);
+            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
 
             if (this._fileSystem.DoesFileExist(projectFilePath)) {
                 throw new NotSupportedException();
             }
 
+            foreach (var directory in ReservedDirectories) {
+                this._fileSystem.CreateDirectory(Path.Combine(projectDirectoryPath, directory));
+            }
+
             var project = new GameProject();
-            this.CurrentScene = this._sceneService.CreateNewScene(Path.Combine(projectDirectoryPath, GameProject.ContentDirectoryName), "Default Scene");
-
-            // TODO: create scene, save it, and place it in the content hierarchy
-            /*var startupScene = new GameScene();
-            var sceneAsset = new SceneAsset();
-            sceneAsset.LoadContent(startupScene);
-            this.CurrentProject.Assets.*/
-
+            var sceneAsset = this._sceneService.CreateNewScene(projectDirectoryPath, Path.Combine(ContentDirectory, "Default Scene"));
+            project.StartupSceneContentId = sceneAsset.ContentId;
             this.SaveProjectFile(project, projectFilePath);
             return this.LoadProject(projectFilePath);
+        }
+
+        /// <inheritdoc />
+        public string GetProjectDirectoryPath() {
+            return !string.IsNullOrEmpty(this._projectFilePath) ? Path.GetDirectoryName(this._projectFilePath) : string.Empty;
         }
 
         /// <inheritdoc />
         public IGameProject LoadProject(string projectFilePath) {
             this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? projectFilePath : throw new NotSupportedException();
             this.CurrentProject = this._serializer.Deserialize<GameProject>(projectFilePath);
-            this._contentService.Initialize(Path.GetDirectoryName(projectFilePath), this.CurrentProject.Assets);
+            this.LoadContent();
+            // TODO: compile content
             return this.CurrentProject;
+        }
+
+
+        /// <inheritdoc />
+        public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
+            var originalParent = contentToMove.Parent;
+            this._undoService.Do(() => { contentToMove.ChangeParent(newParent); }, () => { contentToMove.ChangeParent(originalParent); });
         }
 
         /// <inheritdoc />
         public void SaveProject() {
             this.SaveProjectFile(this.CurrentProject, this._projectFilePath);
+        }
+
+        private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
+            switch (sender) {
+                case IContentDirectory:
+                    this._fileSystem.MoveDirectory(e.OriginalValue, e.UpdatedValue);
+                    break;
+                case ContentFile:
+                    this._fileSystem.MoveFile(e.OriginalValue, e.UpdatedValue);
+                    break;
+            }
+        }
+
+        private void CreateContentFile(IContentDirectory parent, string fileName) {
+            var extension = Path.GetExtension(fileName);
+
+            if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
+                var parentPath = parent.GetContentPath();
+                var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
+                splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
+                var asset = Activator.CreateInstance(assetType) as IAsset;
+                var metadata = new ContentMetadata(asset, splitPath, extension);
+                this.SaveMetadata(metadata);
+                var contentFile = new ContentFile(parent, metadata);
+                this.CurrentProject.Assets.RegisterMetadata(contentFile.Metadata);
+            }
+        }
+
+        private IEnumerable<ContentMetadata> GetMetadata() {
+            var metadata = new List<ContentMetadata>();
+            var projectDirectoryPath = this.GetProjectDirectoryPath();
+            var metadataDirectory = Path.Combine(projectDirectoryPath, ContentMetadata.MetadataDirectoryName);
+            if (this._fileSystem.DoesDirectoryExist(metadataDirectory)) {
+                var files = this._fileSystem.GetFiles(metadataDirectory, ContentMetadata.MetadataSearchPattern);
+                foreach (var file in files) {
+                    try {
+                        var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
+                        metadata.Add(contentMetadata);
+                    }
+                    catch (Exception e) {
+                        // TODO: log this exception
+                        // Archive the file since it can't seem to deserialize.
+                        var archiveDirectory = Path.Combine(projectDirectoryPath, ContentMetadata.ArchiveDirectoryName);
+                        this._fileSystem.CreateDirectory(archiveDirectory);
+                        this._fileSystem.MoveFile(file, Path.Combine(archiveDirectory, Path.GetFileName(file)));
+                    }
+                }
+            }
+
+            return metadata;
+        }
+
+        private void LoadContent() {
+            var projectDirectoryPath = this.GetProjectDirectoryPath();
+            if (!string.IsNullOrWhiteSpace(projectDirectoryPath)) {
+                this._fileSystem.CreateDirectory(projectDirectoryPath);
+
+                if (this._rootContentDirectory != null) {
+                    this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
+                }
+
+                this._rootContentDirectory = new RootContentDirectory(this._fileSystem, projectDirectoryPath);
+                this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
+
+                foreach (var metadata in this.GetMetadata()) {
+                    this.ResolveContentFile(metadata);
+                }
+
+                this.ResolveNewContentFiles(this._rootContentDirectory);
+            }
+        }
+
+        private void ResolveContentFile(ContentMetadata metadata) {
+            ContentFile contentNode = null;
+            var splitPath = metadata.SplitContentPath;
+            if (splitPath.Any()) {
+                IContentDirectory parentDirectory;
+                if (splitPath.Count == this._rootContentDirectory.GetDepth() + 1) {
+                    parentDirectory = this._rootContentDirectory;
+                }
+                else {
+                    parentDirectory = this._rootContentDirectory.FindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
+                }
+
+                if (parentDirectory != null) {
+                    var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
+                    if (this._fileSystem.DoesFileExist(contentFilePath)) {
+                        contentNode = new ContentFile(parentDirectory, metadata);
+                    }
+                }
+            }
+
+            if (contentNode == null) {
+                var projectDirectoryPath = this.GetProjectDirectoryPath();
+                var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
+                var current = Path.Combine(projectDirectoryPath, ContentMetadata.MetadataDirectoryName, fileName);
+                var moveTo = Path.Combine(projectDirectoryPath, ContentMetadata.ArchiveDirectoryName, fileName);
+                this._fileSystem.MoveFile(current, moveTo);
+            }
+            else {
+                this.CurrentProject.Assets.RegisterMetadata(metadata);
+            }
+        }
+
+        private void ResolveNewContentFiles(IContentDirectory currentDirectory) {
+            var currentPath = currentDirectory.GetFullPath();
+            var files = this._fileSystem.GetFiles(currentPath);
+            var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
+
+            foreach (var file in files) {
+                var fileName = Path.GetFileName(file);
+                if (currentContentFiles.All(x => x.Name != Path.GetFileName(file))) {
+                    this.CreateContentFile(currentDirectory, fileName);
+                }
+            }
+
+            var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
+            foreach (var child in currentContentDirectories) {
+                this.ResolveNewContentFiles(child);
+            }
+        }
+
+        private void SaveMetadata(ContentMetadata metadata) {
+            var fullDirectoryPath = Path.Combine(this.GetProjectDirectoryPath(), ContentMetadata.MetadataDirectoryName);
+
+            if (this._fileSystem.DoesDirectoryExist(fullDirectoryPath)) {
+                this._serializer.Serialize(metadata, Path.Combine(fullDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
+            }
         }
 
         private void SaveProjectFile(IGameProject project, string projectFilePath) {

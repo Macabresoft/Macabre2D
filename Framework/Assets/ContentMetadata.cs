@@ -31,14 +31,7 @@
         public const string MetadataSearchPattern = "*" + FileExtension;
 
         [DataMember]
-        private string[] _splitContentPath;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
-        /// </summary>
-        /// <remarks>This constructor should only be used when metadata is being deserialized.</remarks>
-        internal ContentMetadata() : this(null, Enumerable.Empty<string>(), string.Empty) {
-        }
+        private List<string> _splitContentPath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentMetadata" /> class.
@@ -49,7 +42,7 @@
         public ContentMetadata(IAsset? asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
             this.Asset = asset;
             this.ContentFileExtension = contentFileExtension;
-            this._splitContentPath = splitContentPath.ToArray();
+            this._splitContentPath = splitContentPath?.ToList() ?? new List<string>();
         }
 
         /// <summary>
@@ -88,7 +81,7 @@
         /// </summary>
         /// <returns>The split content path.</returns>
         public string GetContentPath() {
-            return Path.Combine(this._splitContentPath);
+            return Path.Combine(this._splitContentPath.ToArray());
         }
 
         /// <summary>
@@ -108,20 +101,20 @@
         }
 
         /// <summary>
-        /// Sets the content path to a new value.
-        /// </summary>
-        /// <param name="contentPath">The content path.</param>
-        public void SetContentPath(string contentPath) {
-            this._splitContentPath = contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
         /// Gets the metadata path from a given identifier.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <returns>The metadata path.</returns>
         public static string GetMetadataPath(Guid contentId) {
             return Path.Combine(MetadataDirectoryName, $"{contentId.ToString()}{FileExtension}");
+        }
+
+        /// <summary>
+        /// Sets the content path to a new value.
+        /// </summary>
+        /// <param name="contentPath">The content path.</param>
+        public void SetContentPath(string contentPath) {
+            this._splitContentPath = contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
     }
 }

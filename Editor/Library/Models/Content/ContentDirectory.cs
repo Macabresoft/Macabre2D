@@ -91,11 +91,12 @@
             var currentDepth = this.GetDepth();
 
             if (currentDepth == parentDepth) {
-                node = this.Children.FirstOrDefault(x => x.GetContentPath() == Path.Combine(splitContentPath));
+                var nodeName = splitContentPath[currentDepth];
+                node = this.Children.FirstOrDefault(x => x.NameWithoutExtension == nodeName);
             }
             else if (currentDepth < parentDepth) {
-                var name = splitContentPath[currentDepth];
-                if (this._children.FirstOrDefault(x => x.Name == name) is IContentDirectory child) {
+                var parentName = splitContentPath[currentDepth];
+                if (this._children.FirstOrDefault(x => x.Name == parentName) is IContentDirectory child) {
                     node = child.FindNode(splitContentPath);
                 }
             }
@@ -104,11 +105,11 @@
         }
 
         /// <inheritdoc />
-        public void LoadChildDirectories(IFileSystemService fileSystemService) {
+        public virtual void LoadChildDirectories(IFileSystemService fileSystemService) {
             var currentDirectoryPath = this.GetFullPath();
 
             if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
-                var directories = fileSystemService.GetDirectories(currentDirectoryPath).Where(x => Path.GetDirectoryName(x)?.StartsWith('.') == false);
+                var directories = fileSystemService.GetDirectories(currentDirectoryPath);
 
                 foreach (var directory in directories) {
                     this.LoadDirectory(fileSystemService, directory);
@@ -131,11 +132,16 @@
             this.RaisePathChanged(sender, e);
         }
 
-        private void LoadDirectory(IFileSystemService fileSystemService, string path) {
+        /// <summary>
+        /// Loads a directory.
+        /// </summary>
+        /// <param name="fileSystem">The file system.</param>
+        /// <param name="path">The path to the directory.</param>
+        protected void LoadDirectory(IFileSystemService fileSystem, string path) {
             var splitPath = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
             var name = splitPath.Length > 1 ? splitPath.Last() : path;
             var node = new ContentDirectory(name, this);
-            node.LoadChildDirectories(fileSystemService);
+            node.LoadChildDirectories(fileSystem);
         }
     }
 }

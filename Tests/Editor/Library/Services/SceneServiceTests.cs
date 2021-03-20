@@ -22,12 +22,15 @@
             fileSystem.DoesFileExist(filePath).Returns(false);
 
             var sceneService = new SceneService(fileSystem, serializer);
-            var scene = sceneService.CreateNewScene(directoryPath, sceneName);
+            var sceneAsset = sceneService.CreateNewScene(directoryPath, sceneName);
 
             using (new AssertionScope()) {
-                scene.Should().NotBeNull();
-                scene.Name.Should().Be(sceneName);
-                serializer.Received().Serialize(scene, filePath);
+                sceneAsset.Should().NotBeNull();
+                sceneAsset.Name.Should().Be(sceneName);
+                sceneAsset.Content.Should().NotBeNull();
+                // ReSharper disable once PossibleNullReferenceException
+                sceneAsset.Content.Name.Should().Be(sceneName);
+                serializer.Received().Serialize(sceneAsset.Content, filePath);
                 serializer.Received().Serialize(
                     Arg.Is<ContentMetadata>(x => x.GetFileNameWithoutExtension() == sceneName && x.ContentFileExtension == SceneAsset.FileExtension),
                     Arg.Is<string>(x => x.StartsWith(directoryPath)));

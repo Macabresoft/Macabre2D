@@ -97,7 +97,7 @@
         /// <inheritdoc />
         public IGameProject Project {
             get => this._project;
-            private set {
+            protected set {
                 this._project = value;
                 this.ApplyGraphicsSettings();
 
@@ -190,7 +190,7 @@
         protected override void LoadContent() {
             base.LoadContent();
             try {
-                var project = this.Content.Load<GameProject?>(GameProject.ProjectFileName);
+                var project = this.Content.Load<GameProject?>(GameProject.ProjectFileExtension);
                 if (project != null) {
                     this.Project = project;
                 }
@@ -200,7 +200,7 @@
 
             this.Project.Assets.Initialize(this.Content);
 
-            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.Settings.StartupSceneAssetId, out var scene) && scene != null) {
+            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
 

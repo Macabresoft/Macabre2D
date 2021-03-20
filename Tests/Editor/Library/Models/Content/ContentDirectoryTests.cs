@@ -23,26 +23,26 @@
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
-            var firstC = new ContentFile(root, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var firstC = new ContentFile(root, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".m2d"));
             var secondA = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
             var secondB = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
-            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".m2d"));
             var thirdA = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
             var thirdB = new ContentDirectory(Guid.NewGuid().ToString(), secondB);
-            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
-            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".m2d"));
+            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".m2d"));
 
             using (new AssertionScope()) {
-                firstA.GetContentPath().Should().Be(firstA.Name);
-                firstB.GetContentPath().Should().Be(firstB.Name);
-                firstC.GetContentPath().Should().Be(firstC.NameWithoutExtension);
-                secondA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name));
-                secondB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name));
-                secondC.GetContentPath().Should().Be(Path.Combine(firstB.Name, secondC.NameWithoutExtension));
-                thirdA.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name));
-                thirdB.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondB.Name, thirdB.Name));
-                thirdC.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdC.NameWithoutExtension));
-                fourth.GetContentPath().Should().Be(Path.Combine(firstA.Name, secondA.Name, thirdA.Name, fourth.NameWithoutExtension));
+                firstA.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name));
+                firstB.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstB.Name));
+                firstC.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstC.NameWithoutExtension));
+                secondA.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondA.Name));
+                secondB.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondB.Name));
+                secondC.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstB.Name, secondC.NameWithoutExtension));
+                thirdA.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondA.Name, thirdA.Name));
+                thirdB.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondB.Name, thirdB.Name));
+                thirdC.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondA.Name, thirdC.NameWithoutExtension));
+                fourth.GetContentPath().Should().Be(Path.Combine(ProjectService.ContentDirectory, firstA.Name, secondA.Name, thirdA.Name, fourth.NameWithoutExtension));
             }
         }
 
@@ -52,12 +52,12 @@
             var fileSystemService = new TestFileSystemService();
 
             // Root calls LoadChildDirectories when constructed.
-            var root = new RootContentDirectory(fileSystemService, fileSystemService.PathToContentDirectory);
+            var root = new RootContentDirectory(fileSystemService, fileSystemService.PathToProjectDirectory);
 
             using (new AssertionScope()) {
-                root.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[fileSystemService.PathToContentDirectory].Count());
-                var count = 1 + root.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, root, child.Name));
-                count.Should().Be(fileSystemService.DirectoryToChildrenMap.Count);
+                root.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[ProjectService.ContentDirectory].Count());
+                var count = root.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, root, child.Name));
+                count.Should().Be(fileSystemService.DirectoryToChildrenMap.Count - 2); // The content and project directory are not in the count, so - 2.
             }
         }
 

@@ -44,14 +44,21 @@
         private TContent? _content;
         private string _name = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
+        /// </summary>
+        protected Asset() {
+            this.ContentId = Guid.NewGuid();
+        }
+        
         /// <inheritdoc />
         [DataMember]
-        public Guid ContentId { get; } = Guid.NewGuid();
+        public Guid ContentId { get; private set; }
 
         /// <inheritdoc />
         public TContent? Content {
             get => this._content;
-            set => this.Set(ref this._content, value);
+            protected set => this.Set(ref this._content, value);
         }
 
         /// <inheritdoc />
@@ -62,17 +69,17 @@
         }
 
         /// <inheritdoc />
-        public virtual void LoadContent(TContent content) {
-            this.Content = content;
-        }
-        
-        /// <inheritdoc />
         public void Dispose() {
             if (this.Content is IDisposable disposable) {
                 disposable.Dispose();
             }
-            
+
             this.DisposePropertyChanged();
+        }
+
+        /// <inheritdoc />
+        public virtual void LoadContent(TContent content) {
+            this.Content = content;
         }
     }
 }

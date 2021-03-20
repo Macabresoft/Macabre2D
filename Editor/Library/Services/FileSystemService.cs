@@ -8,6 +8,12 @@
     /// <remarks>Exists purely for unit testing purposes, which feels wrong, but I don't care.</remarks>
     public interface IFileSystemService {
         /// <summary>
+        /// Creates the directory structure for the given path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        void CreateDirectory(string path);
+
+        /// <summary>
         /// Returns a value indicating whether a directory exists at the given path.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -52,24 +58,29 @@
         IEnumerable<string> GetFiles(string directoryPath, string searchPattern);
 
         /// <summary>
-        /// Moves a file from the original path to the new path.
-        /// </summary>
-        /// <param name="originalPath">The original path.</param>
-        /// <param name="newPath">The new path.</param>
-        void MoveFile(string originalPath, string newPath);
-
-        /// <summary>
         /// Moves a directory from the original path to the new path.
         /// </summary>
         /// <param name="originalPath">The original path.</param>
         /// <param name="newPath">The new path.</param>
         void MoveDirectory(string originalPath, string newPath);
+
+        /// <summary>
+        /// Moves a file from the original path to the new path.
+        /// </summary>
+        /// <param name="originalPath">The original path.</param>
+        /// <param name="newPath">The new path.</param>
+        void MoveFile(string originalPath, string newPath);
     }
 
     /// <summary>
     /// A service which wraps basic file system operations.
     /// </summary>
     public class FileSystemService : IFileSystemService {
+        /// <inheritdoc />
+        public void CreateDirectory(string path) {
+            Directory.CreateDirectory(path);
+        }
+
         /// <inheritdoc />
         public bool DoesDirectoryExist(string path) {
             return Directory.Exists(path);
@@ -101,13 +112,13 @@
         }
 
         /// <inheritdoc />
-        public void MoveFile(string originalPath, string newPath) {
-            File.Move(originalPath, newPath);
+        public void MoveDirectory(string originalPath, string newPath) {
+            Directory.Move(originalPath, newPath);
         }
 
         /// <inheritdoc />
-        public void MoveDirectory(string originalPath, string newPath) {
-            Directory.Move(originalPath, newPath);
+        public void MoveFile(string originalPath, string newPath) {
+            File.Move(originalPath, newPath);
         }
     }
 }

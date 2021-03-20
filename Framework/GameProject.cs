@@ -33,28 +33,48 @@
     [DataContract]
     public class GameProject : IGameProject {
         /// <summary>
-        /// The project file extension.
+        /// The default project name.
         /// </summary>
-        public const string ProjectFileName = ".m2dproj";
+        public const string DefaultProjectName = "project";
 
         /// <summary>
-        /// The content directory name.
+        /// The project file extension.
         /// </summary>
-        public const string ContentDirectoryName = "Content";
+        public const string ProjectFileExtension = ".m2dproj";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameProject" /> class.
+        /// </summary>
+        /// <param name="assets">The asset manager.</param>
+        /// <param name="settings">The settings.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="startupSceneContentId">The identifier for the scene which should run on startup.</param>
+        public GameProject(IAssetManager assets, IGameSettings settings, string name, Guid startupSceneContentId) {
+            this.Assets = assets;
+            this.Settings = settings;
+            this.Name = name;
+            this.StartupSceneContentId = startupSceneContentId;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameProject" /> class.
+        /// </summary>
+        public GameProject() : this(new AssetManager(), new GameSettings(), DefaultProjectName, Guid.Empty) {
+        }
 
         /// <summary>
         /// Gets the asset manager for this project.
         /// </summary>
         [DataMember]
-        public IAssetManager Assets { get; } = new AssetManager();
+        public IAssetManager Assets { get; }
 
         /// <inheritdoc />
         [DataMember]
-        public IGameSettings Settings { get; } = new GameSettings();
+        public IGameSettings Settings { get; }
 
         /// <inheritdoc />
         [DataMember]
-        public string Name { get; set; } = "Macabre2D Project";
+        public string Name { get; set; }
 
         /// <inheritdoc />
         [DataMember]

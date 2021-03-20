@@ -2,6 +2,7 @@
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -13,10 +14,10 @@
         /// Creates the new scene and serializes it.
         /// </summary>
         /// <typeparam name="T">The type of scene.</typeparam>
-        /// <param name="contentDirectoryPath">The full path to the content directory.</param>
+        /// <param name="projectDirectoryPath">The full path to the project directory.</param>
         /// <param name="contentPath">The content path of the new scene.</param>
-        /// <returns>The newly created scene.</returns>
-        GameScene CreateNewScene(string contentDirectoryPath, string contentPath);
+        /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
+        SceneAsset CreateNewScene(string projectDirectoryPath, string contentPath);
     }
 
     /// <summary>
@@ -37,13 +38,13 @@
         }
 
         /// <inheritdoc />
-        public GameScene CreateNewScene(string contentDirectoryPath, string contentPath) {
-            if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
+        public SceneAsset CreateNewScene(string projectDirectoryPath, string contentPath) {
+            if (!this._fileSystem.DoesDirectoryExist(projectDirectoryPath)) {
                 throw new DirectoryNotFoundException();
             }
 
             GameScene scene;
-            var filePath = Path.Combine(contentDirectoryPath, $"{contentPath}{SceneAsset.FileExtension}");
+            var filePath = Path.Combine(projectDirectoryPath, $"{contentPath}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
                 // TODO: Override warning.
                 scene = this._serializer.Deserialize<GameScene>(filePath);
@@ -57,19 +58,22 @@
                 this._serializer.Serialize(scene, filePath);
             }
 
-            var sceneAsset = new SceneAsset();
+            var sceneAsset = new SceneAsset {
+                Name = scene.Name
+            };
+
             sceneAsset.LoadContent(scene);
             var metadata = new ContentMetadata(
                 sceneAsset,
-                contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries),
+                contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
                 SceneAsset.FileExtension);
 
-            var metadataPath = Path.Combine(contentDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
+            var metadataPath = Path.Combine(projectDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
             this._serializer.Serialize(metadata, metadataPath);
 
             // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
 
-            return scene;
+            return sceneAsset;
         }
     }
 }

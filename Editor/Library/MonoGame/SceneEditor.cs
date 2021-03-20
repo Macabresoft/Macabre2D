@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -8,6 +9,7 @@
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
@@ -50,12 +52,16 @@
             IEditorService editorService,
             IProjectService projectService,
             ISelectionService selectionService,
-            IUndoService undoService) {
+            IUndoService undoService) : base() {
             this._editorService = editorService;
             this._projectService = projectService;
             this._selectionService = selectionService;
             this._undoService = undoService;
+
+            // TODO: this should be set to the compiled path.
+            this.Content.RootDirectory = this._projectService.GetProjectDirectoryPath();
         }
+
 
         /// <inheritdoc />
         public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
@@ -76,6 +82,24 @@
                 }
             }
         }
+        
+        /// <inheritdoc />
+        protected override void LoadContent() {
+            base.LoadContent();
+            
+            if (this._projectService.CurrentProject != null) {
+                this.Project = this._projectService.CurrentProject;
+            }
+
+            this.Project.Assets.Initialize(this.Content);
+
+            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+                this.LoadScene(scene);
+                this._projectService.CurrentScene = scene;
+            }
+
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        }
 
         /// <inheritdoc />
         protected override void Initialize() {
@@ -83,8 +107,9 @@
                 try {
                     this.LoadScene(this.CreateScene());
                     base.Initialize();
+
                     if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                        this._projectService.CurrentScene.Initialize(this);    
+                        this._projectService.CurrentScene.Initialize(this);
                     }
                     
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -121,9 +146,13 @@
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IProjectService.CurrentScene)) {
-                if (this.IsInitialized && !GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                    this._projectService.CurrentScene.Initialize(this);
+            if (this.IsInitialized) {
+                if (e.PropertyName == nameof(IProjectService.CurrentScene)) {
+                    if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
+                        this._projectService.CurrentScene.Initialize(this);
+                    }
+                } else if (e.PropertyName == nameof(IProjectService.CurrentProject)) {
+                    this.Project = this._projectService.CurrentProject;
                 }
             }
         }

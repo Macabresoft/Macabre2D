@@ -15,8 +15,7 @@
             var gameSettings = new GameSettings() {
                 ErrorSpritesColor = Color.Red,
                 FallbackBackgroundColor = Color.Coral,
-                PixelsPerUnit = 200,
-                StartupSceneAssetId = Guid.NewGuid()
+                PixelsPerUnit = 200
             };
 
             var fileLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, "GameSettingsForTest.m2dgs");
@@ -43,7 +42,6 @@
             Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
             Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
             Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
-            Assert.AreEqual(originalSettings.StartupSceneAssetId, deserializedSettings.StartupSceneAssetId);
         }
     }
 }
