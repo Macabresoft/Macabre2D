@@ -1,5 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System.Text;
+    using Microsoft.Xna.Framework.Content.Pipeline;
+    using Microsoft.Xna.Framework.Content.Pipeline.Processors;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
@@ -10,8 +12,8 @@
         public override string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");
-            contentStringBuilder.AppendLine(@"/importer:EffectImporter");
-            contentStringBuilder.AppendLine(@"/processor:EffectProcessor");
+            contentStringBuilder.AppendLine($@"/importer:{nameof(EffectImporter)}");
+            contentStringBuilder.AppendLine($@"/processor:{nameof(EffectProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:DebugMode = Auto");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
             return contentStringBuilder.ToString();

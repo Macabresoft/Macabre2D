@@ -14,8 +14,8 @@
         public override string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");
-            contentStringBuilder.AppendLine(@"/importer:SceneImporter");
-            contentStringBuilder.AppendLine(@"/processor:SceneProcessor");
+            contentStringBuilder.AppendLine($@"/importer:{nameof(SceneImporter)}");
+            contentStringBuilder.AppendLine($@"/processor:{nameof(SceneProcessor)}");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
             return contentStringBuilder.ToString();
         }

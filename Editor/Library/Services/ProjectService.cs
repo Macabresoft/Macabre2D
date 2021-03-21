@@ -212,7 +212,6 @@
         }
 
         private void BuildContentForProject() {
-            var contentFiles = this.RootContentDirectory.GetAllContentFiles();
             var mgcbContents = new StringBuilder();
             var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MgcbFileName);
             var buildArgs = new BuildContentArguments(mgcbFilePath, "DesktopGL", true);
@@ -227,6 +226,21 @@
             mgcbContents.AppendLine();
             mgcbContents.AppendLine(@"#-------------------------------- References --------------------------------#");
             mgcbContents.AppendLine();
+            
+            // TODO: add references
+            /*foreach (var referencePath in referencePaths) {
+                mgcbContents.AppendLine($@"/reference:{referencePath}");
+            }*/
+            
+            mgcbContents.AppendLine();
+            mgcbContents.AppendLine(@"#---------------------------------- Content ---------------------------------#");
+            mgcbContents.AppendLine();
+            
+            var contentFiles = this.RootContentDirectory.GetAllContentFiles();
+            foreach (var contentFile in contentFiles) {
+                mgcbContents.AppendLine(contentFile.Metadata.GetContentBuildCommands());
+                mgcbContents.AppendLine();
+            }
             
             this._fileSystem.WriteAllText(mgcbFilePath, mgcbContents.ToString());
         }

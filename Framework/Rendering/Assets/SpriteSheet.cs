@@ -5,6 +5,8 @@
     using System.Runtime.Serialization;
     using System.Text;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content.Pipeline;
+    using Microsoft.Xna.Framework.Content.Pipeline.Processors;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
@@ -153,8 +155,8 @@
             // TODO: allow customization of compilation parameters.
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");
-            contentStringBuilder.AppendLine(@"/importer:TextureImporter");
-            contentStringBuilder.AppendLine(@"/processor:TextureProcessor");
+            contentStringBuilder.AppendLine($@"/importer:{nameof(TextureImporter)}");
+            contentStringBuilder.AppendLine($@"/processor:{nameof(TextureProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:ColorKeyColor=255,0,255,255");
             contentStringBuilder.AppendLine(@"/processorParam:ColorKeyEnabled=True");
             contentStringBuilder.AppendLine(@"/processorParam:GenerateMipmaps=False");

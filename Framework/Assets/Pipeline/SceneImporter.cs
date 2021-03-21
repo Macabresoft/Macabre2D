@@ -1,11 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using Microsoft.Xna.Framework.Content.Pipeline;
 
     /// <summary>
-    /// Content importer for <see cref="Scene" />.
+    /// Content importer for <see cref="GameScene" />.
     /// </summary>
-    [ContentImporter(".m2dscene", DefaultProcessor = nameof(SceneProcessor), DisplayName = "Scene Importer - Macabresoft.Macabre2D.Framework")]
+    [ContentImporter(SceneAsset.FileExtension, DefaultProcessor = nameof(SceneProcessor), DisplayName = "Scene Importer - Macabresoft.Macabre2D.Framework")]
     public sealed class SceneImporter : JsonImporter {
     }
 }

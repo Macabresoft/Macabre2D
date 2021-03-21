@@ -2,17 +2,18 @@
     using System;
     using System.Text;
     using Microsoft.Xna.Framework.Audio;
+    using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
     /// <summary>
     /// A single audio clip.
     /// </summary>
-    public sealed class AudioClip : Asset<SoundEffect>, IDisposable {
+    public sealed class AudioClip : Asset<SoundEffect> {
         /// <inheritdoc />
         public override string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");
             contentStringBuilder.AppendLine($@"/importer:{GetImporterName(fileExtension)}");
-            contentStringBuilder.AppendLine(@"/processor:SoundEffectProcessor");
+            contentStringBuilder.AppendLine($@"/processor:{nameof(SoundEffectProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:Quality=Best");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
             return contentStringBuilder.ToString();

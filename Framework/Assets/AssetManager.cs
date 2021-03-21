@@ -106,7 +106,7 @@
                 try {
                     loaded = this._contentManager.Load<T?>(path);
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     loaded = null;
                 }
             }

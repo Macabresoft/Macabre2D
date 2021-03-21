@@ -4,19 +4,19 @@
     using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
     /// <summary>
-    /// Content type writer for <see cref="AssetManager" />.
+    /// Content type writer for <see cref="ContentMetadata" />.
     /// </summary>
     [ContentTypeWriter]
-    public sealed class AssetManagerWriter : JsonWriter<AssetManager> {
+    public sealed class MetadataWriter : JsonWriter<ContentMetadata> {
 
         /// <inheritdoc />
         public override string GetRuntimeReader(TargetPlatform targetPlatform) {
-            return $"{typeof(AssetManagerReader).FullName}, {nameof(Macabresoft)}.{nameof(MonoGame)}.{nameof(Core)}";
+            return $"{typeof(MetadataReader).FullName}, {nameof(Macabresoft)}.{nameof(Macabre2D)}.{nameof(Framework)}";
         }
 
         /// <inheritdoc />
         public override string GetRuntimeType(TargetPlatform targetPlatform) {
-            return $"{typeof(AssetManager).FullName}, {nameof(Macabresoft)}.{nameof(MonoGame)}.{nameof(Core)}";
+            return $"{typeof(MetadataReader).FullName}, {nameof(Macabresoft)}.{nameof(Macabre2D)}.{nameof(Framework)}";
         }
     }
 }

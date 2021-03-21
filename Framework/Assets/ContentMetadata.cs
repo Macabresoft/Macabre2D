@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
+    using System.Text;
 
     /// <summary>
     /// Serializable metadata for content loaded by MonoGame. Contains the assets built on top of content.
@@ -107,6 +108,31 @@
         /// <returns>The metadata path.</returns>
         public static string GetMetadataPath(Guid contentId) {
             return Path.Combine(MetadataDirectoryName, $"{contentId.ToString()}{FileExtension}");
+        }
+
+        /// <summary>
+        /// Gets the content build commands used by MGCB to compile this metadata and its associated asset and content.
+        /// </summary>
+        /// <returns>The content build commands.</returns>
+        public string GetContentBuildCommands() {
+            var contentStringBuilder = new StringBuilder();
+
+            if (this.Asset != null) {
+                var contentPath = this.GetContentPath();
+                var metadataPath = GetMetadataPath(this.ContentId);
+                contentStringBuilder.AppendLine($"# name --------- {this.GetFileName()}");
+                contentStringBuilder.AppendLine($"# content path - {contentPath}");
+                contentStringBuilder.AppendLine($"# content id --- {this.ContentId}");
+                contentStringBuilder.AppendLine($"#begin {metadataPath}");
+                contentStringBuilder.AppendLine($@"/importer:{nameof(MetadataImporter)}");
+                contentStringBuilder.AppendLine($@"/processor:{nameof(MetadataProcessor)}");
+                contentStringBuilder.AppendLine($@"/build:{metadataPath}");
+                contentStringBuilder.AppendLine();
+                contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
+                contentStringBuilder.AppendLine($"# --------------");
+            }
+
+            return contentStringBuilder.ToString();
         }
 
         /// <summary>

@@ -4,19 +4,19 @@
     using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
     /// <summary>
-    /// Content type writer for <see cref="GameSettings" />.
+    /// Content type writer for <see cref="GameProject" />.
     /// </summary>
     [ContentTypeWriter]
-    public sealed class GameSettingsWriter : JsonWriter<GameSettings> {
+    public sealed class GameProjectWriter : JsonWriter<GameProject> {
 
         /// <inheritdoc />
         public override string GetRuntimeReader(TargetPlatform targetPlatform) {
-            return $"{typeof(GameSettingsReader).FullName}, {nameof(Macabresoft)}.{nameof(MonoGame)}.{nameof(Core)}";
+            return $"{typeof(GameProjectReader).FullName}, {nameof(Macabresoft)}.{nameof(Macabre2D)}.{nameof(Framework)}";
         }
 
         /// <inheritdoc />
         public override string GetRuntimeType(TargetPlatform targetPlatform) {
-            return $"{typeof(GameSettings).FullName}, {nameof(Macabresoft)}.{nameof(MonoGame)}.{nameof(Core)}";
+            return $"{typeof(GameSettings).FullName}, {nameof(Macabresoft)}.{nameof(Macabre2D)}.{nameof(Framework)}";
         }
     }
 }
