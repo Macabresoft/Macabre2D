@@ -29,6 +29,12 @@
         IContentNode FindNode(string[] splitContentPath);
 
         /// <summary>
+        /// Gets all content files that are descendants of this directory.
+        /// </summary>
+        /// <returns>All content files that are descendants of this directory.</returns>
+        IEnumerable<ContentFile> GetAllContentFiles();
+
+        /// <summary>
         /// Loads the child directories under this node.
         /// </summary>
         /// <param name="fileSystemService">The file service.</param>
@@ -105,6 +111,16 @@
         }
 
         /// <inheritdoc />
+        public IEnumerable<ContentFile> GetAllContentFiles() {
+            var contentFiles = this.Children.OfType<ContentFile>().ToList();
+            foreach (var child in this.Children.OfType<IContentDirectory>()) {
+                contentFiles.AddRange(child.GetAllContentFiles());
+            }
+
+            return contentFiles;
+        }
+
+        /// <inheritdoc />
         public virtual void LoadChildDirectories(IFileSystemService fileSystemService) {
             var currentDirectoryPath = this.GetFullPath();
 
@@ -128,10 +144,6 @@
             return node != null;
         }
 
-        private void Child_PathChanged(object sender, ValueChangedEventArgs<string> e) {
-            this.RaisePathChanged(sender, e);
-        }
-
         /// <summary>
         /// Loads a directory.
         /// </summary>
@@ -142,6 +154,10 @@
             var name = splitPath.Length > 1 ? splitPath.Last() : path;
             var node = new ContentDirectory(name, this);
             node.LoadChildDirectories(fileSystem);
+        }
+
+        private void Child_PathChanged(object sender, ValueChangedEventArgs<string> e) {
+            this.RaisePathChanged(sender, e);
         }
     }
 }

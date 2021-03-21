@@ -4,7 +4,6 @@
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Framework;
 
     internal class TestFileSystemService : IFileSystemService {
         public TestFileSystemService() {
@@ -13,12 +12,11 @@
 
         public IDictionary<string, IEnumerable<string>> DirectoryToChildrenMap { get; } = new Dictionary<string, IEnumerable<string>>();
 
-        public string PathToProjectDirectory { get; } = Guid.NewGuid().ToString();
-
         public string PathToContentDirectory => Path.Combine(this.PathToProjectDirectory, ProjectService.ContentDirectory);
 
+        public string PathToProjectDirectory { get; } = Guid.NewGuid().ToString();
+
         public void CreateDirectory(string path) {
-            return;
         }
 
         public bool DoesDirectoryExist(string path) {
@@ -79,6 +77,8 @@
         public void MoveFile(string originalPath, string newPath) {
         }
 
+        public void WriteAllText(string filePath, string text) {
+        }
 
         private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();

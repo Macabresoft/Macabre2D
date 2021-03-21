@@ -5,6 +5,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
@@ -79,6 +80,7 @@
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         public const string ContentDirectory = "content";
+        public const string MgcbFileName = "editor.mgcb";
         private const string CompiledContentDirectory = ".compiled";
         private const string SourceDirectory = "src";
 
@@ -131,7 +133,6 @@
             this._serializer = serializer;
             this._undoService = undoService;
         }
-
 
         /// <inheritdoc />
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
@@ -208,6 +209,26 @@
             this.LoadContent();
             // TODO: compile content
             return this.CurrentProject;
+        }
+
+        private void BuildContentForProject() {
+            var contentFiles = this.RootContentDirectory.GetAllContentFiles();
+            var mgcbContents = new StringBuilder();
+            var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MgcbFileName);
+            var buildArgs = new BuildContentArguments(mgcbFilePath, "DesktopGL", true);
+            
+            mgcbContents.AppendLine("#----------------------------- Global Properties ----------------------------#");
+            mgcbContents.AppendLine();
+            
+            foreach (var argument in buildArgs.GetConsoleArguments()) {
+                mgcbContents.AppendLine(argument);
+            }
+            
+            mgcbContents.AppendLine();
+            mgcbContents.AppendLine(@"#-------------------------------- References --------------------------------#");
+            mgcbContents.AppendLine();
+            
+            this._fileSystem.WriteAllText(mgcbFilePath, mgcbContents.ToString());
         }
 
 
@@ -289,6 +310,7 @@
                 }
 
                 this.ResolveNewContentFiles(this._rootContentDirectory);
+                this.BuildContentForProject();
             }
         }
 

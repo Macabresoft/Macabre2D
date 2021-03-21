@@ -1,4 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     
@@ -39,9 +41,18 @@
         /// <summary>
         /// Converts to console arguments used by MGCB.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The console arguments.</returns>
         public string ToConsoleArguments() {
-            var contentPath = Path.GetDirectoryName(this.ContentFilePath);
+            var arguments = this.GetConsoleArguments();
+            return arguments.Aggregate((first, second) => $"{first} {second}");
+        }
+
+        /// <summary>
+        /// Gets the console arguments as an <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <returns>The console arguments.</returns>
+        public IEnumerable<string> GetConsoleArguments() {
+            var contentPath = Path.GetDirectoryName(this.ContentFilePath) ?? throw new NotSupportedException();
 
             var arguments = new[] {
                 $"/outputDir:\"{Path.Combine(contentPath, "bin", this.Platform)}\"",
@@ -54,7 +65,7 @@
                 $"/@:\"{this.ContentFilePath}\""
             };
 
-            return arguments.Aggregate((first, second) => $"{first} {second}");
+            return arguments;
         }
     }
 }

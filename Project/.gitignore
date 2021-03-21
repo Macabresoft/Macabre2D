@@ -1,2 +1,7 @@
-Content/
-.m2dproj
+content/
+.archive/
+.metadata/
+.compiled/
+
+*.m2dproj
+editor.mgcb

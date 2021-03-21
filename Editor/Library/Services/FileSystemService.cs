@@ -70,6 +70,13 @@
         /// <param name="originalPath">The original path.</param>
         /// <param name="newPath">The new path.</param>
         void MoveFile(string originalPath, string newPath);
+
+        /// <summary>
+        /// Writes all text to the specified file path.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="text">The text.</param>
+        void WriteAllText(string filePath, string text);
     }
 
     /// <summary>
@@ -119,6 +126,11 @@
         /// <inheritdoc />
         public void MoveFile(string originalPath, string newPath) {
             File.Move(originalPath, newPath);
+        }
+
+        /// <inheritdoc />
+        public void WriteAllText(string filePath, string text) {
+            File.WriteAllText(filePath, text);
         }
     }
 }
