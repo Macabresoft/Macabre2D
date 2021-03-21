@@ -18,6 +18,14 @@
         /// </summary>
         /// <value>The name.</value>
         string Name { get; }
+
+        /// <summary>
+        /// Gets the content build commands used by MGCB to compile this piece of content.
+        /// </summary>
+        /// <param name="contentPath">The content path.</param>
+        /// <param name="fileExtension">The file extension.</param>
+        /// <returns>The content build commands.</returns>
+        string GetContentBuildCommands(string contentPath, string fileExtension);
     }
 
     /// <summary>
@@ -50,16 +58,16 @@
         protected Asset() {
             this.ContentId = Guid.NewGuid();
         }
-        
-        /// <inheritdoc />
-        [DataMember]
-        public Guid ContentId { get; private set; }
 
         /// <inheritdoc />
         public TContent? Content {
             get => this._content;
             protected set => this.Set(ref this._content, value);
         }
+
+        /// <inheritdoc />
+        [DataMember]
+        public Guid ContentId { get; private set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -76,6 +84,9 @@
 
             this.DisposePropertyChanged();
         }
+
+        /// <inheritdoc />
+        public abstract string GetContentBuildCommands(string contentPath, string fileExtension);
 
         /// <inheritdoc />
         public virtual void LoadContent(TContent content) {

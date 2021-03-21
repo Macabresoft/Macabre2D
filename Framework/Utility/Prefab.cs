@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Runtime.Serialization;
 
@@ -8,7 +7,7 @@
     /// that can be copied many times over.
     /// </summary>
     public sealed class Prefab : BaseIdentifiable, IAsset, IDisposable {
-        private bool _disposedValue = false;
+        private bool _disposedValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Prefab" /> class.
@@ -47,6 +46,11 @@
         /// <inheritdoc />
         public void Dispose() {
             this.Dispose(true);
+        }
+
+        /// <inheritdoc />
+        public string GetContentBuildCommands(string contentPath, string fileExtension) {
+            throw new NotImplementedException();
         }
 
         private void Dispose(bool disposing) {

@@ -45,7 +45,7 @@
     /// An asset that packages other objects.
     /// </summary>
     [DataContract]
-    public class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
+    public abstract class AssetPackage<TContent> : Asset<TContent>, IAssetPackage {
         [DataMember]
         private readonly ObservableCollectionExtended<IIdentifiable> _packagedObjects = new();
 

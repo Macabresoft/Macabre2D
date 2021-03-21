@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
+    using System.Text;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
@@ -145,6 +146,24 @@
             Color color,
             SpriteEffects orientation) {
             this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
+        }
+
+        /// <inheritdoc />
+        public override string GetContentBuildCommands(string contentPath, string fileExtension) {
+            // TODO: allow customization of compilation parameters.
+            var contentStringBuilder = new StringBuilder();
+            contentStringBuilder.AppendLine($"#begin {contentPath}");
+            contentStringBuilder.AppendLine(@"/importer:TextureImporter");
+            contentStringBuilder.AppendLine(@"/processor:TextureProcessor");
+            contentStringBuilder.AppendLine(@"/processorParam:ColorKeyColor=255,0,255,255");
+            contentStringBuilder.AppendLine(@"/processorParam:ColorKeyEnabled=True");
+            contentStringBuilder.AppendLine(@"/processorParam:GenerateMipmaps=False");
+            contentStringBuilder.AppendLine(@"/processorParam:PremultiplyAlpha=True");
+            contentStringBuilder.AppendLine(@"/processorParam:ResizeToPowerOfTwo=False");
+            contentStringBuilder.AppendLine(@"/processorParam:MakeSquare=False");
+            contentStringBuilder.AppendLine(@"/processorParam:TextureFormat=Color");
+            contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            return contentStringBuilder.ToString();
         }
 
         /// <summary>

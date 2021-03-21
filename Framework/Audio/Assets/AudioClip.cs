@@ -1,11 +1,23 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
+    using System.Text;
     using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// A single audio clip.
     /// </summary>
     public sealed class AudioClip : Asset<SoundEffect>, IDisposable {
+        /// <inheritdoc />
+        public override string GetContentBuildCommands(string contentPath, string fileExtension) {
+            var contentStringBuilder = new StringBuilder();
+            contentStringBuilder.AppendLine($"#begin {contentPath}");
+            contentStringBuilder.AppendLine($@"/importer:{GetImporterName(fileExtension)}");
+            contentStringBuilder.AppendLine(@"/processor:SoundEffectProcessor");
+            contentStringBuilder.AppendLine(@"/processorParam:Quality=Best");
+            contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            return contentStringBuilder.ToString();
+        }
+
         /// <summary>
         /// Gets a sound effect instance.
         /// </summary>
@@ -27,12 +39,15 @@
 
             return instance;
         }
-        
-        
-        /// <inheritdoc />
-        public void Dispose() {
-            this.Content?.Dispose();
-            this.DisposePropertyChanged();
+
+        private static string GetImporterName(string fileExtension) {
+            // TODO: can we support OGG? I'd like to do that just to be cool.
+            return fileExtension.ToUpper() switch {
+                ".WAV" => "WavImporter",
+                ".MP3" => "Mp3Importer",
+                ".WMA" => "WmaImporter",
+                _ => throw new NotSupportedException("You have an audio asset with an unsupported file extension. Please use .mp3, .wav, or .wma.")
+            };
         }
     }
 }
