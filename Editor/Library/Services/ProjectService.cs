@@ -95,6 +95,7 @@
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
         private readonly IFileSystemService _fileSystem;
+        private readonly IProcessService _processService;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
 
@@ -120,15 +121,18 @@
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
         /// <param name="fileSystem">The file system service.</param>
+        /// <param name="processService">The process service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
         /// <param name="undoService"></param>
         public ProjectService(
             IFileSystemService fileSystem,
+            IProcessService processService,
             ISceneService sceneService,
             ISerializer serializer,
             IUndoService undoService) : base() {
             this._fileSystem = fileSystem;
+            this._processService = processService;
             this._sceneService = sceneService;
             this._serializer = serializer;
             this._undoService = undoService;
@@ -168,11 +172,7 @@
                     WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
                 };
 
-                using var process = Process.Start(startInfo);
-                if (process != null) {
-                    process.WaitForExit();
-                    exitCode = process.ExitCode;
-                }
+                exitCode = this._processService.StartProcess(startInfo);
             }
 
             return exitCode;

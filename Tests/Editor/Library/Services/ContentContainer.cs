@@ -49,7 +49,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.SetupNewContentFiles();
 
             this.FileSystem.GetFiles(MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
-            this.Instance = new ProjectService(this.FileSystem, this.SceneService, this.Serializer, new UndoService());
+            this.Instance = new ProjectService(this.FileSystem, Substitute.For<IProcessService>(), this.SceneService, this.Serializer, new UndoService());
         }
 
         public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();

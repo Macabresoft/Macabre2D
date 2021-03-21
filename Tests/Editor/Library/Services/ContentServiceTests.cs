@@ -25,7 +25,13 @@
         [Test]
         [Category("Integration Tests")]
         public void Build_ShouldRunMGCB() {
-            var service = new ProjectService(new FileSystemService(), Substitute.For<ISceneService>(), new Serializer(), new UndoService());
+            var service = new ProjectService(
+                new FileSystemService(), 
+                new ProcessService(), 
+                Substitute.For<ISceneService>(), 
+                new Serializer(),
+                new UndoService());
+            
             var contentDirectory = Path.Combine(
                 TestContext.CurrentContext.TestDirectory,
                 PathHelper.GetPathToAncestorDirectory(3),

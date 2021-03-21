@@ -28,6 +28,7 @@
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
                 .RegisterType<IFileSystemService, FileSystemService>(new SingletonLifetimeManager())
+                .RegisterType<IProcessService, ProcessService>(new SingletonLifetimeManager())
                 .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
                 .RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager())
                 .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())

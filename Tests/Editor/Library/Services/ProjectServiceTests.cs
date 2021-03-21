@@ -17,7 +17,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, new ProcessService(), sceneService, serializer, undoService);
             var sceneAsset = new SceneAsset();
             sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
             
@@ -50,7 +50,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, Substitute.For<IProcessService>(), sceneService, serializer, undoService);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
@@ -70,7 +70,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, Substitute.For<IProcessService>(), sceneService, serializer, undoService);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
@@ -94,7 +94,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, Substitute.For<IProcessService>(), sceneService, serializer, undoService);
             
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
             fileSystem.DoesFileExist(projectFilePath).Returns(false);
@@ -114,7 +114,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, Substitute.For<IProcessService>(), sceneService, serializer, undoService);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
             projectService.SaveProject();
@@ -131,7 +131,7 @@
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(fileSystem, sceneService, serializer, undoService);
+            var projectService = new ProjectService(fileSystem, Substitute.For<IProcessService>(), sceneService, serializer, undoService);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
             fileSystem.DoesFileExist(projectFilePath).Returns(true);
