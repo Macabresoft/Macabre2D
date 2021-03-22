@@ -70,7 +70,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
         public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
-        public void RunInitializeTest() {
+        public void RunLoadProjectTest() {
             this.Instance.LoadProject(this._projectFilePath);
 
             using (new AssertionScope()) {
