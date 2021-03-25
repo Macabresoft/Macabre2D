@@ -95,6 +95,7 @@
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
         private readonly IFileSystemService _fileSystem;
+        private readonly ILoggingService _loggingService;
         private readonly IProcessService _processService;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
@@ -121,17 +122,20 @@
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
         /// <param name="fileSystem">The file system service.</param>
+        /// <param name="loggingService">The logging service.</param>
         /// <param name="processService">The process service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
         /// <param name="undoService"></param>
         public ProjectService(
             IFileSystemService fileSystem,
+            ILoggingService loggingService,
             IProcessService processService,
             ISceneService sceneService,
             ISerializer serializer,
             IUndoService undoService) : base() {
             this._fileSystem = fileSystem;
+            this._loggingService = loggingService;
             this._processService = processService;
             this._sceneService = sceneService;
             this._serializer = serializer;
@@ -295,11 +299,12 @@
                         metadata.Add(contentMetadata);
                     }
                     catch (Exception e) {
-                        // TODO: log this exception
-                        // Archive the file since it can't seem to deserialize.
+                        var fileName = Path.GetFileName(file);
+                        var message = $"Archiving metadata '{fileName}' due to an exception";
+                        this._loggingService.LogException(message, e);
                         var archiveDirectory = Path.Combine(projectDirectoryPath, ContentMetadata.ArchiveDirectoryName);
                         this._fileSystem.CreateDirectory(archiveDirectory);
-                        this._fileSystem.MoveFile(file, Path.Combine(archiveDirectory, Path.GetFileName(file)));
+                        this._fileSystem.MoveFile(file, Path.Combine(archiveDirectory, fileName));
                     }
                 }
             }
