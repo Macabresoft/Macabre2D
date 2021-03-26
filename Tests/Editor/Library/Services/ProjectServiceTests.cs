@@ -4,7 +4,6 @@
     using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
-    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -13,47 +12,6 @@
 
     [TestFixture]
     public class ProjectServiceTests {
-        private const string Folder1 = "Folder1";
-        private const string Folder2 = "Folder2";
-        private const string Folder1A = "Folder1A";
-        private const string BinDirectoryName = "bin";
-        private const string ContentFileName = "Content.mgcb";
-        private const string LeagueMonoXnbName = "League Mono.xnb";
-        private const string PlatformName = "DesktopGL";
-        private const string SkullXnbName = "skull.xnb";
-        
-        [Test]
-        [Category("Integration Tests")]
-        public void Build_ShouldRunMGCB() {
-            var service = new ProjectService(
-                new FileSystemService(), 
-                new LoggingService(),
-                new ProcessService(),
-                Substitute.For<ISceneService>(),
-                new Serializer(),
-                new UndoService());
-
-            var contentDirectory = Path.Combine(
-                TestContext.CurrentContext.TestDirectory,
-                PathHelper.GetPathToAncestorDirectory(3),
-                ProjectService.ContentDirectory);
-            var contentFile = Path.Combine(contentDirectory, ContentFileName);
-            var binDirectory = Path.Combine(contentDirectory, BinDirectoryName);
-            var buildContentDirectory = Path.Combine(binDirectory, PlatformName);
-            var skullFilePath = Path.Combine(buildContentDirectory, SkullXnbName);
-            var leagueMonoFilePath = Path.Combine(buildContentDirectory, LeagueMonoXnbName);
-
-            if (Directory.Exists(binDirectory)) {
-                Directory.Delete(binDirectory, true);
-            }
-
-            using (new AssertionScope()) {
-                service.Build(new BuildContentArguments(contentFile, PlatformName, false)).Should().Be(0);
-                File.Exists(skullFilePath).Should().BeTrue();
-                File.Exists(leagueMonoFilePath).Should().BeTrue();
-            }
-        }
-
         [Test]
         [Category("Unit Tests")]
         public void CreateProject_ShouldCreateProject_WhenFileDoesNotExist() {
@@ -62,13 +20,13 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
-                fileSystem, 
+                Substitute.For<IBuildService>(),
+                fileSystem,
                 Substitute.For<ILoggingService>(),
-                Substitute.For<IProcessService>(),
-                sceneService, 
+                sceneService,
                 serializer,
                 undoService);
-            
+
             var sceneAsset = new SceneAsset();
             sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
 
@@ -102,9 +60,9 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
-                fileSystem, 
-                Substitute.For<ILoggingService>(), 
-                Substitute.For<IProcessService>(),
+                Substitute.For<IBuildService>(),
+                fileSystem,
+                Substitute.For<ILoggingService>(),
                 sceneService,
                 serializer,
                 undoService);
@@ -199,10 +157,10 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
+                Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
-                Substitute.For<IProcessService>(), 
-                sceneService, 
+                sceneService,
                 serializer,
                 undoService);
 
@@ -229,11 +187,11 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
-                fileSystem, 
-                Substitute.For<ILoggingService>(), 
-                Substitute.For<IProcessService>(), 
-                sceneService, 
-                serializer, 
+                Substitute.For<IBuildService>(),
+                fileSystem,
+                Substitute.For<ILoggingService>(),
+                sceneService,
+                serializer,
                 undoService);
 
             var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
@@ -309,9 +267,9 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
-                fileSystem, 
-                Substitute.For<ILoggingService>(), 
-                Substitute.For<IProcessService>(),
+                Substitute.For<IBuildService>(),
+                fileSystem,
+                Substitute.For<ILoggingService>(),
                 sceneService,
                 serializer,
                 undoService);
@@ -332,9 +290,9 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
-                fileSystem, 
+                Substitute.For<IBuildService>(),
+                fileSystem,
                 Substitute.For<ILoggingService>(),
-                Substitute.For<IProcessService>(), 
                 sceneService,
                 serializer,
                 undoService);
@@ -350,5 +308,9 @@
                 serializer.Received().Serialize(project, projectFilePath);
             }
         }
+
+        private const string Folder1 = "Folder1";
+        private const string Folder2 = "Folder2";
+        private const string Folder1A = "Folder1A";
     }
 }

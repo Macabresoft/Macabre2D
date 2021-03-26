@@ -37,13 +37,6 @@
         bool HasChanges { get; set; }
 
         /// <summary>
-        /// Builds the content.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <returns>The exit code of the MGCB process.</returns>
-        int Build(BuildContentArguments args);
-
-        /// <summary>
         /// Creates a project at the specified path.
         /// </summary>
         /// <param name="projectDirectoryPath">Path to the directory where the project should be created.</param>
@@ -84,6 +77,11 @@
         private const string MgcbFileName = "editor.mgcb";
         private const string SourceDirectory = "src";
 
+        private static readonly string[] RequiredReferences = {
+            "Newtonsoft.Json.dll",
+            "Macabre2D.Framework.dll",
+        };
+
         public static readonly string[] ReservedDirectories = {
             ContentMetadata.MetadataDirectoryName,
             ContentMetadata.ArchiveDirectoryName,
@@ -94,9 +92,9 @@
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
+        private readonly IBuildService _buildService;
         private readonly IFileSystemService _fileSystem;
         private readonly ILoggingService _loggingService;
-        private readonly IProcessService _processService;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
 
@@ -121,22 +119,22 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
+        /// <param name="buildService">The build service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="loggingService">The logging service.</param>
-        /// <param name="processService">The process service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <param name="undoService"></param>
+        /// <param name="undoService">The undo service.</param>
         public ProjectService(
+            IBuildService buildService,
             IFileSystemService fileSystem,
             ILoggingService loggingService,
-            IProcessService processService,
             ISceneService sceneService,
             ISerializer serializer,
             IUndoService undoService) : base() {
+            this._buildService = buildService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
-            this._processService = processService;
             this._sceneService = sceneService;
             this._serializer = serializer;
             this._undoService = undoService;
@@ -161,25 +159,6 @@
         public bool HasChanges {
             get => this._hasChanges;
             set => this.RaiseAndSetIfChanged(ref this._hasChanges, value);
-        }
-
-        /// <inheritdoc />
-        public int Build(BuildContentArguments args) {
-            var exitCode = -1;
-            if (!string.IsNullOrWhiteSpace(args.ContentFilePath) && this._fileSystem.DoesFileExist(args.ContentFilePath)) {
-                var startInfo = new ProcessStartInfo {
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    FileName = "mgcb",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = args.ToConsoleArguments(),
-                    WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
-                };
-
-                exitCode = this._processService.StartProcess(startInfo);
-            }
-
-            return exitCode;
         }
 
         /// <inheritdoc />
@@ -243,10 +222,9 @@
             mgcbContents.AppendLine(@"#-------------------------------- References --------------------------------#");
             mgcbContents.AppendLine();
 
-            // TODO: add references
-            /*foreach (var referencePath in referencePaths) {
-                mgcbContents.AppendLine($@"/reference:{referencePath}");
-            }*/
+            foreach (var reference in RequiredReferences) {
+                mgcbContents.AppendLine($@"/reference:{reference}");
+            }
 
             mgcbContents.AppendLine();
             mgcbContents.AppendLine(@"#---------------------------------- Content ---------------------------------#");

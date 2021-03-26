@@ -26,6 +26,7 @@
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterLibraryServices(this IUnityContainer container) {
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
+                .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
                 .RegisterType<IFileSystemService, FileSystemService>(new SingletonLifetimeManager())
                 .RegisterType<ILoggingService, LoggingService>(new SingletonLifetimeManager())

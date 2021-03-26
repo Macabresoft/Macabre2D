@@ -50,9 +50,9 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             this.FileSystem.GetFiles(MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
             this.Instance = new ProjectService(
+                Substitute.For<IBuildService>(),
                 this.FileSystem,
                 Substitute.For<ILoggingService>(), 
-                Substitute.For<IProcessService>(), 
                 this.SceneService, 
                 this.Serializer, 
                 new UndoService());
