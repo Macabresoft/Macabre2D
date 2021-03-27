@@ -53,19 +53,30 @@
         /// <returns>The console arguments.</returns>
         public IEnumerable<string> GetConsoleArguments() {
             var contentPath = Path.GetDirectoryName(this.ContentFilePath) ?? throw new NotSupportedException();
+            var arguments = this.GetMGCBFileArguments(contentPath);
+            arguments.Add("/rebuild");
+            arguments.Add($"/@:\"{this.ContentFilePath}\"");
+            return arguments;
+        }
 
-            var arguments = new[] {
+        /// <summary>
+        /// Gets the MGCB arguments as an <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <returns>The MGCB arguments.</returns>
+        public IEnumerable<string> GetMGCBFileArguments() {
+            var contentPath = Path.GetDirectoryName(this.ContentFilePath) ?? throw new NotSupportedException();
+            return this.GetMGCBFileArguments(contentPath);
+        }
+
+        private IList<string> GetMGCBFileArguments(string contentPath) {
+            return new List<string>() {
                 $"/outputDir:\"{Path.Combine(contentPath, "bin", this.Platform)}\"",
                 $"/intermediateDir:\"{Path.Combine(contentPath, "obj", this.Platform)}\"",
                 $"/platform:{this.Platform}",
                 "/config:",
                 "/profile:Reach",
-                $"/compress:{this.PerformCompression}",
-                "/rebuild",
-                $"/@:\"{this.ContentFilePath}\""
+                $"/compress:{this.PerformCompression}"
             };
-
-            return arguments;
         }
     }
 }

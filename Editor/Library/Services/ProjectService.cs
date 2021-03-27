@@ -2,7 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -73,13 +72,13 @@
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         public const string ContentDirectory = "content";
-        private const string CompiledContentDirectory = ".compiled";
+        private const string EditorBuildDirectory = ".editorbuild";
         private const string MgcbFileName = "editor.mgcb";
         private const string SourceDirectory = "src";
 
         private static readonly string[] RequiredReferences = {
             "Newtonsoft.Json.dll",
-            "Macabre2D.Framework.dll",
+            "Macabre2D.Framework.dll"
         };
 
         public static readonly string[] ReservedDirectories = {
@@ -87,10 +86,11 @@
             ContentMetadata.ArchiveDirectoryName,
             ContentDirectory,
             SourceDirectory,
-            CompiledContentDirectory
+            EditorBuildDirectory
         };
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
+
 
         private readonly IBuildService _buildService;
         private readonly IFileSystemService _fileSystem;
@@ -190,7 +190,6 @@
             this._projectFilePath = this._fileSystem.DoesFileExist(projectFilePath) ? projectFilePath : throw new NotSupportedException();
             this.CurrentProject = this._serializer.Deserialize<GameProject>(projectFilePath);
             this.LoadContent();
-            // TODO: compile content
             return this.CurrentProject;
         }
 
@@ -214,7 +213,7 @@
             mgcbContents.AppendLine("#----------------------------- Global Properties ----------------------------#");
             mgcbContents.AppendLine();
 
-            foreach (var argument in buildArgs.GetConsoleArguments()) {
+            foreach (var argument in buildArgs.GetMGCBFileArguments()) {
                 mgcbContents.AppendLine(argument);
             }
 
@@ -237,6 +236,7 @@
             }
 
             this._fileSystem.WriteAllText(mgcbFilePath, mgcbContents.ToString());
+            this._buildService.BuildContent(buildArgs);
         }
 
         private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
