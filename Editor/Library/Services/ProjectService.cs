@@ -73,7 +73,8 @@
     public sealed class ProjectService : ReactiveObject, IProjectService {
         public const string ContentDirectory = "content";
         private const string EditorBuildDirectory = ".editorbuild";
-        private const string MgcbFileName = "editor.mgcb";
+        private const string MGCBDirectory = ".mgcb";
+        private const string MGCBFileName = "Editor.mgcb";
         private const string SourceDirectory = "src";
 
         private static readonly string[] RequiredReferences = {
@@ -85,8 +86,9 @@
             ContentMetadata.MetadataDirectoryName,
             ContentMetadata.ArchiveDirectoryName,
             ContentDirectory,
-            SourceDirectory,
-            EditorBuildDirectory
+            EditorBuildDirectory,
+            MGCBDirectory,
+            SourceDirectory
         };
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
@@ -207,7 +209,7 @@
 
         private void BuildContentForProject() {
             var mgcbContents = new StringBuilder();
-            var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MgcbFileName);
+            var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MGCBDirectory, MGCBFileName);
             var buildArgs = new BuildContentArguments(mgcbFilePath, "DesktopGL", true);
 
             mgcbContents.AppendLine("#----------------------------- Global Properties ----------------------------#");
