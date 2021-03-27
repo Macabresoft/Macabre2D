@@ -127,6 +127,7 @@
                 contentStringBuilder.AppendLine($@"/importer:{nameof(MetadataImporter)}");
                 contentStringBuilder.AppendLine($@"/processor:{nameof(MetadataProcessor)}");
                 contentStringBuilder.AppendLine($@"/build:{metadataPath}");
+                contentStringBuilder.AppendLine($"#end {metadataPath}");
                 contentStringBuilder.AppendLine();
                 contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
                 contentStringBuilder.AppendLine($"# --------------");

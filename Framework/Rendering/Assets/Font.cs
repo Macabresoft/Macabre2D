@@ -93,6 +93,7 @@
             contentStringBuilder.AppendLine($@"/processorParam:PremultiplyAlpha = {this.PremultiplyAlpha}");
             contentStringBuilder.AppendLine($@"/processorParam:TextureFormat = {this.TextureFormat.ToString()}");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
     }

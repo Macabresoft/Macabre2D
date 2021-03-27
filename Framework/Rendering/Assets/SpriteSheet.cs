@@ -165,6 +165,7 @@
             contentStringBuilder.AppendLine(@"/processorParam:MakeSquare=False");
             contentStringBuilder.AppendLine(@"/processorParam:TextureFormat=Color");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
 

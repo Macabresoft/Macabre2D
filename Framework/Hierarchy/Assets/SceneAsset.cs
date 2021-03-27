@@ -17,6 +17,7 @@
             contentStringBuilder.AppendLine($@"/importer:{nameof(SceneImporter)}");
             contentStringBuilder.AppendLine($@"/processor:{nameof(SceneProcessor)}");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
     }

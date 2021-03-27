@@ -16,6 +16,7 @@
             contentStringBuilder.AppendLine($@"/processor:{nameof(SoundEffectProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:Quality=Best");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
 

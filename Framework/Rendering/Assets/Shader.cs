@@ -16,6 +16,7 @@
             contentStringBuilder.AppendLine($@"/processor:{nameof(EffectProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:DebugMode = Auto");
             contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
     }
