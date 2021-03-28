@@ -12,13 +12,17 @@
     <RootNamespace>Macabresoft.Macabre2D.Project.DesktopGL</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Content\Content.mgcb" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="..\Content\Content.DesktopGL.mgcb">
+      <Link>Content\Content.DesktopGL.mgcb</Link>
+    </MonoGameContentReference>
   </ItemGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
