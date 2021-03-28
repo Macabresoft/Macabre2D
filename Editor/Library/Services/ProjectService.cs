@@ -71,11 +71,9 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
-        public const string ContentDirectory = "content";
-        private const string EditorBuildDirectory = ".editorbuild";
-        private const string MGCBDirectory = ".mgcb";
-        private const string MGCBFileName = "Editor.mgcb";
-        private const string SourceDirectory = "src";
+        public const string ContentDirectory = "Content";
+        private const string EditorBuildDirectory = ".contentbin";
+        private const string MGCBFileName = "Content.Editor.mgcb";
 
         private static readonly string[] RequiredReferences = {
             "Newtonsoft.Json.dll",
@@ -86,9 +84,7 @@
             ContentMetadata.MetadataDirectoryName,
             ContentMetadata.ArchiveDirectoryName,
             ContentDirectory,
-            EditorBuildDirectory,
-            MGCBDirectory,
-            SourceDirectory
+            EditorBuildDirectory
         };
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
@@ -133,7 +129,7 @@
             ILoggingService loggingService,
             ISceneService sceneService,
             ISerializer serializer,
-            IUndoService undoService) : base() {
+            IUndoService undoService) {
             this._buildService = buildService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
@@ -209,8 +205,13 @@
 
         private void BuildContentForProject() {
             var mgcbContents = new StringBuilder();
-            var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MGCBDirectory, MGCBFileName);
-            var buildArgs = new BuildContentArguments(mgcbFilePath, "DesktopGL", true);
+            var projectDirectoryPath = this.GetProjectDirectoryPath();
+            var mgcbFilePath = Path.Combine(this.GetProjectDirectoryPath(), MGCBFileName);
+            var buildArgs = new BuildContentArguments(
+                mgcbFilePath, 
+                projectDirectoryPath, 
+                "DesktopGL", 
+                true);
 
             mgcbContents.AppendLine("#----------------------------- Global Properties ----------------------------#");
             mgcbContents.AppendLine();

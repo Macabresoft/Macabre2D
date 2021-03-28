@@ -29,7 +29,7 @@
             }
 
             using (new AssertionScope()) {
-                service.BuildContent(new BuildContentArguments(contentFile, PlatformName, false)).Should().Be(0);
+                service.BuildContent(new BuildContentArguments(contentFile, contentDirectory, PlatformName, false)).Should().Be(0);
                 File.Exists(skullFilePath).Should().BeTrue();
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }

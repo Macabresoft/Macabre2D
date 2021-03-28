@@ -12,10 +12,16 @@
         /// Initializes a new instance of the <see cref="BuildContentArguments" /> struct.
         /// </summary>
         /// <param name="contentFilePath">The content file path.</param>
+        /// <param name="projectDirectoryPath">The project directory path.</param>
         /// <param name="platform">The platform.</param>
         /// <param name="performCompression">if set to <c>true</c> MGCB will perform compression.</param>
-        public BuildContentArguments(string contentFilePath, string platform, bool performCompression) {
+        public BuildContentArguments(
+            string contentFilePath,
+            string projectDirectoryPath,
+            string platform,
+            bool performCompression) {
             this.ContentFilePath = contentFilePath;
+            this.ProjectDirectoryPath = projectDirectoryPath;
             this.Platform = platform;
             this.PerformCompression = performCompression;
         }
@@ -37,6 +43,12 @@
         /// </summary>
         /// <value>The platform.</value>
         public string Platform { get; }
+        
+        /// <summary>
+        /// Gets the project directory path.
+        /// </summary>
+        /// <value>The project directory path.</value>
+        public string ProjectDirectoryPath { get; }
 
         /// <summary>
         /// Converts to console arguments used by MGCB.
@@ -52,8 +64,7 @@
         /// </summary>
         /// <returns>The console arguments.</returns>
         public IEnumerable<string> GetConsoleArguments() {
-            var contentPath = Path.GetDirectoryName(this.ContentFilePath) ?? throw new NotSupportedException();
-            var arguments = this.GetMGCBFileArguments(contentPath);
+            var arguments = this.GetMGCBFileArguments(this.ProjectDirectoryPath);
             arguments.Add("/rebuild");
             arguments.Add($"/@:\"{this.ContentFilePath}\"");
             return arguments;
@@ -64,14 +75,13 @@
         /// </summary>
         /// <returns>The MGCB arguments.</returns>
         public IEnumerable<string> GetMGCBFileArguments() {
-            var contentPath = Path.GetDirectoryName(this.ContentFilePath) ?? throw new NotSupportedException();
-            return this.GetMGCBFileArguments(contentPath);
+            return this.GetMGCBFileArguments(this.ProjectDirectoryPath);
         }
 
-        private IList<string> GetMGCBFileArguments(string contentPath) {
+        private IList<string> GetMGCBFileArguments(string projectDirectoryPath) {
             return new List<string>() {
-                $"/outputDir:\"{Path.Combine(contentPath, "bin", this.Platform)}\"",
-                $"/intermediateDir:\"{Path.Combine(contentPath, "obj", this.Platform)}\"",
+                $"/outputDir:\"{Path.Combine(projectDirectoryPath, "bin", this.Platform)}\"",
+                $"/intermediateDir:\"{Path.Combine(projectDirectoryPath, "obj", this.Platform)}\"",
                 $"/platform:{this.Platform}",
                 "/config:",
                 "/profile:Reach",
