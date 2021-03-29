@@ -2,11 +2,17 @@
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// The root of the content directory tree.
     /// </summary>
     public sealed class RootContentDirectory : ContentDirectory {
+        private static readonly string[] ReservedContentDirectories = {
+            ContentMetadata.ArchiveDirectoryName,
+            ContentMetadata.MetadataDirectoryName
+        };
+        
         private readonly string _pathToProjectDirectory;
 
         /// <summary>
@@ -21,12 +27,12 @@
 
         /// <inheritdoc />
         public override string GetContentPath() {
-            return ProjectService.ContentDirectory;
+            return string.Empty;
         }
 
         /// <inheritdoc />
         public override string GetFullPath() {
-            return Path.Combine(this._pathToProjectDirectory, this.GetContentPath());
+            return Path.Combine(this._pathToProjectDirectory, ProjectService.ContentDirectory);
         }
 
         /// <inheritdoc />
@@ -34,7 +40,7 @@
             var currentDirectoryPath = this.GetFullPath();
 
             if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
-                var directories = fileSystemService.GetDirectories(currentDirectoryPath);
+                var directories = fileSystemService.GetDirectories(currentDirectoryPath).Where(x => !ReservedContentDirectories.Contains(Path.GetDirectoryName(x)));
 
                 foreach (var directory in directories) {
                     this.LoadDirectory(fileSystemService, directory);

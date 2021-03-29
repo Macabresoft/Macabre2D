@@ -59,7 +59,7 @@
             this._undoService = undoService;
 
             // TODO: this should be set to the compiled path.
-            this.Content.RootDirectory = this._projectService.GetProjectDirectoryPath();
+            //this.Content.RootDirectory = this._projectService.GetProjectDirectoryPath();
         }
 
 

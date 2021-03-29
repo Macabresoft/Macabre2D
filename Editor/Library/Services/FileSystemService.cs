@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     /// <summary>
     /// Interface for a service which wraps basic file system operations.

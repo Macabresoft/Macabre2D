@@ -19,14 +19,14 @@
 
             var fileName = "File";
             var fileExtension = ".jpg";
-            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { ProjectService.ContentDirectory, directory1.Name, fileName }, fileExtension));
+            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { directory1.Name, fileName }, fileExtension));
             file.ChangeParent(directory2);
 
             using (new AssertionScope()) {
-                var expectedContentPath = Path.Combine(ProjectService.ContentDirectory, directory2.Name, fileName);
+                var expectedContentPath = Path.Combine(directory2.Name, fileName);
                 file.GetContentPath().Should().Be(expectedContentPath);
 
-                var expectedFullPath = Path.Combine(ProjectPath, $"{expectedContentPath}{fileExtension}");
+                var expectedFullPath = Path.Combine(ProjectPath, ProjectService.ContentDirectory, $"{expectedContentPath}{fileExtension}");
                 file.GetFullPath().Should().Be(expectedFullPath);
             }
         }

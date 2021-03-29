@@ -125,7 +125,7 @@
 
         /// <inheritdoc />
         public int GetDepth() {
-            return this.Parent?.GetDepth() + 1 ?? 1;
+            return this.Parent?.GetDepth() + 1 ?? 0;
         }
 
         /// <inheritdoc />

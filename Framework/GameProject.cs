@@ -43,6 +43,11 @@
         public const string ProjectFileExtension = ".m2dproj";
 
         /// <summary>
+        /// The project file name.
+        /// </summary>
+        public const string ProjectFileName = DefaultProjectName + ProjectFileExtension;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="GameProject" /> class.
         /// </summary>
         /// <param name="assets">The asset manager.</param>

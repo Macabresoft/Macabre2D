@@ -31,8 +31,11 @@
             sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
+            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
+
+            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
             fileSystem.DoesFileExist(projectFilePath).Returns(false);
+
             serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))
                 .Do(x => {
                     if (x[1] is string path) {
@@ -54,38 +57,12 @@
 
         [Test]
         [Category("Unit Tests")]
-        public void CreateProject_ShouldThrow_WhenFileExists() {
-            var fileSystem = Substitute.For<IFileSystemService>();
-            var sceneService = Substitute.For<ISceneService>();
-            var serializer = Substitute.For<ISerializer>();
-            var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(
-                Substitute.For<IBuildService>(),
-                fileSystem,
-                Substitute.For<ILoggingService>(),
-                sceneService,
-                serializer,
-                undoService);
-
-            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
-            fileSystem.DoesFileExist(projectFilePath).Returns(true);
-
-            using (new AssertionScope()) {
-                projectService.Invoking(x => x.CreateProject(projectDirectoryPath)).Should().Throw<NotSupportedException>();
-                serializer.DidNotReceive().Serialize(Arg.Any<GameProject>(), projectFilePath);
-                projectService.CurrentProject.Should().BeNull();
-            }
-        }
-
-        [Test]
-        [Category("Unit Tests")]
         public void LoadProject_Should_ArchiveMetadataWithMissingContent() {
             var metadataToArchive = new[] {
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var container = new ContentContainer(Enumerable.Empty<ContentMetadata>(), metadataToArchive, Enumerable.Empty<string>());
@@ -96,10 +73,10 @@
         [Category("Unit Tests")]
         public void LoadProject_Should_CreateMetadataForNewContent() {
             var newContentFiles = new[] {
-                Path.Combine(ProjectService.ContentDirectory, Folder1, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, Folder2, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, Folder1, Folder1A, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, $"{Guid.NewGuid()}.jpg")
+                Path.Combine(Folder1, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(Folder2, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(Folder1, Folder1A, $"{Guid.NewGuid()}.jpg"),
+                $"{Guid.NewGuid()}.jpg"
             };
 
             var container = new ContentContainer(Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<ContentMetadata>(), newContentFiles);
@@ -110,25 +87,25 @@
         [Category("Unit Tests")]
         public void LoadProject_Should_HandleAComplexSituation() {
             var existing = new[] {
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var metadataToArchive = new[] {
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var newContentFiles = new[] {
-                Path.Combine(ProjectService.ContentDirectory, Folder1, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, Folder2, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, Folder1, Folder1A, $"{Guid.NewGuid()}.jpg"),
-                Path.Combine(ProjectService.ContentDirectory, $"{Guid.NewGuid()}.jpg")
+                Path.Combine(Folder1, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(Folder2, $"{Guid.NewGuid()}.jpg"),
+                Path.Combine(Folder1, Folder1A, $"{Guid.NewGuid()}.jpg"),
+                $"{Guid.NewGuid()}.jpg"
             };
 
             var container = new ContentContainer(existing, metadataToArchive, newContentFiles);
@@ -139,10 +116,10 @@
         [Category("Unit Tests")]
         public void LoadProject_Should_ResolveExistingMetadata() {
             var existing = new[] {
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Folder1, Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+                new ContentMetadata(new SpriteSheet(), new[] { Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -165,12 +142,15 @@
                 undoService);
 
             var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var projectFilePath = Path.Combine(projectDirectoryPath, GameProject.ProjectFileExtension);
+            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
+
+            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
             fileSystem.DoesFileExist(projectFilePath).Returns(true);
+
             var project = new GameProject();
             serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
 
-            var loadedProject = projectService.LoadProject(projectFilePath);
+            var loadedProject = projectService.LoadProject(projectDirectoryPath);
 
             using (new AssertionScope()) {
                 serializer.Received().Deserialize<GameProject>(projectFilePath);
@@ -208,18 +188,18 @@
         [Test]
         [Category("Unit Tests")]
         public void MoveContent_ShouldMoveDirectory() {
-            var metadata = new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg");
+            var metadata = new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg");
             var existing = new[] {
                 metadata,
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
             container.RunLoadProjectTest();
 
-            var directory1 = container.Instance.RootContentDirectory.FindNode(new[] { ProjectService.ContentDirectory, Folder1 });
+            var directory1 = container.Instance.RootContentDirectory.FindNode(new[] { Folder1 });
             var originalPath = directory1.GetFullPath();
-            var directory2 = container.Instance.RootContentDirectory.FindNode(new[] { ProjectService.ContentDirectory, Folder2 }) as IContentDirectory;
+            var directory2 = container.Instance.RootContentDirectory.FindNode(new[] { Folder2 }) as IContentDirectory;
             container.Instance.MoveContent(directory1, directory2);
             var newPath = directory1.GetFullPath();
 
@@ -235,10 +215,10 @@
         [Test]
         [Category("Unit Tests")]
         public void MoveContent_ShouldMoveFile() {
-            var metadata = new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder1, Guid.NewGuid().ToString() }, ".jpg");
+            var metadata = new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg");
             var existing = new[] {
                 metadata,
-                new ContentMetadata(new SpriteSheet(), new[] { ProjectService.ContentDirectory, Folder2, Guid.NewGuid().ToString() }, ".jpg")
+                new ContentMetadata(new SpriteSheet(), new[] { Folder2, Guid.NewGuid().ToString() }, ".jpg")
             };
 
             var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
@@ -246,7 +226,7 @@
 
             var contentFile = container.Instance.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
             var originalPath = contentFile.GetFullPath();
-            var secondFolder = container.Instance.RootContentDirectory.FindNode(new[] { ProjectService.ContentDirectory, Folder2 }) as IContentDirectory;
+            var secondFolder = container.Instance.RootContentDirectory.FindNode(new[] { Folder2 }) as IContentDirectory;
             container.Instance.MoveContent(contentFile, secondFolder);
             var newPath = contentFile.GetFullPath();
 
@@ -274,7 +254,8 @@
                 serializer,
                 undoService);
 
-            var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
+            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
             projectService.SaveProject();
 
             using (new AssertionScope()) {
@@ -297,11 +278,13 @@
                 serializer,
                 undoService);
 
-            var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
+            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
+            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
             fileSystem.DoesFileExist(projectFilePath).Returns(true);
             var project = new GameProject();
             serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
-            projectService.LoadProject(projectFilePath);
+            projectService.LoadProject(projectDirectoryPath);
             projectService.SaveProject();
 
             using (new AssertionScope()) {
