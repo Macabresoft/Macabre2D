@@ -31,17 +31,10 @@
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
                 var projectService = Resolver.Resolve<IProjectService>();
                 
-                // TODO: rework this to not be hard coded when multiple projects are supported
+                // TODO: sanitize that path.
                 var assemblyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new NotSupportedException();
-                var projectFolder = Path.Combine(assemblyDirectoryPath, "..", "..", "..", "..", "..", "Project");
-                var projectFilePath = Path.Combine(projectFolder, GameProject.ProjectFileExtension);
-
-                if (File.Exists(projectFilePath)) {
-                    projectService.LoadProject(projectFilePath);
-                }
-                else {
-                    projectService.CreateProject(projectFolder);
-                }
+                var projectDirectoryInfo = new DirectoryInfo(Path.Combine(assemblyDirectoryPath, "..", "..", "..", "..", "..", "Project"));
+                projectService.LoadProject(projectDirectoryInfo.FullName);
                 
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);

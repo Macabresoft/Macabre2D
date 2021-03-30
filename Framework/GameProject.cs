@@ -35,7 +35,7 @@
         /// <summary>
         /// The default project name.
         /// </summary>
-        public const string DefaultProjectName = "project";
+        public const string DefaultProjectName = "Project";
 
         /// <summary>
         /// The project file extension.

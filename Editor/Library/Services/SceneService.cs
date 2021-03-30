@@ -13,11 +13,10 @@
         /// <summary>
         /// Creates the new scene and serializes it.
         /// </summary>
-        /// <typeparam name="T">The type of scene.</typeparam>
-        /// <param name="projectDirectoryPath">The full path to the project directory.</param>
+        /// <param name="contentDirectoryPath">The full path to the content directory.</param>
         /// <param name="contentPath">The content path of the new scene.</param>
         /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
-        SceneAsset CreateNewScene(string projectDirectoryPath, string contentPath);
+        SceneAsset CreateNewScene(string contentDirectoryPath, string contentPath);
     }
 
     /// <summary>
@@ -38,15 +37,15 @@
         }
 
         /// <inheritdoc />
-        public SceneAsset CreateNewScene(string projectDirectoryPath, string contentPath) {
-            if (!this._fileSystem.DoesDirectoryExist(projectDirectoryPath)) {
+        public SceneAsset CreateNewScene(string contentDirectoryPath, string contentPath) {
+            if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
                 throw new DirectoryNotFoundException();
             }
 
             GameScene scene;
-            var filePath = Path.Combine(projectDirectoryPath, $"{contentPath}{SceneAsset.FileExtension}");
+            var filePath = Path.Combine(contentDirectoryPath, $"{contentPath}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
-                // TODO: Override warning.
+                // TODO: Overwrite warning.
                 scene = this._serializer.Deserialize<GameScene>(filePath);
             }
             else {
@@ -68,7 +67,7 @@
                 contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
                 SceneAsset.FileExtension);
 
-            var metadataPath = Path.Combine(projectDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
+            var metadataPath = Path.Combine(contentDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
             this._serializer.Serialize(metadata, metadataPath);
 
             // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig

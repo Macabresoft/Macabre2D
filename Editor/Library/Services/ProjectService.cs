@@ -36,13 +36,6 @@
         bool HasChanges { get; set; }
 
         /// <summary>
-        /// Creates a project at the specified path.
-        /// </summary>
-        /// <param name="projectDirectoryPath">Path to the directory where the project exists.</param>
-        /// <returns>The created project.</returns>
-        IGameProject CreateProject(string projectDirectoryPath);
-
-        /// <summary>
         /// Loads the project at the specified path.
         /// </summary>
         /// <param name="projectDirectoryPath">Path to the directory where the project exists.</param>
@@ -67,7 +60,6 @@
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         public const string ContentDirectory = "Content";
-        private const string ContentBinDirectory = ".contentbin";
         private const string MGCBFileName = "Content.Editor.mgcb";
 
         private static readonly string[] RequiredReferences = {
@@ -78,8 +70,7 @@
         public static readonly string[] ReservedDirectories = {
             Path.Combine(ContentDirectory, ContentMetadata.MetadataDirectoryName),
             Path.Combine(ContentDirectory, ContentMetadata.ArchiveDirectoryName),
-            ContentDirectory,
-            ContentBinDirectory
+            ContentDirectory
         };
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
@@ -155,8 +146,9 @@
         }
 
         /// <inheritdoc />
-        public IGameProject CreateProject(string projectDirectoryPath) {
-            var projectFilePath = Path.Combine(projectDirectoryPath, ContentDirectory, GameProject.ProjectFileName);
+        public IGameProject LoadProject(string projectDirectoryPath) {
+            this._projectDirectoryPath = this._fileSystem.DoesDirectoryExist(projectDirectoryPath) ? projectDirectoryPath : throw new NotSupportedException();
+            var projectFilePath = this.GetProjectFilePath();
 
             if (!this._fileSystem.DoesFileExist(projectFilePath)) {
                 foreach (var directory in ReservedDirectories) {
@@ -164,18 +156,11 @@
                 }
 
                 var project = new GameProject();
-                var sceneAsset = this._sceneService.CreateNewScene(projectDirectoryPath, Path.Combine(ContentDirectory, "Default Scene"));
+                var sceneAsset = this._sceneService.CreateNewScene(Path.Combine(projectDirectoryPath, ContentDirectory), Path.Combine(ContentDirectory, "Default Scene"));
                 project.StartupSceneContentId = sceneAsset.ContentId;
                 this.SaveProjectFile(project, projectFilePath);
             }
 
-            return this.LoadProject(projectDirectoryPath);
-        }
-
-        /// <inheritdoc />
-        public IGameProject LoadProject(string projectDirectoryPath) {
-            this._projectDirectoryPath = this._fileSystem.DoesDirectoryExist(projectDirectoryPath) ? projectDirectoryPath : throw new NotSupportedException();
-            var projectFilePath = this.GetProjectFilePath();
             this.CurrentProject = this._serializer.Deserialize<GameProject>(projectFilePath);
             this.LoadContent();
             return this.CurrentProject;
@@ -193,12 +178,17 @@
             this.SaveProjectFile(this.CurrentProject, this.GetProjectFilePath());
         }
 
+        private string GetContentDirectoryPath() {
+            return Path.Combine(this._projectDirectoryPath, ContentDirectory);
+        }
+
         private void BuildContentForProject() {
             var mgcbStringBuilder = new StringBuilder();
-            var mgcbFilePath = Path.Combine(this._projectDirectoryPath, ContentDirectory, MGCBFileName);
+            var contentDirectoryPath = this.GetContentDirectoryPath();
+            var mgcbFilePath = Path.Combine(contentDirectoryPath, MGCBFileName);
             var buildArgs = new BuildContentArguments(
                 mgcbFilePath,
-                this._projectDirectoryPath,
+                contentDirectoryPath,
                 "DesktopGL",
                 true);
 
@@ -231,9 +221,8 @@
             this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
 
             // TODO: handle different build configurations
-            var desktopGLFilePath = Path.Combine(this._projectDirectoryPath, "Content.DesktopGL.mgcb");
+            var desktopGLFilePath = Path.Combine(contentDirectoryPath, "Content.DesktopGL.mgcb");
             this._fileSystem.WriteAllText(desktopGLFilePath, mgcbText);
-
             this._buildService.BuildContent(buildArgs);
         }
 
@@ -263,11 +252,15 @@
             }
         }
 
+        private string GetArchiveDirectoryPath() {
+            return Path.Combine(this._projectDirectoryPath, ContentDirectory, ContentMetadata.ArchiveDirectoryName);
+        }
+
         private IEnumerable<ContentMetadata> GetMetadata() {
             var metadata = new List<ContentMetadata>();
-            var metadataDirectory = Path.Combine(this._projectDirectoryPath, ContentDirectory, ContentMetadata.MetadataDirectoryName);
-            if (this._fileSystem.DoesDirectoryExist(metadataDirectory)) {
-                var files = this._fileSystem.GetFiles(metadataDirectory, ContentMetadata.MetadataSearchPattern);
+            var metadataDirectoryPath = this.GetMetadataDirectoryPath();
+            if (this._fileSystem.DoesDirectoryExist(metadataDirectoryPath)) {
+                var files = this._fileSystem.GetFiles(metadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
                 foreach (var file in files) {
                     try {
                         var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
@@ -285,6 +278,10 @@
             }
 
             return metadata;
+        }
+
+        private string GetMetadataDirectoryPath() {
+            return Path.Combine(this._projectDirectoryPath, ContentDirectory, ContentMetadata.MetadataDirectoryName);
         }
 
         private string GetProjectFilePath() {
@@ -332,10 +329,9 @@
             }
 
             if (contentNode == null) {
-                var projectDirectoryPath = this._projectDirectoryPath;
                 var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
-                var current = Path.Combine(projectDirectoryPath, ContentDirectory, ContentMetadata.MetadataDirectoryName, fileName);
-                var moveTo = Path.Combine(projectDirectoryPath, ContentDirectory, ContentMetadata.ArchiveDirectoryName, fileName);
+                var current = Path.Combine(this.GetMetadataDirectoryPath(), fileName);
+                var moveTo = Path.Combine(this.GetArchiveDirectoryPath(), fileName);
                 this._fileSystem.MoveFile(current, moveTo);
             }
             else {
@@ -362,7 +358,7 @@
         }
 
         private void SaveMetadata(ContentMetadata metadata) {
-            var fullDirectoryPath = Path.Combine(this._projectDirectoryPath, ContentDirectory, ContentMetadata.MetadataDirectoryName);
+            var fullDirectoryPath = this.GetMetadataDirectoryPath();
 
             if (this._fileSystem.DoesDirectoryExist(fullDirectoryPath)) {
                 this._serializer.Serialize(metadata, Path.Combine(fullDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));

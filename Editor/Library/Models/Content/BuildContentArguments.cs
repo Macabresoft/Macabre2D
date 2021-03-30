@@ -12,16 +12,16 @@
         /// Initializes a new instance of the <see cref="BuildContentArguments" /> struct.
         /// </summary>
         /// <param name="contentFilePath">The content file path.</param>
-        /// <param name="projectDirectoryPath">The project directory path.</param>
+        /// <param name="contentDirectoryPath">The content directory path.</param>
         /// <param name="platform">The platform.</param>
         /// <param name="performCompression">if set to <c>true</c> MGCB will perform compression.</param>
         public BuildContentArguments(
             string contentFilePath,
-            string projectDirectoryPath,
+            string contentDirectoryPath,
             string platform,
             bool performCompression) {
             this.ContentFilePath = contentFilePath;
-            this.ProjectDirectoryPath = projectDirectoryPath;
+            this.ContentDirectoryPath = contentDirectoryPath;
             this.Platform = platform;
             this.PerformCompression = performCompression;
         }
@@ -45,10 +45,10 @@
         public string Platform { get; }
         
         /// <summary>
-        /// Gets the project directory path.
+        /// Gets the content directory path.
         /// </summary>
-        /// <value>The project directory path.</value>
-        public string ProjectDirectoryPath { get; }
+        /// <value>The content directory path.</value>
+        public string ContentDirectoryPath { get; }
 
         /// <summary>
         /// Converts to console arguments used by MGCB.
@@ -64,7 +64,7 @@
         /// </summary>
         /// <returns>The console arguments.</returns>
         public IEnumerable<string> GetConsoleArguments() {
-            var arguments = this.GetMGCBFileArguments(this.ProjectDirectoryPath);
+            var arguments = this.GetMGCBFileArguments(this.ContentDirectoryPath);
             arguments.Add("/rebuild");
             arguments.Add($"/@:\"{this.ContentFilePath}\"");
             return arguments;
@@ -75,7 +75,7 @@
         /// </summary>
         /// <returns>The MGCB arguments.</returns>
         public IEnumerable<string> GetMGCBFileArguments() {
-            return this.GetMGCBFileArguments(this.ProjectDirectoryPath);
+            return this.GetMGCBFileArguments(this.ContentDirectoryPath);
         }
 
         private IList<string> GetMGCBFileArguments(string projectDirectoryPath) {

@@ -14,7 +14,7 @@
     public class ProjectServiceTests {
         [Test]
         [Category("Unit Tests")]
-        public void CreateProject_ShouldCreateProject_WhenFileDoesNotExist() {
+        public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
             var fileSystem = Substitute.For<IFileSystemService>();
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
@@ -45,7 +45,7 @@
                 });
 
 
-            var project = projectService.CreateProject(projectDirectoryPath);
+            var project = projectService.LoadProject(projectDirectoryPath);
 
             using (new AssertionScope()) {
                 serializer.Received().Serialize(Arg.Any<GameProject>(), projectFilePath);

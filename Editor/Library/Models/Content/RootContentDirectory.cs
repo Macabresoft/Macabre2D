@@ -8,7 +8,7 @@
     /// The root of the content directory tree.
     /// </summary>
     public sealed class RootContentDirectory : ContentDirectory {
-        private static readonly string[] ReservedContentDirectories = {
+        private static readonly string[] UnusedContentDirectories = {
             ContentMetadata.ArchiveDirectoryName,
             ContentMetadata.MetadataDirectoryName
         };
@@ -40,10 +40,13 @@
             var currentDirectoryPath = this.GetFullPath();
 
             if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
-                var directories = fileSystemService.GetDirectories(currentDirectoryPath).Where(x => !ReservedContentDirectories.Contains(Path.GetDirectoryName(x)));
+                var directories = fileSystemService.GetDirectories(currentDirectoryPath);
 
                 foreach (var directory in directories) {
-                    this.LoadDirectory(fileSystemService, directory);
+                    var directoryName = Path.GetDirectoryName(directory);
+                    if (!UnusedContentDirectories.Contains(directoryName)) {
+                        this.LoadDirectory(fileSystemService, directory);
+                    }
                 }
             }
         }
