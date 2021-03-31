@@ -15,7 +15,7 @@
             contentStringBuilder.AppendLine($@"/importer:{nameof(EffectImporter)}");
             contentStringBuilder.AppendLine($@"/processor:{nameof(EffectProcessor)}");
             contentStringBuilder.AppendLine(@"/processorParam:DebugMode = Auto");
-            contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($@"/build:{contentPath}{fileExtension}");
             contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }

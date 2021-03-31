@@ -1,9 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    
+
     /// <summary>
     /// Arguments for building content using MGCB.
     /// </summary>
@@ -27,6 +26,12 @@
         }
 
         /// <summary>
+        /// Gets the content directory path.
+        /// </summary>
+        /// <value>The content directory path.</value>
+        public string ContentDirectoryPath { get; }
+
+        /// <summary>
         /// Gets the content file path.
         /// </summary>
         /// <value>The content file path.</value>
@@ -43,43 +48,28 @@
         /// </summary>
         /// <value>The platform.</value>
         public string Platform { get; }
-        
-        /// <summary>
-        /// Gets the content directory path.
-        /// </summary>
-        /// <value>The content directory path.</value>
-        public string ContentDirectoryPath { get; }
 
         /// <summary>
         /// Converts to console arguments used by MGCB.
         /// </summary>
         /// <returns>The console arguments.</returns>
         public string ToConsoleArguments() {
-            var arguments = this.GetConsoleArguments();
+            var arguments = this.ToGlobalProperties(this.ContentDirectoryPath);
+            arguments.Add("/rebuild");
+            arguments.Add($"/@:\"{this.ContentFilePath}\"");
             return arguments.Aggregate((first, second) => $"{first} {second}");
         }
 
         /// <summary>
-        /// Gets the console arguments as an <see cref="IEnumerable{T}"/>.
+        /// Gets the lines for the global properties section of an MGCB file.
         /// </summary>
-        /// <returns>The console arguments.</returns>
-        public IEnumerable<string> GetConsoleArguments() {
-            var arguments = this.GetMGCBFileArguments(this.ContentDirectoryPath);
-            arguments.Add("/rebuild");
-            arguments.Add($"/@:\"{this.ContentFilePath}\"");
-            return arguments;
+        /// <returns>The lines for the global properties section of an MGCB file.</returns>
+        public IEnumerable<string> ToGlobalProperties() {
+            return this.ToGlobalProperties(this.ContentDirectoryPath);
         }
 
-        /// <summary>
-        /// Gets the MGCB arguments as an <see cref="IEnumerable{T}"/>.
-        /// </summary>
-        /// <returns>The MGCB arguments.</returns>
-        public IEnumerable<string> GetMGCBFileArguments() {
-            return this.GetMGCBFileArguments(this.ContentDirectoryPath);
-        }
-
-        private IList<string> GetMGCBFileArguments(string projectDirectoryPath) {
-            return new List<string>() {
+        private IList<string> ToGlobalProperties(string projectDirectoryPath) {
+            return new List<string> {
                 $"/outputDir:\"{Path.Combine(projectDirectoryPath, "bin", this.Platform)}\"",
                 $"/intermediateDir:\"{Path.Combine(projectDirectoryPath, "obj", this.Platform)}\"",
                 $"/platform:{this.Platform}",

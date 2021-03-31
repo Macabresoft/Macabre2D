@@ -156,7 +156,7 @@
                 }
 
                 var project = new GameProject();
-                var sceneAsset = this._sceneService.CreateNewScene(Path.Combine(projectDirectoryPath, ContentDirectory), Path.Combine(ContentDirectory, "Default Scene"));
+                var sceneAsset = this._sceneService.CreateNewScene(this.GetContentDirectoryPath(), "Default Scene");
                 project.StartupSceneContentId = sceneAsset.ContentId;
                 this.SaveProjectFile(project, projectFilePath);
             }
@@ -195,7 +195,7 @@
             mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
             mgcbStringBuilder.AppendLine();
 
-            foreach (var argument in buildArgs.GetMGCBFileArguments()) {
+            foreach (var argument in buildArgs.ToGlobalProperties()) {
                 mgcbStringBuilder.AppendLine(argument);
             }
 

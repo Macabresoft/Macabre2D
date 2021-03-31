@@ -92,7 +92,7 @@
             contentStringBuilder.AppendLine(@"/processor:FontDescriptionProcessor");
             contentStringBuilder.AppendLine($@"/processorParam:PremultiplyAlpha = {this.PremultiplyAlpha}");
             contentStringBuilder.AppendLine($@"/processorParam:TextureFormat = {this.TextureFormat.ToString()}");
-            contentStringBuilder.AppendLine($@"/build:{contentPath}");
+            contentStringBuilder.AppendLine($@"/build:{contentPath}{fileExtension}");
             contentStringBuilder.AppendLine($"#end {contentPath}");
             return contentStringBuilder.ToString();
         }
