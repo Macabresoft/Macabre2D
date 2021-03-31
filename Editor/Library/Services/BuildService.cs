@@ -40,7 +40,7 @@
             if (!string.IsNullOrWhiteSpace(args.ContentFilePath) && this._fileSystem.DoesFileExist(args.ContentFilePath)) {
                 var startInfo = new ProcessStartInfo {
                     CreateNoWindow = true,
-                    UseShellExecute = false,
+                    UseShellExecute = true,
                     FileName = "mgcb",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     Arguments = args.ToConsoleArguments(),
