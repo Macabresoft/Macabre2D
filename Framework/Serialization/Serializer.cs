@@ -1,15 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Newtonsoft.Json;
     using System;
     using System.IO;
     using System.Text;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Interface for a serializer to be used by the framework.
     /// </summary>
     public interface ISerializer {
-
         /// <summary>
         /// Deserializes a file at the specified path.
         /// </summary>
@@ -17,6 +15,14 @@
         /// <param name="path">The path.</param>
         /// <returns>A deserialized object from the specified file.</returns>
         T Deserialize<T>(string path);
+
+        /// <summary>
+        /// Deserializes a file from the specified stream.
+        /// </summary>
+        /// <typeparam name="T">The type to deserialize to.</typeparam>
+        /// <param name="stream">The stream.</param>
+        /// <returns>A deserialized object from the specified stream.</returns>
+        T Deserialize<T>(Stream stream);
 
         /// <summary>
         /// Deserializes from string.
@@ -52,7 +58,6 @@
     /// <summary>
     /// Serializes to Json.
     /// </summary>
-    /// <seealso cref="ISerializationService" />
     public sealed class Serializer : ISerializer {
 #nullable disable
         private static ISerializer _instance = new Serializer();
@@ -61,23 +66,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Serializer" /> class.
         /// </summary>
-        public Serializer() : this(new JsonSerializer()) {
-        }
+        public Serializer() {
+            this._jsonSerializer = new JsonSerializer {
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                Formatting = Formatting.Indented,
+                ObjectCreationHandling = ObjectCreationHandling.Auto,
+                PreserveReferencesHandling = PreserveReferencesHandling.All,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                ContractResolver = new CustomContractResolver()
+            };
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Serializer" /> class.
-        /// </summary>
-        /// <param name="jsonSerializer">The json serializer.</param>
-        public Serializer(JsonSerializer jsonSerializer) {
-            this._jsonSerializer = jsonSerializer;
-            this._jsonSerializer.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;
-            this._jsonSerializer.MissingMemberHandling = MissingMemberHandling.Ignore;
-            this._jsonSerializer.Formatting = Formatting.Indented;
-            this._jsonSerializer.ObjectCreationHandling = ObjectCreationHandling.Auto;
-            this._jsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
-            this._jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            this._jsonSerializer.TypeNameHandling = TypeNameHandling.Auto;
-            this._jsonSerializer.ContractResolver = new CustomContractResolver();
             this._jsonSerializer.Converters.Add(new JsonColorConverter());
         }
 
@@ -85,13 +85,11 @@
         /// Gets the singleton instance of <see cref="ISerializer" />.
         /// </summary>
         public static ISerializer Instance {
-            get {
-                return Serializer._instance;
-            }
+            get => _instance;
 
             set {
                 if (value != null) {
-                    Serializer._instance = value;
+                    _instance = value;
                 }
             }
         }
@@ -99,6 +97,13 @@
         /// <inheritdoc />
         public T Deserialize<T>(string path) {
             using var streamReader = new StreamReader(path);
+            using var jsonReader = new JsonTextReader(streamReader);
+            return this._jsonSerializer.Deserialize<T>(jsonReader);
+        }
+
+        /// <inheritdoc />
+        public T Deserialize<T>(Stream stream) {
+            using var streamReader = new StreamReader(stream);
             using var jsonReader = new JsonTextReader(streamReader);
             return this._jsonSerializer.Deserialize<T>(jsonReader);
         }
@@ -121,7 +126,7 @@
         public void Serialize(object value, string path) {
             var directoryName = Path.GetDirectoryName(path);
             if (!string.IsNullOrWhiteSpace(directoryName)) {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                Directory.CreateDirectory(directoryName);
             }
 
             using var streamWriter = new StreamWriter(path);
