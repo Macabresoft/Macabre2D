@@ -91,7 +91,7 @@
                 this.Project = this._projectService.CurrentProject;
             }
 
-            this.Project.Assets.Initialize(this.Content);
+            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
 
             if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);

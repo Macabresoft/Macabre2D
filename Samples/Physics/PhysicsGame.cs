@@ -16,7 +16,7 @@
         }
 
         protected override void LoadContent() {
-            this.Project.Assets.Initialize(this.Content);
+            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new GameScene();

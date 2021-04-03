@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
 
     /// <summary>
@@ -13,7 +15,8 @@
         /// Initializes this instance.
         /// </summary>
         /// <param name="contentManager">The content manager.</param>
-        void Initialize(ContentManager contentManager);
+        /// <param name="serializer">The serializer.</param>
+        void Initialize(ContentManager contentManager, ISerializer serializer);
 
         /// <summary>
         /// Registers the content meta data into the cache.
@@ -59,12 +62,15 @@
     /// </summary>
     [DataContract]
     public sealed class AssetManager : IAssetManager {
+        private const string MonoGameNamespace = nameof(Microsoft) + "." + nameof(Microsoft.Xna) + "." + nameof(Microsoft.Xna.Framework);
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
+        private ISerializer? _serializer;
 
         /// <inheritdoc />
-        public void Initialize(ContentManager contentManager) {
+        public void Initialize(ContentManager contentManager, ISerializer serializer) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
+            this._serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         /// <inheritdoc />
@@ -88,27 +94,33 @@
         /// <inheritdoc />
         public bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class {
             loaded = null;
-
             if (this._contentManager != null) {
-                try {
-                    loaded = this._contentManager.Load<T?>(contentPath);
+                if (typeof(T).Namespace?.StartsWith(MonoGameNamespace) == true) {
+                    try {
+                        loaded = this._contentManager.Load<T?>(contentPath);
+                    }
+                    catch (ContentLoadException) {
+                        // TODO: log this
+                    }
                 }
-                catch (ContentLoadException) {
+                else if (this._serializer != null) {
+                    try {
+                        var fileStream = TitleContainer.OpenStream(Path.Combine(this._contentManager.RootDirectory, contentPath));
+                        loaded = this._serializer.Deserialize<T>(fileStream);
+                    }
+                    catch(FileNotFoundException) {
+                        // TODO: log this
+                    }
                 }
             }
-
+            
             return loaded != null;
         }
 
         /// <inheritdoc />
         public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
-            if (this._contentManager != null && this.TryGetContentPath(id, out var path)) {
-                try {
-                    loaded = this._contentManager.Load<T?>(path);
-                }
-                catch (Exception) {
-                    loaded = null;
-                }
+            if (this.TryGetContentPath(id, out var path) && !string.IsNullOrWhiteSpace(path)) {
+                this.TryLoadContent(path, out loaded);
             }
             else {
                 loaded = null;

@@ -8,7 +8,7 @@
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
         protected override void LoadContent() {
-            this.Project.Assets.Initialize(this.Content);
+            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
             this.Project.Settings.PixelsPerUnit = 64;
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);

@@ -102,7 +102,7 @@
                 this.ApplyGraphicsSettings();
 
                 if (this.Content != null) {
-                    this._project.Assets.Initialize(this.Content);
+                    this._project.Assets.Initialize(this.Content, Serializer.Instance);
                 }
             }
         }
@@ -198,7 +198,7 @@
             catch (ContentLoadException) {
             }
 
-            this.Project.Assets.Initialize(this.Content);
+            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
 
             if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);
