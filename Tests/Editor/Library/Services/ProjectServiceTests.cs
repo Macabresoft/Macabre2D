@@ -14,49 +14,6 @@
     public class ProjectServiceTests {
         [Test]
         [Category("Unit Tests")]
-        public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
-            var fileSystem = Substitute.For<IFileSystemService>();
-            var sceneService = Substitute.For<ISceneService>();
-            var serializer = Substitute.For<ISerializer>();
-            var undoService = Substitute.For<IUndoService>();
-            var projectService = new ProjectService(
-                Substitute.For<IBuildService>(),
-                fileSystem,
-                Substitute.For<ILoggingService>(),
-                sceneService,
-                serializer,
-                undoService);
-
-            var sceneAsset = new SceneAsset();
-            sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
-
-            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
-
-            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
-            fileSystem.DoesFileExist(projectFilePath).Returns(false);
-
-            serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))
-                .Do(x => {
-                    if (x[1] is string path) {
-                        fileSystem.DoesFileExist(path).Returns(true);
-                        serializer.Deserialize<GameProject>(path).Returns(new GameProject());
-                    }
-                });
-
-
-            var project = projectService.LoadProject(projectDirectoryPath);
-
-            using (new AssertionScope()) {
-                serializer.Received().Serialize(Arg.Any<GameProject>(), projectFilePath);
-                project.Should().NotBeNull();
-                projectService.CurrentProject.Should().NotBeNull();
-                projectService.CurrentProject.Should().Be(project);
-            }
-        }
-
-        [Test]
-        [Category("Unit Tests")]
         public void LoadProject_Should_ArchiveMetadataWithMissingContent() {
             var metadataToArchive = new[] {
                 new ContentMetadata(new SpriteSheet(), new[] { Folder1, Guid.NewGuid().ToString() }, ".jpg"),
@@ -128,60 +85,67 @@
 
         [Test]
         [Category("Unit Tests")]
-        public void LoadProject_ShouldLoad_WhenFileExists() {
-            var fileSystem = Substitute.For<IFileSystemService>();
+        public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
+            var pathService = this.CreatePathService();
+            var fileSystem = this.CreateFileSystem(pathService, false);
             var sceneService = Substitute.For<ISceneService>();
+            var sceneAsset = new SceneAsset();
+            sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
+
             var serializer = Substitute.For<ISerializer>();
+            serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))
+                .Do(x => {
+                    if (x[1] is string path) {
+                        fileSystem.DoesFileExist(path).Returns(true);
+                        serializer.Deserialize<GameProject>(path).Returns(new GameProject());
+                    }
+                });
+
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
+                pathService,
                 sceneService,
                 serializer,
                 undoService);
 
-            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
-
-            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
-            fileSystem.DoesFileExist(projectFilePath).Returns(true);
-
-            var project = new GameProject();
-            serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
-
-            var loadedProject = projectService.LoadProject(projectDirectoryPath);
+            var project = projectService.LoadProject();
 
             using (new AssertionScope()) {
-                serializer.Received().Deserialize<GameProject>(projectFilePath);
-                loadedProject.Should().Be(project);
+                serializer.Received().Serialize(Arg.Any<GameProject>(), pathService.ProjectFilePath);
+                project.Should().NotBeNull();
+                projectService.CurrentProject.Should().NotBeNull();
                 projectService.CurrentProject.Should().Be(project);
             }
         }
 
         [Test]
         [Category("Unit Tests")]
-        public void LoadProject_ShouldNotLoad_WhenFileDoesNotExist() {
-            var fileSystem = Substitute.For<IFileSystemService>();
+        public void LoadProject_ShouldLoad_WhenFileExists() {
+            var pathService = this.CreatePathService();
+            var fileSystem = this.CreateFileSystem(pathService, true);
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
+            var project = new GameProject();
+            serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
+                pathService,
                 sceneService,
                 serializer,
                 undoService);
 
-            var projectFilePath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), GameProject.ProjectFileExtension);
-            fileSystem.DoesFileExist(projectFilePath).Returns(false);
-
+            var loadedProject = projectService.LoadProject();
 
             using (new AssertionScope()) {
-                projectService.Invoking(x => x.LoadProject(projectFilePath)).Should().Throw<NotSupportedException>();
-                serializer.DidNotReceive().Deserialize<GameProject>(projectFilePath);
-                projectService.CurrentProject.Should().BeNull();
+                serializer.Received().Deserialize<GameProject>(pathService.ProjectFilePath);
+                loadedProject.Should().Be(project);
+                projectService.CurrentProject.Should().Be(project);
             }
         }
 
@@ -242,7 +206,8 @@
         [Test]
         [Category("Unit Tests")]
         public void SaveProject_ShouldNotSave_WhenProjectDoesNotExist() {
-            var fileSystem = Substitute.For<IFileSystemService>();
+            var pathService = this.CreatePathService();
+            var fileSystem = this.CreateFileSystem(pathService, true);
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
@@ -250,46 +215,58 @@
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
+                pathService,
                 sceneService,
                 serializer,
                 undoService);
 
-            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
             projectService.SaveProject();
 
             using (new AssertionScope()) {
-                serializer.DidNotReceive().Serialize(Arg.Any<IGameProject>(), projectFilePath);
+                serializer.DidNotReceive().Serialize(Arg.Any<IGameProject>(), pathService.ProjectFilePath);
             }
         }
 
         [Test]
         [Category("Unit Tests")]
         public void SaveProject_ShouldSave_WhenProjectExists() {
-            var fileSystem = Substitute.For<IFileSystemService>();
+            var pathService = this.CreatePathService();
+            var fileSystem = this.CreateFileSystem(pathService, true);
             var sceneService = Substitute.For<ISceneService>();
             var serializer = Substitute.For<ISerializer>();
+            var project = new GameProject();
+            serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
+                pathService,
                 sceneService,
                 serializer,
                 undoService);
 
-            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var projectFilePath = Path.Combine(projectDirectoryPath, ProjectService.ContentDirectory, GameProject.ProjectFileName);
-            fileSystem.DoesDirectoryExist(projectDirectoryPath).Returns(true);
-            fileSystem.DoesFileExist(projectFilePath).Returns(true);
-            var project = new GameProject();
-            serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
-            projectService.LoadProject(projectDirectoryPath);
+            projectService.LoadProject();
             projectService.SaveProject();
 
             using (new AssertionScope()) {
-                serializer.Received().Serialize(project, projectFilePath);
+                serializer.Received().Serialize(project, pathService.ProjectFilePath);
             }
+        }
+
+        private IPathService CreatePathService() {
+            var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            return new PathService(Guid.NewGuid().ToString(), projectDirectoryPath);
+        }
+
+        private IFileSystemService CreateFileSystem(IPathService pathService, bool shouldProjectFileExist) {
+            var fileSystem = Substitute.For<IFileSystemService>();
+            fileSystem.DoesFileExist(pathService.ProjectFilePath).Returns(shouldProjectFileExist);
+            fileSystem.DoesDirectoryExist(pathService.ProjectDirectoryPath).Returns(true);
+            fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
+            fileSystem.DoesDirectoryExist(pathService.MetadataDirectoryPath).Returns(true);
+            fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);
+            return fileSystem;
         }
 
         private const string Folder1 = "Folder1";

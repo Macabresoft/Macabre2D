@@ -29,12 +29,9 @@
 
         public override void OnFrameworkInitializationCompleted() {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-                var projectService = Resolver.Resolve<IProjectService>();
                 
-                // TODO: sanitize that path.
-                var assemblyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new NotSupportedException();
-                var projectDirectoryInfo = new DirectoryInfo(Path.Combine(assemblyDirectoryPath, "..", "..", "..", "..", "..", "Project"));
-                projectService.LoadProject(projectDirectoryInfo.FullName);
+                var projectService = Resolver.Resolve<IProjectService>();
+                projectService.LoadProject();
                 
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);

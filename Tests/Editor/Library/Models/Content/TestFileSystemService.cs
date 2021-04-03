@@ -12,9 +12,7 @@
 
         public IDictionary<string, IEnumerable<string>> DirectoryToChildrenMap { get; } = new Dictionary<string, IEnumerable<string>>();
 
-        public string PathToContentDirectory => Path.Combine(this.PathToProjectDirectory, ProjectService.ContentDirectory);
-
-        public string PathToProjectDirectory { get; } = Guid.NewGuid().ToString();
+        public IPathService TestPathService { get; } = new PathService(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
 
         public void CreateDirectory(string path) {
         }
@@ -83,8 +81,8 @@
         private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();
             var directories = new List<string>();
-            this.DirectoryToChildrenMap[this.PathToProjectDirectory] = new[] { ProjectService.ContentDirectory };
-            this.DirectoryToChildrenMap[ProjectService.ContentDirectory] = directories;
+            this.DirectoryToChildrenMap[this.TestPathService.ProjectDirectoryPath] = new[] { PathService.ContentDirectoryName };
+            this.DirectoryToChildrenMap[PathService.ContentDirectoryName] = directories;
             for (var i = 0; i < 3; i++) {
                 var name = Guid.NewGuid();
                 this.GenerateFakeDirectory(name, 3);

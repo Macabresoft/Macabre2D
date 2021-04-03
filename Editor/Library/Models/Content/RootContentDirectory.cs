@@ -12,16 +12,16 @@
             ContentMetadata.ArchiveDirectoryName,
             ContentMetadata.MetadataDirectoryName
         };
-        
-        private readonly string _pathToProjectDirectory;
+
+        private readonly IPathService _pathService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RootContentDirectory" /> class.
         /// </summary>
         /// <param name="fileSystemService">The file service.</param>
-        /// <param name="pathToProjectDirectory">The path to the project directory.</param>
-        public RootContentDirectory(IFileSystemService fileSystemService, string pathToProjectDirectory) : base(ProjectService.ContentDirectory, null) {
-            this._pathToProjectDirectory = pathToProjectDirectory;
+        /// <param name="pathService">The path service.</param>
+        public RootContentDirectory(IFileSystemService fileSystemService, IPathService pathService) : base(PathService.ContentDirectoryName, null) {
+            this._pathService = pathService;
             this.LoadChildDirectories(fileSystemService);
         }
 
@@ -32,7 +32,7 @@
 
         /// <inheritdoc />
         public override string GetFullPath() {
-            return Path.Combine(this._pathToProjectDirectory, ProjectService.ContentDirectory);
+            return this._pathService.ContentDirectoryPath;
         }
 
         /// <inheritdoc />

@@ -13,7 +13,11 @@
         [Test]
         [Category("Unit Tests")]
         public void ChangeParent_ShouldChangePaths() {
-            var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), ProjectPath);
+            var pathService = Substitute.For<IPathService>();
+            pathService.ProjectDirectoryPath.Returns(ProjectPath);
+            pathService.ContentDirectoryPath.Returns(pathService.ProjectDirectoryPath, PathService.ContentDirectoryName);
+
+            var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), pathService);
             var directory1 = new ContentDirectory("D1", root);
             var directory2 = new ContentDirectory("D2", root);
 
@@ -26,7 +30,7 @@
                 var expectedContentPath = Path.Combine(directory2.Name, fileName);
                 file.GetContentPath().Should().Be(expectedContentPath);
 
-                var expectedFullPath = Path.Combine(ProjectPath, ProjectService.ContentDirectory, $"{expectedContentPath}{fileExtension}");
+                var expectedFullPath = Path.Combine(pathService.ContentDirectoryPath, $"{expectedContentPath}{fileExtension}");
                 file.GetFullPath().Should().Be(expectedFullPath);
             }
         }

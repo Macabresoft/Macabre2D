@@ -17,7 +17,7 @@
             var contentDirectory = Path.Combine(
                 TestContext.CurrentContext.TestDirectory,
                 PathHelper.GetPathToAncestorDirectory(3),
-                ProjectService.ContentDirectory);
+                PathService.ContentDirectoryName);
             var contentFile = Path.Combine(contentDirectory, ContentFileName);
             var binDirectory = Path.Combine(contentDirectory, BinDirectoryName);
             var buildContentDirectory = Path.Combine(binDirectory, PlatformName);

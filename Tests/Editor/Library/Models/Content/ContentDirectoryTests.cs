@@ -12,14 +12,16 @@
 
     [TestFixture]
     public class ContentDirectoryTests {
-        
         [Test]
         [Category("Unit Tests")]
         public void GetContentPath_ShouldReturnPath() {
             var rootPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var pathService = Substitute.For<IPathService>();
+            pathService.ContentDirectoryPath.Returns(rootPath);
+
             var fileSystemService = Substitute.For<IFileSystemService>();
             fileSystemService.GetDirectories(Arg.Any<string>()).Returns(Enumerable.Empty<string>());
-            var root = new RootContentDirectory(fileSystemService, rootPath);
+            var root = new RootContentDirectory(fileSystemService, pathService);
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
@@ -52,10 +54,10 @@
             var fileSystemService = new TestFileSystemService();
 
             // Root calls LoadChildDirectories when constructed.
-            var root = new RootContentDirectory(fileSystemService, fileSystemService.PathToProjectDirectory);
+            var root = new RootContentDirectory(fileSystemService, fileSystemService.TestPathService);
 
             using (new AssertionScope()) {
-                root.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[ProjectService.ContentDirectory].Count());
+                root.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[PathService.ContentDirectoryName].Count());
                 var count = root.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, root, child.Name));
                 count.Should().Be(fileSystemService.DirectoryToChildrenMap.Count - 2); // The content and project directory are not in the count, so - 2.
             }
