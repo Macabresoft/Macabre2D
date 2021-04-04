@@ -38,11 +38,18 @@
     /// </summary>
     public class AvaloniaGame : BaseGame, IAvaloniaGame {
         private StandardCursorType _cursorType = StandardCursorType.None;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
+        /// </summary>
+        public AvaloniaGame() : this(new AssetManager()) {
+        }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
-        public AvaloniaGame() : base() {
+        /// <param name="assetManager">The asset manager.</param>
+        protected AvaloniaGame(IAssetManager assetManager) : base(assetManager) {
             this.IsFixedTimeStep = false;
             BaseGame.IsDesignMode = true;
         }

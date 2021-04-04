@@ -60,13 +60,17 @@
     /// <summary>
     /// Maps content with identifiers. This should be the primary way that content is accessed.
     /// </summary>
-    [DataContract]
     public sealed class AssetManager : IAssetManager {
         private const string MonoGameNamespace = nameof(Microsoft) + "." + nameof(Microsoft.Xna) + "." + nameof(Microsoft.Xna.Framework);
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
         private ISerializer? _serializer;
 
+        /// <summary>
+        /// The default empty <see cref="IAssetManager" /> that is present before initialization.
+        /// </summary>
+        public static readonly IAssetManager Empty = new EmptyAssetManager();
+        
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
@@ -181,6 +185,37 @@
             }
 
             return !string.IsNullOrEmpty(contentPath);
+        }
+
+        private sealed class EmptyAssetManager : IAssetManager {
+            /// <inheritdoc />
+            public void Initialize(ContentManager contentManager, ISerializer serializer) {
+            }
+
+            /// <inheritdoc />
+            public void RegisterMetadata(ContentMetadata metadata) {
+            }
+
+            /// <inheritdoc />
+            public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class {
+                loaded = null;
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
+                loaded = null;
+                return false;
+            }
+
+            /// <inheritdoc />
+            public void Unload() {
+            }
         }
     }
 }

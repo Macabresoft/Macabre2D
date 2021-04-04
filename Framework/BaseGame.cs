@@ -43,10 +43,23 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseGame" /> class.
         /// </summary>
-        protected BaseGame() : base() {
+        /// <param name="assetManager">The asset manager.</param>
+        protected BaseGame(IAssetManager assetManager) : base() {
+            this.Assets = assetManager ?? throw new ArgumentNullException(nameof(assetManager));
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
+            this.Assets.Initialize(this.Content, Serializer.Instance);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseGame" /> class.
+        /// </summary>
+        protected BaseGame() : this(new AssetManager()) {
+
+        }
+
+        /// <inheritdoc />
+        public IAssetManager Assets { get; }
 
         /// <summary>
         /// Gets the components.
@@ -100,10 +113,6 @@
             protected set {
                 this._project = value;
                 this.ApplyGraphicsSettings();
-
-                if (this.Content != null) {
-                    this._project.Assets.Initialize(this.Content, Serializer.Instance);
-                }
             }
         }
 
@@ -136,7 +145,7 @@
 
         /// <inheritdoc />
         public void LoadScene(string sceneName) {
-            if (this.Project.Assets.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
+            if (this.Assets.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
             else {
@@ -189,18 +198,12 @@
         /// <inheritdoc />
         protected override void LoadContent() {
             base.LoadContent();
-            try {
-                var project = this.Content.Load<GameProject?>(GameProject.DefaultProjectName);
-                if (project != null) {
-                    this.Project = project;
-                }
-            }
-            catch (ContentLoadException) {
+            
+            if (this.Assets.TryLoadContent<GameProject>(GameProject.ProjectFileName, out var project) && project != null) {
+                this.Project = project;
             }
 
-            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
-
-            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+            if (this.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
 
@@ -269,6 +272,9 @@
 
             /// <inheritdoc />
             public event EventHandler<Point>? ViewportSizeChanged;
+
+            /// <inheritdoc />
+            public IAssetManager Assets => AssetManager.Empty;
 
             /// <inheritdoc />
             public ContentManager? Content => null;

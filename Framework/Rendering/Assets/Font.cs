@@ -24,6 +24,9 @@
         private TextureProcessorOutputFormat _textureFormat = TextureProcessorOutputFormat.Compressed;
         private bool _useKerning = true;
 
+        /// <inheritdoc />
+        public override bool IncludeFileExtensionInContentPath => false;
+        
         /// <summary>
         /// Gets or sets a value indicating whether or not to premultiply the alpha.
         /// </summary>

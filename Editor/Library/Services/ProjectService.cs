@@ -15,6 +15,11 @@
     /// </summary>
     public interface IProjectService : INotifyPropertyChanged {
         /// <summary>
+        /// Gets the assets.
+        /// </summary>
+        IAssetManager Assets { get; }
+
+        /// <summary>
         /// Gets the currently loaded project.
         /// </summary>
         IGameProject CurrentProject { get; }
@@ -94,6 +99,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
+        /// <param name="assetManager">The asset manager.</param>
         /// <param name="buildService">The build service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="loggingService">The logging service.</param>
@@ -102,6 +108,7 @@
         /// <param name="serializer">The serializer.</param>
         /// <param name="undoService">The undo service.</param>
         public ProjectService(
+            IAssetManager assetManager,
             IBuildService buildService,
             IFileSystemService fileSystem,
             ILoggingService loggingService,
@@ -109,6 +116,7 @@
             ISceneService sceneService,
             ISerializer serializer,
             IUndoService undoService) {
+            this.Assets = assetManager;
             this._buildService = buildService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
@@ -117,6 +125,9 @@
             this._serializer = serializer;
             this._undoService = undoService;
         }
+
+        /// <inheritdoc />
+        public IAssetManager Assets { get; }
 
         /// <inheritdoc />
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
@@ -188,13 +199,13 @@
             mgcbStringBuilder.AppendLine();
             mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
             mgcbStringBuilder.AppendLine();
-
-            foreach (var reference in RequiredReferences) {
-                mgcbStringBuilder.AppendLine($@"/reference:{reference}");
-            }
-
             mgcbStringBuilder.AppendLine();
             mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
+            mgcbStringBuilder.AppendLine();
+
+            mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
+            mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
+            mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
             mgcbStringBuilder.AppendLine();
 
             var contentFiles = this.RootContentDirectory.GetAllContentFiles();
@@ -234,7 +245,7 @@
                 var metadata = new ContentMetadata(asset, splitPath, extension);
                 this.SaveMetadata(metadata);
                 var contentFile = new ContentFile(parent, metadata);
-                this.CurrentProject.Assets.RegisterMetadata(contentFile.Metadata);
+                this.Assets.RegisterMetadata(contentFile.Metadata);
             }
         }
 
@@ -307,7 +318,7 @@
                 this._fileSystem.MoveFile(current, moveTo);
             }
             else {
-                this.CurrentProject.Assets.RegisterMetadata(metadata);
+                this.Assets.RegisterMetadata(metadata);
             }
         }
 

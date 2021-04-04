@@ -16,7 +16,7 @@
         }
 
         protected override void LoadContent() {
-            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
+            this.Assets.Initialize(this.Content, Serializer.Instance);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new GameScene();
@@ -27,7 +27,7 @@
             physicsService.TimeStep = 1f / 60f;
 
             var leagueMono = new Font();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
+            this.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
 
             var cameraEntity = scene.AddChild();
             cameraEntity.AddComponent<CameraComponent>();

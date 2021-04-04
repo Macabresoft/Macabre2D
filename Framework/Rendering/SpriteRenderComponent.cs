@@ -32,7 +32,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this.Entity.Scene.Game.Project.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+            this.Entity.Scene.Game.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
             this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
         }
 

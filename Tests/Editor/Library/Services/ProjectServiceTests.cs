@@ -103,6 +103,7 @@
 
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
+                Substitute.For<IAssetManager>(),
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
@@ -132,6 +133,7 @@
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
+                Substitute.For<IAssetManager>(),
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
@@ -212,6 +214,7 @@
             var serializer = Substitute.For<ISerializer>();
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
+                Substitute.For<IAssetManager>(),
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),
@@ -238,6 +241,7 @@
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var undoService = Substitute.For<IUndoService>();
             var projectService = new ProjectService(
+                Substitute.For<IAssetManager>(),
                 Substitute.For<IBuildService>(),
                 fileSystem,
                 Substitute.For<ILoggingService>(),

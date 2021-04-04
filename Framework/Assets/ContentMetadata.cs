@@ -40,7 +40,7 @@
         /// <param name="asset">The asses which manages this content.</param>
         /// <param name="splitContentPath">The split path to the content file without its extension.</param>
         /// <param name="contentFileExtension"></param>
-        public ContentMetadata(IAsset? asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
+        public ContentMetadata(IAsset asset, IEnumerable<string> splitContentPath, string contentFileExtension) {
             this.Asset = asset;
             this.ContentFileExtension = contentFileExtension;
             this._splitContentPath = splitContentPath?.ToList() ?? new List<string>();
@@ -50,7 +50,7 @@
         /// Gets the asset.
         /// </summary>
         [DataMember]
-        public IAsset? Asset { get; }
+        public IAsset Asset { get; }
 
         /// <summary>
         /// Gets the content file's extension, including the period.
@@ -66,7 +66,7 @@
         /// <summary>
         /// Gets the content's path.
         /// </summary>
-        public IReadOnlyCollection<string> SplitContentPath => this._splitContentPath;
+        public IReadOnlyCollection<string> SplitContentPath => this._splitContentPath; // TODO: this not having the file extension could be an issue. Maybe we stop this from being exposed?
 
         /// <summary>
         /// Gets the archive path from a given identifier.
@@ -78,11 +78,33 @@
         }
 
         /// <summary>
+        /// Gets the content build commands used by MGCB to compile this metadata and its associated asset and content.
+        /// </summary>
+        /// <returns>The content build commands.</returns>
+        public string GetContentBuildCommands() {
+            var contentStringBuilder = new StringBuilder();
+            var contentPath = this.GetContentPath();
+            var metadataPath = GetMetadataPath(this.ContentId);
+            contentStringBuilder.AppendLine($"#begin {metadataPath}");
+            contentStringBuilder.AppendLine($@"/copy:{metadataPath}");
+            contentStringBuilder.AppendLine($"#end {metadataPath}");
+            contentStringBuilder.AppendLine();
+            contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
+            return contentStringBuilder.ToString();
+        }
+
+        /// <summary>
         /// Gets the content path.
         /// </summary>
         /// <returns>The split content path.</returns>
         public string GetContentPath() {
-            return Path.Combine(this._splitContentPath.ToArray());
+            var contentPath = Path.Combine(this._splitContentPath.ToArray());
+
+            if (this.Asset.IncludeFileExtensionInContentPath && !string.IsNullOrWhiteSpace(this.ContentFileExtension)) {
+                contentPath += this.ContentFileExtension;
+            }
+
+            return contentPath;
         }
 
         /// <summary>
@@ -108,32 +130,6 @@
         /// <returns>The metadata path.</returns>
         public static string GetMetadataPath(Guid contentId) {
             return Path.Combine(MetadataDirectoryName, $"{contentId.ToString()}{FileExtension}");
-        }
-
-        /// <summary>
-        /// Gets the content build commands used by MGCB to compile this metadata and its associated asset and content.
-        /// </summary>
-        /// <returns>The content build commands.</returns>
-        public string GetContentBuildCommands() {
-            var contentStringBuilder = new StringBuilder();
-
-            if (this.Asset != null) {
-                var contentPath = this.GetContentPath();
-                var metadataPath = GetMetadataPath(this.ContentId);
-                contentStringBuilder.AppendLine($"# name --------- {this.GetFileName()}");
-                contentStringBuilder.AppendLine($"# content path - {contentPath}");
-                contentStringBuilder.AppendLine($"# content id --- {this.ContentId}");
-                contentStringBuilder.AppendLine($"#begin {metadataPath}");
-                contentStringBuilder.AppendLine($@"/importer:{nameof(MetadataImporter)}");
-                contentStringBuilder.AppendLine($@"/processor:{nameof(MetadataProcessor)}");
-                contentStringBuilder.AppendLine($@"/build:{metadataPath}");
-                contentStringBuilder.AppendLine($"#end {metadataPath}");
-                contentStringBuilder.AppendLine();
-                contentStringBuilder.AppendLine(this.Asset.GetContentBuildCommands(contentPath, this.ContentFileExtension));
-                contentStringBuilder.AppendLine($"# --------------");
-            }
-
-            return contentStringBuilder.ToString();
         }
 
         /// <summary>

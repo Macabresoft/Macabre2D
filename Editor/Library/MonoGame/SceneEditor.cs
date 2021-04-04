@@ -52,24 +52,21 @@
             IEditorService editorService,
             IProjectService projectService,
             ISelectionService selectionService,
-            IUndoService undoService) : base() {
+            IUndoService undoService) : base(projectService.Assets) {
             this._editorService = editorService;
             this._projectService = projectService;
             this._selectionService = selectionService;
             this._undoService = undoService;
-
             // TODO: this should be set to the compiled path.
             //this.Content.RootDirectory = this._projectService.GetProjectDirectoryPath();
         }
-
-
+        
         /// <inheritdoc />
         public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
 
         /// <inheritdoc />
         public ICameraComponent Camera { get; private set; }
-
-
+        
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
@@ -90,10 +87,8 @@
             if (this._projectService.CurrentProject != null) {
                 this.Project = this._projectService.CurrentProject;
             }
-
-            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
-
-            if (this.Project.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+            
+            if (this._projectService.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);
                 this._projectService.CurrentScene = scene;
             }

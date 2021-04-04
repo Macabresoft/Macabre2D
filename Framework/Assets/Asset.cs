@@ -2,6 +2,7 @@
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using System.Text;
 
     /// <summary>
     /// Interface for an object that is an asset.
@@ -12,6 +13,11 @@
         /// </summary>
         /// <value>The content identifier.</value>
         Guid ContentId { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not this should include the file extension in its content path.
+        /// </summary>
+        bool IncludeFileExtensionInContentPath { get; }
 
         /// <summary>
         /// Gets the name.
@@ -60,6 +66,9 @@
         }
 
         /// <inheritdoc />
+        public abstract bool IncludeFileExtensionInContentPath { get; }
+
+        /// <inheritdoc />
         public TContent? Content {
             get => this._content;
             protected set => this.Set(ref this._content, value);
@@ -86,7 +95,13 @@
         }
 
         /// <inheritdoc />
-        public abstract string GetContentBuildCommands(string contentPath, string fileExtension);
+        public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {
+            var contentStringBuilder = new StringBuilder();
+            contentStringBuilder.AppendLine($"#begin {contentPath}");
+            contentStringBuilder.AppendLine($@"/copy:{contentPath}");
+            contentStringBuilder.AppendLine($"#end {contentPath}");
+            return contentStringBuilder.ToString();
+        }
 
         /// <inheritdoc />
         public virtual void LoadContent(TContent content) {

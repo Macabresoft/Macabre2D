@@ -150,7 +150,7 @@
             this.Entity.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
             this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
 
-            this.Entity.Scene.Game.Project.Assets.ResolveAsset<Shader, Effect>(this._shaderReference);
+            this.Entity.Scene.Game.Assets.ResolveAsset<Shader, Effect>(this._shaderReference);
         }
 
         /// <inheritdoc />

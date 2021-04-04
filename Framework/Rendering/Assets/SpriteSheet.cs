@@ -32,6 +32,9 @@
 
         private Point _spriteSize;
 
+        /// <inheritdoc />
+        public override bool IncludeFileExtensionInContentPath => false;
+
         /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
         /// </summary>

@@ -9,6 +9,9 @@
     /// </summary>
     public sealed class AudioClip : Asset<SoundEffect> {
         /// <inheritdoc />
+        public override bool IncludeFileExtensionInContentPath => false;
+
+        /// <inheritdoc />
         public override string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");

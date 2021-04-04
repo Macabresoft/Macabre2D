@@ -16,7 +16,8 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterFrameworkTypes(this IUnityContainer container) {
-            return container.RegisterType<ISerializer, Serializer>(new SingletonLifetimeManager());
+            return container.RegisterType<IAssetManager, AssetManager>(new SingletonLifetimeManager())
+                .RegisterType<ISerializer, Serializer>(new SingletonLifetimeManager());
         }
 
         /// <summary>

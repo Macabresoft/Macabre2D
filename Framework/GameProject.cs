@@ -6,10 +6,6 @@
     /// Interface for a single project in the engine.
     /// </summary>
     public interface IGameProject {
-        /// <summary>
-        /// Gets the asset manager for this project.
-        /// </summary>
-        IAssetManager Assets { get; }
 
         /// <summary>
         /// Gets the name for this project.
@@ -50,12 +46,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="GameProject" /> class.
         /// </summary>
-        /// <param name="assets">The asset manager.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="name">The name.</param>
         /// <param name="startupSceneContentId">The identifier for the scene which should run on startup.</param>
-        public GameProject(IAssetManager assets, IGameSettings settings, string name, Guid startupSceneContentId) {
-            this.Assets = assets;
+        public GameProject(IGameSettings settings, string name, Guid startupSceneContentId) {
             this.Settings = settings;
             this.Name = name;
             this.StartupSceneContentId = startupSceneContentId;
@@ -64,14 +58,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="GameProject" /> class.
         /// </summary>
-        public GameProject() : this(new AssetManager(), new GameSettings(), DefaultProjectName, Guid.Empty) {
+        public GameProject() : this(new GameSettings(), DefaultProjectName, Guid.Empty) {
         }
-
-        /// <summary>
-        /// Gets the asset manager for this project.
-        /// </summary>
-        [DataMember]
-        public IAssetManager Assets { get; }
 
         /// <inheritdoc />
         [DataMember]

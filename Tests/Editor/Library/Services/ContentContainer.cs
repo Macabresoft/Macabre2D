@@ -35,7 +35,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             var projectFilePath = Path.Combine(this._pathService.ContentDirectoryPath, GameProject.ProjectFileName);
             this.FileSystem.DoesFileExist(projectFilePath).Returns(true);
 
-            var project = new GameProject(this.AssetManager, this.GameSettings, GameProject.DefaultProjectName, Guid.Empty);
+            var project = new GameProject(this.GameSettings, GameProject.DefaultProjectName, Guid.Empty);
             this.Serializer.Deserialize<GameProject>(projectFilePath).Returns(project);
 
             this.SetupExistingMetadata();
@@ -44,6 +44,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             this.FileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
             this.Instance = new ProjectService(
+                this.AssetManager,
                 Substitute.For<IBuildService>(),
                 this.FileSystem,
                 Substitute.For<ILoggingService>(),

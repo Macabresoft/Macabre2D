@@ -19,6 +19,11 @@
         event EventHandler<Point> ViewportSizeChanged;
 
         /// <summary>
+        /// Gets the assets.
+        /// </summary>
+        IAssetManager Assets { get; }
+
+        /// <summary>
         /// Gets the content manager.
         /// </summary>
         /// <value>The content manager.</value>

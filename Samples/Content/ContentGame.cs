@@ -8,7 +8,6 @@
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
         protected override void LoadContent() {
-            this.Project.Assets.Initialize(this.Content, Serializer.Instance);
             this.Project.Settings.PixelsPerUnit = 64;
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
@@ -26,7 +25,7 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new [] { "WhiteSquare" }, ".png"));
+            this.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new [] { "WhiteSquare" }, ".png"));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -53,14 +52,14 @@
             this.PreLoadAudioStuff(scene);
 
             var font = new Font();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(font, new[] { "League Mono" }, ".spritefont"));
+            this.Assets.RegisterMetadata(new ContentMetadata(font, new[] { "League Mono" }, ".spritefont"));
 
             var colorfulSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
 
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
+            this.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
 
             var animatedEntity = scene.AddChild();
             var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
@@ -188,7 +187,7 @@
 
         private void PreLoadAudioStuff(GameScene scene) {
             var laser = new AudioClip();
-            this.Project.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
+            this.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
 
             var audioEntity = scene.AddChild();
             var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();

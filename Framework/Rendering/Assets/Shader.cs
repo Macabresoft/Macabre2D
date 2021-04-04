@@ -8,6 +8,10 @@
     /// A shader that wraps around <see cref="Effect" />.
     /// </summary>
     public sealed class Shader : Asset<Effect> {
+        
+        /// <inheritdoc />
+        public override bool IncludeFileExtensionInContentPath => false;
+        
         /// <inheritdoc />
         public override string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
