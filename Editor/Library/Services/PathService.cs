@@ -8,32 +8,37 @@
     /// </summary>
     public interface IPathService {
         /// <summary>
-        /// Gets the content directory path.
+        /// Gets the path to the content directory.
         /// </summary>
         string ContentDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the editor's bin directory path.
+        /// Gets the path to the editor's bin directory.
         /// </summary>
         string EditorBinDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the metadata archive directory path.
+        /// Gets the path to the editor's compiled content directory.
+        /// </summary>
+        string EditorContentDirectoryPath { get; }
+
+        /// <summary>
+        /// Gets the path to the metadata archive directory.
         /// </summary>
         string MetadataArchiveDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the metadata directory path.
+        /// Gets the path to the metadata directory.
         /// </summary>
         string MetadataDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the project directory path.
+        /// Gets the path to the project directory.
         /// </summary>
         string ProjectDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the project file path.
+        /// Gets the path to the project file.
         /// </summary>
         string ProjectFilePath { get; }
     }
@@ -43,9 +48,19 @@
     /// </summary>
     public class PathService : IPathService {
         /// <summary>
+        /// The name of the bin directory.
+        /// </summary>
+        public const string BinDirectoryName = "bin";
+
+        /// <summary>
         /// The name of the content directory.
         /// </summary>
         public const string ContentDirectoryName = "Content";
+
+        /// <summary>
+        /// The name of the obj directory.
+        /// </summary>
+        public const string ObjDirectoryName = "obj";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PathService" /> class.
@@ -62,6 +77,7 @@
             this.EditorBinDirectoryPath = editorBinDirectoryPath;
             this.ProjectDirectoryPath = projectDirectoryPath;
             this.ContentDirectoryPath = Path.Combine(this.ProjectDirectoryPath, ContentDirectoryName);
+            this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, ContentDirectoryName);
             this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
             this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
             this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
@@ -77,6 +93,9 @@
 
         /// <inheritdoc />
         public string EditorBinDirectoryPath { get; }
+
+        /// <inheritdoc />
+        public string EditorContentDirectoryPath { get; }
 
         /// <inheritdoc />
         public string MetadataArchiveDirectoryPath { get; }

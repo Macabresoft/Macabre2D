@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Macabresoft.Macabre2D.Editor.Library.Services;
 
     /// <summary>
     /// Arguments for building content using MGCB.
@@ -54,9 +56,18 @@
         /// </summary>
         /// <returns>The console arguments.</returns>
         public string ToConsoleArguments() {
-            var arguments = this.ToGlobalProperties(this.ContentDirectoryPath);
+            return this.ToConsoleArguments(PathService.BinDirectoryName);
+        }
+
+        /// <summary>
+        /// Converts to console arguments used by MGCB.
+        /// </summary>
+        /// <param name="outputDirectoryPath">The path to the output directory.</param>
+        /// <returns>The console arguments.</returns>
+        public string ToConsoleArguments(string outputDirectoryPath) {
+            var arguments = this.ToGlobalProperties(outputDirectoryPath, this.ContentDirectoryPath);
             arguments.Add("/rebuild");
-            arguments.Add($"/@:\"{this.ContentFilePath}\"");
+            arguments.Add($"/@:{Path.GetFileName(this.ContentFilePath)}");
             return arguments.Aggregate((first, second) => $"{first} {second}");
         }
 
@@ -65,13 +76,21 @@
         /// </summary>
         /// <returns>The lines for the global properties section of an MGCB file.</returns>
         public IEnumerable<string> ToGlobalProperties() {
-            return this.ToGlobalProperties(this.ContentDirectoryPath);
+            return this.ToGlobalProperties(PathService.BinDirectoryName, this.ContentDirectoryPath);
+        }
+        
+        /// <summary>
+        /// Gets the lines for the global properties section of an MGCB file.
+        /// </summary>
+        /// <returns>The lines for the global properties section of an MGCB file.</returns>
+        public IEnumerable<string> ToGlobalProperties(string outputDirectory) {
+            return this.ToGlobalProperties(outputDirectory, this.ContentDirectoryPath);
         }
 
-        private IList<string> ToGlobalProperties(string projectDirectoryPath) {
+        private IList<string> ToGlobalProperties(string outputDirectory, string contentDirectoryPath) {
             return new List<string> {
-                $"/outputDir:\"{Path.Combine(projectDirectoryPath, "bin", this.Platform)}\"",
-                $"/intermediateDir:\"{Path.Combine(projectDirectoryPath, "obj", this.Platform)}\"",
+                $"/outputDir:{outputDirectory}",
+                $"/intermediateDir:{PathService.ObjDirectoryName}",
                 $"/platform:{this.Platform}",
                 "/config:",
                 "/profile:Reach",

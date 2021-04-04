@@ -13,14 +13,20 @@
         /// <param name="args">The arguments.</param>
         /// <returns>The exit code of the MGCB process.</returns>
         int BuildContent(BuildContentArguments args);
+
+        /// <summary>
+        /// Builds the content with an output directory in mind.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="outputDirectoryPath">The path to the output directory.</param>
+        /// <returns>The exit code of the MGCB process.</returns>
+        int BuildContent(BuildContentArguments args, string outputDirectoryPath);
     }
 
     /// <summary>
     /// Service which abstracts out building content and projects.
     /// </summary>
     public class BuildService : IBuildService {
-
-        
         private readonly IFileSystemService _fileSystem;
         private readonly IProcessService _processService;
 
@@ -36,6 +42,11 @@
 
         /// <inheritdoc />
         public int BuildContent(BuildContentArguments args) {
+            return this.BuildContent(args, null);
+        }
+
+        /// <inheritdoc />
+        public int BuildContent(BuildContentArguments args, string outputDirectoryPath) {
             var exitCode = -1;
             if (!string.IsNullOrWhiteSpace(args.ContentFilePath) && this._fileSystem.DoesFileExist(args.ContentFilePath)) {
                 var startInfo = new ProcessStartInfo {
@@ -43,7 +54,7 @@
                     UseShellExecute = true,
                     FileName = "mgcb",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = args.ToConsoleArguments(),
+                    Arguments = !string.IsNullOrEmpty(outputDirectoryPath) ? args.ToConsoleArguments(outputDirectoryPath) : args.ToConsoleArguments(),
                     WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
                 };
 

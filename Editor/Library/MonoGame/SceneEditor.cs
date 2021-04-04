@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
@@ -45,11 +45,13 @@
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
+        /// <param name="pathService">The path service.</param>
         /// <param name="projectService">The project service.</param>
         /// <param name="selectionService">The selection service</param>
         /// <param name="undoService">The undo service.</param>
         public SceneEditor(
             IEditorService editorService,
+            IPathService pathService,
             IProjectService projectService,
             ISelectionService selectionService,
             IUndoService undoService) : base(projectService.Assets) {
@@ -57,16 +59,16 @@
             this._projectService = projectService;
             this._selectionService = selectionService;
             this._undoService = undoService;
-            // TODO: this should be set to the compiled path.
-            //this.Content.RootDirectory = this._projectService.GetProjectDirectoryPath();
+
+            this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
         }
-        
+
         /// <inheritdoc />
         public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
 
         /// <inheritdoc />
         public ICameraComponent Camera { get; private set; }
-        
+
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
@@ -79,22 +81,6 @@
                 }
             }
         }
-        
-        /// <inheritdoc />
-        protected override void LoadContent() {
-            base.LoadContent();
-            
-            if (this._projectService.CurrentProject != null) {
-                this.Project = this._projectService.CurrentProject;
-            }
-            
-            if (this._projectService.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
-                this.LoadScene(scene);
-                this._projectService.CurrentScene = scene;
-            }
-
-            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
-        }
 
         /// <inheritdoc />
         protected override void Initialize() {
@@ -106,13 +92,27 @@
                     if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
                         this._projectService.CurrentScene.Initialize(this);
                     }
-                    
+
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
                 }
                 finally {
                     this._isInitialized = true;
                 }
             }
+        }
+
+        /// <inheritdoc />
+        protected override void LoadContent() {
+            if (this._projectService.CurrentProject != null) {
+                this.Project = this._projectService.CurrentProject;
+            }
+
+            if (this._projectService.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+                this._projectService.CurrentScene = scene;
+                this._projectService.CurrentScene.Initialize(this);
+            }
+
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
         }
 
         private IGameScene CreateScene() {
@@ -146,7 +146,8 @@
                     if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
                         this._projectService.CurrentScene.Initialize(this);
                     }
-                } else if (e.PropertyName == nameof(IProjectService.CurrentProject)) {
+                }
+                else if (e.PropertyName == nameof(IProjectService.CurrentProject)) {
                     this.Project = this._projectService.CurrentProject;
                 }
             }

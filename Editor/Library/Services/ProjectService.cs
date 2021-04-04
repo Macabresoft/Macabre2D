@@ -189,10 +189,12 @@
                 "DesktopGL",
                 true);
 
+            var outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
+
             mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
             mgcbStringBuilder.AppendLine();
 
-            foreach (var argument in buildArgs.ToGlobalProperties()) {
+            foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
                 mgcbStringBuilder.AppendLine(argument);
             }
 
@@ -220,7 +222,8 @@
             // TODO: handle different build configurations
             var desktopGLFilePath = Path.Combine(this._pathService.ContentDirectoryPath, "Content.DesktopGL.mgcb");
             this._fileSystem.WriteAllText(desktopGLFilePath, mgcbText);
-            this._buildService.BuildContent(buildArgs);
+
+            this._buildService.BuildContent(buildArgs, outputDirectoryPath);
         }
 
         private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {

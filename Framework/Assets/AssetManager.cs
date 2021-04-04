@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
 
@@ -62,15 +61,16 @@
     /// </summary>
     public sealed class AssetManager : IAssetManager {
         private const string MonoGameNamespace = nameof(Microsoft) + "." + nameof(Microsoft.Xna) + "." + nameof(Microsoft.Xna.Framework);
-        private readonly HashSet<ContentMetadata> _loadedMetadata = new();
-        private ContentManager? _contentManager;
-        private ISerializer? _serializer;
 
         /// <summary>
         /// The default empty <see cref="IAssetManager" /> that is present before initialization.
         /// </summary>
         public static readonly IAssetManager Empty = new EmptyAssetManager();
-        
+
+        private readonly HashSet<ContentMetadata> _loadedMetadata = new();
+        private ContentManager? _contentManager;
+        private ISerializer? _serializer;
+
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
             this._contentManager = contentManager ?? throw new ArgumentNullException(nameof(contentManager));
@@ -112,12 +112,12 @@
                         var fileStream = TitleContainer.OpenStream(Path.Combine(this._contentManager.RootDirectory, contentPath));
                         loaded = this._serializer.Deserialize<T>(fileStream);
                     }
-                    catch(FileNotFoundException) {
+                    catch (FileNotFoundException) {
                         // TODO: log this
                     }
                 }
             }
-            
+
             return loaded != null;
         }
 
@@ -154,7 +154,7 @@
 
 
         private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
-            if (asset is IAsset<TContent> {Content: null} contentAsset &&
+            if (asset is IAsset<TContent> { Content: null } contentAsset &&
                 this.TryLoadContent<TContent>(asset.ContentId, out var content) &&
                 content != null) {
                 contentAsset.LoadContent(content);

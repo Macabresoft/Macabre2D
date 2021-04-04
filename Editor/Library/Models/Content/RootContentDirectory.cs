@@ -10,7 +10,9 @@
     public sealed class RootContentDirectory : ContentDirectory {
         private static readonly string[] UnusedContentDirectories = {
             ContentMetadata.ArchiveDirectoryName,
-            ContentMetadata.MetadataDirectoryName
+            ContentMetadata.MetadataDirectoryName,
+            PathService.BinDirectoryName,
+            PathService.ObjDirectoryName
         };
 
         private readonly IPathService _pathService;
