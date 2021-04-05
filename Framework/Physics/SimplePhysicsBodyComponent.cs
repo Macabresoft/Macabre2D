@@ -15,7 +15,7 @@
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
-                return this.Collider != null ? this.Collider.BoundingArea : new BoundingArea();
+                return Collider?.BoundingArea ?? new BoundingArea();
             }
         }
 

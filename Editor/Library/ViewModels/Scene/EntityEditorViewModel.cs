@@ -47,11 +47,11 @@
             this._undoService = undoService;
             this._valueEditorService = valueEditorService;
             this.SelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
-            
+
             this._addComponentCommand = ReactiveCommand.CreateFromTask<Type>(
-                async x => await this.AddComponent(x), 
+                async x => await this.AddComponent(x),
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
-            
+
             this._removeComponentCommand = ReactiveCommand.Create<IGameComponent, Unit>(
                 this.RemoveComponent,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
@@ -83,18 +83,28 @@
 
                 if (type != null) {
                     if (Activator.CreateInstance(type) is IGameComponent component) {
+                        var previouslySelectedComponent = this.SelectionService.SelectedComponent;
                         this._undoService.Do(() => {
                             Dispatcher.UIThread.Post(() => {
-                                var valueEditorCollection = this._valueEditorService.GetComponentEditor(component, this._removeComponentCommand);
                                 entity.AddComponent(component);
-                                this._componentEditors.Add(valueEditorCollection);
-                            });
+                                var valueEditorCollection = this._valueEditorService.GetComponentEditor(component, this._removeComponentCommand);
 
+                                lock (this._editorsLock) {
+                                    this._componentEditors.Add(valueEditorCollection);
+                                }
+
+                                this.SelectionService.SelectedComponent = component;
+                            });
                         }, () => {
                             Dispatcher.UIThread.Post(() => {
-                                var valueEditorCollection = this._componentEditors.FirstOrDefault(x => x.Owner == component);
                                 entity.RemoveComponent(component);
-                                this._componentEditors.Remove(valueEditorCollection);
+
+                                lock (this._editorsLock) {
+                                    var valueEditorCollection = this._componentEditors.FirstOrDefault(x => x.Owner == component);
+                                    this._componentEditors.Remove(valueEditorCollection);
+                                }
+
+                                this.SelectionService.SelectedComponent = previouslySelectedComponent;
                             });
                         });
                     }
