@@ -22,7 +22,7 @@ You must install the MGCB dotnet tool to run the editor. Full instructions can b
 The full source code is available here from GitHub:
 
 * Clone the source: `git clone git@github.com:Macabresoft/Macabre2D.git`
-* Pull down LFS objects: `git lfs pull` and `git lfs fetch --all`
+* Pull down LFS objects: `git lfs fetch --all`
 * Restore NuGet packages for Macabre2D.sln.
 
 ## Using Fonts
