@@ -19,6 +19,7 @@
         private readonly ObservableCollectionExtended<ValueEditorCollection> _componentEditors = new();
         private readonly IDialogService _dialogService;
         private readonly object _editorsLock = new();
+        private readonly IProjectService _projectService;
         private readonly ReactiveCommand<IGameComponent, Unit> _removeComponentCommand;
         private readonly IUndoService _undoService;
         private readonly IValueEditorService _valueEditorService;
@@ -33,16 +34,19 @@
         /// Initializes a new instance of the <see cref="EntityEditorViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         /// <param name="valueEditorService">The value editor service.</param>
         [InjectionConstructor]
         public EntityEditorViewModel(
             IDialogService dialogService,
+            IProjectService projectService,
             ISelectionService selectionService,
             IUndoService undoService,
             IValueEditorService valueEditorService) {
             this._dialogService = dialogService;
+            this._projectService = projectService;
             this.SelectionService = selectionService;
             this._undoService = undoService;
             this._valueEditorService = valueEditorService;
@@ -83,6 +87,7 @@
 
                 if (type != null) {
                     if (Activator.CreateInstance(type) is IGameComponent component) {
+                        var originalHasChanges = this._projectService.HasChanges;
                         var previouslySelectedComponent = this.SelectionService.SelectedComponent;
                         this._undoService.Do(() => {
                             Dispatcher.UIThread.Post(() => {
@@ -94,6 +99,7 @@
                                 }
 
                                 this.SelectionService.SelectedComponent = component;
+                                this._projectService.HasChanges = true;
                             });
                         }, () => {
                             Dispatcher.UIThread.Post(() => {
@@ -105,6 +111,7 @@
                                 }
 
                                 this.SelectionService.SelectedComponent = previouslySelectedComponent;
+                                this._projectService.HasChanges = originalHasChanges;
                             });
                         });
                     }
@@ -118,12 +125,15 @@
                 var newValue = e.UpdatedValue;
 
                 if (originalValue != newValue) {
+                    var originalHasChanges = this._projectService.HasChanges;
                     this._undoService.Do(() => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
                         valueEditor.SetValue(newValue);
+                        this._projectService.HasChanges = true;
                     }, () => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                         valueEditor.SetValue(originalValue);
+                        this._projectService.HasChanges = false;
                     });
                 }
             }
@@ -136,6 +146,7 @@
                     var selectComponent = false;
                     var valueEditorCollection = this._componentEditors.FirstOrDefault(x => x.Owner == component);
                     var index = this._componentEditors.IndexOf(valueEditorCollection);
+                    var originalHasChanges = this._projectService.HasChanges;
                     this._undoService.Do(() => {
                         Dispatcher.UIThread.Post(() => {
                             entity.RemoveComponent(component);
@@ -145,6 +156,8 @@
                                 this.SelectionService.SelectedComponent = null;
                                 selectComponent = true;
                             }
+
+                            this._projectService.HasChanges = true;
                         });
                     }, () => {
                         Dispatcher.UIThread.Post(() => {
@@ -161,6 +174,8 @@
                             if (selectComponent) {
                                 this.SelectionService.SelectedComponent = component;
                             }
+
+                            this._projectService.HasChanges = originalHasChanges;
                         });
                     });
                 }

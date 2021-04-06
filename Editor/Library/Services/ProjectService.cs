@@ -67,11 +67,6 @@
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
-        private static readonly string[] RequiredReferences = {
-            "Newtonsoft.Json.dll",
-            "Macabre2D.Framework.dll"
-        };
-
         private readonly IBuildService _buildService;
         private readonly IFileSystemService _fileSystem;
         private readonly ILoggingService _loggingService;
@@ -244,11 +239,13 @@
                 var parentPath = parent.GetContentPath();
                 var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
                 splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
-                var asset = Activator.CreateInstance(assetType) as IAsset;
-                var metadata = new ContentMetadata(asset, splitPath, extension);
-                this.SaveMetadata(metadata);
-                var contentFile = new ContentFile(parent, metadata);
-                this.Assets.RegisterMetadata(contentFile.Metadata);
+
+                if (Activator.CreateInstance(assetType) is IAsset asset) {
+                    var metadata = new ContentMetadata(asset, splitPath, extension);
+                    this.SaveMetadata(metadata);
+                    var contentFile = new ContentFile(parent, metadata);
+                    this.Assets.RegisterMetadata(contentFile.Metadata);
+                }
             }
         }
 

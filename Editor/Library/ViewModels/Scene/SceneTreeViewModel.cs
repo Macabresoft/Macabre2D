@@ -74,12 +74,15 @@
                 Name = "Unnamed Entity"
             };
 
+            var originalHasChanges = this._projectService.HasChanges;
             this._undoService.Do(() => {
                 parent.AddChild(child);
                 this.SelectionService.SelectedEntity = child;
+                this._projectService.HasChanges = true;
             }, () => {
                 parent.RemoveChild(child);
                 this.SelectionService.SelectedEntity = parent;
+                this._projectService.HasChanges = originalHasChanges;
             });
 
             return Unit.Default;
@@ -87,12 +90,15 @@
 
         private Unit RemoveEntity(IGameEntity entity) {
             var parent = entity.Parent;
+            var originalHasChanges = this._projectService.HasChanges;
             this._undoService.Do(() => {
                 parent.RemoveChild(entity);
                 this.SelectionService.SelectedEntity = null;
+                this._projectService.HasChanges = true;
             }, () => {
                 parent.AddChild(entity);
                 this.SelectionService.SelectedEntity = entity;
+                this._projectService.HasChanges = originalHasChanges;
             });
 
             return Unit.Default;
