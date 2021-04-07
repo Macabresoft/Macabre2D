@@ -15,7 +15,7 @@
     public class SceneTreeViewModel : ViewModelBase {
         private readonly ReactiveCommand<IGameEntity, Unit> _addEntityCommand;
         private readonly ReactiveCommand<IGameEntity, Unit> _removeEntityCommand;
-        private readonly IProjectService _projectService;
+        private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IGameEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
 
@@ -29,16 +29,16 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
-        /// <param name="projectService">The scene service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(IProjectService projectService, ISelectionService selectionService, IUndoService undoService) {
-            this._projectService = projectService;
+        public SceneTreeViewModel(ISceneService sceneService, ISelectionService selectionService, IUndoService undoService) {
+            this._sceneService = sceneService;
             this.SelectionService = selectionService;
             this._undoService = undoService;
             this.ResetRoot();
-            this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+            this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
             this._addEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
                 this.AddEntity,
@@ -74,15 +74,15 @@
                 Name = "Unnamed Entity"
             };
 
-            var originalHasChanges = this._projectService.HasChanges;
+            var originalHasChanges = this._sceneService.HasChanges;
             this._undoService.Do(() => {
                 parent.AddChild(child);
                 this.SelectionService.SelectedEntity = child;
-                this._projectService.HasChanges = true;
+                this._sceneService.HasChanges = true;
             }, () => {
                 parent.RemoveChild(child);
                 this.SelectionService.SelectedEntity = parent;
-                this._projectService.HasChanges = originalHasChanges;
+                this._sceneService.HasChanges = originalHasChanges;
             });
 
             return Unit.Default;
@@ -90,15 +90,15 @@
 
         private Unit RemoveEntity(IGameEntity entity) {
             var parent = entity.Parent;
-            var originalHasChanges = this._projectService.HasChanges;
+            var originalHasChanges = this._sceneService.HasChanges;
             this._undoService.Do(() => {
                 parent.RemoveChild(entity);
                 this.SelectionService.SelectedEntity = null;
-                this._projectService.HasChanges = true;
+                this._sceneService.HasChanges = true;
             }, () => {
                 parent.AddChild(entity);
                 this.SelectionService.SelectedEntity = entity;
-                this._projectService.HasChanges = originalHasChanges;
+                this._sceneService.HasChanges = originalHasChanges;
             });
 
             return Unit.Default;
@@ -107,13 +107,13 @@
         private void ResetRoot() {
             this._treeRoot.Clear();
 
-            if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                this._treeRoot.Add(this._projectService.CurrentScene);
+            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                this._treeRoot.Add(this._sceneService.CurrentScene);
             }
         }
 
-        private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IProjectService.CurrentScene)) {
+        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ISceneService.CurrentScene)) {
                 this.ResetRoot();
             }
         }

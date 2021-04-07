@@ -38,25 +38,31 @@
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly IProjectService _projectService;
         private readonly ISelectionService _selectionService;
+        private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditor" /> class.
         /// </summary>
+        /// <param name="assetManager">The asset manager.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="projectService">The project service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service</param>
         /// <param name="undoService">The undo service.</param>
         public SceneEditor(
+            IAssetManager assetManager,
             IEditorService editorService,
             IPathService pathService,
             IProjectService projectService,
+            ISceneService sceneService,
             ISelectionService selectionService,
-            IUndoService undoService) : base(projectService.Assets) {
+            IUndoService undoService) : base(assetManager) {
             this._editorService = editorService;
             this._projectService = projectService;
+            this._sceneService = sceneService;
             this._selectionService = selectionService;
             this._undoService = undoService;
 
@@ -72,8 +78,8 @@
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
-                if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                    this.GraphicsDevice.Clear(this._projectService.CurrentScene.BackgroundColor);
+                if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                    this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
                 else {
@@ -89,11 +95,12 @@
                     this.LoadScene(this.CreateScene());
                     base.Initialize();
 
-                    if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                        this._projectService.CurrentScene.Initialize(this);
+                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                        this._sceneService.CurrentScene.Initialize(this);
                     }
 
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+                    this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
                 }
                 finally {
                     this._isInitialized = true;
@@ -107,9 +114,9 @@
                 this.Project = this._projectService.CurrentProject;
             }
 
-            if (this._projectService.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
-                this._projectService.CurrentScene = scene;
-                this._projectService.CurrentScene.Initialize(this);
+            if (this.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+                this._sceneService.CurrentScene = scene;
+                this._sceneService.CurrentScene.Initialize(this);
             }
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
@@ -117,13 +124,13 @@
 
         private IGameScene CreateScene() {
             var scene = new GameScene();
-            scene.AddSystem(new EditorRenderSystem(this._projectService));
+            scene.AddSystem(new EditorRenderSystem(this._sceneService));
             var cameraEntity = scene.AddChild();
             this.Camera = cameraEntity.AddComponent<CameraComponent>();
             cameraEntity.AddComponent<CameraControlComponent>();
-            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._projectService));
+            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
             cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
-            var selectorGizmo = new SelectorComponent(this._projectService, this._selectionService);
+            var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
             cameraEntity.AddComponent(selectorGizmo);
 
             var translationGizmoEntity = cameraEntity.AddChild();
@@ -141,16 +148,17 @@
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (this.IsInitialized) {
-                if (e.PropertyName == nameof(IProjectService.CurrentScene)) {
-                    if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene)) {
-                        this._projectService.CurrentScene.Initialize(this);
-                    }
-                }
-                else if (e.PropertyName == nameof(IProjectService.CurrentProject)) {
+            if (this.IsInitialized && e.PropertyName == nameof(IProjectService.CurrentProject)) {
                     this.Project = this._projectService.CurrentProject;
-                }
             }
+        }
+        
+        private void SceneService_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (this.IsInitialized &&
+                e.PropertyName == nameof(ISceneService.CurrentScene) && 
+                !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                    this._sceneService.CurrentScene.Initialize(this);
+            }        
         }
     }
 }

@@ -11,17 +11,17 @@
     /// </summary>
     internal sealed class EditorGridComponent : BaseDrawerComponent {
         private readonly IEditorService _editorService;
-        private readonly IProjectService _projectService;
+        private readonly ISceneService _sceneService;
         private CameraComponent _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorGridComponent" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        /// <param name="projectService">The project service.</param>
-        public EditorGridComponent(IEditorService editorService, IProjectService projectService) {
+        /// <param name="sceneService">The scene service.</param>
+        public EditorGridComponent(IEditorService editorService, ISceneService sceneService) {
             this._editorService = editorService;
-            this._projectService = projectService;
+            this._sceneService = sceneService;
         }
 
         /// <inheritdoc />
@@ -52,7 +52,7 @@
 
             if (this.Entity.Scene.Game.SpriteBatch is { } spriteBatch) {
                 if (this._editorService.MajorGridSize > 0) {
-                    if (!GameScene.IsNullOrEmpty(this._projectService.CurrentScene) && this.Color != this._projectService.CurrentScene.BackgroundColor) {
+                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
                         this.ResetColor();
                     }
 
@@ -151,8 +151,8 @@
         }
 
         private void ResetColor() {
-            this.Color = !GameScene.IsNullOrEmpty(this._projectService.CurrentScene) ? 
-                this._projectService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : 
+            this.Color = !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) ? 
+                this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : 
                 this.Entity.Scene.BackgroundColor.GetContrastingBlackOrWhite();
         }
     }

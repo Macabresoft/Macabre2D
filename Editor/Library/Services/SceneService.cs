@@ -11,6 +11,17 @@
     /// </summary>
     public interface ISceneService : INotifyPropertyChanged {
         /// <summary>
+        /// Gets or sets the current scene.
+        /// </summary>
+        /// <value>The current scene.</value>
+        public IGameScene CurrentScene { get; set; }
+        
+        /// <summary>
+        /// Gets or sets a value which indicates whether or not the scene has changes which require saving.
+        /// </summary>
+        bool HasChanges { get; set; }
+        
+        /// <summary>
         /// Creates the new scene and serializes it.
         /// </summary>
         /// <param name="contentDirectoryPath">The full path to the content directory.</param>
@@ -25,6 +36,8 @@
     public sealed class SceneService : ReactiveObject, ISceneService {
         private readonly IFileSystemService _fileSystem;
         private readonly ISerializer _serializer;
+        private IGameScene _currentScene;
+        private bool _hasChanges;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneService" /> class.
@@ -34,6 +47,18 @@
         public SceneService(IFileSystemService fileSystem, ISerializer serializer) {
             this._fileSystem = fileSystem;
             this._serializer = serializer;
+        }
+        
+        /// <inheritdoc />
+        public IGameScene CurrentScene {
+            get => this._currentScene;
+            set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
+        }
+        
+        /// <inheritdoc />
+        public bool HasChanges {
+            get => this._hasChanges;
+            set => this.RaiseAndSetIfChanged(ref this._hasChanges, value);
         }
 
         /// <inheritdoc />

@@ -127,22 +127,23 @@
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                var entity = this.SelectionService.SelectedEntity;
-                if (inputState.IsButtonHeld(MouseButton.Left)) {
-                    var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
-                    this.UpdatePosition(entity, newPosition);
-                    this.ResetEndPoints();
-                    result = true;
-                }
-                else {
-                    this.CurrentAxis = GizmoAxis.None;
-                    this.SetCursor(StandardCursorType.None);
+                if (this.SelectionService.SelectedEntity is IGameEntity entity) {
+                    if (inputState.IsButtonHeld(MouseButton.Left)) {
+                        var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
+                        this.UpdatePosition(entity, newPosition);
+                        this.ResetEndPoints();
+                        result = true;
+                    }
+                    else {
+                        this.CurrentAxis = GizmoAxis.None;
+                        this.SetCursor(StandardCursorType.None);
 
-                    var position = entity.Transform.Position;
-                    var unmovedPosition = this._unmovedPosition;
-                    this._undoService.Do(
-                        () => this.UpdatePosition(entity, position),
-                        () => this.UpdatePosition(entity, unmovedPosition));
+                        var position = entity.Transform.Position;
+                        var unmovedPosition = this._unmovedPosition;
+                        this._undoService.Do(
+                            () => this.UpdatePosition(entity, position),
+                            () => this.UpdatePosition(entity, unmovedPosition));
+                    }
                 }
             }
             else {

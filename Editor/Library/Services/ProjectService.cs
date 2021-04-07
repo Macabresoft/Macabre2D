@@ -14,10 +14,6 @@
     /// Interface for a service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public interface IProjectService : INotifyPropertyChanged {
-        /// <summary>
-        /// Gets the assets.
-        /// </summary>
-        IAssetManager Assets { get; }
 
         /// <summary>
         /// Gets the currently loaded project.
@@ -28,12 +24,6 @@
         /// Gets the root content directory.
         /// </summary>
         IContentDirectory RootContentDirectory { get; }
-
-        /// <summary>
-        /// Gets or sets the current scene.
-        /// </summary>
-        /// <value>The current scene.</value>
-        public IGameScene CurrentScene { get; set; }
 
         /// <summary>
         /// Gets or sets a value which indicates whether or not the project has changes which require saving.
@@ -67,6 +57,7 @@
 
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
+        private readonly IAssetManager _assetManager;
         private readonly IBuildService _buildService;
         private readonly IFileSystemService _fileSystem;
         private readonly ILoggingService _loggingService;
@@ -76,7 +67,6 @@
 
         private readonly IUndoService _undoService;
         private IGameProject _currentProject;
-        private IGameScene _currentScene;
         private bool _hasChanges;
         private RootContentDirectory _rootContentDirectory;
 
@@ -111,7 +101,7 @@
             ISceneService sceneService,
             ISerializer serializer,
             IUndoService undoService) {
-            this.Assets = assetManager;
+            this._assetManager = assetManager;
             this._buildService = buildService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
@@ -122,21 +112,12 @@
         }
 
         /// <inheritdoc />
-        public IAssetManager Assets { get; }
-
-        /// <inheritdoc />
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
         /// <inheritdoc />
         public IGameProject CurrentProject {
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
-        }
-
-        /// <inheritdoc />
-        public IGameScene CurrentScene {
-            get => this._currentScene;
-            set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
         }
 
         /// <inheritdoc />
@@ -244,7 +225,7 @@
                     var metadata = new ContentMetadata(asset, splitPath, extension);
                     this.SaveMetadata(metadata);
                     var contentFile = new ContentFile(parent, metadata);
-                    this.Assets.RegisterMetadata(contentFile.Metadata);
+                    this._assetManager.RegisterMetadata(contentFile.Metadata);
                 }
             }
         }
@@ -318,7 +299,7 @@
                 this._fileSystem.MoveFile(current, moveTo);
             }
             else {
-                this.Assets.RegisterMetadata(metadata);
+                this._assetManager.RegisterMetadata(metadata);
             }
         }
 
