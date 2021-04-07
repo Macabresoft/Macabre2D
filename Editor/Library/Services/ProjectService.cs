@@ -14,11 +14,10 @@
     /// Interface for a service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public interface IProjectService : INotifyPropertyChanged {
-
         /// <summary>
         /// Gets the currently loaded project.
         /// </summary>
-        IGameProject CurrentProject { get; }
+        GameProject CurrentProject { get; }
 
         /// <summary>
         /// Gets the root content directory.
@@ -34,7 +33,7 @@
         /// Loads the project.
         /// </summary>
         /// <returns>The loaded project.</returns>
-        IGameProject LoadProject();
+        GameProject LoadProject();
 
         /// <summary>
         /// Moves the content to a new folder.
@@ -66,7 +65,7 @@
         private readonly ISerializer _serializer;
 
         private readonly IUndoService _undoService;
-        private IGameProject _currentProject;
+        private GameProject _currentProject;
         private bool _hasChanges;
         private RootContentDirectory _rootContentDirectory;
 
@@ -115,7 +114,7 @@
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
         /// <inheritdoc />
-        public IGameProject CurrentProject {
+        public GameProject CurrentProject {
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
         }
@@ -127,23 +126,29 @@
         }
 
         /// <inheritdoc />
-        public IGameProject LoadProject() {
-            if (!this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath)) {
+        public GameProject LoadProject() {
+            var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
+            if (!projectExists) {
                 this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
                 this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
                 this._fileSystem.CreateDirectory(this._pathService.MetadataDirectoryPath);
 
-                var project = new GameProject();
-                var sceneAsset = this._sceneService.CreateNewScene(this._pathService.ContentDirectoryPath, "Default Scene");
-                project.StartupSceneContentId = sceneAsset.ContentId;
+                var project = new GameProject {
+                    StartupSceneContentId = this.CreateInitialScene()
+                };
+
                 this.SaveProjectFile(project, this._pathService.ProjectFilePath);
             }
 
             this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
             this.LoadContent();
+
+            if (projectExists && !this._sceneService.TryLoadScene(this.CurrentProject.StartupSceneContentId, out var sceneAsset) && sceneAsset != null) {
+                this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+            }
+
             return this.CurrentProject;
         }
-
 
         /// <inheritdoc />
         public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
@@ -228,6 +233,11 @@
                     this._assetManager.RegisterMetadata(contentFile.Metadata);
                 }
             }
+        }
+
+        private Guid CreateInitialScene() {
+            var newSceneAsset = this._sceneService.CreateNewScene(this._pathService.ContentDirectoryPath, "Default Scene");
+            return newSceneAsset.ContentId;
         }
 
         private IEnumerable<ContentMetadata> GetMetadata() {

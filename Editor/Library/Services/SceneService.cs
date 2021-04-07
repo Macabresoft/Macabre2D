@@ -28,6 +28,14 @@
         /// <param name="contentPath">The content path of the new scene.</param>
         /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
         SceneAsset CreateNewScene(string contentDirectoryPath, string contentPath);
+
+        /// <summary>
+        /// Tries to load a scene.
+        /// </summary>
+        /// <param name="contentId">The content identifier of the scene.</param>
+        /// <param name="sceneAsset">The scene asset.</param>
+        /// <returns>A value indicating whether or not the scene was loaded.</returns>
+        bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset);
     }
 
     /// <summary>
@@ -35,6 +43,7 @@
     /// </summary>
     public sealed class SceneService : ReactiveObject, ISceneService {
         private readonly IFileSystemService _fileSystem;
+        private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
         private IGameScene _currentScene;
         private bool _hasChanges;
@@ -43,9 +52,14 @@
         /// Initializes a new instance of the <see cref="SceneService" /> class.
         /// </summary>
         /// <param name="fileSystem">The file system service.</param>
+        /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
-        public SceneService(IFileSystemService fileSystem, ISerializer serializer) {
+        public SceneService(
+            IFileSystemService fileSystem,
+            IPathService pathService,
+            ISerializer serializer) {
             this._fileSystem = fileSystem;
+            this._pathService = pathService;
             this._serializer = serializer;
         }
         
@@ -96,8 +110,31 @@
             this._serializer.Serialize(metadata, metadataPath);
 
             // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
-
+            this.CurrentScene = scene;
             return sceneAsset;
+        }
+
+        /// <inheritdoc />
+        public bool TryLoadScene(Guid contentId, out SceneAsset sceneAsset) {
+            if (contentId == Guid.Empty) {
+                sceneAsset = null;
+            }
+            else {
+                var metadataFilePath = this._pathService.GetMetadataFilePath(contentId);
+                if (this._fileSystem.DoesFileExist(metadataFilePath)) {
+                    var metadata = this._serializer.Deserialize<ContentMetadata>(metadataFilePath);
+                    sceneAsset = metadata?.Asset as SceneAsset;
+
+                    if (sceneAsset != null) {
+                            // TODO: load content
+                    }
+                }
+                else {
+                    sceneAsset = null;
+                }
+            }
+
+            return sceneAsset != null;
         }
     }
 }

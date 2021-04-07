@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+    using System;
     using System.IO;
     using System.Reflection;
     using Macabresoft.Macabre2D.Framework;
@@ -41,6 +42,13 @@
         /// Gets the path to the project file.
         /// </summary>
         string ProjectFilePath { get; }
+
+        /// <summary>
+        /// Gets the path to a metadata file with the specified content identifier.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns>The path to the metadata file.</returns>
+        string GetMetadataFilePath(Guid contentId);
     }
 
     /// <summary>
@@ -108,5 +116,9 @@
 
         /// <inheritdoc />
         public string ProjectFilePath { get; }
+
+        public string GetMetadataFilePath(Guid contentId) {
+            return Path.Combine(this.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
+        }
     }
 }

@@ -114,8 +114,7 @@
                 this.Project = this._projectService.CurrentProject;
             }
 
-            if (this.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
-                this._sceneService.CurrentScene = scene;
+            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this._sceneService.CurrentScene.Initialize(this);
             }
 

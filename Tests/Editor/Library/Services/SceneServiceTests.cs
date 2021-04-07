@@ -14,6 +14,7 @@
         [Category("Unit Tests")]
         public void CreateNewScene_ShouldCreateScene_WhenDirectoryExists() {
             var fileSystem = Substitute.For<IFileSystemService>();
+            var pathService = Substitute.For<IPathService>();
             var serializer = Substitute.For<ISerializer>();
             var sceneName = Guid.NewGuid().ToString();
             var directoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
@@ -21,7 +22,7 @@
             fileSystem.DoesDirectoryExist(directoryPath).Returns(true);
             fileSystem.DoesFileExist(filePath).Returns(false);
 
-            var sceneService = new SceneService(fileSystem, serializer);
+            var sceneService = new SceneService(fileSystem, pathService, serializer);
             var sceneAsset = sceneService.CreateNewScene(directoryPath, sceneName);
 
             using (new AssertionScope()) {
