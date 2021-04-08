@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+    using Assimp;
     using System;
     using System.ComponentModel;
     using System.IO;
@@ -11,10 +12,10 @@
     /// </summary>
     public interface ISceneService : INotifyPropertyChanged {
         /// <summary>
-        /// Gets or sets the current scene.
+        /// Gets the current scene.
         /// </summary>
         /// <value>The current scene.</value>
-        public IGameScene CurrentScene { get; set; }
+        public IGameScene CurrentScene { get; }
         
         /// <summary>
         /// Gets or sets a value which indicates whether or not the scene has changes which require saving.
@@ -45,6 +46,7 @@
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
+        private Guid _currentSceneContentId;
         private IGameScene _currentScene;
         private bool _hasChanges;
 
@@ -66,7 +68,6 @@
         /// <inheritdoc />
         public IGameScene CurrentScene {
             get => this._currentScene;
-            set => this.RaiseAndSetIfChanged(ref this._currentScene, value);
         }
         
         /// <inheritdoc />
@@ -108,9 +109,7 @@
 
             var metadataPath = Path.Combine(contentDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
             this._serializer.Serialize(metadata, metadataPath);
-
-            // TODO: Maybe check if the content service is initialized and add this? Maybe just add it blindly and have the content service just ig
-            this.CurrentScene = scene;
+            this.SetCurrentScene(scene, sceneAsset.ContentId);
             return sceneAsset;
         }
 
@@ -126,7 +125,12 @@
                     sceneAsset = metadata?.Asset as SceneAsset;
 
                     if (sceneAsset != null) {
-                            // TODO: load content
+                        // ReSharper disable once PossibleNullReferenceException
+                        var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+                        var scene = this._serializer.Deserialize<GameScene>(contentPath);
+                        if (scene != null) {
+                            this.SetCurrentScene(scene, contentId);
+                        }
                     }
                 }
                 else {
@@ -136,5 +140,11 @@
 
             return sceneAsset != null;
         }
+
+        private void SetCurrentScene(IGameScene scene, Guid contentId) {
+            this._currentSceneContentId = contentId;
+            this.RaiseAndSetIfChanged(ref this._currentScene, scene);
+        }
+
     }
 }

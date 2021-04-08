@@ -152,7 +152,7 @@
             }
         }
         
-        private void SceneService_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.IsInitialized &&
                 e.PropertyName == nameof(ISceneService.CurrentScene) && 
                 !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
