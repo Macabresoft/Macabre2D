@@ -166,7 +166,6 @@
             var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, MGCBFileName);
             var buildArgs = new BuildContentArguments(
                 mgcbFilePath,
-                this._pathService.ContentDirectoryPath,
                 "DesktopGL",
                 true);
 

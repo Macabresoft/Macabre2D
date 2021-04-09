@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+    using Macabresoft.Core;
     using System.Diagnostics;
     using System.IO;
     using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using System.Linq;
 
     /// <summary>
     /// Interface that abstracts out building content and projects.
@@ -54,10 +56,14 @@
                     UseShellExecute = true,
                     FileName = "mgcb",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = !string.IsNullOrEmpty(outputDirectoryPath) ? args.ToConsoleArguments(outputDirectoryPath) : args.ToConsoleArguments(),
                     WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
                 };
-
+                
+                var arguments = !string.IsNullOrEmpty(outputDirectoryPath) ? 
+                    args.ToConsoleArguments(outputDirectoryPath) : 
+                    args.ToConsoleArguments();
+                
+                startInfo.ArgumentList.AddRange(arguments);
                 exitCode = this._processService.StartProcess(startInfo);
             }
 

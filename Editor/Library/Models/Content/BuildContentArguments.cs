@@ -18,20 +18,12 @@
         /// <param name="performCompression">if set to <c>true</c> MGCB will perform compression.</param>
         public BuildContentArguments(
             string contentFilePath,
-            string contentDirectoryPath,
             string platform,
             bool performCompression) {
             this.ContentFilePath = contentFilePath;
-            this.ContentDirectoryPath = contentDirectoryPath;
             this.Platform = platform;
             this.PerformCompression = performCompression;
         }
-
-        /// <summary>
-        /// Gets the content directory path.
-        /// </summary>
-        /// <value>The content directory path.</value>
-        public string ContentDirectoryPath { get; }
 
         /// <summary>
         /// Gets the content file path.
@@ -55,7 +47,7 @@
         /// Converts to console arguments used by MGCB.
         /// </summary>
         /// <returns>The console arguments.</returns>
-        public string ToConsoleArguments() {
+        public IEnumerable<string> ToConsoleArguments() {
             return this.ToConsoleArguments(PathService.BinDirectoryName);
         }
 
@@ -64,11 +56,11 @@
         /// </summary>
         /// <param name="outputDirectoryPath">The path to the output directory.</param>
         /// <returns>The console arguments.</returns>
-        public string ToConsoleArguments(string outputDirectoryPath) {
-            var arguments = this.ToGlobalProperties(outputDirectoryPath, this.ContentDirectoryPath);
+        public IEnumerable<string> ToConsoleArguments(string outputDirectoryPath) {
+            var arguments = this.ToGlobalPropertiesInternal(outputDirectoryPath);
             arguments.Add("/rebuild");
             arguments.Add($"/@:{Path.GetFileName(this.ContentFilePath)}");
-            return arguments.Aggregate((first, second) => $"{first} {second}");
+            return arguments;
         }
 
         /// <summary>
@@ -76,7 +68,7 @@
         /// </summary>
         /// <returns>The lines for the global properties section of an MGCB file.</returns>
         public IEnumerable<string> ToGlobalProperties() {
-            return this.ToGlobalProperties(PathService.BinDirectoryName, this.ContentDirectoryPath);
+            return this.ToGlobalPropertiesInternal(PathService.BinDirectoryName);
         }
         
         /// <summary>
@@ -84,10 +76,10 @@
         /// </summary>
         /// <returns>The lines for the global properties section of an MGCB file.</returns>
         public IEnumerable<string> ToGlobalProperties(string outputDirectory) {
-            return this.ToGlobalProperties(outputDirectory, this.ContentDirectoryPath);
+            return this.ToGlobalPropertiesInternal(outputDirectory);
         }
 
-        private IList<string> ToGlobalProperties(string outputDirectory, string contentDirectoryPath) {
+        private IList<string> ToGlobalPropertiesInternal(string outputDirectory) {
             return new List<string> {
                 $"/outputDir:{outputDirectory}",
                 $"/intermediateDir:{PathService.ObjDirectoryName}",

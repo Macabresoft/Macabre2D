@@ -20,16 +20,15 @@
                 PathService.ContentDirectoryName);
             var contentFile = Path.Combine(contentDirectory, ContentFileName);
             var binDirectory = Path.Combine(contentDirectory, BinDirectoryName);
-            var buildContentDirectory = Path.Combine(binDirectory, PlatformName);
-            var skullFilePath = Path.Combine(buildContentDirectory, SkullXnbName);
-            var leagueMonoFilePath = Path.Combine(buildContentDirectory, LeagueMonoXnbName);
+            var skullFilePath = Path.Combine(binDirectory, SkullXnbName);
+            var leagueMonoFilePath = Path.Combine(binDirectory, LeagueMonoXnbName);
 
             if (Directory.Exists(binDirectory)) {
                 Directory.Delete(binDirectory, true);
             }
 
             using (new AssertionScope()) {
-                service.BuildContent(new BuildContentArguments(contentFile, contentDirectory, PlatformName, false), buildContentDirectory).Should().Be(0);
+                service.BuildContent(new BuildContentArguments(contentFile, PlatformName, false)).Should().Be(0);
                 File.Exists(skullFilePath).Should().BeTrue();
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
