@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -21,14 +22,14 @@
         /// Gets or sets a value which indicates whether or not the scene has changes which require saving.
         /// </summary>
         bool HasChanges { get; set; }
-        
+
         /// <summary>
         /// Creates the new scene and serializes it.
         /// </summary>
-        /// <param name="contentDirectoryPath">The full path to the content directory.</param>
-        /// <param name="contentPath">The content path of the new scene.</param>
+        /// <param name="parent">The parent content directory.</param>
+        /// <param name="sceneName">The name of the scene without its file extension.</param>
         /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
-        SceneAsset CreateNewScene(string contentDirectoryPath, string contentPath);
+        SceneAsset CreateNewScene(IContentDirectory parent, string sceneName);
 
         /// <summary>
         /// Tries to load a scene.
@@ -43,6 +44,7 @@
     /// A service which handles the <see cref="IGameScene" /> open in the editor.
     /// </summary>
     public sealed class SceneService : ReactiveObject, ISceneService {
+        private readonly IAssetManager _assetManager;
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
@@ -53,13 +55,16 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneService" /> class.
         /// </summary>
+        /// <param name="assetManager">The asset manager.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
         public SceneService(
+            IAssetManager assetManager,
             IFileSystemService fileSystem,
             IPathService pathService,
             ISerializer serializer) {
+            this._assetManager = assetManager;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._serializer = serializer;
@@ -77,13 +82,14 @@
         }
 
         /// <inheritdoc />
-        public SceneAsset CreateNewScene(string contentDirectoryPath, string contentPath) {
+        public SceneAsset CreateNewScene(IContentDirectory parent, string sceneName) {
+            var contentDirectoryPath = parent.GetFullPath();
             if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
                 throw new DirectoryNotFoundException();
             }
 
             GameScene scene;
-            var filePath = Path.Combine(contentDirectoryPath, $"{contentPath}{SceneAsset.FileExtension}");
+            var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
                 // TODO: Overwrite warning.
                 scene = this._serializer.Deserialize<GameScene>(filePath);
@@ -91,7 +97,7 @@
             else {
                 scene = new GameScene {
                     BackgroundColor = DefinedColors.MacabresoftPurple,
-                    Name = Path.GetFileName(contentPath)
+                    Name = sceneName
                 };
 
                 this._serializer.Serialize(scene, filePath);
@@ -100,8 +106,10 @@
             var sceneAsset = new SceneAsset {
                 Name = scene.Name
             };
+            
 
             sceneAsset.LoadContent(scene);
+            var contentPath = Path.Combine(parent.GetContentPath(), sceneName);
             var metadata = new ContentMetadata(
                 sceneAsset,
                 contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
@@ -109,7 +117,11 @@
 
             var metadataPath = Path.Combine(contentDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
             this._serializer.Serialize(metadata, metadataPath);
-            this.SetCurrentScene(scene, sceneAsset.ContentId);
+            this._assetManager.RegisterMetadata(metadata);
+
+            var contentFile = new ContentFile(parent, metadata);
+
+            this.SetCurrentScene(scene, contentFile.Asset.ContentId);
             return sceneAsset;
         }
 
@@ -127,9 +139,13 @@
                     if (sceneAsset != null) {
                         // ReSharper disable once PossibleNullReferenceException
                         var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
-                        var scene = this._serializer.Deserialize<GameScene>(contentPath);
-                        if (scene != null) {
-                            this.SetCurrentScene(scene, contentId);
+
+                        if (this._fileSystem.DoesFileExist(contentPath)) {
+                            var scene = this._serializer.Deserialize<GameScene>(contentPath);
+                            if (scene != null) {
+                                sceneAsset.LoadContent(scene);
+                                this.SetCurrentScene(scene, contentId);
+                            }
                         }
                     }
                 }

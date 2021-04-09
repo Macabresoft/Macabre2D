@@ -90,7 +90,7 @@
             var fileSystem = this.CreateFileSystem(pathService, false);
             var sceneService = Substitute.For<ISceneService>();
             var sceneAsset = new SceneAsset();
-            sceneService.CreateNewScene(Arg.Any<string>(), Arg.Any<string>()).Returns(sceneAsset);
+            sceneService.CreateNewScene(Arg.Any<IContentDirectory>(), Arg.Any<string>()).Returns(sceneAsset);
 
             var serializer = Substitute.For<ISerializer>();
             serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))

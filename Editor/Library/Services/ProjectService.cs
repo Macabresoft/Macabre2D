@@ -127,26 +127,27 @@
 
         /// <inheritdoc />
         public GameProject LoadProject() {
+            this.LoadContent();
+
             var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
             if (!projectExists) {
                 this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
                 this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
                 this._fileSystem.CreateDirectory(this._pathService.MetadataDirectoryPath);
 
-                var project = new GameProject {
+                this.CurrentProject = new GameProject {
                     StartupSceneContentId = this.CreateInitialScene()
                 };
 
-                this.SaveProjectFile(project, this._pathService.ProjectFilePath);
+                this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
             }
-
-            this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
-            this.LoadContent();
-
-            if (projectExists && !this._sceneService.TryLoadScene(this.CurrentProject.StartupSceneContentId, out var sceneAsset) && sceneAsset != null) {
-                this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+            else {
+                this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
+                if (!this._sceneService.TryLoadScene(this.CurrentProject.StartupSceneContentId, out var sceneAsset) && sceneAsset != null) {
+                    this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+                }
             }
-
+            
             return this.CurrentProject;
         }
 
@@ -235,7 +236,7 @@
         }
 
         private Guid CreateInitialScene() {
-            var newSceneAsset = this._sceneService.CreateNewScene(this._pathService.ContentDirectoryPath, "Default Scene");
+            var newSceneAsset = this._sceneService.CreateNewScene(this._rootContentDirectory, "Default Scene");
             return newSceneAsset.ContentId;
         }
 
