@@ -14,7 +14,7 @@
             };
 
             if (initializationMode == InitializationMode.Before) {
-                this.Scene.Initialize(Substitute.For<IGame>());
+                this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
             }
 
             this.RenderableEntity = this.Scene.AddChild();
@@ -30,7 +30,7 @@
             this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimatorComponent>();
 
             if (initializationMode == InitializationMode.After) {
-                this.Scene.Initialize(Substitute.For<IGame>());
+                this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
             }
         }
 

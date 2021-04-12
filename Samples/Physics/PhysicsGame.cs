@@ -7,6 +7,10 @@
 
     [ExcludeFromCodeCoverage]
     public class PhysicsGame : BaseGame {
+        protected override IAssetManager CreateSceneLevelAssetManager() {
+            return this.Assets;
+        }
+
         protected override void Initialize() {
             this._graphics.PreferredBackBufferHeight = 1080;
             this._graphics.PreferredBackBufferWidth = 1920;
@@ -108,7 +112,7 @@
             triggerDrawer.Color = DefinedColors.MacabresoftRed;
             triggerDrawer.LineThickness = 3f;
 
-            scene.Initialize(this);
+            scene.Initialize(this, this.CreateSceneLevelAssetManager());
 
             var fileName = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, fileName);

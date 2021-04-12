@@ -7,6 +7,10 @@
 
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
+        protected override IAssetManager CreateSceneLevelAssetManager() {
+            return this.Assets;
+        }
+
         protected override void LoadContent() {
             this.Project.Settings.PixelsPerUnit = 64;
 
@@ -25,7 +29,7 @@
             cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
-            this.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new [] { "WhiteSquare" }, ".png"));
+            this.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new[] { "WhiteSquare" }, ".png"));
 
             var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
@@ -121,7 +125,7 @@
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
 
-            scene.Initialize(this);
+            scene.Initialize(this, this.Assets);
 
             var filePath = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, filePath);

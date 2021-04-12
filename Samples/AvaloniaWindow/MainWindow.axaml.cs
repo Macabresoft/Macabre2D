@@ -7,7 +7,7 @@
     public class MainWindow : Window {
 
         public MainWindow() {
-            this.SkullViewModel = new SkullViewModel(new AvaloniaGame());
+            this.SkullViewModel = new SkullViewModel(new SampleAvaloniaGame());
             this.SolidViewModel = new SolidViewModel(this.SkullViewModel.Game);
             this.InitializeComponent();
         }

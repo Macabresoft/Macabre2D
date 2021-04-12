@@ -55,7 +55,6 @@
         /// Initializes a new instance of the <see cref="BaseGame" /> class.
         /// </summary>
         protected BaseGame() : this(new AssetManager()) {
-
         }
 
         /// <inheritdoc />
@@ -125,7 +124,7 @@
                     this._scene = value;
 
                     if (this.IsInitialized) {
-                        this._scene.Initialize(this);
+                        this._scene.Initialize(this, this.CreateSceneLevelAssetManager());
                     }
                 }
             }
@@ -183,7 +182,7 @@
             base.Initialize();
 
             this._viewportSize = new Point(this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.Scene.Initialize(this);
+            this._scene.Initialize(this, this.CreateSceneLevelAssetManager());
 
             if (this.SaveDataManager.TryLoad<GraphicsSettings>(GraphicsSettings.SettingsFileName, this.Project.Name, out var graphicsSettings) && graphicsSettings != null) {
                 this.GraphicsSettings = graphicsSettings;
@@ -195,10 +194,21 @@
             this.IsInitialized = true;
         }
 
+        /// <summary>
+        /// Creates a scene level asset manager.
+        /// </summary>
+        /// <returns>The asset manager.</returns>
+        protected virtual IAssetManager CreateSceneLevelAssetManager() {
+            var assetManager = new AssetManager();
+            var contentManager = new ContentManager(this.Content.ServiceProvider, this.Content.RootDirectory);
+            assetManager.Initialize(contentManager, Serializer.Instance);
+            return assetManager;
+        }
+
         /// <inheritdoc />
         protected override void LoadContent() {
             base.LoadContent();
-            
+
             if (this.Assets.TryLoadContent<GameProject>(GameProject.ProjectFileName, out var project) && project != null) {
                 this.Project = project;
             }
@@ -265,7 +275,7 @@
 
             this._graphics.ApplyChanges();
         }
-
+        
         private sealed class EmptyGame : IGame {
             /// <inheritdoc />
             public event EventHandler<double>? GameSpeedChanged;

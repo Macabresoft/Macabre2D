@@ -12,6 +12,12 @@
     /// which runs on a <see cref="IGame" />.
     /// </summary>
     public interface IGameScene : IGameEntity, IGameUpdateable {
+        
+        /// <summary>
+        /// Gets the asset manager.
+        /// </summary>
+        IAssetManager Assets => AssetManager.Empty;
+        
         /// <summary>
         /// Gets the camera components.
         /// </summary>
@@ -76,10 +82,11 @@
         void AddSystem(IGameSystem service);
 
         /// <summary>
-        /// Initializes this instance with the specified game.
+        /// Initializes this instance.
         /// </summary>
         /// <param name="game">The game.</param>
-        void Initialize(IGame game);
+        /// <param name="assetManager">The asset manager.</param>
+        void Initialize(IGame game, IAssetManager assetManager);
 
         /// <summary>
         /// Invokes the specified action after the current update
@@ -192,10 +199,12 @@
         public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
 
         /// <inheritdoc />
+        public IAssetManager Assets { get; private set; } = AssetManager.Empty;
+        
+        /// <inheritdoc />
         [DataMember]
         public Color BackgroundColor {
             get => this._backgroundColor;
-
             set => this.Set(ref this._backgroundColor, value);
         }
 
@@ -222,10 +231,11 @@
         }
 
         /// <inheritdoc />
-        public void Initialize(IGame game) {
+        public void Initialize(IGame game, IAssetManager assetManager) {
             if (!this._isInitialized) {
                 try {
                     this._isBusy = true;
+                    this.Assets = assetManager;
                     this.Game = game;
                     this.Initialize(this, this);
 
@@ -369,7 +379,7 @@
             }
 
             /// <inheritdoc />
-            public void Initialize(IGame gameLoop) {
+            public void Initialize(IGame gameLoop, IAssetManager assetManager) {
             }
 
             /// <inheritdoc />

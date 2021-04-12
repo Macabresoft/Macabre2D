@@ -96,7 +96,7 @@
                     base.Initialize();
 
                     if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                        this._sceneService.CurrentScene.Initialize(this);
+                        this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
                     }
 
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -112,10 +112,6 @@
         protected override void LoadContent() {
             if (this._projectService.CurrentProject != null) {
                 this.Project = this._projectService.CurrentProject;
-            }
-
-            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this._sceneService.CurrentScene.Initialize(this);
             }
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
@@ -156,7 +152,7 @@
             if (this.IsInitialized &&
                 e.PropertyName == nameof(ISceneService.CurrentScene) && 
                 !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this._sceneService.CurrentScene.Initialize(this);
+                    this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
             }        
         }
     }

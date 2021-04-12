@@ -113,7 +113,7 @@
         /// <inheritdoc />
         public override void Initialize(IGameEntity entity) {
             base.Initialize(entity);
-            this.Entity.Scene.Game.Assets.ResolveAsset<Font, SpriteFont>(this.FontReference);
+            this.Entity.Scene.Assets.ResolveAsset<Font, SpriteFont>(this.FontReference);
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
             this.RenderSettings.Initialize(this.CreateSize);
         }
