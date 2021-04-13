@@ -201,8 +201,6 @@
             this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
 
             // TODO: handle different build configurations
-            var desktopGLFilePath = Path.Combine(this._pathService.ContentDirectoryPath, "Content.DesktopGL.mgcb");
-            this._fileSystem.WriteAllText(desktopGLFilePath, mgcbText);
 
             this._buildService.BuildContent(buildArgs, outputDirectoryPath);
         }
