@@ -12,21 +12,20 @@
     [TestFixture]
     public class SceneServiceTests {
         private static readonly string ProjectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-        private static readonly string ContentDirectoryPath = Path.Combine(ProjectDirectoryPath, PathService.ContentDirectoryName);
         private static readonly string SceneName = Guid.NewGuid().ToString();
-        private static readonly string SceneFilePath = Path.Combine(ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
-
+        
         [Test]
         [Category("Unit Tests")]
         public void CreateNewScene_ShouldCreateScene() {
             var assetManager = Substitute.For<IAssetManager>();
             var fileSystem = Substitute.For<IFileSystemService>();
-            var pathService = Substitute.For<IPathService>();
+            var pathService = new PathService(Guid.NewGuid().ToString(), ProjectDirectoryPath);
             var serializer = Substitute.For<ISerializer>();
             var contentDirectory = Substitute.For<IContentDirectory>();
-            contentDirectory.GetFullPath().Returns(ContentDirectoryPath);
-            fileSystem.DoesDirectoryExist(ContentDirectoryPath).Returns(true);
-            fileSystem.DoesFileExist(SceneFilePath).Returns(false);
+            contentDirectory.GetFullPath().Returns(pathService.ContentDirectoryPath);
+            fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
+            var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
+            fileSystem.DoesFileExist(sceneFilePath).Returns(false);
 
             var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer);
             var sceneAsset = sceneService.CreateNewScene(contentDirectory, SceneName);
@@ -37,10 +36,10 @@
                 sceneAsset.Content.Should().NotBeNull();
                 // ReSharper disable once PossibleNullReferenceException
                 sceneAsset.Content.Name.Should().Be(SceneName);
-                serializer.Received().Serialize(sceneAsset.Content, SceneFilePath);
+                serializer.Received().Serialize(sceneAsset.Content, sceneFilePath);
                 serializer.Received().Serialize(
                     Arg.Is<ContentMetadata>(x => x.GetFileNameWithoutExtension() == SceneName && x.ContentFileExtension == SceneAsset.FileExtension),
-                    Arg.Is<string>(x => x.StartsWith(ContentDirectoryPath)));
+                    Arg.Is<string>(x => x.StartsWith(pathService.ContentDirectoryPath)));
                 contentDirectory.Received().AddChild(Arg.Any<ContentFile>());
             }
         }
@@ -53,13 +52,14 @@
             var pathService = new PathService(string.Empty, ProjectDirectoryPath);
             var serializer = Substitute.For<ISerializer>();
             var contentDirectory = Substitute.For<IContentDirectory>();
-            contentDirectory.GetFullPath().Returns(ContentDirectoryPath);
-            fileSystem.DoesDirectoryExist(ContentDirectoryPath).Returns(true);
-            fileSystem.DoesFileExist(SceneFilePath).Returns(false);
+            contentDirectory.GetFullPath().Returns(pathService.ContentDirectoryPath);
+            fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
+            var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
+            fileSystem.DoesFileExist(sceneFilePath).Returns(false);
 
             var scene = new GameScene();
-            fileSystem.DoesFileExist(SceneFilePath).Returns(true);
-            serializer.Deserialize<GameScene>(SceneFilePath).Returns(scene);
+            fileSystem.DoesFileExist(sceneFilePath).Returns(true);
+            serializer.Deserialize<GameScene>(sceneFilePath).Returns(scene);
             
             var sceneAsset = new SceneAsset();
             var metadata = new ContentMetadata(sceneAsset, new[] { SceneName }, SceneAsset.FileExtension);

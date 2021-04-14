@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
-    using Assimp;
     using System;
     using System.ComponentModel;
     using System.IO;
@@ -16,8 +15,13 @@
         /// Gets the current scene.
         /// </summary>
         /// <value>The current scene.</value>
-        public IGameScene CurrentScene { get; }
-        
+        IGameScene CurrentScene { get; }
+
+        /// <summary>
+        /// Gets the current scene metadata.
+        /// </summary>
+        ContentMetadata CurrentSceneMetadata { get; }
+
         /// <summary>
         /// Gets or sets a value which indicates whether or not the scene has changes which require saving.
         /// </summary>
@@ -30,6 +34,11 @@
         /// <param name="sceneName">The name of the scene without its file extension.</param>
         /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
         SceneAsset CreateNewScene(IContentDirectory parent, string sceneName);
+
+        /// <summary>
+        /// Saves the current scene.
+        /// </summary>
+        void SaveScene();
 
         /// <summary>
         /// Tries to load a scene.
@@ -48,8 +57,7 @@
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
-        private Guid _currentSceneContentId;
-        private IGameScene _currentScene;
+        private ContentMetadata _currentSceneMetadata;
         private bool _hasChanges;
 
         /// <summary>
@@ -69,12 +77,19 @@
             this._pathService = pathService;
             this._serializer = serializer;
         }
-        
+
         /// <inheritdoc />
-        public IGameScene CurrentScene {
-            get => this._currentScene;
+        public IGameScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
+
+        /// <inheritdoc />
+        public ContentMetadata CurrentSceneMetadata {
+            get => this._currentSceneMetadata;
+            private set {
+                this.RaiseAndSetIfChanged(ref this._currentSceneMetadata, value);
+                this.RaisePropertyChanged(nameof(this.CurrentScene));
+            }
         }
-        
+
         /// <inheritdoc />
         public bool HasChanges {
             get => this._hasChanges;
@@ -83,6 +98,11 @@
 
         /// <inheritdoc />
         public SceneAsset CreateNewScene(IContentDirectory parent, string sceneName) {
+            if (this.CurrentScene != null && this.HasChanges) {
+                // TODO: ask user if they want to save or cancel changes
+                this.SaveScene();
+            }
+
             var contentDirectoryPath = parent.GetFullPath();
             if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
                 throw new DirectoryNotFoundException();
@@ -99,14 +119,11 @@
                     BackgroundColor = DefinedColors.MacabresoftPurple,
                     Name = sceneName
                 };
-
-                this._serializer.Serialize(scene, filePath);
             }
 
             var sceneAsset = new SceneAsset {
                 Name = scene.Name
             };
-            
 
             sceneAsset.LoadContent(scene);
             var contentPath = Path.Combine(parent.GetContentPath(), sceneName);
@@ -115,14 +132,26 @@
                 contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
                 SceneAsset.FileExtension);
 
-            var metadataPath = Path.Combine(contentDirectoryPath, ContentMetadata.GetMetadataPath(sceneAsset.ContentId));
-            this._serializer.Serialize(metadata, metadataPath);
+            this.CurrentSceneMetadata = metadata;
+            
+            this.SaveScene();
+
             this._assetManager.RegisterMetadata(metadata);
-
-            var contentFile = new ContentFile(parent, metadata);
-
-            this.SetCurrentScene(scene, contentFile.Asset.ContentId);
+            CreateContentFile(parent, metadata);
             return sceneAsset;
+        }
+
+        /// <inheritdoc />
+        public void SaveScene() {
+            if (this.CurrentSceneMetadata != null && this.CurrentScene != null) {
+                var metadataPath = this._pathService.GetMetadataFilePath(this.CurrentSceneMetadata.ContentId);
+                this._serializer.Serialize(this.CurrentSceneMetadata, metadataPath);
+                
+                var filePath = Path.Combine(this._pathService.ContentDirectoryPath, this.CurrentSceneMetadata.GetContentPath());
+                this._serializer.Serialize(this.CurrentScene, filePath);
+
+                this.HasChanges = false;
+            }
         }
 
         /// <inheritdoc />
@@ -136,15 +165,15 @@
                     var metadata = this._serializer.Deserialize<ContentMetadata>(metadataFilePath);
                     sceneAsset = metadata?.Asset as SceneAsset;
 
-                    if (sceneAsset != null) {
-                        // ReSharper disable once PossibleNullReferenceException
+                    if (metadata != null && sceneAsset != null) {
                         var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
 
                         if (this._fileSystem.DoesFileExist(contentPath)) {
                             var scene = this._serializer.Deserialize<GameScene>(contentPath);
                             if (scene != null) {
                                 sceneAsset.LoadContent(scene);
-                                this.SetCurrentScene(scene, contentId);
+                                this.CurrentSceneMetadata = metadata;
+                                this.HasChanges = false;
                             }
                         }
                     }
@@ -157,10 +186,8 @@
             return sceneAsset != null;
         }
 
-        private void SetCurrentScene(IGameScene scene, Guid contentId) {
-            this._currentSceneContentId = contentId;
-            this.RaiseAndSetIfChanged(ref this._currentScene, scene);
+        private static ContentFile CreateContentFile(IContentDirectory parent, ContentMetadata metadata) {
+            return new(parent, metadata);
         }
-
     }
 }
