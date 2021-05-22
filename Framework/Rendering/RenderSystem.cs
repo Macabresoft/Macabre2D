@@ -1,14 +1,13 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework.Graphics;
     using System.Linq;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// The default rendering system, which attempts to render every <see
-    /// cref="IGameRenderableComponent" /> in the scene.
+    /// The default rendering system, which attempts to render every
+    /// <see cref="IGameRenderableEntity" /> in the scene.
     /// </summary>
     public class RenderSystem : GameSystem {
-        private readonly QuadTree<IGameRenderableComponent> _renderTree = new QuadTree<IGameRenderableComponent>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+        private readonly QuadTree<IGameRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         /// <inheritdoc />
         public override SystemLoop Loop => SystemLoop.Render;
@@ -17,15 +16,15 @@
             if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 this._renderTree.Clear();
 
-                foreach (var component in this.Scene.RenderableComponents) {
-                    this._renderTree.Insert(component);
+                foreach (var entity in this.Scene.RenderableEntities) {
+                    this._renderTree.Insert(entity);
                 }
 
-                foreach (var camera in this.Scene.CameraComponents) {
-                    var potentialRenderables = 
+                foreach (var camera in this.Scene.Cameras) {
+                    var potentialRenderables =
                         this._renderTree
                             .RetrievePotentialCollisions(camera.BoundingArea)
-                            .Where(x => (x.Entity.Layers & camera.LayersToRender) != Layers.None)
+                            .Where(x => (x.Layers & camera.LayersToRender) != Layers.None)
                             .ToList();
 
                     if (potentialRenderables.Any()) {

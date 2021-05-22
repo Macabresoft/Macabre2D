@@ -1,22 +1,21 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Represents a hit between a ray and a collider.
     /// </summary>
     public sealed class RaycastHit {
-
         /// <summary>
         /// The empty raycast hit.
         /// </summary>
-        public static readonly RaycastHit Empty = new RaycastHit(null, Vector2.Zero, Vector2.Zero);
+        public static readonly RaycastHit Empty = new(null, Vector2.Zero, Vector2.Zero);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RaycastHit" /> class.
         /// </summary>
         /// <param name="collider">The collider.</param>
         /// <param name="contactPoint">The contact point.</param>
+        /// <param name="normal">The normal.</param>
         public RaycastHit(Collider? collider, Vector2 contactPoint, Vector2 normal) {
             this.Collider = collider;
             this.ContactPoint = contactPoint;

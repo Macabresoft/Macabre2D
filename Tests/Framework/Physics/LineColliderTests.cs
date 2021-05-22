@@ -2,6 +2,7 @@
 
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -15,8 +16,9 @@
             float x1, float y1, float x2, float y2,
             float rx1, float ry1, float rx2, float ry2,
             bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using var lineBody = new DynamicPhysicsBodyComponent();
-            lineBody.Initialize(new GameEntity());
+            var lineBody = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            lineBody.Initialize(scene, new GameEntity());
             lineBody.Collider = new LineCollider(new Vector2(x1, y1), new Vector2(x2, y2));
 
             var ray = new LineSegment(new Vector2(rx1, ry1), new Vector2(rx2, ry2));

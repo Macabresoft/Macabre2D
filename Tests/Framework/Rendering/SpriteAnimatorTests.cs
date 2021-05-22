@@ -4,17 +4,39 @@
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public static class SpriteAnimatorTests {
+        private static SpriteAnimation CreateAnimation(byte numberOfSteps) {
+            var steps = new List<SpriteAnimationStep>();
+            for (byte i = 0; i < numberOfSteps; i++) {
+                steps.Add(new SpriteAnimationStep {
+                    Frames = 1,
+                    SpriteIndex = i
+                });
+            }
+
+            return new SpriteAnimation(steps);
+        }
+
+        private static SpriteAnimator CreateAnimator(byte frameRate) {
+            var animator = new SpriteAnimator {
+                FrameRate = frameRate
+            };
+
+            return animator;
+        }
+
         [Test]
         [Category("Unit Tests")]
         public static void SpriteAnimator_LoopingTest() {
             byte numberOfSteps = 3;
             var animation = CreateAnimation(numberOfSteps);
             var animator = CreateAnimator(1);
-            animator.Initialize(new GameEntity());
+            var scene = Substitute.For<IGameScene>();
+            animator.Initialize(scene, new GameEntity());
 
             var gameTime = new GameTime {
                 ElapsedGameTime = TimeSpan.FromMilliseconds(100d)
@@ -39,26 +61,6 @@
             // Should loop here.
             animator.Update(frameTime, default);
             Assert.AreEqual(animation.Steps.ElementAt(0).SpriteIndex, animator.SpriteIndex);
-        }
-
-        private static SpriteAnimation CreateAnimation(byte numberOfSteps) {
-            var steps = new List<SpriteAnimationStep>();
-            for (byte i = 0; i < numberOfSteps; i++) {
-                steps.Add(new SpriteAnimationStep {
-                    Frames = 1,
-                    SpriteIndex = i
-                });
-            }
-
-            return new SpriteAnimation(steps);
-        }
-
-        private static SpriteAnimatorComponent CreateAnimator(byte frameRate) {
-            var animator = new SpriteAnimatorComponent {
-                FrameRate = frameRate
-            };
-
-            return animator;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -13,9 +14,10 @@
             // session) that was failing due to floating point precision.
             var ray = new LineSegment(new Vector2(3.125f, 0.616657f), new Vector2(0f, -1f), 0.666667f);
 
-            using var body = new SimplePhysicsBodyComponent();
-            body.Initialize(new GameEntity());
-            body.Entity.LocalPosition = new Vector2(0f, -0.5f);
+            var body = new SimplePhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            body.Initialize(scene, new GameEntity());
+            body.LocalPosition = new Vector2(0f, -0.5f);
             body.Collider = new RectangleCollider(18f, 1f);
             var result = body.Collider.IsHitBy(ray, out var hit);
             Assert.IsTrue(result);

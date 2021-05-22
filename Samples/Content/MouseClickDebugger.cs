@@ -1,40 +1,36 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Content {
-
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
-    public sealed class MouseClickDebugger : BaseDrawerComponent, IGameUpdateableComponent {
-        private CameraComponent _camera;
+    public sealed class MouseClickDebugger : BaseDrawer, IGameUpdateableEntity {
+        private Camera _camera;
 
-        public override BoundingArea BoundingArea {
-            get {
-                return new BoundingArea(this.Entity.LocalPosition - new Vector2(1f, 1f), this.Entity.LocalPosition + new Vector2(1f, 1f));
-            }
-        }
+        public override BoundingArea BoundingArea => new(this.LocalPosition - new Vector2(1f, 1f), this.LocalPosition + new Vector2(1f, 1f));
 
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
+
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
             this.Color = Color.Green;
             this.LineThickness = 3f;
-            this.Entity.Parent.TryGetComponent(out this._camera);
+            this.TryGetParentEntity(out this._camera);
         }
 
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 this.PrimitiveDrawer?.DrawCircle(
-                    spriteBatch, 
-                    this.Entity.Scene.Game.Project.Settings.PixelsPerUnit, 
-                    1f, 
-                    this.Entity.Transform.Position, 
-                    50, 
-                    this.Color, 
+                    spriteBatch,
+                    this.Scene.Game.Project.Settings.PixelsPerUnit,
+                    1f,
+                    this.Transform.Position,
+                    50,
+                    this.Color,
                     3f);
             }
         }
 
         public void Update(FrameTime frameTime, InputState inputState) {
-            this.Entity.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
+            this.SetWorldPosition(this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position));
         }
     }
 }

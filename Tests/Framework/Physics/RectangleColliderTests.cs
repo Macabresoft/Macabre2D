@@ -1,11 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
-
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     public static class RectangleColliderTests {
-
         [Test]
         [Category("Unit Tests")]
         [TestCase(0f, 0f, 1f, 0f, 0f, 0.5f, 0.5f, true, TestName = "Rectangle to Circle Collision - Circle Contains Square")]
@@ -14,16 +13,25 @@
         [TestCase(-0.5f, 0f, 0.5f, 0f, 0f, 1f, 1f, true, TestName = "Rectangle to Circle Collision - Left Collision")]
         [TestCase(3f, 3f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Rectangle to Circle Collision - No Collision")]
         [TestCase(0f, -130f, 50f, 0f, -200f, 500f, 50f, true, TestName = "Rectangle to Circle Collision - Physics Test Failure")]
-        public static void RectangleCollider_CollidesWithCircleTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool collisionOccured) {
-            using var circleBody = new DynamicPhysicsBodyComponent();
-            using var rectangleBody = new DynamicPhysicsBodyComponent();
-            circleBody.Initialize(new GameEntity());
-            rectangleBody.Initialize(new GameEntity());
+        public static void RectangleCollider_CollidesWithCircleTest(
+            float x1,
+            float y1,
+            float r1,
+            float x2,
+            float y2,
+            float w,
+            float h,
+            bool collisionOccured) {
+            var circleBody = new DynamicPhysicsBody();
+            var rectangleBody = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            circleBody.Initialize(scene, new GameEntity());
+            rectangleBody.Initialize(scene, new GameEntity());
 
-            circleBody.Entity.SetWorldPosition(new Vector2(x1, y1));
+            circleBody.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);
 
-            rectangleBody.Entity.SetWorldPosition(new Vector2(x2, y2));
+            rectangleBody.SetWorldPosition(new Vector2(x2, y2));
             rectangleBody.Collider = new RectangleCollider(w, h);
 
             Assert.AreEqual(collisionOccured, circleBody.Collider.CollidesWith(rectangleBody.Collider, out var collision1));
@@ -36,12 +44,12 @@
                 Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
                 Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-                var originalPosition = circleBody.Entity.Transform.Position;
-                circleBody.Entity.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
+                var originalPosition = circleBody.Transform.Position;
+                circleBody.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
                 Assert.False(circleBody.Collider.CollidesWith(rectangleBody.Collider, out collision1));
-                circleBody.Entity.SetWorldPosition(originalPosition);
+                circleBody.SetWorldPosition(originalPosition);
 
-                rectangleBody.Entity.SetWorldPosition(rectangleBody.Entity.Transform.Position + collision2.MinimumTranslationVector);
+                rectangleBody.SetWorldPosition(rectangleBody.Transform.Position + collision2.MinimumTranslationVector);
                 Assert.False(rectangleBody.Collider.CollidesWith(circleBody.Collider, out collision2));
             }
             else {
@@ -58,16 +66,26 @@
         [TestCase(-0.5f, 0f, 0.5f, 0.5f, 0f, 0f, 1f, 1f, true, TestName = "Rectangle to Rectangle Collision - Left Collision")]
         [TestCase(3f, 3f, 1f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Rectangle to Rectangle Collision - No Collision")]
         [TestCase(0f, -130f, 100f, 100f, 0f, -200f, 500f, 100f, true, TestName = "Rectangle to Rectangle Collision - Physics Test Failure")]
-        public static void RectangleCollider_RectangleCollidesWithRectangleTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool collisionOccured) {
-            using var rectangleBody1 = new DynamicPhysicsBodyComponent();
-            using var rectangleBody2 = new DynamicPhysicsBodyComponent();
-            rectangleBody1.Initialize(new GameEntity());
-            rectangleBody2.Initialize(new GameEntity());
+        public static void RectangleCollider_RectangleCollidesWithRectangleTest(
+            float x1,
+            float y1,
+            float w1,
+            float h1,
+            float x2,
+            float y2,
+            float w2,
+            float h2,
+            bool collisionOccured) {
+            var rectangleBody1 = new DynamicPhysicsBody();
+            var rectangleBody2 = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            rectangleBody1.Initialize(scene, new GameEntity());
+            rectangleBody2.Initialize(scene, new GameEntity());
 
-            rectangleBody1.Entity.SetWorldPosition(new Vector2(x1, y1));
+            rectangleBody1.SetWorldPosition(new Vector2(x1, y1));
             rectangleBody1.Collider = new RectangleCollider(w1, h1);
 
-            rectangleBody2.Entity.SetWorldPosition(new Vector2(x2, y2));
+            rectangleBody2.SetWorldPosition(new Vector2(x2, y2));
             rectangleBody2.Collider = new RectangleCollider(w2, h2);
 
             Assert.AreEqual(collisionOccured, rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out var collision1));
@@ -80,12 +98,12 @@
                 Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
                 Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-                var originalPosition = rectangleBody1.Entity.Transform.Position;
-                rectangleBody1.Entity.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
+                var originalPosition = rectangleBody1.Transform.Position;
+                rectangleBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
                 Assert.False(rectangleBody1.Collider.CollidesWith(rectangleBody2.Collider, out collision1));
-                rectangleBody1.Entity.SetWorldPosition(originalPosition);
+                rectangleBody1.SetWorldPosition(originalPosition);
 
-                rectangleBody2.Entity.SetWorldPosition(rectangleBody2.Entity.Transform.Position + collision2.MinimumTranslationVector);
+                rectangleBody2.SetWorldPosition(rectangleBody2.Transform.Position + collision2.MinimumTranslationVector);
                 Assert.False(rectangleBody2.Collider.CollidesWith(rectangleBody1.Collider, out collision2));
             }
             else {

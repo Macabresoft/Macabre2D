@@ -1,22 +1,21 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Collider representing a generic polygon to be used by the physics engine.
     /// </summary>
     /// <seealso cref="Collider" />
     public class PolygonCollider : Collider {
-
-        [DataMember]
-        protected readonly List<Vector2> _points = new List<Vector2>();
-
         private readonly ResettableLazy<Vector2> _center;
         private readonly ResettableLazy<List<Vector2>> _normals;
+
+        [DataMember]
+        private readonly List<Vector2> _vertices = new();
+
         private readonly ResettableLazy<List<Vector2>> _worldPoints;
 
         /// <summary>
@@ -33,7 +32,7 @@
         /// </summary>
         /// <param name="points">The points.</param>
         public PolygonCollider(IEnumerable<Vector2> points) : this() {
-            this._points.AddRange(points);
+            this._vertices.AddRange(points);
         }
 
         /// <summary>
@@ -44,58 +43,25 @@
         }
 
         /// <inheritdoc />
-        public override ColliderType ColliderType {
-            get {
-                return ColliderType.Polygon;
-            }
-        }
+        public override ColliderType ColliderType => ColliderType.Polygon;
 
         /// <summary>
         /// Gets the normals.
         /// </summary>
         /// <value>The normals.</value>
-        public IReadOnlyCollection<Vector2> Normals {
-            get {
-                return this._normals.Value;
-            }
-        }
+        public IReadOnlyCollection<Vector2> Normals => this._normals.Value;
 
         /// <summary>
-        /// Gets the points.
+        /// Gets the vertices.
         /// </summary>
-        /// <value>The points.</value>
-        public IReadOnlyCollection<Vector2> Points {
-            get {
-                return this._points;
-            }
-        }
+        /// <value>The vertices.</value>
+        public IReadOnlyList<Vector2> Vertices => this._vertices;
 
         /// <summary>
         /// Gets the world points.
         /// </summary>
         /// <value>The world points.</value>
-        public IReadOnlyCollection<Vector2> WorldPoints {
-            get {
-                return this._worldPoints.Value;
-            }
-        }
-
-        /// <summary>
-        /// Creates a rectangle from the specified height and width.
-        /// </summary>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <returns>The rectangle polygon collider.</returns>
-        public static PolygonCollider CreateRectangle(float width, float height) {
-            var points = new List<Vector2>();
-            var halfWidth = 0.5f * width;
-            var halfHeight = 0.5f * height;
-            points.Add(new Vector2(-halfWidth, -halfHeight));
-            points.Add(new Vector2(-halfWidth, halfHeight));
-            points.Add(new Vector2(halfWidth, halfHeight));
-            points.Add(new Vector2(halfWidth, -halfHeight));
-            return new PolygonCollider(points);
-        }
+        public IReadOnlyCollection<Vector2> WorldPoints => this._worldPoints.Value;
 
         /// <inheritdoc />
         public override bool Contains(Vector2 point) {
@@ -178,7 +144,8 @@
 
                 return true;
             }
-            else if (other is PolygonCollider polygon) {
+
+            if (other is PolygonCollider polygon) {
                 foreach (var point in polygon.WorldPoints) {
                     if (!this.Contains(point)) {
                         return false;
@@ -191,8 +158,25 @@
             return false;
         }
 
+        /// <summary>
+        /// Creates a rectangle from the specified height and width.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The rectangle polygon collider.</returns>
+        public static PolygonCollider CreateRectangle(float width, float height) {
+            var points = new List<Vector2>();
+            var halfWidth = 0.5f * width;
+            var halfHeight = 0.5f * height;
+            points.Add(new Vector2(-halfWidth, -halfHeight));
+            points.Add(new Vector2(-halfWidth, halfHeight));
+            points.Add(new Vector2(halfWidth, halfHeight));
+            points.Add(new Vector2(halfWidth, -halfHeight));
+            return new PolygonCollider(points);
+        }
+
         /// <inheritdoc />
-        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
+        public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
             return this.Normals;
         }
 
@@ -216,7 +200,7 @@
 
         /// <inheritdoc />
         protected override BoundingArea CreateBoundingArea() {
-            return new BoundingArea(
+            return new(
                 this.WorldPoints.Min(p => p.X),
                 this.WorldPoints.Max(p => p.X),
                 this.WorldPoints.Min(p => p.Y),
@@ -254,6 +238,16 @@
             this._center.Reset();
         }
 
+        /// <summary>
+        /// Clears the vertex collection and adds the newly provided vertices.
+        /// </summary>
+        /// <param name="vertices">The new vertices.</param>
+        protected void ResetVertices(IEnumerable<Vector2> vertices) {
+            this._vertices.Clear();
+            this._vertices.AddRange(vertices);
+            this.Reset();
+        }
+
         /// <inheritdoc />
         protected override bool TryHit(LineSegment ray, out RaycastHit result) {
             var hasIntersection = false;
@@ -280,11 +274,28 @@
             return hasIntersection;
         }
 
+        /// <summary>
+        /// Tries to set the vertex at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="vertex">The vertex.</param>
+        /// <returns>A value indicating whether or not the vertex was set at the index.</returns>
+        protected bool TrySetVertex(int index, Vector2 vertex) {
+            var result = false;
+            if (index >= 0 && index < this._vertices.Count) {
+                this._vertices[index] = vertex;
+                this.Reset();
+                result = true;
+            }
+
+            return result;
+        }
+
         private List<Vector2> CreateWorldPoints() {
             var worldPoints = new List<Vector2>();
             if (this.Body != null) {
-                foreach (var point in this._points) {
-                    var worldPoint = this.Body.Entity.GetWorldTransform(this.Offset + point).Position;
+                foreach (var point in this._vertices) {
+                    var worldPoint = this.Body.GetWorldTransform(this.Offset + point).Position;
                     worldPoints.Add(worldPoint);
                 }
             }
@@ -295,15 +306,15 @@
         private void ForceClockwise() {
             var sum = 0f;
 
-            for (var i = 0; i < this._points.Count; i++) {
-                var current = this._points[i];
-                var next = this._points[i + 1 == this._points.Count ? 0 : i + 1];
+            for (var i = 0; i < this._vertices.Count; i++) {
+                var current = this._vertices[i];
+                var next = this._vertices[i + 1 == this._vertices.Count ? 0 : i + 1];
 
-                sum += (current.X * next.Y - next.X * current.Y);
+                sum += current.X * next.Y - next.X * current.Y;
             }
 
             if (sum < 0f) {
-                this._points.Reverse();
+                this._vertices.Reverse();
             }
         }
     }

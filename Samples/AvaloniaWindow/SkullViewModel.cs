@@ -3,16 +3,16 @@
     using Avalonia.Controls;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Components;
+    using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Entities;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
     using Point = Microsoft.Xna.Framework.Point;
 
     public sealed class SkullViewModel : MonoGameViewModel {
-        private CameraComponent _camera;
+        private Camera _camera;
         private string _displayText = @"github.com/Macabresoft/Macabresoft.Macabre2D";
-        private TextRenderComponent _displayTextRenderer;
-        private SpriteRenderComponent _skullRenderer;
+        private TextRenderer _displayTextRenderer;
+        private SpriteRenderer _skullRenderer;
 
         public SkullViewModel(IAvaloniaGame game) : base(game) {
             this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
@@ -37,51 +37,46 @@
             scene.AddSystem<UpdateSystem>();
             scene.BackgroundColor = DefinedColors.MacabresoftPurple;
 
-            var gridComponent = scene.AddChild().AddComponent<GridDrawerComponent>();
-            gridComponent.Color = DefinedColors.MacabresoftBone * 0.5f;
-            gridComponent.UseDynamicLineThickness = false;
-            gridComponent.Grid = new TileGrid(Vector2.One);
-            gridComponent.RenderOrder = -1;
+            var gridDrawer = scene.AddChild<GridDrawer>();
+            gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
+            gridDrawer.UseDynamicLineThickness = false;
+            gridDrawer.Grid = new TileGrid(Vector2.One);
+            gridDrawer.RenderOrder = -1;
 
             var skull = new SpriteSheet();
             this.Game.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
 
-            var skullEntity = scene.AddChild();
-            skullEntity.LocalPosition += new Vector2(0f, 0.5f);
-            this._skullRenderer = skullEntity.AddComponent<SpriteRenderComponent>();
+            this._skullRenderer = scene.AddChild<SpriteRenderer>();
+            this._skullRenderer.LocalPosition += new Vector2(0f, 0.5f);
             this._skullRenderer.SpriteReference.Initialize(skull);
             this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
-            skullEntity.AddComponent<SampleInputComponent>();
+            this._skullRenderer.AddChild<SampleInputEntity>();
 
             var leagueMono = new Font();
             this.Game.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
 
-            var textRenderEntity = scene.AddChild();
-            this._displayTextRenderer = textRenderEntity.AddComponent<TextRenderComponent>();
+            this._displayTextRenderer = scene.AddChild<TextRenderer>();
             this._displayTextRenderer.FontReference.Initialize(leagueMono);
             this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
             this._displayTextRenderer.Text = this.DisplayText;
             this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
-            textRenderEntity.LocalScale = new Vector2(0.25f);
-            textRenderEntity.LocalPosition = new Vector2(0f, -3f);
+            this._displayTextRenderer.LocalScale = new Vector2(0.25f);
+            this._displayTextRenderer.LocalPosition = new Vector2(0f, -3f);
 
-            var cameraEntity = scene.AddChild();
-            this._camera = cameraEntity.AddComponent<CameraComponent>();
+            this._camera = scene.AddChild<Camera>();
             this._camera.ViewHeight = 9f;
-            var cameraChild = cameraEntity.AddChild();
-            var cameraTextRenderer = cameraChild.AddComponent<TextRenderComponent>();
+            var cameraTextRenderer = this._camera.AddChild<TextRenderer>();
             cameraTextRenderer.FontReference.Initialize(leagueMono);
             cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
             cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
             cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
-            cameraChild.AddComponent<MouseDebuggerComponent>();
-            cameraChild.LocalScale = new Vector2(0.1f);
-            cameraChild.LocalPosition = new Vector2(0f, -2.5f);
-            var frameRateDisplayEntity = cameraEntity.AddChild();
-            var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
+            cameraTextRenderer.AddChild<MouseDebuggerEntity>();
+            cameraTextRenderer.LocalScale = new Vector2(0.1f);
+            cameraTextRenderer.LocalPosition = new Vector2(0f, -2.5f);
+            var frameRateDisplay = this._camera.AddChild<FrameRateDisplayEntity>();
             frameRateDisplay.FontReference.Initialize(leagueMono);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
-            frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
+            frameRateDisplay.LocalScale = new Vector2(0.1f);
 
             this.Game.LoadScene(scene);
             base.Initialize(window, viewportSize, mouse, keyboard);

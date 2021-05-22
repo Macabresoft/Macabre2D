@@ -1,6 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using Microsoft.Xna.Framework.Graphics;
 
+    /// <summary>
+    /// Helper class for lines.
+    /// </summary>
     public static class LineHelper {
         /// <summary>
         /// Gets the dynamic line thickness. This scales a static line size to appear the same size regardless of the camera's view

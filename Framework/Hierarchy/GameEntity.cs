@@ -1,30 +1,33 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IScene" /> which
-    /// holds a collection of <see cref="IGameComponent" />.
+    /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IGameScene" /> which
+    /// holds a collection of <see cref="IGameEntity" />.
     /// </summary>
-    public interface IGameEntity : IEnableable, ITransformable, INotifyPropertyChanged {
-
+    public interface IGameEntity : IEnableable, IIdentifiable, ITransformable, INotifyPropertyChanged {
         /// <summary>
         /// Gets the children.
         /// </summary>
         /// <value>The children.</value>
-        IReadOnlyCollection<IGameEntity> Children { get => new IGameEntity[0]; }
+        IReadOnlyCollection<IGameEntity> Children => Array.Empty<IGameEntity>();
 
         /// <summary>
-        /// Gets the components.
+        /// Gets the parent.
         /// </summary>
-        /// <value>The components.</value>
-        IReadOnlyCollection<IGameComponent> Components { get => new IGameComponent[0]; }
+        /// <value>The parent.</value>
+        IGameEntity Parent => GameScene.Empty;
+
+        /// <summary>
+        /// Gets the scene.
+        /// </summary>
+        /// <value>The scene.</value>
+        IGameScene Scene => GameScene.Empty;
 
         /// <summary>
         /// Gets the layers.
@@ -37,18 +40,6 @@
         /// </summary>
         /// <value>The name.</value>
         string Name { get; set; }
-
-        /// <summary>
-        /// Gets the parent.
-        /// </summary>
-        /// <value>The parent.</value>
-        IGameEntity Parent { get => GameScene.Empty; }
-
-        /// <summary>
-        /// Gets the scene.
-        /// </summary>
-        /// <value>The scene.</value>
-        IGameScene Scene { get => GameScene.Empty; }
 
         /// <summary>
         /// Adds a child of the specified type.
@@ -72,30 +63,15 @@
         void AddChild(IGameEntity entity);
 
         /// <summary>
-        /// Adds a new component of the specified type.
+        /// Gets the child of the specified type if it exists; otherwise, adds a new child.
         /// </summary>
-        /// <typeparam name="T">
-        /// A type that implements <see cref="IGameComponent" /> and has an empty constructor.
-        /// </typeparam>
-        /// <returns>The added component.</returns>
-        T AddComponent<T>() where T : IGameComponent, new();
+        /// <typeparam name="T">The type of child to find.</typeparam>
+        /// <returns>The entity that was found or added.</returns>
+        T GetOrAddChild<T>() where T : class, IGameEntity, new();
 
         /// <summary>
-        /// Adds the component.
-        /// </summary>
-        /// <param name="component">The component.</param>
-        void AddComponent(IGameComponent component);
-
-        /// <summary>
-        /// Gets the component of the specified type if it exists; otherwise, adds the component.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>The component that was found or added.</returns>
-        T GetOrAddComponent<T>() where T : class, IGameComponent, new();
-
-        /// <summary>
-        /// Initializes this entity as a descendent of <paramref name="scene" /> and <paramref
-        /// name="parent" />.
+        /// Initializes this entity as a descendent of <paramref name="scene" /> and
+        /// <paramref name="parent" />.
         /// </summary>
         /// <param name="scene">The scene.</param>
         /// <param name="parent">The parent.</param>
@@ -122,54 +98,40 @@
         void RemoveChild(IGameEntity entity);
 
         /// <summary>
-        /// Removes the component.
+        /// Tries the get a child of the specific type. This is recursive.
         /// </summary>
-        /// <param name="component">The component.</param>
-        /// <returns>A value indicating whether or not the component was removed.</returns>
-        bool RemoveComponent(IGameComponent component);
-
-        /// <summary>
-        /// Tries the get ancestral component. This component could be a component on this instance
-        /// or a parent going all the way up to the scene.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="component">The component.</param>
-        /// <returns>A value indicating whether or not the component was found.</returns>
-        bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent;
-
-        /// <summary>
-        /// Tries the get component a component of the specified type that belongs to this instance.
-        /// </summary>
-        /// <typeparam name="T">The type of component to search for.</typeparam>
-        /// <param name="component">The component.</param>
+        /// <typeparam name="T">The type of entity for which to search.</typeparam>
+        /// <param name="entity">The child entity.</param>
         /// <returns>
-        /// A value indicating whether or not a component of the specified type was found.
+        /// A value indicating whether or not a child of the specified type was found.
         /// </returns>
-        bool TryGetComponent<T>(out T? component) where T : class, IGameComponent;
+        bool TryGetChild<T>(out T? entity) where T : class, IGameEntity;
+
+        /// <summary>
+        /// Tries the get the parent. This entity could be a parent going all the way up to the scene.
+        /// </summary>
+        /// <typeparam name="T">The type of parent entity.</typeparam>
+        /// <param name="entity">The parent entity.</param>
+        /// <returns>A value indicating whether or not the entity was found.</returns>
+        bool TryGetParentEntity<T>(out T? entity) where T : class, IGameEntity;
     }
 
     /// <summary>
     /// A <see cref="ITransformable" /> descendent of <see cref="IGameScene" /> which holds a
-    /// collection of <see cref="IGameComponent" />
+    /// collection of <see cref="IGameEntity" />
     /// </summary>
     public class GameEntity : Transformable, IGameEntity {
-
         /// <summary>
         /// The default empty <see cref="IGameEntity" /> that is present before initialization.
         /// </summary>
         public static readonly IGameEntity Empty = new EmptyGameEntity();
 
         [DataMember]
-        private readonly ObservableCollection<IGameEntity> _children = new ObservableCollection<IGameEntity>();
+        private readonly ObservableCollection<IGameEntity> _children = new();
 
-        [DataMember]
-        private readonly ObservableCollection<IGameComponent> _components = new ObservableCollection<IGameComponent>();
-
-        
+        private Guid _id = Guid.NewGuid();
         private bool _isEnabled = true;
-
         private Layers _layers = Layers.Default;
-        
         private string _name = string.Empty;
 
         /// <summary>
@@ -183,46 +145,35 @@
         public IReadOnlyCollection<IGameEntity> Children => this._children;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameComponent> Components => this._components;
+        [DataMember]
+        public Guid Id {
+            get => this._id;
+            set => this.Set(ref this._id, value);
+        }
 
         /// <inheritdoc />
         [DataMember]
         public bool IsEnabled {
-            get {
-                return this._isEnabled;
-            }
-
-            set {
-                this.Set(ref this._isEnabled, value);
-            }
+            get => this._isEnabled;
+            set => this.Set(ref this._isEnabled, value);
         }
 
         /// <inheritdoc />
         [DataMember]
         public Layers Layers {
-            get {
-                return this._layers;
-            }
-
-            set {
-                this.Set(ref this._layers, value);
-            }
+            get => this._layers;
+            set => this.Set(ref this._layers, value);
         }
 
         /// <inheritdoc />
         [DataMember]
         public string Name {
-            get {
-                return this._name;
-            }
-
-            set {
-                this.Set(ref this._name, value);
-            }
+            get => this._name;
+            set => this.Set(ref this._name, value);
         }
 
         /// <inheritdoc />
-        public IGameEntity Parent { get; private set; } = GameEntity.Empty;
+        public IGameEntity Parent { get; private set; } = Empty;
 
         /// <inheritdoc />
         public IGameScene Scene { get; private set; } = GameScene.Empty;
@@ -243,50 +194,26 @@
         /// <inheritdoc />
         public void AddChild(IGameEntity entity) {
             if (this.CanAddChild(entity)) {
-                entity.Parent?.RemoveChild(entity);
+                entity.Parent.RemoveChild(entity);
                 this._children.Add(entity);
                 this.OnAddChild(entity);
             }
         }
 
         /// <inheritdoc />
-        public T AddComponent<T>() where T : IGameComponent, new() {
-            var component = new T();
-            this.AddComponent(component);
-            return component;
+        public T GetOrAddChild<T>() where T : class, IGameEntity, new() {
+            if (this.TryGetChild<T>(out var entity) && entity != null) {
+                return entity;
+            }
+
+            return this.AddChild<T>();
         }
 
         /// <inheritdoc />
-        public void AddComponent(IGameComponent component) {
-            component.Entity.RemoveComponent(component);
-            this._components.Add(component);
-            if (!GameScene.IsNullOrEmpty(this.Scene)) {
-                this.Scene.Invoke(() => {
-                    this.Scene.RegisterComponent(component);
-                    component.Initialize(this);
-                });
-            }
-        }
-
-        /// <inheritdoc />
-        public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
-            if (this.TryGetComponent<T>(out var component) && component != null) {
-                return component;
-            }
-            else {
-                return this.AddComponent<T>();
-            }
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IGameScene scene, IGameEntity parent) {
+        public virtual void Initialize(IGameScene scene, IGameEntity parent) {
             this.Scene = scene;
             this.Parent = parent;
-
-            foreach (var component in this.Components) {
-                component.Initialize(this);
-                this.Scene.RegisterComponent(component);
-            }
+            this.Scene.RegisterEntity(this);
 
             foreach (var child in this.Children) {
                 child.Initialize(this.Scene, this);
@@ -297,18 +224,14 @@
 
         /// <inheritdoc />
         public bool IsDescendentOf(IGameEntity entity) {
-            return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
+            return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
         }
 
         /// <inheritdoc />
-        public void OnRemovedFromSceneTree() {
-            var scene = this.Scene;
+        public virtual void OnRemovedFromSceneTree() {
+            this.Scene.UnregisterEntity(this);
             this.Scene = GameScene.Empty;
-            this.Parent = GameEntity.Empty;
-
-            foreach (var component in this._components) {
-                scene.UnregisterComponent(component);
-            }
+            this.Parent = Empty;
 
             foreach (var child in this._children) {
                 child.OnRemovedFromSceneTree();
@@ -326,34 +249,21 @@
         }
 
         /// <inheritdoc />
-        public bool RemoveComponent(IGameComponent component) {
-            var result = false;
+        public bool TryGetChild<T>(out T? entity) where T : class, IGameEntity {
+            entity = this.Children.OfType<T>().FirstOrDefault();
+            return entity != null;
+        }
 
-            if (this._components.Contains(component)) {
-                if (!GameScene.IsNullOrEmpty(this.Scene)) {
-                    this.Scene.Invoke(() => {
-                        this._components.Remove(component);
-                        this.Scene.UnregisterComponent(component);
-                    });
-                    result = true;
-                }
-                else {
-                    result = this._components.Remove(component);
-                }
+        /// <inheritdoc />
+        public virtual bool TryGetParentEntity<T>(out T? entity) where T : class, IGameEntity {
+            if (this.Parent is T parent) {
+                entity = parent;
+            }
+            else {
+                this.Parent.TryGetParentEntity(out entity);
             }
 
-            return result;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent {
-            return this.TryGetComponent(out component) || this.Parent.TryGetAncestralComponent(out component);
-        }
-
-        /// <inheritdoc />
-        public bool TryGetComponent<T>(out T? component) where T : class, IGameComponent {
-            component = this.Components.OfType<T>().FirstOrDefault();
-            return component != null;
+            return entity != null;
         }
 
         /// <inheritdoc />
@@ -378,8 +288,10 @@
             return entity != this && this.Children.All(x => x != entity) && !this.IsDescendentOf(entity);
         }
 
-        private void OnAddChild(IGameEntity entity) {
-            this.Scene.Invoke(() => entity.Initialize(this.Scene, this));
+        private void OnAddChild(IGameEntity child) {
+            if (!GameScene.IsNullOrEmpty(this.Scene)) {
+                this.Scene.Invoke(() => child.Initialize(this.Scene, this));
+            }
         }
 
         private void PerformChildRemoval(IGameEntity entity) {
@@ -390,10 +302,15 @@
         }
 
         internal class EmptyGameEntity : EmptyTransformable, IGameEntity {
-
             /// <inheritdoc />
             public event PropertyChangedEventHandler? PropertyChanged;
-            
+
+            /// <inheritdoc />
+            public Guid Id {
+                get => Guid.Empty;
+                set { }
+            }
+
             /// <inheritdoc />
             public bool IsEnabled {
                 get => false;
@@ -428,17 +345,7 @@
             }
 
             /// <inheritdoc />
-            public T AddComponent<T>() where T : IGameComponent, new() {
-                throw new NotSupportedException("Initialization has not occured.");
-            }
-
-            /// <inheritdoc />
-            public void AddComponent(IGameComponent component) {
-                throw new NotSupportedException("Initialization has not occured.");
-            }
-            
-            /// <inheritdoc />
-            public T GetOrAddComponent<T>() where T : class, IGameComponent, new() {
+            public T GetOrAddChild<T>() where T : class, IGameEntity, new() {
                 throw new NotSupportedException("Initialization has not occured.");
             }
 
@@ -462,19 +369,14 @@
             }
 
             /// <inheritdoc />
-            public bool RemoveComponent(IGameComponent component) {
+            public bool TryGetChild<T>(out T? entity) where T : class, IGameEntity {
+                entity = null;
                 return false;
             }
 
             /// <inheritdoc />
-            public bool TryGetAncestralComponent<T>(out T? component) where T : class, IGameComponent {
-                component = default;
-                return false;
-            }
-
-            /// <inheritdoc />
-            public bool TryGetComponent<T>(out T? component) where T : class, IGameComponent {
-                component = null;
+            public bool TryGetParentEntity<T>(out T? entity) where T : class, IGameEntity {
+                entity = default;
                 return false;
             }
         }

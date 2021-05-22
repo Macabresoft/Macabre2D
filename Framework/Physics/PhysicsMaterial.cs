@@ -1,5 +1,4 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Runtime.Serialization;
 
@@ -7,17 +6,16 @@
     /// A material which describes the physical attributes of a collider.
     /// </summary>
     [DataContract]
-    public struct PhysicsMaterial {
-
+    public readonly struct PhysicsMaterial {
         /// <summary>
         /// The default physics material.
         /// </summary>
-        public static readonly PhysicsMaterial Default = new PhysicsMaterial(0.5f, 1f);
+        public static readonly PhysicsMaterial Default = new(0.5f, 1f);
 
         /// <summary>
         /// An empty physics material with zero for both values.
         /// </summary>
-        public static readonly PhysicsMaterial Empty = new PhysicsMaterial(0f, 0f);
+        public static readonly PhysicsMaterial Empty = new(0f, 0f);
 
         /// <summary>
         /// A multiplier used when another collider hits the collider with this physics material. A

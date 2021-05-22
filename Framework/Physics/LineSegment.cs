@@ -1,13 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Represents a ray in the physics system.
     /// </summary>
     public sealed class LineSegment : IBoundable {
-
         /// <summary>
         /// The direction of the ray.
         /// </summary>
@@ -34,7 +32,7 @@
         private readonly Lazy<float> _valueC;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineSegment"/> class.
+        /// Initializes a new instance of the <see cref="LineSegment" /> class.
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
@@ -48,7 +46,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LineSegment"/> class.
+        /// Initializes a new instance of the <see cref="LineSegment" /> class.
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="direction">The direction.</param>
@@ -58,30 +56,14 @@
             this.Distance = distance;
         }
 
-        /// <inheritdoc/>
-        public BoundingArea BoundingArea {
-            get {
-                return this._boundingArea.Value;
-            }
-        }
+        /// <inheritdoc />
+        public BoundingArea BoundingArea => this._boundingArea.Value;
 
-        internal float ValueA {
-            get {
-                return this._valueA.Value;
-            }
-        }
+        internal float ValueA => this._valueA.Value;
 
-        internal float ValueB {
-            get {
-                return this._valueB.Value;
-            }
-        }
+        internal float ValueB => this._valueB.Value;
 
-        internal float ValueC {
-            get {
-                return this._valueC.Value;
-            }
-        }
+        internal float ValueC => this._valueC.Value;
 
         /// <summary>
         /// Gets the center of this line segment.

@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
 
     /// <summary>
-    /// A system which does a sorted update loop over enabled updateable components.
+    /// A system which does a sorted update loop over enabled updateable entities.
     /// </summary>
     public class UpdateSystem : GameSystem {
 
@@ -10,8 +10,8 @@
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            foreach (var component in this.Scene.UpdateableComponents) {
-                component.Update(frameTime, inputState);
+            foreach (var entity in this.Scene.UpdateableEntities) {
+                entity.Update(frameTime, inputState);
             }
         }
     }

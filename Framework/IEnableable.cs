@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
 
     /// <summary>
-    /// Interface for a component that can be enabled.
+    /// Interface for an entity that can be enabled.
     /// </summary>
     public interface IEnableable {
 

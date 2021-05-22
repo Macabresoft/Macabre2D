@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        public RectangleCollider(float width, float height) : base(CreatePoints(width, height)) {
+        public RectangleCollider(float width, float height) : base(CreateVertices(width, height)) {
         }
 
         /// <summary>
@@ -31,8 +31,8 @@
         /// <value>The height.</value>
         public float Height {
             get {
-                if (this._points.Count == 4) {
-                    return Math.Abs(this._points[2].Y - this._points[0].Y);
+                if (this.Vertices.Count == 4) {
+                    return Math.Abs(this.Vertices[2].Y - this.Vertices[0].Y);
                 }
 
                 return 0;
@@ -41,9 +41,7 @@
             set {
                 if (value != this.Height && value > 0) {
                     var width = this.Width;
-                    this._points.Clear();
-                    this._points.AddRange(CreatePoints(width, value));
-                    this.Reset();
+                    this.ResetVertices(CreateVertices(width, value));
                     this.RaisePropertyChanged();
                 }
             }
@@ -56,8 +54,8 @@
         /// <value>The width.</value>
         public float Width {
             get {
-                if (this._points.Count == 4) {
-                    return Math.Abs(this._points[0].X - this._points[2].X);
+                if (this.Vertices.Count == 4) {
+                    return Math.Abs(this.Vertices[0].X - this.Vertices[2].X);
                 }
 
                 return 0;
@@ -66,9 +64,7 @@
             set {
                 if (value != this.Width && value > 0) {
                     var height = this.Height;
-                    this._points.Clear();
-                    this._points.AddRange(CreatePoints(value, height));
-                    this.Reset();
+                    this.ResetVertices(CreateVertices(value, height));
                     this.RaisePropertyChanged();
                 }
             }
@@ -86,7 +82,7 @@
             return normals;
         }
 
-        private static IEnumerable<Vector2> CreatePoints(float width, float height) {
+        private static IEnumerable<Vector2> CreateVertices(float width, float height) {
             var halfWidth = 0.5f * width;
             var halfHeight = 0.5f * height;
 

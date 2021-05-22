@@ -9,7 +9,7 @@
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
-    internal sealed class TranslationGizmoComponent : BaseAxisGizmoComponent {
+    internal sealed class TranslationGizmo : BaseAxisGizmo {
         private readonly IUndoService _undoService;
         private Texture2D _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;
@@ -17,12 +17,12 @@
         private Texture2D _yAxisArrowSprite;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TranslationGizmoComponent" /> class.
+        /// Initializes a new instance of the <see cref="TranslationGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
-        public TranslationGizmoComponent(
+        public TranslationGizmo(
             IEditorService editorService,
             ISelectionService selectionService,
             IUndoService undoService) : base(editorService, selectionService) {

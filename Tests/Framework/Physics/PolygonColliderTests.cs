@@ -1,12 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
-
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public static class PolygonColliderTests {
-
         [Test]
         [Category("Unit Tests")]
         [TestCase(0f, 0f, 1f, 1f, 0f, 0f, 0.5f, false, TestName = "Quad Contains Circle - Touches Edges")]
@@ -15,16 +14,25 @@
         [TestCase(0f, 0f, 1f, 1f, 0.25f, -0.25f, 2f, false, TestName = "Quad Contains Circle - Inside But Does Not Contain")]
         [TestCase(0f, 0f, 1f, 1f, 3f, -2f, 0.5f, false, TestName = "Quad Contains Circle - Outside")]
         [TestCase(0f, 0f, 1f, 1f, 1, 1f, 0.5f, false, TestName = "Quad Contains Circle - Edges Touch")]
-        public static void PolygonCollider_ContainsCircle(float x1, float y1, float w1, float h1, float x2, float y2, float r2, bool shouldContain) {
-            using var quadBody = new DynamicPhysicsBodyComponent();
-            using var circleBody = new DynamicPhysicsBodyComponent();
-            circleBody.Initialize(new GameEntity());
-            quadBody.Initialize(new GameEntity());
+        public static void PolygonCollider_ContainsCircle(
+            float x1,
+            float y1,
+            float w1,
+            float h1,
+            float x2,
+            float y2,
+            float r2,
+            bool shouldContain) {
+            var quadBody = new DynamicPhysicsBody();
+            var circleBody = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            circleBody.Initialize(scene, new GameEntity());
+            quadBody.Initialize(scene, new GameEntity());
 
-            quadBody.Entity.SetWorldPosition(new Vector2(x1, y1));
+            quadBody.SetWorldPosition(new Vector2(x1, y1));
             quadBody.Collider = PolygonCollider.CreateRectangle(w1, h1);
 
-            circleBody.Entity.SetWorldPosition(new Vector2(x2, y2));
+            circleBody.SetWorldPosition(new Vector2(x2, y2));
             circleBody.Collider = new CircleCollider(r2);
 
             Assert.AreEqual(shouldContain, quadBody.Collider.Contains(circleBody.Collider));
@@ -37,10 +45,18 @@
         [TestCase(0f, 0f, 1f, 1f, 0.25f, 0.25f, true, TestName = "Quad Contains Point - Point is Inside")]
         [TestCase(0f, 0f, 1f, 1f, 1f, 1f, false, TestName = "Quad Contains Point - Point is Outside")]
         [TestCase(0f, 0f, 1f, 1f, 100f, 100f, false, TestName = "Quad Contains Point - Point is Way Outside")]
-        public static void PolygonCollider_ContainsPoint(float x1, float y1, float w, float h, float x2, float y2, bool shouldContain) {
-            using var quadBody = new DynamicPhysicsBodyComponent();
-            quadBody.Initialize(new GameEntity());
-            quadBody.Entity.SetWorldPosition(new Vector2(x1, y1));
+        public static void PolygonCollider_ContainsPoint(
+            float x1,
+            float y1,
+            float w,
+            float h,
+            float x2,
+            float y2,
+            bool shouldContain) {
+            var quadBody = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            quadBody.Initialize(scene, new GameEntity());
+            quadBody.SetWorldPosition(new Vector2(x1, y1));
             quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
 
             Assert.AreEqual(shouldContain, quadBody.Collider.Contains(new Vector2(x2, y2)));
@@ -54,16 +70,26 @@
         [TestCase(0f, 0f, 1f, 1f, 0.25f, -0.25f, 3f, 2f, false, TestName = "Quad Contains Quad - Inside But Does Not Contain")]
         [TestCase(0f, 0f, 1f, 1f, 3f, -2f, 1f, 1f, false, TestName = "Quad Contains Quad - Outside")]
         [TestCase(0f, 0f, 1f, 1f, 1, 1f, 1f, 1f, false, TestName = "Quad Contains Quad - Edges Touch")]
-        public static void PolygonCollider_ContainsPolygon(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool shouldContain) {
-            using var quadBody1 = new DynamicPhysicsBodyComponent();
-            using var quadBody2 = new DynamicPhysicsBodyComponent();
-            quadBody1.Initialize(new GameEntity());
-            quadBody2.Initialize(new GameEntity());
+        public static void PolygonCollider_ContainsPolygon(
+            float x1,
+            float y1,
+            float w1,
+            float h1,
+            float x2,
+            float y2,
+            float w2,
+            float h2,
+            bool shouldContain) {
+            var quadBody1 = new DynamicPhysicsBody();
+            var quadBody2 = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            quadBody1.Initialize(scene, new GameEntity());
+            quadBody2.Initialize(scene, new GameEntity());
 
-            quadBody1.Entity.SetWorldPosition(new Vector2(x1, y1));
+            quadBody1.SetWorldPosition(new Vector2(x1, y1));
             quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
 
-            quadBody2.Entity.SetWorldPosition(new Vector2(x2, y2));
+            quadBody2.SetWorldPosition(new Vector2(x2, y2));
             quadBody2.Collider = PolygonCollider.CreateRectangle(w2, h2);
 
             Assert.AreEqual(shouldContain, quadBody1.Collider.Contains(quadBody2.Collider));
@@ -77,16 +103,26 @@
         [TestCase(-0.5f, 0f, 0.5f, 0.5f, 0f, 0f, 1f, 1f, true, TestName = "Quad to Quad Collision - Right Collision")]
         [TestCase(3f, 3f, 1f, 1f, 0f, 0f, 1f, 1f, false, TestName = "Quad to Quad Collision - No Collision")]
         [TestCase(0f, -130f, 100f, 100f, 0f, -200f, 500f, 50f, true, TestName = "Quad to Quad Collision - Physics Test Failure")] // I think this should be failing?
-        public static void PolygonCollider_QuadCollidesWithQuadTest(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, bool collisionOccured) {
-            using var quadBody1 = new DynamicPhysicsBodyComponent();
-            using var quadBody2 = new DynamicPhysicsBodyComponent();
-            quadBody1.Initialize(new GameEntity());
-            quadBody2.Initialize(new GameEntity());
+        public static void PolygonCollider_QuadCollidesWithQuadTest(
+            float x1,
+            float y1,
+            float w1,
+            float h1,
+            float x2,
+            float y2,
+            float w2,
+            float h2,
+            bool collisionOccured) {
+            var quadBody1 = new DynamicPhysicsBody();
+            var quadBody2 = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            quadBody1.Initialize(scene, new GameEntity());
+            quadBody2.Initialize(scene, new GameEntity());
 
-            quadBody1.Entity.SetWorldPosition(new Vector2(x1, y1));
+            quadBody1.SetWorldPosition(new Vector2(x1, y1));
             quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
 
-            quadBody2.Entity.SetWorldPosition(new Vector2(x2, y2));
+            quadBody2.SetWorldPosition(new Vector2(x2, y2));
             quadBody2.Collider = PolygonCollider.CreateRectangle(w2, h2);
 
             Assert.AreEqual(collisionOccured, quadBody1.Collider.CollidesWith(quadBody2.Collider, out var collision1));
@@ -99,12 +135,12 @@
                 Assert.AreEqual(collision1.FirstContainsSecond, collision2.SecondContainsFirst);
                 Assert.AreEqual(collision1.SecondContainsFirst, collision2.FirstContainsSecond);
 
-                var originalPosition = quadBody1.Entity.Transform.Position;
-                quadBody1.Entity.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
+                var originalPosition = quadBody1.Transform.Position;
+                quadBody1.SetWorldPosition(originalPosition + collision1.MinimumTranslationVector);
                 Assert.False(quadBody1.Collider.CollidesWith(quadBody2.Collider, out collision1));
-                quadBody1.Entity.SetWorldPosition(originalPosition);
+                quadBody1.SetWorldPosition(originalPosition);
 
-                quadBody2.Entity.SetWorldPosition(quadBody2.Entity.Transform.Position + collision2.MinimumTranslationVector);
+                quadBody2.SetWorldPosition(quadBody2.Transform.Position + collision2.MinimumTranslationVector);
                 Assert.False(quadBody2.Collider.CollidesWith(quadBody1.Collider, out collision2));
             }
             else {
@@ -121,10 +157,25 @@
         [TestCase(0f, 0f, 2f, 2f, 2f, 0f, -1f, 0f, 5f, true, 1f, 0f, 1f, 0f, TestName = "Raycast on Quad - Ray Hits From Right")]
         [TestCase(0f, 0f, 2f, 2f, 2f, 2f, -1f, 0f, 5f, false, TestName = "Raycast on Quad - Ray Misses")]
         [TestCase(0f, 0f, 2f, 2f, -2f, 1f, 1f, 0f, 5f, true, -1f, 1f, -1f, 0f, TestName = "Raycast on Quad - Ray Hits Top Most Point")]
-        public static void PolyGonCollider_QuadIsHitByTest(float qx, float qy, float qw, float qh, float rx, float ry, float directionX, float directionY, float distance, bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
-            using var quadBody = new DynamicPhysicsBodyComponent();
-            quadBody.Initialize(new GameEntity());
-            quadBody.Entity.SetWorldPosition(new Vector2(qx, qy));
+        public static void PolyGonCollider_QuadIsHitByTest(
+            float qx,
+            float qy,
+            float qw,
+            float qh,
+            float rx,
+            float ry,
+            float directionX,
+            float directionY,
+            float distance,
+            bool shouldHit,
+            float ix = 0f,
+            float iy = 0f,
+            float nx = 0f,
+            float ny = 0f) {
+            var quadBody = new DynamicPhysicsBody();
+            var scene = Substitute.For<IGameScene>();
+            quadBody.Initialize(scene, new GameEntity());
+            quadBody.SetWorldPosition(new Vector2(qx, qy));
             quadBody.Collider = PolygonCollider.CreateRectangle(qw, qh);
 
             var ray = new LineSegment(new Vector2(rx, ry), new Vector2(directionX, directionY), distance);

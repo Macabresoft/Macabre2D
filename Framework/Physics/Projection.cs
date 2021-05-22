@@ -1,19 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Macabresoft.Macabre2D.Framework {
+﻿namespace Macabresoft.Macabre2D.Framework {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// A projection used by the physics engine when implementing the Separating Axis Theorem
     /// </summary>
-    public struct Projection {
-
+    public readonly struct Projection {
         /// <summary>
         /// The empty projection.
         /// </summary>
-        public static readonly Projection Empty = new Projection(Vector2.Zero, 0f, 0f);
+        public static readonly Projection Empty = new(Vector2.Zero, 0f, 0f);
 
         /// <summary>
         /// The axis on which things are being projected.
@@ -45,26 +43,27 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <summary>
         /// Creates the polygon's projection on the specified axis.
         /// </summary>
-        /// <param name="polygon">The polygon.</param>
         /// <param name="axis">The axis.</param>
+        /// <param name="worldVertices">The vertices in world units.</param>
         /// <returns>The polygon's projection on the specified axis.</returns>
-        public static Projection CreatePolygonProjection(Vector2 axis, IEnumerable<Vector2> worldPoints) {
-            return CreatePolygonProjection(axis, 0f, worldPoints);
+        public static Projection CreatePolygonProjection(Vector2 axis, IEnumerable<Vector2> worldVertices) {
+            return CreatePolygonProjection(axis, 0f, worldVertices);
         }
 
         /// <summary>
         /// Creates the polygon's projection on the specified axis.
         /// </summary>
-        /// <param name="polygon">The polygon.</param>
         /// <param name="axis">The axis.</param>
         /// <param name="offset">The offset.</param>
+        /// <param name="worldVertices">The vertices in world units.</param>
         /// <returns>The polygon's projection on the specified axis.</returns>
-        public static Projection CreatePolygonProjection(Vector2 axis, float offset, IEnumerable<Vector2> worldPoints) {
-            var minimum = Vector2.Dot(axis, worldPoints.ElementAt(0));
+        public static Projection CreatePolygonProjection(Vector2 axis, float offset, IEnumerable<Vector2> worldVertices) {
+            var vertices = worldVertices.ToList();
+            var minimum = Vector2.Dot(axis, vertices.ElementAt(0));
             var maximum = minimum;
 
-            for (var i = 1; i < worldPoints.Count(); i++) {
-                var dotProduct = Vector2.Dot(axis, worldPoints.ElementAt(i));
+            for (var i = 1; i < vertices.Count; i++) {
+                var dotProduct = Vector2.Dot(axis, vertices[i]);
 
                 if (dotProduct < minimum) {
                     minimum = dotProduct;

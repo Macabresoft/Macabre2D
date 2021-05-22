@@ -10,16 +10,16 @@
     /// A component which displays the currently selected <see cref="IGameEntity" /> and
     /// <see cref="Framework.IGameComponent" />.
     /// </summary>
-    internal class SelectionDisplayComponent : BaseDrawerComponent {
+    internal class SelectionDisplay : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly ISelectionService _selectionService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectionDisplayComponent" /> class.
+        /// Initializes a new instance of the <see cref="SelectionDisplay" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
-        public SelectionDisplayComponent(IEditorService editorService, ISelectionService selectionService) : base() {
+        public SelectionDisplay(IEditorService editorService, ISelectionService selectionService) : base() {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 2f;
             this._editorService = editorService;

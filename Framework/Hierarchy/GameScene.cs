@@ -19,10 +19,10 @@
         IAssetManager Assets => AssetManager.Empty;
         
         /// <summary>
-        /// Gets the camera components.
+        /// Gets the cameras in the scene.
         /// </summary>
-        /// <value>The camera components.</value>
-        IReadOnlyCollection<ICameraComponent> CameraComponents => Array.Empty<ICameraComponent>();
+        /// <value>The cameras.</value>
+        IReadOnlyCollection<ICamera> Cameras => Array.Empty<ICamera>();
 
         /// <summary>
         /// Gets the game currently running this scene.
@@ -34,19 +34,19 @@
         /// Gets the grid.
         /// </summary>
         /// <value>The grid.</value>
-        TileGrid Grid => TileGrid.Empty;
+        TileGrid Grid => TileGrid.One;
 
         /// <summary>
         /// Gets the physics bodies.
         /// </summary>
         /// <value>The physics bodies.</value>
-        IReadOnlyCollection<IPhysicsBodyComponent> PhysicsBodies => Array.Empty<IPhysicsBodyComponent>();
+        IReadOnlyCollection<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
 
         /// <summary>
-        /// Gets the renderable components.
+        /// Gets the renderable entities in the scene.
         /// </summary>
-        /// <value>The renderable components.</value>
-        IReadOnlyCollection<IGameRenderableComponent> RenderableComponents => Array.Empty<IGameRenderableComponent>();
+        /// <value>The renderable entities.</value>
+        IReadOnlyCollection<IGameRenderableEntity> RenderableEntities => Array.Empty<IGameRenderableEntity>();
 
         /// <summary>
         /// Gets the systems.
@@ -55,10 +55,10 @@
         IReadOnlyCollection<IGameSystem> Systems => new IGameSystem[0];
 
         /// <summary>
-        /// Gets the updateable components.
+        /// Gets the updateable entities.
         /// </summary>
-        /// <value>The updateable components.</value>
-        IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => new IGameUpdateableComponent[0];
+        /// <value>The updateable entities.</value>
+        IReadOnlyCollection<IGameUpdateableEntity> UpdateableEntities => new IGameUpdateableEntity[0];
 
         /// <summary>
         /// Gets or sets the color of the background.
@@ -70,7 +70,7 @@
         /// Adds the service.
         /// </summary>
         /// <typeparam name="T">
-        /// A type that implements <see cref="IGameSystem" /> and has an empty contructor.
+        /// A type that implements <see cref="IGameSystem" /> and has an empty constructor.
         /// </typeparam>
         /// <returns>The added service.</returns>
         T AddSystem<T>() where T : IGameSystem, new();
@@ -95,10 +95,10 @@
         void Invoke(Action action);
 
         /// <summary>
-        /// Registers the component with relevant services.
+        /// Registers the entity with relevant services.
         /// </summary>
-        /// <param name="component">The component.</param>
-        void RegisterComponent(IGameComponent component);
+        /// <param name="entity">The entity.</param>
+        void RegisterEntity(IGameEntity entity);
 
         /// <summary>
         /// Removes the service.
@@ -132,10 +132,10 @@
         T ResolveDependency<T>(Func<T> objectFactory) where T : class;
 
         /// <summary>
-        /// Unregisters the component from services.
+        /// Unregisters the entity from services.
         /// </summary>
-        /// <param name="component">The component.</param>
-        void UnregisterComponent(IGameComponent component);
+        /// <param name="entity">The entity.</param>
+        void UnregisterEntity(IGameEntity entity);
     }
 
     /// <summary>
@@ -148,55 +148,56 @@
         /// </summary>
         public new static readonly IGameScene Empty = new EmptyGameScene();
 
-        private readonly HashSet<IGameComponent> _allComponentsInScene = new();
+        private readonly HashSet<IGameEntity> _allEntitiesInScene = new();
 
-        private readonly FilterSortCollection<ICameraComponent> _cameraComponents = new(
+        private readonly FilterSortCollection<ICamera> _cameras = new(
             c => c.IsEnabled,
-            nameof(IGameComponent.IsEnabled),
+            nameof(IEnableable.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            nameof(ICameraComponent.RenderOrder));
+            nameof(ICamera.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new();
         private readonly List<Action> _pendingActions = new();
 
-        private readonly FilterSortCollection<IPhysicsBodyComponent> _physicsBodies = new(
+        private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new(
             r => r.IsEnabled,
-            nameof(IGameComponent.IsEnabled),
+            nameof(IEnableable.IsEnabled),
             (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
-            nameof(IPhysicsBodyComponent.UpdateOrder));
+            nameof(IPhysicsBody.UpdateOrder));
 
-        private readonly FilterSortCollection<IGameRenderableComponent> _renderableComponents = new(
+        private readonly FilterSortCollection<IGameRenderableEntity> _renderableEntities = new(
             c => c.IsVisible,
-            nameof(IGameRenderableComponent.IsVisible),
+            nameof(IGameRenderableEntity.IsVisible),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            nameof(IGameRenderableComponent.RenderOrder));
+            nameof(IGameRenderableEntity.RenderOrder));
 
         [DataMember]
         private readonly ObservableCollection<IGameSystem> _systems = new();
 
-        private readonly FilterSortCollection<IGameUpdateableComponent> _updateableComponents = new(
+        private readonly FilterSortCollection<IGameUpdateableEntity> _updateableEntities = new(
             c => c.IsEnabled,
-            nameof(IGameUpdateableComponent.IsEnabled),
+            nameof(IGameUpdateableEntity.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IGameUpdateableComponent.UpdateOrder));
+            nameof(IGameUpdateableEntity.UpdateOrder));
 
         private Color _backgroundColor = DefinedColors.MacabresoftBlack;
+        private TileGrid _grid = TileGrid.One;
         private bool _isBusy;
         private bool _isInitialized;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ICameraComponent> CameraComponents => this._cameraComponents;
+        public IReadOnlyCollection<ICamera> Cameras => this._cameras;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IPhysicsBodyComponent> PhysicsBodies => this._physicsBodies;
+        public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
 
-        public IReadOnlyCollection<IGameRenderableComponent> RenderableComponents => this._renderableComponents;
+        public IReadOnlyCollection<IGameRenderableEntity> RenderableEntities => this._renderableEntities;
 
         /// <inheritdoc />
         public IReadOnlyCollection<IGameSystem> Systems => this._systems;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameUpdateableComponent> UpdateableComponents => this._updateableComponents;
+        public IReadOnlyCollection<IGameUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
         /// <inheritdoc />
         public IAssetManager Assets { get; private set; } = AssetManager.Empty;
@@ -212,7 +213,10 @@
         public IGame Game { get; private set; } = BaseGame.Empty;
 
         /// <inheritdoc />
-        public TileGrid Grid { get; set; } = new(Vector2.One);
+        public TileGrid Grid {
+            get => this._grid;
+            set => this.Set(ref this._grid, value);
+        }
 
         /// <inheritdoc />
         public T AddSystem<T>() where T : IGameSystem, new() {
@@ -274,12 +278,12 @@
         }
 
         /// <inheritdoc />
-        public void RegisterComponent(IGameComponent component) {
-            this._allComponentsInScene.Add(component);
-            this._cameraComponents.Add(component);
-            this._physicsBodies.Add(component);
-            this._renderableComponents.Add(component);
-            this._updateableComponents.Add(component);
+        public void RegisterEntity(IGameEntity entity) {
+            this._allEntitiesInScene.Add(entity);
+            this._cameras.Add(entity);
+            this._physicsBodies.Add(entity);
+            this._renderableEntities.Add(entity);
+            this._updateableEntities.Add(entity);
         }
 
         /// <inheritdoc />
@@ -319,6 +323,12 @@
         }
 
         /// <inheritdoc />
+        public override bool TryGetParentEntity<T>(out T? entity) where T : class {
+            entity = null;
+            return false;
+        }
+
+        /// <inheritdoc />
         public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
             if (this._dependencies.TryGetValue(typeof(T), out var found) && found is T dependency) {
                 return dependency;
@@ -330,12 +340,12 @@
         }
 
         /// <inheritdoc />
-        public void UnregisterComponent(IGameComponent component) {
-            this._allComponentsInScene.Remove(component);
-            this._cameraComponents.Remove(component);
-            this._physicsBodies.Remove(component);
-            this._renderableComponents.Remove(component);
-            this._updateableComponents.Remove(component);
+        public void UnregisterEntity(IGameEntity entity) {
+            this._allEntitiesInScene.Remove(entity);
+            this._cameras.Remove(entity);
+            this._physicsBodies.Remove(entity);
+            this._renderableEntities.Remove(entity);
+            this._updateableEntities.Remove(entity);
         }
 
         /// <inheritdoc />
@@ -387,7 +397,7 @@
             }
 
             /// <inheritdoc />
-            public void RegisterComponent(IGameComponent component) {
+            public void RegisterEntity(IGameEntity entity) {
             }
 
             /// <inheritdoc />
@@ -410,7 +420,7 @@
             }
 
             /// <inheritdoc />
-            public void UnregisterComponent(IGameComponent component) {
+            public void UnregisterEntity(IGameEntity entity) {
             }
 
             /// <inheritdoc />

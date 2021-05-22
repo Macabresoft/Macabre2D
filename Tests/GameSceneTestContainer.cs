@@ -17,17 +17,13 @@
                 this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
             }
 
-            this.RenderableEntity = this.Scene.AddChild();
+            this.RenderableEntity = this.Scene.AddChild<SpriteRenderer>();
             this.RenderableEntity.Name = $"{nameof(this.RenderableEntity)} / {nameof(this.UpdateableEntity)}";
-            this.RenderableComponent = this.RenderableEntity.AddComponent<SpriteRenderComponent>();
-            this.UpdateableEntity = this.RenderableEntity;
-            this.UpdateableComponent = this.UpdateableEntity.AddComponent<FrameRateComponent>();
-            this.CameraEntity = this.UpdateableEntity.AddChild();
+            this.UpdateableEntity = this.RenderableEntity.AddChild<FrameRateEntity>();
+            this.CameraEntity = this.UpdateableEntity.AddChild<Camera>();
             this.CameraEntity.Name = nameof(this.CameraEntity);
-            this.CameraComponent = this.CameraEntity.AddComponent<CameraComponent>();
-            this.UpdateableAndRenderableEntity = this.Scene.AddChild();
+            this.UpdateableAndRenderableEntity = this.Scene.AddChild<SpriteAnimator>();
             this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
-            this.UpdateableAndRenderableComponent = this.UpdateableAndRenderableEntity.AddComponent<SpriteAnimatorComponent>();
 
             if (initializationMode == InitializationMode.After) {
                 this.Scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
@@ -39,32 +35,24 @@
             After,
             None
         }
-
-        public IGameComponent CameraComponent { get; }
-
+        
         public IGameEntity CameraEntity { get; }
-
-        public IGameComponent RenderableComponent { get; }
 
         public IGameEntity RenderableEntity { get; }
 
         public IGameScene Scene { get; }
 
-        public IGameComponent UpdateableAndRenderableComponent { get; }
-
         public IGameEntity UpdateableAndRenderableEntity { get; }
-
-        public IGameComponent UpdateableComponent { get; }
-
+        
         public IGameEntity UpdateableEntity { get; }
 
-        internal void AssertExistanceOfComponents(bool shouldExist) {
+        internal void AssertExistenceOfEntities(bool shouldExist) {
             using (new AssertionScope()) {
-                this.Scene.RenderableComponents.Any(x => x.Id == this.RenderableComponent.Id).Should().Be(shouldExist);
-                this.Scene.RenderableComponents.Any(x => x.Id == this.UpdateableAndRenderableComponent.Id).Should().Be(shouldExist);
-                this.Scene.UpdateableComponents.Any(x => x.Id == this.UpdateableAndRenderableComponent.Id).Should().Be(shouldExist);
-                this.Scene.UpdateableComponents.Any(x => x.Id == this.UpdateableComponent.Id).Should().Be(shouldExist);
-                this.Scene.CameraComponents.Any(x => x.Id == this.CameraComponent.Id).Should().Be(shouldExist);
+                this.Scene.RenderableEntities.Any(x => x.Id == this.RenderableEntity.Id).Should().Be(shouldExist);
+                this.Scene.RenderableEntities.Any(x => x.Id == this.UpdateableAndRenderableEntity.Id).Should().Be(shouldExist);
+                this.Scene.UpdateableEntities.Any(x => x.Id == this.UpdateableAndRenderableEntity.Id).Should().Be(shouldExist);
+                this.Scene.UpdateableEntities.Any(x => x.Id == this.UpdateableEntity.Id).Should().Be(shouldExist);
+                this.Scene.Cameras.Any(x => x.Id == this.CameraEntity.Id).Should().Be(shouldExist);
             }
         }
     }

@@ -12,7 +12,7 @@
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
-    internal abstract class BaseAxisGizmoComponent : BaseDrawerComponent, IGizmo {
+    internal abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         /// <summary>
         /// Represents the axis a gizmo is being operated on.
         /// </summary>
@@ -30,14 +30,14 @@
 
         private const float FloatingPointTolerance = 0.0001f;
 
-        private ICameraComponent _camera;
+        private ICamera _camera;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseAxisGizmoComponent" /> class.
+        /// Initializes a new instance of the <see cref="BaseAxisGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
-        protected BaseAxisGizmoComponent(IEditorService editorService, ISelectionService selectionService) {
+        protected BaseAxisGizmo(IEditorService editorService, ISelectionService selectionService) {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 1f;
             this.EditorService = editorService;
@@ -56,7 +56,7 @@
         /// <summary>
         /// Gets the camera.
         /// </summary>
-        protected ICameraComponent Camera => this._camera;
+        protected ICamera Camera => this._camera;
 
         /// <summary>
         /// The editor service.
@@ -223,7 +223,7 @@
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ICameraComponent.ViewHeight)) {
+            if (e.PropertyName == nameof(ICamera.ViewHeight)) {
                 this.ResetEndPoints();
             }
         }

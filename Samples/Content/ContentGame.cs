@@ -20,28 +20,27 @@
             scene.AddSystem<UpdateSystem>();
             scene.AddSystem<RenderSystem>();
 
-            var cameraEntity = scene.AddChild();
-            cameraEntity.AddComponent<CameraScroller>();
-            var camera = cameraEntity.AddComponent<CameraComponent>();
+            var camera = scene.AddChild<Camera>();
+            camera.AddChild<CameraScroller>();
             camera.LayersToRender = Layers.Default;
             camera.OffsetSettings.OffsetType = PixelOffsetType.Center;
-            cameraEntity.AddComponent<MovingDot>();
-            cameraEntity.AddChild().AddComponent<MouseClickDebugger>();
+            camera.AddChild<MovingDot>();
+            camera.AddChild<MouseClickDebugger>();
 
             var whiteSquare = new SpriteSheet();
             this.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new[] { "WhiteSquare" }, ".png"));
 
-            var spriteRenderer = cameraEntity.AddComponent<SpriteRenderComponent>();
+            var spriteRenderer = camera.AddChild<SpriteRenderer>();
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
-            var binaryTileMapEntity = scene.AddChild();
-            var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
-            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * this.Project.Settings.InversePixelsPerUnit);
-            var binaryTileMap = binaryTileMapEntity.AddComponent<BinaryTileMapComponent>();
+            var binaryTileMap = scene.AddChild<BinaryTileMap>();
+            // TODO: allow changing of scene grid
+            /*var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
+            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * this.Project.Settings.InversePixelsPerUnit);*/
             binaryTileMap.RenderOrder = -300;
-            binaryTileMapEntity.LocalPosition = new Vector2(-5f, -10f);
-            binaryTileMapEntity.LocalScale = new Vector2(1f, 1f);
+            binaryTileMap.LocalPosition = new Vector2(-5f, -10f);
+            binaryTileMap.LocalScale = new Vector2(1f, 1f);
             binaryTileMap.SpriteReference.Initialize(whiteSquare);
             binaryTileMap.Color = Color.DarkGray;
 
@@ -65,8 +64,7 @@
 
             this.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
 
-            var animatedEntity = scene.AddChild();
-            var spriteAnimator = animatedEntity.AddComponent<SpriteAnimatorComponent>();
+            var spriteAnimator = scene.AddChild<SpriteAnimator>();
             spriteAnimator.FrameRate = 4;
             spriteAnimator.RenderOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -82,48 +80,43 @@
             spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
             spriteAnimator.AnimationReference.Initialize(colorfulSquares);
 
-            var scalerEntity1 = scene.AddChild();
-            scalerEntity1.AddComponent<Scaler>();
-            scalerEntity1.LocalPosition -= new Vector2(2f, 0);
-            var spriteRenderer3 = scalerEntity1.AddComponent<SpriteRenderComponent>();
+            var spriteRenderer3 = scene.AddChild<SpriteRenderer>();
             spriteRenderer3.RenderOrder = -200;
             spriteRenderer3.SpriteReference.Initialize(whiteSquare);
             spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
-            var middleSpinningDotBoundingArea = scalerEntity1.AddComponent<BoundingAreaDrawerComponent>();
+            spriteRenderer3.LocalPosition -= new Vector2(2f, 0);
+            spriteRenderer3.AddChild<Scaler>();
+            var middleSpinningDotBoundingArea = spriteRenderer3.AddChild<BoundingAreaDrawer>();
             middleSpinningDotBoundingArea.Color = Color.Red;
             middleSpinningDotBoundingArea.LineThickness = 3f;
 
-            var scalerEntity2 = scalerEntity1.AddChild();
-            scalerEntity2.AddComponent<Scaler>();
-            scalerEntity2.LocalPosition -= new Vector2(2f, 0f);
-            var spriteRenderer4 = scalerEntity2.AddComponent<SpriteRenderComponent>();
+            var spriteRenderer4 = spriteRenderer3.AddChild<SpriteRenderer>();
             spriteRenderer4.RenderOrder = 100;
             spriteRenderer4.SpriteReference.Initialize(whiteSquare);
             spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
-            var outwardSpinningDotBoundingArea = scalerEntity2.AddComponent<BoundingAreaDrawerComponent>();
+            spriteRenderer4.LocalPosition -= new Vector2(2f, 0f);
+            spriteRenderer4.AddChild<Scaler>();
+            var outwardSpinningDotBoundingArea = spriteRenderer4.AddChild<BoundingAreaDrawer>();
             outwardSpinningDotBoundingArea.Color = Color.Red;
             outwardSpinningDotBoundingArea.LineThickness = 3f;
 
-            var textEntity = scene.AddChild();
-            var textRenderer = textEntity.AddComponent<TextRenderComponent>();
+            var textRenderer = scene.AddChild<TextRenderer>();
             textRenderer.Text = "Hello, World";
             textRenderer.FontReference.Initialize(font);
             textRenderer.Color = Color.DarkMagenta;
-            textEntity.LocalScale = new Vector2(0.5f, 0.5f);
-            textEntity.LocalPosition -= new Vector2(5f, 5f);
-            var textRendererBoundingArea = textEntity.AddComponent<BoundingAreaDrawerComponent>();
+            textRenderer.LocalScale = new Vector2(0.5f, 0.5f);
+            textRenderer.LocalPosition -= new Vector2(5f, 5f);
+            var textRendererBoundingArea = textRenderer.AddChild<BoundingAreaDrawer>();
             textRendererBoundingArea.Color = Color.Red;
             textRendererBoundingArea.LineThickness = 3f;
 
-            var secondCameraEntity = scene.AddChild();
-            var secondCamera = secondCameraEntity.AddComponent<CameraComponent>();
+            var secondCamera = scene.AddChild<Camera>();
             secondCamera.LayersToRender = Layers.Layer03;
-            var frameRateDisplayEntity = secondCameraEntity.AddChild();
-            frameRateDisplayEntity.Layers = Layers.Layer03;
-            var frameRateDisplay = frameRateDisplayEntity.AddComponent<FrameRateDisplayComponent>();
+            var frameRateDisplay = secondCamera.AddChild<FrameRateDisplayEntity>();
+            frameRateDisplay.Layers = Layers.Layer03;
             frameRateDisplay.FontReference.Initialize(font);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
-            frameRateDisplayEntity.LocalScale = new Vector2(0.1f);
+            frameRateDisplay.LocalScale = new Vector2(0.1f);
 
             scene.Initialize(this, this.Assets);
 
@@ -138,52 +131,46 @@
 
         private void PostLoadRenderingStuff() {
             var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
-            var arrowSpriteEntity1 = this.Scene.AddChild();
-            var arrowSpriteRenderer1 = arrowSpriteEntity1.AddComponent<Texture2DRenderComponent>();
+            var arrowSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
             arrowSpriteRenderer1.Texture = arrowSprite1;
-            arrowSpriteEntity1.LocalPosition += new Vector2(2f, -2f);
+            arrowSpriteRenderer1.LocalPosition += new Vector2(2f, -2f);
 
             var arrowSprite2 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32);
-            var arrowSpriteEntity2 = this.Scene.AddChild();
-            var arrowSpriteRenderer2 = arrowSpriteEntity2.AddComponent<Texture2DRenderComponent>();
+            var arrowSpriteRenderer2 = this.Scene.AddChild<Texture2DRenderer>();
             arrowSpriteRenderer2.Color = Color.LawnGreen;
             arrowSpriteRenderer2.Texture = arrowSprite2;
-            arrowSpriteEntity2.LocalPosition += new Vector2(3f, -1f);
-            arrowSpriteEntity2.LocalScale = new Vector2(0.75f, 2f);
+            arrowSpriteRenderer2.LocalPosition += new Vector2(3f, -1f);
+            arrowSpriteRenderer2.LocalScale = new Vector2(0.75f, 2f);
 
             var quadSprite1 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 32), Color.Magenta);
-            var quadEntity1 = this.Scene.AddChild();
-            var quadSpriteRenderer1 = quadEntity1.AddComponent<Texture2DRenderComponent>();
+            var quadSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
             quadSpriteRenderer1.Texture = quadSprite1;
-            quadEntity1.LocalPosition += new Vector2(3f, 2f);
+            quadSpriteRenderer1.LocalPosition += new Vector2(3f, 2f);
 
             var quadSprite2 = PrimitiveDrawer.CreateQuadSprite(this.GraphicsDevice, new Point(32, 64));
-            var quadEntity2 = this.Scene.AddChild();
-            var quadSpriteRenderer2 = quadEntity2.AddComponent<Texture2DRenderComponent>();
+            var quadSpriteRenderer2 = this.Scene.AddChild<Texture2DRenderer>();
             quadSpriteRenderer2.Color = Color.Khaki;
             quadSpriteRenderer2.Texture = quadSprite2;
-            quadEntity2.LocalPosition += new Vector2(3f, 1f);
+            quadSpriteRenderer2.LocalPosition += new Vector2(3f, 1f);
 
             var rightTriangleSprite1 = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(this.GraphicsDevice, new Point(32, 32), Color.MediumVioletRed);
-            var rightTriangleEntity = this.Scene.AddChild();
-            var rightTriangleSpriteRenderer1 = rightTriangleEntity.AddComponent<Texture2DRenderComponent>();
+            var rightTriangleSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
             rightTriangleSpriteRenderer1.Texture = rightTriangleSprite1;
-            rightTriangleEntity.LocalPosition = new Vector2(-3f, 3f);
+            rightTriangleSpriteRenderer1.LocalPosition = new Vector2(-3f, 3f);
 
             var circleSprite = PrimitiveDrawer.CreateCircleSprite(this.GraphicsDevice, 64, Color.Red);
-            var circleEntity = this.Scene.AddChild();
-            var circleSpriteRenderer = circleEntity.AddComponent<Texture2DRenderComponent>();
+            var circleSpriteRenderer = this.Scene.AddChild<Texture2DRenderer>();
             circleSpriteRenderer.Texture = circleSprite;
-            circleEntity.LocalPosition = new Vector2(-5f, 3f);
+            circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
 
-            var gridDrawer = this.Scene.AddChild().AddComponent<GridDrawerComponent>();
+            var gridDrawer = this.Scene.AddChild<GridDrawer>();
             gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
             gridDrawer.UseDynamicLineThickness = true;
             gridDrawer.Grid = new TileGrid(Vector2.One);
             gridDrawer.RenderOrder = -1;
 
-            if (this.Scene.TryGetComponent<BinaryTileMapComponent>(out var binaryTileMapComponent) && binaryTileMapComponent != null) {
-                var binaryTileMapBoundingArea = binaryTileMapComponent.Entity.AddComponent<BoundingAreaDrawerComponent>();
+            if (this.Scene.TryGetChild<BinaryTileMap>(out var binaryTileMap) && binaryTileMap != null) {
+                var binaryTileMapBoundingArea = binaryTileMap.AddChild<BoundingAreaDrawer>();
                 binaryTileMapBoundingArea.Color = Color.Red;
                 binaryTileMapBoundingArea.LineThickness = 3f;
             }
@@ -193,11 +180,10 @@
             var laser = new AudioClip();
             this.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
 
-            var audioEntity = scene.AddChild();
-            var audioPlayer = audioEntity.AddComponent<AudioPlayerComponent>();
+            var audioPlayer = scene.AddChild<AudioPlayer>();
             audioPlayer.Volume = 0.5f;
             audioPlayer.AudioClipReference.Initialize(laser);
-            audioEntity.AddComponent<VolumeController>();
+            audioPlayer.AddChild<VolumeController>();
         }
     }
 }

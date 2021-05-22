@@ -9,17 +9,17 @@
     /// <summary>
     /// Draws a grid for the editor.
     /// </summary>
-    internal sealed class EditorGridComponent : BaseDrawerComponent {
+    internal sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
-        private CameraComponent _camera;
+        private Camera _camera;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditorGridComponent" /> class.
+        /// Initializes a new instance of the <see cref="EditorGrid" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        public EditorGridComponent(IEditorService editorService, ISceneService sceneService) {
+        public EditorGrid(IEditorService editorService, ISceneService sceneService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
         }
@@ -75,7 +75,7 @@
                 var verticalShadowOffset = new Vector2(0f, shadowOffset);
                 var color = this.Color * alpha;
                 
-                var columns = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
+                var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, gridSize, 0f);
                 var pixelsPerUnit = this.Entity.Scene.Game.Project.Settings.PixelsPerUnit;
                 foreach (var column in columns) {
                     var minimum = new Vector2(column, boundingArea.Minimum.Y);
@@ -109,7 +109,7 @@
                     }
                 }
 
-                var rows = GridDrawerComponent.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, gridSize, 0f);
+                var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, gridSize, 0f);
                 foreach (var row in rows) {
                     var minimum = new Vector2(boundingArea.Minimum.X, row);
                     var maximum = new Vector2(boundingArea.Maximum.X, row);

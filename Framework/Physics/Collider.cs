@@ -1,16 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// The type of collider being used.
     /// </summary>
     public enum ColliderType {
-
         /// <summary>
         /// Circle collider.
         /// </summary>
@@ -47,22 +45,12 @@
         /// Initializes a new instance of the <see cref="Collider" /> class.
         /// </summary>
         protected Collider() {
-            this._transform = new ResettableLazy<Transform>(() => this.Body?.Entity.GetWorldTransform(this.Offset) ?? Transform.Origin);
+            this._transform = new ResettableLazy<Transform>(() => this.Body?.GetWorldTransform(this.Offset) ?? Transform.Origin);
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
         }
 
-        /// <summary>
-        /// Gets the body that this collider is attached to.
-        /// </summary>
-        /// <value>The body.</value>
-        public IPhysicsBodyComponent? Body { get; private set; }
-
         /// <inheritdoc />
-        public BoundingArea BoundingArea {
-            get {
-                return this._boundingArea.Value;
-            }
-        }
+        public BoundingArea BoundingArea => this._boundingArea.Value;
 
         /// <summary>
         /// Gets the type of the collider.
@@ -71,18 +59,26 @@
         public abstract ColliderType ColliderType { get; }
 
         /// <summary>
+        /// Gets the transform.
+        /// </summary>
+        /// <value>The transform.</value>
+        public Transform Transform => this._transform.Value;
+
+        /// <summary>
+        /// Gets the body that this collider is attached to.
+        /// </summary>
+        /// <value>The body.</value>
+        public IPhysicsBody? Body { get; private set; }
+
+        /// <summary>
         /// Gets the layers.
         /// </summary>
         /// <value>The layers.</value>
         [DataMember(Name = "Collider Layers")]
         public Layers Layers {
-            get {
-                return this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Entity.Layers ?? Layers.None;
-            }
+            get => this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Layers ?? Layers.None;
 
-            internal set {
-                this.Set(ref this._overrideLayers, value);
-            }
+            internal set => this.Set(ref this._overrideLayers, value);
         }
 
         /// <summary>
@@ -91,24 +87,12 @@
         /// <value>The offset.</value>
         [DataMember]
         public Vector2 Offset {
-            get {
-                return this._offset;
-            }
+            get => this._offset;
 
             set {
                 if (this.Set(ref this._offset, value)) {
                     this.Reset();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the transform.
-        /// </summary>
-        /// <value>The transform.</value>
-        public Transform Transform {
-            get {
-                return this._transform.Value;
             }
         }
 
@@ -127,8 +111,8 @@
             var overlap = float.MaxValue;
             var smallestAxis = Vector2.Zero;
 
-            var axes = new List<Vector2>(this.GetAxesForSAT(other));
-            axes.AddRange(other.GetAxesForSAT(this));
+            var axes = new List<Vector2>(this.GetAxesForSat(other));
+            axes.AddRange(other.GetAxesForSat(this));
 
             var thisContainsOther = true;
             var otherContainsThis = true;
@@ -147,6 +131,7 @@
                     if (!aContainsB) {
                         thisContainsOther = false;
                     }
+
                     if (!bContainsA) {
                         otherContainsThis = false;
                     }
@@ -206,7 +191,7 @@
         /// </summary>
         /// <param name="other">The other collider.</param>
         /// <returns>The axes to test for the Separating Axis Theorem</returns>
-        public abstract IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other);
+        public abstract IReadOnlyCollection<Vector2> GetAxesForSat(Collider other);
 
         /// <summary>
         /// Gets the center of the collider.
@@ -225,7 +210,7 @@
         /// Initializes the specified body.
         /// </summary>
         /// <param name="body">The body.</param>
-        public void Initialize(IPhysicsBodyComponent body) {
+        public void Initialize(IPhysicsBody body) {
             this.Body = body;
             this.Reset();
         }

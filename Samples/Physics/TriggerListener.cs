@@ -2,25 +2,26 @@
 
     using Macabresoft.Macabre2D.Framework;
 
-    public sealed class TriggerListener : Framework.GameComponent {
-        private IPhysicsBodyComponent _body;
-        private ColliderDrawerComponent _drawer;
+    public sealed class TriggerListener : GameEntity {
+        private IPhysicsBody _body;
+        private ColliderDrawer _drawer;
 
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
 
-            if (this.Entity.TryGetComponent<IPhysicsBodyComponent>(out var body) && body != null) {
+            if (this.TryGetParentEntity<IPhysicsBody>(out var body) && body != null) {
                 this._body = body;
+                this._body.TryGetChild<ColliderDrawer>(out this._drawer);
             }
 
             this._body.CollisionOccured += this.Body_CollisionOccured;
-            this.Entity.TryGetComponent(out this._drawer);
         }
 
         private void Body_CollisionOccured(object sender, CollisionEventArgs e) {
             if (this._drawer != null) {
                 this._drawer.Color = DefinedColors.ZvukostiGreen;
                 this._drawer.LineThickness = 5f;
+                this._body.CollisionOccured -= this.Body_CollisionOccured;
             }
         }
     }

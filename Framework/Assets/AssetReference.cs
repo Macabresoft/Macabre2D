@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A reference to an asset using identifier and type. Held by components for serialization.
+    /// A reference to an asset using identifier and type. Held by entities for serialization.
     /// </summary>
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]

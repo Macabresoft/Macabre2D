@@ -1,27 +1,26 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.Content {
-
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public class MovingDot : GameUpdateableComponent {
+    public class MovingDot : GameUpdateableEntity {
         private readonly float _speed = 1f;
 
         public override void Update(FrameTime frameTime, InputState inputState) {
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
-                this.Entity.LocalPosition += new Vector2(0f, this._speed);
+                this.LocalPosition += new Vector2(0f, this._speed);
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
-                this.Entity.LocalPosition += new Vector2(0f, -this._speed);
+                this.LocalPosition += new Vector2(0f, -this._speed);
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
-                this.Entity.LocalPosition += new Vector2(-this._speed, 0f);
+                this.LocalPosition += new Vector2(-this._speed, 0f);
             }
 
             if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
-                this.Entity.LocalPosition += new Vector2(this._speed, 0f);
+                this.LocalPosition += new Vector2(this._speed, 0f);
             }
         }
     }

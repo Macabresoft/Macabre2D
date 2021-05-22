@@ -13,7 +13,7 @@
     internal class SelectorComponent : GameComponent, IGizmo {
         private readonly ISceneService _sceneService;
         private readonly ISelectionService _selectionService;
-        private ICameraComponent _camera;
+        private ICamera _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectorComponent" /> class.
@@ -46,7 +46,7 @@
                 inputState.PreviousMouseState.LeftButton == ButtonState.Released) {
                 
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-                var selected = this._sceneService.CurrentScene.RenderableComponents.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
+                var selected = this._sceneService.CurrentScene.RenderableEntities.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
 
                 if (this._selectionService.SelectedComponent != selected) {
                     if (selected == null) {

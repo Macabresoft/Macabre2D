@@ -1,17 +1,16 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// A system which allows for raycasting and handles rigidbody physics interactions.
     /// </summary>
     /// <seealso cref="SimplePhysicsSystem" />
     public sealed class PhysicsSystem : SimplePhysicsSystem, IGamePhysicsSystem {
-        private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new Dictionary<Guid, List<Guid>>();
+        private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new();
 
         [DataMember(Name = "Collision Resolver", Order = 0)]
         private ICollisionResolver _collisionResolver = new DefaultCollisionResolver();
@@ -21,70 +20,50 @@
         private float _minimumPostFrictionMagnitude = 0.2f;
         private float _stickiness = 0.1f;
 
+        /// <inheritdoc />
+        [DataMember(Order = 1)]
+        public Gravity Gravity { get; } = new(Vector2.Zero);
+
         /// <summary>
         /// Gets the collision resolver.
         /// </summary>
         /// <value>The collision resolver.</value>
         public ICollisionResolver CollisionResolver {
-            get {
-                return this._collisionResolver;
-            }
+            get => this._collisionResolver;
 
-            private set {
-                this.Set(ref this._collisionResolver, value);
-            }
+            private set => this.Set(ref this._collisionResolver, value);
         }
-
-        /// <inheritdoc />
-        [DataMember(Order = 1)]
-        public Gravity Gravity { get; } = new Gravity(Vector2.Zero);
 
         /// <inheritdoc />
         [DataMember(Order = 2)]
         public float Groundedness {
-            get {
-                return this._groundedness;
-            }
+            get => this._groundedness;
 
-            set {
-                this.Set(ref this._groundedness, value);
-            }
+            set => this.Set(ref this._groundedness, value);
         }
 
         /// <inheritdoc />
         [DataMember(Order = 4, Name = "Minimum Post-Bounce Magnitude")]
         public float MinimumPostBounceMagnitude {
-            get {
-                return this._minimumPostBounceMagnitude;
-            }
+            get => this._minimumPostBounceMagnitude;
 
-            set {
-                this.Set(ref this._minimumPostBounceMagnitude, value);
-            }
+            set => this.Set(ref this._minimumPostBounceMagnitude, value);
         }
 
         /// <inheritdoc />
         [DataMember(Order = 5, Name = "Minimum Post-Friction Magnitude")]
         public float MinimumPostFrictionMagnitude {
-            get {
-                return this._minimumPostFrictionMagnitude;
-            }
+            get => this._minimumPostFrictionMagnitude;
 
-            set {
-                this.Set(ref this._minimumPostFrictionMagnitude, value);
-            }
+            set => this.Set(ref this._minimumPostFrictionMagnitude, value);
         }
 
         /// <inheritdoc />
         [DataMember(Order = 3)]
         public float Stickiness {
-            get {
-                return this._stickiness;
-            }
+            get => this._stickiness;
 
-            set {
-                this.Set(ref this._stickiness, value);
-            }
+            set => this.Set(ref this._stickiness, value);
         }
 
         /// <inheritdoc />
@@ -103,10 +82,10 @@
             }
         }
 
-        private void HandleCollisions(IPhysicsBodyComponent body) {
+        private void HandleCollisions(IPhysicsBody body) {
             if (body.HasCollider && body is IDynamicPhysicsBody dynamicBody) {
                 var collisionsOccured = new List<Guid>();
-                dynamicBody.Entity.SetWorldPosition(dynamicBody.Entity.Transform.Position + dynamicBody.Velocity * this.TimeStep);
+                dynamicBody.SetWorldPosition(dynamicBody.Transform.Position + dynamicBody.Velocity * this.TimeStep);
 
                 if (dynamicBody.IsKinematic) {
                     dynamicBody.Velocity += this.Gravity.Value * this.TimeStep;
@@ -117,7 +96,7 @@
                     foreach (var otherCollider in potentials.Where(c => c != collider && this.Scene.Game.Project.Settings.Layers.GetShouldCollide(c.Layers, collider.Layers))) {
                         if (otherCollider.Body != null) {
                             var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
-                                collisions.Contains(body.Id);
+                                                              collisions.Contains(body.Id);
 
                             if (!hasCollisionAlreadyResolved && collider.CollidesWith(otherCollider, out var collision) && collision != null) {
                                 if (!body.IsTrigger && !otherCollider.Body.IsTrigger) {

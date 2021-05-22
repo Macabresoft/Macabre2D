@@ -10,18 +10,18 @@
     /// <summary>
     /// A gizmo/component that allows the user to scale entities in the editor.
     /// </summary>
-    internal sealed class ScaleGizmoComponent : BaseAxisGizmoComponent {
+    internal sealed class ScaleGizmo : BaseAxisGizmo {
         private readonly IUndoService _undoService;
         private Texture2D _squareSprite;
         private Vector2 _unmovedScale;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScaleGizmoComponent" /> class.
+        /// Initializes a new instance of the <see cref="ScaleGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
-        public ScaleGizmoComponent(
+        public ScaleGizmo(
             IEditorService editorService,
             ISelectionService selectionService,
             IUndoService undoService) : base(editorService, selectionService) {

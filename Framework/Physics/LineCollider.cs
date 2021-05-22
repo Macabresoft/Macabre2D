@@ -1,17 +1,15 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Collider representing a line defined by a start and end point to be used by the physics engine.
     /// </summary>
     [Display(Name = "Line Collider")]
     public sealed class LineCollider : PolygonCollider {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LineCollider" /> class.
         /// </summary>
@@ -33,14 +31,12 @@
         /// <value>The end.</value>
         [DataMember(Order = 1)]
         public Vector2 End {
-            get {
-                return this._points[1];
-            }
+            get => this.Vertices[1];
 
             set {
-                this._points[1] = value;
-                this.Reset();
-                this.RaisePropertyChanged();
+                if (this.TrySetVertex(1, value)) {
+                    this.RaisePropertyChanged();
+                }
             }
         }
 
@@ -51,14 +47,12 @@
         /// <value>The start.</value>
         [DataMember(Order = 0)]
         public Vector2 Start {
-            get {
-                return this._points[0];
-            }
+            get => this.Vertices[0];
 
             set {
-                this._points[0] = value;
-                this.Reset();
-                this.RaisePropertyChanged();
+                if (this.TrySetVertex(0, value)) {
+                    this.RaisePropertyChanged();
+                }
             }
         }
 
@@ -73,8 +67,8 @@
         }
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
-            var normals = base.GetAxesForSAT(other);
+        public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
+            var normals = base.GetAxesForSat(other);
             var result = new List<Vector2>();
             var thisCenter = this.GetCenter();
             var otherCenter = other.GetCenter();
@@ -93,7 +87,7 @@
 
         /// <inheritdoc />
         protected override List<Vector2> GetNormals() {
-            return new List<Vector2> {
+            return new() {
                 this.GetNormal(this.WorldPoints.ElementAt(0), this.WorldPoints.ElementAt(1))
             };
         }

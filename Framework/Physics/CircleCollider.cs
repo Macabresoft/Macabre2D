@@ -1,12 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Enumeration which defines how a circle's radius will scale when its body has a scale other
@@ -14,7 +13,6 @@
     /// become any other ellipse.
     /// </summary>
     public enum RadiusScalingType {
-
         /// <summary>
         /// No scaling will occur.
         /// </summary>
@@ -76,18 +74,16 @@
         /// Gets the center.
         /// </summary>
         /// <value>The center.</value>
-        public Vector2 Center {
-            get {
-                return this.Transform.Position;
-            }
-        }
+        public Vector2 Center => this.Transform.Position;
 
         /// <inheritdoc />
-        public override ColliderType ColliderType {
-            get {
-                return ColliderType.Circle;
-            }
-        }
+        public override ColliderType ColliderType => ColliderType.Circle;
+
+        /// <summary>
+        /// Gets the radius of this circle after all scaling operations have occurred.
+        /// </summary>
+        /// <value>The scaled radius.</value>
+        public float ScaledRadius => this._scaledRadius.Value;
 
         /// <summary>
         /// Gets or sets the radius.
@@ -95,9 +91,7 @@
         /// <value>The radius.</value>
         [DataMember]
         public float Radius {
-            get {
-                return this._radius;
-            }
+            get => this._radius;
 
             set {
                 this._radius = value;
@@ -111,25 +105,13 @@
         /// <value>The type of the radius scaling.</value>
         [DataMember(Name = "Radius Scaling")]
         public RadiusScalingType RadiusScalingType {
-            get {
-                return this._radiusScalingType;
-            }
+            get => this._radiusScalingType;
 
             set {
                 if (this._radiusScalingType != value) {
                     this._radiusScalingType = value;
                     this.ResetLazyFields();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the radius of this circle after all scaling operations have occurred.
-        /// </summary>
-        /// <value>The scaled radius.</value>
-        public float ScaledRadius {
-            get {
-                return this._scaledRadius.Value;
             }
         }
 
@@ -143,9 +125,10 @@
         public override bool Contains(Collider other) {
             if (other is CircleCollider circle) {
                 var distance = Vector2.Distance(this.Center, circle.Center);
-                return this.ScaledRadius > (distance + circle.ScaledRadius); // Should this be >= ?
+                return this.ScaledRadius > distance + circle.ScaledRadius; // Should this be >= ?
             }
-            else if (other is PolygonCollider polygon) {
+
+            if (other is PolygonCollider polygon) {
                 foreach (var point in polygon.WorldPoints) {
                     if (!this.Contains(point)) {
                         return false;
@@ -159,7 +142,7 @@
         }
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<Vector2> GetAxesForSAT(Collider other) {
+        public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
             var axes = new List<Vector2>();
 
             if (other is PolygonCollider polygon) {
@@ -210,7 +193,7 @@
 
         /// <inheritdoc />
         protected override BoundingArea CreateBoundingArea() {
-            return new BoundingArea(
+            return new(
                 this.Center.X - this.ScaledRadius,
                 this.Center.X + this.ScaledRadius,
                 this.Center.Y - this.ScaledRadius,
@@ -243,7 +226,8 @@
                 result = RaycastHit.Empty;
                 return false;
             }
-            else if (det == 0f) {
+
+            if (det == 0f) {
                 var t = -valueB / (2f * valueA);
                 var intersection = new Vector2(ray.Start.X + t * distanceX, ray.Start.Y + t * distanceY);
                 var normal = intersection - this.Center;
@@ -275,20 +259,13 @@
             var result = this._radius;
 
             if (this.Body != null) {
-                var worldTransform = this.Body.Entity.Transform;
-                switch (this.RadiusScalingType) {
-                    case RadiusScalingType.X:
-                        result = this._radius * worldTransform.Scale.X;
-                        break;
-
-                    case RadiusScalingType.Y:
-                        result = this._radius * worldTransform.Scale.Y;
-                        break;
-
-                    case RadiusScalingType.Average:
-                        result = this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y);
-                        break;
-                }
+                var worldTransform = this.Body.Transform;
+                result = this.RadiusScalingType switch {
+                    RadiusScalingType.X => this._radius * worldTransform.Scale.X,
+                    RadiusScalingType.Y => this._radius * worldTransform.Scale.Y,
+                    RadiusScalingType.Average => this._radius * 0.5f * (worldTransform.Scale.X + worldTransform.Scale.Y),
+                    _ => result
+                };
             }
 
             return result;

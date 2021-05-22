@@ -9,7 +9,7 @@
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
     /// </summary>
     internal class EditorRenderSystem : GameSystem {
-        private readonly QuadTree<IGameRenderableComponent> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+        private readonly QuadTree<IGameRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         private readonly ISceneService _sceneService;
 
@@ -26,18 +26,18 @@
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Scene.Game is ISceneEditor { SpriteBatch: SpriteBatch spriteBatch, Camera: ICameraComponent camera } sceneEditor) {
+            if (this.Scene.Game is ISceneEditor { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
                 this._renderTree.Clear();
 
-                foreach (var component in sceneEditor.Scene.RenderableComponents.Where(x => x is EditorGridComponent)) {
+                foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => x is EditorGrid)) {
                     this._renderTree.Insert(component);
                 }
                 
-                foreach (var component in this._sceneService.CurrentScene.RenderableComponents) {
+                foreach (var component in this._sceneService.CurrentScene.RenderableEntities) {
                     this._renderTree.Insert(component);
                 }
                 
-                foreach (var component in sceneEditor.Scene.RenderableComponents.Where(x => !(x is EditorGridComponent))) {
+                foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                     this._renderTree.Insert(component);
                 }
                 

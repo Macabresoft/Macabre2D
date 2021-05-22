@@ -1,20 +1,18 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
     /// </summary>
     /// <seealso cref="FixedTimeStepSystem" />
     public class SimplePhysicsSystem : FixedTimeStepSystem {
-
         /// <summary>
         /// Gets the collider tree.
         /// </summary>
         /// <value>The collider tree.</value>
-        protected QuadTree<Collider> ColliderTree { get; } = new QuadTree<Collider>(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+        protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         /// <inheritdoc />
         public override void Initialize(IGameScene scene) {

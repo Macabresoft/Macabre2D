@@ -63,6 +63,7 @@
         /// <summary>
         /// Gets the components.
         /// </summary>
+        /// <remarks>Macabre2D doesn't use this part of MonoGame. Ignore it.</remarks>
         /// <value>The components.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("This is a function of MonoGame not used by MacabreGame.", true)]

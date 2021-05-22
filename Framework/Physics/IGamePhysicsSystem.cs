@@ -1,10 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     /// <summary>
     /// A physics system that handles collisions.
     /// </summary>
     public interface IGamePhysicsSystem {
-
         /// <summary>
         /// Gets or sets the gravity.
         /// </summary>
@@ -20,7 +18,7 @@
         float Groundedness { get; }
 
         /// <summary>
-        /// Gets the minimum magnitude of velocity perpindicular to the collision after bounce has
+        /// Gets the minimum magnitude of velocity perpendicular to the collision after bounce has
         /// been applied.
         /// </summary>
         /// <value>The minimum post bounce magnitude.</value>

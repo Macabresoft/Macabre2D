@@ -4,14 +4,14 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class CameraScroller : GameUpdateableComponent {
-        private CameraComponent _camera;
+    public sealed class CameraScroller : GameUpdateableEntity {
+        private Camera _camera;
 
         private int _previousScrollValue;
 
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
-            this.Entity.TryGetComponent(out this._camera);
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
+            this.TryGetParentEntity(out this._camera);
         }
 
         public override void Update(FrameTime frameTime, InputState inputState) {
@@ -31,19 +31,19 @@
                 var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
 
                 if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
-                    this.Entity.LocalPosition += new Vector2(0f, movementMultiplier);
+                    this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                 }
 
                 if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
-                    this.Entity.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
+                    this._camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
                 }
 
                 if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
-                    this.Entity.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
+                    this._camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
                 }
 
                 if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
-                    this.Entity.LocalPosition += new Vector2(movementMultiplier, 0f);
+                    this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
             }
         }

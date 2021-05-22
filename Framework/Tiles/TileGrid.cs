@@ -13,7 +13,7 @@
         /// <summary>
         /// An empty tile grid.
         /// </summary>
-        public static readonly TileGrid Empty = new TileGrid(Vector2.One);
+        public static readonly TileGrid One = new (Vector2.One);
 
         /// <summary>
         /// The offset

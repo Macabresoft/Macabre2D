@@ -1,7 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework {
-
+    using System.Transactions;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -19,16 +20,17 @@
             float expectedViewHeight,
             float expectedX,
             float expectedY) {
-            var camera = new CameraComponent() {
+            var camera = new Camera() {
                 ViewHeight = startingViewHeight
             };
 
-            camera.Initialize(new GameEntity());
+            var scene = Substitute.For<IGameScene>();
+            camera.Initialize(scene, new GameEntity());
 
             camera.ZoomTo(new Vector2(zoomX, zoomY), zoomAmount);
             Assert.AreEqual(expectedViewHeight, camera.ViewHeight);
-            Assert.AreEqual(expectedX, camera.Entity.LocalPosition.X, 0.001f);
-            Assert.AreEqual(expectedY, camera.Entity.LocalPosition.Y, 0.001f);
+            Assert.AreEqual(expectedX, camera.LocalPosition.X, 0.001f);
+            Assert.AreEqual(expectedY, camera.LocalPosition.Y, 0.001f);
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// Represents gravity in the physics engine. This class helps deal with commonly required
-    /// things like the gravity direction and perpindicular.
+    /// things like the gravity direction and perpendicular.
     /// </summary>
     [DataContract]
     public sealed class Gravity : NotifyPropertyChanged {
@@ -30,10 +29,10 @@
         public Vector2 Direction { get; private set; }
 
         /// <summary>
-        /// Gets the perpindicular of the gravity's direction. This is a normalized vector.
+        /// Gets the perpendicular of the gravity's direction. This is a normalized vector.
         /// </summary>
-        /// <value>The perpindicular.</value>
-        public Vector2 Perpindicular { get; private set; }
+        /// <value>The perpendicular.</value>
+        public Vector2 Perpendicular { get; private set; }
 
         /// <summary>
         /// Gets or sets the vector value of this gravity.
@@ -41,9 +40,7 @@
         /// <value>The value.</value>
         [DataMember]
         public Vector2 Value {
-            get {
-                return this._value;
-            }
+            get => this._value;
 
             set {
                 if (this.Set(ref this._value, value, true)) {
@@ -54,7 +51,7 @@
 
         private void SetProperties() {
             this.Direction = this._value.GetNormalized();
-            this.Perpindicular = this.Direction.GetPerpendicular();
+            this.Perpendicular = this.Direction.GetPerpendicular();
         }
     }
 }

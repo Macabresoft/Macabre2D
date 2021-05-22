@@ -1,10 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
     /// <summary>
     /// Interface for resolving collisions.
     /// </summary>
     public interface ICollisionResolver {
-
         /// <summary>
         /// Initializes the collision resolver, providing it the physics service.
         /// </summary>

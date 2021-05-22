@@ -141,7 +141,7 @@
         private bool _isTransformUpToDate;
         private Vector2 _localPosition;
         private Vector2 _localScale = Vector2.One;
-        private Transform _transform = new Transform();
+        private Transform _transform = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Transformable" /> class.

@@ -1,36 +1,33 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework {
-
+    using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
     using NUnit.Framework;
-    using System.Linq;
 
     [TestFixture]
     public static class GameEntityTests {
-
         [Test]
         [Category("Unit Tests")]
-        public static void GameEntity_RegistersComponent_WhenMoved() {
+        public static void GameEntity_RegistersChild_WhenMoved() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
             test.Scene.RemoveChild(test.RenderableEntity);
             test.UpdateableAndRenderableEntity.AddChild(test.RenderableEntity);
-            test.AssertExistanceOfComponents(true);
+            test.AssertExistenceOfEntities(true);
         }
 
         [Test]
         [Category("Unit Tests")]
-        public static void GameEntity_UnregistersComponent_WhenRemovedFromSceneTree() {
+        public static void GameEntity_UnregistersChild_WhenRemovedFromSceneTree() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
-
             test.Scene.RemoveChild(test.RenderableEntity);
 
             using (new AssertionScope()) {
-                test.Scene.RenderableComponents.Any(x => x.Id == test.RenderableComponent.Id).Should().BeFalse();
-                test.Scene.UpdateableComponents.Any(x => x.Id == test.UpdateableComponent.Id).Should().BeFalse();
-                test.Scene.CameraComponents.Any(x => x.Id == test.CameraComponent.Id).Should().BeFalse();
+                test.Scene.RenderableEntities.Any(x => x.Id == test.RenderableEntity.Id).Should().BeFalse();
+                test.Scene.UpdateableEntities.Any(x => x.Id == test.UpdateableEntity.Id).Should().BeFalse();
+                test.Scene.Cameras.Any(x => x.Id == test.CameraEntity.Id).Should().BeFalse();
 
-                test.Scene.RenderableComponents.Any(x => x.Id == test.UpdateableAndRenderableComponent.Id).Should().BeTrue();
-                test.Scene.UpdateableComponents.Any(x => x.Id == test.UpdateableAndRenderableComponent.Id).Should().BeTrue();
+                test.Scene.RenderableEntities.Any(x => x.Id == test.UpdateableAndRenderableEntity.Id).Should().BeTrue();
+                test.Scene.UpdateableEntities.Any(x => x.Id == test.UpdateableAndRenderableEntity.Id).Should().BeTrue();
             }
         }
     }

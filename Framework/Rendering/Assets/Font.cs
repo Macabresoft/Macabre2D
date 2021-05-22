@@ -14,7 +14,7 @@
     }
 
     /// <summary>
-    /// A font to be used by the <see cref="TextRenderComponent" />.
+    /// A font to be used by the <see cref="TextRenderer" />.
     /// </summary>
     public sealed class Font : Asset<SpriteFont> {
         private bool _premultiplyAlpha = true;

@@ -1,13 +1,11 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
     using System;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// The information provided after a collision occurs.
     /// </summary>
     public sealed class CollisionEventArgs : EventArgs {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CollisionEventArgs" /> class.
         /// </summary>
@@ -17,7 +15,13 @@
         /// <param name="minimumTranslation">The minimum translation.</param>
         /// <param name="firstContainsSecond">if set to <c>true</c> [first contains second].</param>
         /// <param name="secondContainsFirst">if set to <c>true</c> [second contains first].</param>
-        public CollisionEventArgs(Collider firstCollider, Collider secondCollider, Vector2 normal, Vector2 minimumTranslation, bool firstContainsSecond, bool secondContainsFirst) {
+        public CollisionEventArgs(
+            Collider firstCollider,
+            Collider secondCollider,
+            Vector2 normal,
+            Vector2 minimumTranslation,
+            bool firstContainsSecond,
+            bool secondContainsFirst) {
             this.FirstCollider = firstCollider;
             this.SecondCollider = secondCollider;
             this.Normal = normal;

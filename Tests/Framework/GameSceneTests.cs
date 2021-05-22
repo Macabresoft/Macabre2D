@@ -1,35 +1,32 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework {
-
     using NUnit.Framework;
 
     [TestFixture]
     public sealed class GameSceneTests {
-
         [Test]
         [Category("Unit Tests")]
-        public static void GameScene_RegistersComponent_WhenAddedAfterInitialization() {
+        public static void GameScene_RegistersEntity_WhenAddedAfterInitialization() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
-            test.AssertExistanceOfComponents(true);
+            test.AssertExistenceOfEntities(true);
         }
 
         [Test]
         [Category("Unit Tests")]
-        public static void GameScene_RegistersComponent_WhenInitialized() {
+        public static void GameScene_RegistersEntity_WhenInitialized() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
-            test.AssertExistanceOfComponents(true);
+            test.AssertExistenceOfEntities(true);
         }
 
         [Test]
         [Category("Unit Tests")]
-        public static void GameScene_UnregistersComponent_WhenRemoved() {
+        public static void GameScene_UnregistersEntity_WhenRemoved() {
             var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.Before);
 
-            test.RenderableEntity.RemoveComponent(test.RenderableComponent);
-            test.UpdateableEntity.RemoveComponent(test.UpdateableComponent);
-            test.CameraEntity.RemoveComponent(test.CameraComponent);
-            test.UpdateableAndRenderableEntity.RemoveComponent(test.UpdateableAndRenderableComponent);
-
-            test.AssertExistanceOfComponents(false);
+            test.Scene.RemoveChild(test.RenderableEntity);
+            test.Scene.RemoveChild(test.UpdateableEntity);
+            test.Scene.RemoveChild(test.CameraEntity);
+            test.Scene.RemoveChild(test.UpdateableAndRenderableEntity);
+            test.AssertExistenceOfEntities(false);
         }
     }
 }

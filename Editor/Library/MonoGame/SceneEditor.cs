@@ -21,7 +21,7 @@
         /// Gets the camera.
         /// </summary>
         /// <value>The camera.</value>
-        public ICameraComponent Camera { get; }
+        public ICamera Camera { get; }
 
         /// <summary>
         /// Gets the selected gizmo.
@@ -73,7 +73,7 @@
         public IGizmo SelectedGizmo => this._gizmos.FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
 
         /// <inheritdoc />
-        public ICameraComponent Camera { get; private set; }
+        public ICamera Camera { get; private set; }
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
@@ -121,20 +121,20 @@
             var scene = new GameScene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             var cameraEntity = scene.AddChild();
-            this.Camera = cameraEntity.AddComponent<CameraComponent>();
-            cameraEntity.AddComponent<CameraControlComponent>();
-            cameraEntity.AddComponent(new EditorGridComponent(this._editorService, this._sceneService));
-            cameraEntity.AddComponent(new SelectionDisplayComponent(this._editorService, this._selectionService));
+            this.Camera = cameraEntity.AddComponent<Camera>();
+            cameraEntity.AddComponent<CameraControlEntity>();
+            cameraEntity.AddComponent(new EditorGrid(this._editorService, this._sceneService));
+            cameraEntity.AddComponent(new SelectionDisplay(this._editorService, this._selectionService));
             var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
             cameraEntity.AddComponent(selectorGizmo);
 
             var translationGizmoEntity = cameraEntity.AddChild();
-            var translationGizmo = new TranslationGizmoComponent(this._editorService, this._selectionService, this._undoService);
+            var translationGizmo = new TranslationGizmo(this._editorService, this._selectionService, this._undoService);
             translationGizmoEntity.AddComponent(translationGizmo);
             this._gizmos.Add(translationGizmo);
 
             var scaleGizmoEntity = cameraEntity.AddChild();
-            var scaleGizmo = new ScaleGizmoComponent(this._editorService, this._selectionService, this._undoService);
+            var scaleGizmo = new ScaleGizmo(this._editorService, this._selectionService, this._undoService);
             scaleGizmoEntity.AddComponent(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 
