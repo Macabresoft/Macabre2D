@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
     using System.ComponentModel;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -7,8 +7,7 @@
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// A component which displays the currently selected <see cref="IGameEntity" /> and
-    /// <see cref="Framework.IGameComponent" />.
+    /// A component which displays the currently selected <see cref="IGameEntity" />.
     /// </summary>
     internal class SelectionDisplay : BaseDrawer {
         private readonly IEditorService _editorService;
@@ -32,7 +31,7 @@
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
-                if (this._selectionService.SelectedComponent is IBoundable boundable) {
+                if (this._selectionService.SelectedEntity is IBoundable boundable) {
                     return boundable.BoundingArea;
                 }
 
@@ -46,8 +45,8 @@
                 return;
             }
 
-            if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
-                var settings = this.Entity.Scene.Game.Project.Settings;
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                var settings = this.Scene.Game.Project.Settings;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
 
@@ -55,7 +54,7 @@
                     var minimum = this.BoundingArea.Minimum;
                     var maximum = this.BoundingArea.Maximum;
 
-                    var points = new[] {minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y)};
+                    var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
 
                     var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
                     var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
@@ -75,19 +74,19 @@
 
                     var verticalShadowOffset = new Vector2(0f, shadowOffset);
                     this.PrimitiveDrawer.DrawLine(
-                        spriteBatch, 
-                        settings.PixelsPerUnit, 
+                        spriteBatch,
+                        settings.PixelsPerUnit,
                         left + verticalShadowOffset,
-                        right + verticalShadowOffset, 
+                        right + verticalShadowOffset,
                         this._editorService.DropShadowColor,
                         lineThickness);
-                    
+
                     var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
                     this.PrimitiveDrawer.DrawLine(
-                        spriteBatch, 
-                        settings.PixelsPerUnit, 
-                        top + horizontalShadowOffset, 
-                        bottom + horizontalShadowOffset, 
+                        spriteBatch,
+                        settings.PixelsPerUnit,
+                        top + horizontalShadowOffset,
+                        bottom + horizontalShadowOffset,
                         this._editorService.DropShadowColor,
                         lineThickness);
 
@@ -96,7 +95,7 @@
                 }
             }
         }
-        
+
         private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IEditorService.SelectionColor)) {
                 this.Color = this._editorService.SelectionColor;

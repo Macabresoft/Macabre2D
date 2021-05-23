@@ -1,24 +1,24 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
     using System;
     using Avalonia.Input;
-    using AvaloniaInterop;
-    using Framework;
+    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    internal sealed class CameraControlEntity : GameUpdateableEntity {
+    internal sealed class CameraController : GameUpdateableEntity {
         private Camera _camera;
 
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
 
-            if (!this.Entity.TryGetComponent(out this._camera)) {
-                throw new ArgumentNullException(nameof(this._camera));
+            if (!this.TryGetParentEntity(out this._camera)) {
+                throw new NotSupportedException("Could not find a camera ancestor.");
             }
         }
 
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Entity.Scene.Game is IAvaloniaGame game) {
+            if (this.Scene.Game is IAvaloniaGame game && this._camera != null) {
                 var mouseState = inputState.CurrentMouseState;
                 var keyboardState = inputState.CurrentKeyboardState;
                 var previousMouseState = inputState.PreviousMouseState;
@@ -40,7 +40,7 @@
                         var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(mouseState.Position);
 
                         var distance = oldPosition - mousePosition;
-                        this._camera.Entity.LocalPosition += distance;
+                        this._camera.LocalPosition += distance;
                     }
 
                     if (game.CursorType == StandardCursorType.None) {
@@ -54,19 +54,19 @@
                 if (!keyboardState.IsModifierKeyDown()) {
                     var movementMultiplier = (float)frameTime.SecondsPassed * this._camera.ViewHeight;
                     if (keyboardState.IsKeyDown(Keys.W)) {
-                        this.Entity.LocalPosition += new Vector2(0f, movementMultiplier);
+                        this._camera.LocalPosition += new Vector2(0f, movementMultiplier);
                     }
 
                     if (keyboardState.IsKeyDown(Keys.A)) {
-                        this.Entity.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
+                        this._camera.LocalPosition += new Vector2(movementMultiplier * -1f, 0f);
                     }
 
                     if (keyboardState.IsKeyDown(Keys.S)) {
-                        this.Entity.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
+                        this._camera.LocalPosition += new Vector2(0f, movementMultiplier * -1f);
                     }
 
                     if (keyboardState.IsKeyDown(Keys.D)) {
-                        this.Entity.LocalPosition += new Vector2(movementMultiplier, 0f);
+                        this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                     }
                 }
             }

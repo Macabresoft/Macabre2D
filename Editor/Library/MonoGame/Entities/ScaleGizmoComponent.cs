@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -32,36 +32,36 @@
         public override GizmoKind GizmoKind => GizmoKind.Scale;
 
         /// <inheritdoc />
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
-            if (this.Entity.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
+            if (this.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
                 this._squareSprite = PrimitiveDrawer.CreateQuadSprite(graphicsDevice, new Point(GizmoPointSize));
             }
         }
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
-                var settings = this.Entity.Scene.Game.Project.Settings;
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+                var settings = this.Scene.Game.Project.Settings;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                 var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
-                var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Entity.Scene.Game.ViewportSize.Y);
+                var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Scene.Game.ViewportSize.Y);
                 var scale = new Vector2(viewRatio);
                 var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
-                var pixelsPerUnit = this.Entity.Scene.Game.Project.Settings.PixelsPerUnit;
+                var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
                 spriteBatch.Draw(
                     pixelsPerUnit,
-                    this._squareSprite, 
-                    this.XAxisPosition - new Vector2(offset) + shadowOffsetVector, 
-                    scale, 
-                    0f, 
+                    this._squareSprite,
+                    this.XAxisPosition - new Vector2(offset) + shadowOffsetVector,
+                    scale,
+                    0f,
                     this.EditorService.DropShadowColor);
-                
+
                 spriteBatch.Draw(
                     pixelsPerUnit,
-                    this._squareSprite, 
+                    this._squareSprite,
                     this.YAxisPosition - new Vector2(offset) + shadowOffsetVector,
                     scale,
                     0f,
@@ -71,22 +71,22 @@
 
                 spriteBatch.Draw(
                     pixelsPerUnit,
-                    this._squareSprite, 
-                    this.XAxisPosition - new Vector2(offset), 
+                    this._squareSprite,
+                    this.XAxisPosition - new Vector2(offset),
                     scale,
                     0f,
                     this.EditorService.XAxisColor);
-                
+
                 spriteBatch.Draw(
                     pixelsPerUnit,
-                    this._squareSprite, 
-                    this.YAxisPosition - new Vector2(offset), 
+                    this._squareSprite,
+                    this.YAxisPosition - new Vector2(offset),
                     scale,
                     0f,
                     this.EditorService.YAxisColor);
             }
         }
-        
+
         /// <inheritdoc />
         public override bool Update(FrameTime frameTime, InputState inputState) {
             var result = base.Update(frameTime, inputState);

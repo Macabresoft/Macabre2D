@@ -4,7 +4,7 @@
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities;
     using Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -37,8 +37,8 @@
         private readonly IEditorService _editorService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly IProjectService _projectService;
-        private readonly ISelectionService _selectionService;
         private readonly ISceneService _sceneService;
+        private readonly ISelectionService _selectionService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
@@ -120,22 +120,19 @@
         private IGameScene CreateScene() {
             var scene = new GameScene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
-            var cameraEntity = scene.AddChild();
-            this.Camera = cameraEntity.AddComponent<Camera>();
-            cameraEntity.AddComponent<CameraControlEntity>();
-            cameraEntity.AddComponent(new EditorGrid(this._editorService, this._sceneService));
-            cameraEntity.AddComponent(new SelectionDisplay(this._editorService, this._selectionService));
+            this.Camera = scene.AddChild<Camera>();
+            this.Camera.AddChild<CameraController>();
+            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService));
+            this.Camera.AddChild(new SelectionDisplay(this._editorService, this._selectionService));
             var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
-            cameraEntity.AddComponent(selectorGizmo);
+            this.Camera.AddChild(selectorGizmo);
 
-            var translationGizmoEntity = cameraEntity.AddChild();
             var translationGizmo = new TranslationGizmo(this._editorService, this._selectionService, this._undoService);
-            translationGizmoEntity.AddComponent(translationGizmo);
+            this.Camera.AddChild(translationGizmo);
             this._gizmos.Add(translationGizmo);
 
-            var scaleGizmoEntity = cameraEntity.AddChild();
             var scaleGizmo = new ScaleGizmo(this._editorService, this._selectionService, this._undoService);
-            scaleGizmoEntity.AddComponent(scaleGizmo);
+            this.Camera.AddChild(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 
             scene.AddSystem(new EditorUpdateSystem(this._editorService, selectorGizmo));
@@ -144,16 +141,16 @@
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.IsInitialized && e.PropertyName == nameof(IProjectService.CurrentProject)) {
-                    this.Project = this._projectService.CurrentProject;
+                this.Project = this._projectService.CurrentProject;
             }
         }
-        
+
         private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.IsInitialized &&
-                e.PropertyName == nameof(ISceneService.CurrentScene) && 
+                e.PropertyName == nameof(ISceneService.CurrentScene) &&
                 !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                    this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
-            }        
+                this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
+            }
         }
     }
 }

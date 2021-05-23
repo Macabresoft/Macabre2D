@@ -15,11 +15,6 @@
         EntitySelectionKind MostRecentlySelectedKind { get; }
 
         /// <summary>
-        /// Gets or sets the selected component.
-        /// </summary>
-        IGameComponent SelectedComponent { get; set; }
-
-        /// <summary>
         /// Gets or sets the selected entity.
         /// </summary>
         IGameEntity SelectedEntity { get; set; }
@@ -35,7 +30,6 @@
     /// </summary>
     public sealed class SelectionService : ReactiveObject, ISelectionService {
         private EntitySelectionKind _mostRecentlySelectedKind = EntitySelectionKind.None;
-        private IGameComponent _selectedComponent;
         private IGameEntity _selectedEntity;
         private IGameSystem _selectedSystem;
 
@@ -45,22 +39,6 @@
             private set => this.RaiseAndSetIfChanged(ref this._mostRecentlySelectedKind, value);
         }
 
-        /// <inheritdoc />
-        public IGameComponent SelectedComponent {
-            get => this._selectedComponent;
-            set {
-                if (value != this._selectedComponent) {
-                    this.RaiseAndSetIfChanged(ref this._selectedComponent, value);
-
-                    if (this._selectedComponent != null && this.SelectedEntity != this._selectedComponent.Entity) {
-                        this.SelectedEntity = this._selectedComponent.Entity;
-                    }
-                    
-                    this.RaisePropertyChanged(nameof(this.MostRecentlySelectedKind));
-                    this.RaisePropertyChanged(nameof(this.SelectedEntity));
-                }
-            }
-        }
 
         /// <inheritdoc />
         public IGameEntity SelectedEntity {
@@ -74,15 +52,10 @@
                     this.MostRecentlySelectedKind = EntitySelectionKind.Scene;
                 }
                 else if (value != null) {
-                    if (value != this._selectedEntity && this._selectedComponent?.Entity != value) {
-                        this.SelectedComponent = value.Components.FirstOrDefault();
-                    }
-
                     this.MostRecentlySelectedKind = EntitySelectionKind.Entity;
                 }
                 else {
                     this.MostRecentlySelectedKind = EntitySelectionKind.None;
-                    this.SelectedComponent = null;
                     this.SelectedSystem = null;
                 }
 

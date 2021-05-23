@@ -4,11 +4,9 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
-    using System.Windows.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Mappers;
     using Macabresoft.Macabre2D.Editor.Library.Models;
-    using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
     /// <summary>
@@ -25,22 +23,6 @@
         /// <returns>The value editors.</returns>
         IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore);
 
-        /// <summary>
-        /// Gets the component editor for the provided <see cref="IGameComponent"/>.
-        /// </summary>
-        /// <param name="component">The component.</param>
-        /// <param name="deleteComponentCommand">A command to delete a component from the entity.</param>
-        /// <returns>A value editor collection for a single component.</returns>
-        ValueEditorCollection GetComponentEditor(IGameComponent component, ICommand deleteComponentCommand);
-        
-        /// <summary>
-        /// Gets component editors for the provided <see cref="IGameEntity" />.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        /// <param name="deleteComponentCommand">A command to delete a component from the entity.</param>
-        /// <returns>Value editor collections for each component on the entity.</returns>
-        IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand);
-        
         /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
@@ -69,27 +51,6 @@
         /// <inheritdoc />
         public IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore) {
             return this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<ValueEditorCollection> GetComponentEditors(IGameEntity entity, ICommand deleteComponentCommand) {
-            var editors = new List<ValueEditorCollection>();
-            foreach (var component in entity.Components) {
-                var componentEditors = this.CreateEditors(component);
-                var name = component.GetType().GetTypeDisplayName();
-                var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
-                editors.Add(editorCollection);
-            }
-
-            return editors;
-        }
-        
-        /// <inheritdoc />
-        public ValueEditorCollection GetComponentEditor(IGameComponent component, ICommand deleteComponentCommand) {
-            var componentEditors = this.CreateEditors(component);
-            var name = component.GetType().GetTypeDisplayName();
-            var editorCollection = new ValueEditorCollection(componentEditors, component, name, deleteComponentCommand);
-            return editorCollection;
         }
 
         /// <inheritdoc />
@@ -161,8 +122,6 @@
                             result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
                         }
                     }
-                    
-
                 }
                 else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
                     // TODO: pull from cache

@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems {
     using System.Linq;
     using Framework;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Components;
+    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities;
     using Microsoft.Xna.Framework.Graphics;
     using Services;
 

@@ -46,7 +46,7 @@
                     var assemblyPaths = Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
                     foreach (var assemblyPath in assemblyPaths) {
                         try {
-                            if (assemblyPath.HasObjectsOfType<IGameComponent>() || assemblyPath.HasObjectsOfType<IGameSystem>()) {
+                            if (assemblyPath.HasObjectsOfType<IGameEntity>() || assemblyPath.HasObjectsOfType<IGameSystem>()) {
                                 Assembly.LoadFile(assemblyPath);
                             }
                         }

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Components {
+﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
     using System;
     using System.ComponentModel;
     using Avalonia.Input;
@@ -7,22 +7,11 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using IGameComponent = Microsoft.Xna.Framework.IGameComponent;
 
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
     internal abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
-        /// <summary>
-        /// Represents the axis a gizmo is being operated on.
-        /// </summary>
-        public enum GizmoAxis {
-            X,
-            Y,
-            Neutral,
-            None
-        }
-
         /// <summary>
         /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
         /// </summary>
@@ -76,7 +65,7 @@
         /// <summary>
         /// Gets or sets the neutral axis position, which is the intersection of the X and Y axis.
         /// </summary>
-        protected Vector2 NeutralAxisPosition { get; set; }
+        protected Vector2 NeutralAxisPosition { get; private set; }
 
         /// <summary>
         /// Gets or sets the end point of the x axis line.
@@ -89,10 +78,10 @@
         protected Vector2 YAxisPosition { get; set; }
 
         /// <inheritdoc />
-        public override void Initialize(IGameEntity entity) {
-            base.Initialize(entity);
+        public override void Initialize(IGameScene scene, IGameEntity entity) {
+            base.Initialize(scene, entity);
 
-            if (this.Entity.Parent.TryGetComponent(out this._camera)) {
+            if (this.TryGetParentEntity(out this._camera)) {
                 this.Camera.PropertyChanged += this.Camera_PropertyChanged;
             }
             else {
@@ -104,15 +93,18 @@
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.PrimitiveDrawer != null && this.Entity.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
-                var pixelsPerUnit = this.Entity.Scene.Game.Project.Settings.PixelsPerUnit;
-                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
-                this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
+                var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
+
+                if (this.PrimitiveDrawer != null) {
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
+                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
+                }
             }
         }
 
@@ -141,8 +133,8 @@
         protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
             var result = GizmoAxis.None;
 
-            var viewRatio = this.Entity.Scene.Game.Project.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Entity.Scene.Game.ViewportSize.Y);
-            var radius = viewRatio * GizmoPointSize * this.Entity.Scene.Game.Project.Settings.InversePixelsPerUnit * 0.5f;
+            var viewRatio = this.Scene.Game.Project.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Scene.Game.ViewportSize.Y);
+            var radius = viewRatio * GizmoPointSize * this.Scene.Game.Project.Settings.InversePixelsPerUnit * 0.5f;
             if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
                 result = GizmoAxis.X;
             }
@@ -155,7 +147,7 @@
 
             return result;
         }
-        
+
         /// <summary>
         /// Moves the end positions of the gizmo along the axis appropriately. Basically, this makes sure the drag operation is all
         /// good.
@@ -209,7 +201,7 @@
         /// </summary>
         /// <param name="cursorType">The cursor type.</param>
         protected void SetCursor(StandardCursorType cursorType) {
-            if (this.Entity.Scene.Game is IAvaloniaGame game) {
+            if (this.Scene.Game is IAvaloniaGame game) {
                 game.CursorType = cursorType;
             }
         }
@@ -248,9 +240,19 @@
         }
 
         private void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ISelectionService.SelectedEntity) || e.PropertyName == nameof(ISelectionService.SelectedComponent)) {
+            if (e.PropertyName == nameof(ISelectionService.SelectedEntity)) {
                 this.ResetIsEnabled();
             }
+        }
+
+        /// <summary>
+        /// Represents the axis a gizmo is being operated on.
+        /// </summary>
+        protected enum GizmoAxis {
+            X,
+            Y,
+            Neutral,
+            None
         }
     }
 }

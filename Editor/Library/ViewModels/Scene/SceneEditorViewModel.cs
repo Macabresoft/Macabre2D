@@ -14,14 +14,13 @@
     /// the view.
     /// </summary>
     public sealed class SceneEditorViewModel : MonoGameViewModel {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
         public SceneEditorViewModel() : base() {
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
         /// </summary>
@@ -58,7 +57,7 @@
         public ICommand SetSelectedGizmoCommand { get; }
 
         private void CenterCamera() {
-            this.SceneEditor.Camera.Entity.LocalPosition = Vector2.Zero;
+            this.SceneEditor.Camera.LocalPosition = Vector2.Zero;
         }
 
         private Unit SetSelectedGizmo(GizmoKind kind) {

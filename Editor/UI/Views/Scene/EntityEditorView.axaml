@@ -82,7 +82,7 @@
             </controls:GroupBox>
 
             <ItemsControl Grid.Row="2"
-                          Items="{Binding ComponentEditors}">
+                          Items="{Binding Editors}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <controls:GroupBox Header="{Binding Name}"
