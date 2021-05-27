@@ -1,15 +1,27 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
+    using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
     /// <summary>
     /// A base class that implements <see cref="INotifyPropertyChanged" />
     /// </summary>
-    public class NotifyPropertyChanged : INotifyPropertyChanged {
+    public class NotifyPropertyChanged : INotifyPropertyChanged, IDisposable {
+        private bool _isDisposed;
+
         /// <summary>
         /// Occurs when a property changes.
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <inheritdoc />
+        public void Dispose() {
+            if (!this._isDisposed) {
+                this.OnDisposing();
+                this._isDisposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
 
         /// <summary>
         /// Raises the property changed event.
@@ -43,6 +55,13 @@
         /// Disposes <see cref="PropertyChanged" />.
         /// </summary>
         protected void DisposePropertyChanged() {
+            this.PropertyChanged = null;
+        }
+
+        /// <summary>
+        /// Called when this <see cref="IDisposable" /> is being disposed.
+        /// </summary>
+        protected virtual void OnDisposing() {
             this.PropertyChanged = null;
         }
 
