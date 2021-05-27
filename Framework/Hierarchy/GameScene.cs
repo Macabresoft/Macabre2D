@@ -11,13 +11,12 @@
     /// Interface for a combination of <see cref="IGameSystem" /> and <see cref="IGameEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public interface IGameScene : IGameEntity, IGameUpdateable {
-        
+    public interface IGameScene : IGameEntity, IGameUpdateable, IGridContainer {
         /// <summary>
         /// Gets the asset manager.
         /// </summary>
         IAssetManager Assets => AssetManager.Empty;
-        
+
         /// <summary>
         /// Gets the cameras in the scene.
         /// </summary>
@@ -29,12 +28,6 @@
         /// </summary>
         /// <value>The game.</value>
         IGame Game => BaseGame.Empty;
-
-        /// <summary>
-        /// Gets the grid.
-        /// </summary>
-        /// <value>The grid.</value>
-        TileGrid Grid => TileGrid.One;
 
         /// <summary>
         /// Gets the physics bodies.
@@ -142,7 +135,7 @@
     /// A user-created combination of <see cref="IGameSystem" /> and <see cref="IGameEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public sealed class GameScene : GameEntity, IGameScene {
+    public sealed class GameScene : GridContainer, IGameScene {
         /// <summary>
         /// The default empty <see cref="IGameScene" /> that is present before initialization.
         /// </summary>
@@ -181,7 +174,6 @@
             nameof(IGameUpdateableEntity.UpdateOrder));
 
         private Color _backgroundColor = DefinedColors.MacabresoftBlack;
-        private TileGrid _grid = TileGrid.One;
         private bool _isBusy;
         private bool _isInitialized;
 
@@ -201,7 +193,7 @@
 
         /// <inheritdoc />
         public IAssetManager Assets { get; private set; } = AssetManager.Empty;
-        
+
         /// <inheritdoc />
         [DataMember]
         public Color BackgroundColor {
@@ -211,12 +203,6 @@
 
         /// <inheritdoc />
         public IGame Game { get; private set; } = BaseGame.Empty;
-
-        /// <inheritdoc />
-        public TileGrid Grid {
-            get => this._grid;
-            set => this.Set(ref this._grid, value);
-        }
 
         /// <inheritdoc />
         public T AddSystem<T>() where T : IGameSystem, new() {
@@ -323,12 +309,6 @@
         }
 
         /// <inheritdoc />
-        public override bool TryGetParentEntity<T>(out T? entity) where T : class {
-            entity = null;
-            return false;
-        }
-
-        /// <inheritdoc />
         public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
             if (this._dependencies.TryGetValue(typeof(T), out var found) && found is T dependency) {
                 return dependency;
@@ -337,6 +317,12 @@
             dependency = objectFactory.SafeInvoke();
             this._dependencies.Add(typeof(T), dependency);
             return dependency;
+        }
+
+        /// <inheritdoc />
+        public override bool TryGetParentEntity<T>(out T? entity) where T : class {
+            entity = null;
+            return false;
         }
 
         /// <inheritdoc />
@@ -372,7 +358,7 @@
             }
         }
 
-        private class EmptyGameScene : EmptyGameEntity, IGameScene {
+        private class EmptyGameScene : EmptyGridContainer, IGameScene {
             /// <inheritdoc />
             public Color BackgroundColor {
                 get => Color.HotPink;

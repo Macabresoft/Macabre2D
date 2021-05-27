@@ -34,10 +34,9 @@
             spriteRenderer.SpriteReference.Initialize(whiteSquare);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
-            var binaryTileMap = scene.AddChild<BinaryTileMap>();
-            // TODO: allow changing of scene grid
-            /*var gridComponent = binaryTileMapEntity.AddComponent<GridComponent>();
-            gridComponent.Grid = new TileGrid(new Vector2(32, 64) * this.Project.Settings.InversePixelsPerUnit);*/
+            var gridContainer = scene.AddChild<GridContainer>();
+            gridContainer.Grid = new TileGrid(2, 4);
+            var binaryTileMap = gridContainer.AddChild<BinaryTileMap>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMap.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMap.LocalScale = new Vector2(1f, 1f);

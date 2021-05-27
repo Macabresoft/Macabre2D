@@ -105,8 +105,8 @@
         }
 
         /// <inheritdoc />
-        protected override void ResetBoundingAreas() {
-            base.ResetBoundingAreas();
+        protected override void ResetBoundingArea() {
+            base.ResetBoundingArea();
             this.ResetSpriteScale();
         }
 
@@ -128,7 +128,7 @@
 
         private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
-                this.ResetBoundingAreas();
+                this.ResetBoundingArea();
             }
         }
     }

@@ -11,15 +11,10 @@
     [Flags]
     public enum CardinalDirections : byte {
         None = 0,
-
         North = 1 << 0,
-
         West = 1 << 1,
-
         East = 1 << 2,
-
         South = 1 << 3,
-
         All = North | West | East | South
     }
 
@@ -30,6 +25,7 @@
     public abstract class TileableEntity : GameEntity, IGameTileableEntity {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new();
+        private IGridContainer _gridContainer = GridContainer.Empty;
 
         /// <inheritdoc />
         public event EventHandler? TilesChanged;
@@ -46,6 +42,9 @@
 
         /// <inheritdoc />
         public BoundingArea BoundingArea => this._boundingArea.Value;
+
+        /// <inheritdoc />
+        public TileGrid CurrentGrid => this._gridContainer.Grid;
 
         /// <inheritdoc />
         public Point MaximumTile { get; private set; }
@@ -87,14 +86,13 @@
             this.MinimumTile = Point.Zero;
             this.MaximumTile = Point.Zero;
             this.ResetBoundingArea();
-            this.ResetTileBoundingAreas();
             this.TilesChanged.SafeInvoke(this);
         }
 
         /// <inheritdoc />
         public Point GetTileThatContains(Vector2 worldPosition) {
             var result = Point.Zero;
-            var grid = this.Scene.Grid;
+            var grid = this.CurrentGrid;
 
             if (grid.TileSize.X > 0 && grid.TileSize.Y > 0) {
                 worldPosition -= grid.Offset;
@@ -119,16 +117,14 @@
         public override void Initialize(IGameScene scene, IGameEntity parent) {
             base.Initialize(scene, parent);
 
-            this.Scene.PropertyChanged += this.Scene_PropertyChanged;
-            this.ResetBoundingArea();
-            this.ResetTileBoundingAreas();
+            this.ResetGridContainer();
             this.ResetMinimumTile();
             this.ResetMaximumTile();
         }
 
         /// <inheritdoc />
         public override void OnRemovedFromSceneTree() {
-            this.Scene.PropertyChanged -= this.Scene_PropertyChanged;
+            this._gridContainer.PropertyChanged -= this.GridContainer_PropertyChanged;
             base.OnRemovedFromSceneTree();
         }
 
@@ -178,7 +174,7 @@
         /// <returns>The bounding area.</returns>
         protected BoundingArea GetTileBoundingArea(Point tile) {
             if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
-                var grid = this.Scene.Grid;
+                var grid = this.CurrentGrid;
                 var tilePosition = grid.GetTilePosition(tile);
                 boundingArea = new BoundingArea(tilePosition, tilePosition + grid.TileSize);
                 this._tilePositionToBoundingArea.Add(tile, boundingArea);
@@ -194,7 +190,7 @@
         /// <returns>The scale for the sprite to fit within the tile grid.</returns>
         protected Vector2 GetTileScale(Point spriteSize) {
             var inversePixelsPerUnit = this.Scene.Game.Project.Settings.InversePixelsPerUnit;
-            var result = this.Scene.Grid.TileSize;
+            var result = this.CurrentGrid.TileSize;
 
             if (spriteSize.X != 0 && spriteSize.Y != 0) {
                 var spriteWidth = spriteSize.X * inversePixelsPerUnit;
@@ -211,27 +207,21 @@
         /// <returns><c>true</c> if this has active tiles; otherwise, <c>false</c>.</returns>
         protected abstract bool HasActiveTiles();
 
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            base.OnPropertyChanged(sender, e);
+
+            if (e.PropertyName == nameof(IGameEntity.Parent)) {
+                this.ResetGridContainer();
+            }
+        }
+
         /// <summary>
         /// Resets the bounding area.
         /// </summary>
-        protected void ResetBoundingArea() {
+        protected virtual void ResetBoundingArea() {
             this._tilePositionToBoundingArea.Clear();
             this._boundingArea.Reset();
-        }
-
-        /// <summary>
-        /// Called when bounding area should be reset.
-        /// </summary>
-        protected virtual void ResetBoundingAreas() {
-            this.ResetBoundingArea();
-            this.ResetTileBoundingAreas();
-        }
-
-        /// <summary>
-        /// Resets the tile bounding areas.
-        /// </summary>
-        protected void ResetTileBoundingAreas() {
-            this._tilePositionToBoundingArea.Clear();
         }
 
         /// <summary>
@@ -251,7 +241,7 @@
         private BoundingArea CreateBoundingArea() {
             BoundingArea result;
             if (this.HasActiveTiles()) {
-                var grid = this.Scene.Grid;
+                var grid = this.CurrentGrid;
                 result = new BoundingArea(grid.GetTilePosition(this.MinimumTile), grid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
             }
             else {
@@ -259,6 +249,26 @@
             }
 
             return result;
+        }
+
+        private void GridContainer_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IGridContainer.Grid)) {
+                this.ResetBoundingArea();
+            }
+        }
+
+        private void ResetGridContainer() {
+            this._gridContainer.PropertyChanged -= this.GridContainer_PropertyChanged;
+
+            if (this.TryGetParentEntity<IGridContainer>(out var gridContainer) && gridContainer != null) {
+                this._gridContainer = gridContainer;
+                this._gridContainer.PropertyChanged += this.GridContainer_PropertyChanged;
+            }
+            else {
+                this._gridContainer = GridContainer.Empty;
+            }
+
+            this.ResetBoundingArea();
         }
 
         private void ResetMaximumTile() {
@@ -269,12 +279,6 @@
         private void ResetMinimumTile() {
             this.MinimumTile = this.HasActiveTiles() ? this.GetMinimumTile() : Point.Zero;
             this._boundingArea.Reset();
-        }
-
-        private void Scene_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IGameScene.Grid)) {
-                this.ResetBoundingAreas();
-            }
         }
     }
 }

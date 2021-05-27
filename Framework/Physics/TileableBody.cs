@@ -189,7 +189,9 @@
                 }
 
                 foreach (var segment in allSegments) {
-                    var collider = new LineCollider(this.Scene.Grid.GetTilePosition(segment.StartPoint), this.Scene.Grid.GetTilePosition(segment.EndPoint)) {
+                    var collider = new LineCollider(
+                        this._tileable.CurrentGrid.GetTilePosition(segment.StartPoint),
+                        this.Scene.Grid.GetTilePosition(segment.EndPoint)) {
                         Layers = segment.Layers
                     };
 
@@ -212,7 +214,7 @@
                     this.EndPoint = new Point(Math.Max(firstPoint.X, secondPoint.X), firstPoint.Y);
                 }
                 else {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(secondPoint));
                 }
             }
 

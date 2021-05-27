@@ -1,19 +1,17 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
-    using System.Collections.Generic;
+    using System;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
-    /// A grid of uniform tiless.
+    /// A grid of uniform tiles.
     /// </summary>
     [DataContract]
-    public struct TileGrid {
-
+    public readonly struct TileGrid {
         /// <summary>
         /// An empty tile grid.
         /// </summary>
-        public static readonly TileGrid One = new (Vector2.One);
+        public static readonly TileGrid One = new(Vector2.One);
 
         /// <summary>
         /// The offset
@@ -31,6 +29,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TileGrid" /> struct.
         /// </summary>
+        /// <param name="xTileSize">The size of each tile on the x-axis.</param>
+        /// <param name="yTileSize">The size of each tile on the y-axis.</param>
+        public TileGrid(float xTileSize, float yTileSize) : this(new Vector2(xTileSize, yTileSize), Vector2.Zero) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TileGrid" /> struct.
+        /// </summary>
         /// <param name="tileSize">Size of the tile.</param>
         public TileGrid(Vector2 tileSize) : this(tileSize, Vector2.Zero) {
         }
@@ -38,19 +44,19 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TileGrid" /> struct.
         /// </summary>
-        /// <param name="gridSize">Size of the grid.</param>
         /// <param name="tileSize">Size of the tile.</param>
+        /// <param name="offset">The offset of the grid from an entity's origin.</param>
         public TileGrid(Vector2 tileSize, Vector2 offset) {
             this.Offset = offset;
             this.TileSize = tileSize;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="object" />
         public static bool operator !=(TileGrid grid1, TileGrid grid2) {
             return grid1.TileSize != grid2.TileSize || grid1.Offset != grid2.Offset;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="object" />
         public static bool operator ==(TileGrid grid1, TileGrid grid2) {
             return grid1.TileSize == grid2.TileSize && grid1.Offset == grid2.Offset;
         }
@@ -64,7 +70,7 @@
 
         /// <inheritdoc />
         public override int GetHashCode() {
-            return System.HashCode.Combine(this.Offset, this.TileSize);
+            return HashCode.Combine(this.Offset, this.TileSize);
         }
 
         /// <summary>

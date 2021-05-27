@@ -19,6 +19,11 @@
         IReadOnlyCollection<Point> ActiveTiles { get; }
 
         /// <summary>
+        /// Gets the currently used grid.
+        /// </summary>
+        TileGrid CurrentGrid { get; }
+
+        /// <summary>
         /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid,
         /// which may or may not be from the same tile.
         /// </summary>
