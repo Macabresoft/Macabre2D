@@ -1,24 +1,29 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+    using System;
+    using System.ComponentModel;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
-    using System;
-    using System.ComponentModel;
 
     /// <summary>
     /// A <see cref="IGame" /> that can run within Avalonia.
     /// </summary>
     public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
         /// <summary>
-        /// Gets the type of the cursor.
+        /// Gets the asset manager.
         /// </summary>
-        /// <value>The type of the cursor.</value>
-        StandardCursorType CursorType { get; set; }
+        IAssetManager Assets { get; }
 
         /// <summary>
         /// Gets the graphics device manager for this game.
         /// </summary>
         public GraphicsDeviceManager GraphicsDeviceManager { get; }
+
+        /// <summary>
+        /// Gets the type of the cursor.
+        /// </summary>
+        /// <value>The type of the cursor.</value>
+        StandardCursorType CursorType { get; set; }
 
         /// <summary>
         /// Initializes the specified mouse.
@@ -39,38 +44,42 @@
     public class AvaloniaGame : BaseGame, IAvaloniaGame {
         private StandardCursorType _cursorType = StandardCursorType.None;
 
+        /// <inheritdoc />
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
         public AvaloniaGame() : this(new AssetManager()) {
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaGame" /> class.
         /// </summary>
         /// <param name="assetManager">The asset manager.</param>
-        protected AvaloniaGame(IAssetManager assetManager) : base(assetManager) {
+        protected AvaloniaGame(IAssetManager assetManager) : base() {
+            this.Assets = assetManager;
             this.IsFixedTimeStep = false;
-            BaseGame.IsDesignMode = true;
+            IsDesignMode = true;
         }
 
         /// <inheritdoc />
-        public GraphicsDeviceManager GraphicsDeviceManager => this._graphics;
+        public IAssetManager Assets { get; }
 
         /// <inheritdoc />
-        public event PropertyChangedEventHandler PropertyChanged;
+        public GraphicsDeviceManager GraphicsDeviceManager => this._graphics;
 
         /// <summary>
         /// Gets or sets the type of the cursor.
         /// </summary>
         /// <value>The type of the cursor.</value>
         public StandardCursorType CursorType {
-            get { return this._cursorType; }
+            get => this._cursorType;
 
             set {
                 if (value != this._cursorType) {
                     this._cursorType = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CursorType)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CursorType)));
                 }
             }
         }
@@ -91,6 +100,17 @@
         public void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             this.Mouse = mouse;
             this.Keyboard = keyboard;
+        }
+
+        /// <inheritdoc />
+        protected override IAssetManager CreateAssetManager() {
+            return this.Assets;
+        }
+
+        /// <inheritdoc />
+        protected override void LoadContent() {
+            base.LoadContent();
+            this.Assets.Initialize(this.Content, new Serializer());
         }
 
         /// <inheritdoc />

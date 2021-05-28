@@ -44,7 +44,6 @@
             gridDrawer.RenderOrder = -1;
 
             var skull = new SpriteSheet();
-            this.Game.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
 
             this._skullRenderer = scene.AddChild<SpriteRenderer>();
             this._skullRenderer.LocalPosition += new Vector2(0f, 0.5f);
@@ -53,7 +52,6 @@
             this._skullRenderer.AddChild<SampleInputEntity>();
 
             var leagueMono = new Font();
-            this.Game.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
 
             this._displayTextRenderer = scene.AddChild<TextRenderer>();
             this._displayTextRenderer.FontReference.Initialize(leagueMono);
@@ -78,7 +76,10 @@
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplay.LocalScale = new Vector2(0.1f);
 
+            this.Game.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
+            this.Game.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
             this.Game.LoadScene(scene);
+
             base.Initialize(window, viewportSize, mouse, keyboard);
         }
 

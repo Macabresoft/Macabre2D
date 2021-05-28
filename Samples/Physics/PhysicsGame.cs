@@ -7,9 +7,7 @@
 
     [ExcludeFromCodeCoverage]
     public class PhysicsGame : BaseGame {
-        protected override IAssetManager CreateSceneLevelAssetManager() {
-            return this.Assets;
-        }
+        private Font _font;
 
         protected override void Initialize() {
             this._graphics.PreferredBackBufferHeight = 1080;
@@ -20,7 +18,6 @@
         }
 
         protected override void LoadContent() {
-            this.Assets.Initialize(this.Content, Serializer.Instance);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             var scene = new Scene();
@@ -30,14 +27,13 @@
             physicsService.Gravity.Value = new Vector2(0f, -9f);
             physicsService.TimeStep = 1f / 60f;
 
-            var leagueMono = new Font();
-            this.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
+            this._font = new Font();
 
             var cameraEntity = scene.AddChild<Camera>();
             var frameRateDisplay = cameraEntity.AddChild<FrameRateDisplayEntity>();
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplay.LocalScale = new Vector2(0.1f);
-            frameRateDisplay.FontReference.Initialize(leagueMono);
+            frameRateDisplay.FontReference.Initialize(this._font);
 
             var circleEntity = scene.AddChild<DynamicPhysicsBody>();
             circleEntity.LocalPosition -= new Vector2(0f, 3f);
@@ -103,7 +99,7 @@
             triggerDrawer.Color = DefinedColors.MacabresoftRed;
             triggerDrawer.LineThickness = 3f;
 
-            scene.Initialize(this, this.CreateSceneLevelAssetManager());
+            scene.Initialize(this, this.CreateAssetManager());
 
             var fileName = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, fileName);
@@ -111,6 +107,11 @@
             File.Delete(fileName);
 
             this.LoadScene(scene);
+        }
+
+        protected override void RegisterNewSceneMetadata(IAssetManager assetManager) {
+            base.RegisterNewSceneMetadata(assetManager);
+            assetManager.RegisterMetadata(new ContentMetadata(this._font, new[] { "League Mono" }, ".spritefont"));
         }
     }
 }

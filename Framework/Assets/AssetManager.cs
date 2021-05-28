@@ -9,7 +9,7 @@
     /// <summary>
     /// Interface to manage assets.
     /// </summary>
-    public interface IAssetManager {
+    public interface IAssetManager : IDisposable {
         /// <summary>
         /// Initializes this instance.
         /// </summary>
@@ -70,6 +70,15 @@
         private readonly HashSet<ContentMetadata> _loadedMetadata = new();
         private ContentManager? _contentManager;
         private ISerializer? _serializer;
+
+        /// <inheritdoc />
+        public void Dispose() {
+            this.Unload();
+            this._loadedMetadata.Clear();
+            this._serializer = null;
+            this._contentManager?.Dispose();
+            this._contentManager = null;
+        }
 
         /// <inheritdoc />
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
@@ -188,6 +197,10 @@
         }
 
         private sealed class EmptyAssetManager : IAssetManager {
+            /// <inheritdoc />
+            public void Dispose() {
+            }
+
             /// <inheritdoc />
             public void Initialize(ContentManager contentManager, ISerializer serializer) {
             }

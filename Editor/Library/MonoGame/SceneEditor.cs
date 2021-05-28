@@ -96,7 +96,7 @@
                     base.Initialize();
 
                     if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                        this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
+                        this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
                     }
 
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
@@ -149,7 +149,7 @@
             if (this.IsInitialized &&
                 e.PropertyName == nameof(ISceneService.CurrentScene) &&
                 !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
+                this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
             }
         }
     }

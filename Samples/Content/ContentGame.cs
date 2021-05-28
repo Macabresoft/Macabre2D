@@ -7,9 +7,11 @@
 
     [ExcludeFromCodeCoverage]
     public class ContentGame : BaseGame {
-        protected override IAssetManager CreateSceneLevelAssetManager() {
-            return this.Assets;
-        }
+        private SpriteSheet _colorfulSquares;
+        private Font _font;
+        private AudioClip _lazer;
+
+        private SpriteSheet _whiteSquare;
 
         protected override void LoadContent() {
             this.Project.Settings.PixelsPerUnit = 64;
@@ -27,11 +29,10 @@
             camera.AddChild<MovingDot>();
             camera.AddChild<MouseClickDebugger>();
 
-            var whiteSquare = new SpriteSheet();
-            this.Assets.RegisterMetadata(new ContentMetadata(whiteSquare, new[] { "WhiteSquare" }, ".png"));
+            this._whiteSquare = new SpriteSheet();
 
             var spriteRenderer = camera.AddChild<SpriteRenderer>();
-            spriteRenderer.SpriteReference.Initialize(whiteSquare);
+            spriteRenderer.SpriteReference.Initialize(this._whiteSquare);
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             var gridContainer = scene.AddChild<GridContainer>();
@@ -40,7 +41,7 @@
             binaryTileMap.RenderOrder = -300;
             binaryTileMap.LocalPosition = new Vector2(-5f, -10f);
             binaryTileMap.LocalScale = new Vector2(1f, 1f);
-            binaryTileMap.SpriteReference.Initialize(whiteSquare);
+            binaryTileMap.SpriteReference.Initialize(this._whiteSquare);
             binaryTileMap.Color = Color.DarkGray;
 
             for (var x = 0; x < 5; x++) {
@@ -51,17 +52,12 @@
                 }
             }
 
-            this.PreLoadAudioStuff(scene);
+            this._font = new Font();
 
-            var font = new Font();
-            this.Assets.RegisterMetadata(new ContentMetadata(font, new[] { "League Mono" }, ".spritefont"));
-
-            var colorfulSquares = new SpriteSheet {
+            this._colorfulSquares = new SpriteSheet {
                 Rows = 2,
                 Columns = 2
             };
-
-            this.Assets.RegisterMetadata(new ContentMetadata(colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
 
             var spriteAnimator = scene.AddChild<SpriteAnimator>();
             spriteAnimator.FrameRate = 4;
@@ -75,13 +71,13 @@
                 step.Frames = 2;
             }
 
-            colorfulSquares.AddPackage(spriteAnimation);
+            this._colorfulSquares.AddPackage(spriteAnimation);
             spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
-            spriteAnimator.AnimationReference.Initialize(colorfulSquares);
+            spriteAnimator.AnimationReference.Initialize(this._colorfulSquares);
 
             var spriteRenderer3 = scene.AddChild<SpriteRenderer>();
             spriteRenderer3.RenderOrder = -200;
-            spriteRenderer3.SpriteReference.Initialize(whiteSquare);
+            spriteRenderer3.SpriteReference.Initialize(this._whiteSquare);
             spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
             spriteRenderer3.LocalPosition -= new Vector2(2f, 0);
             spriteRenderer3.AddChild<Scaler>();
@@ -91,7 +87,7 @@
 
             var spriteRenderer4 = spriteRenderer3.AddChild<SpriteRenderer>();
             spriteRenderer4.RenderOrder = 100;
-            spriteRenderer4.SpriteReference.Initialize(whiteSquare);
+            spriteRenderer4.SpriteReference.Initialize(this._whiteSquare);
             spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
             spriteRenderer4.LocalPosition -= new Vector2(2f, 0f);
             spriteRenderer4.AddChild<Scaler>();
@@ -101,7 +97,7 @@
 
             var textRenderer = scene.AddChild<TextRenderer>();
             textRenderer.Text = "Hello, World";
-            textRenderer.FontReference.Initialize(font);
+            textRenderer.FontReference.Initialize(this._font);
             textRenderer.Color = Color.DarkMagenta;
             textRenderer.LocalScale = new Vector2(0.5f, 0.5f);
             textRenderer.LocalPosition -= new Vector2(5f, 5f);
@@ -113,11 +109,19 @@
             secondCamera.LayersToRender = Layers.Layer03;
             var frameRateDisplay = secondCamera.AddChild<FrameRateDisplayEntity>();
             frameRateDisplay.Layers = Layers.Layer03;
-            frameRateDisplay.FontReference.Initialize(font);
+            frameRateDisplay.FontReference.Initialize(this._font);
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplay.LocalScale = new Vector2(0.1f);
 
-            scene.Initialize(this, this.Assets);
+            this._lazer = new AudioClip();
+
+            var audioPlayer = scene.AddChild<AudioPlayer>();
+            audioPlayer.Volume = 0.5f;
+            audioPlayer.AudioClipReference.Initialize(this._lazer);
+            audioPlayer.AddChild<VolumeController>();
+
+            //scene.Initialize(this, this._assets);
+
 
             var filePath = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, filePath);
@@ -126,6 +130,15 @@
 
             this.LoadScene(scene);
             this.PostLoadRenderingStuff();
+        }
+
+        protected override void RegisterNewSceneMetadata(IAssetManager assetManager) {
+            base.RegisterNewSceneMetadata(assetManager);
+
+            assetManager.RegisterMetadata(new ContentMetadata(this._colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
+            assetManager.RegisterMetadata(new ContentMetadata(this._whiteSquare, new[] { "WhiteSquare" }, ".png"));
+            assetManager.RegisterMetadata(new ContentMetadata(this._font, new[] { "League Mono" }, ".spritefont"));
+            assetManager.RegisterMetadata(new ContentMetadata(this._lazer, new[] { "laser" }, ".wav"));
         }
 
         private void PostLoadRenderingStuff() {
@@ -173,16 +186,6 @@
                 binaryTileMapBoundingArea.Color = Color.Red;
                 binaryTileMapBoundingArea.LineThickness = 3f;
             }
-        }
-
-        private void PreLoadAudioStuff(Scene scene) {
-            var laser = new AudioClip();
-            this.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
-
-            var audioPlayer = scene.AddChild<AudioPlayer>();
-            audioPlayer.Volume = 0.5f;
-            audioPlayer.AudioClipReference.Initialize(laser);
-            audioPlayer.AddChild<VolumeController>();
         }
     }
 }
