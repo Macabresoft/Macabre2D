@@ -8,7 +8,7 @@
     /// </summary>
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]
-    public class AssetReference<TAsset> : NotifyPropertyChanged, IDisposable where TAsset : class, IAsset {
+    public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class, IAsset {
         /// <summary>
         /// Gets the asset.
         /// </summary>
@@ -19,13 +19,6 @@
         /// </summary>
         [DataMember]
         public Guid ContentId { get; private set; }
-
-        /// <inheritdoc />
-        public void Dispose() {
-            if (this.Asset != null) {
-                this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
-            }
-        }
 
         /// <summary>
         /// Initializes this instance with an asset.
@@ -39,6 +32,15 @@
             this.Asset = asset;
             this.Asset.PropertyChanged += this.Asset_PropertyChanged;
             this.ContentId = this.Asset.ContentId;
+        }
+
+        /// <inheritdoc />
+        protected override void OnDisposing() {
+            base.OnDisposing();
+
+            if (this.Asset != null) {
+                this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
+            }
         }
 
         private void Asset_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

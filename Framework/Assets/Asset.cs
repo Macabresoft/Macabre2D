@@ -86,15 +86,6 @@
         }
 
         /// <inheritdoc />
-        public void Dispose() {
-            if (this.Content is IDisposable disposable) {
-                disposable.Dispose();
-            }
-
-            this.DisposePropertyChanged();
-        }
-
-        /// <inheritdoc />
         public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {
             var contentStringBuilder = new StringBuilder();
             contentStringBuilder.AppendLine($"#begin {contentPath}");
@@ -106,6 +97,15 @@
         /// <inheritdoc />
         public virtual void LoadContent(TContent content) {
             this.Content = content;
+        }
+
+        /// <inheritdoc />
+        protected override void OnDisposing() {
+            base.OnDisposing();
+
+            if (this.Content is IDisposable disposable) {
+                disposable.Dispose();
+            }
         }
     }
 }

@@ -52,13 +52,6 @@
         }
 
         /// <summary>
-        /// Disposes <see cref="PropertyChanged" />.
-        /// </summary>
-        protected void DisposePropertyChanged() {
-            this.PropertyChanged = null;
-        }
-
-        /// <summary>
         /// Called when this <see cref="IDisposable" /> is being disposed.
         /// </summary>
         protected virtual void OnDisposing() {
