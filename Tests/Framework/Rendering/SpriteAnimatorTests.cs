@@ -35,8 +35,8 @@
             byte numberOfSteps = 3;
             var animation = CreateAnimation(numberOfSteps);
             var animator = CreateAnimator(1);
-            var scene = Substitute.For<IGameScene>();
-            animator.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            animator.Initialize(scene, new Entity());
 
             var gameTime = new GameTime {
                 ElapsedGameTime = TimeSpan.FromMilliseconds(100d)

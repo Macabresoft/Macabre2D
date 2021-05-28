@@ -57,9 +57,9 @@
             var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
             fileSystem.DoesFileExist(sceneFilePath).Returns(false);
 
-            var scene = new GameScene();
+            var scene = new Scene();
             fileSystem.DoesFileExist(sceneFilePath).Returns(true);
-            serializer.Deserialize<GameScene>(sceneFilePath).Returns(scene);
+            serializer.Deserialize<Scene>(sceneFilePath).Returns(scene);
             
             var sceneAsset = new SceneAsset();
             var metadata = new ContentMetadata(sceneAsset, new[] { SceneName }, SceneAsset.FileExtension);

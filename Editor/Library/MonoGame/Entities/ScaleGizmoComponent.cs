@@ -32,7 +32,7 @@
         public override GizmoKind GizmoKind => GizmoKind.Scale;
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             if (this.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
                 this._squareSprite = PrimitiveDrawer.CreateQuadSprite(graphicsDevice, new Point(GizmoPointSize));

@@ -9,7 +9,7 @@
     internal class GameSceneTestContainer {
 
         public GameSceneTestContainer(InitializationMode initializationMode) {
-            this.Scene = new GameScene() {
+            this.Scene = new Scene() {
                 Name = "Test Scene"
             };
 
@@ -36,15 +36,15 @@
             None
         }
         
-        public IGameEntity CameraEntity { get; }
+        public IEntity CameraEntity { get; }
 
-        public IGameEntity RenderableEntity { get; }
+        public IEntity RenderableEntity { get; }
 
-        public IGameScene Scene { get; }
+        public IScene Scene { get; }
 
-        public IGameEntity UpdateableAndRenderableEntity { get; }
+        public IEntity UpdateableAndRenderableEntity { get; }
         
-        public IGameEntity UpdateableEntity { get; }
+        public IEntity UpdateableEntity { get; }
 
         internal void AssertExistenceOfEntities(bool shouldExist) {
             using (new AssertionScope()) {

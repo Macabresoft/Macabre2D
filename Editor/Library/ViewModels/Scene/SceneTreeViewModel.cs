@@ -13,10 +13,10 @@
     /// A view model for the scene tree.
     /// </summary>
     public class SceneTreeViewModel : ViewModelBase {
-        private readonly ReactiveCommand<IGameEntity, Unit> _addEntityCommand;
-        private readonly ReactiveCommand<IGameEntity, Unit> _removeEntityCommand;
+        private readonly ReactiveCommand<IEntity, Unit> _addEntityCommand;
+        private readonly ReactiveCommand<IEntity, Unit> _removeEntityCommand;
         private readonly ISceneService _sceneService;
-        private readonly ObservableCollection<IGameEntity> _treeRoot = new();
+        private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
 
         /// <summary>
@@ -40,11 +40,11 @@
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
-            this._addEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
+            this._addEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.AddEntity,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
 
-            this._removeEntityCommand = ReactiveCommand.Create<IGameEntity, Unit>(
+            this._removeEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
                 this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
         }
@@ -62,15 +62,15 @@
         /// <summary>
         /// Gets the root of the scene tree.
         /// </summary>
-        public IReadOnlyCollection<IGameEntity> Root => this._treeRoot;
+        public IReadOnlyCollection<IEntity> Root => this._treeRoot;
 
         /// <summary>
         /// Gets the selection service.
         /// </summary>
         public ISelectionService SelectionService { get; }
 
-        private Unit AddEntity(IGameEntity parent) {
-            var child = new GameEntity {
+        private Unit AddEntity(IEntity parent) {
+            var child = new Entity {
                 Name = "Unnamed Entity"
             };
 
@@ -88,7 +88,7 @@
             return Unit.Default;
         }
 
-        private Unit RemoveEntity(IGameEntity entity) {
+        private Unit RemoveEntity(IEntity entity) {
             var parent = entity.Parent;
             var originalHasChanges = this._sceneService.HasChanges;
             this._undoService.Do(() => {
@@ -107,7 +107,7 @@
         private void ResetRoot() {
             this._treeRoot.Clear();
 
-            if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+            if (!Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this._treeRoot.Add(this._sceneService.CurrentScene);
             }
         }

@@ -7,7 +7,7 @@
     /// Draws a collider.
     /// </summary>
     [Display(Name = "Collider Drawer (Diagnostics)")]
-    public sealed class ColliderDrawer : BaseDrawer, IGameUpdateableEntity {
+    public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
         private IPhysicsBody? _body;
 
         /// <inheritdoc />
@@ -16,7 +16,7 @@
         /// <inheritdoc />
         public int UpdateOrder => 0;
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
             this.Reset();
         }

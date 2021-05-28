@@ -11,7 +11,7 @@
     /// Animates sprites at the specified frame rate.
     /// </summary>
     [Display(Name = "Sprite Animator")]
-    public sealed class SpriteAnimator : BaseSpriteEntity, IGameUpdateableEntity {
+    public sealed class SpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
         private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
@@ -88,7 +88,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
             
             this._millisecondsPerFrame = 1000u / this._frameRate;

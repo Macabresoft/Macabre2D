@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for an updateable object in the game loop.
     /// </summary>
-    public interface IGameUpdateable : INotifyPropertyChanged, IEnableable {
+    public interface IUpdateableGameObject : INotifyPropertyChanged, IEnableable {
 
         /// <summary>
         /// Updates this instance.

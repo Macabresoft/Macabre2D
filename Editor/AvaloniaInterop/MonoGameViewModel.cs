@@ -34,7 +34,7 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        IGameScene Scene { get; }
+        IScene Scene { get; }
 
         /// <summary>
         /// Initializes this instance.
@@ -142,7 +142,7 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        public IGameScene Scene { get; private set; }
+        public IScene Scene { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() {

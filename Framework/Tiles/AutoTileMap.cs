@@ -52,7 +52,7 @@
             return this._activeTileToIndex.ContainsKey(tilePosition);
         }
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this._previousWorldScale = this.Transform.Scale;
@@ -103,7 +103,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform) && this.Transform.Scale != this._previousWorldScale) {
+            if (e.PropertyName == nameof(IEntity.Transform) && this.Transform.Scale != this._previousWorldScale) {
                 this._previousWorldScale = this.Transform.Scale;
                 this.ResetSpriteScale();
             }

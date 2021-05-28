@@ -20,12 +20,12 @@
 
     /// <summary>
     /// A tileable entity. Contains a <see cref="TileGrid" /> and implements
-    /// <see cref="IGameTileableEntity" />
+    /// <see cref="ITileableEntity" />
     /// </summary>
-    public abstract class TileableEntity : GameEntity, IGameTileableEntity {
+    public abstract class TileableEntity : Entity, ITileableEntity {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly Dictionary<Point, BoundingArea> _tilePositionToBoundingArea = new();
-        private IGridContainer _gridContainer = GridContainer.Empty;
+        private IGridContainer _gridContainer = GridContainer.EmptyGridContainer;
 
         /// <inheritdoc />
         public event EventHandler? TilesChanged;
@@ -114,7 +114,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this.ResetGridContainer();
@@ -211,7 +211,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Parent)) {
+            if (e.PropertyName == nameof(IEntity.Parent)) {
                 this.ResetGridContainer();
             }
         }
@@ -265,7 +265,7 @@
                 this._gridContainer.PropertyChanged += this.GridContainer_PropertyChanged;
             }
             else {
-                this._gridContainer = GridContainer.Empty;
+                this._gridContainer = GridContainer.EmptyGridContainer;
             }
 
             this.ResetBoundingArea();

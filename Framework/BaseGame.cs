@@ -25,7 +25,7 @@
         private double _gameSpeed = 1d;
         private GraphicsSettings _graphicsSettings = new();
         private IGameProject _project = new GameProject();
-        private IGameScene _scene = GameScene.Empty;
+        private IScene _scene = Framework.Scene.Empty;
         private Point _viewportSize;
 
         /// <inheritdoc />
@@ -117,7 +117,7 @@
         }
 
         /// <inheritdoc />
-        public IGameScene Scene {
+        public IScene Scene {
             get => this._scene;
 
             private set {
@@ -145,7 +145,7 @@
 
         /// <inheritdoc />
         public void LoadScene(string sceneName) {
-            if (this.Assets.TryLoadContent<GameScene>(sceneName, out var scene) && scene != null) {
+            if (this.Assets.TryLoadContent<Scene>(sceneName, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
             else {
@@ -154,7 +154,7 @@
         }
 
         /// <inheritdoc />
-        public void LoadScene(IGameScene scene) {
+        public void LoadScene(IScene scene) {
             this.Scene = scene;
         }
 
@@ -214,7 +214,7 @@
                 this.Project = project;
             }
 
-            if (this.Assets.TryLoadContent<GameScene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
+            if (this.Assets.TryLoadContent<Scene>(this.Project.StartupSceneContentId, out var scene) && scene != null) {
                 this.LoadScene(scene);
             }
 
@@ -303,7 +303,7 @@
             public ISaveDataManager SaveDataManager { get; } = new EmptySaveDataManager();
 
             /// <inheritdoc />
-            public IGameScene Scene => GameScene.Empty;
+            public IScene Scene => Framework.Scene.Empty;
 
             /// <inheritdoc />
             public SpriteBatch? SpriteBatch => null;
@@ -332,7 +332,7 @@
             }
 
             /// <inheritdoc />
-            public void LoadScene(IGameScene scene) {
+            public void LoadScene(IScene scene) {
             }
 
             /// <inheritdoc />

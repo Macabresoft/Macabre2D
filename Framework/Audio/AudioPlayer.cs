@@ -9,7 +9,7 @@
     /// Plays a <see cref="AudioClip" />.
     /// </summary>
     [Display(Name = "Audio Player")]
-    public sealed class AudioPlayer : GameEntity {
+    public sealed class AudioPlayer : Entity {
         private SoundEffectInstance? _currentSoundEffectInstance;
         private float _pan;
         private float _pitch;
@@ -92,7 +92,7 @@
             }
         }
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this.Scene.Assets.ResolveAsset<AudioClip, SoundEffect>(this.AudioClipReference);
@@ -143,7 +143,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.IsEnabled)) {
+            if (e.PropertyName == nameof(IEntity.IsEnabled)) {
                 if (this.ShouldLoop && this.IsEnabled) {
                     this.Play();
                 }

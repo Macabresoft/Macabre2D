@@ -2,10 +2,10 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class VolumeController : GameUpdateableEntity {
+    public sealed class VolumeController : UpdateableEntity {
         private AudioPlayer _audioPlayer;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._audioPlayer);
         }

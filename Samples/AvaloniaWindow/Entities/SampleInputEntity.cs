@@ -3,10 +3,10 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class SampleInputEntity : GameUpdateableEntity {
+    public sealed class SampleInputEntity : UpdateableEntity {
         private SpriteRenderer _skullRenderer;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._skullRenderer);
         }

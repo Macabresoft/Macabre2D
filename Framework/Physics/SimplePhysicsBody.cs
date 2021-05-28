@@ -37,7 +37,7 @@
             return this.Collider != null ? new[] { this.Collider } : new Collider[0];
         }
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
             this._collider?.Initialize(this);
         }
@@ -45,7 +45,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 this._collider?.Reset();
             }
         }

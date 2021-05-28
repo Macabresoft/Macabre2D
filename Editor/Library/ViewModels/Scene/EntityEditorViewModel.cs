@@ -83,9 +83,9 @@
         }
 
         private void ResetComponentEditors() {
-            if (this.SelectionService.SelectedEntity is IGameScene scene) {
+            if (this.SelectionService.SelectedEntity is IScene scene) {
             }
-            else if (this.SelectionService.SelectedEntity is IGameEntity entity) {
+            else if (this.SelectionService.SelectedEntity is IEntity entity) {
                 var editorCollections = this._valueEditorService.CreateEditors(entity).ToList();
 
                 lock (this._editorsLock) {

@@ -8,14 +8,14 @@
     using ReactiveUI;
 
     /// <summary>
-    /// Interface for a service which handles the <see cref="IGameScene" /> open in the editor.
+    /// Interface for a service which handles the <see cref="IScene" /> open in the editor.
     /// </summary>
     public interface ISceneService : INotifyPropertyChanged {
         /// <summary>
         /// Gets the current scene.
         /// </summary>
         /// <value>The current scene.</value>
-        IGameScene CurrentScene { get; }
+        IScene CurrentScene { get; }
 
         /// <summary>
         /// Gets the current scene metadata.
@@ -50,7 +50,7 @@
     }
 
     /// <summary>
-    /// A service which handles the <see cref="IGameScene" /> open in the editor.
+    /// A service which handles the <see cref="IScene" /> open in the editor.
     /// </summary>
     public sealed class SceneService : ReactiveObject, ISceneService {
         private readonly IAssetManager _assetManager;
@@ -79,7 +79,7 @@
         }
 
         /// <inheritdoc />
-        public IGameScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
+        public IScene CurrentScene => (this._currentSceneMetadata?.Asset as SceneAsset)?.Content;
 
         /// <inheritdoc />
         public ContentMetadata CurrentSceneMetadata {
@@ -108,14 +108,14 @@
                 throw new DirectoryNotFoundException();
             }
 
-            GameScene scene;
+            Scene scene;
             var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
                 // TODO: Overwrite warning.
-                scene = this._serializer.Deserialize<GameScene>(filePath);
+                scene = this._serializer.Deserialize<Scene>(filePath);
             }
             else {
-                scene = new GameScene {
+                scene = new Scene {
                     BackgroundColor = DefinedColors.MacabresoftPurple,
                     Name = sceneName
                 };
@@ -169,7 +169,7 @@
                         var contentPath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
 
                         if (this._fileSystem.DoesFileExist(contentPath)) {
-                            var scene = this._serializer.Deserialize<GameScene>(contentPath);
+                            var scene = this._serializer.Deserialize<Scene>(contentPath);
                             if (scene != null) {
                                 sceneAsset.LoadContent(scene);
                                 this.CurrentSceneMetadata = metadata;

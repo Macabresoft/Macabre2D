@@ -20,7 +20,7 @@
             float directionY,
             bool layersCompatible,
             bool raycastHit) {
-            var scene = new GameScene();
+            var scene = new Scene();
             var project = Substitute.For<IGameProject>();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
@@ -54,7 +54,7 @@
             float directionY,
             float distance,
             bool raycastHit) {
-            var scene = new GameScene();
+            var scene = new Scene();
             var project = Substitute.For<IGameProject>();
             var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();

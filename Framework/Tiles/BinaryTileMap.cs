@@ -51,7 +51,7 @@
             return this._activeTiles.Contains(tilePosition);
         }
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
@@ -97,7 +97,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 if (this.SpriteReference.Asset is SpriteSheet spriteSheet) {
                     this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
                 }

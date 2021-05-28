@@ -3,11 +3,11 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
 
-    public sealed class MouseDebuggerEntity : GameUpdateableEntity {
+    public sealed class MouseDebuggerEntity : UpdateableEntity {
         private Camera _camera;
         private TextRenderer _textRenderer;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._textRenderer);
             this.TryGetParentEntity(out this._camera);

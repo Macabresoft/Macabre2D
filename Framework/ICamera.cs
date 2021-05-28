@@ -4,9 +4,9 @@
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// Interface for a camera which tells the engine where to render any <see cref="IGameRenderableEntity" />.
+    /// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
     /// </summary>
-    public interface ICamera : IGameEntity, IBoundable {
+    public interface ICamera : IEntity, IBoundable {
         /// <summary>
         /// Gets the layers to render.
         /// </summary>
@@ -48,6 +48,6 @@
         /// <param name="frameTime">The frame time.</param>
         /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
         /// <param name="entities">The entities to render.</param>
-        void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableEntity> entities);
+        void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities);
     }
 }

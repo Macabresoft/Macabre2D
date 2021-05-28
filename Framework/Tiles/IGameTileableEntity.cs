@@ -6,7 +6,7 @@
     /// <summary>
     /// An interface for tileable entities.
     /// </summary>
-    public interface IGameTileableEntity : IGameEntity, IBoundable {
+    public interface ITileableEntity : IEntity, IBoundable {
         /// <summary>
         /// Occurs when a tile is added or removed.
         /// </summary>

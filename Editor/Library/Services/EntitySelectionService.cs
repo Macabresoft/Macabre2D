@@ -17,12 +17,12 @@
         /// <summary>
         /// Gets or sets the selected entity.
         /// </summary>
-        IGameEntity SelectedEntity { get; set; }
+        IEntity SelectedEntity { get; set; }
 
         /// <summary>
         /// Gets or sets the selected system.
         /// </summary>
-        IGameSystem SelectedSystem { get; set; }
+        IUpdateableSystem SelectedSystem { get; set; }
     }
 
     /// <summary>
@@ -30,8 +30,8 @@
     /// </summary>
     public sealed class SelectionService : ReactiveObject, ISelectionService {
         private EntitySelectionKind _mostRecentlySelectedKind = EntitySelectionKind.None;
-        private IGameEntity _selectedEntity;
-        private IGameSystem _selectedSystem;
+        private IEntity _selectedEntity;
+        private IUpdateableSystem _selectedSystem;
 
         /// <inheritdoc />
         public EntitySelectionKind MostRecentlySelectedKind {
@@ -41,10 +41,10 @@
 
 
         /// <inheritdoc />
-        public IGameEntity SelectedEntity {
+        public IEntity SelectedEntity {
             get => this._selectedEntity;
             set {
-                if (value is IGameScene scene) {
+                if (value is IScene scene) {
                     if (value != this._selectedEntity) {
                         this.SelectedSystem = scene.Systems.FirstOrDefault();
                     }
@@ -64,7 +64,7 @@
         }
 
         /// <inheritdoc />
-        public IGameSystem SelectedSystem {
+        public IUpdateableSystem SelectedSystem {
             get => this._selectedSystem;
             set {
                 if (value != this._selectedSystem) {
@@ -72,7 +72,7 @@
                 }
 
                 if (this._selectedEntity != null) {
-                    this._mostRecentlySelectedKind = this._selectedEntity is IGameScene ? EntitySelectionKind.Scene : EntitySelectionKind.Entity;
+                    this._mostRecentlySelectedKind = this._selectedEntity is IScene ? EntitySelectionKind.Scene : EntitySelectionKind.Entity;
                 }
                 else if (this._mostRecentlySelectedKind == EntitySelectionKind.Entity || this._mostRecentlySelectedKind == EntitySelectionKind.Scene) {
                     this.MostRecentlySelectedKind = EntitySelectionKind.None;

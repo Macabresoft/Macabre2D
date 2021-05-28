@@ -13,7 +13,7 @@
 
     /// <summary>
     /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
-    /// <see cref="IGameScene" />
+    /// <see cref="IScene" />
     /// easier.
     /// </summary>
     public interface ISceneEditor : IAvaloniaGame {
@@ -78,7 +78,7 @@
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
-                if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                     this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }
@@ -95,7 +95,7 @@
                     this.LoadScene(this.CreateScene());
                     base.Initialize();
 
-                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                    if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                         this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
                     }
 
@@ -117,8 +117,8 @@
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
         }
 
-        private IGameScene CreateScene() {
-            var scene = new GameScene();
+        private IScene CreateScene() {
+            var scene = new Scene();
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             this.Camera = scene.AddChild<Camera>();
             this.Camera.AddChild<CameraController>();
@@ -148,7 +148,7 @@
         private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.IsInitialized &&
                 e.PropertyName == nameof(ISceneService.CurrentScene) &&
-                !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this._sceneService.CurrentScene.Initialize(this, this.CreateSceneLevelAssetManager());
             }
         }

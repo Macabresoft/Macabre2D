@@ -33,7 +33,7 @@
         public override GizmoKind GizmoKind => GizmoKind.Translation;
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             if (this.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
                 this._xAxisArrowSprite = PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, GizmoPointSize);
@@ -127,7 +127,7 @@
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                if (this.SelectionService.SelectedEntity is IGameEntity entity) {
+                if (this.SelectionService.SelectedEntity is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
                         var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
                         this.UpdatePosition(entity, newPosition);
@@ -187,7 +187,7 @@
             }
         }
 
-        private void UpdatePosition(IGameEntity entity, Vector2 newPosition) {
+        private void UpdatePosition(IEntity entity, Vector2 newPosition) {
             entity?.SetWorldPosition(newPosition);
         }
     }

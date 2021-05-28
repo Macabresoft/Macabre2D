@@ -17,8 +17,8 @@
             float rx1, float ry1, float rx2, float ry2,
             bool shouldHit, float ix = 0f, float iy = 0f, float nx = 0f, float ny = 0f) {
             var lineBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            lineBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            lineBody.Initialize(scene, new Entity());
             lineBody.Collider = new LineCollider(new Vector2(x1, y1), new Vector2(x2, y2));
 
             var ray = new LineSegment(new Vector2(rx1, ry1), new Vector2(rx2, ry2));

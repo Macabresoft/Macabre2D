@@ -78,7 +78,7 @@
         protected Vector2 YAxisPosition { get; set; }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             if (this.TryGetParentEntity(out this._camera)) {
@@ -211,7 +211,7 @@
         /// </summary>
         /// <returns>A value indicating whether or not this should be enabled.</returns>
         protected virtual bool ShouldBeEnabled() {
-            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.SelectionService.SelectedEntity is IGameScene);
+            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.SelectionService.SelectedEntity is IScene);
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {

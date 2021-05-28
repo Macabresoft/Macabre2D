@@ -5,7 +5,7 @@
     /// <summary>
     /// A base renderable tile map.
     /// </summary>
-    public abstract class RenderableTileMap : TileableEntity, IGameRenderableEntity {
+    public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
         private bool _isVisible = true;
         private int _renderOrder;
 
@@ -29,7 +29,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.IsEnabled) && this._isVisible) {
+            if (e.PropertyName == nameof(IEntity.IsEnabled) && this._isVisible) {
                 this.RaisePropertyChanged(nameof(this.IsVisible));
             }
         }

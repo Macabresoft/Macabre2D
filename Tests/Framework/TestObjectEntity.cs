@@ -3,7 +3,7 @@
     using Macabresoft.Macabre2D.Framework;
     using System.Threading;
 
-    internal class TestUpdateableEntity : GameUpdateableEntity {
+    internal class TestUpdateableEntity : UpdateableEntity {
 
         public int UpdateCount {
             get;

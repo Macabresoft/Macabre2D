@@ -3,10 +3,10 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A <see cref="IGameEntity" /> which implements <see cref="IGameUpdateable" />, <see
+    /// A <see cref="IEntity" /> which implements <see cref="IUpdateableGameObject" />, <see
     /// cref="IEnableable" />, and can be sorted.
     /// </summary>
-    public interface IGameUpdateableEntity : IGameEntity, IGameUpdateable {
+    public interface IUpdateableEntity : IEntity, IUpdateableGameObject {
 
         /// <summary>
         /// Gets the update order.
@@ -16,9 +16,9 @@
     }
     
     /// <summary>
-    /// A base implementation of <see cref="IGameUpdateableEntity" />.
+    /// A base implementation of <see cref="IUpdateableEntity" />.
     /// </summary>
-    public abstract class GameUpdateableEntity : GameEntity, IGameUpdateableEntity {
+    public abstract class UpdateableEntity : Entity, IUpdateableEntity {
         private int _updateOrder = 0;
 
         /// <inheritdoc />

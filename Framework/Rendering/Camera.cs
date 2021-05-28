@@ -12,7 +12,7 @@
     /// Represents a camera into the game world.
     /// </summary>
     [Display(Name = "Camera")]
-    public sealed class Camera : GameEntity, ICamera {
+    public sealed class Camera : Entity, ICamera {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
 
         [DataMember]
@@ -148,7 +148,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this.OffsetSettings.Initialize(this.CreateSize);
@@ -162,7 +162,7 @@
         }
 
         /// <inheritdoc />
-        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IGameRenderableEntity> entities) {
+        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities) {
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -225,7 +225,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 this.ResetBoundingArea();
             }
         }

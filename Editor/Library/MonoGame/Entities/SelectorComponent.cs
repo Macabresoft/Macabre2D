@@ -9,7 +9,7 @@
     /// <summary>
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
-    internal class SelectorComponent : GameEntity, IGizmo {
+    internal class SelectorComponent : Entity, IGizmo {
         private readonly ISceneService _sceneService;
         private readonly ISelectionService _selectionService;
         private ICamera _camera;
@@ -28,7 +28,7 @@
         public GizmoKind GizmoKind => GizmoKind.Selector;
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             if (!this.TryGetParentEntity(out this._camera)) {
@@ -40,7 +40,7 @@
         public bool Update(FrameTime frameTime, InputState inputState) {
             var result = false;
             if (this._camera != null &&
-                !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
+                !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
                 inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
                 inputState.PreviousMouseState.LeftButton == ButtonState.Released) {
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);

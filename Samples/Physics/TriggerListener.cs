@@ -2,11 +2,11 @@
 
     using Macabresoft.Macabre2D.Framework;
 
-    public sealed class TriggerListener : GameEntity {
+    public sealed class TriggerListener : Entity {
         private IPhysicsBody _body;
         private ColliderDrawer _drawer;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             if (this.TryGetParentEntity<IPhysicsBody>(out var body) && body != null) {

@@ -6,10 +6,10 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    internal sealed class CameraController : GameUpdateableEntity {
+    internal sealed class CameraController : UpdateableEntity {
         private Camera _camera;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             if (!this.TryGetParentEntity(out this._camera)) {

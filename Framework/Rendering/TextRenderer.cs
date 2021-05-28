@@ -12,7 +12,7 @@
     /// An entity which will render the specified text.
     /// </summary>
     [Display(Name = "Text Renderer")]
-    public class TextRenderer : GameRenderableEntity, IRotatable {
+    public class TextRenderer : RenderableEntity, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
@@ -111,7 +111,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             this.Scene.Assets.ResolveAsset<Font, SpriteFont>(this.FontReference);
@@ -136,7 +136,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 this.Reset();
             }
         }

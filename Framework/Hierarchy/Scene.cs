@@ -8,10 +8,10 @@
     using Microsoft.Xna.Framework;
 
     /// <summary>
-    /// Interface for a combination of <see cref="IGameSystem" /> and <see cref="IGameEntity" />
+    /// Interface for a combination of <see cref="IUpdateableSystem" /> and <see cref="IEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public interface IGameScene : IGameEntity, IGameUpdateable, IGridContainer {
+    public interface IScene : IEntity, IUpdateableGameObject, IGridContainer {
         /// <summary>
         /// Gets the asset manager.
         /// </summary>
@@ -39,19 +39,19 @@
         /// Gets the renderable entities in the scene.
         /// </summary>
         /// <value>The renderable entities.</value>
-        IReadOnlyCollection<IGameRenderableEntity> RenderableEntities => Array.Empty<IGameRenderableEntity>();
+        IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
 
         /// <summary>
         /// Gets the systems.
         /// </summary>
         /// <value>The systems.</value>
-        IReadOnlyCollection<IGameSystem> Systems => new IGameSystem[0];
+        IReadOnlyCollection<IUpdateableSystem> Systems => new IUpdateableSystem[0];
 
         /// <summary>
         /// Gets the updateable entities.
         /// </summary>
         /// <value>The updateable entities.</value>
-        IReadOnlyCollection<IGameUpdateableEntity> UpdateableEntities => new IGameUpdateableEntity[0];
+        IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => new IUpdateableEntity[0];
 
         /// <summary>
         /// Gets or sets the color of the background.
@@ -63,16 +63,16 @@
         /// Adds the service.
         /// </summary>
         /// <typeparam name="T">
-        /// A type that implements <see cref="IGameSystem" /> and has an empty constructor.
+        /// A type that implements <see cref="IUpdateableSystem" /> and has an empty constructor.
         /// </typeparam>
         /// <returns>The added service.</returns>
-        T AddSystem<T>() where T : IGameSystem, new();
+        T AddSystem<T>() where T : IUpdateableSystem, new();
 
         /// <summary>
         /// Adds the service.
         /// </summary>
         /// <param name="service">The service.</param>
-        void AddSystem(IGameSystem service);
+        void AddSystem(IUpdateableSystem service);
 
         /// <summary>
         /// Initializes this instance.
@@ -91,14 +91,14 @@
         /// Registers the entity with relevant services.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        void RegisterEntity(IGameEntity entity);
+        void RegisterEntity(IEntity entity);
 
         /// <summary>
         /// Removes the service.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <returns>A value indicating whether or not the service was removed.</returns>
-        bool RemoveSystem(IGameSystem service);
+        bool RemoveSystem(IUpdateableSystem service);
 
         /// <summary>
         /// Renders the scene.
@@ -128,20 +128,20 @@
         /// Unregisters the entity from services.
         /// </summary>
         /// <param name="entity">The entity.</param>
-        void UnregisterEntity(IGameEntity entity);
+        void UnregisterEntity(IEntity entity);
     }
 
     /// <summary>
-    /// A user-created combination of <see cref="IGameSystem" /> and <see cref="IGameEntity" />
+    /// A user-created combination of <see cref="IUpdateableSystem" /> and <see cref="IEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public sealed class GameScene : GridContainer, IGameScene {
+    public sealed class Scene : GridContainer, IScene {
         /// <summary>
-        /// The default empty <see cref="IGameScene" /> that is present before initialization.
+        /// The default empty <see cref="IScene" /> that is present before initialization.
         /// </summary>
-        public new static readonly IGameScene Empty = new EmptyGameScene();
+        public new static readonly IScene Empty = new EmptyScene();
 
-        private readonly HashSet<IGameEntity> _allEntitiesInScene = new();
+        private readonly HashSet<IEntity> _allEntitiesInScene = new();
 
         private readonly FilterSortCollection<ICamera> _cameras = new(
             c => c.IsEnabled,
@@ -158,20 +158,20 @@
             (r1, r2) => Comparer<int>.Default.Compare(r1.UpdateOrder, r2.UpdateOrder),
             nameof(IPhysicsBody.UpdateOrder));
 
-        private readonly FilterSortCollection<IGameRenderableEntity> _renderableEntities = new(
+        private readonly FilterSortCollection<IRenderableEntity> _renderableEntities = new(
             c => c.IsVisible,
-            nameof(IGameRenderableEntity.IsVisible),
+            nameof(IRenderableEntity.IsVisible),
             (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
-            nameof(IGameRenderableEntity.RenderOrder));
+            nameof(IRenderableEntity.RenderOrder));
 
         [DataMember]
-        private readonly ObservableCollection<IGameSystem> _systems = new();
+        private readonly ObservableCollection<IUpdateableSystem> _systems = new();
 
-        private readonly FilterSortCollection<IGameUpdateableEntity> _updateableEntities = new(
+        private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
             c => c.IsEnabled,
-            nameof(IGameUpdateableEntity.IsEnabled),
+            nameof(IUpdateableEntity.IsEnabled),
             (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-            nameof(IGameUpdateableEntity.UpdateOrder));
+            nameof(IUpdateableEntity.UpdateOrder));
 
         private Color _backgroundColor = DefinedColors.MacabresoftBlack;
         private bool _isBusy;
@@ -183,13 +183,14 @@
         /// <inheritdoc />
         public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
 
-        public IReadOnlyCollection<IGameRenderableEntity> RenderableEntities => this._renderableEntities;
+        /// <inheritdoc />
+        public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameSystem> Systems => this._systems;
+        public IReadOnlyCollection<IUpdateableSystem> Systems => this._systems;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IGameUpdateableEntity> UpdateableEntities => this._updateableEntities;
+        public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
         /// <inheritdoc />
         public IAssetManager Assets { get; private set; } = AssetManager.Empty;
@@ -205,14 +206,14 @@
         public IGame Game { get; private set; } = BaseGame.Empty;
 
         /// <inheritdoc />
-        public T AddSystem<T>() where T : IGameSystem, new() {
+        public T AddSystem<T>() where T : IUpdateableSystem, new() {
             var system = new T();
             this.AddSystem(system);
             return system;
         }
 
         /// <inheritdoc />
-        public void AddSystem(IGameSystem system) {
+        public void AddSystem(IUpdateableSystem system) {
             this._systems.Add(system);
 
             if (this._isInitialized) {
@@ -253,18 +254,18 @@
         }
 
         /// <summary>
-        /// Determines whether the specified scene is null or <see cref="GameScene.Empty" />.
+        /// Determines whether the specified scene is null or <see cref="Scene.Empty" />.
         /// </summary>
         /// <param name="scene">The scene.</param>
         /// <returns>
-        /// <c>true</c> if the specified scene is null or <see cref="GameScene.Empty" />; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified scene is null or <see cref="Scene.Empty" />; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsNullOrEmpty(IGameScene? scene) {
+        public static bool IsNullOrEmpty(IScene? scene) {
             return scene == null || scene == Empty;
         }
 
         /// <inheritdoc />
-        public void RegisterEntity(IGameEntity entity) {
+        public void RegisterEntity(IEntity entity) {
             this._allEntitiesInScene.Add(entity);
             this._cameras.Add(entity);
             this._physicsBodies.Add(entity);
@@ -273,7 +274,7 @@
         }
 
         /// <inheritdoc />
-        public bool RemoveSystem(IGameSystem system) {
+        public bool RemoveSystem(IUpdateableSystem system) {
             var result = false;
             if (this._systems.Contains(system)) {
                 this.Invoke(() => this._systems.Remove(system));
@@ -326,7 +327,7 @@
         }
 
         /// <inheritdoc />
-        public void UnregisterEntity(IGameEntity entity) {
+        public void UnregisterEntity(IEntity entity) {
             this._allEntitiesInScene.Remove(entity);
             this._cameras.Remove(entity);
             this._physicsBodies.Remove(entity);
@@ -358,7 +359,7 @@
             }
         }
 
-        private class EmptyGameScene : EmptyGridContainer, IGameScene {
+        private class EmptyScene : EmptyGridContainer, IScene {
             /// <inheritdoc />
             public Color BackgroundColor {
                 get => Color.HotPink;
@@ -366,12 +367,12 @@
             }
 
             /// <inheritdoc />
-            public T AddSystem<T>() where T : IGameSystem, new() {
+            public T AddSystem<T>() where T : IUpdateableSystem, new() {
                 return new();
             }
 
             /// <inheritdoc />
-            public void AddSystem(IGameSystem service) {
+            public void AddSystem(IUpdateableSystem service) {
             }
 
             /// <inheritdoc />
@@ -383,11 +384,11 @@
             }
 
             /// <inheritdoc />
-            public void RegisterEntity(IGameEntity entity) {
+            public void RegisterEntity(IEntity entity) {
             }
 
             /// <inheritdoc />
-            public bool RemoveSystem(IGameSystem service) {
+            public bool RemoveSystem(IUpdateableSystem service) {
                 return false;
             }
 
@@ -406,7 +407,7 @@
             }
 
             /// <inheritdoc />
-            public void UnregisterEntity(IGameEntity entity) {
+            public void UnregisterEntity(IEntity entity) {
             }
 
             /// <inheritdoc />

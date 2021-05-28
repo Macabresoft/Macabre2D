@@ -3,7 +3,7 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public class MovingDot : GameUpdateableEntity {
+    public class MovingDot : UpdateableEntity {
         private readonly float _speed = 1f;
 
         public override void Update(FrameTime frameTime, InputState inputState) {

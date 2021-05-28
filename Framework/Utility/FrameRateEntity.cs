@@ -6,7 +6,7 @@
     /// An entity which measures frame rate.
     /// </summary>
     [Display(Name = "Frame Rate Entity")]
-    public class FrameRateEntity : GameUpdateableEntity {
+    public class FrameRateEntity : UpdateableEntity {
         private readonly RollingMeanFloat _rollingAverage = new RollingMeanFloat(10);
 
         /// <summary>

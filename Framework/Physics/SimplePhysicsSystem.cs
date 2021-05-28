@@ -15,7 +15,7 @@
         protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene) {
+        public override void Initialize(IScene scene) {
             base.Initialize(scene);
             this.InsertColliders();
         }

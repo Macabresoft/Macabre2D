@@ -2,12 +2,12 @@
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
 
-    public class Scaler : GameUpdateableEntity {
+    public class Scaler : UpdateableEntity {
         private float _currentSign = 1f;
 
         private SpriteRenderer _spriteRenderer;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._spriteRenderer);
         }

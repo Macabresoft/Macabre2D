@@ -25,9 +25,9 @@
             bool shouldContain) {
             var quadBody = new DynamicPhysicsBody();
             var circleBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody.Initialize(scene, new GameEntity());
-            quadBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody.Initialize(scene, new Entity());
+            quadBody.Initialize(scene, new Entity());
 
             quadBody.SetWorldPosition(new Vector2(x1, y1));
             quadBody.Collider = PolygonCollider.CreateRectangle(w1, h1);
@@ -54,8 +54,8 @@
             float y2,
             bool shouldContain) {
             var quadBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            quadBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            quadBody.Initialize(scene, new Entity());
             quadBody.SetWorldPosition(new Vector2(x1, y1));
             quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
 
@@ -82,9 +82,9 @@
             bool shouldContain) {
             var quadBody1 = new DynamicPhysicsBody();
             var quadBody2 = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            quadBody1.Initialize(scene, new GameEntity());
-            quadBody2.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            quadBody1.Initialize(scene, new Entity());
+            quadBody2.Initialize(scene, new Entity());
 
             quadBody1.SetWorldPosition(new Vector2(x1, y1));
             quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
@@ -115,9 +115,9 @@
             bool collisionOccured) {
             var quadBody1 = new DynamicPhysicsBody();
             var quadBody2 = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            quadBody1.Initialize(scene, new GameEntity());
-            quadBody2.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            quadBody1.Initialize(scene, new Entity());
+            quadBody2.Initialize(scene, new Entity());
 
             quadBody1.SetWorldPosition(new Vector2(x1, y1));
             quadBody1.Collider = PolygonCollider.CreateRectangle(w1, h1);
@@ -173,8 +173,8 @@
             float nx = 0f,
             float ny = 0f) {
             var quadBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            quadBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            quadBody.Initialize(scene, new Entity());
             quadBody.SetWorldPosition(new Vector2(qx, qy));
             quadBody.Collider = PolygonCollider.CreateRectangle(qw, qh);
 

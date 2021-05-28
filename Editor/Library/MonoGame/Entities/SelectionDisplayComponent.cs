@@ -7,7 +7,7 @@
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// A component which displays the currently selected <see cref="IGameEntity" />.
+    /// A component which displays the currently selected <see cref="IEntity" />.
     /// </summary>
     internal class SelectionDisplay : BaseDrawer {
         private readonly IEditorService _editorService;

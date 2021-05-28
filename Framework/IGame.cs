@@ -63,7 +63,7 @@
         /// Gets the scene.
         /// </summary>
         /// <value>The scene.</value>
-        IGameScene Scene { get; }
+        IScene Scene { get; }
 
         /// <summary>
         /// Gets the sprite batch.
@@ -98,7 +98,7 @@
         /// Loads the scene.
         /// </summary>
         /// <param name="scene">The scene.</param>
-        void LoadScene(IGameScene scene);
+        void LoadScene(IScene scene);
 
         /// <summary>
         /// Saves the applies graphics settings.

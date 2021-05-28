@@ -3,13 +3,13 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
-    public sealed class MouseClickDebugger : BaseDrawer, IGameUpdateableEntity {
+    public sealed class MouseClickDebugger : BaseDrawer, IUpdateableEntity {
         private Camera _camera;
 
         public override BoundingArea BoundingArea => new(this.LocalPosition - new Vector2(1f, 1f), this.LocalPosition + new Vector2(1f, 1f));
 
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.Color = Color.Green;
             this.LineThickness = 3f;

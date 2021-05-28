@@ -7,7 +7,7 @@
     /// An entity which displays frame rate in the top right corner of the screen.
     /// </summary>
     [Display(Name = "Frame Rate Display")]
-    public sealed class FrameRateDisplayEntity : TextRenderer, IGameUpdateableEntity {
+    public sealed class FrameRateDisplayEntity : TextRenderer, IUpdateableEntity {
         private readonly RollingMeanFloat _rollingAverage = new RollingMeanFloat(10);
         private Camera? _camera;
 
@@ -24,7 +24,7 @@
         public float CurrentFrameRate { get; private set; }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._camera);
             this.RenderSettings.OffsetType = PixelOffsetType.TopRight;

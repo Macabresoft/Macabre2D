@@ -29,7 +29,7 @@
                 </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="framework:IGameEntity"
+                <TreeDataTemplate DataType="framework:IEntity"
                                   ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Name}" />
                 </TreeDataTemplate>

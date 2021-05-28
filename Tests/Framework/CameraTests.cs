@@ -24,8 +24,8 @@
                 ViewHeight = startingViewHeight
             };
 
-            var scene = Substitute.For<IGameScene>();
-            camera.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            camera.Initialize(scene, new Entity());
 
             camera.ZoomTo(new Vector2(zoomX, zoomY), zoomAmount);
             Assert.AreEqual(expectedViewHeight, camera.ViewHeight);

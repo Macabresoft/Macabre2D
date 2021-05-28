@@ -23,7 +23,7 @@
             this.Assets.Initialize(this.Content, Serializer.Instance);
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
-            var scene = new GameScene();
+            var scene = new Scene();
             scene.AddSystem<UpdateSystem>();
             scene.AddSystem<RenderSystem>();
             var physicsService = scene.AddSystem<PhysicsSystem>();
@@ -107,7 +107,7 @@
 
             var fileName = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, fileName);
-            scene = Serializer.Instance.Deserialize<GameScene>(fileName);
+            scene = Serializer.Instance.Deserialize<Scene>(fileName);
             File.Delete(fileName);
 
             this.LoadScene(scene);

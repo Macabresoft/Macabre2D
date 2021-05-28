@@ -17,9 +17,9 @@
         public static void CircleCollider_CollidesWithCircleTest(float x1, float y1, float r1, float x2, float y2, float r2, bool collisionOccured) {
             var circleBody1 = new DynamicPhysicsBody();
             var circleBody2 = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody1.Initialize(scene, new GameEntity());
-            circleBody2.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody1.Initialize(scene, new Entity());
+            circleBody2.Initialize(scene, new Entity());
 
             circleBody1.SetWorldPosition(new Vector2(x1, y1));
             circleBody1.Collider = new CircleCollider(r1);
@@ -62,9 +62,9 @@
         public static void CircleCollider_CollidesWithQuadTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool collisionOccured) {
             var circleBody = new DynamicPhysicsBody();
             var quadBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody.Initialize(scene, new GameEntity());
-            quadBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody.Initialize(scene, new Entity());
+            quadBody.Initialize(scene, new Entity());
 
             circleBody.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);
@@ -107,9 +107,9 @@
         public static void CircleCollider_ContainsCircleTest(float x1, float y1, float r1, float x2, float y2, float r2, bool shouldContain) {
             var circleBody1 = new DynamicPhysicsBody();
             var circleBody2 = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody1.Initialize(scene, new GameEntity());
-            circleBody2.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody1.Initialize(scene, new Entity());
+            circleBody2.Initialize(scene, new Entity());
 
             circleBody1.SetWorldPosition(new Vector2(x1, y1));
             circleBody1.Collider = new CircleCollider(r1);
@@ -129,8 +129,8 @@
         [TestCase(0f, 0f, 1f, 100f, 100f, false, TestName = "Circle Contains Point - Point is Way Outside")]
         public static void CircleCollider_ContainsPointTest(float x1, float y1, float r1, float x2, float y2, bool shouldContain) {
             var circleBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody.Initialize(scene, new Entity());
             circleBody.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);
             var circle = circleBody.Collider as CircleCollider;
@@ -148,9 +148,9 @@
         public static void CircleCollider_ContainsQuadTest(float x1, float y1, float r1, float x2, float y2, float w, float h, bool shouldContain) {
             var circleBody = new DynamicPhysicsBody();
             var quadBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody.Initialize(scene, new GameEntity());
-            quadBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody.Initialize(scene, new Entity());
+            quadBody.Initialize(scene, new Entity());
 
             circleBody.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);

@@ -13,7 +13,7 @@
         }
 
         public override void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            this.Game.LoadScene(new GameScene());
+            this.Game.LoadScene(new Scene());
             this.Game.Scene.AddSystem<RenderSystem>();
             this.Game.Scene.AddSystem<UpdateSystem>();
             this.Game.Scene.BackgroundColor = DefinedColors.CosmicJam;

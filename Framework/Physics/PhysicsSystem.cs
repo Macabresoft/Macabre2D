@@ -67,7 +67,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene) {
+        public override void Initialize(IScene scene) {
             base.Initialize(scene);
             this._collisionResolver.Initialize(this);
         }

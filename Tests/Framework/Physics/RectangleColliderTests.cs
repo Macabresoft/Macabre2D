@@ -24,9 +24,9 @@
             bool collisionOccured) {
             var circleBody = new DynamicPhysicsBody();
             var rectangleBody = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            circleBody.Initialize(scene, new GameEntity());
-            rectangleBody.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            circleBody.Initialize(scene, new Entity());
+            rectangleBody.Initialize(scene, new Entity());
 
             circleBody.SetWorldPosition(new Vector2(x1, y1));
             circleBody.Collider = new CircleCollider(r1);
@@ -78,9 +78,9 @@
             bool collisionOccured) {
             var rectangleBody1 = new DynamicPhysicsBody();
             var rectangleBody2 = new DynamicPhysicsBody();
-            var scene = Substitute.For<IGameScene>();
-            rectangleBody1.Initialize(scene, new GameEntity());
-            rectangleBody2.Initialize(scene, new GameEntity());
+            var scene = Substitute.For<IScene>();
+            rectangleBody1.Initialize(scene, new Entity());
+            rectangleBody2.Initialize(scene, new Entity());
 
             rectangleBody1.SetWorldPosition(new Vector2(x1, y1));
             rectangleBody1.Collider = new RectangleCollider(w1, h1);

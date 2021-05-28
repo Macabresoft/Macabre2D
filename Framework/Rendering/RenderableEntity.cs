@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for an entity which can be rendered.
     /// </summary>
-    public interface IGameRenderableEntity : IBoundable, IGameEntity {
+    public interface IRenderableEntity : IBoundable, IEntity {
         /// <summary>
         /// Gets a value indicating whether this instance is visible.
         /// </summary>
@@ -27,10 +27,10 @@
     }
 
     /// <summary>
-    /// A <see cref="IGameEntity" /> which has a default implementation of
-    /// <see cref="IGameRenderableEntity" />.
+    /// A <see cref="IEntity" /> which has a default implementation of
+    /// <see cref="IRenderableEntity" />.
     /// </summary>
-    public abstract class GameRenderableEntity : GameEntity, IGameRenderableEntity {
+    public abstract class RenderableEntity : Entity, IRenderableEntity {
         private bool _isVisible = true;
         private int _renderOrder;
 

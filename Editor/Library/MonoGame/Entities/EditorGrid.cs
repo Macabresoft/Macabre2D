@@ -29,7 +29,7 @@
 
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             this.UseDynamicLineThickness = true;
@@ -51,7 +51,7 @@
 
             if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
                 if (this._editorService.MajorGridSize > 0) {
-                    if (!GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
+                    if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
                         this.ResetColor();
                     }
 
@@ -150,7 +150,7 @@
         }
 
         private void ResetColor() {
-            this.Color = !GameScene.IsNullOrEmpty(this._sceneService.CurrentScene) ? this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : this.Scene.BackgroundColor.GetContrastingBlackOrWhite();
+            this.Color = !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) ? this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : this.Scene.BackgroundColor.GetContrastingBlackOrWhite();
         }
     }
 }

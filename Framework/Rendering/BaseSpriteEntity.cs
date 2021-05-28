@@ -10,7 +10,7 @@
     /// <summary>
     /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
     /// </summary>
-    public abstract class BaseSpriteEntity : GameRenderableEntity, IRotatable {
+    public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
         private readonly ResettableLazy<Transform> _rotatableTransform;
@@ -97,7 +97,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
             
             this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
@@ -121,10 +121,10 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
             
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 this.Reset();
             }
-            else if (e.PropertyName == nameof(IGameEntity.IsEnabled) && this.IsEnabled) {
+            else if (e.PropertyName == nameof(IEntity.IsEnabled) && this.IsEnabled) {
                 this.RaisePropertyChanged(nameof(this.IsVisible));
             }
         }

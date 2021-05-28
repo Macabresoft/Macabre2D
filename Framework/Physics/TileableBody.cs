@@ -8,7 +8,7 @@
     using Microsoft.Xna.Framework;
 
     /// <summary>
-    /// A <see cref="PhysicsBody" /> which reacts to a <see cref="IGameTileableEntity" /> parent
+    /// A <see cref="PhysicsBody" /> which reacts to a <see cref="ITileableEntity" /> parent
     /// and creates colliders based on the available grid.
     /// </summary>
     [Display(Name = "Tileable Body")]
@@ -19,7 +19,7 @@
         private Layers _overrideLayersLeftEdge = Layers.None;
         private Layers _overrideLayersRightEdge = Layers.None;
         private Layers _overrideLayersTopEdge = Layers.None;
-        private IGameTileableEntity? _tileable;
+        private ITileableEntity? _tileable;
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
@@ -73,7 +73,7 @@
         }
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             if (this._tileable != null) {
@@ -94,7 +94,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IGameEntity.Transform)) {
+            if (e.PropertyName == nameof(IEntity.Transform)) {
                 this.OnRequestReset(sender, e);
             }
         }

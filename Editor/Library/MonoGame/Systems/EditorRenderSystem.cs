@@ -8,8 +8,8 @@
     /// <summary>
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
     /// </summary>
-    internal class EditorRenderSystem : GameSystem {
-        private readonly QuadTree<IGameRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    internal class EditorRenderSystem : UpdateableSystem {
+        private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         private readonly ISceneService _sceneService;
 

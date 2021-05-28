@@ -4,14 +4,14 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class VelocityChanger : GameUpdateableEntity {
+    public sealed class VelocityChanger : UpdateableEntity {
 
         public const float Speed = 0.5f;
 
 
         private IDynamicPhysicsBody _body;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
 
             if (this.TryGetParentEntity<IDynamicPhysicsBody>(out var body) && body != null) {

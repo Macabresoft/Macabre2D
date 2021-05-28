@@ -8,7 +8,7 @@
     /// <summary>
     /// Represents a physics body that handles interactions with <see cref="Collider" />.
     /// </summary>
-    public interface IPhysicsBody : IGameEntity, IBoundable {
+    public interface IPhysicsBody : IEntity, IBoundable {
         /// <summary>
         /// Occurs when a collision occurs involving this body.
         /// </summary>
@@ -59,7 +59,7 @@
     /// A base for entities that implement <see cref="IPhysicsBody" />.
     /// </summary>
     [Display(Name = "Physics Body")]
-    public abstract class PhysicsBody : GameEntity, IPhysicsBody {
+    public abstract class PhysicsBody : Entity, IPhysicsBody {
         [DataMember]
         private int _updateOrder;
 

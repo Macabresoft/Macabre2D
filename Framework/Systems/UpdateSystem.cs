@@ -3,7 +3,7 @@
     /// <summary>
     /// A system which does a sorted update loop over enabled updateable entities.
     /// </summary>
-    public class UpdateSystem : GameSystem {
+    public class UpdateSystem : UpdateableSystem {
 
         /// <inheritdoc />
         public override SystemLoop Loop => SystemLoop.Update;

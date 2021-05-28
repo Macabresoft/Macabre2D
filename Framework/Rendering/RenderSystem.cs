@@ -4,10 +4,10 @@
 
     /// <summary>
     /// The default rendering system, which attempts to render every
-    /// <see cref="IGameRenderableEntity" /> in the scene.
+    /// <see cref="IRenderableEntity" /> in the scene.
     /// </summary>
-    public class RenderSystem : GameSystem {
-        private readonly QuadTree<IGameRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    public class RenderSystem : UpdateableSystem {
+        private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         /// <inheritdoc />
         public override SystemLoop Loop => SystemLoop.Render;

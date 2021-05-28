@@ -6,7 +6,7 @@
     /// <summary>
     /// A base class for drawing the outlines of entities.
     /// </summary>
-    public abstract class BaseDrawer : GameRenderableEntity {
+    public abstract class BaseDrawer : RenderableEntity {
         private Color _color = Color.White;
         private float _lineThickness = 1f;
         private bool _useDynamicLineThickness;
@@ -47,7 +47,7 @@
         /// <value>The primitive drawer.</value>
         protected PrimitiveDrawer? PrimitiveDrawer { get; private set; }
 
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             if (this.Scene.Game.SpriteBatch != null) {

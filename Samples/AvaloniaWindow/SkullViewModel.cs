@@ -32,7 +32,7 @@
         public override void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
             this.Game.Project.Settings.PixelsPerUnit = 32;
 
-            var scene = new GameScene();
+            var scene = new Scene();
             scene.AddSystem<RenderSystem>();
             scene.AddSystem<UpdateSystem>();
             scene.BackgroundColor = DefinedColors.MacabresoftPurple;

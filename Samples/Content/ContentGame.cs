@@ -15,7 +15,7 @@
             this.Project.Settings.PixelsPerUnit = 64;
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
-            var scene = new GameScene();
+            var scene = new Scene();
 
             scene.AddSystem<UpdateSystem>();
             scene.AddSystem<RenderSystem>();
@@ -121,7 +121,7 @@
 
             var filePath = Path.GetTempFileName();
             Serializer.Instance.Serialize(scene, filePath);
-            scene = Serializer.Instance.Deserialize<GameScene>(filePath);
+            scene = Serializer.Instance.Deserialize<Scene>(filePath);
             File.Delete(filePath);
 
             this.LoadScene(scene);
@@ -175,7 +175,7 @@
             }
         }
 
-        private void PreLoadAudioStuff(GameScene scene) {
+        private void PreLoadAudioStuff(Scene scene) {
             var laser = new AudioClip();
             this.Assets.RegisterMetadata(new ContentMetadata(laser, new[] { "laser" }, ".wav"));
 

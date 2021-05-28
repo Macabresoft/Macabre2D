@@ -2,11 +2,11 @@
     using System.Text;
 
     /// <summary>
-    /// An asset which contains a <see cref="IGameScene" />.
+    /// An asset which contains a <see cref="IScene" />.
     /// </summary>
-    public class SceneAsset : Asset<GameScene> {
+    public class SceneAsset : Asset<Scene> {
         /// <summary>
-        /// The file extension for a serialized <see cref="GameScene" />.
+        /// The file extension for a serialized <see cref="Scene" />.
         /// </summary>
         public const string FileExtension = ".m2dscene";
         

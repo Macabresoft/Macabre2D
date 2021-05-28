@@ -30,7 +30,7 @@
         public override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
 
         /// <inheritdoc />
-        public override void Initialize(IGameScene scene, IGameEntity parent) {
+        public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
 
             this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);

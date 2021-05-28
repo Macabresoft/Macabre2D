@@ -4,12 +4,12 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    public sealed class CameraScroller : GameUpdateableEntity {
+    public sealed class CameraScroller : UpdateableEntity {
         private Camera _camera;
 
         private int _previousScrollValue;
 
-        public override void Initialize(IGameScene scene, IGameEntity entity) {
+        public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
             this.TryGetParentEntity(out this._camera);
         }
