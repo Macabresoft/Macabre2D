@@ -5,11 +5,11 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public static class GameEntityTests {
+    public static class EntityTests {
         [Test]
         [Category("Unit Tests")]
-        public static void GameEntity_RegistersChild_WhenMoved() {
-            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
+        public static void Entity_RegistersChild_WhenMoved() {
+            var test = new SceneTestContainer(SceneTestContainer.InitializationMode.After);
             test.Scene.RemoveChild(test.RenderableEntity);
             test.UpdateableAndRenderableEntity.AddChild(test.RenderableEntity);
             test.AssertExistenceOfEntities(true);
@@ -17,8 +17,8 @@
 
         [Test]
         [Category("Unit Tests")]
-        public static void GameEntity_UnregistersChild_WhenRemovedFromSceneTree() {
-            var test = new GameSceneTestContainer(GameSceneTestContainer.InitializationMode.After);
+        public static void Entity_UnregistersChild_WhenRemovedFromSceneTree() {
+            var test = new SceneTestContainer(SceneTestContainer.InitializationMode.After);
             test.Scene.RemoveChild(test.RenderableEntity);
 
             using (new AssertionScope()) {

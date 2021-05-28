@@ -6,9 +6,9 @@
     using NSubstitute;
     using System.Linq;
 
-    internal class GameSceneTestContainer {
+    internal class SceneTestContainer {
 
-        public GameSceneTestContainer(InitializationMode initializationMode) {
+        public SceneTestContainer(InitializationMode initializationMode) {
             this.Scene = new Scene() {
                 Name = "Test Scene"
             };
