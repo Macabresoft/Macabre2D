@@ -351,6 +351,12 @@
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnDisposing() {
+            base.OnDisposing();
+            this.Assets.Dispose();
+        }
+
         private void InvokePendingActions() {
             var actions = this._pendingActions.ToList();
             foreach (var action in actions) {
