@@ -10,7 +10,7 @@
 
     public class EntityEditorViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
-        private readonly ObservableCollectionExtended<IValueEditor> _editors = new();
+        private readonly ObservableCollectionExtended<ValueEditorCollection> _editors = new();
         private readonly object _editorsLock = new();
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
@@ -49,7 +49,7 @@
         /// <summary>
         /// Gets the editors.
         /// </summary>
-        public IReadOnlyCollection<IValueEditor> Editors {
+        public IReadOnlyCollection<ValueEditorCollection> Editors {
             get {
                 lock (this._editorsLock) {
                     return this._editors;
@@ -89,12 +89,12 @@
                 var editorCollections = this._valueEditorService.CreateEditors(entity).ToList();
 
                 lock (this._editorsLock) {
-                    foreach (var componentEditor in this._editors) {
-                        componentEditor.ValueChanged -= this.EditorCollection_OwnedValueChanged;
+                    foreach (var editorCollection in this._editors) {
+                        editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
                     }
 
                     foreach (var editorCollection in editorCollections) {
-                        editorCollection.ValueChanged += this.EditorCollection_OwnedValueChanged;
+                        editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
                     }
 
                     this._editors.Reset(editorCollections);

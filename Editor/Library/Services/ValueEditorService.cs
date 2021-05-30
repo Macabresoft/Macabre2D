@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
@@ -15,25 +16,34 @@
     /// </summary>
     public interface IValueEditorService {
         /// <summary>
+        /// Creates a single editor collection for an editable object.
+        /// </summary>
+        /// <param name="editableObject">The editable object.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>The editor collection.</returns>
+        ValueEditorCollection CreateEditor(object editableObject, string name);
+
+        /// <summary>
         /// Creates value editors for an object based on its properties and fields that contain a
         /// <see cref="DataMemberAttribute" />.
         /// </summary>
         /// <param name="editableObject">The editable object for which to make editors..</param>
         /// <param name="typesToIgnore"></param>
-        /// <returns>The value editors.</returns>
-        IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore);
+        /// <returns>The value editors in collections split by their category.</returns>
+        IReadOnlyCollection<ValueEditorCollection> CreateEditors(object editableObject, params Type[] typesToIgnore);
 
         /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
         /// <param name="editorCollections">The editor collections to return.</param>
-        void ReturnEditors(IEnumerable<ValueEditorCollection> editorCollections);
+        void ReturnEditors(params ValueEditorCollection[] editorCollections);
     }
 
     /// <summary>
     /// A service which produces value editor controls given an object that contains a <see cref="DataContractAttribute" />.
     /// </summary>
     public class ValueEditorService : ReactiveObject, IValueEditorService {
+        private const string DefaultCategoryName = "Uncategorized";
         private readonly IAssemblyService _assemblyService;
         private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new();
         private readonly IValueEditorTypeMapper _typeMapper;
@@ -49,12 +59,18 @@
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<IValueEditor> CreateEditors(object editableObject, params Type[] typesToIgnore) {
+        public ValueEditorCollection CreateEditor(object editableObject, string name) {
+            var collections = this.CreateEditors(string.Empty, editableObject, editableObject);
+            return new ValueEditorCollection(collections.SelectMany(x => x.ValueEditors), editableObject, name);
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<ValueEditorCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
             return this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
         }
 
         /// <inheritdoc />
-        public void ReturnEditors(IEnumerable<ValueEditorCollection> editorCollections) {
+        public void ReturnEditors(params ValueEditorCollection[] editorCollections) {
             foreach (var editorCollection in editorCollections) {
                 foreach (var valueEditor in editorCollection.ValueEditors) {
                     if (this._editorCache.TryGetValue(valueEditor.ValueType, out var valueEditorCache)) {
@@ -73,9 +89,10 @@
             }
         }
 
-        private IReadOnlyCollection<IValueEditor> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
-            var editors = new List<IValueEditor>();
-            var members = typesToIgnore != null ? editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
+        private IReadOnlyCollection<ValueEditorCollection> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
+            var categoryToEditors = new Dictionary<string, IList<IValueEditor>>();
+            var editableObjectType = editableObject.GetType();
+            var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
 
             var membersWithAttributes = members
                 .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttributes(typeof(DataMemberAttribute), false).OfType<DataMemberAttribute>().FirstOrDefault()))
@@ -88,11 +105,29 @@
                 var editor = this.GetEditorForType(originalObject, value, memberType, member.MemberInfo, propertyPath);
 
                 if (editor != null) {
-                    editors.Add(editor);
+                    var category = DefaultCategoryName;
+
+                    if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
+                        category = memberCategory.Category;
+                    }
+                    else if (Attribute.GetCustomAttribute(editableObjectType, typeof(CategoryAttribute)) is CategoryAttribute classCategory) {
+                        category = classCategory.Category;
+                    }
+
+                    if (categoryToEditors.TryGetValue(category, out var editors)) {
+                        editors.Add(editor);
+                    }
+                    else {
+                        editors = new List<IValueEditor> {
+                            editor
+                        };
+
+                        categoryToEditors.Add(category, editors);
+                    }
                 }
             }
 
-            return editors;
+            return categoryToEditors.Select(x => new ValueEditorCollection(x.Value, editableObject, x.Key)).ToList();
         }
 
         private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, MemberInfo memberInfo, string propertyPath) {

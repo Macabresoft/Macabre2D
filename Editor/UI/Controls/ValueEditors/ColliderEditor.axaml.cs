@@ -28,6 +28,8 @@
 
         private readonly ObservableCollectionExtended<IValueEditor> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
+
+        private ValueEditorCollection _editorCollection;
         private Type _selectedType;
         private IValueEditorService _valueEditorService;
 
@@ -78,29 +80,29 @@
             }
         }
 
-        private void ChildEditor_ValueChanged(object sender, ValueChangedEventArgs<object> e) {
-            this.RaiseValueChanged(sender, e);
-        }
-
         private void ClearEditors() {
-            foreach (var editor in this._childEditors) {
-                editor.ValueChanged -= this.ChildEditor_ValueChanged;
+            if (this._editorCollection != null) {
+                this._editorCollection.OwnedValueChanged -= this.ColliderEditor_ValueChanged;
+                this._valueEditorService.ReturnEditors(this._editorCollection);
+                this._editorCollection = null;
             }
 
             this._childEditors.Clear();
+        }
+
+        private void ColliderEditor_ValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            this.RaiseValueChanged(sender, e);
         }
 
         private void CreateEditors() {
             this.ClearEditors();
 
             if (this.Value is Collider value && this._valueEditorService != null) {
-                var childEditors = this._valueEditorService.CreateEditors(value);
-
-                foreach (var editor in childEditors) {
-                    editor.ValueChanged += this.ChildEditor_ValueChanged;
+                this._editorCollection = this._valueEditorService.CreateEditor(value, string.Empty);
+                if (this._editorCollection != null) {
+                    this._editorCollection.OwnedValueChanged += this.ColliderEditor_ValueChanged;
+                    Dispatcher.UIThread.Post(() => this._childEditors.Reset(this._editorCollection.ValueEditors));
                 }
-
-                Dispatcher.UIThread.Post(() => this._childEditors.Reset(childEditors));
             }
         }
 
