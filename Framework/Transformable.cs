@@ -1,13 +1,24 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Interface for an object which has a <see cref="Transform" />.
     /// </summary>
     public interface ITransformable {
+        /// <summary>
+        /// Gets the transform.
+        /// </summary>
+        /// <value>The transform.</value>
+        Transform Transform { get; }
+
+        /// <summary>
+        /// Gets the transform matrix.
+        /// </summary>
+        /// <value>The transform matrix.</value>
+        Matrix TransformMatrix { get; }
 
         /// <summary>
         /// Gets or sets the local position.
@@ -20,18 +31,6 @@
         /// </summary>
         /// <value>The local scale.</value>
         Vector2 LocalScale { get; set; }
-
-        /// <summary>
-        /// Gets the transform.
-        /// </summary>
-        /// <value>The transform.</value>
-        Transform Transform { get; }
-
-        /// <summary>
-        /// Gets the transform matrix.
-        /// </summary>
-        /// <value>The transform matrix.</value>
-        Matrix TransformMatrix { get; }
 
         /// <summary>
         /// Gets the world transform.
@@ -136,50 +135,19 @@
     /// expected way.
     /// </summary>
     [DataContract]
+    [Category("Transform")]
     public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         private readonly ResettableLazy<Matrix> _transformMatrix;
         private bool _isTransformUpToDate;
         private Vector2 _localPosition;
         private Vector2 _localScale = Vector2.One;
-        private Transform _transform = new();
+        private Transform _transform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Transformable" /> class.
         /// </summary>
         protected Transformable() {
             this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
-        }
-
-        /// <summary>
-        /// Gets or sets the local position.
-        /// </summary>
-        /// <value>The local position.</value>
-        [DataMember(Name = "Local Position")]
-        public Vector2 LocalPosition {
-            get {
-                return this._localPosition;
-            }
-            set {
-                if (this.Set(ref this._localPosition, value)) {
-                    this.HandleMatrixOrTransformChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the local scale.
-        /// </summary>
-        /// <value>The local scale.</value>
-        [DataMember(Name = "Local Scale")]
-        public Vector2 LocalScale {
-            get {
-                return this._localScale;
-            }
-            set {
-                if (this.Set(ref this._localScale, value)) {
-                    this.HandleMatrixOrTransformChanged();
-                }
-            }
         }
 
         /// <inheritdoc />
@@ -195,9 +163,33 @@
         }
 
         /// <inheritdoc />
-        public Matrix TransformMatrix {
-            get {
-                return this._transformMatrix.Value;
+        public Matrix TransformMatrix => this._transformMatrix.Value;
+
+        /// <summary>
+        /// Gets or sets the local position.
+        /// </summary>
+        /// <value>The local position.</value>
+        [DataMember(Name = "Local Position")]
+        public Vector2 LocalPosition {
+            get => this._localPosition;
+            set {
+                if (this.Set(ref this._localPosition, value)) {
+                    this.HandleMatrixOrTransformChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the local scale.
+        /// </summary>
+        /// <value>The local scale.</value>
+        [DataMember(Name = "Local Scale")]
+        public Vector2 LocalScale {
+            get => this._localScale;
+            set {
+                if (this.Set(ref this._localScale, value)) {
+                    this.HandleMatrixOrTransformChanged();
+                }
             }
         }
 
@@ -332,24 +324,23 @@
         }
 
         internal class EmptyTransformable : ITransformable {
-
-            /// <inheritdoc />
-            public Vector2 LocalPosition {
-                get => Vector2.Zero;
-                set { return; }
-            }
-
-            /// <inheritdoc />
-            public Vector2 LocalScale {
-                get => Vector2.One;
-                set { return; }
-            }
-
             /// <inheritdoc />
             public Transform Transform => Transform.Origin;
 
             /// <inheritdoc />
             public Matrix TransformMatrix => Matrix.Identity;
+
+            /// <inheritdoc />
+            public Vector2 LocalPosition {
+                get => Vector2.Zero;
+                set { }
+            }
+
+            /// <inheritdoc />
+            public Vector2 LocalScale {
+                get => Vector2.One;
+                set { }
+            }
 
             /// <inheritdoc />
             public Transform GetWorldTransform(float rotationAngle) {
@@ -393,17 +384,14 @@
 
             /// <inheritdoc />
             public void SetWorldPosition(Vector2 position) {
-                return;
             }
 
             /// <inheritdoc />
             public void SetWorldScale(Vector2 scale) {
-                return;
             }
 
             /// <inheritdoc />
             public void SetWorldTransform(Vector2 position, Vector2 scale) {
-                return;
             }
         }
     }

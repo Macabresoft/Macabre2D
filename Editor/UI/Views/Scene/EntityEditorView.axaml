@@ -1,9 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls"
-             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
-             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
              xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;assembly=Macabre2D.Editor.Library"
              x:Class="Macabresoft.Macabre2D.Editor.UI.Views.Scene.EntityEditorView">
     <Design.DataContext>
@@ -11,88 +8,16 @@
     </Design.DataContext>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
-        <Grid RowDefinitions="Auto, Auto *"
-              Margin="{StaticResource DoubleMarginAll}">
-            <StackPanel Grid.Row="0"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Command="{Binding AddComponentCommand}"
-                        CommandParameter="{x:Null}"
-                        Content="{StaticResource PlusCharacter}" />
-            </StackPanel>
-            
-            <controls:GroupBox Grid.Row="1"
-                               Header="Entity">
-                <Grid ColumnDefinitions="Auto, *"
-                      RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="0"
-                               FontWeight="Bold"
-                               Text="Name"
-                               VerticalAlignment="Center" />
-
-                    <valueEditors:StringEditor Grid.Column="1"
-                                               Grid.Row="0"
-                                               Value="{Binding SelectionService.SelectedEntity.Name, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="1"
-                               FontWeight="Bold"
-                               Text="Layers"
-                               VerticalAlignment="Center" />
-
-                    <valueEditors:FlagsEnumEditor Grid.Column="1"
-                                                  Grid.Row="1"
-                                                  EnumType="{x:Type framework:Layers}"
-                                                  Value="{Binding SelectionService.SelectedEntity.Layers, Mode=TwoWay}" />
-
-                    <valueEditors:BoolEditor Grid.Column="1"
-                                             Grid.Row="2"
-                                             Title="Is Enabled"
-                                             Value="{Binding SelectionService.SelectedEntity.IsEnabled, Mode=TwoWay}" />
-
-                    <GridSplitter Grid.Column="0"
-                                  Grid.ColumnSpan="2"
-                                  Grid.Row="3"
-                                  IsEnabled="False"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Center"
-                                  Margin="{StaticResource DoubleMarginVertical}" />
-
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="4"
-                               FontWeight="Bold"
-                               Text="Position"
-                               VerticalAlignment="Center" />
-
-                    <valueEditors:Vector2Editor Grid.Column="1"
-                                                Grid.Row="4"
-                                                Value="{Binding SelectionService.SelectedEntity.LocalPosition}" />
-
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="5"
-                               FontWeight="Bold"
-                               Text="Scale"
-                               VerticalAlignment="Center" />
-
-                    <valueEditors:Vector2Editor Grid.Column="1"
-                                                Grid.Row="5"
-                                                Value="{Binding SelectionService.SelectedEntity.LocalScale}" />
-                </Grid>
-            </controls:GroupBox>
-
-            <ItemsControl Grid.Row="2"
-                          Items="{Binding Editors}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:GroupBox Header="{Binding Name}"
-                                           CloseCommand="{Binding DeleteCommand}"
-                                           CloseCommandParameter="{Binding Owner}">
-                            <ItemsControl Items="{Binding ValueEditors}" />
-                        </controls:GroupBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+        <ItemsControl Items="{Binding Editors}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <controls:GroupBox Header="{Binding Name}"
+                                       CloseCommand="{Binding DeleteCommand}"
+                                       CloseCommandParameter="{Binding Owner}">
+                        <ItemsControl Items="{Binding ValueEditors}" />
+                    </controls:GroupBox>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </ScrollViewer>
 </UserControl>

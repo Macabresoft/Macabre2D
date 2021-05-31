@@ -104,14 +104,23 @@
                 var value = member.MemberInfo.GetValue(editableObject);
                 var editor = this.GetEditorForType(originalObject, value, memberType, member.MemberInfo, propertyPath);
 
+                if (!string.IsNullOrEmpty(member.Attribute.Name)) {
+                    editor.Title = member.Attribute.Name;
+                }
+                
                 if (editor != null) {
                     var category = DefaultCategoryName;
 
                     if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
                         category = memberCategory.Category;
                     }
-                    else if (Attribute.GetCustomAttribute(editableObjectType, typeof(CategoryAttribute)) is CategoryAttribute classCategory) {
-                        category = classCategory.Category;
+                    else if (member.MemberInfo.DeclaringType != null) {
+                        if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
+                            category = classCategory.Category;
+                        }
+                        else {
+                            category = member.MemberInfo.DeclaringType.Name;
+                        }
                     }
 
                     if (categoryToEditors.TryGetValue(category, out var editors)) {

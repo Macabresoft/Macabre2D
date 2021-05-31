@@ -120,6 +120,7 @@
     /// A <see cref="ITransformable" /> descendent of <see cref="IScene" /> which holds a
     /// collection of <see cref="IEntity" />
     /// </summary>
+    [Category("Entity")]
     public class Entity : Transformable, IEntity {
         /// <summary>
         /// The default empty <see cref="IEntity" /> that is present before initialization.

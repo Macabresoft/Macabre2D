@@ -1,27 +1,30 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents transform information for an object.
     /// </summary>
     [DataContract]
-    public struct Transform {
-
+    public readonly struct Transform {
         /// <summary>
-        /// The origin trasnform.
+        /// The origin transform.
         /// </summary>
-        public static readonly Transform Origin = new Transform(Vector2.Zero, Vector2.One);
+        public static readonly Transform Origin = new(Vector2.Zero, Vector2.One);
 
         [DataMember]
+        [Category("Transform")]
         public readonly Vector2 Position;
 
         [DataMember]
+        [Category("Transform")]
         public readonly float Rotation;
 
         [DataMember]
+        [Category("Transform")]
         public readonly Vector2 Scale;
 
         /// <summary>
@@ -69,7 +72,7 @@
         }
 
         public override int GetHashCode() {
-            return System.HashCode.Combine(this.Position, this.Scale, this.Rotation);
+            return HashCode.Combine(this.Position, this.Scale, this.Rotation);
         }
     }
 }

@@ -38,22 +38,14 @@
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Bottom"
-              ColumnDefinitions="0.15*, Auto, 0.7*, Auto, 0.15*">
-            <GridSplitter Width="3"
-                          Grid.Column="1" />
-
-            <scene:SceneEditorView Grid.Column="2" />
-
-            <GridSplitter Width="3"
-                          Grid.Column="3" />
-
-            <Grid Grid.Column="4"
+              ColumnDefinitions="0.25*, Auto, 0.75*">
+            <Grid Grid.Column="0"
                   RowDefinitions="0.4*, Auto, 0.6*">
                 <scene:SceneTreeView Grid.Row="0" />
 
                 <GridSplitter Height="3"
                               Grid.Row="1" />
-                
+
                 <scene:EntityEditorView Grid.Row="2">
                     <scene:EntityEditorView.IsVisible>
                         <Binding Path="SelectionService.MostRecentlySelectedKind"
@@ -62,6 +54,11 @@
                     </scene:EntityEditorView.IsVisible>
                 </scene:EntityEditorView>
             </Grid>
+
+            <GridSplitter Width="3"
+                          Grid.Column="1" />
+
+            <scene:SceneEditorView Grid.Column="2" />
         </Grid>
     </DockPanel>
 </Window>
