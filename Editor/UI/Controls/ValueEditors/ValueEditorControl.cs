@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
     using System;
+    using System.ComponentModel;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
@@ -18,12 +19,15 @@
 
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-        
+
+
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
 
         public static readonly StyledProperty<Type> ValueTypeProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
+
+        private bool _ignoreUpdate;
 
         public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
@@ -65,6 +69,10 @@
             this.Owner = owner;
             this.ValuePropertyName = valuePropertyName;
             this.Title = title;
+
+            if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
+                notifyPropertyChanged.PropertyChanged += this.Owner_PropertyChanged;
+            }
         }
 
         public void SetValue(object newValue) {
@@ -73,11 +81,24 @@
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
+            base.OnDetachedFromVisualTree(e);
+
+            if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
+                notifyPropertyChanged.PropertyChanged -= this.Owner_PropertyChanged;
+            }
+        }
+
         protected virtual void OnValueChanged(T updatedValue) {
-            if (this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
+            if (!this._ignoreUpdate && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
                 var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
                 this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
             }
+        }
+
+        protected void RaiseValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            this.ValueChanged.SafeInvoke(sender, e);
         }
 
         protected void SetEditorValue(T originalValue, T updatedValue) {
@@ -85,13 +106,21 @@
             this.RaiseValueChanged(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
         }
 
-        protected void RaiseValueChanged(object sender, ValueChangedEventArgs<object> e) {
-            this.ValueChanged.SafeInvoke(sender, e);
-        }
-
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
             if (!isBeforeChange && control is ValueEditorControl<T> valueEditor) {
                 valueEditor.OnValueChanged(valueEditor.Value);
+            }
+        }
+
+        private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == this.ValuePropertyName) {
+                try {
+                    this._ignoreUpdate = true;
+                    this.Value = (T)this.Owner.GetPropertyValue(this.ValuePropertyName);
+                }
+                finally {
+                    this._ignoreUpdate = false;
+                }
             }
         }
     }

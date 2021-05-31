@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
+    using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -130,7 +131,7 @@
                 if (this.SelectionService.SelectedEntity is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
                         var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
-                        this.UpdatePosition(entity, newPosition);
+                        UpdatePosition(entity, newPosition);
                         this.ResetEndPoints();
                         result = true;
                     }
@@ -141,8 +142,8 @@
                         var position = entity.Transform.Position;
                         var unmovedPosition = this._unmovedPosition;
                         this._undoService.Do(
-                            () => this.UpdatePosition(entity, position),
-                            () => this.UpdatePosition(entity, unmovedPosition));
+                            () => UpdatePosition(entity, position),
+                            () => UpdatePosition(entity, unmovedPosition));
                     }
                 }
             }
@@ -187,7 +188,7 @@
             }
         }
 
-        private void UpdatePosition(IEntity entity, Vector2 newPosition) {
+        private static void UpdatePosition(ITransformable entity, Vector2 newPosition) {
             entity?.SetWorldPosition(newPosition);
         }
     }
