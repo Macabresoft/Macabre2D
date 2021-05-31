@@ -199,7 +199,7 @@
             var pixels = new Color[size * size];
 
             var index = 0;
-            for (var y = size - 1; y >= 0; y--) {
+            for (var y = 0; y < size; y++) {
                 var buffer = (size - (size - y)) / 2;
                 var fill = size - (buffer * 2);
 
