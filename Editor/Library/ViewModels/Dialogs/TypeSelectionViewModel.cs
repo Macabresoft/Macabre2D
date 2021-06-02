@@ -34,10 +34,11 @@
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="baseType">The base type.</param>
+        /// <param name="typesToIgnore">The types to ignore.</param>
         [InjectionConstructor]
-        public TypeSelectionViewModel(IAssemblyService assemblyService, Type baseType) {
+        public TypeSelectionViewModel(IAssemblyService assemblyService, Type baseType, IEnumerable<Type> typesToIgnore) {
             var types = assemblyService.LoadTypes(baseType);
-            this._types.AddRange(types.OrderBy(x => x.FullName));
+            this._types.AddRange(types.Where(x => !typesToIgnore.Contains(x)).OrderBy(x => x.FullName));
 
             this.CancelCommand = ReactiveCommand.Create<Unit, Unit>(x => this.RequestClose(true));
             this.OkCommand = ReactiveCommand.Create<Unit, Unit>(

@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.UI.Services {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Editor.UI.Views;
@@ -20,9 +21,9 @@
         }
 
         /// <inheritdoc />
-        public async Task<Type> OpenTypeSelectionDialog(Type baseType) {
+        public async Task<Type> OpenTypeSelectionDialog(Type baseType, params Type[] typesToIgnore) {
             Type selectedType = null;
-            var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(Type), baseType));
+            var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(Type), baseType), new ParameterOverride(typeof(IEnumerable<Type>), typesToIgnore));
             var result = await window.ShowDialog<bool>(this._mainWindow);
 
             if (result && window.ViewModel != null) {

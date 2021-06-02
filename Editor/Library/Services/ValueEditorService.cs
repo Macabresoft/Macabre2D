@@ -45,7 +45,6 @@
     public class ValueEditorService : ReactiveObject, IValueEditorService {
         private const string DefaultCategoryName = "Uncategorized";
         private readonly IAssemblyService _assemblyService;
-        private readonly Dictionary<Type, IList<IValueEditor>> _editorCache = new();
         private readonly IValueEditorTypeMapper _typeMapper;
 
         /// <summary>
@@ -72,19 +71,6 @@
         /// <inheritdoc />
         public void ReturnEditors(params ValueEditorCollection[] editorCollections) {
             foreach (var editorCollection in editorCollections) {
-                foreach (var valueEditor in editorCollection.ValueEditors) {
-                    if (this._editorCache.TryGetValue(valueEditor.ValueType, out var valueEditorCache)) {
-                        valueEditorCache.Add(valueEditor);
-                    }
-                    else {
-                        var newEditorCache = new List<IValueEditor> {
-                            valueEditor
-                        };
-
-                        this._editorCache[valueEditor.ValueType] = newEditorCache;
-                    }
-                }
-
                 editorCollection.Dispose();
             }
         }
@@ -104,11 +90,11 @@
                 var value = member.MemberInfo.GetValue(editableObject);
                 var editor = this.GetEditorForType(originalObject, value, memberType, member.MemberInfo, propertyPath);
 
-                if (!string.IsNullOrEmpty(member.Attribute.Name)) {
-                    editor.Title = member.Attribute.Name;
-                }
-                
                 if (editor != null) {
+                    if (!string.IsNullOrEmpty(member.Attribute.Name)) {
+                        editor.Title = member.Attribute.Name;
+                    }
+
                     var category = DefaultCategoryName;
 
                     if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
@@ -141,36 +127,26 @@
 
         private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, MemberInfo memberInfo, string propertyPath) {
             IValueEditor result = null;
-
-            if (this._editorCache.TryGetValue(memberType, out var editorList)) {
-                result = editorList.FirstOrDefault();
+            var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
+            if (editorType != null) {
+                if (Activator.CreateInstance(editorType) is IValueEditor editor) {
+                    result = editor;
+                }
             }
-
-            if (result == null) {
-                var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
-                if (editorType != null) {
-                    if (Activator.CreateInstance(editorType) is IValueEditor editor) {
-                        result = editor;
+            else if (memberType.IsEnum) {
+                if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
+                    if (this._typeMapper.FlagsEnumEditorType != null) {
+                        result = Activator.CreateInstance(this._typeMapper.FlagsEnumEditorType) as IValueEditor;
                     }
                 }
-                else if (memberType.IsEnum) {
-                    if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
-                        if (this._typeMapper.FlagsEnumEditorType != null) {
-                            // TODO: pull from cache
-                            result = Activator.CreateInstance(this._typeMapper.FlagsEnumEditorType) as IValueEditor;
-                        }
-                    }
-                    else {
-                        if (this._typeMapper.EnumEditorType != null) {
-                            // TODO: pull from cache
-                            result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
-                        }
+                else {
+                    if (this._typeMapper.EnumEditorType != null) {
+                        result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
                     }
                 }
-                else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
-                    // TODO: pull from cache
-                    result = Activator.CreateInstance(this._typeMapper.GenericEditorType) as IValueEditor;
-                }
+            }
+            else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
+                result = Activator.CreateInstance(this._typeMapper.GenericEditorType) as IValueEditor;
             }
 
             if (result != null) {

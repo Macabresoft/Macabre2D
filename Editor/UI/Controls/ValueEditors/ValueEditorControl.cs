@@ -68,6 +68,7 @@
 
             this.Owner = owner;
             this.ValuePropertyName = valuePropertyName;
+            this.ValueType = valueType;
             this.Title = title;
 
             if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {

@@ -2,6 +2,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+    using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Editor.Library.Models;
     using Macabresoft.Macabre2D.Editor.Library.Services;
@@ -97,7 +98,7 @@
                         editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
                     }
 
-                    this._editors.Reset(editorCollections);
+                    Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
                 }
             }
         }

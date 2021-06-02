@@ -11,7 +11,8 @@
         /// Opens a dialog that allows the user to pick a <see cref="Type"/> which inherits from the provided base type.
         /// </summary>
         /// <param name="baseType">The base type.</param>
-        /// <returns>A type that inherits from <see cref="IGameComponent"/>.</returns>
-        Task<Type> OpenTypeSelectionDialog(Type baseType);
+        /// <param name="typesToIgnore">Types to be ignored from the types shown.</param>
+        /// <returns>A type that inherits from the specified type.</returns>
+        Task<Type> OpenTypeSelectionDialog(Type baseType, params Type[] typesToIgnore);
     }
 }
