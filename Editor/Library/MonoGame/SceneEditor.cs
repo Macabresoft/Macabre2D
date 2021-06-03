@@ -122,7 +122,7 @@
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             this.Camera = scene.AddChild<Camera>();
             this.Camera.AddChild<CameraController>();
-            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService));
+            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._selectionService));
             this.Camera.AddChild(new SelectionDisplay(this._editorService, this._selectionService));
             var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
             this.Camera.AddChild(selectorGizmo);

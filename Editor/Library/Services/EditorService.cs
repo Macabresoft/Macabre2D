@@ -15,6 +15,12 @@
         Color DropShadowColor { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of divisions between major grid lines.
+        /// </summary>
+        /// <value>The number of divisions.</value>
+        byte GridDivisions { get; set; }
+
+        /// <summary>
         /// Gets or sets the selected gizmo.
         /// </summary>
         GizmoKind SelectedGizmo { get; set; }
@@ -38,18 +44,6 @@
         /// Gets or sets the color of the y axis.
         /// </summary>
         Color YAxisColor { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the size of the major grid.
-        /// </summary>
-        /// <value>The size of the major grid.</value>
-        byte MajorGridSize { get; set; }
-
-        /// <summary>
-        /// Gets or sets the number of divisions between major grid lines.
-        /// </summary>
-        /// <value>The number of divisions.</value>
-        byte MinorGridDivisions { get; set; }
     }
 
     /// <summary>
@@ -57,13 +51,12 @@
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
         private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
+        private byte _gridDivisions = 5;
         private GizmoKind _selectedGizmo = GizmoKind.Translation;
         private Color _selectionColor = DefinedColors.MacabresoftYellow;
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
-        private byte _minorGridDivisions = 5;
-        private byte _majorGridSize = 5;
 
         /// <inheritdoc />
         public Color DropShadowColor {
@@ -72,21 +65,15 @@
         }
 
         /// <inheritdoc />
+        public byte GridDivisions {
+            get => this._gridDivisions;
+            set => this.RaiseAndSetIfChanged(ref this._gridDivisions, value);
+        }
+
+        /// <inheritdoc />
         public GizmoKind SelectedGizmo {
             get => this._selectedGizmo;
             set => this.RaiseAndSetIfChanged(ref this._selectedGizmo, value);
-        }
-
-        /// <inheritdoc />
-        public byte MajorGridSize {
-            get => this._majorGridSize;
-            set => this.RaiseAndSetIfChanged(ref this._majorGridSize, value);
-        }
-
-        /// <inheritdoc />
-        public byte MinorGridDivisions {
-            get => this._minorGridDivisions;
-            set => this.RaiseAndSetIfChanged(ref this._minorGridDivisions, value);
         }
 
         /// <inheritdoc />
