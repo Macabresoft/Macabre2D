@@ -2,11 +2,13 @@
     using System;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
+    using System.ComponentModel;
 
     /// <summary>
     /// A grid of uniform tiles.
     /// </summary>
     [DataContract]
+    [Category("Grid")]
     public readonly struct TileGrid {
         /// <summary>
         /// An empty tile grid.
