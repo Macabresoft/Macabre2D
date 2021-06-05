@@ -13,8 +13,5 @@
 
         /// <inheritdoc />
         public Type FlagsEnumEditorType => typeof(FlagsEnumEditor);
-        
-        /// <inheritdoc />
-        public Type GenericEditorType => typeof(GenericValueEditor);
     }
 }
