@@ -10,6 +10,11 @@
         /// Called when the value changes.
         /// </summary>
         event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
+        
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
+        string Category { get; set; }
 
         /// <summary>
         /// Gets or sets the owner of the value. This is only required if not directly binding to the value.

@@ -59,13 +59,14 @@
 
         /// <inheritdoc />
         public ValueEditorCollection CreateEditor(object editableObject, string name) {
-            var collections = this.CreateEditors(string.Empty, editableObject, editableObject);
-            return new ValueEditorCollection(collections.SelectMany(x => x.ValueEditors), editableObject, name);
+            var editors = this.CreateEditors(string.Empty, editableObject, editableObject);
+            return new ValueEditorCollection(editors, editableObject, name);
         }
 
         /// <inheritdoc />
         public IReadOnlyCollection<ValueEditorCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
-            return this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
+            var valueEditors = this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
+            return valueEditors.GroupBy(x => x.Category).Select(x => new ValueEditorCollection(x, editableObject, x.Key)).ToList();
         }
 
         /// <inheritdoc />
@@ -75,8 +76,8 @@
             }
         }
 
-        private IReadOnlyCollection<ValueEditorCollection> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
-            var categoryToEditors = new Dictionary<string, IList<IValueEditor>>();
+        private IReadOnlyCollection<IValueEditor> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
+            var result = new List<IValueEditor>();
             var editableObjectType = editableObject.GetType();
             var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
 
@@ -88,77 +89,79 @@
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var memberType = member.MemberInfo.GetMemberReturnType();
                 var value = member.MemberInfo.GetValue(editableObject);
-                var editor = this.GetEditorForType(originalObject, value, memberType, member.MemberInfo, propertyPath);
-
-                if (editor != null) {
-                    if (!string.IsNullOrEmpty(member.Attribute.Name)) {
-                        editor.Title = member.Attribute.Name;
-                    }
-
-                    var category = DefaultCategoryName;
-
-                    if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
-                        category = memberCategory.Category;
-                    }
-                    else if (member.MemberInfo.DeclaringType != null) {
-                        if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
-                            category = classCategory.Category;
-                        }
-                        else {
-                            category = member.MemberInfo.DeclaringType.Name;
-                        }
-                    }
-
-                    if (categoryToEditors.TryGetValue(category, out var editors)) {
-                        editors.Add(editor);
-                    }
-                    else {
-                        editors = new List<IValueEditor> {
-                            editor
-                        };
-
-                        categoryToEditors.Add(category, editors);
-                    }
-                }
+                var editors = this.CreateEditorsForMember(originalObject, value, memberType, member.MemberInfo, propertyPath);
+                result.AddRange(editors);
             }
 
-            return categoryToEditors.Select(x => new ValueEditorCollection(x.Value, editableObject, x.Key)).ToList();
+            return result;
         }
 
-        private IValueEditor GetEditorForType(object originalObject, object value, Type memberType, MemberInfo memberInfo, string propertyPath) {
-            IValueEditor result = null;
+        private ICollection<IValueEditor> CreateEditorsForMember(object originalObject, object value, Type memberType, MemberInfo memberInfo, string propertyPath) {
+            var result = new List<IValueEditor>();
             var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
             if (editorType != null) {
-                if (Activator.CreateInstance(editorType) is IValueEditor editor) {
-                    result = editor;
+                var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, memberInfo, propertyPath);
+                if (editor != null) {
+                    result.Add(editor);
                 }
             }
             else if (memberType.IsEnum) {
                 if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
                     if (this._typeMapper.FlagsEnumEditorType != null) {
-                        result = Activator.CreateInstance(this._typeMapper.FlagsEnumEditorType) as IValueEditor;
+                        var editor = this.CreateValueEditorFromType(this._typeMapper.FlagsEnumEditorType, originalObject, value, memberType, memberInfo, propertyPath);
+                        if (editor != null) {
+                            result.Add(editor);
+                        }
                     }
                 }
-                else {
-                    if (this._typeMapper.EnumEditorType != null) {
-                        result = Activator.CreateInstance(this._typeMapper.EnumEditorType) as IValueEditor;
+                else if (this._typeMapper.EnumEditorType != null) {
+                    var editor = this.CreateValueEditorFromType(this._typeMapper.EnumEditorType, originalObject, value, memberType, memberInfo, propertyPath);
+                    if (editor != null) {
+                        result.Add(editor);
                     }
                 }
             }
-            else if (!memberType.IsValueType && this._typeMapper.GenericEditorType != null && memberType.GetCustomAttributes(typeof(DataContractAttribute), true).Any()) {
-                result = Activator.CreateInstance(this._typeMapper.GenericEditorType) as IValueEditor;
-            }
-
-            if (result != null) {
-                var title = memberType.GetPropertyDisplayName(memberInfo.Name);
-                result.Initialize(value, memberType, propertyPath, title, originalObject);
-
-                if (result is IParentValueEditor parentValueEditor) {
-                    parentValueEditor.Initialize(this, this._assemblyService);
-                }
+            else if (!memberType.IsValueType && memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) {
+                var editors = this.CreateEditors(propertyPath, value, originalObject);
+                result.AddRange(editors);
             }
 
             return result;
+        }
+
+        private IValueEditor CreateValueEditorFromType(
+            Type editorType,
+            object originalObject,
+            object value,
+            Type memberType,
+            MemberInfo memberInfo,
+            string propertyPath) {
+            if (Activator.CreateInstance(editorType) is IValueEditor editor) {
+                var title = memberType.GetPropertyDisplayName(memberInfo.Name);
+                editor.Initialize(value, memberType, propertyPath, title, originalObject);
+
+                if (editor is IParentValueEditor parentValueEditor) {
+                    parentValueEditor.Initialize(this, this._assemblyService);
+                }
+
+                editor.Category = DefaultCategoryName;
+
+                if (memberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
+                    editor.Category = memberCategory.Category;
+                }
+                else if (memberInfo.DeclaringType != null) {
+                    if (Attribute.GetCustomAttribute(memberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
+                        editor.Category = classCategory.Category;
+                    }
+                    else {
+                        editor.Category = memberInfo.DeclaringType.Name;
+                    }
+                }
+
+                return editor;
+            }
+
+            return null;
         }
     }
 }

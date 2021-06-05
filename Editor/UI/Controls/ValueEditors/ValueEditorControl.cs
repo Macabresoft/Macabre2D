@@ -14,13 +14,15 @@
         public static readonly StyledProperty<T> ValueProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
 
+        public static readonly StyledProperty<string> CategoryProperty =
+            AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Category));
+
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-
-
+        
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
 
@@ -30,6 +32,11 @@
         private bool _ignoreUpdate;
 
         public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
+
+        public string Category {
+            get => this.GetValue(CategoryProperty);
+            set => this.SetValue(CategoryProperty, value);
+        }
 
         public object Owner {
             get => this.GetValue(OwnerProperty);

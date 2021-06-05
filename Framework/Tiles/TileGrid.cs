@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
-    using System.ComponentModel;
 
     /// <summary>
     /// A grid of uniform tiles.
