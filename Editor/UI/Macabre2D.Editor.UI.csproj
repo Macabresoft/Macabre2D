@@ -112,5 +112,9 @@
       <DependentUpon>SceneTreeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\TileGridEditor.axaml.cs">
+      <DependentUpon>TileGridEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

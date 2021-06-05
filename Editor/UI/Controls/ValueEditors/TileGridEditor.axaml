@@ -1,0 +1,29 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
+                          x:TypeArguments="monoGame:Vector2"
+                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.TileGridEditor"
+                          UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
+        <TextBlock Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="{Binding $parent[local:TileGridEditor].Title}" />
+
+        <TextBlock Grid.Column="1"
+                   Text="Tile Size: "
+                   VerticalAlignment="Center" />
+
+        <local:Vector2Editor Grid.Column="2"
+                             Value="{Binding $parent[local:TileGridEditor].TileSizeValue}"
+                             XMinimum="0"
+                             YMinimum="0" />
+
+        <TextBlock Grid.Column="3"
+                   Text="Offset: "
+                   VerticalAlignment="Center" />
+
+        <local:Vector2Editor Grid.Column="4"
+                             Value="{Binding $parent[local:TileGridEditor].OffsetValue}" />
+    </Grid>
+</local:ValueEditorControl>
