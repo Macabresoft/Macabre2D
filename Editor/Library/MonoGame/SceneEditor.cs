@@ -124,7 +124,7 @@
             this.Camera.AddChild<CameraController>();
             this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._selectionService));
             this.Camera.AddChild(new SelectionDisplay(this._editorService, this._selectionService));
-            var selectorGizmo = new SelectorComponent(this._sceneService, this._selectionService);
+            var selectorGizmo = new SelectorGizmo(this._sceneService, this._selectionService);
             this.Camera.AddChild(selectorGizmo);
 
             var translationGizmo = new TranslationGizmo(this._editorService, this._selectionService, this._undoService);
