@@ -160,7 +160,7 @@
                 if (this._selectionService.SelectedEntity is IGridContainer container) {
                     gridContainer = container;
                 }
-                else if (!this._selectionService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
+                else if (this._selectionService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
                     gridContainer = container;
                 }
             }
