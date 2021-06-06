@@ -1,16 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws a grid for the specified camera.
     /// </summary>
     [Display(Name = "Grid Drawer (Diagnostics)")]
     public sealed class GridDrawer : BaseDrawer {
-
         /// <inheritdoc />
         public override BoundingArea BoundingArea => BoundingArea.MaximumSize;
 
@@ -57,7 +55,7 @@
             if (this.PrimitiveDrawer != null && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
 
-                var columns = GridDrawer.GetGridPositions(viewBoundingArea.Minimum.X, viewBoundingArea.Maximum.X, this.Grid.TileSize.X, this.Grid.Offset.X);
+                var columns = GetGridPositions(viewBoundingArea.Minimum.X, viewBoundingArea.Maximum.X, this.Grid.TileSize.X, 0f);
                 foreach (var column in columns) {
                     this.PrimitiveDrawer.DrawLine(
                         spriteBatch,
@@ -68,7 +66,7 @@
                         lineThickness);
                 }
 
-                var rows = GridDrawer.GetGridPositions(viewBoundingArea.Minimum.Y, viewBoundingArea.Maximum.Y, this.Grid.TileSize.Y, this.Grid.Offset.Y);
+                var rows = GetGridPositions(viewBoundingArea.Minimum.Y, viewBoundingArea.Maximum.Y, this.Grid.TileSize.Y, 0f);
                 foreach (var row in rows) {
                     this.PrimitiveDrawer.DrawLine(
                         spriteBatch,

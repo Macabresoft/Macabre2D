@@ -44,11 +44,11 @@
             var y = position.Y;
 
             if (this.Grid.TileSize.X > 0f) {
-                x = (float)Math.Round(x / this.Grid.TileSize.X) * this.Grid.TileSize.X + this.Grid.Offset.X;
+                x = (float)Math.Round(x / this.Grid.TileSize.X) * this.Grid.TileSize.X;
             }
 
             if (this.Grid.TileSize.Y > 0f) {
-                y = (float)Math.Round(y / this.Grid.TileSize.Y) * this.Grid.TileSize.Y + this.Grid.Offset.Y;
+                y = (float)Math.Round(y / this.Grid.TileSize.Y) * this.Grid.TileSize.Y;
             }
 
             return new Vector2(x, y);

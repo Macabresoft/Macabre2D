@@ -62,7 +62,7 @@
                     this.DrawGrid(spriteBatch, viewBoundingArea, container.Grid, lineThickness, 0.2f);
 
                     var majorGridSize = container.Grid.TileSize * this._editorService.GridDivisions;
-                    var grid = new TileGrid(majorGridSize, container.Grid.Offset);
+                    var grid = new TileGrid(majorGridSize);
                     this.DrawGrid(spriteBatch, viewBoundingArea, grid, lineThickness, 0.5f);
                 }
             }
@@ -75,13 +75,13 @@
                 var verticalShadowOffset = new Vector2(0f, shadowOffset);
                 var color = this.Color * alpha;
 
-                var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, grid.TileSize.X, grid.Offset.X);
+                var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, grid.TileSize.X, 0f);
                 var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
                 foreach (var column in columns) {
                     var minimum = new Vector2(column, boundingArea.Minimum.Y);
                     var maximum = new Vector2(column, boundingArea.Maximum.Y);
 
-                    if (Math.Abs(column - grid.Offset.X) < float.Epsilon) {
+                    if (column == 0f) {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
                             pixelsPerUnit,
@@ -109,12 +109,12 @@
                     }
                 }
 
-                var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, grid.TileSize.Y, grid.Offset.Y);
+                var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, grid.TileSize.Y, 0f);
                 foreach (var row in rows) {
                     var minimum = new Vector2(boundingArea.Minimum.X, row);
                     var maximum = new Vector2(boundingArea.Maximum.X, row);
 
-                    if (Math.Abs(row - grid.Offset.Y) < float.Epsilon) {
+                    if (row == 0f) {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
                             pixelsPerUnit,

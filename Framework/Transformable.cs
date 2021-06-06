@@ -250,19 +250,19 @@
 
         /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset;
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y);
             return this.GetWorldTransform(position);
         }
 
         /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + offset;
             return this.GetWorldTransform(position);
         }
 
         /// <inheritdoc />
         public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + grid.Offset + offset;
+            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + offset;
             return this.GetWorldTransform(position, rotationAngle);
         }
 

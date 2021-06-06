@@ -95,7 +95,6 @@
             var grid = this.CurrentGrid;
 
             if (grid.TileSize.X > 0 && grid.TileSize.Y > 0) {
-                worldPosition -= grid.Offset;
                 var xTile = Math.Floor(worldPosition.X / grid.TileSize.X);
                 var yTile = Math.Floor(worldPosition.Y / grid.TileSize.Y);
                 result = new Point((int)xTile, (int)yTile);
