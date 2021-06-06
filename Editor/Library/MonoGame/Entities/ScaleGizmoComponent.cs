@@ -104,6 +104,8 @@
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var lineLength = this.GetAxisLength();
                     var newPosition = mousePosition;
+                    // TODO: snap to grid
+                    // var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
 
                     if (this.CurrentAxis == GizmoAxis.X) {
                         newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition);

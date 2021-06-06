@@ -1,10 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
-    using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
     using MouseButton = Macabresoft.Macabre2D.Framework.MouseButton;
 
     /// <summary>
@@ -130,7 +130,8 @@
             else if (this.CurrentAxis != GizmoAxis.None) {
                 if (this.SelectionService.SelectedEntity is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
-                        var newPosition = this.GetPositionAlongCurrentAxis(mousePosition);
+                        var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
+                        var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
                         UpdatePosition(entity, newPosition);
                         this.ResetEndPoints();
                         result = true;
@@ -160,15 +161,21 @@
             return this.SelectionService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
-        private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition) {
-            // TODO: handle snapped positions when holding ctrl.
+        private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
             var newPosition = mousePosition;
-            if (this.CurrentAxis == GizmoAxis.X) {
-                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, mousePosition) - (this.XAxisPosition - this.NeutralAxisPosition);
+
+            if (snapToAxis &&
+                this.SelectionService.SelectedEntity != null &&
+                this.SelectionService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
+                gridContainer != null) {
+                newPosition = gridContainer.GetNearestTilePosition(newPosition);
             }
-            else if (this.CurrentAxis == GizmoAxis.Y) {
-                newPosition = this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, mousePosition) - (this.YAxisPosition - this.NeutralAxisPosition);
-            }
+
+            newPosition = this.CurrentAxis switch {
+                GizmoAxis.X => this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, newPosition) - (this.XAxisPosition - this.NeutralAxisPosition),
+                GizmoAxis.Y => this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, newPosition) - (this.YAxisPosition - this.NeutralAxisPosition),
+                _ => newPosition
+            };
 
             return newPosition;
         }

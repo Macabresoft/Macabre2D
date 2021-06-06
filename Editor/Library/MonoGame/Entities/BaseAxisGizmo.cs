@@ -159,6 +159,7 @@
         protected Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
             var slope = Math.Abs(end.X - start.X) > FloatingPointTolerance ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
+            
             Vector2 newPosition;
             if (Math.Abs(slope) <= 0.5f) {
                 if (Math.Abs(slope) < FloatingPointTolerance) {
@@ -178,7 +179,7 @@
                     newPosition = new Vector2(moveToPosition.X, newY);
                 }
             }
-
+            
             return newPosition;
         }
 
