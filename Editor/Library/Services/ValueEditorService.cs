@@ -82,25 +82,30 @@
             var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
 
             var membersWithAttributes = members
-                .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttributes(typeof(DataMemberAttribute), false).OfType<DataMemberAttribute>().FirstOrDefault()))
+                .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))
                 .OrderBy(x => x.Attribute.Order);
 
             foreach (var member in membersWithAttributes) {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var memberType = member.MemberInfo.GetMemberReturnType();
                 var value = member.MemberInfo.GetValue(editableObject);
-                var editors = this.CreateEditorsForMember(originalObject, value, memberType, member.MemberInfo, propertyPath);
+                var editors = this.CreateEditorsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }
 
             return result;
         }
 
-        private ICollection<IValueEditor> CreateEditorsForMember(object originalObject, object value, Type memberType, MemberInfo memberInfo, string propertyPath) {
+        private ICollection<IValueEditor> CreateEditorsForMember(
+            object originalObject,
+            object value, 
+            Type memberType, 
+            AttributeMemberInfo<DataMemberAttribute> member, 
+            string propertyPath) {
             var result = new List<IValueEditor>();
             var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
             if (editorType != null) {
-                var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, memberInfo, propertyPath);
+                var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, member, propertyPath);
                 if (editor != null) {
                     result.Add(editor);
                 }
@@ -108,14 +113,14 @@
             else if (memberType.IsEnum) {
                 if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
                     if (this._typeMapper.FlagsEnumEditorType != null) {
-                        var editor = this.CreateValueEditorFromType(this._typeMapper.FlagsEnumEditorType, originalObject, value, memberType, memberInfo, propertyPath);
+                        var editor = this.CreateValueEditorFromType(this._typeMapper.FlagsEnumEditorType, originalObject, value, memberType, member, propertyPath);
                         if (editor != null) {
                             result.Add(editor);
                         }
                     }
                 }
                 else if (this._typeMapper.EnumEditorType != null) {
-                    var editor = this.CreateValueEditorFromType(this._typeMapper.EnumEditorType, originalObject, value, memberType, memberInfo, propertyPath);
+                    var editor = this.CreateValueEditorFromType(this._typeMapper.EnumEditorType, originalObject, value, memberType, member, propertyPath);
                     if (editor != null) {
                         result.Add(editor);
                     }
@@ -134,10 +139,10 @@
             object originalObject,
             object value,
             Type memberType,
-            MemberInfo memberInfo,
+            AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
             if (Activator.CreateInstance(editorType) is IValueEditor editor) {
-                var title = memberType.GetPropertyDisplayName(memberInfo.Name);
+                var title = !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : member.MemberInfo.Name;
                 editor.Initialize(value, memberType, propertyPath, title, originalObject);
 
                 if (editor is IParentValueEditor parentValueEditor) {
@@ -146,15 +151,15 @@
 
                 editor.Category = DefaultCategoryName;
 
-                if (memberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
+                if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
                     editor.Category = memberCategory.Category;
                 }
-                else if (memberInfo.DeclaringType != null) {
-                    if (Attribute.GetCustomAttribute(memberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
+                else if (member.MemberInfo.DeclaringType != null) {
+                    if (Attribute.GetCustomAttribute(member.MemberInfo.DeclaringType, typeof(CategoryAttribute), false) is CategoryAttribute classCategory) {
                         editor.Category = classCategory.Category;
                     }
                     else {
-                        editor.Category = memberInfo.DeclaringType.Name;
+                        editor.Category = member.MemberInfo.DeclaringType.Name;
                     }
                 }
 
