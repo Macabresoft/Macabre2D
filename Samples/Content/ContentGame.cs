@@ -36,7 +36,7 @@
             spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
             var gridContainer = scene.AddChild<GridContainer>();
-            gridContainer.Grid = new TileGrid(2, 4);
+            gridContainer.LocalTileSize = new Vector2(2, 4);
             var binaryTileMap = gridContainer.AddChild<BinaryTileMap>();
             binaryTileMap.RenderOrder = -300;
             binaryTileMap.LocalPosition = new Vector2(-5f, -10f);
@@ -174,12 +174,6 @@
             var circleSpriteRenderer = this.Scene.AddChild<Texture2DRenderer>();
             circleSpriteRenderer.Texture = circleSprite;
             circleSpriteRenderer.LocalPosition = new Vector2(-5f, 3f);
-
-            var gridDrawer = this.Scene.AddChild<GridDrawer>();
-            gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
-            gridDrawer.UseDynamicLineThickness = true;
-            gridDrawer.Grid = new TileGrid(Vector2.One);
-            gridDrawer.RenderOrder = -1;
 
             if (this.Scene.TryGetChild<BinaryTileMap>(out var binaryTileMap) && binaryTileMap != null) {
                 var binaryTileMapBoundingArea = binaryTileMap.AddChild<BoundingAreaDrawer>();

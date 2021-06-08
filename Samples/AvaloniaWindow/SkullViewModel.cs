@@ -37,12 +37,6 @@
             scene.AddSystem<UpdateSystem>();
             scene.BackgroundColor = DefinedColors.MacabresoftPurple;
 
-            var gridDrawer = scene.AddChild<GridDrawer>();
-            gridDrawer.Color = DefinedColors.MacabresoftBone * 0.5f;
-            gridDrawer.UseDynamicLineThickness = false;
-            gridDrawer.Grid = new TileGrid(Vector2.One);
-            gridDrawer.RenderOrder = -1;
-
             var skull = new SpriteSheet();
 
             this._skullRenderer = scene.AddChild<SpriteRenderer>();

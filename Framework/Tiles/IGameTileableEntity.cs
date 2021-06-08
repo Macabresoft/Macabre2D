@@ -21,7 +21,7 @@
         /// <summary>
         /// Gets the currently used grid.
         /// </summary>
-        TileGrid CurrentGrid { get; }
+        IGridContainer CurrentGrid { get; }
 
         /// <summary>
         /// Gets the maximum tile. This represents the maximum X and Y coordinates of the grid,

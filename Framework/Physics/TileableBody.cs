@@ -94,7 +94,7 @@
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(IEntity.Transform)) {
+            if (e.PropertyName == nameof(ITransformable.Transform)) {
                 this.OnRequestReset(sender, e);
             }
         }
@@ -191,7 +191,7 @@
                 foreach (var segment in allSegments) {
                     var collider = new LineCollider(
                         this._tileable.CurrentGrid.GetTilePosition(segment.StartPoint),
-                        this.Scene.Grid.GetTilePosition(segment.EndPoint)) {
+                        this._tileable.CurrentGrid.GetTilePosition(segment.EndPoint)) {
                         Layers = segment.Layers
                     };
 

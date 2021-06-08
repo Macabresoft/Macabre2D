@@ -72,45 +72,6 @@
         Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale);
 
         /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <remarks>This is to be used in conjunction with a <see cref="TileGrid" />.</remarks>
-        /// <param name="grid">The grid.</param>
-        /// <param name="gridTileLocation">
-        /// The grid tile location. This is the (x, y) coordinate on the grid for which one is
-        /// getting the world transform.
-        /// </param>
-        /// <returns>The world transform.</returns>
-        Transform GetWorldTransform(TileGrid grid, Point gridTileLocation);
-
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <remarks>This is to be used in conjunction with a <see cref="TileGrid" />.</remarks>
-        /// <param name="grid">The grid.</param>
-        /// <param name="gridTileLocation">
-        /// The grid tile location. This is the (x, y) coordinate on the grid for which one is
-        /// getting the world transform.
-        /// </param>
-        /// <param name="offset">The offset.</param>
-        /// <returns>The world transform.</returns>
-        Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset);
-
-        /// <summary>
-        /// Gets the world transform.
-        /// </summary>
-        /// <remarks>This is to be used in conjunction with a <see cref="TileGrid" />.</remarks>
-        /// <param name="grid">The grid.</param>
-        /// <param name="gridTileLocation">
-        /// The grid tile location. This is the (x, y) coordinate on the grid for which one is
-        /// getting the world transform.
-        /// </param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="rotationAngle">The rotation angle.</param>
-        /// <returns>The world transform.</returns>
-        Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle);
-
-        /// <summary>
         /// Sets the world position.
         /// </summary>
         /// <param name="position">The position.</param>
@@ -247,25 +208,7 @@
 
             return matrix.ToTransform();
         }
-
-        /// <inheritdoc />
-        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y);
-            return this.GetWorldTransform(position);
-        }
-
-        /// <inheritdoc />
-        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + offset;
-            return this.GetWorldTransform(position);
-        }
-
-        /// <inheritdoc />
-        public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
-            var position = new Vector2(gridTileLocation.X * grid.TileSize.X, gridTileLocation.Y * grid.TileSize.Y) + offset;
-            return this.GetWorldTransform(position, rotationAngle);
-        }
-
+        
         /// <inheritdoc />
         public void SetWorldPosition(Vector2 position) {
             this.SetWorldTransform(position, this.Transform.Scale);
@@ -364,21 +307,6 @@
 
             /// <inheritdoc />
             public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
-                return this.Transform;
-            }
-
-            /// <inheritdoc />
-            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation) {
-                return this.Transform;
-            }
-
-            /// <inheritdoc />
-            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset) {
-                return this.Transform;
-            }
-
-            /// <inheritdoc />
-            public Transform GetWorldTransform(TileGrid grid, Point gridTileLocation, Vector2 offset, float rotationAngle) {
                 return this.Transform;
             }
 

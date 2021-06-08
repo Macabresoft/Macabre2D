@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using Macabresoft.Macabre2D.Editor.Library.Services;
     using Macabresoft.Macabre2D.Framework;
@@ -59,23 +60,22 @@
                     }
 
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                    this.DrawGrid(spriteBatch, viewBoundingArea, container.Grid, lineThickness, 0.2f);
+                    this.DrawGrid(spriteBatch, viewBoundingArea, container.WorldTileSize, lineThickness, 0.2f);
 
-                    var majorGridSize = container.Grid.TileSize * this._editorService.GridDivisions;
-                    var grid = new TileGrid(majorGridSize);
-                    this.DrawGrid(spriteBatch, viewBoundingArea, grid, lineThickness, 0.5f);
+                    var majorGridSize = container.WorldTileSize * this._editorService.GridDivisions;
+                    this.DrawGrid(spriteBatch, viewBoundingArea, majorGridSize, lineThickness, 0.5f);
                 }
             }
         }
 
-        private void DrawGrid(SpriteBatch spriteBatch, BoundingArea boundingArea, TileGrid grid, float lineThickness, float alpha) {
+        private void DrawGrid(SpriteBatch spriteBatch, BoundingArea boundingArea, Vector2 tileSize, float lineThickness, float alpha) {
             if (this.PrimitiveDrawer != null) {
                 var shadowOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
                 var verticalShadowOffset = new Vector2(0f, shadowOffset);
                 var color = this.Color * alpha;
 
-                var columns = GridDrawer.GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, grid.TileSize.X, 0f);
+                var columns = GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, tileSize.X, 0f);
                 var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
                 foreach (var column in columns) {
                     var minimum = new Vector2(column, boundingArea.Minimum.Y);
@@ -109,7 +109,7 @@
                     }
                 }
 
-                var rows = GridDrawer.GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, grid.TileSize.Y, 0f);
+                var rows = GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, tileSize.Y, 0f);
                 foreach (var row in rows) {
                     var minimum = new Vector2(boundingArea.Minimum.X, row);
                     var maximum = new Vector2(boundingArea.Maximum.X, row);
@@ -148,6 +148,30 @@
             if (e.PropertyName == nameof(IEditorService.ShowGrid)) {
                 this.IsVisible = this._editorService.ShowGrid;
             }
+        }
+
+        private static IEnumerable<float> GetGridPositions(float lowerLimit, float upperLimit, float stepSize, float offset) {
+            var result = new List<float>();
+
+            if (stepSize > 0f) {
+                if (offset < lowerLimit) {
+                    while (offset + stepSize < lowerLimit) {
+                        offset += stepSize;
+                    }
+                }
+                else if (offset > lowerLimit) {
+                    while (offset - stepSize > lowerLimit) {
+                        offset -= stepSize;
+                    }
+                }
+
+                while (offset <= upperLimit) {
+                    result.Add(offset);
+                    offset += stepSize;
+                }
+            }
+
+            return result;
         }
 
         private void ResetColor() {

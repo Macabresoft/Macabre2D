@@ -44,7 +44,7 @@
         public BoundingArea BoundingArea => this._boundingArea.Value;
 
         /// <inheritdoc />
-        public TileGrid CurrentGrid => this._gridContainer.Grid;
+        public IGridContainer CurrentGrid => this._gridContainer;
 
         /// <inheritdoc />
         public Point MaximumTile { get; private set; }
@@ -94,9 +94,9 @@
             var result = Point.Zero;
             var grid = this.CurrentGrid;
 
-            if (grid.TileSize.X > 0 && grid.TileSize.Y > 0) {
-                var xTile = Math.Floor(worldPosition.X / grid.TileSize.X);
-                var yTile = Math.Floor(worldPosition.Y / grid.TileSize.Y);
+            if (grid.WorldTileSize.X > 0 && grid.WorldTileSize.Y > 0) {
+                var xTile = Math.Floor(worldPosition.X / grid.WorldTileSize.X);
+                var yTile = Math.Floor(worldPosition.Y / grid.WorldTileSize.Y);
                 result = new Point((int)xTile, (int)yTile);
             }
 
@@ -175,7 +175,7 @@
             if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
                 var grid = this.CurrentGrid;
                 var tilePosition = grid.GetTilePosition(tile);
-                boundingArea = new BoundingArea(tilePosition, tilePosition + grid.TileSize);
+                boundingArea = new BoundingArea(tilePosition, tilePosition + grid.WorldTileSize);
                 this._tilePositionToBoundingArea.Add(tile, boundingArea);
             }
 
@@ -189,7 +189,7 @@
         /// <returns>The scale for the sprite to fit within the tile grid.</returns>
         protected Vector2 GetTileScale(Point spriteSize) {
             var inversePixelsPerUnit = this.Scene.Game.Project.Settings.InversePixelsPerUnit;
-            var result = this.CurrentGrid.TileSize;
+            var result = this.CurrentGrid.WorldTileSize;
 
             if (spriteSize.X != 0 && spriteSize.Y != 0) {
                 var spriteWidth = spriteSize.X * inversePixelsPerUnit;
@@ -251,8 +251,9 @@
         }
 
         private void GridContainer_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IGridContainer.Grid)) {
+            if (e.PropertyName == nameof(IGridContainer.WorldTileSize)) {
                 this.ResetBoundingArea();
+                this.TilesChanged?.SafeInvoke(this);
             }
         }
 
