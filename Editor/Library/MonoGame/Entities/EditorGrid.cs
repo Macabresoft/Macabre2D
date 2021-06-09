@@ -60,28 +60,34 @@
                     }
 
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                    this.DrawGrid(spriteBatch, viewBoundingArea, container.WorldTileSize, lineThickness, 0.2f);
+                    this.DrawGrid(spriteBatch, viewBoundingArea, container.WorldTileSize, container.Transform.Position, lineThickness, 0.2f);
 
                     var majorGridSize = container.WorldTileSize * this._editorService.GridDivisions;
-                    this.DrawGrid(spriteBatch, viewBoundingArea, majorGridSize, lineThickness, 0.5f);
+                    this.DrawGrid(spriteBatch, viewBoundingArea, majorGridSize, container.Transform.Position, lineThickness, 0.5f);
                 }
             }
         }
 
-        private void DrawGrid(SpriteBatch spriteBatch, BoundingArea boundingArea, Vector2 tileSize, float lineThickness, float alpha) {
+        private void DrawGrid(
+            SpriteBatch spriteBatch,
+            BoundingArea boundingArea,
+            Vector2 tileSize,
+            Vector2 offset,
+            float lineThickness,
+            float alpha) {
             if (this.PrimitiveDrawer != null) {
                 var shadowOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
                 var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
                 var verticalShadowOffset = new Vector2(0f, shadowOffset);
                 var color = this.Color * alpha;
 
-                var columns = GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, tileSize.X, 0f);
+                var columns = GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, tileSize.X, offset.X);
                 var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
                 foreach (var column in columns) {
                     var minimum = new Vector2(column, boundingArea.Minimum.Y);
                     var maximum = new Vector2(column, boundingArea.Maximum.Y);
 
-                    if (column == 0f) {
+                    if (Math.Abs(column - offset.X) < float.Epsilon) {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
                             pixelsPerUnit,
@@ -109,12 +115,12 @@
                     }
                 }
 
-                var rows = GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, tileSize.Y, 0f);
+                var rows = GetGridPositions(boundingArea.Minimum.Y, boundingArea.Maximum.Y, tileSize.Y, offset.Y);
                 foreach (var row in rows) {
                     var minimum = new Vector2(boundingArea.Minimum.X, row);
                     var maximum = new Vector2(boundingArea.Maximum.X, row);
 
-                    if (row == 0f) {
+                    if (Math.Abs(row - offset.Y) < float.Epsilon) {
                         this.PrimitiveDrawer.DrawLine(
                             spriteBatch,
                             pixelsPerUnit,
