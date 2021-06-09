@@ -44,7 +44,6 @@
         public static readonly IGridContainer EmptyGridContainer = new EmptyGridContainer();
 
         private readonly ResettableLazy<Vector2> _worldTileSize;
-
         private Vector2 _tileSize = Vector2.One;
 
         public GridContainer() : base() {
@@ -63,13 +62,14 @@
                 if (this.Set(ref this._tileSize, value)) {
                     this.ResetWorldTileSize();
                 }
-            } 
+            }
         }
 
         /// <inheritdoc />
         public Vector2 GetNearestTilePosition(Vector2 position) {
-            var x = position.X;
-            var y = position.Y;
+            var transform = this.Transform;
+            var x = position.X - transform.Position.X;
+            var y = position.Y - transform.Position.Y;
 
             if (this.WorldTileSize.X > 0f) {
                 x = (float)Math.Round(x / this.WorldTileSize.X) * this.WorldTileSize.X;
@@ -79,7 +79,7 @@
                 y = (float)Math.Round(y / this.WorldTileSize.Y) * this.WorldTileSize.Y;
             }
 
-            return new Vector2(x, y);
+            return new Vector2(x, y) + transform.Position;
         }
 
 
@@ -101,13 +101,13 @@
             }
         }
 
+        private Vector2 GetWorldTileSize() {
+            return this._tileSize * this.Transform.Scale;
+        }
+
         private void ResetWorldTileSize() {
             this._worldTileSize.Reset();
             this.RaisePropertyChanged(nameof(this.WorldTileSize));
-        }
-
-        private Vector2 GetWorldTileSize() {
-            return this._tileSize * this.Transform.Scale;
         }
     }
 
