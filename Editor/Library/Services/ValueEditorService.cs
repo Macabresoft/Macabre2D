@@ -98,9 +98,9 @@
 
         private ICollection<IValueEditor> CreateEditorsForMember(
             object originalObject,
-            object value, 
-            Type memberType, 
-            AttributeMemberInfo<DataMemberAttribute> member, 
+            object value,
+            Type memberType,
+            AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
             var result = new List<IValueEditor>();
             var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
