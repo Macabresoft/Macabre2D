@@ -212,6 +212,7 @@
 
         /// <inheritdoc />
         public virtual void Initialize(IScene scene, IEntity parent) {
+            this.Parent.PropertyChanged -= this.Parent_PropertyChanged;
             this.Scene = scene;
             this.Parent = parent;
             this.Scene.RegisterEntity(this);
@@ -221,11 +222,12 @@
             }
 
             this.HandleMatrixOrTransformChanged();
+            this.Parent.PropertyChanged += this.Parent_PropertyChanged;
         }
 
         /// <inheritdoc />
         public bool IsDescendentOf(IEntity entity) {
-            return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
+            return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
         }
 
         /// <inheritdoc />
@@ -292,6 +294,12 @@
         private void OnAddChild(IEntity child) {
             if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
                 this.Scene.Invoke(() => child.Initialize(this.Scene, this));
+            }
+        }
+
+        private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ITransformable.Transform)) {
+                this.HandleMatrixOrTransformChanged();
             }
         }
 
