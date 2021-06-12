@@ -8,7 +8,7 @@
     </Design.DataContext>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
-        <ItemsControl Items="{Binding Editors}">
+        <ItemsControl Items="{Binding SelectionService.Editors}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <controls:GroupBox Header="{Binding Name}"

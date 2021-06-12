@@ -162,7 +162,11 @@
         }
 
         private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
-            var newPosition = mousePosition;
+            var newPosition = this.CurrentAxis switch {
+                GizmoAxis.X => mousePosition - (this.XAxisPosition - this.NeutralAxisPosition),
+                GizmoAxis.Y => mousePosition - (this.YAxisPosition - this.NeutralAxisPosition),
+                _ => mousePosition
+            };
 
             if (snapToAxis &&
                 this.SelectionService.SelectedEntity != null &&
@@ -172,8 +176,8 @@
             }
 
             newPosition = this.CurrentAxis switch {
-                GizmoAxis.X => this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, newPosition) - (this.XAxisPosition - this.NeutralAxisPosition),
-                GizmoAxis.Y => this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, newPosition) - (this.YAxisPosition - this.NeutralAxisPosition),
+                GizmoAxis.X => this.MoveAlongAxis(this.NeutralAxisPosition, this.XAxisPosition, newPosition),
+                GizmoAxis.Y => this.MoveAlongAxis(this.NeutralAxisPosition, this.YAxisPosition, newPosition),
                 _ => newPosition
             };
 
