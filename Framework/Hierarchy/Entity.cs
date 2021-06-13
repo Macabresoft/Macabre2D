@@ -227,7 +227,7 @@
 
         /// <inheritdoc />
         public bool IsDescendentOf(IEntity entity) {
-            return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
+            return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
         }
 
         /// <inheritdoc />
