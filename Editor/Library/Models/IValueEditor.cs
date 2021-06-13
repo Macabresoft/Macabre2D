@@ -35,6 +35,11 @@
         /// Gets or sets the value's type.
         /// </summary>
         Type ValueType { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the collection to which this editor belongs.
+        /// </summary>
+        ValueEditorCollection Collection { get; set; }
 
         /// <summary>
         /// Initializes the value editor.

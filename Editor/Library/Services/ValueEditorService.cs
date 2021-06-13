@@ -144,11 +144,6 @@
             if (Activator.CreateInstance(editorType) is IValueEditor editor) {
                 var title = !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : member.MemberInfo.Name;
                 editor.Initialize(value, memberType, propertyPath, title, originalObject);
-
-                if (editor is IParentValueEditor parentValueEditor) {
-                    parentValueEditor.Initialize(this, this._assemblyService);
-                }
-
                 editor.Category = DefaultCategoryName;
 
                 if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {

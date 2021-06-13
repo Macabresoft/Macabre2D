@@ -17,17 +17,27 @@
         public static readonly StyledProperty<string> CategoryProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Category));
 
+        public static readonly DirectProperty<ValueEditorControl<T>, ValueEditorCollection> CollectionProperty =
+            AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, ValueEditorCollection>(
+                nameof(Collection),
+                editor => editor.Collection,
+                (editor, value) => editor.Collection = value);
+
+
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-        
+
+
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
 
         public static readonly StyledProperty<Type> ValueTypeProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
+
+        private ValueEditorCollection _collection;
 
         private bool _ignoreUpdate;
 
@@ -36,6 +46,11 @@
         public string Category {
             get => this.GetValue(CategoryProperty);
             set => this.SetValue(CategoryProperty, value);
+        }
+
+        public ValueEditorCollection Collection {
+            get => this._collection;
+            set => this.SetAndRaise(CollectionProperty, ref this._collection, value);
         }
 
         public object Owner {

@@ -22,6 +22,7 @@
         /// </summary>
         /// <value>The colliders.</value>
         [DataMember(Order = 0)]
+        [Category("Collider")]
         public Collider? Collider {
             get => this._collider;
 

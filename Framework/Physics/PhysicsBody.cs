@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
@@ -59,6 +60,7 @@
     /// A base for entities that implement <see cref="IPhysicsBody" />.
     /// </summary>
     [Display(Name = "Physics Body")]
+    [Category("Body")]
     public abstract class PhysicsBody : Entity, IPhysicsBody {
         [DataMember]
         private int _updateOrder;
