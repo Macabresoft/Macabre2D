@@ -20,7 +20,7 @@
             <Grid RowDefinitions="Auto, *"
                   Margin="{StaticResource DoubleMarginAll}">
                 <Grid Grid.Row="0"
-                      ColumnDefinitions="*, Auto, Auto"
+                      ColumnDefinitions="*, Auto"
                       Margin="{StaticResource DoubleMarginVertical}">
                     <TextBlock Grid.Column="0"
                                ToolTip.Tip="{TemplateBinding Header}"
@@ -49,12 +49,6 @@
                             </TextBlock>
                         </Panel>
                     </Button>
-                    <Button Grid.Column="2"
-                            Classes="groupBoxButton"
-                            Command="{TemplateBinding CloseCommand}"
-                            CommandParameter="{TemplateBinding CloseCommandParameter}"
-                            Content="{StaticResource XCharacter}"
-                            IsVisible="{TemplateBinding CloseCommand, Converter={x:Static ObjectConverters.IsNotNull}}" />
                 </Grid>
 
                 <Border Grid.Row="1"
