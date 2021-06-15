@@ -10,6 +10,11 @@
     /// </summary>
     public interface IEditorService : INotifyPropertyChanged {
         /// <summary>
+        /// Gets or sets the color of selected colliders.
+        /// </summary>
+        Color ColliderColor { get; set; }
+
+        /// <summary>
         /// Gets or sets the drop shadow color.
         /// </summary>
         Color DropShadowColor { get; set; }
@@ -50,6 +55,7 @@
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
+        private Color _colliderColor = DefinedColors.MacabresoftBone;
         private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
         private byte _gridDivisions = 5;
         private GizmoKind _selectedGizmo = GizmoKind.Translation;
@@ -57,6 +63,12 @@
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
+
+        /// <inheritdoc />
+        public Color ColliderColor {
+            get => this._colliderColor;
+            set => this.RaiseAndSetIfChanged(ref this._colliderColor, value);
+        }
 
         /// <inheritdoc />
         public Color DropShadowColor {

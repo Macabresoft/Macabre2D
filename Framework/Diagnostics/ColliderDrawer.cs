@@ -1,6 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
+    using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
@@ -21,7 +21,6 @@
             this.Reset();
         }
 
-
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
             if (this.PrimitiveDrawer != null && this._body != null && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
@@ -29,33 +28,13 @@
                 var colliders = this._body.GetColliders();
 
                 foreach (var collider in colliders) {
-                    if (collider is CircleCollider circle) {
-                        this.PrimitiveDrawer.DrawCircle(
-                            spriteBatch,
-                            this.Scene.Game.Project.Settings.PixelsPerUnit,
-                            circle.ScaledRadius,
-                            circle.Center,
-                            50,
-                            this.Color,
-                            lineThickness);
-                    }
-                    else if (collider is LineCollider line) {
-                        this.PrimitiveDrawer.DrawLine(
-                            spriteBatch,
-                            this.Scene.Game.Project.Settings.PixelsPerUnit,
-                            line.WorldPoints.First(),
-                            line.WorldPoints.Last(),
-                            this.Color,
-                            lineThickness);
-                    }
-                    else if (collider is PolygonCollider polygon) {
-                        this.PrimitiveDrawer.DrawPolygon(
-                            spriteBatch,
-                            this.Scene.Game.Project.Settings.PixelsPerUnit,
-                            this.Color,
-                            lineThickness,
-                            polygon.WorldPoints);
-                    }
+                    this.PrimitiveDrawer.DrawCollider(
+                        collider,
+                        spriteBatch,
+                        this.Scene.Game.Project.Settings.PixelsPerUnit,
+                        this.Color,
+                        lineThickness,
+                        Vector2.Zero);
                 }
             }
         }

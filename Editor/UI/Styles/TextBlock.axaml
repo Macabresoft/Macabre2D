@@ -18,5 +18,7 @@
                 Value="CharacterEllipsis" />
         <Setter Property="VerticalAlignment"
                 Value="Center" />
+        <Setter Property="Width"
+                Value="128" />
     </Style>
 </Styles>

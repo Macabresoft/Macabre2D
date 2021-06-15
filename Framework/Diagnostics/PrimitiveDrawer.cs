@@ -1,11 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Macabresoft.Core;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// Draws primitive objects.
@@ -17,7 +16,6 @@
         /// Initializes a new instance of the <see cref="PrimitiveDrawer" /> class.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
-        /// <param name="gameSettings">The game settings.</param>
         public PrimitiveDrawer(SpriteBatch spriteBatch) {
             this._pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             this._pixel.SetData(new[] { Color.White });
@@ -30,7 +28,7 @@
         /// <param name="size">The size.</param>
         /// <returns>A filled circle sprite.</returns>
         public static Texture2D CreateCircleSprite(GraphicsDevice graphicsDevice, int size) {
-            return PrimitiveDrawer.CreateCircleSprite(graphicsDevice, size, Color.White);
+            return CreateCircleSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -69,10 +67,9 @@
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
-        /// <param name="color">The color.</param>
         /// <returns>The arrow sprite.</returns>
         public static Texture2D CreateForwardArrowSprite(GraphicsDevice graphicsDevice, int size) {
-            return PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, size, Color.White);
+            return CreateForwardArrowSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -88,7 +85,7 @@
 
             var index = 0;
             for (var y = size - 1; y >= 0; y--) {
-                var buffer = Math.Abs(size - (y * 2f));
+                var buffer = Math.Abs(size - y * 2f);
                 var fill = size - buffer;
 
                 //var difference = size - (buffer * 2 + fill);
@@ -115,10 +112,9 @@
         /// <remarks>This call will make all the pixels of the sprite white.</remarks>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="size">The size.</param>
-        /// <param name="color">The color.</param>
         /// <returns>The quad sprite.</returns>
         public static Texture2D CreateQuadSprite(GraphicsDevice graphicsDevice, Point size) {
-            return PrimitiveDrawer.CreateQuadSprite(graphicsDevice, size, Color.White);
+            return CreateQuadSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -143,7 +139,7 @@
         /// <param name="size">The size.</param>
         /// <returns>The right triangle sprite.</returns>
         public static Texture2D CreateTopLeftRightTriangleSprite(GraphicsDevice graphicsDevice, Point size) {
-            return PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
+            return CreateTopLeftRightTriangleSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -184,7 +180,7 @@
         /// <param name="size">The size.</param>
         /// <returns>The arrow sprite.</returns>
         public static Texture2D CreateUpwardsArrowSprite(GraphicsDevice graphicsDevice, int size) {
-            return PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
+            return CreateUpwardsArrowSprite(graphicsDevice, size, Color.White);
         }
 
         /// <summary>
@@ -201,7 +197,7 @@
             var index = 0;
             for (var y = 0; y < size; y++) {
                 var buffer = (size - (size - y)) / 2;
-                var fill = size - (buffer * 2);
+                var fill = size - buffer * 2;
 
                 var difference = size - (buffer * 2 + fill);
                 fill += difference;
@@ -236,7 +232,14 @@
         /// <param name="complexity">The complexity.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
-        public void DrawCircle(SpriteBatch spriteBatch, ushort pixelsPerUnit, float radius, Vector2 center, int complexity, Color color, float thickness) {
+        public void DrawCircle(
+            SpriteBatch spriteBatch,
+            ushort pixelsPerUnit,
+            float radius,
+            Vector2 center,
+            int complexity,
+            Color color,
+            float thickness) {
             var points = new Vector2[complexity];
             var step = MathHelper.TwoPi / complexity;
             var theta = 0f;
@@ -252,6 +255,45 @@
         }
 
         /// <summary>
+        /// Draws a collider as a primitive outline.
+        /// </summary>
+        /// <param name="collider">The collider.</param>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="pixelsPerUnit">The pixels per unit.</param>
+        /// <param name="color">The color of the primitive's outline.</param>
+        /// <param name="thickness">The outline thickness.</param>
+        /// <param name="offset">The offset from the collider position.</param>
+        public void DrawCollider(Collider collider, SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, Vector2 offset) {
+            if (collider is CircleCollider circle) {
+                this.DrawCircle(
+                    spriteBatch,
+                    pixelsPerUnit,
+                    circle.ScaledRadius,
+                    circle.Center + offset,
+                    50,
+                    color,
+                    thickness);
+            }
+            else if (collider is LineCollider line) {
+                this.DrawLine(
+                    spriteBatch,
+                    pixelsPerUnit,
+                    line.WorldPoints.First() + offset,
+                    line.WorldPoints.Last() + offset,
+                    color,
+                    thickness);
+            }
+            else if (collider is PolygonCollider polygon) {
+                this.DrawPolygon(
+                    spriteBatch,
+                    pixelsPerUnit,
+                    color,
+                    thickness,
+                    offset != Vector2.Zero ? polygon.WorldPoints.Select(x => x + offset) : polygon.WorldPoints);
+            }
+        }
+
+        /// <summary>
         /// Draws a line given two points.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
@@ -260,7 +302,13 @@
         /// <param name="point2">The point2.</param>
         /// <param name="color">The color.</param>
         /// <param name="thickness">The thickness.</param>
-        public void DrawLine(SpriteBatch spriteBatch, ushort pixelsPerUnit, Vector2 point1, Vector2 point2, Color color, float thickness) {
+        public void DrawLine(
+            SpriteBatch spriteBatch,
+            ushort pixelsPerUnit,
+            Vector2 point1,
+            Vector2 point2,
+            Color color,
+            float thickness) {
             var length = Vector2.Distance(point1, point2);
             var angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
             spriteBatch.Draw(
@@ -305,13 +353,14 @@
         /// <param name="thickness">The thickness.</param>
         /// <param name="points">The points.</param>
         public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, IEnumerable<Vector2> points) {
-            if (points.Count() < 3) {
+            var pointList = points?.ToList();
+            if (pointList == null || pointList.Count < 3) {
                 throw new NotSupportedException("A polygon must contain at least three points.");
             }
 
-            var previousPoint = points.LastOrDefault();
+            var previousPoint = pointList.LastOrDefault();
 
-            foreach (var point in points) {
+            foreach (var point in pointList) {
                 this.DrawLine(spriteBatch, pixelsPerUnit, previousPoint, point, color, thickness);
                 previousPoint = point;
             }
