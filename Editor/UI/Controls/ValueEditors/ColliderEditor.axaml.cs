@@ -53,16 +53,13 @@
         }
 
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-
             var types = this._assemblyService.LoadTypes(typeof(Collider));
             this._derivedTypes.Reset(types);
             this._derivedTypes.Remove(typeof(PolygonCollider));
 
-            if (this.Value != null) {
-                this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, this.Value.GetType());
-                this.ResetColliderEditors();
-            }
+            base.Initialize(value, valueType, valuePropertyName, title, owner);
+
+            this.ResetColliderEditors();
         }
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
@@ -102,7 +99,8 @@
         private void ResetColliderEditors() {
             this.ClearEditors();
 
-            if (this.Value is Collider value && this._valueEditorService != null) {
+            if (this._valueEditorService != null && this.Collection != null && this.Value is Collider value) {
+                this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
                 this._editorCollection = this._valueEditorService.CreateEditor(value, string.Empty);
                 if (this._editorCollection != null) {
                     this._editorCollection.OwnedValueChanged += this.ColliderEditor_ValueChanged;
