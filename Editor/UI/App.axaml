@@ -7,9 +7,9 @@
     </Application.DataTemplates>
     
     <Application.Styles>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml" />
-        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseDark.xaml" />
+        <FluentTheme Mode="Dark"/>
         
+        <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/Brushes.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/Margins.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/Button.axaml" />
         <StyleInclude Source="avares://Macabre2D.Editor.UI/Styles/CheckBox.axaml" />

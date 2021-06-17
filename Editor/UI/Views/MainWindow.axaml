@@ -6,18 +6,20 @@
         xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Views.Scene"
         x:Class="Macabresoft.Macabre2D.Editor.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Macabre2D">
+        Title="Macabre2D"
+        Background="{StaticResource WindowBackgroundBrush}"
+        ExtendClientAreaToDecorationsHint="True">
     <Window.Resources>
         <converters:EntitySelectionKindToBoolConverter x:Key="EntitySelectionKindToBoolConverter" />
     </Window.Resources>
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
-    <DockPanel>
+    <DockPanel Margin="{StaticResource DoubleMarginAll}">
         <Menu DockPanel.Dock="Top"
-              BorderBrush="{StaticResource ThemeBorderLowBrush}"
               BorderThickness="0,0,0,1"
-              Padding="0,2">
+              Padding="0,2"
+              HorizontalAlignment="Left">
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit"
                           Click="Exit_Click" />
