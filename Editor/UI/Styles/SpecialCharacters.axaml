@@ -4,7 +4,7 @@
 	<Style.Resources>
 		<system:String x:Key="PlusCharacter">&#65291;</system:String>
 		<system:String x:Key="TriangleDownCharacter">&#9660;</system:String>
-		<system:String x:Key="TriangleLeftCharacter">&#9664;</system:String>
+		<system:String x:Key="TriangleRightCharacter">&#9658;</system:String>
 		<system:String x:Key="XCharacter">&#10005;</system:String>
 	</Style.Resources>
 </Style>

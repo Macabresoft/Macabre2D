@@ -20,23 +20,15 @@
             <Grid RowDefinitions="Auto, *"
                   Margin="{StaticResource DoubleMarginAll}">
                 <Grid Grid.Row="0"
-                      ColumnDefinitions="*, Auto"
+                      ColumnDefinitions="Auto, *"
                       Margin="{StaticResource DoubleMarginVertical}">
-                    <TextBlock Grid.Column="0"
-                               ToolTip.Tip="{TemplateBinding Header}"
-                               FontSize="{StaticResource FontSizeLarge}"
-                               Margin="0"
-                               Text="{TemplateBinding Header}"
-                               TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Bottom" />
-
                     <Button Grid.Row="0"
-                            Grid.Column="1"
+                            Grid.Column="0"
                             Classes="groupBoxButton"
                             Command="{TemplateBinding ToggleContentCommand}">
                         <Panel>
                             <TextBlock IsVisible="{TemplateBinding HideContent}"
-                                       Text="{StaticResource TriangleLeftCharacter}" >
+                                       Text="{StaticResource TriangleRightCharacter}" >
                                 <TextBlock.RenderTransform>
                                     <ScaleTransform ScaleX="0.5"></ScaleTransform>
                                 </TextBlock.RenderTransform>
@@ -49,6 +41,14 @@
                             </TextBlock>
                         </Panel>
                     </Button>
+                    
+                    <TextBlock Grid.Column="1"
+                               ToolTip.Tip="{TemplateBinding Header}"
+                               FontSize="{StaticResource FontSizeLarge}"
+                               Margin="0"
+                               Text="{TemplateBinding Header}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Bottom" />
                 </Grid>
 
                 <Border Grid.Row="1"
