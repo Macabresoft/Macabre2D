@@ -18,31 +18,31 @@
     </Design.DataContext>
     <NativeMenu.Menu>
         <NativeMenu>
-            <NativeMenuItem Header="_File">
+            <NativeMenuItem Header="File">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="_Exit"
+                        <NativeMenuItem Header="Exit"
                                         Command="{Binding ExitCommand}"
                                         CommandParameter="{Binding $parent[Window]}"/>
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
-            <NativeMenuItem Header="_Edit">
+            <NativeMenuItem Header="Edit">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="_Undo"
+                        <NativeMenuItem Header="Undo"
                                         Command="{Binding UndoCommand}"
                                         Gesture="Ctrl + Z"/>
-                        <NativeMenuItem Header="_Redo"
+                        <NativeMenuItem Header="Redo"
                                         Command="{Binding RedoCommand}"
                                         Gesture="Ctrl + Y" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
-            <NativeMenuItem Header="_Help">
+            <NativeMenuItem Header="Help">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="_View Source"
+                        <NativeMenuItem Header="View Source"
                                         Command="{Binding ViewSourceCommand}"/>
                     </NativeMenu>
                 </NativeMenuItem.Menu>
@@ -77,6 +77,11 @@
                               Command="{Binding ViewSourceCommand}" />
                 </MenuItem>
             </Menu>
+            
+            <TextBlock Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Text="Macabre2D"/>
         </Grid>
 
         <Grid DockPanel.Dock="Bottom"
