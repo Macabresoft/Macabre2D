@@ -8,37 +8,77 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D"
         Background="{StaticResource WindowBackgroundBrush}"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="True"
+        Padding="{StaticResource DoubleMarginAll}">
     <Window.Resources>
         <converters:EntitySelectionKindToBoolConverter x:Key="EntitySelectionKindToBoolConverter" />
     </Window.Resources>
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="_File">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="_Exit"
+                                        Command="{Binding ExitCommand}"
+                                        CommandParameter="{Binding $parent[Window]}"/>
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="_Edit">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="_Undo"
+                                        Command="{Binding UndoCommand}"
+                                        Gesture="Ctrl + Z"/>
+                        <NativeMenuItem Header="_Redo"
+                                        Command="{Binding RedoCommand}"
+                                        Gesture="Ctrl + Y" />
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="_Help">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="_View Source"
+                                        Command="{Binding ViewSourceCommand}"/>
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+        </NativeMenu>
+    </NativeMenu.Menu>
     <DockPanel Margin="{StaticResource DoubleMarginAll}">
-        <Menu DockPanel.Dock="Top"
-              BorderThickness="0,0,0,1"
-              Padding="0,2"
-              HorizontalAlignment="Left">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Exit"
-                          Click="Exit_Click" />
-            </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo"
-                          Command="{Binding UndoCommand}"
-                          InputGesture="Ctrl + Z"
-                          HotKey="Ctrl + Z" />
-                <MenuItem Header="_Redo"
-                          Command="{Binding RedoCommand}"
-                          InputGesture="Ctrl + Y"
-                          HotKey="Ctrl + Y" />
-            </MenuItem>
-            <MenuItem Header="_Help">
-                <MenuItem Header="_View Source"
-                          Click="ViewSource_Click" />
-            </MenuItem>
-        </Menu>
+        <Grid DockPanel.Dock="Top"
+              ColumnDefinitions="Auto, *">
+            <Menu Grid.Column="0"
+                  BorderThickness="0,0,0,1"
+                  Padding="0,2"
+                  HorizontalAlignment="Left"
+                  IsVisible="{Binding ShowNonNativeMenu}">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Exit"
+                              Command="{Binding ExitCommand}"
+                              CommandParameter="{Binding $parent[Window]}"/>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Undo"
+                              Command="{Binding UndoCommand}"
+                              InputGesture="Ctrl + Z"
+                              HotKey="Ctrl + Z" />
+                    <MenuItem Header="_Redo"
+                              Command="{Binding RedoCommand}"
+                              InputGesture="Ctrl + Y"
+                              HotKey="Ctrl + Y" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_View Source"
+                              Command="{Binding ViewSourceCommand}" />
+                </MenuItem>
+            </Menu>
+        </Grid>
+
         <Grid DockPanel.Dock="Bottom"
               ColumnDefinitions="0.25*, Auto, 0.75*">
             <Grid Grid.Column="0"
