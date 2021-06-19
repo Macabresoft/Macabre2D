@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System.ComponentModel;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
+    using Macabresoft.Macabre2D.UI.Library.MonoGame;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using ReactiveUI;

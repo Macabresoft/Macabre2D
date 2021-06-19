@@ -1,6 +1,6 @@
 ﻿<ContentControl xmlns="https://github.com/avaloniaui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.DropDownButton">
+                x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Controls.DropDownButton">
     <ContentControl.Template>
         <ControlTemplate>
             <Button>

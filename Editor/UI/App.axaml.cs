@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor {
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Editor.Library;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Editor.UI.Views;
+    using Macabresoft.Macabre2D.UI.Library;
+    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.SceneEditor.Views;
     using Unity;
 
     public class App : Application {

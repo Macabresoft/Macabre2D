@@ -1,9 +1,9 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors"
                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                           x:TypeArguments="monoGame:Vector2"
-                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.Vector2Editor"
+                          x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors.Vector2Editor"
                           UpdateOnLostFocus="False">
     <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
         <TextBlock Grid.Column="0"

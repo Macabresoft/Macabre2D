@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Converters {
     using System;
     using System.Globalization;
     using Avalonia.Data.Converters;

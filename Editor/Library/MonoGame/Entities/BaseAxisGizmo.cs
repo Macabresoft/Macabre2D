@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
+﻿namespace Macabresoft.Macabre2D.UI.Library.MonoGame.Entities {
     using System;
     using System.ComponentModel;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;

@@ -1,9 +1,9 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels;assembly=Macabre2D.Editor.Library"
-             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;assembly=Macabre2D.Editor.Library"
-             x:Class="Macabresoft.Macabre2D.Editor.UI.Views.Scene.SceneTreeView">
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Library.ViewModels;assembly=Macabre2D.UI.Library"
+             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Library.ViewModels.Scene;assembly=Macabre2D.UI.Library"
+             x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Views.Scene.SceneTreeView">
     <Design.DataContext>
         <scene:SceneTreeViewModel />
     </Design.DataContext>

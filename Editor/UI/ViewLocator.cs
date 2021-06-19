@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.Editor.UI {
+namespace Macabresoft.Macabre2D.UI.SceneEditor {
 
     using Avalonia.Controls;
     using Avalonia.Controls.Templates;
-    using Macabresoft.Macabre2D.Editor.Library.ViewModels;
+    using Macabresoft.Macabre2D.UI.Library.ViewModels;
     using System;
 
     public class ViewLocator : IDataTemplate {

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System.Diagnostics;
 
     /// <summary>

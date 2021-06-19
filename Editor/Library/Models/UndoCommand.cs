@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Models {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Models {
     using System;
     using Macabresoft.Core;
 

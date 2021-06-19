@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI {
-    using Macabresoft.Macabre2D.Editor.Library.Mappers;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Editor.UI.Mappers;
-    using Macabresoft.Macabre2D.Editor.UI.Services;
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor {
+    using Macabresoft.Macabre2D.UI.Library.Mappers;
+    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.SceneEditor.Mappers;
+    using Macabresoft.Macabre2D.UI.SceneEditor.Services;
     using Unity;
     using Unity.Lifetime;
 

@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library {
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+﻿namespace Macabresoft.Macabre2D.UI.Library {
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+    using Macabresoft.Macabre2D.UI.Library.MonoGame;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using Unity;
     using Unity.Lifetime;
@@ -46,8 +46,8 @@
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterLibraryTypes(this IUnityContainer container) {
-            return container.RegisterType<IAvaloniaGame, SceneEditor>(new PerResolveLifetimeManager())
-                .RegisterType<ISceneEditor, SceneEditor>(new PerResolveLifetimeManager());
+            return container.RegisterType<IAvaloniaGame, SceneEditorGame>(new PerResolveLifetimeManager())
+                .RegisterType<ISceneEditor, SceneEditorGame>(new PerResolveLifetimeManager());
         }
     }
 }

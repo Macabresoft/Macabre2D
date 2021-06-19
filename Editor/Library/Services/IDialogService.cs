@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System;
     using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Framework;

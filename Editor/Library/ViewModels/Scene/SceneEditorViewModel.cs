@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene {
+﻿namespace Macabresoft.Macabre2D.UI.Library.ViewModels.Scene {
     using System;
     using System.Reactive;
     using System.Windows.Input;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+    using Macabresoft.Macabre2D.UI.Library.MonoGame;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
     using Unity;

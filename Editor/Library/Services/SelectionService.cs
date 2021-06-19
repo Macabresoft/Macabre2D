@@ -1,10 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using Avalonia.Threading;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Models;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 

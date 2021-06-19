@@ -1,6 +1,6 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"
 	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	   xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters">
+	   xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Converters">
 	<Style.Resources>
 		<converters:WindowStateToPaddingConverter x:Key="WindowStateToPaddingConverter" />
 		<Thickness x:Key="StandardMarginAll">2</Thickness>

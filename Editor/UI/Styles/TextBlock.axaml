@@ -1,5 +1,5 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
+        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Converters"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Styles.Resources>
         <converters:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />

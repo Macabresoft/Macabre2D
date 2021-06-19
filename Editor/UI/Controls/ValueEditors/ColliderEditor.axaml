@@ -1,10 +1,10 @@
 ﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Converters"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors"
+                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Converters"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors"
                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                           x:TypeArguments="framework:Collider"
-                          x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors.ColliderEditor">
+                          x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors.ColliderEditor">
     <local:ValueEditorControl.Resources>
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>

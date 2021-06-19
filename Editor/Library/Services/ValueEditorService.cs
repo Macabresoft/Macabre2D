@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -6,8 +6,8 @@
     using System.Reflection;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Mappers;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Mappers;
+    using Macabresoft.Macabre2D.UI.Library.Models;
     using ReactiveUI;
 
     /// <summary>

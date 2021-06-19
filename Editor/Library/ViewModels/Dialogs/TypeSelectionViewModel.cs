@@ -1,12 +1,12 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
+﻿namespace Macabresoft.Macabre2D.UI.Library.ViewModels {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reactive;
     using System.Windows.Input;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene;
+    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.ViewModels.Scene;
     using ReactiveUI;
     using Unity;
 

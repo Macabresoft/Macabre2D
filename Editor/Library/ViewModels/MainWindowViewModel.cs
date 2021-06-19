@@ -1,11 +1,11 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels {
+﻿namespace Macabresoft.Macabre2D.UI.Library.ViewModels {
     using System;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Platform;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using ReactiveUI;
     using Unity;
 

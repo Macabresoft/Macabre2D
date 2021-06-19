@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Macabre2D.Editor.Tests {
+namespace Macabre2D.UI.Tests {
     public class Tests {
         [SetUp]
         public void Setup() {

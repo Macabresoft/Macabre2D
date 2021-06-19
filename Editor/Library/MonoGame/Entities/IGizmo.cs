@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities {
+﻿namespace Macabresoft.Macabre2D.UI.Library.MonoGame.Entities {
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Macabresoft.Macabre2D.Editor.AvaloniaInterop</RootNamespace>
+        <RootNamespace>Macabresoft.Macabre2D.UI.AvaloniaInterop</RootNamespace>
         <LangVersion>9</LangVersion>
     </PropertyGroup>
     <ItemGroup>

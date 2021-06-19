@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Mappers {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Mappers {
     using System;
-    using Macabresoft.Macabre2D.Editor.Library.Mappers;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
-    using Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors;
+    using Macabresoft.Macabre2D.UI.Library.Mappers;
+    using Macabresoft.Macabre2D.UI.Library.Models;
+    using Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors;
 
     /// <summary>
     /// Maps a <see cref="Type"/> of a <see cref="IValueEditor"/> for special scenarios.

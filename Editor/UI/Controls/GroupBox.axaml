@@ -1,6 +1,6 @@
 ﻿<HeaderedContentControl xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        x:Class="Macabresoft.Macabre2D.Editor.UI.Controls.GroupBox">
+                        x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Controls.GroupBox">
     <HeaderedContentControl.Styles>
         <Style Selector="Button.groupBoxButton">
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />

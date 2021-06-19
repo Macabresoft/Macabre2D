@@ -1,11 +1,11 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors {
     using System;
     using System.ComponentModel;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Models;
 
     public abstract class ValueEditorControl<T> : UserControl, IValueEditor<T> {
         public static readonly StyledProperty<object> OwnerProperty =

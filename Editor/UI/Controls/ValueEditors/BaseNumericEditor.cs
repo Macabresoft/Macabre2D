@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors {
     using System;
     using System.Data;
     using Avalonia;

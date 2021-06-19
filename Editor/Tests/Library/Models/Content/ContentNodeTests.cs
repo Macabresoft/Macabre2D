@@ -2,8 +2,8 @@
     using System.IO;
     using FluentAssertions;
     using FluentAssertions.Execution;
-    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.Models.Content;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using NSubstitute;
     using NUnit.Framework;

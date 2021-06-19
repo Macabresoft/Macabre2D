@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Converters {
     using System;
     using System.Globalization;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Models;
 
     public class EntitySelectionKindToBoolConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

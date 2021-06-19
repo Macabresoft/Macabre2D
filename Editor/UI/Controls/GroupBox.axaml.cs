@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Controls {
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls.Primitives;

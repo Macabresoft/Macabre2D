@@ -2,9 +2,9 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Macabresoft.Macabre2D.Editor.UI</RootNamespace>
-    <AssemblyName>Macabre2D.Editor.UI</AssemblyName>
+    <RootNamespace>Macabresoft.Macabre2D.UI.SceneEditor</RootNamespace>
     <LangVersion>9</LangVersion>
+    <PackageId>Macabre2D.UI.SceneEditor</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -18,7 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-    <ProjectReference Include="..\AvaloniaInterop\Macabre2D.Editor.AvaloniaInterop.csproj" />
-    <ProjectReference Include="..\Library\Macabre2D.Editor.Library.csproj" />
+    <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
+    <ProjectReference Include="..\Library\Macabre2D.UI.Library.csproj" />
   </ItemGroup>
 </Project>

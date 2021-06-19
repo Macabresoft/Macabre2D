@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Converters {
     using System;
     using System.Globalization;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame;
+    using Macabresoft.Macabre2D.UI.Library.MonoGame;
 
     /// <summary>
     /// A converter that takes two objects and returns a value indicating whether or not they are equal.

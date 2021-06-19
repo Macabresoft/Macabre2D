@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor {
 
     using System;
     using Unity;

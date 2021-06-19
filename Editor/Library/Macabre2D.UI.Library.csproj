@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Macabresoft.Macabre2D.Editor.Library</RootNamespace>
-    <AssemblyName>Macabre2D.Editor.Library</AssemblyName>
+    <RootNamespace>Macabresoft.Macabre2D.UI.Library</RootNamespace>
+    <AssemblyName>Macabre2D.UI.Library</AssemblyName>
     <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -28,7 +28,7 @@
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AvaloniaInterop\Macabre2D.Editor.AvaloniaInterop.csproj" />
+    <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
     <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
   </ItemGroup>
 </Project>

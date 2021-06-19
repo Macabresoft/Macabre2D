@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Controls.ValueEditors {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -6,8 +6,8 @@
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
 
     public class ColliderEditor : ValueEditorControl<Collider> {

@@ -4,6 +4,8 @@
         <TargetFramework>net5.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>Macabresoft.Macabre2D.UI.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-      <ProjectReference Include="..\Library\Macabre2D.Editor.Library.csproj" />
+      <ProjectReference Include="..\Library\Macabre2D.UI.Library.csproj" />
     </ItemGroup>
 
 </Project>

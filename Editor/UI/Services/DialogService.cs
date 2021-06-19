@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Editor.UI.Services {
+﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Services {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
-    using Macabresoft.Macabre2D.Editor.UI.Views;
+    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.SceneEditor.Views;
     using Unity.Resolution;
 
     /// <summary>

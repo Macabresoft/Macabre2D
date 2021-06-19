@@ -1,6 +1,6 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.MonoGame.Systems {
-    using Macabresoft.Macabre2D.Editor.Library.MonoGame.Entities;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+﻿namespace Macabresoft.Macabre2D.UI.Library.MonoGame.Systems {
+    using Macabresoft.Macabre2D.UI.Library.MonoGame.Entities;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>

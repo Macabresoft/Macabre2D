@@ -1,7 +1,7 @@
 ﻿using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 
-namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
+namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
@@ -11,7 +11,7 @@ namespace Macabresoft.Macabre2D.Editor.AvaloniaInterop {
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop.Extensions;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System;

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene {
+﻿namespace Macabresoft.Macabre2D.UI.Library.ViewModels.Scene {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
     using Unity;

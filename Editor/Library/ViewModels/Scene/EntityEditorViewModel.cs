@@ -1,5 +1,5 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.ViewModels.Scene {
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+﻿namespace Macabresoft.Macabre2D.UI.Library.ViewModels.Scene {
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Unity;
 
     public class EntityEditorViewModel : ViewModelBase {

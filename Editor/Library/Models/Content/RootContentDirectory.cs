@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Models.Content {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Models.Content {
     using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.Editor.Library.Services;
+    using Macabresoft.Macabre2D.UI.Library.Services;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>

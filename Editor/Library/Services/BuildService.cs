@@ -1,8 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using Macabresoft.Core;
     using System.Diagnostics;
     using System.IO;
-    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using Macabresoft.Macabre2D.UI.Library.Models.Content;
     using System.Linq;
 
     /// <summary>

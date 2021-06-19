@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
     using Avalonia;
     using Avalonia.Controls;
-    using Macabresoft.Macabre2D.Editor.AvaloniaInterop;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
     using Point = Microsoft.Xna.Framework.Point;
 

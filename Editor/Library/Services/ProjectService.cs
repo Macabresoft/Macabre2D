@@ -1,12 +1,12 @@
-﻿namespace Macabresoft.Macabre2D.Editor.Library.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Library.Services {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
-    using Macabresoft.Macabre2D.Editor.Library.Models;
-    using Macabresoft.Macabre2D.Editor.Library.Models.Content;
+    using Macabresoft.Macabre2D.UI.Library.Models;
+    using Macabresoft.Macabre2D.UI.Library.Models.Content;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
