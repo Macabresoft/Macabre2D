@@ -23,15 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.Content",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Tests", "Tests\Macabre2D.Tests.csproj", "{24A0BAE5-1C52-416E-880A-C2440FF063D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.AvaloniaInterop", "Editor\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.AvaloniaInterop", "UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj", "{96987098-E920-47E7-A2CF-CC25A1C97F2A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.AvaloniaWindow", "Samples\AvaloniaWindow\Macabre2D.Samples.AvaloniaWindow.csproj", "{DE26FED5-C0BE-46C3-8426-890B71CABCE5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editor", "Editor", "{286A8E80-F4CC-4212-B9BD-54FCC61B7F8F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{286A8E80-F4CC-4212-B9BD-54FCC61B7F8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.Library", "Editor\Library\Macabre2D.UI.Library.csproj", "{A3560F2F-786D-4A53-A2A2-3A6CCE1C891C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.Library", "UI\Library\Macabre2D.UI.Library.csproj", "{A3560F2F-786D-4A53-A2A2-3A6CCE1C891C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.SceneEditor", "Editor\UI\Macabre2D.UI.SceneEditor.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.SceneEditor", "UI\SceneEditor\Macabre2D.UI.SceneEditor.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{A707DA94-5554-4B3F-9E19-559D9EA577E9}"
 EndProject
@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Project.Gameplay"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Project.DesktopGL", "Project\DesktopGL\Macabre2D.Project.DesktopGL.csproj", "{1D3272F5-C42A-4577-914D-29F8759C91B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "Editor\Tests\Macabre2D.UI.Tests.csproj", "{38C69253-BBE3-460F-8672-C7FFC9F833F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Tests\Macabre2D.UI.Tests.csproj", "{38C69253-BBE3-460F-8672-C7FFC9F833F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
