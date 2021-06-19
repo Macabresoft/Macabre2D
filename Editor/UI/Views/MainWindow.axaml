@@ -7,9 +7,8 @@
         x:Class="Macabresoft.Macabre2D.Editor.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D"
-        Background="{StaticResource WindowBackgroundBrush}"
         ExtendClientAreaToDecorationsHint="True"
-        Padding="{StaticResource DoubleMarginAll}">
+        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Window.Resources>
         <converters:EntitySelectionKindToBoolConverter x:Key="EntitySelectionKindToBoolConverter" />
     </Window.Resources>
@@ -21,9 +20,12 @@
             <NativeMenuItem Header="File">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Exit"
-                                        Command="{Binding ExitCommand}"
-                                        CommandParameter="{Binding $parent[Window]}"/>
+                        <NativeMenuItem Header="Save Scene"
+                                        IsEnabled="False" />
+                        <NativeMenuItem Header="Save Scene As"
+                                        IsEnabled="False" />
+                        <NativeMenuItem Header="Open Scene"
+                                        IsEnabled="False" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -32,7 +34,7 @@
                     <NativeMenu>
                         <NativeMenuItem Header="Undo"
                                         Command="{Binding UndoCommand}"
-                                        Gesture="Ctrl + Z"/>
+                                        Gesture="Ctrl + Z" />
                         <NativeMenuItem Header="Redo"
                                         Command="{Binding RedoCommand}"
                                         Gesture="Ctrl + Y" />
@@ -43,15 +45,23 @@
                 <NativeMenuItem.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="View Source"
-                                        Command="{Binding ViewSourceCommand}"/>
+                                        Command="{Binding ViewSourceCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
         </NativeMenu>
     </NativeMenu.Menu>
-    <DockPanel Margin="{StaticResource DoubleMarginAll}">
+    <DockPanel>
         <Grid DockPanel.Dock="Top"
               ColumnDefinitions="Auto, *">
+            <Border DockPanel.Dock="Top"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Stretch"
+                    IsHitTestVisible="False"
+                    Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
+                    Padding="{StaticResource DoubleMarginAll}"
+                    ZIndex="-1" />
+
             <Menu Grid.Column="0"
                   BorderThickness="0,0,0,1"
                   Padding="0,2"
@@ -60,7 +70,7 @@
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit"
                               Command="{Binding ExitCommand}"
-                              CommandParameter="{Binding $parent[Window]}"/>
+                              CommandParameter="{Binding $parent[Window]}" />
                 </MenuItem>
                 <MenuItem Header="_Edit">
                     <MenuItem Header="_Undo"
@@ -77,15 +87,17 @@
                               Command="{Binding ViewSourceCommand}" />
                 </MenuItem>
             </Menu>
-            
+
             <TextBlock Grid.Column="1"
                        HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                        IsHitTestVisible="False"
-                       Text="Macabre2D"/>
+                       Text="Macabre2D" />
         </Grid>
 
         <Grid DockPanel.Dock="Bottom"
-              ColumnDefinitions="0.25*, Auto, 0.75*">
+              ColumnDefinitions="0.25*, Auto, 0.75*"
+              Margin="{StaticResource DoubleMarginAll}">
             <Grid Grid.Column="0"
                   RowDefinitions="0.4*, Auto, 0.6*">
                 <scene:SceneTreeView Grid.Row="0" />
