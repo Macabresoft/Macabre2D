@@ -8,6 +8,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D"
         ExtendClientAreaToDecorationsHint="True"
+        WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Window.Resources>
         <converters:EntitySelectionKindToBoolConverter x:Key="EntitySelectionKindToBoolConverter" />

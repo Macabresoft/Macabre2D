@@ -38,8 +38,8 @@
            
            <!-- TODO -->
            <Color x:Key="SystemErrorTextColor">#FFF000</Color>
-           <Color x:Key="SystemAccentColor">#634960</Color>
            
+           <Color x:Key="SystemAccentColor">#634960</Color>
            <Color x:Key="SystemRevealListLowColor">#18E3DAC9</Color>
            <Color x:Key="SystemRevealListMediumColor">#30E3DAC9</Color>
            </Style.Resources>
