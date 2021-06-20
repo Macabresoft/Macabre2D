@@ -54,48 +54,48 @@
     </NativeMenu.Menu>
     <DockPanel>
         <Grid DockPanel.Dock="Top"
-              ColumnDefinitions="Auto, Auto, *">
+              ColumnDefinitions="Auto, *">
             <Border DockPanel.Dock="Top"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="2"
                     HorizontalAlignment="Stretch"
                     IsHitTestVisible="False"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
                     Padding="{StaticResource DoubleMarginAll}"
                     ZIndex="-1" />
-            
-            <Image Grid.Column="0"
-                   Width="16"
-                   Height="16"
-                   Margin="{StaticResource DoubleMarginHorizontal}"
-                   Source="/Assets/avalonia-logo.ico"/>
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        IsVisible="{Binding ShowNonNativeMenu}">
+                <Image Width="16"
+                       Height="16"
+                       Margin="{StaticResource DoubleMarginHorizontal}"
+                       Source="/Assets/avalonia-logo.ico"/>
 
-            <Menu Grid.Column="1"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  IsVisible="{Binding ShowNonNativeMenu}">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Exit"
-                              InputGesture="Alt + F4"
-                              Command="{Binding ExitCommand}"
-                              CommandParameter="{Binding $parent[Window]}" />
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="_Undo"
-                              Command="{Binding UndoCommand}"
-                              InputGesture="Ctrl + Z"
-                              HotKey="Ctrl + Z" />
-                    <MenuItem Header="_Redo"
-                              Command="{Binding RedoCommand}"
-                              InputGesture="Ctrl + Y"
-                              HotKey="Ctrl + Y" />
-                </MenuItem>
-                <MenuItem Header="_Help">
-                    <MenuItem Header="_View Source"
-                              Command="{Binding ViewSourceCommand}" />
-                </MenuItem>
-            </Menu>
+                <Menu HorizontalAlignment="Left"
+                      VerticalAlignment="Center">
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Exit"
+                                  InputGesture="Alt + F4"
+                                  Command="{Binding ExitCommand}"
+                                  CommandParameter="{Binding $parent[Window]}" />
+                    </MenuItem>
+                    <MenuItem Header="_Edit">
+                        <MenuItem Header="_Undo"
+                                  Command="{Binding UndoCommand}"
+                                  InputGesture="Ctrl + Z"
+                                  HotKey="Ctrl + Z" />
+                        <MenuItem Header="_Redo"
+                                  Command="{Binding RedoCommand}"
+                                  InputGesture="Ctrl + Y"
+                                  HotKey="Ctrl + Y" />
+                    </MenuItem>
+                    <MenuItem Header="_Help">
+                        <MenuItem Header="_View Source"
+                                  Command="{Binding ViewSourceCommand}" />
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
 
-            <TextBlock Grid.Column="2"
+            <TextBlock Grid.Column="1"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
