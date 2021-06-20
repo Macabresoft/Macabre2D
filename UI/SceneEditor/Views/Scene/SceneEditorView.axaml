@@ -1,9 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.SceneEditor.Converters"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Library.MonoGame;assembly=Macabre2D.UI.Library"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Library.ViewModels;assembly=Macabre2D.UI.Library"
              xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Library.ViewModels.Scene;assembly=Macabre2D.UI.Library"
              x:Class="Macabresoft.Macabre2D.UI.SceneEditor.Views.Scene.SceneEditorView">
     <Design.DataContext>

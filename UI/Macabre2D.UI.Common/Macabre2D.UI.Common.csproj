@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.10.6" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.6" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Assets\avalonia-logo.ico" />
+      <UpToDateCheckInput Remove="Views\MainWindow.axaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Library\Macabre2D.UI.Library.csproj" />
+    </ItemGroup>
+</Project>

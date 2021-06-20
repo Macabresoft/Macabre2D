@@ -1,14 +1,13 @@
-﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.Common.Converters {
     using System;
     using System.Globalization;
     using Avalonia.Data.Converters;
     using Macabresoft.Core;
 
     /// <summary>
-    /// Converts from a <see cref="Type"/> or <see cref="Enum"/> to a display name.
+    /// Converts from a <see cref="Type" /> or <see cref="Enum" /> to a display name.
     /// </summary>
     public class ToDisplayNameConverter : IValueConverter {
-        
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var result = string.Empty;

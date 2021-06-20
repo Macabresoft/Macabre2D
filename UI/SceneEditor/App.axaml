@@ -8,15 +8,6 @@
     </Application.DataTemplates>
     
     <Application.Styles>
-        <FluentTheme Mode="Dark"/>
-        
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/Brushes.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/Margins.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/Button.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/CheckBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/ComboBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/SpecialCharacters.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/TextBlock.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.SceneEditor/Styles/TextBox.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.Common/MacabreTheme.axaml" />
     </Application.Styles>
 </Application>
