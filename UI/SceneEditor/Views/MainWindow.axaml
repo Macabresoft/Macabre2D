@@ -54,22 +54,28 @@
     </NativeMenu.Menu>
     <DockPanel>
         <Grid DockPanel.Dock="Top"
-              ColumnDefinitions="Auto, *">
+              ColumnDefinitions="Auto, Auto, *">
             <Border DockPanel.Dock="Top"
-                    Grid.ColumnSpan="2"
+                    Grid.ColumnSpan="3"
                     HorizontalAlignment="Stretch"
                     IsHitTestVisible="False"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
                     Padding="{StaticResource DoubleMarginAll}"
                     ZIndex="-1" />
+            
+            <Image Grid.Column="0"
+                   Width="16"
+                   Height="16"
+                   Margin="{StaticResource DoubleMarginHorizontal}"
+                   Source="/Assets/avalonia-logo.ico"/>
 
-            <Menu Grid.Column="0"
-                  BorderThickness="0,0,0,1"
-                  Padding="0,2"
+            <Menu Grid.Column="1"
                   HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
                   IsVisible="{Binding ShowNonNativeMenu}">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit"
+                              InputGesture="Alt + F4"
                               Command="{Binding ExitCommand}"
                               CommandParameter="{Binding $parent[Window]}" />
                 </MenuItem>
@@ -89,7 +95,7 @@
                 </MenuItem>
             </Menu>
 
-            <TextBlock Grid.Column="1"
+            <TextBlock Grid.Column="2"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
