@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Mappers {
     using System;
-    using Macabresoft.Macabre2D.UI.Library.Mappers;
-    using Macabresoft.Macabre2D.UI.Library.Models;
+    using Macabresoft.Macabre2D.UI.Common.Mappers;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.SceneEditor.Controls.ValueEditors;
 
     /// <summary>

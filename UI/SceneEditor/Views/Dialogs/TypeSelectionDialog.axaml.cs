@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.SceneEditor.Views {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Library.ViewModels;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using Unity;
 
     public class TypeSelectionDialog : Window {

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.Common.Services;
 
     internal class TestFileSystemService : IFileSystemService {
         public TestFileSystemService() {

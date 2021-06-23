@@ -3,8 +3,8 @@
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Library.Models.Content;
-    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using NUnit.Framework;
 
     [TestFixture]

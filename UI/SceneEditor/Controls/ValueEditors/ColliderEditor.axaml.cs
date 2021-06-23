@@ -6,8 +6,8 @@
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Library.Models;
-    using Macabresoft.Macabre2D.UI.Library.Services;
+    using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
 
     public class ColliderEditor : ValueEditorControl<Collider> {

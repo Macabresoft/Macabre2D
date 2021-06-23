@@ -5,7 +5,7 @@
     using Avalonia.Controls;
     using Avalonia.Data;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Library.Models;
+    using Macabresoft.Macabre2D.UI.Common.Models;
 
     public abstract class ValueEditorControl<T> : UserControl, IValueEditor<T> {
         public static readonly StyledProperty<object> OwnerProperty =
