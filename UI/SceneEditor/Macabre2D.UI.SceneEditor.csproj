@@ -5,6 +5,8 @@
     <RootNamespace>Macabresoft.Macabre2D.UI.SceneEditor</RootNamespace>
     <LangVersion>9</LangVersion>
     <PackageId>Macabre2D.UI.SceneEditor</PackageId>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\..\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />

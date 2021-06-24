@@ -3,6 +3,7 @@
     using System.IO;
     using System.Reflection;
     using Macabresoft.Macabre2D.Framework;
+    using Unity;
 
     /// <summary>
     /// Interface for a service which provides typical paths for the editor to access the project and its content.
@@ -65,6 +66,8 @@
         /// </summary>
         public const string ContentDirectoryName = "Content";
 
+        public const string DesktopGLName = "DesktopGL";
+
         /// <summary>
         /// The name of the obj directory.
         /// </summary>
@@ -73,6 +76,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PathService" /> class.
         /// </summary>
+        [InjectionConstructor]
         public PathService() : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)) {
         }
 
@@ -85,7 +89,7 @@
             this.EditorBinDirectoryPath = editorBinDirectoryPath;
             this.ProjectDirectoryPath = projectDirectoryPath;
             this.ContentDirectoryPath = Path.Combine(this.ProjectDirectoryPath, ContentDirectoryName);
-            this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, ContentDirectoryName);
+            this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
             this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
             this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
             this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
@@ -93,7 +97,7 @@
 
         private PathService(string editorBinDirectoryPath) : this(
             editorBinDirectoryPath,
-            new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", "..", "..", "..", "Project")).FullName) {
+            new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", "Project")).FullName) {
         }
 
         /// <inheritdoc />
