@@ -43,7 +43,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseGame" /> class.
         /// </summary>
-        protected BaseGame() : base() {
+        public BaseGame() : base() {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
         }
