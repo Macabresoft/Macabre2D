@@ -233,6 +233,7 @@
                 }
 
                 this.ResolveNewContentFiles(this._rootContentDirectory);
+                this.BuildContentForProject();
             }
         }
 
@@ -283,6 +284,47 @@
             foreach (var child in currentContentDirectories) {
                 this.ResolveNewContentFiles(child);
             }
+        }
+        
+        private void BuildContentForProject() {
+            var platform = "DesktopGL";
+            var mgcbStringBuilder = new StringBuilder();
+            var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{platform}.mgcb");
+            var buildArgs = new BuildContentArguments(
+                mgcbFilePath,
+                platform,
+                true);
+
+            var outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
+
+            mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
+            mgcbStringBuilder.AppendLine();
+
+            foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
+                mgcbStringBuilder.AppendLine(argument);
+            }
+
+            mgcbStringBuilder.AppendLine();
+            mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
+            mgcbStringBuilder.AppendLine();
+            mgcbStringBuilder.AppendLine();
+            mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
+            mgcbStringBuilder.AppendLine();
+
+            mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
+            mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
+            mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
+            mgcbStringBuilder.AppendLine();
+
+            var contentFiles = this.RootContentDirectory.GetAllContentFiles();
+            foreach (var contentFile in contentFiles) {
+                mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
+                mgcbStringBuilder.AppendLine();
+            }
+
+            var mgcbText = mgcbStringBuilder.ToString();
+            this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+            this._buildService.BuildContent(buildArgs, outputDirectoryPath);
         }
 
         private void SaveMetadata(ContentMetadata metadata) {

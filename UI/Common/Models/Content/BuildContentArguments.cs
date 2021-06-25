@@ -13,7 +13,6 @@
         /// Initializes a new instance of the <see cref="BuildContentArguments" /> struct.
         /// </summary>
         /// <param name="contentFilePath">The content file path.</param>
-        /// <param name="contentDirectoryPath">The content directory path.</param>
         /// <param name="platform">The platform.</param>
         /// <param name="performCompression">if set to <c>true</c> MGCB will perform compression.</param>
         public BuildContentArguments(
