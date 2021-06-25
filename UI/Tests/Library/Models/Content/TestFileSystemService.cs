@@ -81,7 +81,7 @@
         private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();
             var directories = new List<string>();
-            this.DirectoryToChildrenMap[this.TestPathService.ProjectDirectoryPath] = new[] { PathService.ContentDirectoryName };
+            this.DirectoryToChildrenMap[this.TestPathService.PlatformsDirectoryPath] = new[] { PathService.ContentDirectoryName };
             this.DirectoryToChildrenMap[PathService.ContentDirectoryName] = directories;
             for (var i = 0; i < 3; i++) {
                 var name = Guid.NewGuid();

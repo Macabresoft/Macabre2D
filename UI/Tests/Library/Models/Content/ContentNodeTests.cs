@@ -14,8 +14,8 @@
         [Category("Unit Tests")]
         public void ChangeParent_ShouldChangePaths() {
             var pathService = Substitute.For<IPathService>();
-            pathService.ProjectDirectoryPath.Returns(ProjectPath);
-            pathService.ContentDirectoryPath.Returns(pathService.ProjectDirectoryPath, PathService.ContentDirectoryName);
+            pathService.PlatformsDirectoryPath.Returns(ProjectPath);
+            pathService.ContentDirectoryPath.Returns(pathService.PlatformsDirectoryPath, PathService.ContentDirectoryName);
 
             var root = new RootContentDirectory(Substitute.For<IFileSystemService>(), pathService);
             var directory1 = new ContentDirectory("D1", root);

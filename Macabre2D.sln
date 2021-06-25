@@ -31,9 +31,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{286A8E80-F4CC-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.SceneEditor", "UI\SceneEditor\Macabre2D.UI.SceneEditor.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{A707DA94-5554-4B3F-9E19-559D9EA577E9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{A707DA94-5554-4B3F-9E19-559D9EA577E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Project.DesktopGL", "Project\DesktopGL\Macabre2D.Project.DesktopGL.csproj", "{1D3272F5-C42A-4577-914D-29F8759C91B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Platforms.DesktopGL", "Platforms\DesktopGL\Macabre2D.Platforms.DesktopGL.csproj", "{1D3272F5-C42A-4577-914D-29F8759C91B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Tests\Macabre2D.UI.Tests.csproj", "{38C69253-BBE3-460F-8672-C7FFC9F833F1}"
 EndProject

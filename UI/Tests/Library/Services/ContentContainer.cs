@@ -27,7 +27,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.MetadataToArchive = metadataToArchive.ToArray();
             this.NewContentFiles = newContentFiles.ToArray();
 
-            this.FileSystem.DoesDirectoryExist(this._pathService.ProjectDirectoryPath).Returns(true);
+            this.FileSystem.DoesDirectoryExist(this._pathService.PlatformsDirectoryPath).Returns(true);
             this.FileSystem.DoesDirectoryExist(this._pathService.ContentDirectoryPath).Returns(true);
             this.FileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath).Returns(true);
             this.FileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath).Returns(true);

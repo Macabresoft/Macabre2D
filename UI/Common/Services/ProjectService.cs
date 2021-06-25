@@ -52,8 +52,6 @@
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
-        private const string MGCBFileName = "Content.Editor.mgcb";
-
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
 
         private readonly IAssetManager _assetManager;
@@ -218,8 +216,8 @@
         }
 
         private void LoadContent() {
-            if (!string.IsNullOrWhiteSpace(this._pathService.ProjectDirectoryPath)) {
-                this._fileSystem.CreateDirectory(this._pathService.ProjectDirectoryPath);
+            if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
+                this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);
 
                 if (this._rootContentDirectory != null) {
                     this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;

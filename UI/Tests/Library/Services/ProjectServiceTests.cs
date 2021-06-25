@@ -266,7 +266,7 @@
         private IFileSystemService CreateFileSystem(IPathService pathService, bool shouldProjectFileExist) {
             var fileSystem = Substitute.For<IFileSystemService>();
             fileSystem.DoesFileExist(pathService.ProjectFilePath).Returns(shouldProjectFileExist);
-            fileSystem.DoesDirectoryExist(pathService.ProjectDirectoryPath).Returns(true);
+            fileSystem.DoesDirectoryExist(pathService.PlatformsDirectoryPath).Returns(true);
             fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
             fileSystem.DoesDirectoryExist(pathService.MetadataDirectoryPath).Returns(true);
             fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);

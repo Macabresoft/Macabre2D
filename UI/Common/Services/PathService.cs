@@ -35,9 +35,9 @@
         string MetadataDirectoryPath { get; }
 
         /// <summary>
-        /// Gets the path to the project directory.
+        /// Gets the path to the platforms directory.
         /// </summary>
-        string ProjectDirectoryPath { get; }
+        string PlatformsDirectoryPath { get; }
 
         /// <summary>
         /// Gets the path to the project file.
@@ -84,11 +84,11 @@
         /// Initializes a new instance of the <see cref="PathService" /> class.
         /// </summary>
         /// <param name="editorBinDirectoryPath">Path to the editor binaries, used for building MGCB.</param>
-        /// <param name="projectDirectoryPath">Path to the project directory.</param>
-        public PathService(string editorBinDirectoryPath, string projectDirectoryPath) {
+        /// <param name="platformsDirectoryPath">Path to the platforms directory.</param>
+        public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) {
             this.EditorBinDirectoryPath = editorBinDirectoryPath;
-            this.ProjectDirectoryPath = projectDirectoryPath;
-            this.ContentDirectoryPath = Path.Combine(this.ProjectDirectoryPath, ContentDirectoryName);
+            this.PlatformsDirectoryPath = platformsDirectoryPath;
+            this.ContentDirectoryPath = Path.Combine(this.PlatformsDirectoryPath, ContentDirectoryName);
             this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
             this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
             this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
@@ -97,7 +97,7 @@
 
         private PathService(string editorBinDirectoryPath) : this(
             editorBinDirectoryPath,
-            new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", "Project")).FullName) {
+            new DirectoryInfo(Path.Combine(editorBinDirectoryPath, "..", "..", "Platforms")).FullName) {
         }
 
         /// <inheritdoc />
@@ -116,7 +116,7 @@
         public string MetadataDirectoryPath { get; }
 
         /// <inheritdoc />
-        public string ProjectDirectoryPath { get; }
+        public string PlatformsDirectoryPath { get; }
 
         /// <inheritdoc />
         public string ProjectFilePath { get; }

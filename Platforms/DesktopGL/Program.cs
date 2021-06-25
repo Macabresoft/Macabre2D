@@ -1,4 +1,4 @@
-﻿namespace Macabre2D.Project.DesktopGL {
+﻿namespace Macabresoft.Macabre2D.Platforms.DesktopGL {
     using System;
     using Macabresoft.Macabre2D.Framework;
 

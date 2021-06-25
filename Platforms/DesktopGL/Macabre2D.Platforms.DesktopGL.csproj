@@ -7,7 +7,7 @@
     <LangVersion>9</LangVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <RootNamespace>Macabresoft.Macabre2D.Project.DesktopGL</RootNamespace>
+    <RootNamespace>Macabresoft.Macabre2D.Platforms.DesktopGL</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\..\bin\$(Configuration)\DesktopGL</OutputPath>
   </PropertyGroup>
