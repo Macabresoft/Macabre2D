@@ -1,16 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.Framework {
-
-    using Microsoft.Xna.Framework;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// An interface to read common game settings.
     /// </summary>
     public interface IGameSettings {
-
         /// <summary>
         /// Gets the default graphics settings.
         /// </summary>
@@ -24,6 +22,26 @@
         Point DefaultResolution { get; }
 
         /// <summary>
+        /// Gets the inverse of <see cref="PixelsPerUnit" />.
+        /// </summary>
+        /// <value>
+        /// <remarks>
+        /// This will be calculated when <see cref="PixelsPerUnit" /> is set.
+        /// Multiplication is a quicker operation than division, so if you find yourself dividing by
+        /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
+        /// produce the same value, but quicker.
+        /// </remarks>
+        /// The inverse pixels per unit.
+        /// </value>
+        float InversePixelsPerUnit { get; }
+
+        /// <summary>
+        /// Gets the layer settings.
+        /// </summary>
+        /// <value>The layer settings.</value>
+        LayerSettings Layers { get; }
+
+        /// <summary>
         /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
         /// </summary>
         Color ErrorSpritesColor { get; set; }
@@ -33,23 +51,6 @@
         /// </summary>
         /// <value>The fallback background color.</value>
         Color FallbackBackgroundColor { get; set; }
-
-        /// <summary>
-        /// Gets the inverse of <see cref="PixelsPerUnit" />.
-        /// </summary>
-        /// <value>
-        /// <remarks>This will be calculated when <see cref="PixelsPerUnit" /> is set.
-        /// Multiplication is a quicker operation than division, so if you find yourself dividing by
-        /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
-        /// produce the same value, but quicker.</remarks> The inverse pixels per unit.
-        /// </value>
-        float InversePixelsPerUnit { get; }
-
-        /// <summary>
-        /// Gets the layer settings.
-        /// </summary>
-        /// <value>The layer settings.</value>
-        LayerSettings Layers { get; }
 
         /// <summary>
         /// Gets or sets the pixels per unit. This value is the number of pixels per abritrary game units.
@@ -86,20 +87,23 @@
     /// </summary>
     [DataContract]
     public sealed class GameSettings : IGameSettings {
-
         /// <summary>
         /// The content file name for <see cref="GameSettings" />.
         /// </summary>
         public const string ContentFileName = "Settings";
-        
+
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<string, string> _customSettings = new();
 
         private ushort _pixelsPerUnit = 32;
-        
+
         /// <inheritdoc />
         [DataMember]
-        public GraphicsSettings DefaultGraphicsSettings { get; } = new GraphicsSettings();
+        public GraphicsSettings DefaultGraphicsSettings { get; } = new();
+
+        /// <inheritdoc />
+        [DataMember]
+        public LayerSettings Layers { get; } = new();
 
         /// <inheritdoc />
         [DataMember]
@@ -118,14 +122,8 @@
 
         /// <inheritdoc />
         [DataMember]
-        public LayerSettings Layers { get; } = new LayerSettings();
-
-        /// <inheritdoc />
-        [DataMember]
         public ushort PixelsPerUnit {
-            get {
-                return this._pixelsPerUnit;
-            }
+            get => this._pixelsPerUnit;
 
             set {
                 if (value < 1) {
