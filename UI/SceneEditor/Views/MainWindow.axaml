@@ -22,7 +22,7 @@
                 <NativeMenuItem.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Save Scene"
-                                        IsEnabled="False" />
+                                        Command="{Binding SaveSceneCommand}" />
                         <NativeMenuItem Header="Save Scene As"
                                         IsEnabled="False" />
                         <NativeMenuItem Header="Open Scene"
@@ -74,6 +74,13 @@
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center">
                 <MenuItem Header="_File">
+                    <MenuItem Header="_Save Scene"
+                              Command="{Binding SaveSceneCommand}"
+                              InputGesture="Ctrl + S"
+                              HotKey="Ctrl + S" />
+                    
+                    <Separator />
+                    
                     <MenuItem Header="_Exit"
                               InputGesture="Alt + F4"
                               Command="{Binding ExitCommand}"

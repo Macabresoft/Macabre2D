@@ -24,11 +24,16 @@
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
         /// <param name="selectionService">The selection service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public MainWindowViewModel(ISelectionService selectionService, IUndoService undoService) : base() {
+        public MainWindowViewModel(ISelectionService selectionService, ISceneService sceneService, IUndoService undoService) : base() {
             if (undoService == null) {
                 throw new ArgumentNullException(nameof(undoService));
+            }
+
+            if (sceneService == null) {
+                throw new ArgumentNullException(nameof(sceneService));
             }
 
             this.SelectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
@@ -37,6 +42,9 @@
             this.RedoCommand = ReactiveCommand.Create(
                 undoService.Redo,
                 undoService.WhenAnyValue(x => x.CanRedo));
+            this.SaveSceneCommand = ReactiveCommand.Create(
+                sceneService.SaveScene,
+                sceneService.WhenAnyValue(x => x.HasChanges));
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
                 undoService.WhenAnyValue(x => x.CanUndo));
@@ -52,6 +60,11 @@
         /// Gets the command to redo a previously undone operation.
         /// </summary>
         public ICommand RedoCommand { get; }
+
+        /// <summary>
+        /// Gets the command to save the current scene.
+        /// </summary>
+        public ICommand SaveSceneCommand { get; }
 
         /// <summary>
         /// Gets the selection service.
