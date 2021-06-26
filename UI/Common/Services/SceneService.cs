@@ -119,6 +119,10 @@
                     BackgroundColor = DefinedColors.MacabresoftPurple,
                     Name = sceneName
                 };
+                
+                scene.AddSystem<UpdateSystem>();
+                scene.AddSystem<RenderSystem>();
+                scene.AddChild<Camera>();
             }
 
             var sceneAsset = new SceneAsset {

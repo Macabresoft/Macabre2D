@@ -11,7 +11,7 @@
     /// Interface for a combination of <see cref="IUpdateableSystem" /> and <see cref="IEntity" />
     /// which runs on a <see cref="IGame" />.
     /// </summary>
-    public interface IScene : IEntity, IUpdateableGameObject, IGridContainer {
+    public interface IScene : IUpdateableGameObject, IGridContainer {
         /// <summary>
         /// Gets the asset manager.
         /// </summary>

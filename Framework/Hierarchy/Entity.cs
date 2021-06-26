@@ -181,7 +181,10 @@
 
         /// <inheritdoc />
         public T AddChild<T>() where T : IEntity, new() {
-            var entity = new T();
+            var entity = new T {
+                Name = typeof(T).Name
+            };
+            
             this._children.Add(entity);
             this.OnAddChild(entity);
             return entity;
