@@ -66,6 +66,9 @@
         /// </summary>
         public const string ContentDirectoryName = "Content";
 
+        /// <summary>
+        /// The name of DesktopGL's platform directory.
+        /// </summary>
         public const string DesktopGLName = "DesktopGL";
 
         /// <summary>
@@ -88,7 +91,7 @@
         public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) {
             this.EditorBinDirectoryPath = editorBinDirectoryPath;
             this.PlatformsDirectoryPath = platformsDirectoryPath;
-            this.ContentDirectoryPath = Path.Combine(this.PlatformsDirectoryPath, ContentDirectoryName);
+            this.ContentDirectoryPath = new DirectoryInfo(Path.Combine(this.PlatformsDirectoryPath, "..", ContentDirectoryName)).FullName;
             this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
             this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
             this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);

@@ -19,8 +19,8 @@
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
-  <ItemGroup Condition="Exists('..\Content\Content.DesktopGL.mgcb')">
-    <MonoGameContentReference Include="..\Content\Content.DesktopGL.mgcb">
+  <ItemGroup Condition="Exists('..\..\Content\Content.DesktopGL.mgcb')">
+    <MonoGameContentReference Include="..\..\Content\Content.DesktopGL.mgcb">
       <Link>Content\Content.DesktopGL.mgcb</Link>
     </MonoGameContentReference>
   </ItemGroup>
