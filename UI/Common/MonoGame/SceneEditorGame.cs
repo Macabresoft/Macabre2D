@@ -3,11 +3,11 @@
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common.MonoGame.Entities;
     using Macabresoft.Macabre2D.UI.Common.MonoGame.Systems;
     using Macabresoft.Macabre2D.UI.Common.Services;
-    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
@@ -127,11 +127,11 @@
             var selectorGizmo = new SelectorGizmo(this._sceneService, this._selectionService);
             this.Camera.AddChild(selectorGizmo);
 
-            var translationGizmo = new TranslationGizmo(this._editorService, this._selectionService, this._undoService);
+            var translationGizmo = new TranslationGizmo(this._editorService, this._sceneService, this._selectionService, this._undoService);
             this.Camera.AddChild(translationGizmo);
             this._gizmos.Add(translationGizmo);
 
-            var scaleGizmo = new ScaleGizmo(this._editorService, this._selectionService, this._undoService);
+            var scaleGizmo = new ScaleGizmo(this._editorService, this._sceneService, this._selectionService, this._undoService);
             this.Camera.AddChild(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 

@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
@@ -19,12 +19,14 @@
         /// Initializes a new instance of the <see cref="ScaleGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public ScaleGizmo(
             IEditorService editorService,
+            ISceneService sceneService,
             ISelectionService selectionService,
-            IUndoService undoService) : base(editorService, selectionService) {
+            IUndoService undoService) : base(editorService, sceneService, selectionService) {
             this._undoService = undoService;
         }
 
@@ -136,9 +138,17 @@
 
                     var scale = entity.Transform.Scale;
                     var unmovedScale = this._unmovedScale;
+
+                    var originalHasChanges = this.SceneService.HasChanges;
                     this._undoService.Do(
-                        () => UpdateScale(entity, scale),
-                        () => UpdateScale(entity, unmovedScale));
+                        () => {
+                            UpdateScale(entity, scale);
+                            this.SceneService.HasChanges = true;
+                        },
+                        () => {
+                            UpdateScale(entity, unmovedScale);
+                            this.SceneService.HasChanges = originalHasChanges;
+                        });
                 }
             }
             else {

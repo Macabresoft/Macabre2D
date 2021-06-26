@@ -21,12 +21,14 @@
         /// Initializes a new instance of the <see cref="TranslationGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public TranslationGizmo(
             IEditorService editorService,
+            ISceneService sceneService,
             ISelectionService selectionService,
-            IUndoService undoService) : base(editorService, selectionService) {
+            IUndoService undoService) : base(editorService, sceneService, selectionService) {
             this._undoService = undoService;
         }
 
@@ -142,9 +144,16 @@
 
                         var position = entity.Transform.Position;
                         var unmovedPosition = this._unmovedPosition;
+                        var originalHasChanges = this.SceneService.HasChanges;
                         this._undoService.Do(
-                            () => UpdatePosition(entity, position),
-                            () => UpdatePosition(entity, unmovedPosition));
+                            () => {
+                                UpdatePosition(entity, position);
+                                this.SceneService.HasChanges = true;
+                            },
+                            () => {
+                                UpdatePosition(entity, unmovedPosition);
+                                this.SceneService.HasChanges = originalHasChanges;
+                            });
                     }
                 }
             }

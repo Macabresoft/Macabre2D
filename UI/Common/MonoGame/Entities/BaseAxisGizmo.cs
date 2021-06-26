@@ -18,20 +18,22 @@
         protected const int GizmoPointSize = 16;
 
         private const float FloatingPointTolerance = 0.0001f;
-
+        
         private ICamera _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseAxisGizmo" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
-        protected BaseAxisGizmo(IEditorService editorService, ISelectionService selectionService) {
+        protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, ISelectionService selectionService) {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 1f;
             this.EditorService = editorService;
             this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
+            this.SceneService = sceneService;
             this.SelectionService = selectionService;
             this.SelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
         }
@@ -48,12 +50,17 @@
         protected ICamera Camera => this._camera;
 
         /// <summary>
-        /// The editor service.
+        /// Gets the editor service.
         /// </summary>
         protected IEditorService EditorService { get; }
+        
+        /// <summary>
+        /// Gets the scene service.
+        /// </summary>
+        protected ISceneService SceneService { get; }
 
         /// <summary>
-        /// The selection service.
+        /// Gets the selection service.
         /// </summary>
         protected ISelectionService SelectionService { get; }
 
