@@ -9,13 +9,13 @@
     /// </summary>
     [Display(Name = "Simple Physics Body")]
     public class SimplePhysicsBody : PhysicsBody {
-        private Collider? _collider;
+        private Collider _collider = new CircleCollider();
 
         /// <inheritdoc />
-        public override BoundingArea BoundingArea => this.Collider?.BoundingArea ?? new BoundingArea();
+        public override BoundingArea BoundingArea => this.Collider.BoundingArea;
 
         /// <inheritdoc />
-        public override bool HasCollider => this.Collider != null;
+        public override bool HasCollider => true;
 
         /// <summary>
         /// Gets the colliders.
@@ -23,31 +23,31 @@
         /// <value>The colliders.</value>
         [DataMember(Order = 0)]
         [Category("Collider")]
-        public Collider? Collider {
+        public Collider Collider {
             get => this._collider;
 
             set {
                 if (this.Set(ref this._collider, value)) {
-                    this._collider?.Initialize(this);
+                    this._collider.Initialize(this);
                 }
             }
         }
 
         /// <inheritdoc />
         public override IEnumerable<Collider> GetColliders() {
-            return this.Collider != null ? new[] { this.Collider } : new Collider[0];
+            return new[] { this.Collider };
         }
 
         public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
-            this._collider?.Initialize(this);
+            this._collider.Initialize(this);
         }
 
         protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             base.OnPropertyChanged(sender, e);
 
             if (e.PropertyName == nameof(IEntity.Transform)) {
-                this._collider?.Reset();
+                this._collider.Reset();
             }
         }
     }

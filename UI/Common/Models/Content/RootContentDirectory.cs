@@ -44,11 +44,8 @@
             if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
                 var directories = fileSystemService.GetDirectories(currentDirectoryPath);
 
-                foreach (var directory in directories) {
-                    var directoryName = Path.GetDirectoryName(directory);
-                    if (!UnusedContentDirectories.Contains(directoryName)) {
-                        this.LoadDirectory(fileSystemService, directory);
-                    }
+                foreach (var directory in directories.Where(x => !UnusedContentDirectories.Any(x.EndsWith))) {
+                    this.LoadDirectory(fileSystemService, directory);
                 }
             }
         }

@@ -40,15 +40,12 @@
         public Type SelectedType {
             get => this._selectedType;
             set {
-                this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
-                Dispatcher.UIThread.Post(() => {
-                    if (value != null) {
+                if (value != null) {
+                    this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
+                    Dispatcher.UIThread.Post(() => {
                         this.SetEditorValue(this.Value, Activator.CreateInstance(value) as Collider);
-                    }
-                    else {
-                        this.SetEditorValue(this.Value, null);
-                    }
-                });
+                    });
+                }
             }
         }
 

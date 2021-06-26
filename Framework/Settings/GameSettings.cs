@@ -141,10 +141,6 @@
         [DataMember]
         public string ProjectName { get; set; } = "Project Name";
 
-        /// <inheritdoc />
-        [DataMember]
-        public Guid StartupSceneAssetId { get; set; }
-
         /// <summary>
         /// Adds the custom setting.
         /// </summary>
