@@ -1,0 +1,39 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene.SceneTreeView">
+    <Design.DataContext>
+        <scene:SceneTreeViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectionService.SelectedEntity}"
+                    Content="Add" />
+            <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectionService.SelectedEntity}"
+                    Content="Remove" />
+        </StackPanel>
+
+        <TreeView Grid.Row="1"
+                  BorderThickness="0"
+                  Name="_treeView"
+                  Items="{Binding Root, Mode=OneWay}"
+                  SelectedItem="{Binding SelectionService.SelectedEntity, Mode=TwoWay}">
+            <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.Styles>
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="framework:IEntity"
+                                  ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+            </TreeView.DataTemplates>
+        </TreeView>
+    </Grid>
+</UserControl>

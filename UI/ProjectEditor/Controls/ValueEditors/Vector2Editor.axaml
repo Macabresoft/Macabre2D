@@ -1,0 +1,31 @@
+﻿<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
+                          xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
+                          x:TypeArguments="monoGame:Vector2"
+                          x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Vector2Editor"
+                          UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
+        <TextBlock Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="{Binding $parent[local:Vector2Editor].Title}" />
+
+        <TextBlock Grid.Column="1"
+                   Text="X: "
+                   VerticalAlignment="Center" />
+
+        <local:FloatEditor Grid.Column="2"
+                           Value="{Binding $parent[local:Vector2Editor].XValue}"
+                           ValueMinimum="{Binding $parent[local:Vector2Editor].XMinimum}"
+                           ValueMaximum="{Binding $parent[local:Vector2Editor].XMaximum}" />
+
+        <TextBlock Grid.Column="3"
+                   Text="Y: "
+                   VerticalAlignment="Center" />
+
+        <local:FloatEditor Grid.Column="4"
+                           Value="{Binding $parent[local:Vector2Editor].YValue}"
+                           ValueMinimum="{Binding $parent[local:Vector2Editor].YMinimum}"
+                           ValueMaximum="{Binding $parent[local:Vector2Editor].YMaximum}" />
+    </Grid>
+</local:ValueEditorControl>
