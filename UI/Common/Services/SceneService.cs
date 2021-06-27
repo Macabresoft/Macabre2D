@@ -3,8 +3,8 @@
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
     /// <summary>
@@ -108,22 +108,19 @@
                 throw new DirectoryNotFoundException();
             }
 
-            Scene scene;
             var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
                 // TODO: Overwrite warning.
-                scene = this._serializer.Deserialize<Scene>(filePath);
             }
-            else {
-                scene = new Scene {
-                    BackgroundColor = DefinedColors.MacabresoftPurple,
-                    Name = sceneName
-                };
-                
-                scene.AddSystem<UpdateSystem>();
-                scene.AddSystem<RenderSystem>();
-                scene.AddChild<Camera>();
-            }
+
+            var scene = new Scene {
+                BackgroundColor = DefinedColors.MacabresoftPurple,
+                Name = sceneName
+            };
+
+            scene.AddSystem<UpdateSystem>();
+            scene.AddSystem<RenderSystem>();
+            scene.AddChild<Camera>();
 
             var sceneAsset = new SceneAsset {
                 Name = scene.Name
@@ -137,7 +134,7 @@
                 SceneAsset.FileExtension);
 
             this.CurrentSceneMetadata = metadata;
-            
+
             this.SaveScene();
 
             this._assetManager.RegisterMetadata(metadata);
@@ -150,7 +147,7 @@
             if (this.CurrentSceneMetadata != null && this.CurrentScene != null) {
                 var metadataPath = this._pathService.GetMetadataFilePath(this.CurrentSceneMetadata.ContentId);
                 this._serializer.Serialize(this.CurrentSceneMetadata, metadataPath);
-                
+
                 var filePath = Path.Combine(this._pathService.ContentDirectoryPath, this.CurrentSceneMetadata.GetContentPath());
                 this._serializer.Serialize(this.CurrentScene, filePath);
 
