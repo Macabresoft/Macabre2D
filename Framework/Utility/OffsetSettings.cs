@@ -10,6 +10,7 @@
     /// </summary>
     [DataContract]
     public class OffsetSettings : NotifyPropertyChanged {
+        [DataMember(Order = 1, Name = "Offset")]
         private Vector2 _offset;
         private ResettableLazy<Vector2> _size = new ResettableLazy<Vector2>(new Func<Vector2>(() => Vector2.Zero));
         private PixelOffsetType _type;
@@ -41,7 +42,6 @@
         /// /> because it provides greater accuracy when converting it to engine units.
         /// </remarks>
         /// <value>The amount.</value>
-        [DataMember(Order = 1)]
         public Vector2 Offset {
             get {
                 return this._offset;
