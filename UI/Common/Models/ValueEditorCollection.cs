@@ -64,6 +64,7 @@
         /// <inheritdoc />
         public void Dispose() {
             foreach (var valueEditor in this.ValueEditors) {
+                valueEditor.ValuePropertyName = null;
                 valueEditor.ValueChanged -= this.ValueEditor_ValueChanged;
             }
 

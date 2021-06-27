@@ -6,9 +6,9 @@
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
-    using Macabresoft.Macabre2D.Framework;
 
     public class ColliderEditor : ValueEditorControl<Collider> {
         public static readonly DirectProperty<ColliderEditor, IReadOnlyCollection<Type>> DerivedTypesProperty =
@@ -42,9 +42,7 @@
             set {
                 if (value != null) {
                     this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
-                    Dispatcher.UIThread.Post(() => {
-                        this.SetEditorValue(this.Value, Activator.CreateInstance(value) as Collider);
-                    });
+                    Dispatcher.UIThread.Post(() => { this.SetEditorValue(this.Value, Activator.CreateInstance(value) as Collider); });
                 }
             }
         }
@@ -94,17 +92,23 @@
         }
 
         private void ResetColliderEditors() {
-            this.ClearEditors();
+            try {
+                this.IgnoreUpdates = true;
+                this.ClearEditors();
 
-            if (this._valueEditorService != null && this.Collection != null && this.Value is Collider value) {
-                this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
-                this._editorCollection = this._valueEditorService.CreateEditor(value, string.Empty);
-                if (this._editorCollection != null) {
-                    this._editorCollection.OwnedValueChanged += this.ColliderEditor_ValueChanged;
-                    this._childEditors.Clear();
-                    this._childEditors.AddRange(this._editorCollection.ValueEditors);
-                    this.Collection.AddEditors(this._childEditors);
+                if (this._valueEditorService != null && this.Collection != null && this.Value is Collider value) {
+                    this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
+                    this._editorCollection = this._valueEditorService.CreateEditor(value, string.Empty);
+                    if (this._editorCollection != null) {
+                        this._editorCollection.OwnedValueChanged += this.ColliderEditor_ValueChanged;
+                        this._childEditors.Clear();
+                        this._childEditors.AddRange(this._editorCollection.ValueEditors);
+                        this.Collection.AddEditors(this._childEditors);
+                    }
                 }
+            }
+            finally {
+                this.IgnoreUpdates = false;
             }
         }
     }

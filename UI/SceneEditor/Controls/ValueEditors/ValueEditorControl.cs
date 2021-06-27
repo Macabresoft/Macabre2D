@@ -23,13 +23,11 @@
                 editor => editor.Collection,
                 (editor, value) => editor.Collection = value);
 
-
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
 
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
-
 
         public static readonly StyledProperty<string> ValuePropertyNameProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
@@ -38,9 +36,7 @@
             AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
 
         private ValueEditorCollection _collection;
-
-        private bool _ignoreUpdate;
-
+        
         public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
         public string Category {
@@ -104,6 +100,8 @@
             }
         }
 
+        protected bool IgnoreUpdates { get; set; }
+
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnDetachedFromVisualTree(e);
 
@@ -113,7 +111,7 @@
         }
 
         protected virtual void OnValueChanged(T updatedValue) {
-            if (!this._ignoreUpdate && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
+            if (!this.IgnoreUpdates && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
                 var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
                 this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
             }
@@ -137,11 +135,11 @@
         private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == this.ValuePropertyName) {
                 try {
-                    this._ignoreUpdate = true;
+                    this.IgnoreUpdates = true;
                     this.Value = (T)this.Owner.GetPropertyValue(this.ValuePropertyName);
                 }
                 finally {
-                    this._ignoreUpdate = false;
+                    this.IgnoreUpdates = false;
                 }
             }
         }
