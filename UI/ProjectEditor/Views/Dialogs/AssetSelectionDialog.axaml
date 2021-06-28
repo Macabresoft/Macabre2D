@@ -1,0 +1,50 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.AssetSelectionDialog"
+        Height="480"
+        Width="640"
+        CanResize="False"
+        Icon="/Assets/avalonia-logo.ico"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Title="Make a Selection">
+    <Design.DataContext>
+        <viewModels:AssetSelectionViewModel />
+    </Design.DataContext>
+    <Grid Margin="{StaticResource DoubleMarginAll}"
+          RowDefinitions="*, Auto">
+        <TreeView Grid.Row="0"
+                  Margin="{StaticResource StandardMarginAll}"
+                  BorderThickness="0"
+                  Name="_treeView"
+                  Items="{Binding RootContentDirectory, Mode=OneWay}"
+                  SelectedItem="{Binding SelectedContentNode, Mode=TwoWay}">
+            <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.Styles>
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="content:FilteredContentWrapper"
+                                  ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+            </TreeView.DataTemplates>
+        </TreeView>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="1"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

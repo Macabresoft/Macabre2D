@@ -1,0 +1,56 @@
+﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+    using System;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
+    using Unity;
+
+    /// <summary>
+    /// A view model for the asset selection dialog.
+    /// </summary>
+    public class AssetSelectionViewModel : BaseDialogViewModel {
+        private readonly bool _allowDirectorySelection;
+        private readonly Type _desiredAssetType;
+        private FilteredContentWrapper _selectedContentNode;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssetSelectionViewModel" /> class.
+        /// </summary>
+        public AssetSelectionViewModel() : base() {
+            this.IsOkEnabled = false;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssetSelectionViewModel" /> class.
+        /// </summary>
+        /// <param name="projectService">The project service.</param>
+        /// <param name="desiredAssetType">The desired asset type.</param>
+        /// <param name="allowDirectorySelection">
+        /// A value indicating whether or not the user can press 'Ok' after selecting a
+        /// directory node.
+        /// </param>
+        [InjectionConstructor]
+        public AssetSelectionViewModel(IProjectService projectService, Type desiredAssetType, bool allowDirectorySelection) : this() {
+            this._desiredAssetType = desiredAssetType;
+            this._allowDirectorySelection = allowDirectorySelection;
+            this.RootContentDirectory = new FilteredContentWrapper(projectService.RootContentDirectory, desiredAssetType);
+        }
+
+        /// <summary>
+        /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
+        /// </summary>
+        public FilteredContentWrapper RootContentDirectory { get; }
+
+        /// <summary>
+        /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
+        /// </summary>
+        public FilteredContentWrapper SelectedContentNode {
+            get => this._selectedContentNode;
+            set {
+                this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
+                this.IsOkEnabled = this._desiredAssetType.IsInstanceOfType(this._selectedContentNode?.Node) ||
+                                   this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
+            }
+        }
+    }
+}

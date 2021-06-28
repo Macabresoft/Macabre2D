@@ -17,8 +17,8 @@
         <viewModels:TypeSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource DoubleMarginAll}" 
-          RowDefinitions="Auto,*,Auto,Auto">
-        <ListBox Grid.Row="1"
+          RowDefinitions="*, Auto">
+        <ListBox Grid.Row="0"
                  Margin="{StaticResource StandardMarginAll}"
                  Items="{Binding Types, Mode=OneWay}"
                  SelectedItem="{Binding SelectedType}"
@@ -39,17 +39,15 @@
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="3"
+                    Grid.Row="1"
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
                     HorizontalAlignment="Right"
-                    IsDefault="True"
-                    Width="50" />
+                    IsDefault="True" />
             <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
-                    IsCancel="True"
-                    Width="50" />
+                    IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>
