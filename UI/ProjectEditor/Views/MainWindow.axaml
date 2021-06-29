@@ -110,8 +110,13 @@
         </Grid>
 
         <Grid DockPanel.Dock="Bottom"
-              ColumnDefinitions="0.25*, Auto, 0.75*"
               Margin="{StaticResource DoubleMarginAll}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.25*"
+                                  MinWidth="300" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="0.75*" />
+            </Grid.ColumnDefinitions>
             <Grid Grid.Column="0"
                   RowDefinitions="0.4*, Auto, 0.6*">
                 <scene:SceneTreeView Grid.Row="0" />
