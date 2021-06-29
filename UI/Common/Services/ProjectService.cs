@@ -218,6 +218,8 @@
         private void LoadContent() {
             if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
                 this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);
+                this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
+                this._fileSystem.CreateDirectory(this._pathService.EditorContentDirectoryPath);
 
                 if (this._rootContentDirectory != null) {
                     this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
