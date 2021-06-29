@@ -38,7 +38,7 @@
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
-        private readonly ISelectionService _selectionService;
+        private readonly IEntitySelectionService _entitySelectionService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
@@ -50,7 +50,7 @@
         /// <param name="pathService">The path service.</param>
         /// <param name="projectService">The project service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service</param>
+        /// <param name="entitySelectionService">The selection service</param>
         /// <param name="undoService">The undo service.</param>
         public SceneEditorGame(
             IAssetManager assetManager,
@@ -58,12 +58,12 @@
             IPathService pathService,
             IProjectService projectService,
             ISceneService sceneService,
-            ISelectionService selectionService,
+            IEntitySelectionService entitySelectionService,
             IUndoService undoService) : base(assetManager) {
             this._editorService = editorService;
             this._projectService = projectService;
             this._sceneService = sceneService;
-            this._selectionService = selectionService;
+            this._entitySelectionService = entitySelectionService;
             this._undoService = undoService;
 
             this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
@@ -122,16 +122,16 @@
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             this.Camera = scene.AddChild<Camera>();
             this.Camera.AddChild<CameraController>();
-            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._selectionService));
-            this.Camera.AddChild(new SelectionDisplay(this._editorService, this._selectionService));
-            var selectorGizmo = new SelectorGizmo(this._sceneService, this._selectionService);
+            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._entitySelectionService));
+            this.Camera.AddChild(new SelectionDisplay(this._editorService, this._entitySelectionService));
+            var selectorGizmo = new SelectorGizmo(this._sceneService, this._entitySelectionService);
             this.Camera.AddChild(selectorGizmo);
 
-            var translationGizmo = new TranslationGizmo(this._editorService, this._sceneService, this._selectionService, this._undoService);
+            var translationGizmo = new TranslationGizmo(this._editorService, this._sceneService, this._entitySelectionService, this._undoService);
             this.Camera.AddChild(translationGizmo);
             this._gizmos.Add(translationGizmo);
 
-            var scaleGizmo = new ScaleGizmo(this._editorService, this._sceneService, this._selectionService, this._undoService);
+            var scaleGizmo = new ScaleGizmo(this._editorService, this._sceneService, this._entitySelectionService, this._undoService);
             this.Camera.AddChild(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 

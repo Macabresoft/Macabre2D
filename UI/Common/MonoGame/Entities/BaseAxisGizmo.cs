@@ -26,16 +26,16 @@
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
-        protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, ISelectionService selectionService) {
+        /// <param name="entitySelectionService">The selection service.</param>
+        protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, IEntitySelectionService entitySelectionService) {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 1f;
             this.EditorService = editorService;
             this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
             this.SceneService = sceneService;
-            this.SelectionService = selectionService;
-            this.SelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
+            this.EntitySelectionService = entitySelectionService;
+            this.EntitySelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
         }
 
         /// <inheritdoc />
@@ -62,7 +62,7 @@
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        protected ISelectionService SelectionService { get; }
+        protected IEntitySelectionService EntitySelectionService { get; }
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -117,7 +117,7 @@
 
         /// <inheritdoc />
         public virtual bool Update(FrameTime frameTime, InputState inputState) {
-            if (this.SelectionService.SelectedEntity != null && this.CurrentAxis == GizmoAxis.None) {
+            if (this.EntitySelectionService.SelectedEntity != null && this.CurrentAxis == GizmoAxis.None) {
                 this.ResetEndPoints();
             }
 
@@ -194,7 +194,7 @@
         /// Resets the end points for each axis of the gizmo.
         /// </summary>
         protected void ResetEndPoints() {
-            var transformable = this.SelectionService.SelectedEntity;
+            var transformable = this.EntitySelectionService.SelectedEntity;
             if (transformable != null) {
                 var axisLength = this.GetAxisLength();
                 var worldTransform = transformable.Transform;
@@ -219,7 +219,7 @@
         /// </summary>
         /// <returns>A value indicating whether or not this should be enabled.</returns>
         protected virtual bool ShouldBeEnabled() {
-            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.SelectionService.SelectedEntity is IScene);
+            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.EntitySelectionService.SelectedEntity is IScene);
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -248,7 +248,7 @@
         }
 
         private void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ISelectionService.SelectedEntity)) {
+            if (e.PropertyName == nameof(IEntitySelectionService.SelectedEntity)) {
                 this.ResetIsEnabled();
             }
         }

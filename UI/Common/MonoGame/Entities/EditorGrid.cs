@@ -13,7 +13,7 @@
     internal sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
-        private readonly ISelectionService _selectionService;
+        private readonly IEntitySelectionService _entitySelectionService;
         private Camera _camera;
 
         /// <summary>
@@ -21,11 +21,11 @@
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
-        public EditorGrid(IEditorService editorService, ISceneService sceneService, ISelectionService selectionService) {
+        /// <param name="entitySelectionService">The selection service.</param>
+        public EditorGrid(IEditorService editorService, ISceneService sceneService, IEntitySelectionService entitySelectionService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
-            this._selectionService = selectionService;
+            this._entitySelectionService = entitySelectionService;
         }
 
         /// <inheritdoc />
@@ -186,11 +186,11 @@
 
         private IGridContainer ResolveGridContainer() {
             var gridContainer = GridContainer.EmptyGridContainer;
-            if (this._selectionService.SelectedEntity != null) {
-                if (this._selectionService.SelectedEntity is IGridContainer container) {
+            if (this._entitySelectionService.SelectedEntity != null) {
+                if (this._entitySelectionService.SelectedEntity is IGridContainer container) {
                     gridContainer = container;
                 }
-                else if (this._selectionService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
+                else if (this._entitySelectionService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
                     gridContainer = container;
                 }
             }

@@ -20,13 +20,13 @@
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
+        /// <param name="entitySelectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public ScaleGizmo(
             IEditorService editorService,
             ISceneService sceneService,
-            ISelectionService selectionService,
-            IUndoService undoService) : base(editorService, sceneService, selectionService) {
+            IEntitySelectionService entitySelectionService,
+            IUndoService undoService) : base(editorService, sceneService, entitySelectionService) {
             this._undoService = undoService;
         }
 
@@ -102,7 +102,7 @@
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                var entity = this.SelectionService.SelectedEntity;
+                var entity = this.EntitySelectionService.SelectedEntity;
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var lineLength = this.GetAxisLength();
                     var newPosition = mousePosition;
@@ -161,7 +161,7 @@
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.SelectionService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntitySelectionService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
         private float GetScaleSign(Vector2 dragPosition, float lineLength) {
@@ -172,7 +172,7 @@
         }
 
         private void StartDrag(GizmoAxis axis) {
-            this._unmovedScale = this.SelectionService.SelectedEntity.Transform.Scale;
+            this._unmovedScale = this.EntitySelectionService.SelectedEntity.Transform.Scale;
             this.CurrentAxis = axis;
 
             if (this.CurrentAxis == GizmoAxis.X) {

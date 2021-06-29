@@ -11,17 +11,17 @@
     /// </summary>
     internal class SelectorGizmo : Entity, IGizmo {
         private readonly ISceneService _sceneService;
-        private readonly ISelectionService _selectionService;
+        private readonly IEntitySelectionService _entitySelectionService;
         private ICamera _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectorGizmo" /> class.
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
-        public SelectorGizmo(ISceneService sceneService, ISelectionService selectionService) : base() {
+        /// <param name="entitySelectionService">The selection service.</param>
+        public SelectorGizmo(ISceneService sceneService, IEntitySelectionService entitySelectionService) : base() {
             this._sceneService = sceneService;
-            this._selectionService = selectionService;
+            this._entitySelectionService = entitySelectionService;
         }
 
         /// <inheritdoc />
@@ -46,12 +46,12 @@
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableEntities.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
 
-                if (this._selectionService.SelectedEntity != selected) {
+                if (this._entitySelectionService.SelectedEntity != selected) {
                     if (selected == null) {
-                        Dispatcher.UIThread.Post(() => this._selectionService.SelectedEntity = null);
+                        Dispatcher.UIThread.Post(() => this._entitySelectionService.SelectedEntity = null);
                     }
                     else {
-                        Dispatcher.UIThread.Post(() => this._selectionService.SelectedEntity = selected);
+                        Dispatcher.UIThread.Post(() => this._entitySelectionService.SelectedEntity = selected);
                     }
                 }
 

@@ -8,14 +8,19 @@
     </Design.DataContext>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
-        <ItemsControl Items="{Binding SelectionService.Editors}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <controls:GroupBox Header="{Binding Name}">
-                        <ItemsControl Items="{Binding ValueEditors}" />
-                    </controls:GroupBox>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Grid>
+            <ItemsControl Items="{Binding EntitySelectionService.Editors}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:GroupBox Header="{Binding Name}">
+                            <ItemsControl Items="{Binding ValueEditors}" />
+                        </controls:GroupBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding EntitySelectionService.IsBusy}"/>
+        </Grid>
     </ScrollViewer>
 </UserControl>

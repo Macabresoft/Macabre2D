@@ -22,13 +22,13 @@
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
+        /// <param name="entitySelectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public TranslationGizmo(
             IEditorService editorService,
             ISceneService sceneService,
-            ISelectionService selectionService,
-            IUndoService undoService) : base(editorService, sceneService, selectionService) {
+            IEntitySelectionService entitySelectionService,
+            IUndoService undoService) : base(editorService, sceneService, entitySelectionService) {
             this._undoService = undoService;
         }
 
@@ -130,7 +130,7 @@
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                if (this.SelectionService.SelectedEntity is IEntity entity) {
+                if (this.EntitySelectionService.SelectedEntity is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
                         var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
                         var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
@@ -167,7 +167,7 @@
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.SelectionService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntitySelectionService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
         private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
@@ -178,8 +178,8 @@
             };
 
             if (snapToAxis &&
-                this.SelectionService.SelectedEntity != null &&
-                this.SelectionService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
+                this.EntitySelectionService.SelectedEntity != null &&
+                this.EntitySelectionService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
                 gridContainer != null) {
                 newPosition = gridContainer.GetNearestTilePosition(newPosition);
             }

@@ -28,5 +28,9 @@
       <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\ColorEditor.axaml.cs">
+      <DependentUpon>ColorEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

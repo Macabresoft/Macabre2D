@@ -34,7 +34,7 @@
                 .RegisterType<IPathService, PathService>(new SingletonLifetimeManager())
                 .RegisterType<IProcessService, ProcessService>(new SingletonLifetimeManager())
                 .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
-                .RegisterType<ISelectionService, SelectionService>(new SingletonLifetimeManager())
+                .RegisterType<IEntitySelectionService, EntityEntitySelectionService>(new SingletonLifetimeManager())
                 .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
                 .RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager())
                 .RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());

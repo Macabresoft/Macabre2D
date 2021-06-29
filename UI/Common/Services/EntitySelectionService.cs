@@ -4,18 +4,23 @@
     using System.Linq;
     using Avalonia.Threading;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
 
     /// <summary>
     /// An interface for a service which handles the selection of entities and their components.
     /// </summary>
-    public interface ISelectionService : INotifyPropertyChanged {
+    public interface IEntitySelectionService : INotifyPropertyChanged {
         /// <summary>
         /// Gets the editors.
         /// </summary>
         IReadOnlyCollection<ValueEditorCollection> Editors { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the value editor service is busy.
+        /// </summary>
+        bool IsBusy { get; }
 
         /// <summary>
         /// Gets the most recently selected item
@@ -36,23 +41,24 @@
     /// <summary>
     /// A service which handles the selection of entities and their components.
     /// </summary>
-    public sealed class SelectionService : ReactiveObject, ISelectionService {
+    public sealed class EntityEntitySelectionService : ReactiveObject, IEntitySelectionService {
         private readonly ObservableCollectionExtended<ValueEditorCollection> _editors = new();
         private readonly object _editorsLock = new();
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
         private readonly IValueEditorService _valueEditorService;
+        private bool _isBusy;
         private EntitySelectionKind _mostRecentlySelectedKind = EntitySelectionKind.None;
         private IEntity _selectedEntity;
         private IUpdateableSystem _selectedSystem;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectionService" /> class.
+        /// Initializes a new instance of the <see cref="EntityEntitySelectionService" /> class.
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
         /// <param name="valueEditorService">The value editor service.</param>
-        public SelectionService(
+        public EntityEntitySelectionService(
             ISceneService sceneService,
             IUndoService undoService,
             IValueEditorService valueEditorService) {
@@ -68,6 +74,12 @@
                     return this._editors;
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public bool IsBusy {
+            get => this._isBusy;
+            private set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
         }
 
         /// <inheritdoc />
@@ -144,18 +156,25 @@
             if (this.SelectedEntity is IScene scene) {
             }
             else if (this.SelectedEntity is IEntity entity) {
-                var editorCollections = this._valueEditorService.CreateEditors(entity).ToList();
-
                 lock (this._editorsLock) {
-                    foreach (var editorCollection in this._editors) {
-                        editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
-                    }
+                    try {
+                        Dispatcher.UIThread.Post(() => this.IsBusy = true);
 
-                    foreach (var editorCollection in editorCollections) {
-                        editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-                    }
+                        var editorCollections = this._valueEditorService.CreateEditors(entity).ToList();
 
-                    Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
+                        foreach (var editorCollection in this._editors) {
+                            editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+                        }
+
+                        foreach (var editorCollection in editorCollections) {
+                            editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+                        }
+
+                        Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
+                    }
+                    finally {
+                        Dispatcher.UIThread.Post(() => this.IsBusy = false);
+                    }
                 }
             }
             else {

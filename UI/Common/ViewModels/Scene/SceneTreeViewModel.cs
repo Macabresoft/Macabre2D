@@ -37,24 +37,24 @@
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
+        /// <param name="entitySelectionService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(IDialogService dialogService, ISceneService sceneService, ISelectionService selectionService, IUndoService undoService) {
+        public SceneTreeViewModel(IDialogService dialogService, ISceneService sceneService, IEntitySelectionService entitySelectionService, IUndoService undoService) {
             this._dialogService = dialogService;
             this._sceneService = sceneService;
-            this.SelectionService = selectionService;
+            this.EntitySelectionService = entitySelectionService;
             this._undoService = undoService;
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
             this._addEntityCommand = ReactiveCommand.CreateFromTask<IEntity>(
                 async x => await this.AddEntity(x),
-                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
+                this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
 
             this._removeEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
-                this.SelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
+                this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public ISelectionService SelectionService { get; }
+        public IEntitySelectionService EntitySelectionService { get; }
 
         private async Task AddEntity(IEntity parent) {
             var type = await this._dialogService.OpenTypeSelectionDialog(typeof(IEntity), typeof(Scene));
@@ -91,13 +91,13 @@
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         parent.AddChild(child);
-                        this.SelectionService.SelectedEntity = child;
+                        this.EntitySelectionService.SelectedEntity = child;
                         this._sceneService.HasChanges = true;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         parent.RemoveChild(child);
-                        this.SelectionService.SelectedEntity = parent;
+                        this.EntitySelectionService.SelectedEntity = parent;
                         this._sceneService.HasChanges = originalHasChanges;
                     });
                 });
@@ -110,13 +110,13 @@
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
                     parent.RemoveChild(entity);
-                    this.SelectionService.SelectedEntity = null;
+                    this.EntitySelectionService.SelectedEntity = null;
                     this._sceneService.HasChanges = true;
                 });
             }, () => {
                 Dispatcher.UIThread.Post(() => {
                     parent.AddChild(entity);
-                    this.SelectionService.SelectedEntity = entity;
+                    this.EntitySelectionService.SelectedEntity = entity;
                     this._sceneService.HasChanges = originalHasChanges;
                 });
             });

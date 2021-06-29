@@ -12,15 +12,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityEditorViewModel" /> class.
         /// </summary>
-        /// <param name="selectionService">The selection service.</param>
+        /// <param name="entitySelectionService">The selection service.</param>
         [InjectionConstructor]
-        public EntityEditorViewModel(ISelectionService selectionService) {
-            this.SelectionService = selectionService;
+        public EntityEditorViewModel(IEntitySelectionService entitySelectionService) {
+            this.EntitySelectionService = entitySelectionService;
         }
 
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public ISelectionService SelectionService { get; }
+        public IEntitySelectionService EntitySelectionService { get; }
     }
 }

@@ -23,11 +23,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
-        /// <param name="selectionService">The selection service.</param>
+        /// <param name="entitySelectionService">The selection service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public MainWindowViewModel(ISelectionService selectionService, ISceneService sceneService, IUndoService undoService) : base() {
+        public MainWindowViewModel(IEntitySelectionService entitySelectionService, ISceneService sceneService, IUndoService undoService) : base() {
             if (undoService == null) {
                 throw new ArgumentNullException(nameof(undoService));
             }
@@ -36,7 +36,7 @@
                 throw new ArgumentNullException(nameof(sceneService));
             }
 
-            this.SelectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
+            this.EntitySelectionService = entitySelectionService ?? throw new ArgumentNullException(nameof(entitySelectionService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(this.Exit);
             this.RedoCommand = ReactiveCommand.Create(
@@ -69,7 +69,7 @@
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public ISelectionService SelectionService { get; }
+        public IEntitySelectionService EntitySelectionService { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.

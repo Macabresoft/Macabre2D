@@ -121,7 +121,7 @@
 
                 <scene:EntityEditorView Grid.Row="2">
                     <scene:EntityEditorView.IsVisible>
-                        <Binding Path="SelectionService.MostRecentlySelectedKind"
+                        <Binding Path="EntitySelectionService.MostRecentlySelectedKind"
                                  Converter="{StaticResource EntitySelectionKindToBoolConverter}"
                                  ConverterParameter="{x:Static models:EntitySelectionKind.Entity}" />
                     </scene:EntityEditorView.IsVisible>
