@@ -40,6 +40,10 @@
            <Color x:Key="SystemErrorTextColor">#FFF000</Color>
            
            <Color x:Key="SystemAccentColor">#634960</Color>
+           
+           <!-- TODO This should be affecting SliderThumbBackgroundPointerOver but it ain't -->
+           <Color x:Key="SystemAccentColorLight1">#C8AB37</Color>
+           
            <Color x:Key="SystemRevealListLowColor">#18E3DAC9</Color>
            <Color x:Key="SystemRevealListMediumColor">#30E3DAC9</Color>
         </Style.Resources>
