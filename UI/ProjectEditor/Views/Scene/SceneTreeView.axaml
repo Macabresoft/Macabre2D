@@ -11,14 +11,17 @@
                     Orientation="Horizontal">
             <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
-                    Content="Add" />
+                    Classes="Icon"
+                    Content="+"
+                    ToolTip.Tip="Add an entity as a child of the selected entity"/>
             <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
-                    Content="Remove" />
+                    Classes="Icon"
+                    Content="-"
+                    ToolTip.Tip="Remove the selected entity and all of its children from the scene"/>
         </StackPanel>
 
         <TreeView Grid.Row="1"
-                  BorderThickness="0"
                   Name="_treeView"
                   Items="{Binding Root, Mode=OneWay}"
                   SelectedItem="{Binding EntitySelectionService.SelectedEntity, Mode=TwoWay}">

@@ -16,6 +16,7 @@
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ComboBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Slider.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/SpecialCharacters.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TabItem.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TextBlock.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TextBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TreeView.axaml" />

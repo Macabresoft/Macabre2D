@@ -36,5 +36,9 @@
       <DependentUpon>ColorSlider.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Assets\AssetTreeView.axaml.cs">
+      <DependentUpon>SceneTreeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

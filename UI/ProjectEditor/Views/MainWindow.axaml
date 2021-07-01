@@ -4,6 +4,7 @@
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
         xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene"
+        xmlns:assets="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D"
@@ -119,7 +120,19 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0"
                   RowDefinitions="0.4*, Auto, 0.6*">
-                <scene:SceneTreeView Grid.Row="0" />
+                <TabControl Grid.Row="0"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Top">
+                    <TabItem Header="Scene">
+                        <scene:SceneTreeView />
+                    </TabItem>
+                    <TabItem Header="Content">
+                        <assets:ContentTreeView />
+                    </TabItem>
+                    <TabItem Header="Project">
+                        <TextBlock Text="Project View is Under Construction" />
+                    </TabItem>
+                </TabControl>
 
                 <GridSplitter Height="3"
                               Grid.Row="1" />

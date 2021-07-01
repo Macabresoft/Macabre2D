@@ -19,7 +19,8 @@
                           Content="Selection"
                           Tag="{x:Static monoGame:GizmoKind.Selector}"
                           Command="{Binding SetSelectedGizmoCommand}"
-                          CommandParameter="{x:Static monoGame:GizmoKind.Selector}">
+                          CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
+                          ToolTip.Tip="Shows the selected entity's position">
                 <ToggleButton.IsChecked>
                     <Binding Path="EditorService.SelectedGizmo"
                              Converter="{StaticResource GizmoKindToBoolConverter}"
@@ -32,7 +33,8 @@
                           Content="Translation"
                           Tag="{x:Static monoGame:GizmoKind.Translation}"
                           Command="{Binding SetSelectedGizmoCommand}"
-                          CommandParameter="{x:Static monoGame:GizmoKind.Translation}">
+                          CommandParameter="{x:Static monoGame:GizmoKind.Translation}"
+                          ToolTip.Tip="Alter the position of the currently selected entity">
                 <ToggleButton.IsChecked>
                     <Binding Path="EditorService.SelectedGizmo"
                              Converter="{StaticResource GizmoKindToBoolConverter}"
@@ -45,7 +47,8 @@
                           Content="Scale"
                           Tag="{x:Static monoGame:GizmoKind.Scale}"
                           Command="{Binding SetSelectedGizmoCommand}"
-                          CommandParameter="{x:Static monoGame:GizmoKind.Scale}">
+                          CommandParameter="{x:Static monoGame:GizmoKind.Scale}"
+                          ToolTip.Tip="Alter the scale of the currently selected entity">
                 <ToggleButton.IsChecked>
                     <Binding Path="EditorService.SelectedGizmo"
                              Converter="{StaticResource GizmoKindToBoolConverter}"

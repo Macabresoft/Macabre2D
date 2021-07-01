@@ -1,0 +1,8 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Styles.Resources>
+		<x:Double x:Key="TabItemHeaderFontSize">18</x:Double>
+		<Thickness x:Key="TabItemMargin">0,0,0,0</Thickness>
+		<Thickness x:Key="TabItemHeaderMargin">2,2,16,2</Thickness>
+	</Styles.Resources>
+</Styles>
