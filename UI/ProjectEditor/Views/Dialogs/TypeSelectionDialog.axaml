@@ -6,7 +6,6 @@
         Height="480"
         Width="640"
         CanResize="False"
-        Icon="/Assets/avalonia-logo.ico"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Title="Make a Selection">

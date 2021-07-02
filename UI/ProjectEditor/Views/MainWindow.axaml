@@ -6,7 +6,6 @@
         xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene"
         xmlns:assets="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
         Title="Macabre2D"
         ExtendClientAreaToDecorationsHint="{Binding ShowNonNativeMenu}"
         WindowState="Maximized"
@@ -66,10 +65,10 @@
                     ZIndex="-1" />
             
             <Image Grid.Column="0"
-                   Width="16"
-                   Height="16"
+                   Width="24"
+                   Height="24"
                    Margin="{StaticResource DoubleMarginHorizontal}"
-                   Source="/Assets/avalonia-logo.ico"/>
+                   Source="/Assets/icon.ico"/>
 
             <Menu Grid.Column="1"
                   HorizontalAlignment="Left"
