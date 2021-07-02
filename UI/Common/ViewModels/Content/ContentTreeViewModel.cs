@@ -13,8 +13,8 @@
     /// A view model for the content tree.
     /// </summary>
     public class ContentTreeViewModel : ViewModelBase {
+        private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
-        private readonly IProjectService _projectService;
         private readonly ObservableCollection<IContentDirectory> _treeRoot = new();
         private readonly IUndoService _undoService;
         private IContentNode _selectedNode;
@@ -30,15 +30,15 @@
         /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
-        /// <param name="projectService">The project service.</param>
+        /// <param name="contentService">The content service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(IDialogService dialogService, IProjectService projectService, IUndoService undoService) {
+        public ContentTreeViewModel(IDialogService dialogService, IContentService contentService, IUndoService undoService) {
             this._dialogService = dialogService;
-            this._projectService = projectService;
+            this._contentService = contentService;
             this._undoService = undoService;
             this.ResetRoot();
-            this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+            this._contentService.PropertyChanged += this.ProjectService_PropertyChanged;
 
             this.AddFolderCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.AddFolder,
@@ -73,11 +73,17 @@
         }
 
         private Unit AddFolder(IContentNode parent) {
+            var parentDirectory = parent as IContentDirectory ?? parent.Parent;
+
+            if (parentDirectory != null) {
+                // TODO: add
+            }
+
             return Unit.Default;
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IProjectService.RootContentDirectory)) {
+            if (e.PropertyName == nameof(IContentService.RootContentDirectory)) {
                 this.ResetRoot();
             }
         }
@@ -89,8 +95,8 @@
         private void ResetRoot() {
             this._treeRoot.Clear();
 
-            if (this._projectService.RootContentDirectory != null) {
-                this._treeRoot.Add(this._projectService.RootContentDirectory);
+            if (this._contentService.RootContentDirectory != null) {
+                this._treeRoot.Add(this._contentService.RootContentDirectory);
             }
         }
     }

@@ -88,10 +88,22 @@
         /// </summary>
         /// <param name="editorBinDirectoryPath">Path to the editor binaries, used for building MGCB.</param>
         /// <param name="platformsDirectoryPath">Path to the platforms directory.</param>
-        public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) {
+        public PathService(string editorBinDirectoryPath, string platformsDirectoryPath) : this(
+            editorBinDirectoryPath,
+            platformsDirectoryPath,
+            new DirectoryInfo(Path.Combine(platformsDirectoryPath, "..", ContentDirectoryName)).FullName) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PathService" /> class.
+        /// </summary>
+        /// <param name="editorBinDirectoryPath">Path to the editor binaries, used for building MGCB.</param>
+        /// <param name="platformsDirectoryPath">Path to the platforms directory.</param>
+        /// <param name="contentDirectoryPath">Path to the content directory.</param>
+        public PathService(string editorBinDirectoryPath, string platformsDirectoryPath, string contentDirectoryPath) {
             this.EditorBinDirectoryPath = editorBinDirectoryPath;
             this.PlatformsDirectoryPath = platformsDirectoryPath;
-            this.ContentDirectoryPath = new DirectoryInfo(Path.Combine(this.PlatformsDirectoryPath, "..", ContentDirectoryName)).FullName;
+            this.ContentDirectoryPath = contentDirectoryPath;
             this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
             this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
             this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);

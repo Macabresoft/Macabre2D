@@ -1,8 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common {
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common.MonoGame;
     using Macabresoft.Macabre2D.UI.Common.Services;
-    using Macabresoft.Macabre2D.Framework;
     using Unity;
     using Unity.Lifetime;
 
@@ -28,6 +28,7 @@
         public static IUnityContainer RegisterLibraryServices(this IUnityContainer container) {
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
                 .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
+                .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
                 .RegisterType<IFileSystemService, FileSystemService>(new SingletonLifetimeManager())
                 .RegisterType<ILoggingService, LoggingService>(new SingletonLifetimeManager())

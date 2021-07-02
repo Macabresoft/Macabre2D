@@ -23,17 +23,17 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AssetSelectionViewModel" /> class.
         /// </summary>
-        /// <param name="projectService">The project service.</param>
+        /// <param name="contentService">The content service.</param>
         /// <param name="desiredAssetType">The desired asset type.</param>
         /// <param name="allowDirectorySelection">
         /// A value indicating whether or not the user can press 'Ok' after selecting a
         /// directory node.
         /// </param>
         [InjectionConstructor]
-        public AssetSelectionViewModel(IProjectService projectService, Type desiredAssetType, bool allowDirectorySelection) : this() {
+        public AssetSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection) : this() {
             this._desiredAssetType = desiredAssetType;
             this._allowDirectorySelection = allowDirectorySelection;
-            this.RootContentDirectory = new FilteredContentWrapper(projectService.RootContentDirectory, desiredAssetType);
+            this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, desiredAssetType);
         }
 
         /// <summary>

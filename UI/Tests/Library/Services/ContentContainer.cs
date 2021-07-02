@@ -11,11 +11,14 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
     using NSubstitute;
 
     public class ContentContainer {
+        public const string Folder1 = "Folder1";
+        public const string Folder2 = "Folder2";
+        public const string Folder1A = "Folder1A";
         private const string BinPath = "bin";
-        private const string ProjectPath = "Project";
+        private const string PlatformsPath = "Platforms";
 
         private readonly IList<string> _metadataFilePaths = new List<string>();
-        private readonly IPathService _pathService = new PathService(BinPath, ProjectPath);
+        private readonly IPathService _pathService = new PathService(BinPath, PlatformsPath, PathService.ContentDirectoryName);
         private readonly IDictionary<string, HashSet<string>> _pathToDirectoryList = new Dictionary<string, HashSet<string>>();
         private readonly IDictionary<string, HashSet<string>> _pathToFileList = new Dictionary<string, HashSet<string>>();
 
@@ -43,13 +46,12 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             this.SetupNewContentFiles();
 
             this.FileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
-            this.Instance = new ProjectService(
+            this.Instance = new ContentService(
                 this.AssetManager,
                 Substitute.For<IBuildService>(),
                 this.FileSystem,
                 Substitute.For<ILoggingService>(),
                 this._pathService,
-                this.SceneService,
                 this.Serializer,
                 new UndoService());
         }
@@ -62,18 +64,16 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
         public IGameSettings GameSettings { get; } = Substitute.For<IGameSettings>();
 
-        public IProjectService Instance { get; }
+        public IContentService Instance { get; }
 
         public IReadOnlyCollection<ContentMetadata> MetadataToArchive { get; }
 
         public IReadOnlyCollection<string> NewContentFiles { get; }
-
-        public ISceneService SceneService { get; } = Substitute.For<ISceneService>();
-
+        
         public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
-        public void RunLoadProjectTest() {
-            this.Instance.LoadProject();
+        public void RunRefreshContentTest() {
+            this.Instance.RefreshContent();
 
             using (new AssertionScope()) {
                 this.AssertExistingMetadata();
@@ -158,7 +158,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
         private void RegisterContent(ContentMetadata metadata, bool contentShouldExist) {
             var splitDirectoryPath = metadata.SplitContentPath.Take(metadata.SplitContentPath.Count - 1).ToList();
             splitDirectoryPath.Insert(0, PathService.ContentDirectoryName);
-            splitDirectoryPath.Insert(0, ProjectPath);
             var fileName = metadata.GetFileName();
 
             if (contentShouldExist) {
@@ -197,7 +196,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 var fileName = splitPath.Last();
                 var splitDirectoryPath = splitPath.Take(splitPath.Length - 1).ToList();
                 splitDirectoryPath.Insert(0, PathService.ContentDirectoryName);
-                splitDirectoryPath.Insert(0, ProjectPath);
                 this.AddFileToDirectory(Path.Combine(splitDirectoryPath.ToArray()), fileName);
                 this.FileSystem.DoesFileExist(Path.Combine(this._pathService.ContentDirectoryPath, file)).Returns(true);
             }
