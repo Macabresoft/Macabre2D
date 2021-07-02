@@ -2,9 +2,10 @@
        xmlns:system="clr-namespace:System;assembly=mscorlib"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style.Resources>
-		<system:String x:Key="PlusCharacter">&#65291;</system:String>
 		<system:String x:Key="TriangleDownCharacter">&#9660;</system:String>
 		<system:String x:Key="TriangleRightCharacter">&#9658;</system:String>
-		<system:String x:Key="XCharacter">&#10005;</system:String>
+		
+		<system:String x:Key="FolderIcon">&#128447;</system:String>
+		<system:String x:Key="BulletPointIcon">&#128900;</system:String>
 	</Style.Resources>
 </Style>

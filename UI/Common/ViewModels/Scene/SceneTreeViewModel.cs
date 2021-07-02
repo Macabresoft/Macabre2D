@@ -9,8 +9,8 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
@@ -18,9 +18,7 @@
     /// A view model for the scene tree.
     /// </summary>
     public class SceneTreeViewModel : ViewModelBase {
-        private readonly ReactiveCommand<IEntity, Unit> _addEntityCommand;
         private readonly IDialogService _dialogService;
-        private readonly ReactiveCommand<IEntity, Unit> _removeEntityCommand;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
@@ -48,11 +46,11 @@
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
-            this._addEntityCommand = ReactiveCommand.CreateFromTask<IEntity>(
+            this.AddEntityCommand = ReactiveCommand.CreateFromTask<IEntity>(
                 async x => await this.AddEntity(x),
                 this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
 
-            this._removeEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
+            this.RemoveEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
                 this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
         }
@@ -60,22 +58,22 @@
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
-        public ICommand AddEntityCommand => this._addEntityCommand;
-
-        /// <summary>
-        /// Gets a command to remove an entity.
-        /// </summary>
-        public ICommand RemoveEntityCommand => this._removeEntityCommand;
-
-        /// <summary>
-        /// Gets the root of the scene tree.
-        /// </summary>
-        public IReadOnlyCollection<IEntity> Root => this._treeRoot;
+        public ICommand AddEntityCommand { get; }
 
         /// <summary>
         /// Gets the selection service.
         /// </summary>
         public IEntitySelectionService EntitySelectionService { get; }
+
+        /// <summary>
+        /// Gets a command to remove an entity.
+        /// </summary>
+        public ICommand RemoveEntityCommand { get; }
+
+        /// <summary>
+        /// Gets the root of the scene tree.
+        /// </summary>
+        public IReadOnlyCollection<IEntity> Root => this._treeRoot;
 
         private async Task AddEntity(IEntity parent) {
             var type = await this._dialogService.OpenTypeSelectionDialog(typeof(IEntity), typeof(Scene));

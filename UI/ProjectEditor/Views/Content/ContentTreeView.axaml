@@ -2,12 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Content;assembly=Macabre2D.UI.Common"
              xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <converters:StringConcatenationConverter x:Key="StringConcatenationConverter" />
+    </UserControl.Resources>
     <Grid RowDefinitions="Auto, *">
-        <!-- TODO buttons to add and remove content -->
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddFolderCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectedNode}"
+                    Classes="Icon"
+                    Content="+"
+                    ToolTip.Tip="Add content as a child of the selected node" />
+            <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
+                    CommandParameter="{Binding SelectedNode}"
+                    Classes="Icon"
+                    Content="-"
+                    ToolTip.Tip="Remove the selected content node and all of its children from the scene" />
+        </StackPanel>
         <TreeView Grid.Row="1"
                   Items="{Binding Root, Mode=OneWay}"
                   SelectedItem="{Binding SelectedNode, Mode=TwoWay}">
@@ -19,10 +35,26 @@
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="content:IContentDirectory"
                                   ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name, StringFormat=&#128447;  \{0\}}" />
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource StringConcatenationConverter}">
+                                <Binding Source="{StaticResource FolderIcon}" />
+                                <Binding Source="  " />
+                                <Binding Path="Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="content:IContentNode">
-                    <TextBlock Text="{Binding Name, StringFormat=&#128900;  \{0\}}" />
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource StringConcatenationConverter}">
+                                <Binding Source="{StaticResource BulletPointIcon}" />
+                                <Binding Source="  " />
+                                <Binding Path="Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
         </TreeView>

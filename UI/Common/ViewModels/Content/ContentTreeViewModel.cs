@@ -2,6 +2,8 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Reactive;
+    using System.Windows.Input;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
@@ -37,7 +39,25 @@
             this._undoService = undoService;
             this.ResetRoot();
             this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
+
+            this.AddFolderCommand = ReactiveCommand.Create<IContentNode, Unit>(
+                this.AddFolder,
+                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
+
+            this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
+                this.RemoveContent,
+                this.WhenAny(x => x.SelectedNode, y => y.Value != null && y.Value.Parent != y.Value));
         }
+
+        /// <summary>
+        /// Gets the add folder command.
+        /// </summary>
+        public ICommand AddFolderCommand { get; }
+
+        /// <summary>
+        /// Gets the remove content command.
+        /// </summary>
+        public ICommand RemoveContentCommand { get; }
 
         /// <summary>
         /// Gets the root of the asset tree.
@@ -52,10 +72,18 @@
             set => this.RaiseAndSetIfChanged(ref this._selectedNode, value);
         }
 
+        private Unit AddFolder(IContentNode parent) {
+            return Unit.Default;
+        }
+
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IProjectService.RootContentDirectory)) {
                 this.ResetRoot();
             }
+        }
+
+        private Unit RemoveContent(IContentNode node) {
+            return Unit.Default;
         }
 
         private void ResetRoot() {
