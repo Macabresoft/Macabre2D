@@ -12,12 +12,12 @@
             <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
                     Classes="Icon"
-                    Content="+"
+                    Content="{StaticResource AddIcon}"
                     ToolTip.Tip="Add an entity as a child of the selected entity"/>
             <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
                     Classes="Icon"
-                    Content="-"
+                    Content="{StaticResource RemoveIcon}"
                     ToolTip.Tip="Remove the selected entity and all of its children from the scene"/>
         </StackPanel>
 

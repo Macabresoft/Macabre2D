@@ -6,5 +6,9 @@
 	
 	<Style Selector="Button.Icon">
 		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 </Styles>

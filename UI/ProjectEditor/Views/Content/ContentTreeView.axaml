@@ -16,12 +16,12 @@
             <Button Command="{Binding AddFolderCommand, Mode=OneWay}"
                     CommandParameter="{Binding SelectedNode}"
                     Classes="Icon"
-                    Content="+"
+                    Content="{StaticResource AddIcon}"
                     ToolTip.Tip="Add content as a child of the selected node" />
             <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
                     CommandParameter="{Binding SelectedNode}"
                     Classes="Icon"
-                    Content="-"
+                    Content="{StaticResource RemoveIcon}"
                     ToolTip.Tip="Remove the selected content node and all of its children from the scene" />
         </StackPanel>
         <TreeView Grid.Row="1"
