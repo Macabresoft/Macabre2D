@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene.SceneTreeView">
@@ -13,12 +14,12 @@
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
                     Classes="Icon"
                     Content="{StaticResource AddIcon}"
-                    ToolTip.Tip="Add an entity as a child of the selected entity"/>
+                    ToolTip.Tip="Add an entity as a child of the selected entity" />
             <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
                     CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
                     Classes="Icon"
                     Content="{StaticResource RemoveIcon}"
-                    ToolTip.Tip="Remove the selected entity and all of its children from the scene"/>
+                    ToolTip.Tip="Remove the selected entity and all of its children from the scene" />
         </StackPanel>
 
         <TreeView Grid.Row="1"
@@ -31,9 +32,16 @@
                 </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="framework:IEntity"
+                <TreeDataTemplate DataType="framework:IScene"
                                   ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+                <TreeDataTemplate DataType="framework:IEntity"
+                                  ItemsSource="{Binding Children}">
+                    <controls:EditableTreeViewItem AllowUndo="True"
+                                                   IsEditable="True"
+                                                   IsSceneChange="True"
+                                                   Text="{Binding Path=Name, Mode=TwoWay}" />
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
         </TreeView>

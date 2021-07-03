@@ -1,0 +1,31 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.EditableTreeViewItem">
+    <UserControl.Resources>
+        <converters:MultiBoolConverter x:Key="MultiBoolConverter"
+                                       RequireAllTrue="True" />
+    </UserControl.Resources>
+
+    <Grid>
+        <TextBlock x:Name="_treeViewItemText"
+                   Text="{Binding $parent[local:EditableTreeViewItem].Text}"
+                   IsVisible="{Binding !#_editableTextBox.IsVisible}"
+                   DoubleTapped="TreeViewItem_OnDoubleTapped" />
+        <TextBox x:Name="_editableTextBox"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 PropertyChanged="EditableTextBox_OnPropertyChanged"
+                 KeyDown="TextBox_OnKeyDown"
+                 LostFocus="TextBox_OnLostFocus">
+            <TextBox.IsVisible>
+                <MultiBinding Converter="{StaticResource MultiBoolConverter}">
+                    <Binding Path="$parent[TreeViewItem].IsSelected" />
+                    <Binding Path="$parent[local:EditableTreeViewItem].IsEditing" />
+                </MultiBinding>
+            </TextBox.IsVisible>
+        </TextBox>
+    </Grid>
+</UserControl>
