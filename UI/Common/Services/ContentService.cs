@@ -92,7 +92,7 @@
         /// <inheritdoc />
         public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
             var originalParent = contentToMove.Parent;
-            this._undoService.Do(() => { contentToMove.ChangeParent(newParent); }, () => { contentToMove.ChangeParent(originalParent); });
+            this._undoService.Do(() => { contentToMove.ChangeParent(newParent); }, () => { contentToMove.ChangeParent(originalParent); }, UndoScope.Content);
         }
 
         public void RefreshContent() {

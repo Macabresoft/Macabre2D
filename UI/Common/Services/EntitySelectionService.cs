@@ -147,7 +147,7 @@
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                         valueEditor.SetValue(originalValue);
                         this._sceneService.HasChanges = originalHasChanges;
-                    });
+                    }, UndoScope.Scene);
                 }
             }
         }

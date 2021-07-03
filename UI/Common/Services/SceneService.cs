@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
@@ -57,6 +58,7 @@
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
+        private readonly IUndoService _undoService;
         private ContentMetadata _currentSceneMetadata;
         private bool _hasChanges;
 
@@ -67,15 +69,18 @@
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="undoService"></param>
         public SceneService(
             IAssetManager assetManager,
             IFileSystemService fileSystem,
             IPathService pathService,
-            ISerializer serializer) {
+            ISerializer serializer,
+            IUndoService undoService) {
             this._assetManager = assetManager;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._serializer = serializer;
+            this._undoService = undoService;
         }
 
         /// <inheritdoc />
@@ -152,6 +157,7 @@
                 this._serializer.Serialize(this.CurrentScene, filePath);
 
                 this.HasChanges = false;
+                this._undoService.Clear(UndoScope.Scene);
             }
         }
 

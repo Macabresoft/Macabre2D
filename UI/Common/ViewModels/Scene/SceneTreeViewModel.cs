@@ -10,6 +10,7 @@
     using System.Windows.Input;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -98,7 +99,7 @@
                         this.EntitySelectionService.SelectedEntity = parent;
                         this._sceneService.HasChanges = originalHasChanges;
                     });
-                });
+                }, UndoScope.Scene);
             }
         }
 
@@ -117,7 +118,7 @@
                     this.EntitySelectionService.SelectedEntity = entity;
                     this._sceneService.HasChanges = originalHasChanges;
                 });
-            });
+            }, UndoScope.Scene);
 
             return Unit.Default;
         }

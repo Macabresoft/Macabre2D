@@ -40,7 +40,7 @@
                                   ItemsSource="{Binding Children}">
                     <controls:EditableTreeViewItem AllowUndo="True"
                                                    IsEditable="True"
-                                                   IsSceneChange="True"
+                                                   UndoScope="Scene"
                                                    Text="{Binding Path=Name, Mode=TwoWay}" />
                 </TreeDataTemplate>
             </TreeView.DataTemplates>

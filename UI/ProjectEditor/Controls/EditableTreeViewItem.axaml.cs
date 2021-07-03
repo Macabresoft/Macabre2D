@@ -1,12 +1,15 @@
 ﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using System;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
+    using Avalonia.Media.TextFormatting.Unicode;
     using Avalonia.Threading;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Common.Utilities;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
@@ -14,6 +17,9 @@
     public class EditableTreeViewItem : UserControl {
         public static readonly StyledProperty<bool> AllowUndoProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(AllowUndo));
+        
+        public static readonly StyledProperty<UndoScope> UndoScopeProperty =
+            AvaloniaProperty.Register<EditableTreeViewItem, UndoScope>(nameof(UndoScopeProperty));
 
         public static readonly StyledProperty<bool> IsEditableProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsEditable), true);
@@ -27,13 +33,11 @@
         public static readonly StyledProperty<bool> IsFileNameProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsFileName));
 
-        public static readonly StyledProperty<bool> IsSceneChangeProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsSceneChange));
-
         public static readonly StyledProperty<string> TextProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, string>(nameof(Text), string.Empty, notifying: OnTextChanging);
 
         private readonly ISceneService _sceneService = Resolver.Resolve<ISceneService>();
+        private readonly IProjectService _projectService = Resolver.Resolve<IProjectService>();
 
         //private readonly IDialogService _dialogService = Resolver.Resolve<IDialogService>();
         private readonly IUndoService _undoService = Resolver.Resolve<IUndoService>();
@@ -46,6 +50,11 @@
         public bool AllowUndo {
             get => this.GetValue(AllowUndoProperty);
             set => this.SetValue(AllowUndoProperty, value);
+        }
+        
+        public UndoScope UndoScope {
+            get => this.GetValue(UndoScopeProperty);
+            set => this.SetValue(UndoScopeProperty, value);
         }
 
         public bool IsEditable {
@@ -61,11 +70,6 @@
         public bool IsFileName {
             get => this.GetValue(IsFileNameProperty);
             set => this.SetValue(IsFileNameProperty, value);
-        }
-
-        public bool IsSceneChange {
-            get => this.GetValue(IsSceneChangeProperty);
-            set => this.SetValue(IsSceneChangeProperty, value);
         }
 
         public string Text {
@@ -86,19 +90,19 @@
             }
 
             if (this.AllowUndo) {
-                var originalSceneHasChanges = this._sceneService.HasChanges;
+                var originalHasChanges = this.GetOriginalHasChanges();
                 this._undoService.Do(
                     () => {
                         this.SetText(newText);
-                        this.SetSceneHasChanges(true);
+                        this.SetHasChanges(true);
                     }, () => {
                         this.SetText(oldText);
-                        this.SetSceneHasChanges(originalSceneHasChanges);
-                    });
+                        this.SetHasChanges(originalHasChanges);
+                    }, this.UndoScope);
             }
             else {
                 this.SetText(newText);
-                this.SetSceneHasChanges(true);
+                this.SetHasChanges(true);
             }
 
             this.IsEditing = false;
@@ -130,12 +134,6 @@
         private static void OnTextChanging(IAvaloniaObject control, bool isBeforeChange) {
             if (!isBeforeChange && control is EditableTreeViewItem treeViewItem && treeViewItem.TryGetEditableTextBox(out var textBox)) {
                 textBox.Text = treeViewItem.GetEditableText(treeViewItem.Text);
-            }
-        }
-
-        private void SetSceneHasChanges(bool hasChanges) {
-            if (this.IsSceneChange) {
-                Dispatcher.UIThread.Post(() => { this._sceneService.HasChanges = hasChanges; });
             }
         }
 
@@ -177,6 +175,41 @@
         private bool TryGetEditableTextBox(out TextBox textBox) {
             textBox = this.FindControl<TextBox>("_editableTextBox");
             return textBox != null;
+        }
+
+        private void SetHasChanges(bool value) {
+            switch (this.UndoScope) {
+                case UndoScope.Scene: {
+                    Dispatcher.UIThread.Post(() => { this._sceneService.HasChanges = value; });
+                    break;
+                }
+                case UndoScope.Project: {
+                    Dispatcher.UIThread.Post(() => { this._projectService.HasChanges = value; });
+                    break;
+                }
+                case UndoScope.Content: {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+
+        private bool GetOriginalHasChanges() {
+            var result = false;
+            switch (this.UndoScope) {
+                case UndoScope.Scene: {
+                    result = this._sceneService.HasChanges;
+                    break;
+                }
+                case UndoScope.Project: {
+                    result = this._projectService.HasChanges;
+                    break;
+                }
+                case UndoScope.Content: {
+                    throw new NotImplementedException();
+                }
+            }
+
+            return result;
         }
     }
 }
