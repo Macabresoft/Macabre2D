@@ -12,6 +12,8 @@
         <TextBlock x:Name="_treeViewItemText"
                    Text="{Binding $parent[local:EditableTreeViewItem].Text}"
                    IsVisible="{Binding !#_editableTextBox.IsVisible}"
+                   HorizontalAlignment="Stretch"
+                   Background="Transparent"
                    DoubleTapped="TreeViewItem_OnDoubleTapped" />
         <TextBox x:Name="_editableTextBox"
                  Background="Transparent"
