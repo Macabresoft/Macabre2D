@@ -52,8 +52,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 this.FileSystem,
                 Substitute.For<ILoggingService>(),
                 this._pathService,
-                this.Serializer,
-                new UndoService());
+                this.Serializer);
         }
 
         public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();

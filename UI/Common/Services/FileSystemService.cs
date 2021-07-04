@@ -78,6 +78,13 @@
         /// <param name="filePath">The file path.</param>
         /// <param name="text">The text.</param>
         void WriteAllText(string filePath, string text);
+
+        /// <summary>
+        /// Gets a value indicating whether or not the provided name is valid for a file or directory name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>A value indicating whether or not the provided name is valid for a file or directory name.</returns>
+        bool IsValidFileOrDirectoryName(string name);
     }
 
     /// <summary>
@@ -132,6 +139,11 @@
         /// <inheritdoc />
         public void WriteAllText(string filePath, string text) {
             File.WriteAllText(filePath, text);
+        }
+
+        /// <inheritdoc />
+        public bool IsValidFileOrDirectoryName(string name) {
+            return !string.IsNullOrEmpty(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
         }
     }
 }

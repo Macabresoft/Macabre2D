@@ -78,6 +78,10 @@
         public void WriteAllText(string filePath, string text) {
         }
 
+        public bool IsValidFileOrDirectoryName(string name) {
+            return true;
+        }
+
         private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();
             var directories = new List<string>();

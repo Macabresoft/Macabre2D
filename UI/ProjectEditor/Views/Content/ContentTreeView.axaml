@@ -60,7 +60,7 @@
                                                        VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
-                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameCommand}"
+                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                        Text="{Binding Name}" />
                     </Grid>
                 </TreeDataTemplate>

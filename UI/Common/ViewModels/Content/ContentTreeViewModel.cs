@@ -8,7 +8,6 @@
     using System.Windows.Input;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
-    using Macabresoft.Macabre2D.UI.Common.Utilities;
     using ReactiveUI;
     using Unity;
 
@@ -18,6 +17,7 @@
     public class ContentTreeViewModel : ViewModelBase {
         private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
+        private readonly IFileSystemService _fileSystem;
         private readonly ObservableCollection<IContentDirectory> _treeRoot = new();
         private IContentNode _selectedNode;
 
@@ -31,12 +31,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
         /// </summary>
-        /// <param name="dialogService">The dialog service.</param>
         /// <param name="contentService">The content service.</param>
+        /// <param name="dialogService">The dialog service.</param>
+        /// <param name="fileSystem">The file system.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(IDialogService dialogService, IContentService contentService) {
-            this._dialogService = dialogService;
+        public ContentTreeViewModel(IContentService contentService, IDialogService dialogService, IFileSystemService fileSystem) {
             this._contentService = contentService;
+            this._dialogService = dialogService;
+            this._fileSystem = fileSystem;
             this.ResetRoot();
             this._contentService.PropertyChanged += this.ProjectService_PropertyChanged;
 
@@ -48,7 +50,7 @@
                 this.RemoveContent,
                 this.WhenAny(x => x.SelectedNode, y => y.Value != null && y.Value.Parent != y.Value));
 
-            this.RenameCommand = ReactiveCommand.CreateFromTask<string>(
+            this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(
                 async x => await this.RenameContent(x),
                 this.WhenAny(x => x.SelectedNode, y => y.Value != null));
         }
@@ -65,9 +67,9 @@
         public ICommand RemoveContentCommand { get; }
 
         /// <summary>
-        /// Gets a command for renaming a content node.
+        /// Gets a command for renaming content.
         /// </summary>
-        public ICommand RenameCommand { get; }
+        public ICommand RenameContentCommand { get; }
 
         /// <summary>
         /// Gets the root of the asset tree.
@@ -104,8 +106,10 @@
 
         private async Task RenameContent(string updatedName) {
             if (this.SelectedNode is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
-                if (!FileHelper.IsValidFileName(updatedName)) {
-                    await this._dialogService.ShowWarningDialog("Invalid File Name", $"'{updatedName}' contains invalid characters.");
+                var isDirectory = node is IContentDirectory;
+                var typeName = isDirectory ? "Directory" : "File";
+                if (this._fileSystem.IsValidFileOrDirectoryName(updatedName)) {
+                    await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
                 }
                 else {
                     if (node.Parent is IContentDirectory parent) {
@@ -113,15 +117,15 @@
                         var updatedPath = Path.Combine(parentPath, updatedName);
 
                         if (File.Exists(updatedPath) || Directory.Exists(updatedPath)) {
-                            await this._dialogService.ShowWarningDialog("Invalid File Name", $"A file or directory named '{updatedName}' already exists.");
+                            await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"A {typeName.ToLower()} named '{updatedName}' already exists.");
                         }
                         else {
                             var originalPath = node.GetFullPath();
-                            if (node is IContentDirectory) {
-                                Directory.Move(originalPath, updatedPath);
+                            if (isDirectory) {
+                                this._fileSystem.MoveDirectory(originalPath, updatedPath);
                             }
                             else {
-                                File.Move(originalPath, updatedPath);
+                                this._fileSystem.MoveFile(originalPath, updatedPath);
                             }
 
                             node.Name = updatedName;
