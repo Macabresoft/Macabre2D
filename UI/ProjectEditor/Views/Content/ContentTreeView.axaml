@@ -4,6 +4,7 @@
              xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeViewModel />
@@ -46,21 +47,20 @@
                         </TextBlock.Text>
                     </TextBlock>
                 </TreeDataTemplate>
-                
+
                 <TreeDataTemplate DataType="content:IContentDirectory"
                                   ItemsSource="{Binding Children}">
                     <Grid ColumnDefinitions="Auto, 4, *">
                         <TextBlock Grid.Column="0"
                                    Text="{StaticResource FolderIcon}"
                                    VerticalAlignment="Center"
-                                   Height="{Binding #_treeViewItem.Height}"/>
-                        <controls:EditableTreeViewItem x:Name="_treeViewItem"
+                                   Height="{Binding #_treeViewItem.Height}" />
+                        <controls:EditableTreeViewItem Grid.Column="2"
+                                                       x:Name="_treeViewItem"
                                                        VerticalAlignment="Center"
-                                                       Grid.Column="2"
-                                                       AllowUndo="True"
                                                        IsEditable="True"
                                                        IsFileName="True"
-                                                       UndoScope="Content"
+                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameCommand}"
                                                        Text="{Binding Name}" />
                     </Grid>
                 </TreeDataTemplate>

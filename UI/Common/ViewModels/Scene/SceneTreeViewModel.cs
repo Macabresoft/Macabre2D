@@ -54,8 +54,17 @@
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
                 this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
+            
+            this.RenameCommand = ReactiveCommand.Create<string, Unit>(
+                this.RenameEntity,
+                this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
         }
 
+        /// <summary>
+        /// Gets a command for renaming an entity.
+        /// </summary>
+        public ICommand RenameCommand { get; }
+        
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
@@ -75,6 +84,27 @@
         /// Gets the root of the scene tree.
         /// </summary>
         public IReadOnlyCollection<IEntity> Root => this._treeRoot;
+
+        private Unit RenameEntity(string updatedName) {
+            if (this.EntitySelectionService.SelectedEntity is IEntity entity && entity.Name != updatedName) {
+                var originalHasChanges = this._sceneService.HasChanges;
+                var originalName = entity.Name;
+                this._undoService.Do(
+                    () => {
+                        Dispatcher.UIThread.Post(() => {
+                            entity.Name = updatedName;
+                            this._sceneService.HasChanges = true;
+                        });
+                    }, () => {
+                        Dispatcher.UIThread.Post(() => {
+                            entity.Name = originalName;
+                            this._sceneService.HasChanges = originalHasChanges;
+                        });
+                    }, UndoScope.Scene);
+            }
+            
+            return Unit.Default;
+        }
 
         private async Task AddEntity(IEntity parent) {
             var type = await this._dialogService.OpenTypeSelectionDialog(typeof(IEntity), typeof(Scene));

@@ -2,10 +2,13 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.IO;
     using System.Reactive;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common.Utilities;
     using ReactiveUI;
     using Unity;
 
@@ -16,7 +19,6 @@
         private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
         private readonly ObservableCollection<IContentDirectory> _treeRoot = new();
-        private readonly IUndoService _undoService;
         private IContentNode _selectedNode;
 
         /// <summary>
@@ -31,12 +33,10 @@
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="contentService">The content service.</param>
-        /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(IDialogService dialogService, IContentService contentService, IUndoService undoService) {
+        public ContentTreeViewModel(IDialogService dialogService, IContentService contentService) {
             this._dialogService = dialogService;
             this._contentService = contentService;
-            this._undoService = undoService;
             this.ResetRoot();
             this._contentService.PropertyChanged += this.ProjectService_PropertyChanged;
 
@@ -47,7 +47,12 @@
             this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.RemoveContent,
                 this.WhenAny(x => x.SelectedNode, y => y.Value != null && y.Value.Parent != y.Value));
+
+            this.RenameCommand = ReactiveCommand.CreateFromTask<string>(
+                async x => await this.RenameContent(x),
+                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
         }
+
 
         /// <summary>
         /// Gets the add folder command.
@@ -58,6 +63,11 @@
         /// Gets the remove content command.
         /// </summary>
         public ICommand RemoveContentCommand { get; }
+
+        /// <summary>
+        /// Gets a command for renaming a content node.
+        /// </summary>
+        public ICommand RenameCommand { get; }
 
         /// <summary>
         /// Gets the root of the asset tree.
@@ -90,6 +100,35 @@
 
         private Unit RemoveContent(IContentNode node) {
             return Unit.Default;
+        }
+
+        private async Task RenameContent(string updatedName) {
+            if (this.SelectedNode is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
+                if (!FileHelper.IsValidFileName(updatedName)) {
+                    await this._dialogService.ShowWarningDialog("Invalid File Name", $"'{updatedName}' contains invalid characters.");
+                }
+                else {
+                    if (node.Parent is IContentDirectory parent) {
+                        var parentPath = parent.GetFullPath();
+                        var updatedPath = Path.Combine(parentPath, updatedName);
+
+                        if (File.Exists(updatedPath) || Directory.Exists(updatedPath)) {
+                            await this._dialogService.ShowWarningDialog("Invalid File Name", $"A file or directory named '{updatedName}' already exists.");
+                        }
+                        else {
+                            var originalPath = node.GetFullPath();
+                            if (node is IContentDirectory) {
+                                Directory.Move(originalPath, updatedPath);
+                            }
+                            else {
+                                File.Move(originalPath, updatedPath);
+                            }
+
+                            node.Name = updatedName;
+                        }
+                    }
+                }
+            }
         }
 
         private void ResetRoot() {

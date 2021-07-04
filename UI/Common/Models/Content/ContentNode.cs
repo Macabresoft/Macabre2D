@@ -16,7 +16,7 @@
         /// <summary>
         /// Gets the name.
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
 
         /// <summary>
         /// Gets the name without an extension.

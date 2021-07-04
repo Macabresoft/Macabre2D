@@ -3,7 +3,6 @@
     /// The scope of an undo operation.
     /// </summary>
     public enum UndoScope {
-        Content,
         Project,
         Scene
     }

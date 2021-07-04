@@ -1,21 +1,14 @@
 ﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using System.IO;
-    using System.Threading.Tasks;
+    using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
-    using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Services;
-    using Macabresoft.Macabre2D.UI.Common.Utilities;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
 
     public class EditableTreeViewItem : UserControl {
-        public static readonly StyledProperty<bool> AllowUndoProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(AllowUndo));
-
         public static readonly StyledProperty<bool> IsEditableProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsEditable), true);
 
@@ -28,27 +21,16 @@
         public static readonly StyledProperty<bool> IsFileNameProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsFileName));
 
-        public static readonly StyledProperty<UndoScope> UndoScopeProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, UndoScope>(nameof(UndoScopeProperty));
+        public static readonly StyledProperty<ICommand> TextCommittedCommandProperty =
+            AvaloniaProperty.Register<EditableTreeViewItem, ICommand>(nameof(TextCommittedCommand));
 
         public static readonly StyledProperty<string> TextProperty =
             AvaloniaProperty.Register<EditableTreeViewItem, string>(nameof(Text), string.Empty, notifying: OnTextChanging);
 
-
-        private readonly IDialogService _dialogService = Resolver.Resolve<IDialogService>();
-        private readonly IProjectService _projectService = Resolver.Resolve<IProjectService>();
-
-        private readonly ISceneService _sceneService = Resolver.Resolve<ISceneService>();
-        private readonly IUndoService _undoService = Resolver.Resolve<IUndoService>();
         private bool _isEditing;
 
         public EditableTreeViewItem() {
             this.InitializeComponent();
-        }
-
-        public bool AllowUndo {
-            get => this.GetValue(AllowUndoProperty);
-            set => this.SetValue(AllowUndoProperty, value);
         }
 
         public bool IsEditable {
@@ -71,39 +53,20 @@
             set => this.SetValue(TextProperty, value);
         }
 
-        public UndoScope UndoScope {
-            get => this.GetValue(UndoScopeProperty);
-            set => this.SetValue(UndoScopeProperty, value);
+        public ICommand TextCommittedCommand {
+            get => this.GetValue(TextCommittedCommandProperty);
+            set => this.SetValue(TextCommittedCommandProperty, value);
         }
-
 
         private static bool CanEditTreeViewItem(TreeViewItem treeViewItem) {
             return treeViewItem?.DataContext != null && treeViewItem.IsSelected;
         }
 
-        private async Task CommitNewText(string oldText, string newText) {
-            if (this.IsFileName && !FileHelper.IsValidFileName(newText)) {
-                await this._dialogService.ShowWarningDialog("Invalid File Name", $"'{newText}' contains invalid characters.");
-                return;
+        private void CommitNewText(string newText) {
+            if (this.TextCommittedCommand != null && this.TextCommittedCommand.CanExecute(newText)) {
+                this.TextCommittedCommand.Execute(newText);
+                this.IsEditing = false;
             }
-
-            if (this.AllowUndo) {
-                var originalHasChanges = this.GetOriginalHasChanges();
-                this._undoService.Do(
-                    () => {
-                        this.SetText(newText);
-                        this.SetHasChanges(true);
-                    }, () => {
-                        this.SetText(oldText);
-                        this.SetHasChanges(originalHasChanges);
-                    }, this.UndoScope);
-            }
-            else {
-                this.SetText(newText);
-                this.SetHasChanges(true);
-            }
-
-            this.IsEditing = false;
         }
 
         private void EditableTextBox_OnPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs e) {
@@ -125,16 +88,6 @@
             return result;
         }
 
-        private bool GetOriginalHasChanges() {
-            var result = this.UndoScope switch {
-                UndoScope.Scene => this._sceneService.HasChanges,
-                UndoScope.Project => this._projectService.HasChanges,
-                _ => false
-            };
-
-            return result;
-        }
-
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }
@@ -145,24 +98,11 @@
             }
         }
 
-        private void SetHasChanges(bool value) {
-            if (this.UndoScope == UndoScope.Scene) {
-                Dispatcher.UIThread.Post(() => { this._sceneService.HasChanges = value; });
-            }
-            else if (this.UndoScope == UndoScope.Project) {
-                Dispatcher.UIThread.Post(() => { this._projectService.HasChanges = value; });
-            }
-        }
-
-        private void SetText(string text) {
-            Dispatcher.UIThread.Post(() => { this.Text = text; });
-        }
-
-        private async void TextBox_OnKeyDown(object sender, KeyEventArgs e) {
+        private void TextBox_OnKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {
                 if (this.TryGetEditableTextBox(out var textBox)) {
                     var newText = this.IsFileName ? $"{textBox.Text}{Path.GetExtension(this.Text)}" : textBox.Text;
-                    await this.CommitNewText(this.Text, newText);
+                    this.CommitNewText(newText);
                 }
             }
             else if (e.Key == Key.Escape) {

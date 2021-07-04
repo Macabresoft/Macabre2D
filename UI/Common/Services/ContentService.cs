@@ -43,7 +43,6 @@
         private readonly ILoggingService _loggingService;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
-        private readonly IUndoService _undoService;
 
         private RootContentDirectory _rootContentDirectory;
 
@@ -67,22 +66,19 @@
         /// <param name="loggingService">The logging service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <param name="undoService">The undo service.</param>
         public ContentService(
             IAssetManager assetManager,
             IBuildService buildService,
             IFileSystemService fileSystem,
             ILoggingService loggingService,
             IPathService pathService,
-            ISerializer serializer,
-            IUndoService undoService) {
+            ISerializer serializer) {
             this._assetManager = assetManager;
             this._buildService = buildService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
             this._pathService = pathService;
             this._serializer = serializer;
-            this._undoService = undoService;
         }
 
 
@@ -91,8 +87,7 @@
 
         /// <inheritdoc />
         public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
-            var originalParent = contentToMove.Parent;
-            this._undoService.Do(() => { contentToMove.ChangeParent(newParent); }, () => { contentToMove.ChangeParent(originalParent); }, UndoScope.Content);
+            contentToMove.ChangeParent(newParent);
         }
 
         public void RefreshContent() {
