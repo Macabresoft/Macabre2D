@@ -1,13 +1,14 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"
        xmlns:system="clr-namespace:System;assembly=mscorlib"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style.Resources>
-		<system:String x:Key="TriangleDownCharacter">&#9660;</system:String>
-		<system:String x:Key="TriangleRightCharacter">&#9658;</system:String>
-		
-		<system:String x:Key="AddIcon">+</system:String>
-		<system:String x:Key="RemoveIcon">-</system:String>
-		<system:String x:Key="BulletPointIcon">&#128900;</system:String>
-		<system:String x:Key="FolderIcon">&#128447;</system:String>
-	</Style.Resources>
+    <Style.Resources>
+        <system:String x:Key="TriangleDownCharacter">&#9660;</system:String>
+        <system:String x:Key="TriangleRightCharacter">&#9658;</system:String>
+
+        <system:String x:Key="AddIcon">+</system:String>
+        <system:String x:Key="RemoveIcon">-</system:String>
+        <system:String x:Key="BulletPointIcon">&#128900;</system:String>
+        <system:String x:Key="FolderIcon">&#128447;</system:String>
+        <system:String x:Key="WarningIcon">&#9888;</system:String>
+    </Style.Resources>
 </Style>

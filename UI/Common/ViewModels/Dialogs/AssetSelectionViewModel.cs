@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;

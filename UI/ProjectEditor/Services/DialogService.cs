@@ -5,6 +5,7 @@
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
+    using Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs;
     using Unity.Resolution;
 
     /// <summary>
@@ -45,6 +46,14 @@
             }
 
             return selectedType;
+        }
+
+        /// <inheritdoc />
+        public async Task ShowWarningDialog(string title, string message) {
+            var window = Resolver.Resolve<WarningDialog>();
+            window.WarningTitle = title;
+            window.WarningMessage = message;
+            await window.ShowDialog(this._mainWindow);
         }
     }
 }

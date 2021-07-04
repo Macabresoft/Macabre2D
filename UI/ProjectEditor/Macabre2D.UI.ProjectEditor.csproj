@@ -40,5 +40,9 @@
       <DependentUpon>SceneTreeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\WarningDialog.axaml.cs">
+      <DependentUpon>WarningDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

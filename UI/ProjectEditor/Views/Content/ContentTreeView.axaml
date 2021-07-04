@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Content;assembly=Macabre2D.UI.Common"
              xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content.ContentTreeView">
     <Design.DataContext>
@@ -33,7 +34,7 @@
                 </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="content:IContentDirectory"
+                <TreeDataTemplate DataType="content:RootContentDirectory"
                                   ItemsSource="{Binding Children}">
                     <TextBlock>
                         <TextBlock.Text>
@@ -44,6 +45,24 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
+                </TreeDataTemplate>
+                
+                <TreeDataTemplate DataType="content:IContentDirectory"
+                                  ItemsSource="{Binding Children}">
+                    <Grid ColumnDefinitions="Auto, 4, *">
+                        <TextBlock Grid.Column="0"
+                                   Text="{StaticResource FolderIcon}"
+                                   VerticalAlignment="Center"
+                                   Height="{Binding #_treeViewItem.Height}"/>
+                        <controls:EditableTreeViewItem x:Name="_treeViewItem"
+                                                       VerticalAlignment="Center"
+                                                       Grid.Column="2"
+                                                       AllowUndo="True"
+                                                       IsEditable="True"
+                                                       IsFileName="True"
+                                                       UndoScope="Content"
+                                                       Text="{Binding Name}" />
+                    </Grid>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="content:IContentNode">
                     <TextBlock>

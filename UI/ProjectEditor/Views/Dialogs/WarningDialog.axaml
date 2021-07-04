@@ -1,0 +1,37 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.WarningDialog"
+        MinHeight="120"
+        MinWidth="240"
+        MaxWidth="400"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        Title="{Binding $self.WarningTitle}">
+    <Grid Margin="{StaticResource DoubleMarginAll}"
+          RowDefinitions="*, Auto">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, 4, *"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <TextBlock Grid.Column="0"
+                       Text="{StaticResource WarningIcon}"
+                       VerticalAlignment="Center"
+                       Height="{Binding #_messageBlock.Height}" />
+            <TextBlock x:Name="_messageBlock"
+                       Grid.Column="2"
+                       Text="{Binding $parent[local:WarningDialog].WarningMessage}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <Button Grid.Row="1"
+                Content="OK"
+                Command="{Binding $parent[local:WarningDialog].OkCommand}"
+                HorizontalAlignment="Right"
+                IsDefault="True" />
+
+    </Grid>
+</Window>
