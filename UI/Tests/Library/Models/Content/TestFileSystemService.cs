@@ -17,6 +17,14 @@
         public void CreateDirectory(string path) {
         }
 
+        public void DeleteDirectory(string path) {
+            // TODO: maybe implement this for tests
+        }
+
+        public void DeleteFile(string path) {
+            // TODO: maybe implement this for tests
+        }
+
         public bool DoesDirectoryExist(string path) {
             var result = false;
             var splitPath = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
@@ -69,6 +77,10 @@
             return Enumerable.Empty<string>();
         }
 
+        public bool IsValidFileOrDirectoryName(string name) {
+            return true;
+        }
+
         public void MoveDirectory(string originalPath, string newPath) {
         }
 
@@ -76,10 +88,6 @@
         }
 
         public void WriteAllText(string filePath, string text) {
-        }
-
-        public bool IsValidFileOrDirectoryName(string name) {
-            return true;
         }
 
         private void FillDirectoryStructure() {
