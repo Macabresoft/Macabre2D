@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.Collections.Generic;
     using System.IO;
-    using System.Text;
 
     /// <summary>
     /// Interface for a service which wraps basic file system operations.
@@ -13,6 +12,18 @@
         /// </summary>
         /// <param name="path">The path.</param>
         void CreateDirectory(string path);
+
+        /// <summary>
+        /// Deletes the specified directory and all of its children.
+        /// </summary>
+        /// <param name="path">The path to the directory.</param>
+        void DeleteDirectory(string path);
+
+        /// <summary>
+        /// Deletes the specified file and all of its children.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        void DeleteFile(string path);
 
         /// <summary>
         /// Returns a value indicating whether a directory exists at the given path.
@@ -59,6 +70,13 @@
         IEnumerable<string> GetFiles(string directoryPath, string searchPattern);
 
         /// <summary>
+        /// Gets a value indicating whether or not the provided name is valid for a file or directory name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>A value indicating whether or not the provided name is valid for a file or directory name.</returns>
+        bool IsValidFileOrDirectoryName(string name);
+
+        /// <summary>
         /// Moves a directory from the original path to the new path.
         /// </summary>
         /// <param name="originalPath">The original path.</param>
@@ -78,13 +96,6 @@
         /// <param name="filePath">The file path.</param>
         /// <param name="text">The text.</param>
         void WriteAllText(string filePath, string text);
-
-        /// <summary>
-        /// Gets a value indicating whether or not the provided name is valid for a file or directory name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>A value indicating whether or not the provided name is valid for a file or directory name.</returns>
-        bool IsValidFileOrDirectoryName(string name);
     }
 
     /// <summary>
@@ -94,6 +105,20 @@
         /// <inheritdoc />
         public void CreateDirectory(string path) {
             Directory.CreateDirectory(path);
+        }
+
+        /// <inheritdoc />
+        public void DeleteDirectory(string path) {
+            if (this.DoesDirectoryExist(path)) {
+                Directory.Delete(path, true);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DeleteFile(string path) {
+            if (this.DoesFileExist(path)) {
+                File.Delete(path);
+            }
         }
 
         /// <inheritdoc />
@@ -127,6 +152,11 @@
         }
 
         /// <inheritdoc />
+        public bool IsValidFileOrDirectoryName(string name) {
+            return !string.IsNullOrEmpty(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
+        }
+
+        /// <inheritdoc />
         public void MoveDirectory(string originalPath, string newPath) {
             Directory.Move(originalPath, newPath);
         }
@@ -139,11 +169,6 @@
         /// <inheritdoc />
         public void WriteAllText(string filePath, string text) {
             File.WriteAllText(filePath, text);
-        }
-
-        /// <inheritdoc />
-        public bool IsValidFileOrDirectoryName(string name) {
-            return !string.IsNullOrEmpty(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
         }
     }
 }

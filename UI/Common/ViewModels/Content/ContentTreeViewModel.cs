@@ -19,6 +19,7 @@
         private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
+        private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IContentDirectory> _treeRoot = new();
         private IContentNode _selectedNode;
 
@@ -35,11 +36,17 @@
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="fileSystem">The file system.</param>
+        /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(IContentService contentService, IDialogService dialogService, IFileSystemService fileSystem) {
+        public ContentTreeViewModel(
+            IContentService contentService,
+            IDialogService dialogService,
+            IFileSystemService fileSystem,
+            ISceneService sceneService) {
             this._contentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
+            this._sceneService = sceneService;
             this.ResetRoot();
             this._contentService.PropertyChanged += this.ProjectService_PropertyChanged;
 
@@ -49,7 +56,7 @@
 
             this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.RemoveContent,
-                this.WhenAny(x => x.SelectedNode, y => y.Value != null && y.Value.Parent != y.Value));
+                this.WhenAny(x => x.SelectedNode, y => y.Value is { } and not RootContentDirectory));
 
             this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(
                 async x => await this.RenameContent(x),
@@ -119,6 +126,27 @@
         }
 
         private Unit RemoveContent(IContentNode node) {
+            var openSceneMetadataId = this._sceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
+            switch (node) {
+                case RootContentDirectory:
+                    this._dialogService.ShowWarningDialog("Cannot Delete", "Cannot delete the root.");
+                    break;
+                case IContentDirectory directory when directory.ContainsMetadata(openSceneMetadataId):
+                    this._dialogService.ShowWarningDialog("Cannot Delete", "This directory cannot be deleted, because the open scene is a descendent.");
+                    break;
+                case IContentDirectory:
+                    this._fileSystem.DeleteDirectory(node.GetFullPath());
+                    node.Parent?.RemoveChild(node);
+                    break;
+                case ContentFile { Metadata: { } } file when file.Metadata.ContentId == openSceneMetadataId:
+                    this._dialogService.ShowWarningDialog("Cannot Delete", "The currently opened scene cannot be deleted.");
+                    break;
+                default:
+                    this._fileSystem.DeleteFile(node.GetFullPath());
+                    node.Parent?.RemoveChild(node);
+                    break;
+            }
+
             return Unit.Default;
         }
 
