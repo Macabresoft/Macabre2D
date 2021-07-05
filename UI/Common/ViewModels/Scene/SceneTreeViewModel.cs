@@ -85,6 +85,35 @@
         /// </summary>
         public IReadOnlyCollection<IEntity> Root => this._treeRoot;
 
+        /// <summary>
+        /// Moves the source entity to be a child of the target entity.
+        /// </summary>
+        /// <param name="sourceEntity">The source entity.</param>
+        /// <param name="targetEntity">The target entity.</param>
+        public void MoveEntity(IEntity sourceEntity, IEntity targetEntity) {
+            if (this.CanMoveEntity(sourceEntity, targetEntity)) {
+                var originalParent = sourceEntity.Parent;
+                var originalHasChanges = this._sceneService.HasChanges;
+                this._undoService.Do(() => {
+                    targetEntity.AddChild(sourceEntity);
+                    this._sceneService.HasChanges = true;
+                }, () => {
+                    originalParent.AddChild(sourceEntity);
+                    this._sceneService.HasChanges = originalHasChanges;
+                }, UndoScope.Scene);
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the entity can be moved.
+        /// </summary>
+        /// <param name="sourceEntity">The source entity.</param>
+        /// <param name="targetEntity">The target entity which will be the parent of the source entity after moving.</param>
+        /// <returns>A value indicating whether or not the entity can be moved.</returns>
+        public bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
+            return sourceEntity != null && targetEntity != null && !sourceEntity.IsDescendentOf(targetEntity) && sourceEntity != targetEntity;
+        }
+
         private Unit RenameEntity(string updatedName) {
             if (this.EntitySelectionService.SelectedEntity is IEntity entity && entity.Name != updatedName) {
                 var originalHasChanges = this._sceneService.HasChanges;

@@ -34,14 +34,19 @@
             </TreeView.Styles>
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="framework:IScene"
-                                  ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}" />
+                                  ItemsSource="{Binding Children}"
+                                  >
+                    <TextBlock Text="{Binding Name}"
+                               HorizontalAlignment="Stretch"
+                               DragDrop.AllowDrop="True"/>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="framework:IEntity"
                                   ItemsSource="{Binding Children}">
                     <controls:EditableTreeViewItem IsEditable="True"
                                                    TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
-                                                   Text="{Binding Path=Name, Mode=TwoWay}" />
+                                                   Text="{Binding Path=Name, Mode=TwoWay}"
+                                                   PointerPressed="Entity_OnPointerPressed"
+                                                   DragDrop.AllowDrop="True" />
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
         </TreeView>
