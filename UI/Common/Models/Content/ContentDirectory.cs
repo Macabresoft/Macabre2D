@@ -79,10 +79,40 @@
         public bool AddChild(IContentNode node) {
             var result = false;
             if (node != null && !this._children.Contains(node)) {
-                if (!(node is IContentDirectory directory && this.IsDescendentOf(directory))) {
-                    this._children.Add(node);
+                var directory = node as IContentDirectory;
+                var isDirectory = directory != null;
+                if (!(isDirectory && this.IsDescendentOf(directory))) {
+                    for (var i = 0; i < this._children.Count; i++) {
+                        var child = this._children[i];
+                        if (isDirectory) {
+                            if (child is IContentDirectory) {
+                                if (StringComparer.OrdinalIgnoreCase.Compare(node.Name, child.Name) < 0) {
+                                    this._children.Insert(i, node);
+                                    result = true;
+                                    break;
+                                }
+                            }
+                            else {
+                                this._children.Insert(i, node);
+                                result = true;
+                                break;
+                            }
+                        }
+                        else if (child is not IContentDirectory) {
+                            if (StringComparer.OrdinalIgnoreCase.Compare(node.Name, child.Name) < 0) {
+                                this._children.Insert(i, node);
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!result) {
+                        this._children.Add(node);
+                        result = true;
+                    }
+
                     node.PathChanged += this.Child_PathChanged;
-                    result = true;
                 }
             }
 

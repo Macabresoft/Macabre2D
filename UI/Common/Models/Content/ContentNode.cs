@@ -95,6 +95,10 @@
                     this.RaisePropertyChanged(nameof(this.Name));
                 }
                 else if (this.Set(ref this._name, value, true)) {
+                    if (this.Parent is IContentDirectory directory) {
+                        directory.RemoveChild(this);
+                        directory.AddChild(this);
+                    }
                     this.OnPathChanged(originalPath);
                 }
             }

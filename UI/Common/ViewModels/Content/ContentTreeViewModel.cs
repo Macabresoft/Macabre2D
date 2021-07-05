@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Content {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -44,7 +45,7 @@
 
             this.AddFolderCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.AddFolder,
-                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
+                this.WhenAny(x => x.SelectedNode, y => y.Value is IContentDirectory));
 
             this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.RemoveContent,
@@ -85,13 +86,30 @@
         }
 
         private Unit AddFolder(IContentNode parent) {
-            var parentDirectory = parent as IContentDirectory ?? parent.Parent;
-
-            if (parentDirectory != null) {
-                // TODO: add
+            if (parent is IContentDirectory parentDirectory) {
+                this.CreateDirectory("New Folder", parentDirectory);
             }
 
             return Unit.Default;
+        }
+
+        private IContentDirectory CreateDirectory(string name, IContentDirectory parent) {
+            var parentPath = parent.GetFullPath();
+            var fullPath = Path.Combine(parentPath, name);
+            var currentCount = 0;
+
+            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
+                currentCount++;
+                if (currentCount >= 100) {
+                    throw new NotSupportedException("What the hell are you even doing with 100 folders named New Folder????");
+                }
+
+                name = $"New Folder ({currentCount})";
+                fullPath = Path.Combine(parentPath, name);
+            }
+
+            this._fileSystem.CreateDirectory(fullPath);
+            return new ContentDirectory(name, parent);
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
