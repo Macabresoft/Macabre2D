@@ -3,15 +3,11 @@
              xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Content;assembly=Macabre2D.UI.Common"
              xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeViewModel />
     </Design.DataContext>
-    <UserControl.Resources>
-        <converters:StringConcatenationConverter x:Key="StringConcatenationConverter" />
-    </UserControl.Resources>
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
@@ -37,15 +33,16 @@
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="content:RootContentDirectory"
                                   ItemsSource="{Binding Children}">
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource StringConcatenationConverter}">
-                                <Binding Source="{StaticResource FolderIcon}" />
-                                <Binding Source="  " />
-                                <Binding Path="Name" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <Grid ColumnDefinitions="Auto, 4, *">
+                        <TextBlock Grid.Column="0"
+                                   Text="{StaticResource FolderIcon}"
+                                   VerticalAlignment="Center"
+                                   Height="{Binding #_rootControl.Height}" />
+                        <TextBlock Grid.Column="2"
+                                   x:Name="_rootControl"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Name}" />
+                    </Grid>
                 </TreeDataTemplate>
 
                 <TreeDataTemplate DataType="content:IContentDirectory"
@@ -54,9 +51,9 @@
                         <TextBlock Grid.Column="0"
                                    Text="{StaticResource FolderIcon}"
                                    VerticalAlignment="Center"
-                                   Height="{Binding #_treeViewItem.Height}" />
+                                   Height="{Binding #_directoryControl.Height}" />
                         <controls:EditableTreeViewItem Grid.Column="2"
-                                                       x:Name="_treeViewItem"
+                                                       x:Name="_directoryControl"
                                                        VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
@@ -65,15 +62,19 @@
                     </Grid>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="content:IContentNode">
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource StringConcatenationConverter}">
-                                <Binding Source="{StaticResource BulletPointIcon}" />
-                                <Binding Source="  " />
-                                <Binding Path="Name" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <Grid ColumnDefinitions="Auto, 4, *">
+                        <TextBlock Grid.Column="0"
+                                   Text="{StaticResource BulletPointIcon}"
+                                   VerticalAlignment="Center"
+                                   Height="{Binding #_nodeControl.Height}" />
+                        <controls:EditableTreeViewItem Grid.Column="2"
+                                                       x:Name="_nodeControl"
+                                                       VerticalAlignment="Center"
+                                                       IsEditable="False"
+                                                       IsFileName="True"
+                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
+                                                       Text="{Binding Name}" />
+                    </Grid>
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
         </TreeView>
