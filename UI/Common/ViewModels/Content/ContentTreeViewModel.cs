@@ -138,6 +138,7 @@
                         }
                         else {
                             node.Name = updatedName;
+                            this._selectedNode = node;
                         }
                     }
                 }
