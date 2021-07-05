@@ -143,7 +143,7 @@
             this.SaveScene();
 
             this._assetManager.RegisterMetadata(metadata);
-            CreateContentFile(parent, metadata);
+            this.CreateContentFile(parent, metadata);
             return sceneAsset;
         }
 
@@ -193,7 +193,7 @@
             return sceneAsset != null;
         }
 
-        private static ContentFile CreateContentFile(IContentDirectory parent, ContentMetadata metadata) {
+        private ContentFile CreateContentFile(IContentDirectory parent, ContentMetadata metadata) {
             return new(parent, metadata);
         }
     }

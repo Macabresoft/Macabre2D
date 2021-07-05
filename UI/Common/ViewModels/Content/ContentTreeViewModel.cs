@@ -106,8 +106,7 @@
 
         private async Task RenameContent(string updatedName) {
             if (this.SelectedNode is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
-                var isDirectory = node is IContentDirectory;
-                var typeName = isDirectory ? "Directory" : "File";
+                var typeName = node is IContentDirectory ? "Directory" : "File";
                 if (this._fileSystem.IsValidFileOrDirectoryName(updatedName)) {
                     await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
                 }
@@ -120,14 +119,6 @@
                             await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"A {typeName.ToLower()} named '{updatedName}' already exists.");
                         }
                         else {
-                            var originalPath = node.GetFullPath();
-                            if (isDirectory) {
-                                this._fileSystem.MoveDirectory(originalPath, updatedPath);
-                            }
-                            else {
-                                this._fileSystem.MoveFile(originalPath, updatedPath);
-                            }
-
                             node.Name = updatedName;
                         }
                     }

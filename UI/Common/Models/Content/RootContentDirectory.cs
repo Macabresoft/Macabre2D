@@ -1,8 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
-    using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// The root of the content directory tree.

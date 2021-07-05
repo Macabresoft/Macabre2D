@@ -70,7 +70,7 @@
                         <controls:EditableTreeViewItem Grid.Column="2"
                                                        x:Name="_nodeControl"
                                                        VerticalAlignment="Center"
-                                                       IsEditable="False"
+                                                       IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                        Text="{Binding Name}" />

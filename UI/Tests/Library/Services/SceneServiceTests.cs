@@ -26,7 +26,6 @@
             fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
             var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
             fileSystem.DoesFileExist(sceneFilePath).Returns(false);
-
             var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, Substitute.For<IUndoService>());
             var sceneAsset = sceneService.CreateNewScene(contentDirectory, SceneName);
 
@@ -66,7 +65,6 @@
             var metadataFilePath = pathService.GetMetadataFilePath(metadata.ContentId);
             fileSystem.DoesFileExist(metadataFilePath).Returns(true);
             serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-
             var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, Substitute.For<IUndoService>());
             var result = sceneService.TryLoadScene(metadata.ContentId, out var loadedSceneAsset);
 

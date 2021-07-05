@@ -3,6 +3,7 @@
     using System.IO;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// Interface for a node in the content tree.
@@ -161,7 +162,7 @@
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event arguments.</param>
         protected void RaisePathChanged(object sender, ValueChangedEventArgs<string> e) {
-            this.PathChanged.SafeInvoke(sender, e);
+            this.PathChanged?.SafeInvoke(sender, e);
         }
     }
 }

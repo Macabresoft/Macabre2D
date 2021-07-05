@@ -159,8 +159,9 @@
                 case IContentDirectory:
                     this._fileSystem.MoveDirectory(e.OriginalValue, e.UpdatedValue);
                     break;
-                case ContentFile:
+                case ContentFile contentFile:
                     this._fileSystem.MoveFile(e.OriginalValue, e.UpdatedValue);
+                    this.SaveMetadata(contentFile.Metadata);
                     break;
             }
         }
