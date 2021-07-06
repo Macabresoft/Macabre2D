@@ -21,13 +21,6 @@
 
         public SceneTreeViewModel ViewModel => this.DataContext as SceneTreeViewModel;
 
-        private void DragOver(object sender, DragEventArgs e) {
-            if (e.Source is IControl { DataContext: IEntity targetEntity } &&
-                e.Data.Get(string.Empty) is IEntity sourceEntity) {
-                e.DragEffects = this.ViewModel.CanMoveEntity(sourceEntity, targetEntity) ? DragDropEffects.Move : DragDropEffects.None;
-            }
-        }
-
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&
                 e.Data.Get(string.Empty) is IEntity sourceEntity) {
@@ -49,7 +42,6 @@
 
         private void SetupDragAndDrop() {
             this.AddHandler(DragDrop.DropEvent, this.Drop);
-            this.AddHandler(DragDrop.DragOverEvent, this.DragOver);
         }
     }
 }
