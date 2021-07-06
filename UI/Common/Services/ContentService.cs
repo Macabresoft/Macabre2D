@@ -90,6 +90,7 @@
             contentToMove.ChangeParent(newParent);
         }
 
+        /// <inheritdoc />
         public void RefreshContent() {
             if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
                 this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);

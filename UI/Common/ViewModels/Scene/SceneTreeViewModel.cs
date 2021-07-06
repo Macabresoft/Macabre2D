@@ -91,7 +91,7 @@
         /// <param name="sourceEntity">The source entity.</param>
         /// <param name="targetEntity">The target entity.</param>
         public void MoveEntity(IEntity sourceEntity, IEntity targetEntity) {
-            if (this.CanMoveEntity(sourceEntity, targetEntity)) {
+            if (CanMoveEntity(sourceEntity, targetEntity)) {
                 var originalParent = sourceEntity.Parent;
                 var originalHasChanges = this._sceneService.HasChanges;
                 this._undoService.Do(() => {
@@ -103,15 +103,8 @@
                 }, UndoScope.Scene);
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether or not the entity can be moved.
-        /// </summary>
-        /// <param name="sourceEntity">The source entity.</param>
-        /// <param name="targetEntity">The target entity which will be the parent of the source entity after moving.</param>
-        /// <returns>A value indicating whether or not the entity can be moved.</returns>
-        public bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
-            return sourceEntity != null && targetEntity != null && !sourceEntity.IsDescendentOf(targetEntity) && sourceEntity != targetEntity;
+        private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
+            return sourceEntity != null && targetEntity != null && sourceEntity != targetEntity && !sourceEntity.IsDescendentOf(targetEntity);
         }
 
         private Unit RenameEntity(string updatedName) {

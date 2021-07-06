@@ -7,6 +7,7 @@
     using System.Reactive;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Avalonia.Threading;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
@@ -62,7 +63,15 @@
                 async x => await this.RenameContent(x),
                 this.WhenAny(x => x.SelectedNode, y => y.Value != null));
         }
-
+        
+        /// <summary>
+        /// Moves the source content node to be a child of the target directory.
+        /// </summary>
+        /// <param name="sourceNode">The source node.</param>
+        /// <param name="targetDirectory">The target directory.</param>
+        public void MoveNode(IContentNode sourceNode, IContentDirectory targetDirectory) {
+            Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
+        }
 
         /// <summary>
         /// Gets the add folder command.

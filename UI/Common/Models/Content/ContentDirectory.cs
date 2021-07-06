@@ -173,6 +173,7 @@
 
         /// <inheritdoc />
         public bool RemoveChild(IContentNode node) {
+            node.PathChanged -= this.Child_PathChanged;
             return this._children.Remove(node);
         }
 

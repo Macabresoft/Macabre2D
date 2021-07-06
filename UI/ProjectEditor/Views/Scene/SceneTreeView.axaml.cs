@@ -16,7 +16,7 @@
         public SceneTreeView() {
             this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
             this.InitializeComponent();
-            this.SetupDragAndDrop();
+            this.AddHandler(DragDrop.DropEvent, this.Drop);
         }
 
         public SceneTreeViewModel ViewModel => this.DataContext as SceneTreeViewModel;
@@ -30,7 +30,7 @@
 
         private async void Entity_OnPointerPressed(object sender, PointerPressedEventArgs e) {
             if (sender is IControl { DataContext: IEntity entity }) {
-                var dragData = new EntityDataObject(entity);
+                var dragData = new GenericDataObject(entity, entity.Name);
                 await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
                 // TODO: could get the result from DoDragDrop and write a message in a status bar
             }
@@ -41,7 +41,6 @@
         }
 
         private void SetupDragAndDrop() {
-            this.AddHandler(DragDrop.DropEvent, this.Drop);
         }
     }
 }

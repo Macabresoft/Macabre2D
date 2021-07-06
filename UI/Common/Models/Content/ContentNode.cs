@@ -107,14 +107,19 @@
         /// <inheritdoc />
         public void ChangeParent(IContentDirectory newParent) {
             var originalParent = this.Parent;
-            var originalPath = originalParent != null ? this.GetFullPath() : string.Empty;
+            if (newParent != originalParent && newParent != this) {
+                var originalPath = originalParent != null ? this.GetFullPath() : string.Empty;
+                originalParent?.RemoveChild(this);
+            
+                if (newParent?.AddChild(this) == true) {
+                    this.Parent = newParent;
 
-            if (newParent?.AddChild(this) == true) {
-                this.Parent?.RemoveChild(this);
-                this.Parent = newParent;
-
-                if (originalParent != null) {
-                    this.OnPathChanged(originalPath);
+                    if (originalParent != null) {
+                        this.OnPathChanged(originalPath);
+                    }
+                }
+                else {
+                    originalParent?.AddChild(this);
                 }
             }
         }
