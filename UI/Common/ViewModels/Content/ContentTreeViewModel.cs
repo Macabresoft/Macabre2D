@@ -1,16 +1,17 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Content {
+    using Avalonia.Threading;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Reactive;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
-    using ReactiveUI;
     using Unity;
 
     /// <summary>
@@ -69,8 +70,20 @@
         /// </summary>
         /// <param name="sourceNode">The source node.</param>
         /// <param name="targetDirectory">The target directory.</param>
-        public void MoveNode(IContentNode sourceNode, IContentDirectory targetDirectory) {
-            Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
+        public async Task MoveNode(IContentNode sourceNode, IContentDirectory targetDirectory) {
+            if (targetDirectory != null && 
+                sourceNode != null && 
+                targetDirectory != sourceNode && 
+                sourceNode.Parent != targetDirectory) {
+                if (targetDirectory.Children.Any(x => string.Equals(x.Name, sourceNode.Name, StringComparison.OrdinalIgnoreCase))) {
+                    await this._dialogService.ShowWarningDialog(
+                        "Error",
+                        $"Directory '{targetDirectory.Name}' already contains a folder named '{sourceNode.Name}'.");
+                }
+                else {
+                    Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
+                }
+            }
         }
 
         /// <summary>

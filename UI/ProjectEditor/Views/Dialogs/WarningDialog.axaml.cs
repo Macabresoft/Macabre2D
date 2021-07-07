@@ -11,7 +11,7 @@
             AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningMessage));
 
         public static readonly StyledProperty<string> WarningTitleProperty =
-            AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningTitle));
+            AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningTitle), "Warning");
 
         public WarningDialog() {
             this.OkCommand = ReactiveCommand.Create<Unit, Unit>(this.Close);

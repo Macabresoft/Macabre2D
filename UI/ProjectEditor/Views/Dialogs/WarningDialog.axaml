@@ -9,7 +9,7 @@
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
-        Title="{Binding $self.WarningTitle}">
+        Title="{Binding $self.WarningTitle, FallbackValue='Warning'}">
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="*, Auto">
         <Grid Grid.Row="0"

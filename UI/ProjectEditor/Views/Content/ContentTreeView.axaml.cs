@@ -30,14 +30,13 @@
             if (sender is IControl { DataContext: IContentNode sourceNode }) {
                 var dragData = new GenericDataObject(sourceNode, sourceNode.Name);
                 await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
-                // TODO: could get the result from DoDragDrop and write a message in a status bar
             }
         }
         
-        private void Drop(object sender, DragEventArgs e) {
+        private async void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IContentDirectory targetDirectory } &&
                 e.Data.Get(string.Empty) is IContentNode sourceNode) {
-                this.ViewModel.MoveNode(sourceNode, targetDirectory);
+                await this.ViewModel.MoveNode(sourceNode, targetDirectory);
             }
         }
     }
