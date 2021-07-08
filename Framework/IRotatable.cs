@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
 
     /// <summary>
     /// Represents something that can be rotated using <see cref="Rotation"/>.

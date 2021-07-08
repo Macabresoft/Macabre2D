@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Converters {
+namespace Macabresoft.Macabre2D.UI.Common.Converters {
     using System;
     using System.Collections.Generic;
     using System.Globalization;

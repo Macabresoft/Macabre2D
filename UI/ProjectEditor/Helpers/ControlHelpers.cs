@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Helpers {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Helpers {
     using Avalonia.Controls;
 
     /// <summary>

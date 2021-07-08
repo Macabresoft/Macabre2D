@@ -1,4 +1,4 @@
-﻿#----------------------------- Global Properties ----------------------------#
+#----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
 /intermediateDir:obj/$(Platform)

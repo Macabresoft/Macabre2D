@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -6,6 +6,7 @@
     using Avalonia.Controls;
     using Avalonia.Platform;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -101,18 +102,18 @@
         /// Gets a value indicating whether or not the window should close.
         /// </summary>
         /// <returns>A value indicating whether or not the window should close.</returns>
-        public async Task<bool> ShouldClose() {
+        public async Task<YesNoCancelResult> TryClose() {
+            var result = YesNoCancelResult.No;
             if (this._projectService.HasChanges || this._sceneService.HasChanges) {
-                var shouldSave = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?");
+                result = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?", true);
 
-                if (shouldSave) {
+                if (result == YesNoCancelResult.Yes) {
                     this._sceneService.SaveScene();
                     this._projectService.SaveProject();
                 }
             }
 
-            // TODO: provide a cancel option
-            return true;
+            return result;
         }
 
         private void Exit(Window window) {

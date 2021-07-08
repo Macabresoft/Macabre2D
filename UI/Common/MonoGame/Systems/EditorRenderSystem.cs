@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
+namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
     using System.Linq;
     using Framework;
     using Macabresoft.Macabre2D.UI.Common.MonoGame.Entities;

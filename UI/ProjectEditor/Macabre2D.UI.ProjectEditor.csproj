@@ -44,8 +44,8 @@
       <DependentUpon>WarningDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Dialogs\YesNoDialog.axaml.cs">
-      <DependentUpon>YesNoDialog.axaml</DependentUpon>
+    <Compile Update="Views\Dialogs\YesNoCancelDialog.axaml.cs">
+      <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

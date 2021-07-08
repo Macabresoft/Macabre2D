@@ -1,4 +1,4 @@
-﻿<Style xmlns="https://github.com/avaloniaui"
+<Style xmlns="https://github.com/avaloniaui"
        xmlns:system="clr-namespace:System;assembly=mscorlib"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style.Resources>

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
 
     /// <summary>
     /// A system which does a sorted update loop over enabled updateable entities.

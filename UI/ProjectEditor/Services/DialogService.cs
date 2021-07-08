@@ -1,7 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
@@ -57,12 +58,12 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> ShowYesNoDialog(string title, string message) {
-            var window = Resolver.Resolve<YesNoDialog>();
+        public async Task<YesNoCancelResult> ShowYesNoDialog(string title, string message, bool allowCancel) {
+            var window = Resolver.Resolve<YesNoCancelDialog>();
             window.Title = title;
             window.Question = message;
 
-            var result = await window.ShowDialog<bool>(this._mainWindow);
+            var result = await window.ShowDialog<YesNoCancelResult>(this._mainWindow);
             return result;
         }
     }

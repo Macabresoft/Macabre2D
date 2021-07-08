@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// Interface for resolving collisions.
     /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using System.Reactive;
     using System.Windows.Input;
     using Avalonia;

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
+namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
 
     using Avalonia;
 

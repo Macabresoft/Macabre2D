@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow.Entities {
+namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow.Entities {
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
     using System.ComponentModel;
     using System.Runtime.Serialization;
     using Macabresoft.Core;

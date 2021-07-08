@@ -1,4 +1,4 @@
-﻿using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {

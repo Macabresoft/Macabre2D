@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common.Services {
     using Macabresoft.Core;
     using System.Diagnostics;
     using System.IO;

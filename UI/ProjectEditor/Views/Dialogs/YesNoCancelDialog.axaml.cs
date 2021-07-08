@@ -1,33 +1,46 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using System.Reactive;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
 
-    public class YesNoDialog : Window {
-        public static readonly StyledProperty<string> QuestionProperty =
-            AvaloniaProperty.Register<YesNoDialog, string>(nameof(Question));
+    public class YesNoCancelDialog : Window {
+        public static readonly StyledProperty<bool> AllowCancelProperty =
+            AvaloniaProperty.Register<YesNoCancelDialog, bool>(nameof(AllowCancel), true);
 
-        public YesNoDialog() {
+        public static readonly StyledProperty<string> QuestionProperty =
+            AvaloniaProperty.Register<YesNoCancelDialog, string>(nameof(Question));
+
+        public YesNoCancelDialog() {
             this.DataContext = this;
-            this.YesCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, true));
-            this.NoCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, false));
+            this.CancelCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.Cancel));
+            this.NoCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.No));
+            this.YesCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.Yes));
 
             this.InitializeComponent();
         }
 
+
+        public ICommand CancelCommand { get; }
+
         public ICommand NoCommand { get; }
 
         public ICommand YesCommand { get; }
+
+        public bool AllowCancel {
+            get => this.GetValue(AllowCancelProperty);
+            set => this.SetValue(AllowCancelProperty, value);
+        }
 
         public string Question {
             get => this.GetValue(QuestionProperty);
             set => this.SetValue(QuestionProperty, value);
         }
 
-        private Unit Close(Unit unit, bool dialogResult) {
+        private Unit Close(Unit unit, YesNoCancelResult dialogResult) {
             this.Close(dialogResult);
             return unit;
         }

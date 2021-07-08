@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework {
+namespace Macabresoft.Macabre2D.Tests.Framework {
     using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;

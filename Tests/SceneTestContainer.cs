@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests {
+namespace Macabresoft.Macabre2D.Tests {
 
     using FluentAssertions;
     using FluentAssertions.Execution;

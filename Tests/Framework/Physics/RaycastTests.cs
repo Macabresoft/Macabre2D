@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
+namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using NSubstitute;

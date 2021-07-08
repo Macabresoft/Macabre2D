@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;

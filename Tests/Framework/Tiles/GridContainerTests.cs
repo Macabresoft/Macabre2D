@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Tiles {
+namespace Macabresoft.Macabre2D.Tests.Framework.Tiles {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;

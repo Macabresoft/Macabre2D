@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
     using Avalonia.Markup.Xaml;
 
     public class BoolEditor : ValueEditorControl<bool> {

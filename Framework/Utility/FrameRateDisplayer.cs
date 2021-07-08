@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
     using System.ComponentModel.DataAnnotations;
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;

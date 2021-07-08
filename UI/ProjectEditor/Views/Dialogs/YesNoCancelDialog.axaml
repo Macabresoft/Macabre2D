@@ -1,7 +1,7 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
-        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.YesNoDialog"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.YesNoCancelDialog"
         Height="128"
         Width="320"
         CanResize="False"
@@ -10,7 +10,7 @@
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="None">
     <Design.DataContext>
-        <local:YesNoDialog />
+        <local:YesNoCancelDialog />
     </Design.DataContext>
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto">
@@ -46,7 +46,12 @@
 
             <Button Content="No"
                     Command="{Binding NoCommand}"
+                    HorizontalAlignment="Right" />
+
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
                     HorizontalAlignment="Right"
+                    IsVisible="{Binding AllowCancel}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

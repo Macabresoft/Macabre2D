@@ -1,6 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.Threading.Tasks;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
     /// <summary>
@@ -40,7 +41,8 @@
         /// </summary>
         /// <param name="title">The title.</param>
         /// <param name="message">The message, usually a yes or no question.</param>
+        /// <param name="allowCancel">A value indicating whether or not to allow cancellation.</param>
         /// <returns><c>true</c> if the user selected yes; otherwise <c>false</c>.</returns>
-        Task<bool> ShowYesNoDialog(string title, string message);
+        Task<YesNoCancelResult> ShowYesNoDialog(string title, string message, bool allowCancel);
     }
 }

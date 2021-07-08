@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Content;assembly=Macabre2D.UI.Common"
              xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
@@ -33,54 +33,39 @@
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="content:RootContentDirectory"
                                   ItemsSource="{Binding Children}">
-                    <Grid ColumnDefinitions="Auto, 4, *"
-                          HorizontalAlignment="Stretch"
-                          DragDrop.AllowDrop="True">
-                        <TextBlock Grid.Column="0"
-                                   Text="{StaticResource FolderIcon}"
-                                   VerticalAlignment="Center"
-                                   Height="{Binding #_rootControl.Height}" />
-                        <TextBlock Grid.Column="2"
-                                   x:Name="_rootControl"
-                                   VerticalAlignment="Center"
+                    <Border HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            DragDrop.AllowDrop="True">
+                        <TextBlock VerticalAlignment="Center"
                                    Text="{Binding Name}" />
-                    </Grid>
+                    </Border>
                 </TreeDataTemplate>
 
                 <TreeDataTemplate DataType="content:IContentDirectory"
                                   ItemsSource="{Binding Children}">
-                    <Grid ColumnDefinitions="Auto, 4, *"
-                          PointerPressed="Node_OnPointerPressed"
-                          DragDrop.AllowDrop="True">
-                        <TextBlock Grid.Column="0"
-                                   Text="{StaticResource FolderIcon}"
-                                   VerticalAlignment="Center"
-                                   Height="{Binding #_directoryControl.Height}" />
-                        <controls:EditableTreeViewItem Grid.Column="2"
-                                                       x:Name="_directoryControl"
+                    <Border HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            PointerPressed="Node_OnPointerPressed"
+                            DragDrop.AllowDrop="True">
+                        <controls:EditableTreeViewItem x:Name="_directoryControl"
                                                        VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                        Text="{Binding Name}" />
-                    </Grid>
+                    </Border>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="content:IContentNode">
-                    <Grid ColumnDefinitions="Auto, 4, *"
-                          PointerPressed="Node_OnPointerPressed"
-                          DragDrop.AllowDrop="True">
-                        <TextBlock Grid.Column="0"
-                                   Text="{StaticResource BulletPointIcon}"
-                                   VerticalAlignment="Center"
-                                   Height="{Binding #_nodeControl.Height}" />
-                        <controls:EditableTreeViewItem Grid.Column="2"
-                                                       x:Name="_nodeControl"
-                                                       VerticalAlignment="Center"
+                    <Border HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            PointerPressed="Node_OnPointerPressed"
+                            DragDrop.AllowDrop="True">
+                        <controls:EditableTreeViewItem VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                        Text="{Binding Name}" />
-                    </Grid>
+                    </Border>
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
         </TreeView>

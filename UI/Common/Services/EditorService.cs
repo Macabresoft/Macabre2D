@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.ComponentModel;
     using Macabresoft.Macabre2D.UI.Common.MonoGame;
     using Macabresoft.Macabre2D.Framework;

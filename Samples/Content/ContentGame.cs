@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Samples.Content {
+namespace Macabresoft.Macabre2D.Samples.Content {
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;

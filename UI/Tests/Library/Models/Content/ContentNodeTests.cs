@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Editor.Library.Models.Content {
+namespace Macabresoft.Macabre2D.Tests.Editor.Library.Models.Content {
     using System.IO;
     using FluentAssertions;
     using FluentAssertions.Execution;

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
     using System.Text;
     using Microsoft.Xna.Framework.Content.Pipeline;
     using Microsoft.Xna.Framework.Content.Pipeline.Processors;

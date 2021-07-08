@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common {
+namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common.MonoGame;

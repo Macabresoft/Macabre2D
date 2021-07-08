@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using System.IO;
     using System.Windows.Input;
     using Avalonia;

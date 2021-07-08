@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Mappers {
+namespace Macabresoft.Macabre2D.UI.Common.Mappers {
     using System;
     using Macabresoft.Macabre2D.UI.Common.Models;
 

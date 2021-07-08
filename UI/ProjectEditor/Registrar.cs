@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor {
     using Macabresoft.Macabre2D.UI.Common.Mappers;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Mappers;

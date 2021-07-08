@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"

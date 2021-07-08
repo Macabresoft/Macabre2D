@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Samples.Physics {
+namespace Macabresoft.Macabre2D.Samples.Physics {
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using Macabresoft.Macabre2D.Framework;

@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Styles.Resources>

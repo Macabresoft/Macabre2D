@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
+namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
     using System;
     using System.Collections.Generic;
     using System.Linq;

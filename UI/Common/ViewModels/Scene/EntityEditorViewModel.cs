@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
+namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Unity;
 

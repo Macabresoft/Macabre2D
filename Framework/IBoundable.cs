@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework {
 
     /// <summary>
     /// Interface for physics objects that can be contained within a bounding area.

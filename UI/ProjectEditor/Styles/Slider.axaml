@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
 	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Styles.Resources>
 		<Thickness x:Key="SliderTopHeaderMargin">0,0,0,0</Thickness>
