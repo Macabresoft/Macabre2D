@@ -14,12 +14,21 @@
     </Design.DataContext>
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto">
-        <TextBlock Grid.Row="0"
-                   Text="{Binding Title}"
-                   TextTrimming="CharacterEllipsis"
-                   TextWrapping="NoWrap"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top" />
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, 4, *"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top">
+            <TextBlock Grid.Column="0"
+                       Text="{StaticResource TelephoneIcon}"
+                       VerticalAlignment="Center"
+                       Height="{Binding #_titleBlock.Height}" />
+            <TextBlock x:Name="_titleBlock"
+                       Grid.Column="2"
+                       Text="{Binding Title}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       VerticalAlignment="Center" />
+        </Grid>
 
         <TextBlock Grid.Row="1"
                    Text="{Binding Question}"

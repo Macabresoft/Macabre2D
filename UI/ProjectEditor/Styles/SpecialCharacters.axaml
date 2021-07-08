@@ -11,5 +11,6 @@
         <system:String x:Key="FolderIcon">&#8627;</system:String>
         <system:String x:Key="WarningIcon">&#9888;</system:String>
         <system:String x:Key="GridIcon">&#8983;</system:String>
+        <system:String x:Key="TelephoneIcon">&#9742;</system:String>
     </Style.Resources>
 </Style>
