@@ -6,33 +6,30 @@
     using Avalonia.Markup.Xaml;
     using ReactiveUI;
 
-    public class WarningDialog : Window {
-        public static readonly StyledProperty<string> WarningMessageProperty =
-            AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningMessage));
+    public class YesNoDialog : Window {
+        public static readonly StyledProperty<string> QuestionProperty =
+            AvaloniaProperty.Register<YesNoDialog, string>(nameof(Question));
 
-        public static readonly StyledProperty<string> WarningTitleProperty =
-            AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningTitle), "Warning");
+        public YesNoDialog() {
+            this.DataContext = this;
+            this.YesCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, true));
+            this.NoCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, false));
 
-        public WarningDialog() {
-            this.OkCommand = ReactiveCommand.Create<Unit, Unit>(this.Close);
             this.InitializeComponent();
         }
 
-        public ICommand OkCommand { get; }
+        public ICommand NoCommand { get; }
 
-        public string WarningMessage {
-            get => this.GetValue(WarningMessageProperty);
-            set => this.SetValue(WarningMessageProperty, value);
+        public ICommand YesCommand { get; }
+
+        public string Question {
+            get => this.GetValue(QuestionProperty);
+            set => this.SetValue(QuestionProperty, value);
         }
 
-        public string WarningTitle {
-            get => this.GetValue(WarningTitleProperty);
-            set => this.SetValue(WarningTitleProperty, value);
-        }
-
-        private Unit Close(Unit unit) {
-            this.Close(true);
-            return Unit.Default;
+        private Unit Close(Unit unit, bool dialogResult) {
+            this.Close(dialogResult);
+            return unit;
         }
 
         private void InitializeComponent() {

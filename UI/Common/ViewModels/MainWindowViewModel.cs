@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
@@ -13,6 +14,10 @@
     /// The view model for the main window.
     /// </summary>
     public class MainWindowViewModel : ViewModelBase {
+        private readonly IDialogService _dialogService;
+        private readonly IProjectService _projectService;
+        private readonly ISceneService _sceneService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
@@ -23,33 +28,44 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
+        /// <param name="dialogService">The dialog service.</param>
         /// <param name="entitySelectionService">The selection service.</param>
         /// <param name="sceneService">The scene service.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public MainWindowViewModel(IEntitySelectionService entitySelectionService, ISceneService sceneService, IUndoService undoService) : base() {
+        public MainWindowViewModel(
+            IDialogService dialogService,
+            IEntitySelectionService entitySelectionService,
+            IProjectService projectService,
+            ISceneService sceneService,
+            IUndoService undoService) : base() {
             if (undoService == null) {
                 throw new ArgumentNullException(nameof(undoService));
             }
 
-            if (sceneService == null) {
-                throw new ArgumentNullException(nameof(sceneService));
-            }
-
+            this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EntitySelectionService = entitySelectionService ?? throw new ArgumentNullException(nameof(entitySelectionService));
+            this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+            this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(this.Exit);
             this.RedoCommand = ReactiveCommand.Create(
                 undoService.Redo,
                 undoService.WhenAnyValue(x => x.CanRedo));
             this.SaveSceneCommand = ReactiveCommand.Create(
-                sceneService.SaveScene,
-                sceneService.WhenAnyValue(x => x.HasChanges));
+                this._sceneService.SaveScene,
+                this._sceneService.WhenAnyValue(x => x.HasChanges));
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
                 undoService.WhenAnyValue(x => x.CanUndo));
             this.ViewSourceCommand = ReactiveCommand.Create(this.ViewSource);
         }
+
+        /// <summary>
+        /// Gets the selection service.
+        /// </summary>
+        public IEntitySelectionService EntitySelectionService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.
@@ -67,11 +83,6 @@
         public ICommand SaveSceneCommand { get; }
 
         /// <summary>
-        /// Gets the selection service.
-        /// </summary>
-        public IEntitySelectionService EntitySelectionService { get; }
-
-        /// <summary>
         /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.
         /// </summary>
         public bool ShowNonNativeMenu => AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem != OperatingSystemType.OSX;
@@ -85,6 +96,24 @@
         /// Gets the command to view the source code.
         /// </summary>
         public ICommand ViewSourceCommand { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the window should close.
+        /// </summary>
+        /// <returns>A value indicating whether or not the window should close.</returns>
+        public async Task<bool> ShouldClose() {
+            if (this._projectService.HasChanges || this._sceneService.HasChanges) {
+                var shouldSave = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?");
+
+                if (shouldSave) {
+                    this._sceneService.SaveScene();
+                    this._projectService.SaveProject();
+                }
+            }
+
+            // TODO: provide a cancel option
+            return true;
+        }
 
         private void Exit(Window window) {
             window?.Close();

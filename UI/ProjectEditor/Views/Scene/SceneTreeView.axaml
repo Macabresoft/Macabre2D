@@ -34,11 +34,12 @@
             </TreeView.Styles>
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="framework:IScene"
-                                  ItemsSource="{Binding Children}"
-                                  >
-                    <TextBlock Text="{Binding Name}"
-                               HorizontalAlignment="Stretch"
-                               DragDrop.AllowDrop="True"/>
+                                  ItemsSource="{Binding Children}">
+                    <Border Background="Transparent"
+                            HorizontalAlignment="Stretch"
+                            DragDrop.AllowDrop="True">
+                        <TextBlock Text="{Binding Name}" />
+                    </Border>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="framework:IEntity"
                                   ItemsSource="{Binding Children}">

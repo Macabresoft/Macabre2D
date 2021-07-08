@@ -51,9 +51,19 @@
         /// <inheritdoc />
         public async Task ShowWarningDialog(string title, string message) {
             var window = Resolver.Resolve<WarningDialog>();
-            window.WarningTitle = title;
+            window.Title = title;
             window.WarningMessage = message;
             await window.ShowDialog(this._mainWindow);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> ShowYesNoDialog(string title, string message) {
+            var window = Resolver.Resolve<YesNoDialog>();
+            window.Title = title;
+            window.Question = message;
+
+            var result = await window.ShowDialog<bool>(this._mainWindow);
+            return result;
         }
     }
 }

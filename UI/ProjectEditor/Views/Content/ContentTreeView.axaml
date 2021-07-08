@@ -33,7 +33,9 @@
             <TreeView.DataTemplates>
                 <TreeDataTemplate DataType="content:RootContentDirectory"
                                   ItemsSource="{Binding Children}">
-                    <Grid ColumnDefinitions="Auto, 4, *">
+                    <Grid ColumnDefinitions="Auto, 4, *"
+                          HorizontalAlignment="Stretch"
+                          DragDrop.AllowDrop="True">
                         <TextBlock Grid.Column="0"
                                    Text="{StaticResource FolderIcon}"
                                    VerticalAlignment="Center"
@@ -41,8 +43,7 @@
                         <TextBlock Grid.Column="2"
                                    x:Name="_rootControl"
                                    VerticalAlignment="Center"
-                                   Text="{Binding Name}"
-                                   DragDrop.AllowDrop="True" />
+                                   Text="{Binding Name}" />
                     </Grid>
                 </TreeDataTemplate>
 

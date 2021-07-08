@@ -34,5 +34,13 @@
         /// <param name="message">The message.</param>
         /// <returns>A task.</returns>
         Task ShowWarningDialog(string title, string message);
+
+        /// <summary>
+        /// Shows a dialog with a yes and a no button.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="message">The message, usually a yes or no question.</param>
+        /// <returns><c>true</c> if the user selected yes; otherwise <c>false</c>.</returns>
+        Task<bool> ShowYesNoDialog(string title, string message);
     }
 }

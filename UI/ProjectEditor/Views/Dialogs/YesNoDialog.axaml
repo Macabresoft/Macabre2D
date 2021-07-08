@@ -1,43 +1,44 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
-        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.WarningDialog"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.YesNoDialog"
         Height="128"
         Width="320"
         CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         ExtendClientAreaToDecorationsHint="True"
-        SystemDecorations="None"
-        Title="{Binding $self.WarningTitle, FallbackValue='Warning'}">
+        SystemDecorations="None">
+    <Design.DataContext>
+        <local:YesNoDialog />
+    </Design.DataContext>
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto">
-        <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, 4, *"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Top">
-            <TextBlock Grid.Column="0"
-                       Text="{StaticResource WarningIcon}"
-                       VerticalAlignment="Center"
-                       Height="{Binding #_titleBlock.Height}" />
-            <TextBlock x:Name="_titleBlock"
-                       Grid.Column="2"
-                       Text="{Binding $parent[local:WarningDialog].WarningTitle}"
-                       TextTrimming="CharacterEllipsis"
-                       TextWrapping="NoWrap"
-                       VerticalAlignment="Center" />
-        </Grid>
+        <TextBlock Grid.Row="0"
+                   Text="{Binding Title}"
+                   TextTrimming="CharacterEllipsis"
+                   TextWrapping="NoWrap"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top" />
 
         <TextBlock Grid.Row="1"
-                   Text="{Binding $parent[local:WarningDialog].WarningMessage}"
+                   Text="{Binding Question}"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center" />
 
-        <Button Grid.Row="2"
-                Content="OK"
-                Command="{Binding $parent[local:WarningDialog].OkCommand}"
-                HorizontalAlignment="Right"
-                IsDefault="True" />
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Content="Yes"
+                    Command="{Binding YesCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+
+            <Button Content="No"
+                    Command="{Binding NoCommand}"
+                    HorizontalAlignment="Right"
+                    IsCancel="True" />
+        </StackPanel>
     </Grid>
 </Window>
