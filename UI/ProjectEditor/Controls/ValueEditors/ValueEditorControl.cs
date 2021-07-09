@@ -74,11 +74,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             set => this.SetValue(ValuePropertyNameProperty, value);
         }
 
-        public Type ValueType {
-            get => this.GetValue(ValueTypeProperty);
-            set => this.SetValue(ValueTypeProperty, value);
-        }
-
         public virtual void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             if (value is T typedValue) {
                 this.Value = typedValue;
@@ -86,7 +81,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
 
             this.Owner = owner;
             this.ValuePropertyName = valuePropertyName;
-            this.ValueType = valueType;
             this.Title = title;
 
             if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {

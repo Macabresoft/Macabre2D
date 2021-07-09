@@ -21,7 +21,8 @@
                 <Button Grid.Row="0"
                         HorizontalAlignment="Stretch"
                         Classes="groupBoxButton"
-                        Command="{TemplateBinding ToggleContentCommand}">
+                        Command="{TemplateBinding ToggleContentCommand}"
+                        Margin="{StaticResource DoubleMarginVertical}">
                     <Grid ColumnDefinitions="Auto, *"
                           Margin="{StaticResource DoubleMarginVertical}">
                         <TextBlock Grid.Column="0"

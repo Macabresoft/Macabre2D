@@ -55,8 +55,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
             if (valueEditors != null) {
                 foreach (var valueEditor in valueEditors) {
                     valueEditor.ValueChanged += this.ValueEditor_ValueChanged;
-                    valueEditor.Collection = this;
                     this._valueEditors.Add(valueEditor);
+                    valueEditor.Collection = this;
                 }
             }
         }
@@ -66,6 +66,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
             foreach (var valueEditor in this.ValueEditors) {
                 valueEditor.ValuePropertyName = null;
                 valueEditor.ValueChanged -= this.ValueEditor_ValueChanged;
+                valueEditor.Collection = null;
             }
 
             this._valueEditors.Clear();

@@ -30,11 +30,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// Gets or sets the value's property name. This is only required if not directly binding to the value.
         /// </summary>
         string ValuePropertyName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value's type.
-        /// </summary>
-        Type ValueType { get; set; }
         
         /// <summary>
         /// Gets or sets the collection to which this editor belongs.
