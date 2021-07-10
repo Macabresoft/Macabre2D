@@ -25,28 +25,20 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         void Clear();
 
         /// <summary>
-        /// Clears the queue of undo and redo operations in the specified scope.
-        /// </summary>
-        /// <param name="scope">The scope.</param>
-        void Clear(UndoScope scope);
-
-        /// <summary>
         /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property
         /// changed action will also be called.
         /// </summary>
         /// <param name="action">The action that can be undone.</param>
         /// <param name="undoAction">The action that undoes the changes performed in <see cref="action" />.</param>
-        /// <param name="scope">The scope of the undo operation.</param>
         /// <param name="propertyChangedAction">An action which will kick off an object's property changed notification.</param>
-        void Do(Action action, Action undoAction, UndoScope scope, Action propertyChangedAction);
+        void Do(Action action, Action undoAction, Action propertyChangedAction);
 
         /// <summary>
         /// Performs the specified action and makes it available to be undone.
         /// </summary>
         /// <param name="action">The action that can be undone.</param>
         /// <param name="undoAction">The action that undoes the changes performed in <see cref="action" />.</param>
-        /// <param name="scope">The scope of the undo operation.</param>
-        void Do(Action action, Action undoAction, UndoScope scope);
+        void Do(Action action, Action undoAction);
 
         /// <summary>
         /// Performs the most recently undone operation.
@@ -95,22 +87,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             }
         }
 
-        public void Clear(UndoScope scope) {
-            lock (this._lock) {
-                ClearStack(this._redoStack, scope);
-                ClearStack(this._undoStack, scope);
-                this.RaiseProperties();
-            }
+        /// <inheritdoc />
+        public void Do(Action action, Action undoAction) {
+            this.Do(action, undoAction, null);
         }
 
         /// <inheritdoc />
-        public void Do(Action action, Action undoAction, UndoScope scope) {
-            this.Do(action, undoAction, scope, null);
-        }
-
-        /// <inheritdoc />
-        public void Do(Action action, Action undoAction, UndoScope scope, Action propertyChangedAction) {
-            var undoCommand = new UndoCommand(action, undoAction, scope, propertyChangedAction);
+        public void Do(Action action, Action undoAction, Action propertyChangedAction) {
+            var undoCommand = new UndoCommand(action, undoAction, propertyChangedAction);
             lock (this._lock) {
                 undoCommand.Do();
                 this._undoStack.Push(undoCommand);
@@ -140,22 +124,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     this._redoStack.Push(command);
                     this.RaiseProperties();
                 }
-            }
-        }
-
-        private static void ClearStack(Stack<UndoCommand> stack, UndoScope scope) {
-            var commands = new List<UndoCommand>();
-
-            while (stack.TryPop(out var command)) {
-                if (command.Scope != scope) {
-                    commands.Add(command);
-                }
-            }
-
-            commands.Reverse();
-
-            foreach (var command in commands) {
-                stack.Push(command);
             }
         }
 

@@ -15,12 +15,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// </summary>
         /// <param name="action">The action that can be undone.</param>
         /// <param name="undoAction">The action that undoes the changes performed in <see cref="_action" />.</param>
-        /// <param name="scope">The scope of the undo operation.</param>
         /// <exception cref="ArgumentException">An action being passed should not be null.</exception>
-        public UndoCommand(Action action, Action undoAction, UndoScope scope) {
+        public UndoCommand(Action action, Action undoAction) {
             this._action = action ?? throw new ArgumentException(nameof(action));
             this._undoAction = undoAction ?? throw new ArgumentException(nameof(undoAction));
-            this.Scope = scope;
         }
 
         /// <summary>
@@ -28,16 +26,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// </summary>
         /// <param name="action">The action that can be undone.</param>
         /// <param name="undoAction">The action that undoes the changes performed in <see cref="_action" />.</param>
-        /// <param name="scope">The scope of the undo operation.</param>
         /// <param name="propertyChangedAction">An action which will kick off an object's property changed notification.</param>
-        public UndoCommand(Action action, Action undoAction, UndoScope scope, Action propertyChangedAction) : this(action, undoAction, scope) {
+        public UndoCommand(Action action, Action undoAction, Action propertyChangedAction) : this(action, undoAction) {
             this._propertyChangedAction = propertyChangedAction;
         }
-
-        /// <summary>
-        /// Gets the scope.
-        /// </summary>
-        public UndoScope Scope { get; }
 
         /// <summary>
         /// Performs the operation.

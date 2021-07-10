@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
     using System.Collections.Generic;
     using FluentAssertions;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using NUnit.Framework;
 
@@ -31,8 +30,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
-                () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene);
+                () => testObject.TestProperty = TestObject.OldValue);
 
             testObject.TestProperty.Should().Be(TestObject.NewValue);
         }
@@ -45,8 +43,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
-                () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene);
+                () => testObject.TestProperty = TestObject.OldValue);
 
             undoService.CanUndo.Should().BeTrue();
         }
@@ -61,7 +58,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
                 () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene,
                 () => hasPropertyChanged = true);
 
             hasPropertyChanged.Should().BeTrue();
@@ -77,8 +73,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
                 var testObject = new TestObject();
                 undoService.Do(
                     () => testObject.TestProperty = TestObject.NewValue,
-                    () => testObject.TestProperty = TestObject.OldValue,
-                    UndoScope.Scene);
+                    () => testObject.TestProperty = TestObject.OldValue);
 
                 testObjects.Add(testObject);
             }
@@ -110,8 +105,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
-                () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene);
+                () => testObject.TestProperty = TestObject.OldValue);
 
             undoService.Undo();
             undoService.Redo();
@@ -129,7 +123,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
                 () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene,
                 () => hasPropertyChanged = true);
 
             undoService.Undo();
@@ -147,8 +140,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
-                () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene);
+                () => testObject.TestProperty = TestObject.OldValue);
 
             undoService.Undo();
             undoService.CanUndo.Should().BeFalse();
@@ -164,7 +156,6 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
                 () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene,
                 () => hasPropertyChanged = true);
 
             hasPropertyChanged = false;
@@ -181,8 +172,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
 
             undoService.Do(
                 () => testObject.TestProperty = TestObject.NewValue,
-                () => testObject.TestProperty = TestObject.OldValue,
-                UndoScope.Scene);
+                () => testObject.TestProperty = TestObject.OldValue);
 
             undoService.Undo();
 

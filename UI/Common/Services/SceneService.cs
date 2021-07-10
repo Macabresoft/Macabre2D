@@ -157,7 +157,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 this._serializer.Serialize(this.CurrentScene, filePath);
 
                 this.HasChanges = false;
-                this._undoService.Clear(UndoScope.Scene);
             }
         }
 

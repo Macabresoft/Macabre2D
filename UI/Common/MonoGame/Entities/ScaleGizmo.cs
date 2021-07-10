@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -149,7 +148,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                         () => {
                             UpdateScale(entity, unmovedScale);
                             this.SceneService.HasChanges = originalHasChanges;
-                        }, UndoScope.Scene);
+                        });
                 }
             }
             else {

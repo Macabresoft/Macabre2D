@@ -100,7 +100,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                 }, () => {
                     originalParent.AddChild(sourceEntity);
                     this._sceneService.HasChanges = originalHasChanges;
-                }, UndoScope.Scene);
+                });
             }
         }
         private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
@@ -122,7 +122,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                             entity.Name = originalName;
                             this._sceneService.HasChanges = originalHasChanges;
                         });
-                    }, UndoScope.Scene);
+                    });
             }
             
             return Unit.Default;
@@ -151,7 +151,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                         this.EntitySelectionService.SelectedEntity = parent;
                         this._sceneService.HasChanges = originalHasChanges;
                     });
-                }, UndoScope.Scene);
+                });
             }
         }
 
@@ -170,7 +170,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                     this.EntitySelectionService.SelectedEntity = entity;
                     this._sceneService.HasChanges = originalHasChanges;
                 });
-            }, UndoScope.Scene);
+            });
 
             return Unit.Default;
         }
