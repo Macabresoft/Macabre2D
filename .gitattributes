@@ -1,4 +1,3 @@
-* text = auto
 *.cs       text diff=csharp
 *.sln      text eol=crlf merge=union
 *.csproj   text merge=union
