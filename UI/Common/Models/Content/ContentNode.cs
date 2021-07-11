@@ -18,6 +18,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// Gets the name.
         /// </summary>
         string Name { get; set; }
+        
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        Guid Id { get; }
 
         /// <summary>
         /// Gets the name without an extension.
@@ -85,6 +90,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
         /// <inheritdoc />
         public IContentDirectory Parent { get; private set; }
+        
+        /// <inheritdoc />
+        public abstract Guid Id { get; }
 
         /// <inheritdoc />
         public string Name {

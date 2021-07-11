@@ -46,6 +46,8 @@
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
                             PointerPressed="Node_OnPointerPressed"
+                            PointerReleased="Node_OnPointerReleased"
+                            PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableTreeViewItem x:Name="_directoryControl"
                                                        VerticalAlignment="Center"
@@ -59,6 +61,8 @@
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
                             PointerPressed="Node_OnPointerPressed"
+                            PointerReleased="Node_OnPointerReleased"
+                            PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableTreeViewItem VerticalAlignment="Center"
                                                        IsEditable="True"

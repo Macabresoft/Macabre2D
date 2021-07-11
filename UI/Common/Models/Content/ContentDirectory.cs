@@ -84,6 +84,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         public override string NameWithoutExtension => this.Name;
 
         /// <inheritdoc />
+        public override Guid Id { get; } = Guid.NewGuid();
+
+        /// <inheritdoc />
         public bool AddChild(IContentNode node) {
             var result = false;
             if (node != null && !this._children.Contains(node)) {

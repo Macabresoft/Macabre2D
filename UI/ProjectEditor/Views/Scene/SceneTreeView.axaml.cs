@@ -37,6 +37,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene {
             if (sender is IControl { DataContext: IEntity entity }) {
                 this._dragTarget = entity.Id;
             }
+            else {
+                this._dragTarget = Guid.Empty;
+            }
         }
 
         private void InitializeComponent() {

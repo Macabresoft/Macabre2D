@@ -7,6 +7,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Content;
+    using System;
 
     public class ContentTreeView : UserControl {
         public static readonly DirectProperty<ContentTreeView, ContentTreeViewModel> ViewModelProperty =
@@ -14,6 +15,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
                 nameof(ViewModel),
                 editor => editor.ViewModel);
 
+        private Guid _dragTarget;
+        
         public ContentTreeView() {
             this.DataContext = Resolver.Resolve<ContentTreeViewModel>();
             this.InitializeComponent();
@@ -26,10 +29,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
             AvaloniaXamlLoader.Load(this);
         }
         
-        private async void Node_OnPointerPressed(object sender, PointerPressedEventArgs e) {
+        private void Node_OnPointerPressed(object sender, PointerPressedEventArgs e) {
             if (sender is IControl { DataContext: IContentNode sourceNode }) {
-                var dragData = new GenericDataObject(sourceNode, sourceNode.Name);
-                await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+                this._dragTarget = sourceNode.Id;
+            }
+            else {
+                this._dragTarget = Guid.Empty;
             }
         }
         
@@ -37,6 +42,20 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
             if (e.Source is IControl { DataContext: IContentDirectory targetDirectory } &&
                 e.Data.Get(string.Empty) is IContentNode sourceNode) {
                 await this.ViewModel.MoveNode(sourceNode, targetDirectory);
+            }
+
+            this._dragTarget = Guid.Empty;
+        }
+
+        private void Node_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
+            this._dragTarget = Guid.Empty;
+        }
+
+        private async void Node_OnPointerMoved(object sender, PointerEventArgs e) {
+            if (this._dragTarget != Guid.Empty && sender is IControl { DataContext: IContentNode sourceNode } && sourceNode.Id == this._dragTarget) {
+                this._dragTarget = sourceNode.Id;
+                var dragData = new GenericDataObject(sourceNode, sourceNode.Name);
+                await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
             }
         }
     }

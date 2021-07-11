@@ -1,11 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     using Macabresoft.Macabre2D.Framework;
+    using System;
 
     /// <summary>
     /// A content file for the project.
     /// </summary>
     public class ContentFile : ContentNode {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
@@ -20,6 +20,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// Gets the asset.
         /// </summary>
         public IAsset Asset => this.Metadata?.Asset;
+
+        /// <inheritdoc />
+        public override Guid Id => this.Metadata?.ContentId ?? Guid.Empty;
 
         /// <summary>
         /// The metadata.
