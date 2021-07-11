@@ -104,7 +104,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
             }
         }
         private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
-            return sourceEntity != null && targetEntity != null && sourceEntity != targetEntity && !sourceEntity.IsDescendentOf(targetEntity);
+            return sourceEntity != null && 
+                   targetEntity != null && 
+                   sourceEntity != targetEntity && 
+                   !targetEntity.IsDescendentOf(sourceEntity);
         }
 
         private Unit RenameEntity(string updatedName) {
