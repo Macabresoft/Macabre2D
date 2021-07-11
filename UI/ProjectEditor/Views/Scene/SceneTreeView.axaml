@@ -47,6 +47,8 @@
                                                    TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                    Text="{Binding Path=Name, Mode=TwoWay}"
                                                    PointerPressed="Entity_OnPointerPressed"
+                                                   PointerReleased="Entity_OnPointerReleased"
+                                                   PointerMoved="Entity_OnPointerMoved"
                                                    DragDrop.AllowDrop="True" />
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
