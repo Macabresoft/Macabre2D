@@ -139,21 +139,13 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                     var scale = entity.Transform.Scale;
                     var unmovedScale = this._unmovedScale;
 
-                    var originalHasChanges = this.SceneService.HasChanges;
-                    this._undoService.Do(
-                        () => {
-                            UpdateScale(entity, scale);
-                            this.SceneService.HasChanges = true;
-                        },
-                        () => {
-                            UpdateScale(entity, unmovedScale);
-                            this.SceneService.HasChanges = originalHasChanges;
-                        });
+                    this._undoService.Do(() => { UpdateScale(entity, scale); },
+                        () => { UpdateScale(entity, unmovedScale); });
                 }
             }
             else {
                 var axis = this.GetAxisUnderMouse(mousePosition);
-                this.SetCursor(axis == GizmoAxis.None || axis == GizmoAxis.Neutral ? StandardCursorType.None : StandardCursorType.Hand);
+                this.SetCursor(axis is GizmoAxis.None or GizmoAxis.Neutral ? StandardCursorType.None : StandardCursorType.Hand);
             }
 
             return result;

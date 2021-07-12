@@ -32,6 +32,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         }
 
         /// <summary>
+        /// Gets the change identifier.
+        /// </summary>
+        public Guid ChangeId { get; } = Guid.NewGuid();
+
+        /// <summary>
         /// Performs the operation.
         /// </summary>
         public void Do() {

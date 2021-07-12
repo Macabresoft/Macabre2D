@@ -4,7 +4,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
@@ -22,11 +21,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Gets the current scene metadata.
         /// </summary>
         ContentMetadata CurrentSceneMetadata { get; }
-
-        /// <summary>
-        /// Gets or sets a value which indicates whether or not the scene has changes which require saving.
-        /// </summary>
-        bool HasChanges { get; set; }
 
         /// <summary>
         /// Creates the new scene and serializes it.
@@ -58,9 +52,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
-        private readonly IUndoService _undoService;
         private ContentMetadata _currentSceneMetadata;
-        private bool _hasChanges;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneService" /> class.
@@ -69,18 +61,15 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <param name="undoService"></param>
         public SceneService(
             IAssetManager assetManager,
             IFileSystemService fileSystem,
             IPathService pathService,
-            ISerializer serializer,
-            IUndoService undoService) {
+            ISerializer serializer) {
             this._assetManager = assetManager;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._serializer = serializer;
-            this._undoService = undoService;
         }
 
         /// <inheritdoc />
@@ -96,15 +85,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public bool HasChanges {
-            get => this._hasChanges;
-            set => this.RaiseAndSetIfChanged(ref this._hasChanges, value);
-        }
-
-        /// <inheritdoc />
         public SceneAsset CreateNewScene(IContentDirectory parent, string sceneName) {
-            if (this.CurrentScene != null && this.HasChanges) {
-                // TODO: ask user if they want to save or cancel changes
+            if (this.CurrentScene != null) {
+                // TODO: ask user if they want to save or cancel changes. This should actually be asked somewhere that SaveService is available.
                 this.SaveScene();
             }
 
@@ -155,8 +138,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
 
                 var filePath = Path.Combine(this._pathService.ContentDirectoryPath, this.CurrentSceneMetadata.GetContentPath());
                 this._serializer.Serialize(this.CurrentScene, filePath);
-
-                this.HasChanges = false;
             }
         }
 
@@ -179,7 +160,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                             if (scene != null) {
                                 sceneAsset.LoadContent(scene);
                                 this.CurrentSceneMetadata = metadata;
-                                this.HasChanges = false;
                             }
                         }
                     }

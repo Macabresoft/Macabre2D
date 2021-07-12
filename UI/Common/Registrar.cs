@@ -36,6 +36,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 .RegisterType<IProcessService, ProcessService>(new SingletonLifetimeManager())
                 .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
                 .RegisterType<IEntitySelectionService, EntityEntitySelectionService>(new SingletonLifetimeManager())
+                .RegisterType<ISaveService, SaveService>(new SingletonLifetimeManager())
                 .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
                 .RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager())
                 .RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());

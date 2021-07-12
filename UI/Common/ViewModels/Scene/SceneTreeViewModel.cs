@@ -10,7 +10,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
     using System.Windows.Input;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -54,17 +53,12 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
                 this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
-            
+
             this.RenameCommand = ReactiveCommand.Create<string, Unit>(
                 this.RenameEntity,
                 this.EntitySelectionService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
         }
 
-        /// <summary>
-        /// Gets a command for renaming an entity.
-        /// </summary>
-        public ICommand RenameCommand { get; }
-        
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
@@ -81,6 +75,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
         public ICommand RemoveEntityCommand { get; }
 
         /// <summary>
+        /// Gets a command for renaming an entity.
+        /// </summary>
+        public ICommand RenameCommand { get; }
+
+        /// <summary>
         /// Gets the root of the scene tree.
         /// </summary>
         public IReadOnlyCollection<IEntity> Root => this._treeRoot;
@@ -93,42 +92,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
         public void MoveEntity(IEntity sourceEntity, IEntity targetEntity) {
             if (CanMoveEntity(sourceEntity, targetEntity)) {
                 var originalParent = sourceEntity.Parent;
-                var originalHasChanges = this._sceneService.HasChanges;
-                this._undoService.Do(() => {
-                    targetEntity.AddChild(sourceEntity);
-                    this._sceneService.HasChanges = true;
-                }, () => {
-                    originalParent.AddChild(sourceEntity);
-                    this._sceneService.HasChanges = originalHasChanges;
-                });
+                this._undoService.Do(() => { targetEntity.AddChild(sourceEntity); }, () => { originalParent.AddChild(sourceEntity); });
             }
-        }
-        private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
-            return sourceEntity != null && 
-                   targetEntity != null && 
-                   sourceEntity != targetEntity && 
-                   !targetEntity.IsDescendentOf(sourceEntity);
-        }
-
-        private Unit RenameEntity(string updatedName) {
-            if (this.EntitySelectionService.SelectedEntity is IEntity entity && entity.Name != updatedName) {
-                var originalHasChanges = this._sceneService.HasChanges;
-                var originalName = entity.Name;
-                this._undoService.Do(
-                    () => {
-                        Dispatcher.UIThread.Post(() => {
-                            entity.Name = updatedName;
-                            this._sceneService.HasChanges = true;
-                        });
-                    }, () => {
-                        Dispatcher.UIThread.Post(() => {
-                            entity.Name = originalName;
-                            this._sceneService.HasChanges = originalHasChanges;
-                        });
-                    });
-            }
-            
-            return Unit.Default;
         }
 
         private async Task AddEntity(IEntity parent) {
@@ -141,39 +106,50 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                     child.Name = type.Name;
                 }
 
-                var originalHasChanges = this._sceneService.HasChanges;
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         parent.AddChild(child);
                         this.EntitySelectionService.SelectedEntity = child;
-                        this._sceneService.HasChanges = true;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         parent.RemoveChild(child);
                         this.EntitySelectionService.SelectedEntity = parent;
-                        this._sceneService.HasChanges = originalHasChanges;
                     });
                 });
             }
         }
 
+        private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
+            return sourceEntity != null &&
+                   targetEntity != null &&
+                   sourceEntity != targetEntity &&
+                   !targetEntity.IsDescendentOf(sourceEntity);
+        }
+
         private Unit RemoveEntity(IEntity entity) {
             var parent = entity.Parent;
-            var originalHasChanges = this._sceneService.HasChanges;
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
                     parent.RemoveChild(entity);
                     this.EntitySelectionService.SelectedEntity = null;
-                    this._sceneService.HasChanges = true;
                 });
             }, () => {
                 Dispatcher.UIThread.Post(() => {
                     parent.AddChild(entity);
                     this.EntitySelectionService.SelectedEntity = entity;
-                    this._sceneService.HasChanges = originalHasChanges;
                 });
             });
+
+            return Unit.Default;
+        }
+
+        private Unit RenameEntity(string updatedName) {
+            if (this.EntitySelectionService.SelectedEntity is IEntity entity && entity.Name != updatedName) {
+                var originalName = entity.Name;
+                this._undoService.Do(
+                    () => { Dispatcher.UIThread.Post(() => { entity.Name = updatedName; }); }, () => { Dispatcher.UIThread.Post(() => { entity.Name = originalName; }); });
+            }
 
             return Unit.Default;
         }

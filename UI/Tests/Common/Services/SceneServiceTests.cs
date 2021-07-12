@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
+namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using System;
     using System.IO;
     using FluentAssertions;
@@ -26,7 +26,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
             var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
             fileSystem.DoesFileExist(sceneFilePath).Returns(false);
-            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, Substitute.For<IUndoService>());
+            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer);
             var sceneAsset = sceneService.CreateNewScene(contentDirectory, SceneName);
 
             using (new AssertionScope()) {
@@ -65,7 +65,7 @@ namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
             var metadataFilePath = pathService.GetMetadataFilePath(metadata.ContentId);
             fileSystem.DoesFileExist(metadataFilePath).Returns(true);
             serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, Substitute.For<IUndoService>());
+            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer);
             var result = sceneService.TryLoadScene(metadata.ContentId, out var loadedSceneAsset);
 
             using (new AssertionScope()) {

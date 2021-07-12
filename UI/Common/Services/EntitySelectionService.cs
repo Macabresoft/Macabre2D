@@ -138,15 +138,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 var newValue = e.UpdatedValue;
 
                 if (originalValue != newValue) {
-                    var originalHasChanges = this._sceneService.HasChanges;
                     this._undoService.Do(() => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
                         valueEditor.SetValue(newValue);
-                        this._sceneService.HasChanges = true;
                     }, () => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                         valueEditor.SetValue(originalValue);
-                        this._sceneService.HasChanges = originalHasChanges;
                     });
                 }
             }

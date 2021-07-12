@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
+namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using System.IO;
     using FluentAssertions;
     using FluentAssertions.Execution;

@@ -144,16 +144,9 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
                         var position = entity.Transform.Position;
                         var unmovedPosition = this._unmovedPosition;
-                        var originalHasChanges = this.SceneService.HasChanges;
                         this._undoService.Do(
-                            () => {
-                                UpdatePosition(entity, position);
-                                this.SceneService.HasChanges = true;
-                            },
-                            () => {
-                                UpdatePosition(entity, unmovedPosition);
-                                this.SceneService.HasChanges = originalHasChanges;
-                            });
+                            () => { UpdatePosition(entity, position); },
+                            () => { UpdatePosition(entity, unmovedPosition); });
                     }
                 }
             }

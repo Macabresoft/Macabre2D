@@ -1,7 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
-    using System.ComponentModel;
-    using System.Reactive.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
@@ -18,9 +16,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// </summary>
     public class MainWindowViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
-        private readonly IProjectService _projectService;
-        private readonly ISceneService _sceneService;
-        private readonly IUndoService _undoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -34,35 +29,28 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="entitySelectionService">The selection service.</param>
-        /// <param name="sceneService">The scene service.</param>
-        /// <param name="projectService">The project service.</param>
+        /// <param name="saveService">The save service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
             IDialogService dialogService,
             IEntitySelectionService entitySelectionService,
-            IProjectService projectService,
-            ISceneService sceneService,
+            ISaveService saveService,
             IUndoService undoService) : base() {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EntitySelectionService = entitySelectionService ?? throw new ArgumentNullException(nameof(entitySelectionService));
-            this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-            this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-            this._undoService = undoService ?? throw new ArgumentNullException(nameof(undoService));
+            this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
 
-            this.ExitCommand = ReactiveCommand.Create<Window>(this.Exit);
+            this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.RedoCommand = ReactiveCommand.Create(
                 undoService.Redo,
                 undoService.WhenAnyValue(x => x.CanRedo));
 
-            this.SaveCommand = ReactiveCommand.Create(this.Save, this.WhenAnyValue(x => x.HasChanges));
+            this.SaveCommand = ReactiveCommand.Create(this.SaveService.Save, this.SaveService.WhenAnyValue(x => x.HasChanges));
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
                 undoService.WhenAnyValue(x => x.CanUndo));
-            this.ViewSourceCommand = ReactiveCommand.Create(this.ViewSource);
-
-            this._sceneService.PropertyChanged += this.HasChanges_OnPropertyChanged;
-            this._projectService.PropertyChanged += this.HasChanges_OnPropertyChanged;
+            this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
 
         /// <summary>
@@ -76,11 +64,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public ICommand ExitCommand { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not there are changes.
-        /// </summary>
-        public bool HasChanges => this._sceneService.HasChanges || this._projectService.HasChanges;
-
-        /// <summary>
         /// Gets the command to redo a previously undone operation.
         /// </summary>
         public ICommand RedoCommand { get; }
@@ -89,6 +72,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to save the current scene.
         /// </summary>
         public ICommand SaveCommand { get; }
+
+        /// <summary>
+        /// Gets the save service.
+        /// </summary>
+        public ISaveService SaveService { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.
@@ -111,35 +99,22 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <returns>A value indicating whether or not the window should close.</returns>
         public async Task<YesNoCancelResult> TryClose() {
             var result = YesNoCancelResult.No;
-            if (this._projectService.HasChanges || this._sceneService.HasChanges) {
+            if (this.SaveService.HasChanges) {
                 result = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?", true);
 
                 if (result == YesNoCancelResult.Yes) {
-                    this._sceneService.SaveScene();
-                    this._projectService.SaveProject();
+                    this.SaveService.Save();
                 }
             }
 
             return result;
         }
 
-        private void Exit(Window window) {
+        private static void Exit(Window window) {
             window?.Close();
         }
 
-        private void HasChanges_OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName is nameof(this._sceneService.HasChanges) or nameof(this._projectService.HasChanges)) {
-                this.RaisePropertyChanged(nameof(this.HasChanges));
-            }
-        }
-
-        private void Save() {
-            this._sceneService.SaveScene();
-            this._projectService.SaveProject();
-            this._undoService.Clear();
-        }
-
-        private void ViewSource() {
+        private static void ViewSource() {
             WebHelper.OpenInBrowser("https://github.com/Macabresoft/Macabre2D");
         }
     }

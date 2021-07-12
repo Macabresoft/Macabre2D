@@ -14,11 +14,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         GameProject CurrentProject { get; }
 
         /// <summary>
-        /// Gets or sets a value which indicates whether or not the project has changes which require saving.
-        /// </summary>
-        bool HasChanges { get; set; }
-
-        /// <summary>
         /// Loads the project.
         /// </summary>
         /// <returns>The loaded project.</returns>
@@ -40,7 +35,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
         private GameProject _currentProject;
-        private bool _hasChanges;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
@@ -67,12 +61,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         public GameProject CurrentProject {
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
-        }
-
-        /// <inheritdoc />
-        public bool HasChanges {
-            get => this._hasChanges;
-            set => this.RaiseAndSetIfChanged(ref this._hasChanges, value);
         }
 
         /// <inheritdoc />
@@ -110,7 +98,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             var newSceneAsset = this._sceneService.CreateNewScene(this._contentService.RootContentDirectory, "Default Scene");
             return newSceneAsset.ContentId;
         }
-        
+
         private void SaveProjectFile(IGameProject project, string projectFilePath) {
             if (project != null && !string.IsNullOrWhiteSpace(projectFilePath)) {
                 this._serializer.Serialize(project, projectFilePath);

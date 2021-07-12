@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
@@ -8,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// <summary>
     /// Interface for a service which handles undo/redo operations.
     /// </summary>
-    public interface IUndoService {
+    public interface IUndoService : INotifyPropertyChanged {
         /// <summary>
         /// Gets a value indicating whether or not a redo operation is possible.
         /// </summary>
@@ -23,6 +24,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Clears the queue of undo and redo operations.
         /// </summary>
         void Clear();
+        
+        /// <summary>
+        /// Gets the most recent change identifier. If no changes, will be <see cref="Guid.Empty"/>.
+        /// </summary>
+        Guid LatestChangeId { get; }
 
         /// <summary>
         /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property
@@ -88,6 +94,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
+        public Guid LatestChangeId => this._undoStack.Any() ? this._undoStack.Peek().ChangeId : Guid.Empty;
+
+        /// <inheritdoc />
         public void Do(Action action, Action undoAction) {
             this.Do(action, undoAction, null);
         }
@@ -130,6 +139,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private void RaiseProperties() {
             this.RaisePropertyChanged(nameof(this.CanRedo));
             this.RaisePropertyChanged(nameof(this.CanUndo));
+            this.RaisePropertyChanged(nameof(this.LatestChangeId));
         }
     }
 }

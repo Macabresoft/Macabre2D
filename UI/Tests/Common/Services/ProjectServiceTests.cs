@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Tests.Editor.Library.Services {
+namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using System;
     using System.IO;
     using System.Linq;
