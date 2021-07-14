@@ -16,35 +16,6 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
 
         [Test]
         [Category("Unit Tests")]
-        public void CreateNewScene_ShouldCreateScene() {
-            var assetManager = Substitute.For<IAssetManager>();
-            var fileSystem = Substitute.For<IFileSystemService>();
-            var pathService = new PathService(Guid.NewGuid().ToString(), ProjectDirectoryPath);
-            var serializer = Substitute.For<ISerializer>();
-            var contentDirectory = Substitute.For<IContentDirectory>();
-            contentDirectory.GetFullPath().Returns(pathService.ContentDirectoryPath);
-            fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
-            var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
-            fileSystem.DoesFileExist(sceneFilePath).Returns(false);
-            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer);
-            var sceneAsset = sceneService.CreateNewScene(contentDirectory, SceneName);
-
-            using (new AssertionScope()) {
-                sceneAsset.Should().NotBeNull();
-                sceneAsset.Name.Should().Be(SceneName);
-                sceneAsset.Content.Should().NotBeNull();
-                // ReSharper disable once PossibleNullReferenceException
-                sceneAsset.Content.Name.Should().Be(SceneName);
-                serializer.Received().Serialize(sceneAsset.Content, sceneFilePath);
-                serializer.Received().Serialize(
-                    Arg.Is<ContentMetadata>(x => x.GetFileNameWithoutExtension() == SceneName && x.ContentFileExtension == SceneAsset.FileExtension),
-                    Arg.Is<string>(x => x.StartsWith(pathService.ContentDirectoryPath)));
-                contentDirectory.Received().AddChild(Arg.Any<ContentFile>());
-            }
-        }
-
-        [Test]
-        [Category("Unit Tests")]
         public void TryLoadScene_LoadsScene_WhenSceneExists() {
             var assetManager = Substitute.For<IAssetManager>();
             var fileSystem = Substitute.For<IFileSystemService>();

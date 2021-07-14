@@ -1,7 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.ComponentModel;
+    using System.IO;
+    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
     /// <summary>
@@ -95,8 +98,41 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         private Guid CreateInitialScene() {
-            var newSceneAsset = this._sceneService.CreateNewScene(this._contentService.RootContentDirectory, "Default Scene");
-            return newSceneAsset.ContentId;
+            var sceneName = "Default";
+            var parent = this._contentService.RootContentDirectory;
+            var contentDirectoryPath = parent.GetFullPath();
+            if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
+                throw new DirectoryNotFoundException();
+            }
+
+            var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
+            if (this._fileSystem.DoesFileExist(filePath)) {
+                throw new NotSupportedException("Whoa you already have a scene, this is a bug, so sorry!");
+            }
+
+            var scene = new Scene {
+                BackgroundColor = DefinedColors.MacabresoftPurple,
+                Name = sceneName
+            };
+
+            scene.AddSystem<UpdateSystem>();
+            scene.AddSystem<RenderSystem>();
+            scene.AddChild<Camera>();
+
+            var sceneAsset = new SceneAsset {
+                Name = scene.Name
+            };
+
+            sceneAsset.LoadContent(scene);
+            var contentPath = Path.Combine(parent.GetContentPath(), sceneName);
+            var metadata = new ContentMetadata(
+                sceneAsset,
+                contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SceneAsset.FileExtension);
+
+            this._sceneService.SaveScene(metadata, scene);
+            var content = new ContentFile(parent, metadata);
+            return this._sceneService.TryLoadScene(content.Id, out var asset) ? asset.ContentId : Guid.Empty;
         }
 
         private void SaveProjectFile(IGameProject project, string projectFilePath) {

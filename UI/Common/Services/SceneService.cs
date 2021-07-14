@@ -2,9 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
     /// <summary>
@@ -23,17 +21,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         ContentMetadata CurrentSceneMetadata { get; }
 
         /// <summary>
-        /// Creates the new scene and serializes it.
-        /// </summary>
-        /// <param name="parent">The parent content directory.</param>
-        /// <param name="sceneName">The name of the scene without its file extension.</param>
-        /// <returns>The newly created scene wrapped in a <see cref="SceneAsset" />.</returns>
-        SceneAsset CreateNewScene(IContentDirectory parent, string sceneName);
-
-        /// <summary>
         /// Saves the current scene.
         /// </summary>
         void SaveScene();
+
+        /// <summary>
+        /// Saves the provided scene and metadata.
+        /// </summary>
+        void SaveScene(ContentMetadata metadata, IScene scene);
 
         /// <summary>
         /// Tries to load a scene.
@@ -85,59 +80,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public SceneAsset CreateNewScene(IContentDirectory parent, string sceneName) {
-            if (this.CurrentScene != null) {
-                // TODO: ask user if they want to save or cancel changes. This should actually be asked somewhere that SaveService is available.
-                this.SaveScene();
-            }
-
-            var contentDirectoryPath = parent.GetFullPath();
-            if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
-                throw new DirectoryNotFoundException();
-            }
-
-            var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
-            if (this._fileSystem.DoesFileExist(filePath)) {
-                // TODO: Overwrite warning.
-            }
-
-            var scene = new Scene {
-                BackgroundColor = DefinedColors.MacabresoftPurple,
-                Name = sceneName
-            };
-
-            scene.AddSystem<UpdateSystem>();
-            scene.AddSystem<RenderSystem>();
-            scene.AddChild<Camera>();
-
-            var sceneAsset = new SceneAsset {
-                Name = scene.Name
-            };
-
-            sceneAsset.LoadContent(scene);
-            var contentPath = Path.Combine(parent.GetContentPath(), sceneName);
-            var metadata = new ContentMetadata(
-                sceneAsset,
-                contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SceneAsset.FileExtension);
-
-            this.CurrentSceneMetadata = metadata;
-
-            this.SaveScene();
-
-            this._assetManager.RegisterMetadata(metadata);
-            this.CreateContentFile(parent, metadata);
-            return sceneAsset;
+        public void SaveScene() {
+            this.SaveScene(this.CurrentSceneMetadata, this.CurrentScene);
         }
 
         /// <inheritdoc />
-        public void SaveScene() {
-            if (this.CurrentSceneMetadata != null && this.CurrentScene != null) {
-                var metadataPath = this._pathService.GetMetadataFilePath(this.CurrentSceneMetadata.ContentId);
-                this._serializer.Serialize(this.CurrentSceneMetadata, metadataPath);
+        public void SaveScene(ContentMetadata metadata, IScene scene) {
+            if (metadata != null && scene != null && metadata.Asset is IAsset<Scene>) {
+                var metadataPath = this._pathService.GetMetadataFilePath(metadata.ContentId);
+                this._serializer.Serialize(metadata, metadataPath);
 
-                var filePath = Path.Combine(this._pathService.ContentDirectoryPath, this.CurrentSceneMetadata.GetContentPath());
-                this._serializer.Serialize(this.CurrentScene, filePath);
+                var filePath = Path.Combine(this._pathService.ContentDirectoryPath, metadata.GetContentPath());
+                this._serializer.Serialize(scene, filePath);
             }
         }
 
@@ -170,10 +124,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             }
 
             return sceneAsset != null;
-        }
-
-        private ContentFile CreateContentFile(IContentDirectory parent, ContentMetadata metadata) {
-            return new(parent, metadata);
         }
     }
 }

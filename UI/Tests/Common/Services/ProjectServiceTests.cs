@@ -30,11 +30,21 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
         [Test]
         [Category("Unit Tests")]
         public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
+            var contentService = Substitute.For<IContentService>();
             var pathService = this.CreatePathService();
             var fileSystem = this.CreateFileSystem(pathService, false);
             var sceneService = Substitute.For<ISceneService>();
+
+            var rootContent = Substitute.For<IContentDirectory>();
+            rootContent.GetFullPath().Returns(pathService.ContentDirectoryPath);
+            contentService.RootContentDirectory.Returns(rootContent);
+
             var sceneAsset = new SceneAsset();
-            sceneService.CreateNewScene(Arg.Any<IContentDirectory>(), Arg.Any<string>()).Returns(sceneAsset);
+            sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
+                .Returns(x => {
+                    x[1] = sceneAsset;
+                    return true;
+                });
 
             var serializer = Substitute.For<ISerializer>();
             serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))
@@ -46,7 +56,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 });
 
             var projectService = new ProjectService(
-                Substitute.For<IContentService>(),
+                contentService,
                 fileSystem,
                 pathService,
                 sceneService,
