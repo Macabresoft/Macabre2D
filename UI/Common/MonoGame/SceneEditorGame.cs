@@ -38,7 +38,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
-        private readonly IEntitySelectionService _entitySelectionService;
+        private readonly IEntityService _entityService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
@@ -50,7 +50,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
         /// <param name="pathService">The path service.</param>
         /// <param name="projectService">The project service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service</param>
+        /// <param name="entityService">The selection service</param>
         /// <param name="undoService">The undo service.</param>
         public SceneEditorGame(
             IAssetManager assetManager,
@@ -58,12 +58,12 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
             IPathService pathService,
             IProjectService projectService,
             ISceneService sceneService,
-            IEntitySelectionService entitySelectionService,
+            IEntityService entityService,
             IUndoService undoService) : base(assetManager) {
             this._editorService = editorService;
             this._projectService = projectService;
             this._sceneService = sceneService;
-            this._entitySelectionService = entitySelectionService;
+            this._entityService = entityService;
             this._undoService = undoService;
 
             this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
@@ -122,16 +122,16 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
             scene.AddSystem(new EditorRenderSystem(this._sceneService));
             this.Camera = scene.AddChild<Camera>();
             this.Camera.AddChild<CameraController>();
-            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._entitySelectionService));
-            this.Camera.AddChild(new SelectionDisplay(this._editorService, this._entitySelectionService));
-            var selectorGizmo = new SelectorGizmo(this._sceneService, this._entitySelectionService);
+            this.Camera.AddChild(new EditorGrid(this._editorService, this._sceneService, this._entityService));
+            this.Camera.AddChild(new SelectionDisplay(this._editorService, this._entityService));
+            var selectorGizmo = new SelectorGizmo(this._sceneService, this._entityService);
             this.Camera.AddChild(selectorGizmo);
 
-            var translationGizmo = new TranslationGizmo(this._editorService, this._sceneService, this._entitySelectionService, this._undoService);
+            var translationGizmo = new TranslationGizmo(this._editorService, this._sceneService, this._entityService, this._undoService);
             this.Camera.AddChild(translationGizmo);
             this._gizmos.Add(translationGizmo);
 
-            var scaleGizmo = new ScaleGizmo(this._editorService, this._sceneService, this._entitySelectionService, this._undoService);
+            var scaleGizmo = new ScaleGizmo(this._editorService, this._sceneService, this._entityService, this._undoService);
             this.Camera.AddChild(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 

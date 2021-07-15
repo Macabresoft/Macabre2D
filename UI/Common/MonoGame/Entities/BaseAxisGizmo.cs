@@ -26,16 +26,16 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
-        protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, IEntitySelectionService entitySelectionService) {
+        /// <param name="entityService">The selection service.</param>
+        protected BaseAxisGizmo(IEditorService editorService, ISceneService sceneService, IEntityService entityService) {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 1f;
             this.EditorService = editorService;
             this.EditorService.PropertyChanged += this.EditorService_PropertyChanged;
 
             this.SceneService = sceneService;
-            this.EntitySelectionService = entitySelectionService;
-            this.EntitySelectionService.PropertyChanged += this.SelectionService_PropertyChanged;
+            this.EntityService = entityService;
+            this.EntityService.PropertyChanged += this.SelectionService_PropertyChanged;
         }
 
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        protected IEntitySelectionService EntitySelectionService { get; }
+        protected IEntityService EntityService { get; }
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -117,7 +117,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         public virtual bool Update(FrameTime frameTime, InputState inputState) {
-            if (this.EntitySelectionService.SelectedEntity != null && this.CurrentAxis == GizmoAxis.None) {
+            if (this.EntityService.SelectedEntity != null && this.CurrentAxis == GizmoAxis.None) {
                 this.ResetEndPoints();
             }
 
@@ -194,7 +194,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// Resets the end points for each axis of the gizmo.
         /// </summary>
         protected void ResetEndPoints() {
-            var transformable = this.EntitySelectionService.SelectedEntity;
+            var transformable = this.EntityService.SelectedEntity;
             if (transformable != null) {
                 var axisLength = this.GetAxisLength();
                 var worldTransform = transformable.Transform;
@@ -219,7 +219,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// </summary>
         /// <returns>A value indicating whether or not this should be enabled.</returns>
         protected virtual bool ShouldBeEnabled() {
-            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.EntitySelectionService.SelectedEntity is IScene);
+            return this.GizmoKind == this.EditorService.SelectedGizmo && !(this.EntityService.SelectedEntity is IScene);
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -248,7 +248,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         }
 
         private void SelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IEntitySelectionService.SelectedEntity)) {
+            if (e.PropertyName == nameof(IEntityService.SelectedEntity)) {
                 this.ResetIsEnabled();
             }
         }

@@ -9,7 +9,7 @@
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
         <Grid>
-            <ItemsControl Items="{Binding EntitySelectionService.Editors}">
+            <ItemsControl Items="{Binding EntityService.Editors}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <controls:GroupBox Header="{Binding Name}">
@@ -20,7 +20,7 @@
             </ItemsControl>
             
             <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding EntitySelectionService.IsBusy}"/>
+                         IsVisible="{Binding EntityService.IsBusy}"/>
         </Grid>
     </ScrollViewer>
 </UserControl>

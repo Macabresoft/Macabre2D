@@ -20,13 +20,13 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
+        /// <param name="entityService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public ScaleGizmo(
             IEditorService editorService,
             ISceneService sceneService,
-            IEntitySelectionService entitySelectionService,
-            IUndoService undoService) : base(editorService, sceneService, entitySelectionService) {
+            IEntityService entityService,
+            IUndoService undoService) : base(editorService, sceneService, entityService) {
             this._undoService = undoService;
         }
 
@@ -102,7 +102,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                var entity = this.EntitySelectionService.SelectedEntity;
+                var entity = this.EntityService.SelectedEntity;
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var lineLength = this.GetAxisLength();
                     var newPosition = mousePosition;
@@ -153,7 +153,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.EntitySelectionService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntityService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
         private float GetScaleSign(Vector2 dragPosition, float lineLength) {
@@ -164,7 +164,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         }
 
         private void StartDrag(GizmoAxis axis) {
-            this._unmovedScale = this.EntitySelectionService.SelectedEntity.Transform.Scale;
+            this._unmovedScale = this.EntityService.SelectedEntity.Transform.Scale;
             this.CurrentAxis = axis;
 
             if (this.CurrentAxis == GizmoAxis.X) {

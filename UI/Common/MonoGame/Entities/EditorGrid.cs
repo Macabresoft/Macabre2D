@@ -13,7 +13,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     internal sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly ISceneService _sceneService;
-        private readonly IEntitySelectionService _entitySelectionService;
+        private readonly IEntityService _entityService;
         private Camera _camera;
 
         /// <summary>
@@ -21,11 +21,11 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
-        public EditorGrid(IEditorService editorService, ISceneService sceneService, IEntitySelectionService entitySelectionService) {
+        /// <param name="entityService">The selection service.</param>
+        public EditorGrid(IEditorService editorService, ISceneService sceneService, IEntityService entityService) {
             this._editorService = editorService;
             this._sceneService = sceneService;
-            this._entitySelectionService = entitySelectionService;
+            this._entityService = entityService;
         }
 
         /// <inheritdoc />
@@ -186,11 +186,11 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         private IGridContainer ResolveGridContainer() {
             var gridContainer = GridContainer.EmptyGridContainer;
-            if (this._entitySelectionService.SelectedEntity != null) {
-                if (this._entitySelectionService.SelectedEntity is IGridContainer container) {
+            if (this._entityService.SelectedEntity != null) {
+                if (this._entityService.SelectedEntity is IGridContainer container) {
                     gridContainer = container;
                 }
-                else if (this._entitySelectionService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
+                else if (this._entityService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
                     gridContainer = container;
                 }
             }

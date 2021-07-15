@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;
     using ReactiveUI;
     using Unity;
@@ -25,13 +24,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
         /// </summary>
-        /// <param name="assemblyService">The assembly service.</param>
-        /// <param name="baseType">The base type.</param>
-        /// <param name="typesToIgnore">The types to ignore.</param>
+        /// <param name="types">The types to select from.</param>
         [InjectionConstructor]
-        public TypeSelectionViewModel(IAssemblyService assemblyService, Type baseType, IEnumerable<Type> typesToIgnore) : this() {
-            var types = assemblyService.LoadTypes(baseType);
-            this._types.AddRange(types.Where(x => !typesToIgnore.Contains(x)).OrderBy(x => x.FullName));
+        public TypeSelectionViewModel(IEnumerable<Type> types) : this() {
+            this._types.AddRange(types.OrderBy(x => x.FullName));
         }
 
         /// <summary>

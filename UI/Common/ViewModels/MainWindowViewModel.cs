@@ -28,17 +28,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
+        /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
             IDialogService dialogService,
-            IEntitySelectionService entitySelectionService,
+            IEntityService entityService,
             ISaveService saveService,
             IUndoService undoService) : base() {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-            this.EntitySelectionService = entitySelectionService ?? throw new ArgumentNullException(nameof(entitySelectionService));
+            this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
@@ -56,7 +56,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public IEntitySelectionService EntitySelectionService { get; }
+        public IEntityService EntityService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.

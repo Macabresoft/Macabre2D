@@ -11,17 +11,17 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     /// </summary>
     internal class SelectorGizmo : Entity, IGizmo {
         private readonly ISceneService _sceneService;
-        private readonly IEntitySelectionService _entitySelectionService;
+        private readonly IEntityService _entityService;
         private ICamera _camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectorGizmo" /> class.
         /// </summary>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
-        public SelectorGizmo(ISceneService sceneService, IEntitySelectionService entitySelectionService) : base() {
+        /// <param name="entityService">The selection service.</param>
+        public SelectorGizmo(ISceneService sceneService, IEntityService entityService) : base() {
             this._sceneService = sceneService;
-            this._entitySelectionService = entitySelectionService;
+            this._entityService = entityService;
         }
 
         /// <inheritdoc />
@@ -46,12 +46,12 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableEntities.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
 
-                if (this._entitySelectionService.SelectedEntity != selected) {
+                if (this._entityService.SelectedEntity != selected) {
                     if (selected == null) {
-                        Dispatcher.UIThread.Post(() => this._entitySelectionService.SelectedEntity = null);
+                        Dispatcher.UIThread.Post(() => this._entityService.SelectedEntity = null);
                     }
                     else {
-                        Dispatcher.UIThread.Post(() => this._entitySelectionService.SelectedEntity = selected);
+                        Dispatcher.UIThread.Post(() => this._entityService.SelectedEntity = selected);
                     }
                 }
 

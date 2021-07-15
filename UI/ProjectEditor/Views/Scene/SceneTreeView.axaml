@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene"
              xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;assembly=Macabre2D.UI.Common"
@@ -8,16 +9,32 @@
     <Design.DataContext>
         <scene:SceneTreeViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
+    </UserControl.Resources>
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <Button Command="{Binding AddEntityCommand, Mode=OneWay}"
-                    CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
+            <Button Command="{Binding AddEntityCommand}"
                     Classes="Icon"
                     Content="{StaticResource AddIcon}"
-                    ToolTip.Tip="Add an entity as a child of the selected entity" />
-            <Button Command="{Binding RemoveEntityCommand, Mode=OneWay}"
-                    CommandParameter="{Binding EntitySelectionService.SelectedEntity}"
+                    ToolTip.Tip="Add an entity as a child of the selected entity">
+                <Button.ContextMenu>
+                    
+                    <ContextMenu Items="{Binding EntityService.AvailableTypes}">
+                        <ContextMenu.Styles>
+                            <Style Selector="MenuItem">
+                                <Setter Property="Header" Value="{Binding Converter={StaticResource ToDisplayNameConverter}}" />
+                                <Setter Property="ToolTip.Tip" Value="{Binding FullName}"></Setter>
+                                <Setter Property="Command" Value="{Binding $parent[Button].Command}" />
+                                <Setter Property="CommandParameter" Value="{Binding}" />
+                            </Style>
+                        </ContextMenu.Styles>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button Command="{Binding RemoveEntityCommand}"
+                    CommandParameter="{Binding EntityService.SelectedEntity}"
                     Classes="Icon"
                     Content="{StaticResource RemoveIcon}"
                     ToolTip.Tip="Remove the selected entity and all of its children from the scene" />
@@ -26,7 +43,7 @@
         <TreeView Grid.Row="1"
                   Name="_treeView"
                   Items="{Binding Root, Mode=OneWay}"
-                  SelectedItem="{Binding EntitySelectionService.SelectedEntity, Mode=TwoWay}">
+                  SelectedItem="{Binding EntityService.SelectedEntity, Mode=TwoWay}">
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True" />

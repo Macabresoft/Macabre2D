@@ -12,15 +12,15 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityEditorViewModel" /> class.
         /// </summary>
-        /// <param name="entitySelectionService">The selection service.</param>
+        /// <param name="entityService">The selection service.</param>
         [InjectionConstructor]
-        public EntityEditorViewModel(IEntitySelectionService entitySelectionService) {
-            this.EntitySelectionService = entitySelectionService;
+        public EntityEditorViewModel(IEntityService entityService) {
+            this.EntityService = entityService;
         }
 
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public IEntitySelectionService EntitySelectionService { get; }
+        public IEntityService EntityService { get; }
     }
 }

@@ -29,8 +29,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Loads all types that implement the specified base type in the current application domain.
         /// </summary>
         /// <param name="baseType"></param>
-        /// <returns>A list of types.</returns>
-        IList<Type> LoadTypes(Type baseType);
+        /// <returns>An enumerable of types.</returns>
+        IEnumerable<Type> LoadTypes(Type baseType);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public IList<Type> LoadTypes(Type baseType) {
+        public IEnumerable<Type> LoadTypes(Type baseType) {
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 

@@ -11,19 +11,19 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     /// </summary>
     internal class SelectionDisplay : BaseDrawer {
         private readonly IEditorService _editorService;
-        private readonly IEntitySelectionService _entitySelectionService;
+        private readonly IEntityService _entityService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectionDisplay" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
-        public SelectionDisplay(IEditorService editorService, IEntitySelectionService entitySelectionService) : base() {
+        /// <param name="entityService">The selection service.</param>
+        public SelectionDisplay(IEditorService editorService, IEntityService entityService) : base() {
             this.UseDynamicLineThickness = true;
             this.LineThickness = 2f;
             this._editorService = editorService;
             this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
-            this._entitySelectionService = entitySelectionService;
+            this._entityService = entityService;
 
             this.Color = this._editorService.SelectionColor;
         }
@@ -31,7 +31,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
-                if (this._entitySelectionService.SelectedEntity is IBoundable boundable) {
+                if (this._entityService.SelectedEntity is IBoundable boundable) {
                     return boundable.BoundingArea;
                 }
 
@@ -63,9 +63,9 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                     this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this.Color, lineThickness, points);
                 }
 
-                if (this._entitySelectionService.SelectedEntity != null) {
+                if (this._entityService.SelectedEntity != null) {
                     if (this._editorService.SelectedGizmo == GizmoKind.Selector) {
-                        var position = this._entitySelectionService.SelectedEntity.Transform.Position;
+                        var position = this._entityService.SelectedEntity.Transform.Position;
 
                         var crosshairLength = viewBoundingArea.Height * 0.01f;
                         var left = new Vector2(position.X - crosshairLength, position.Y);
@@ -95,7 +95,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                         this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this.Color, lineThickness);
                     }
 
-                    if (this._entitySelectionService.SelectedEntity is IPhysicsBody body) {
+                    if (this._entityService.SelectedEntity is IPhysicsBody body) {
                         var colliders = body.GetColliders();
                         foreach (var collider in colliders) {
                             this.PrimitiveDrawer.DrawCollider(

@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
@@ -21,12 +22,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
 
         /// <summary>
-        /// Opens a dialog that allows the user to pick a <see cref="Type" /> which inherits from the provided base type.
+        /// Opens a dialog that allows the user to pick a <see cref="Type" />.
         /// </summary>
-        /// <param name="baseType">The base type.</param>
-        /// <param name="typesToIgnore">Types to be ignored from the types shown.</param>
-        /// <returns>A type that inherits from the specified type.</returns>
-        Task<Type> OpenTypeSelectionDialog(Type baseType, params Type[] typesToIgnore);
+        /// <param name="types">The types to select from.</param>
+        /// <returns>The selected type.</returns>
+        Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types);
 
         /// <summary>
         /// Shows a warning dialog.

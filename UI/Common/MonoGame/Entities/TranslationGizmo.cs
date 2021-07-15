@@ -22,13 +22,13 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="entitySelectionService">The selection service.</param>
+        /// <param name="entityService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         public TranslationGizmo(
             IEditorService editorService,
             ISceneService sceneService,
-            IEntitySelectionService entitySelectionService,
-            IUndoService undoService) : base(editorService, sceneService, entitySelectionService) {
+            IEntityService entityService,
+            IUndoService undoService) : base(editorService, sceneService, entityService) {
             this._undoService = undoService;
         }
 
@@ -130,7 +130,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                if (this.EntitySelectionService.SelectedEntity is IEntity entity) {
+                if (this.EntityService.SelectedEntity is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
                         var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
                         var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
@@ -160,7 +160,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.EntitySelectionService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntityService.SelectedEntity != null && base.ShouldBeEnabled();
         }
 
         private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
@@ -171,8 +171,8 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
             };
 
             if (snapToAxis &&
-                this.EntitySelectionService.SelectedEntity != null &&
-                this.EntitySelectionService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
+                this.EntityService.SelectedEntity != null &&
+                this.EntityService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
                 gridContainer != null) {
                 newPosition = gridContainer.GetNearestTilePosition(newPosition);
             }

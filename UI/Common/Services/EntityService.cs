@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -9,9 +10,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using ReactiveUI;
 
     /// <summary>
-    /// An interface for a service which handles the selection of entities and their components.
+    /// An interface for a service which handles the selection and loading of entities and their editors.
     /// </summary>
-    public interface IEntitySelectionService : INotifyPropertyChanged {
+    public interface IEntityService : INotifyPropertyChanged {
+        /// <summary>
+        /// Gets the available entity types.
+        /// </summary>
+        IReadOnlyCollection<Type> AvailableTypes { get; }
+
         /// <summary>
         /// Gets the editors.
         /// </summary>
@@ -23,49 +29,47 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         bool IsBusy { get; }
 
         /// <summary>
-        /// Gets the most recently selected item
-        /// </summary>
-        EntitySelectionKind MostRecentlySelectedKind { get; }
-
-        /// <summary>
         /// Gets or sets the selected entity.
         /// </summary>
         IEntity SelectedEntity { get; set; }
 
         /// <summary>
-        /// Gets or sets the selected system.
+        /// Initializes this instance.
         /// </summary>
-        IUpdateableSystem SelectedSystem { get; set; }
+        /// <returns>A task.</returns>
+        void Initialize();
     }
 
     /// <summary>
-    /// A service which handles the selection of entities and their components.
+    /// A service which handles the selection and loading of entities and their editors.
     /// </summary>
-    public sealed class EntityEntitySelectionService : ReactiveObject, IEntitySelectionService {
+    public sealed class EntityService : ReactiveObject, IEntityService {
+        private readonly IAssemblyService _assemblyService;
+        private readonly ObservableCollectionExtended<Type> _availableTypes = new();
         private readonly ObservableCollectionExtended<ValueEditorCollection> _editors = new();
         private readonly object _editorsLock = new();
-        private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
         private readonly IValueEditorService _valueEditorService;
         private bool _isBusy;
-        private EntitySelectionKind _mostRecentlySelectedKind = EntitySelectionKind.None;
         private IEntity _selectedEntity;
-        private IUpdateableSystem _selectedSystem;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityEntitySelectionService" /> class.
+        /// Initializes a new instance of the <see cref="EntityService" /> class.
         /// </summary>
-        /// <param name="sceneService">The scene service.</param>
+        /// <param name="assemblyService">The assembly service.</param>
         /// <param name="undoService">The undo service.</param>
         /// <param name="valueEditorService">The value editor service.</param>
-        public EntityEntitySelectionService(
-            ISceneService sceneService,
+        public EntityService(
+            IAssemblyService assemblyService,
             IUndoService undoService,
             IValueEditorService valueEditorService) {
-            this._sceneService = sceneService;
+            this._assemblyService = assemblyService;
             this._undoService = undoService;
             this._valueEditorService = valueEditorService;
         }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<Type> AvailableTypes => this._availableTypes;
 
         /// <inheritdoc />
         public IReadOnlyCollection<ValueEditorCollection> Editors {
@@ -83,31 +87,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public EntitySelectionKind MostRecentlySelectedKind {
-            get => this._mostRecentlySelectedKind;
-            private set => this.RaiseAndSetIfChanged(ref this._mostRecentlySelectedKind, value);
-        }
-
-
-        /// <inheritdoc />
         public IEntity SelectedEntity {
             get => this._selectedEntity;
             set {
-                if (value is IScene scene) {
-                    if (value != this._selectedEntity) {
-                        this.SelectedSystem = scene.Systems.FirstOrDefault();
-                    }
-
-                    this.MostRecentlySelectedKind = EntitySelectionKind.Scene;
-                }
-                else if (value != null) {
-                    this.MostRecentlySelectedKind = EntitySelectionKind.Entity;
-                }
-                else {
-                    this.MostRecentlySelectedKind = EntitySelectionKind.None;
-                    this.SelectedSystem = null;
-                }
-
                 if (this._selectedEntity != value) {
                     this.RaiseAndSetIfChanged(ref this._selectedEntity, value);
                     this.ResetEditors();
@@ -116,20 +98,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public IUpdateableSystem SelectedSystem {
-            get => this._selectedSystem;
-            set {
-                if (value != this._selectedSystem) {
-                    this.RaiseAndSetIfChanged(ref this._selectedSystem, value);
-                }
-
-                if (this._selectedEntity != null) {
-                    this._mostRecentlySelectedKind = this._selectedEntity is IScene ? EntitySelectionKind.Scene : EntitySelectionKind.Entity;
-                }
-                else if (this._mostRecentlySelectedKind == EntitySelectionKind.Entity || this._mostRecentlySelectedKind == EntitySelectionKind.Scene) {
-                    this.MostRecentlySelectedKind = EntitySelectionKind.None;
-                }
-            }
+        public void Initialize() {
+            var types = this._assemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene)));
+            this._availableTypes.Reset(types.OrderBy(x => x.Name));
         }
 
         private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
@@ -150,7 +121,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         private void ResetEditors() {
-            if (this.SelectedEntity is IScene scene) {
+            if (this.SelectedEntity is IScene) {
             }
             else if (this.SelectedEntity is IEntity entity) {
                 lock (this._editorsLock) {

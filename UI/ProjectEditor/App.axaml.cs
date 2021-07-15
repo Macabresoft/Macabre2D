@@ -23,8 +23,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
 
         public override void OnFrameworkInitializationCompleted() {
             if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+                // TODO: show a splash screen while all this is happening
                 var projectService = Resolver.Resolve<IProjectService>();
                 projectService.LoadProject();
+
+                var entityService = Resolver.Resolve<IEntityService>();
+                entityService.Initialize();
 
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);
