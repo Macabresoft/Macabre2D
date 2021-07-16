@@ -8,21 +8,21 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene {
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;
     using System;
 
-    public class SceneTreeView : UserControl {
-        public static readonly DirectProperty<SceneTreeView, SceneTreeViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeViewModel>(
+    public class SceneView : UserControl {
+        public static readonly DirectProperty<SceneView, SceneViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<SceneView, SceneViewModel>(
                 nameof(ViewModel),
                 editor => editor.ViewModel);
 
         private Guid _dragTarget;
         
-        public SceneTreeView() {
-            this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
+        public SceneView() {
+            this.DataContext = Resolver.Resolve<SceneViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
         }
 
-        public SceneTreeViewModel ViewModel => this.DataContext as SceneTreeViewModel;
+        public SceneViewModel ViewModel => this.DataContext as SceneViewModel;
 
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&

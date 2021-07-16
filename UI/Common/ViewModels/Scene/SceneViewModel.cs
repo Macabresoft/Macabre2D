@@ -15,30 +15,30 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
     using Unity;
 
     /// <summary>
-    /// A view model for the scene tree.
+    /// A view model for the scene view.
     /// </summary>
-    public class SceneTreeViewModel : ViewModelBase {
+    public sealed class SceneViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public SceneTreeViewModel() {
+        public SceneViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(IDialogService dialogService, ISceneService sceneService, IEntityService entityService, IUndoService undoService) {
+        public SceneViewModel(IDialogService dialogService, ISceneService sceneService, IEntityService entityService, IUndoService undoService) {
             this._dialogService = dialogService;
             this._sceneService = sceneService;
             this.EntityService = entityService;
@@ -48,26 +48,21 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
 
             this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddEntity(x),
-                this.EntityService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
+                this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
 
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
                 this.RemoveEntity,
-                this.EntityService.WhenAny(x => x.SelectedEntity, y => y.Value != null && y.Value.Parent != y.Value));
+                this.EntityService.WhenAny(x => x.Selected, y => y.Value != null && y.Value.Parent != y.Value));
 
             this.RenameCommand = ReactiveCommand.Create<string, Unit>(
                 this.RenameEntity,
-                this.EntityService.WhenAny(x => x.SelectedEntity, y => y.Value != null));
+                this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
         }
 
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
         public ICommand AddEntityCommand { get; }
-        
-        /// <summary>
-        /// Gets a command to add an entity.
-        /// </summary>
-        public ICommand AddEntityOfTypeCommand { get; }
 
         /// <summary>
         /// Gets the selection service.
@@ -112,17 +107,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
                     child.Name = type.Name;
                 }
 
-                var parent = this.EntityService.SelectedEntity;
+                var parent = this.EntityService.Selected;
 
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         parent.AddChild(child);
-                        this.EntityService.SelectedEntity = child;
+                        this.EntityService.Selected = child;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         parent.RemoveChild(child);
-                        this.EntityService.SelectedEntity = parent;
+                        this.EntityService.Selected = parent;
                     });
                 });
             }
@@ -140,12 +135,12 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
                     parent.RemoveChild(entity);
-                    this.EntityService.SelectedEntity = null;
+                    this.EntityService.Selected = null;
                 });
             }, () => {
                 Dispatcher.UIThread.Post(() => {
                     parent.AddChild(entity);
-                    this.EntityService.SelectedEntity = entity;
+                    this.EntityService.Selected = entity;
                 });
             });
 
@@ -153,7 +148,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
         }
 
         private Unit RenameEntity(string updatedName) {
-            if (this.EntityService.SelectedEntity is IEntity entity && entity.Name != updatedName) {
+            if (this.EntityService.Selected is IEntity entity && entity.Name != updatedName) {
                 var originalName = entity.Name;
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { entity.Name = updatedName; }); }, () => { Dispatcher.UIThread.Post(() => { entity.Name = originalName; }); });

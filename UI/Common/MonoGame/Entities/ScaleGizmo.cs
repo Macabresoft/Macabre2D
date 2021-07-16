@@ -102,7 +102,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                var entity = this.EntityService.SelectedEntity;
+                var entity = this.EntityService.Selected;
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var lineLength = this.GetAxisLength();
                     var newPosition = mousePosition;
@@ -153,7 +153,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.EntityService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntityService.Selected != null && base.ShouldBeEnabled();
         }
 
         private float GetScaleSign(Vector2 dragPosition, float lineLength) {
@@ -164,7 +164,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         }
 
         private void StartDrag(GizmoAxis axis) {
-            this._unmovedScale = this.EntityService.SelectedEntity.Transform.Scale;
+            this._unmovedScale = this.EntityService.Selected.Transform.Scale;
             this.CurrentAxis = axis;
 
             if (this.CurrentAxis == GizmoAxis.X) {

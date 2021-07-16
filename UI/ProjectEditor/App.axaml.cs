@@ -27,8 +27,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
                 var projectService = Resolver.Resolve<IProjectService>();
                 projectService.LoadProject();
 
-                var entityService = Resolver.Resolve<IEntityService>();
-                entityService.Initialize();
+                Resolver.Resolve<IEntityService>().Initialize();
+                Resolver.Resolve<ISystemService>().Initialize();
 
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);

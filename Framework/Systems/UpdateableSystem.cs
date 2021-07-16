@@ -6,13 +6,13 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// Interface for an system which runs operations for a <see cref="IScene" />.
     /// </summary>
-    public interface IUpdateableSystem : INotifyPropertyChanged, IUpdateableGameObject, IEnableable {
+    public interface IUpdateableSystem : IUpdateableGameObject {
         /// <summary>
         /// Gets the loop.
         /// </summary>
         /// <value>The loop.</value>
         SystemLoop Loop { get; }
-
+        
         /// <summary>
         /// Initializes this service as a descendent of <paramref name="scene" />.
         /// </summary>

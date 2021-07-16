@@ -31,7 +31,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// <inheritdoc />
         public override BoundingArea BoundingArea {
             get {
-                if (this._entityService.SelectedEntity is IBoundable boundable) {
+                if (this._entityService.Selected is IBoundable boundable) {
                     return boundable.BoundingArea;
                 }
 
@@ -63,9 +63,9 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                     this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this.Color, lineThickness, points);
                 }
 
-                if (this._entityService.SelectedEntity != null) {
+                if (this._entityService.Selected != null) {
                     if (this._editorService.SelectedGizmo == GizmoKind.Selector) {
-                        var position = this._entityService.SelectedEntity.Transform.Position;
+                        var position = this._entityService.Selected.Transform.Position;
 
                         var crosshairLength = viewBoundingArea.Height * 0.01f;
                         var left = new Vector2(position.X - crosshairLength, position.Y);
@@ -95,7 +95,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                         this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this.Color, lineThickness);
                     }
 
-                    if (this._entityService.SelectedEntity is IPhysicsBody body) {
+                    if (this._entityService.Selected is IPhysicsBody body) {
                         var colliders = body.GetColliders();
                         foreach (var collider in colliders) {
                             this.PrimitiveDrawer.DrawCollider(

@@ -130,7 +130,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 }
             }
             else if (this.CurrentAxis != GizmoAxis.None) {
-                if (this.EntityService.SelectedEntity is IEntity entity) {
+                if (this.EntityService.Selected is IEntity entity) {
                     if (inputState.IsButtonHeld(MouseButton.Left)) {
                         var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
                         var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
@@ -160,7 +160,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         protected override bool ShouldBeEnabled() {
-            return this.EntityService.SelectedEntity != null && base.ShouldBeEnabled();
+            return this.EntityService.Selected != null && base.ShouldBeEnabled();
         }
 
         private Vector2 GetPositionAlongCurrentAxis(Vector2 mousePosition, bool snapToAxis) {
@@ -171,8 +171,8 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
             };
 
             if (snapToAxis &&
-                this.EntityService.SelectedEntity != null &&
-                this.EntityService.SelectedEntity.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
+                this.EntityService.Selected != null &&
+                this.EntityService.Selected.TryGetParentEntity<IGridContainer>(out var gridContainer) &&
                 gridContainer != null) {
                 newPosition = gridContainer.GetNearestTilePosition(newPosition);
             }

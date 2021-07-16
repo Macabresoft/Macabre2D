@@ -60,19 +60,19 @@ namespace Macabresoft.Macabre2D.Framework {
         Color BackgroundColor { get; set; }
 
         /// <summary>
-        /// Adds the service.
+        /// Adds the system.
         /// </summary>
         /// <typeparam name="T">
         /// A type that implements <see cref="IUpdateableSystem" /> and has an empty constructor.
         /// </typeparam>
-        /// <returns>The added service.</returns>
+        /// <returns>The added system.</returns>
         T AddSystem<T>() where T : IUpdateableSystem, new();
 
         /// <summary>
-        /// Adds the service.
+        /// Adds the system.
         /// </summary>
-        /// <param name="service">The service.</param>
-        void AddSystem(IUpdateableSystem service);
+        /// <param name="system">The system.</param>
+        void AddSystem(IUpdateableSystem system);
 
         /// <summary>
         /// Initializes this instance.
@@ -94,11 +94,11 @@ namespace Macabresoft.Macabre2D.Framework {
         void RegisterEntity(IEntity entity);
 
         /// <summary>
-        /// Removes the service.
+        /// Removes the system.
         /// </summary>
-        /// <param name="service">The service.</param>
-        /// <returns>A value indicating whether or not the service was removed.</returns>
-        bool RemoveSystem(IUpdateableSystem service);
+        /// <param name="system">The system.</param>
+        /// <returns>A value indicating whether or not the system was removed.</returns>
+        bool RemoveSystem(IUpdateableSystem system);
 
         /// <summary>
         /// Renders the scene.

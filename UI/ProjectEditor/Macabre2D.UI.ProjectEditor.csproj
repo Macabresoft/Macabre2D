@@ -48,5 +48,9 @@
       <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Systems\SystemsView.axaml.cs">
+      <DependentUpon>SceneEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

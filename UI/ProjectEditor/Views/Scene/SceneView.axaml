@@ -5,9 +5,9 @@
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene"
              xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene.SceneTreeView">
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene.SceneView">
     <Design.DataContext>
-        <scene:SceneTreeViewModel />
+        <scene:SceneViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
@@ -34,7 +34,7 @@
                 </Button.ContextMenu>
             </Button>
             <Button Command="{Binding RemoveEntityCommand}"
-                    CommandParameter="{Binding EntityService.SelectedEntity}"
+                    CommandParameter="{Binding EntityService.Selected}"
                     Classes="Icon"
                     Content="{StaticResource RemoveIcon}"
                     ToolTip.Tip="Remove the selected entity and all of its children from the scene" />
@@ -43,7 +43,7 @@
         <TreeView Grid.Row="1"
                   Name="_treeView"
                   Items="{Binding Root, Mode=OneWay}"
-                  SelectedItem="{Binding EntityService.SelectedEntity, Mode=TwoWay}">
+                  SelectedItem="{Binding EntityService.Selected, Mode=TwoWay}">
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True" />
@@ -61,7 +61,7 @@
                 <TreeDataTemplate DataType="framework:IEntity"
                                   ItemsSource="{Binding Children}">
                     <controls:EditableTreeViewItem IsEditable="True"
-                                                   TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
+                                                   TextCommittedCommand="{Binding $parent[local:SceneView].ViewModel.RenameCommand}"
                                                    Text="{Binding Path=Name, Mode=TwoWay}"
                                                    PointerPressed="Entity_OnPointerPressed"
                                                    PointerReleased="Entity_OnPointerReleased"

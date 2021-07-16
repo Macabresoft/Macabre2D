@@ -10,18 +10,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
     public class ToDisplayNameConverter : IValueConverter {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var result = string.Empty;
-            if (value is Enum enumValue) {
-                result = enumValue.GetEnumDisplayName();
-            }
-            else if (value is Type type) {
-                result = type.GetTypeDisplayName();
-            }
-            else if (value != null) {
-                result = value.ToString();
-            }
-
-            return result;
+            return value switch {
+                Enum enumValue => enumValue.GetEnumDisplayName(),
+                Type type => type.GetTypeDisplayName(),
+                // INameable nameable => nameable.Name, 
+                _ => value?.GetType().GetTypeDisplayName() ?? string.Empty
+            };
         }
 
         /// <inheritdoc />

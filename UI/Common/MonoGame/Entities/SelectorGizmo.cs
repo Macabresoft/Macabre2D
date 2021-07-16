@@ -46,12 +46,12 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
                 var selected = this._sceneService.CurrentScene.RenderableEntities.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
 
-                if (this._entityService.SelectedEntity != selected) {
+                if (this._entityService.Selected != selected) {
                     if (selected == null) {
-                        Dispatcher.UIThread.Post(() => this._entityService.SelectedEntity = null);
+                        Dispatcher.UIThread.Post(() => this._entityService.Selected = null);
                     }
                     else {
-                        Dispatcher.UIThread.Post(() => this._entityService.SelectedEntity = selected);
+                        Dispatcher.UIThread.Post(() => this._entityService.Selected = selected);
                     }
                 }
 

@@ -186,11 +186,11 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         private IGridContainer ResolveGridContainer() {
             var gridContainer = GridContainer.EmptyGridContainer;
-            if (this._entityService.SelectedEntity != null) {
-                if (this._entityService.SelectedEntity is IGridContainer container) {
+            if (this._entityService.Selected != null) {
+                if (this._entityService.Selected is IGridContainer container) {
                     gridContainer = container;
                 }
-                else if (this._entityService.SelectedEntity.TryGetParentEntity(out container) && container != null) {
+                else if (this._entityService.Selected.TryGetParentEntity(out container) && container != null) {
                     gridContainer = container;
                 }
             }
