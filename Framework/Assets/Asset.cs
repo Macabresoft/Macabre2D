@@ -7,7 +7,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// Interface for an object that is an asset.
     /// </summary>
-    public interface IAsset : INotifyPropertyChanged {
+    public interface IAsset : INameable, INotifyPropertyChanged {
         /// <summary>
         /// Gets the content identifier.
         /// </summary>
@@ -18,12 +18,6 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets a value indicating whether or not this should include the file extension in its content path.
         /// </summary>
         bool IncludeFileExtensionInContentPath { get; }
-
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        string Name { get; }
 
         /// <summary>
         /// Gets the content build commands used by MGCB to compile this piece of content.
@@ -54,7 +48,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A base implementation for assets that contains an identifier and name.
     /// </summary>
     [DataContract]
-    public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent>, IDisposable {
+    public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> {
         private TContent? _content;
         private string _name = string.Empty;
 

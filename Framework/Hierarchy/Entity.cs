@@ -10,7 +10,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IScene" /> which
     /// holds a collection of <see cref="IEntity" />.
     /// </summary>
-    public interface IEntity : IEnableable, IIdentifiable, ITransformable, INotifyPropertyChanged {
+    public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropertyChanged, ITransformable {
         /// <summary>
         /// Gets the children.
         /// </summary>
@@ -34,12 +34,6 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <value>The layers.</value>
         Layers Layers { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        string Name { get; set; }
 
         /// <summary>
         /// Adds a child of the specified type.
