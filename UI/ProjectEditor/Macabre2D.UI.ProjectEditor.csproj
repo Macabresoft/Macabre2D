@@ -52,5 +52,9 @@
       <DependentUpon>SceneEditorView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditorListControl.axaml.cs">
+      <DependentUpon>EntityEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
