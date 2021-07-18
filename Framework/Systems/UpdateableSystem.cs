@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework {
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
 
@@ -23,6 +24,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Base class for a system which runs operations for a <see cref="IScene" />.
     /// </summary>
     [DataContract]
+    [Category("System")]
     public abstract class UpdateableSystem : PropertyChangedNotifier, IUpdateableSystem {
         private bool _isEnabled = true;
         private string _name;

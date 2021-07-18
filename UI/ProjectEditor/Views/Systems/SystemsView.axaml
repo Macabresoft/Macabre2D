@@ -47,7 +47,7 @@
                      SelectionMode="Single">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource ToDisplayNameConverter}, Mode=TwoWay}" />
+                        <TextBlock Text="{Binding Name, Mode=TwoWay}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
