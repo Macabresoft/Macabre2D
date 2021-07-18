@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
+    using System;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
@@ -6,7 +7,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
-    using System;
 
     public class SceneView : UserControl {
         public static readonly DirectProperty<SceneView, SceneViewModel> ViewModelProperty =
@@ -15,7 +15,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
                 editor => editor.ViewModel);
 
         private Guid _dragTarget;
-        
+
         public SceneView() {
             this.DataContext = Resolver.Resolve<SceneViewModel>();
             this.InitializeComponent();
@@ -29,24 +29,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
                 e.Data.Get(string.Empty) is IEntity sourceEntity) {
                 this.ViewModel.MoveEntity(sourceEntity, targetEntity);
             }
-            
-            this._dragTarget = Guid.Empty;
-        }
 
-        private void Entity_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-            if (sender is IControl { DataContext: IEntity entity }) {
-                this._dragTarget = entity.Id;
-            }
-            else {
-                this._dragTarget = Guid.Empty;
-            }
-        }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        private void Entity_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
             this._dragTarget = Guid.Empty;
         }
 
@@ -55,6 +38,22 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
                 var dragData = new GenericDataObject(entity, entity.Name);
                 await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
             }
+        }
+
+        private void Entity_OnPointerPressed(object sender, PointerPressedEventArgs e) {
+            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed && sender is IControl { DataContext: IEntity entity }) {
+                this._dragTarget = entity.Id;
+            }
+        }
+
+        private void Entity_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
+            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
+                this._dragTarget = Guid.Empty;
+            }
+        }
+
+        private void InitializeComponent() {
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

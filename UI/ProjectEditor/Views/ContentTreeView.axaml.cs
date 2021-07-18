@@ -30,11 +30,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         }
         
         private void Node_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-            if (sender is IControl { DataContext: IContentNode sourceNode }) {
+            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed && sender is IControl { DataContext: IContentNode sourceNode }) {
                 this._dragTarget = sourceNode.Id;
-            }
-            else {
-                this._dragTarget = Guid.Empty;
             }
         }
         
@@ -48,7 +45,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         }
 
         private void Node_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
-            this._dragTarget = Guid.Empty;
+            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
+                this._dragTarget = Guid.Empty;
+            }
         }
 
         private async void Node_OnPointerMoved(object sender, PointerEventArgs e) {
