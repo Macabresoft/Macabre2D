@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Scene {
+namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
     using System.Reactive;
     using System.Windows.Input;

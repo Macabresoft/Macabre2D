@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-             xmlns:systems="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Systems;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Systems.SystemsView">
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.SystemsView">
     <Design.DataContext>
-        <systems:SystemsViewModel />
+        <viewModels:SystemsViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />

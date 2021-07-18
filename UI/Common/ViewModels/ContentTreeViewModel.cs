@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Content {
+namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;

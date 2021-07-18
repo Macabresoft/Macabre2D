@@ -2,7 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using ReactiveUI;
     using Unity;
 

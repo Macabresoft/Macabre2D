@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
@@ -6,7 +6,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Content;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using System;
 
     public class ContentTreeView : UserControl {

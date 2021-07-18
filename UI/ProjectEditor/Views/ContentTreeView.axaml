@@ -1,10 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Content;assembly=Macabre2D.UI.Common"
-             xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content"
-             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Content.ContentTreeView">
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeViewModel />
     </Design.DataContext>
@@ -31,7 +31,7 @@
                 </Style>
             </TreeView.Styles>
             <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="content:RootContentDirectory"
+                <TreeDataTemplate DataType="viewModels:RootContentDirectory"
                                   ItemsSource="{Binding Children}">
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
@@ -41,7 +41,7 @@
                     </Border>
                 </TreeDataTemplate>
 
-                <TreeDataTemplate DataType="content:IContentDirectory"
+                <TreeDataTemplate DataType="viewModels:IContentDirectory"
                                   ItemsSource="{Binding Children}">
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
@@ -57,7 +57,7 @@
                                                        Text="{Binding Name}" />
                     </Border>
                 </TreeDataTemplate>
-                <TreeDataTemplate DataType="content:IContentNode">
+                <TreeDataTemplate DataType="viewModels:IContentNode">
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
                             PointerPressed="Node_OnPointerPressed"

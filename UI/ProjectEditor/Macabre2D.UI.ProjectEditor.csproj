@@ -48,12 +48,24 @@
       <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Systems\SystemsView.axaml.cs">
+    <Compile Update="Controls\ValueEditorListControl.axaml.cs">
+      <DependentUpon>EntityEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SystemsView.axaml.cs">
+      <DependentUpon>SystemsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SceneView.axaml.cs">
+      <DependentUpon>SceneView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SceneEditorView.axaml.cs">
       <DependentUpon>SceneEditorView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\ValueEditorListControl.axaml.cs">
-      <DependentUpon>EntityEditorView.axaml</DependentUpon>
+    <Compile Update="Views\ContentTreeView.axaml.cs">
+      <DependentUpon>ContentTreeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

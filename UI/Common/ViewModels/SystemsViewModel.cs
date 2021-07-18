@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Systems {
+﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

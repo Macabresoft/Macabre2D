@@ -1,7 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Systems {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Systems;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
 
     public class SystemsView : UserControl {
         public SystemsView() {

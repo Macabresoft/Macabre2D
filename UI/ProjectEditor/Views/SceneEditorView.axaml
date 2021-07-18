@@ -3,10 +3,10 @@
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Common.MonoGame;assembly=Macabre2D.UI.Common"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-             xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene.SceneEditorView">
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.SceneEditorView">
     <Design.DataContext>
-        <scene:SceneEditorViewModel />
+        <viewModels:SceneEditorViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />

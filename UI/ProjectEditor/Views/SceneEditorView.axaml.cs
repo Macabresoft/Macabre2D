@@ -1,7 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Scene {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Scene;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
 
     public class SceneEditorView : UserControl {
         public SceneEditorView() {
