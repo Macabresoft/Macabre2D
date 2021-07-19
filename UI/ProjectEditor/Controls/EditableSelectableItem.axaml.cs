@@ -8,28 +8,28 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
 
-    public class EditableTreeViewItem : UserControl {
+    public class EditableSelectableItem : UserControl {
         public static readonly StyledProperty<bool> IsEditableProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsEditable), true);
+            AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsEditable), true);
 
-        public static readonly DirectProperty<EditableTreeViewItem, bool> IsEditingProperty =
-            AvaloniaProperty.RegisterDirect<EditableTreeViewItem, bool>(
+        public static readonly DirectProperty<EditableSelectableItem, bool> IsEditingProperty =
+            AvaloniaProperty.RegisterDirect<EditableSelectableItem, bool>(
                 nameof(IsEditing),
                 editor => editor.IsEditing,
                 (editor, value) => editor.IsEditing = value);
 
         public static readonly StyledProperty<bool> IsFileNameProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, bool>(nameof(IsFileName));
+            AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsFileName));
 
         public static readonly StyledProperty<ICommand> TextCommittedCommandProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, ICommand>(nameof(TextCommittedCommand));
+            AvaloniaProperty.Register<EditableSelectableItem, ICommand>(nameof(TextCommittedCommand));
 
         public static readonly StyledProperty<string> TextProperty =
-            AvaloniaProperty.Register<EditableTreeViewItem, string>(nameof(Text), string.Empty, notifying: OnTextChanging);
+            AvaloniaProperty.Register<EditableSelectableItem, string>(nameof(Text), string.Empty, notifying: OnTextChanging);
 
         private bool _isEditing;
 
-        public EditableTreeViewItem() {
+        public EditableSelectableItem() {
             this.InitializeComponent();
         }
 
@@ -58,8 +58,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
             set => this.SetValue(TextCommittedCommandProperty, value);
         }
 
-        private static bool CanEditTreeViewItem(TreeViewItem treeViewItem) {
-            return treeViewItem?.DataContext != null && treeViewItem.IsSelected;
+        private static bool CanEditItem(IDataContextProvider control) {
+            return control?.DataContext != null && control is ISelectable { IsSelected: true };
         }
 
         private void CommitNewText(string newText) {
@@ -93,8 +93,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         }
 
         private static void OnTextChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is EditableTreeViewItem treeViewItem && treeViewItem.TryGetEditableTextBox(out var textBox)) {
-                textBox.Text = treeViewItem.GetEditableText(treeViewItem.Text);
+            if (!isBeforeChange && control is EditableSelectableItem editableControl && editableControl.TryGetEditableTextBox(out var textBox)) {
+                textBox.Text = editableControl.GetEditableText(editableControl.Text);
             }
         }
 
@@ -120,9 +120,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
             }
         }
 
-        private void TreeViewItem_OnDoubleTapped(object sender, RoutedEventArgs e) {
-            var treeViewItem = this.FindAncestor<TreeViewItem>();
-            if (this.IsEditable && CanEditTreeViewItem(treeViewItem) && this.TryGetEditableTextBox(out var textBox)) {
+        private void Item_OnDoubleTapped(object sender, RoutedEventArgs e) {
+            var item = this.FindAncestor<ISelectable>() as IControl;
+            if (this.IsEditable && CanEditItem(item) && this.TryGetEditableTextBox(out var textBox)) {
                 textBox.Text = this.GetEditableText(this.Text);
                 this.IsEditing = true;
                 e.Handled = true;

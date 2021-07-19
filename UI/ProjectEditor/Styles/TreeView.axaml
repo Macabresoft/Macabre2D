@@ -3,8 +3,4 @@
     <Style Selector="TreeView">
         <Setter Property="Margin" Value="{DynamicResource StandardMarginAll}" />
     </Style>
-
-    <Style Selector="TreeViewItem /template/ Border#PART_LayoutRoot">
-        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
-    </Style>
 </Styles>

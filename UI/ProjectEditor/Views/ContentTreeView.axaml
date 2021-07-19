@@ -49,7 +49,7 @@
                             PointerReleased="Node_OnPointerReleased"
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
-                        <controls:EditableTreeViewItem x:Name="_directoryControl"
+                        <controls:EditableSelectableItem x:Name="_directoryControl"
                                                        VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
@@ -64,7 +64,7 @@
                             PointerReleased="Node_OnPointerReleased"
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
-                        <controls:EditableTreeViewItem VerticalAlignment="Center"
+                        <controls:EditableSelectableItem VerticalAlignment="Center"
                                                        IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"

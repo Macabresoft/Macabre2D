@@ -8,6 +8,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
             this.DataContext = Resolver.Resolve<SystemsViewModel>();
             this.InitializeComponent();
         }
+        
+        public SystemsViewModel ViewModel => this.DataContext as SystemsViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

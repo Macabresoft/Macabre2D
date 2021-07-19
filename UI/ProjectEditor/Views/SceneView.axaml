@@ -63,7 +63,7 @@
                     </TreeDataTemplate>
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
-                        <controls:EditableTreeViewItem IsEditable="True"
+                        <controls:EditableSelectableItem IsEditable="True"
                                                        TextCommittedCommand="{Binding $parent[local:SceneView].ViewModel.RenameCommand}"
                                                        Text="{Binding Path=Name, Mode=TwoWay}"
                                                        PointerPressed="Entity_OnPointerPressed"

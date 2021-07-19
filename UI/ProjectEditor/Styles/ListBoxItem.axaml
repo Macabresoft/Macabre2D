@@ -8,6 +8,7 @@
         <Setter Property="MinHeight" Value="{DynamicResource TreeViewItemMinHeight}" />
         <Setter Property="Padding" Value="16,0,0,0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
     </Style>
 
     <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">

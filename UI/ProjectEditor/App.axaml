@@ -23,6 +23,7 @@
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TextBlock.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TextBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TreeView.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TreeViewItem.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Window.axaml" />
     </Application.Styles>
 </Application>

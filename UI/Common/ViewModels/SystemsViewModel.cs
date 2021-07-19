@@ -53,6 +53,10 @@
             this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem, Unit>(
                 this.RemoveSystem,
                 this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
+            
+            this.RenameCommand = ReactiveCommand.Create<string, Unit>(
+                this.RenameEntity,
+                this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
         }
 
         /// <summary>
@@ -64,6 +68,11 @@
         /// Gets a command to remove a system.
         /// </summary>
         public ICommand RemoveSystemCommand { get; }
+        
+        /// <summary>
+        /// Gets a command for renaming a system.
+        /// </summary>
+        public ICommand RenameCommand { get; }
 
         /// <summary>
         /// Gets the systems.
@@ -109,6 +118,17 @@
                         this.SystemService.Selected = system;
                     });
                 });
+            }
+
+            return Unit.Default;
+        }
+        
+        private Unit RenameEntity(string updatedName) {
+            if (this.SystemService.Selected is IUpdateableSystem system && system.Name != updatedName) {
+                var originalName = system.Name;
+                this._undoService.Do(
+                    () => { Dispatcher.UIThread.Post(() => { system.Name = updatedName; }); },
+                    () => { Dispatcher.UIThread.Post(() => { system.Name = originalName; }); });
             }
 
             return Unit.Default;
