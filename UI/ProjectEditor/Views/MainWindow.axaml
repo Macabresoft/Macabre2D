@@ -5,6 +5,7 @@
         xmlns:systems="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.MainWindow"
+        Name="Macabre2D"
         Title="Macabre2D"
         ExtendClientAreaToDecorationsHint="{Binding ShowNonNativeMenu}"
         WindowState="Maximized"
