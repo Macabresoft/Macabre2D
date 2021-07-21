@@ -51,7 +51,16 @@
                         <controls:EditableSelectableItem IsEditable="True"
                                                          HorizontalAlignment="Stretch"
                                                          TextCommittedCommand="{Binding $parent[local:SystemsView].ViewModel.RenameCommand}"
-                                                         Text="{Binding Path=Name, Mode=TwoWay}" />
+                                                         Text="{Binding Path=Name, Mode=TwoWay}">
+                            <controls:EditableSelectableItem.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Remove"
+                                              Command="{Binding $parent[local:SystemsView].ViewModel.RemoveSystemCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Remove this system from the scene" />
+                                </ContextMenu>
+                            </controls:EditableSelectableItem.ContextMenu>
+                        </controls:EditableSelectableItem>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

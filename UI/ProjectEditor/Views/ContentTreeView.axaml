@@ -20,7 +20,7 @@
                     CommandParameter="{Binding SelectedNode}"
                     Classes="Icon"
                     Content="{StaticResource RemoveIcon}"
-                    ToolTip.Tip="Remove the selected content node and all of its children from the scene" />
+                    ToolTip.Tip="Remove the selected content node and all of its children from your computer" />
         </StackPanel>
         <TreeView Grid.Row="1"
                   Items="{Binding Root, Mode=OneWay}"
@@ -54,7 +54,16 @@
                                                        IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                       Text="{Binding Name}" />
+                                                       Text="{Binding Name}">
+                            <controls:EditableSelectableItem.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Delete this directory from your computer" />
+                                </ContextMenu>
+                            </controls:EditableSelectableItem.ContextMenu>
+                        </controls:EditableSelectableItem>
                     </Border>
                 </TreeDataTemplate>
                 <TreeDataTemplate DataType="viewModels:IContentNode">
@@ -68,7 +77,16 @@
                                                        IsEditable="True"
                                                        IsFileName="True"
                                                        TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                       Text="{Binding Name}" />
+                                                       Text="{Binding Name}">
+                            <controls:EditableSelectableItem.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Delete this content from your computer" />
+                                </ContextMenu>
+                            </controls:EditableSelectableItem.ContextMenu>
+                        </controls:EditableSelectableItem>
                     </Border>
                 </TreeDataTemplate>
             </TreeView.DataTemplates>
