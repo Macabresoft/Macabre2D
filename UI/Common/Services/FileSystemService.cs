@@ -179,16 +179,20 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         public void OpenDirectoryInFileExplorer(string directoryPath) {
             if (this.DoesDirectoryExist(directoryPath)) {
                 try {
-                    switch (AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem) {
-                        case OperatingSystemType.WinNT:
-                            Process.Start("explorer.exe", directoryPath);
-                            break;
-                        case OperatingSystemType.OSX:
-                            Process.Start("open", directoryPath);
-                            break;
-                        case OperatingSystemType.Linux:
-                            Process.Start("xdg-open", directoryPath);
-                            break;
+                    var runtimeInfo = AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo();
+                    var program = runtimeInfo.OperatingSystem switch {
+                        OperatingSystemType.WinNT => "explorer.exe",
+                        OperatingSystemType.OSX => "open",
+                        OperatingSystemType.Linux => "xdg-open",
+                        _ => string.Empty
+                    };
+
+                    if (!string.IsNullOrEmpty(program)) {
+                        var startInfo = new ProcessStartInfo(program) {
+                            ArgumentList = { directoryPath }
+                        };
+
+                        Process.Start(startInfo);
                     }
                 }
                 catch {
