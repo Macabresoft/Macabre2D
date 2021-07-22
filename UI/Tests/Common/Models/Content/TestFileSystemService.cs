@@ -90,6 +90,9 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
         public void WriteAllText(string filePath, string text) {
         }
 
+        public void OpenDirectoryInFileExplorer(string directoryPath) {
+        }
+
         private void FillDirectoryStructure() {
             this.DirectoryToChildrenMap.Clear();
             var directories = new List<string>();

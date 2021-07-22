@@ -1,6 +1,9 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
+    using Avalonia;
+    using Avalonia.Platform;
 
     /// <summary>
     /// Interface for a service which wraps basic file system operations.
@@ -91,6 +94,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         void MoveFile(string originalPath, string newPath);
 
         /// <summary>
+        /// Opens a directory in the file explorer.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        void OpenDirectoryInFileExplorer(string directoryPath);
+
+        /// <summary>
         /// Writes all text to the specified file path.
         /// </summary>
         /// <param name="filePath">The file path.</param>
@@ -164,6 +173,28 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <inheritdoc />
         public void MoveFile(string originalPath, string newPath) {
             File.Move(originalPath, newPath);
+        }
+
+        /// <inheritdoc />
+        public void OpenDirectoryInFileExplorer(string directoryPath) {
+            if (this.DoesDirectoryExist(directoryPath)) {
+                try {
+                    switch (AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem) {
+                        case OperatingSystemType.WinNT:
+                            Process.Start("explorer.exe", directoryPath);
+                            break;
+                        case OperatingSystemType.OSX:
+                            Process.Start("open", directoryPath);
+                            break;
+                        case OperatingSystemType.Linux:
+                            Process.Start("xdg-open", directoryPath);
+                            break;
+                    }
+                }
+                catch {
+                    // its really not worth throwing an exception because the file explorer didn't open
+                }
+            }
         }
 
         /// <inheritdoc />

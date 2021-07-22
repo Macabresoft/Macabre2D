@@ -37,7 +37,17 @@
                             Background="Transparent"
                             DragDrop.AllowDrop="True">
                         <TextBlock VerticalAlignment="Center"
-                                   Text="{Binding Name}" />
+                                   HorizontalAlignment="Stretch"
+                                   Text="{Binding Name}">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open Directory"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Open the directory in the file explorer"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
                     </Border>
                 </TreeDataTemplate>
 
@@ -57,6 +67,17 @@
                                                        Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                              ToolTip.Tip="Rename this entity" />
+                                    
+                                    <MenuItem Header="Open Directory"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Open the directory in the file explorer"/>
+                                    
+                                    <Separator />
+                                    
                                     <MenuItem Header="Delete"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"
@@ -80,6 +101,17 @@
                                                        Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                              ToolTip.Tip="Rename this entity" />
+                                    
+                                    <MenuItem Header="Open Containing Directory"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Open the directory which contains this file in the file explorer"/>
+                                    
+                                    <Separator />
+                                    
                                     <MenuItem Header="Delete"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"

@@ -54,6 +54,12 @@
                                                          Text="{Binding Path=Name, Mode=TwoWay}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                              ToolTip.Tip="Rename this system" />
+                                    
+                                    <Separator />
+                                    
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SystemsView].ViewModel.RemoveSystemCommand}"
                                               CommandParameter="{Binding}"

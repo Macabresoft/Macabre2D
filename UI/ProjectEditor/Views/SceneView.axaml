@@ -67,6 +67,13 @@
                                                        DragDrop.AllowDrop="True">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
+                                    
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                              ToolTip.Tip="Rename this entity" />
+                                    
+                                    <Separator />
+                                    
                                     <MenuItem Header="Add"
                                               Items="{Binding $parent[local:SceneView].AddMenuItems}">
                                         <MenuItem.Styles>

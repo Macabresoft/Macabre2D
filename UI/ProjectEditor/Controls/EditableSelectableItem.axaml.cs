@@ -6,7 +6,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
+    using Avalonia.Threading;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
+    using ReactiveUI;
 
     public class EditableSelectableItem : UserControl {
         public static readonly StyledProperty<bool> IsEditableProperty =
@@ -17,6 +19,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
                 nameof(IsEditing),
                 editor => editor.IsEditing,
                 (editor, value) => editor.IsEditing = value);
+        
+        public static readonly DirectProperty<EditableSelectableItem, ICommand> EditCommandProperty =
+            AvaloniaProperty.RegisterDirect<EditableSelectableItem, ICommand>(
+                nameof(EditCommand),
+                editor => editor.EditCommand);
 
         public static readonly StyledProperty<bool> IsFileNameProperty =
             AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsFileName));
@@ -30,8 +37,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         private bool _isEditing;
 
         public EditableSelectableItem() {
+            this.EditCommand = ReactiveCommand.Create(
+                () => Dispatcher.UIThread.Post(this.StartEdit),
+                this.WhenAnyValue(x => x.IsEditable));
+            
             this.InitializeComponent();
         }
+        
+        public ICommand EditCommand { get; }
 
         public bool IsEditable {
             get => this.GetValue(IsEditableProperty);
@@ -99,14 +112,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         }
 
         private void TextBox_OnKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
+            if (e.Key is Key.Enter or Key.Tab) {
                 if (this.TryGetEditableTextBox(out var textBox)) {
                     var newText = this.IsFileName ? $"{textBox.Text}{Path.GetExtension(this.Text)}" : textBox.Text;
                     this.CommitNewText(newText);
                 }
             }
             else if (e.Key == Key.Escape) {
-                if (sender is TextBox textBox) {
+                if (this.TryGetEditableTextBox(out var textBox)) {
                     textBox.Text = this.GetEditableText(this.Text);
                     this.IsEditing = false;
                 }
@@ -122,10 +135,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
 
         private void Item_OnDoubleTapped(object sender, RoutedEventArgs e) {
             var item = this.FindAncestor<ISelectable>() as IControl;
-            if (this.IsEditable && CanEditItem(item) && this.TryGetEditableTextBox(out var textBox)) {
+            this.StartEdit();
+            e.Handled |= this.IsEditing;
+        }
+
+        private void StartEdit() {
+            if (this.FindAncestor<ISelectable>() is IControl item &&
+                this.IsEditable && 
+                CanEditItem(item) &&
+                this.TryGetEditableTextBox(out var textBox)) {
                 textBox.Text = this.GetEditableText(this.Text);
                 this.IsEditing = true;
-                e.Handled = true;
             }
         }
 

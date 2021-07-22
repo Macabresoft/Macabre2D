@@ -1,8 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
-    using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
-    using ReactiveUI;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -12,6 +8,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System.Reactive;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Avalonia.Threading;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
     using Unity;
 
     /// <summary>
@@ -56,6 +56,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 this.AddFolder,
                 this.WhenAny(x => x.SelectedNode, y => y.Value is IContentDirectory));
 
+            this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode, Unit>(
+                this.OpenContentLocation,
+                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
+
             this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.RemoveContent,
                 this.WhenAny(x => x.SelectedNode, y => y.Value is { } and not RootContentDirectory));
@@ -64,32 +68,16 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 async x => await this.RenameContent(x),
                 this.WhenAny(x => x.SelectedNode, y => y.Value != null));
         }
-        
-        /// <summary>
-        /// Moves the source content node to be a child of the target directory.
-        /// </summary>
-        /// <param name="sourceNode">The source node.</param>
-        /// <param name="targetDirectory">The target directory.</param>
-        public async Task MoveNode(IContentNode sourceNode, IContentDirectory targetDirectory) {
-            if (targetDirectory != null && 
-                sourceNode != null && 
-                targetDirectory != sourceNode && 
-                sourceNode.Parent != targetDirectory) {
-                if (targetDirectory.Children.Any(x => string.Equals(x.Name, sourceNode.Name, StringComparison.OrdinalIgnoreCase))) {
-                    await this._dialogService.ShowWarningDialog(
-                        "Error",
-                        $"Directory '{targetDirectory.Name}' already contains a folder named '{sourceNode.Name}'.");
-                }
-                else {
-                    Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
-                }
-            }
-        }
 
         /// <summary>
         /// Gets the add folder command.
         /// </summary>
         public ICommand AddFolderCommand { get; }
+
+        /// <summary>
+        /// Gets a command to open the file explorer to the content's location.
+        /// </summary>
+        public ICommand OpenContentLocationCommand { get; }
 
         /// <summary>
         /// Gets the remove content command.
@@ -112,6 +100,27 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public IContentNode SelectedNode {
             get => this._selectedNode;
             set => this.RaiseAndSetIfChanged(ref this._selectedNode, value);
+        }
+
+        /// <summary>
+        /// Moves the source content node to be a child of the target directory.
+        /// </summary>
+        /// <param name="sourceNode">The source node.</param>
+        /// <param name="targetDirectory">The target directory.</param>
+        public async Task MoveNode(IContentNode sourceNode, IContentDirectory targetDirectory) {
+            if (targetDirectory != null &&
+                sourceNode != null &&
+                targetDirectory != sourceNode &&
+                sourceNode.Parent != targetDirectory) {
+                if (targetDirectory.Children.Any(x => string.Equals(x.Name, sourceNode.Name, StringComparison.OrdinalIgnoreCase))) {
+                    await this._dialogService.ShowWarningDialog(
+                        "Error",
+                        $"Directory '{targetDirectory.Name}' already contains a folder named '{sourceNode.Name}'.");
+                }
+                else {
+                    Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
+                }
+            }
         }
 
         private Unit AddFolder(IContentNode parent) {
@@ -139,6 +148,15 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
 
             this._fileSystem.CreateDirectory(fullPath);
             return new ContentDirectory(name, parent);
+        }
+
+        private Unit OpenContentLocation(IContentNode node) {
+            var directory = node as IContentDirectory ?? node?.Parent;
+            if (directory != null) {
+                this._fileSystem.OpenDirectoryInFileExplorer(directory.GetFullPath());
+            }
+
+            return Unit.Default;
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
