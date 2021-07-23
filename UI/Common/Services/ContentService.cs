@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
@@ -13,7 +15,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// <summary>
     /// An interface for a service which loads, imports, deletes, and moves content.
     /// </summary>
-    public interface IContentService : INotifyPropertyChanged {
+    public interface IContentService : ISelectionService<IContentNode> {
         /// <summary>
         /// Gets the root content directory.
         /// </summary>
@@ -35,7 +37,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// <summary>
     /// A service which loads, imports, deletes, and moves content.
     /// </summary>
-    public sealed class ContentService : ReactiveObject, IContentService {
+    public sealed class ContentService : SelectionService<IContentNode>, IContentService {
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
         private readonly IAssetManager _assetManager;
         private readonly IBuildService _buildService;
@@ -60,19 +62,25 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentService" /> class.
         /// </summary>
+        /// <param name="assemblyService">The assembly service.</param>
         /// <param name="assetManager">The asset manager.</param>
         /// <param name="buildService">The build service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="loggingService">The logging service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="undoService">The undo service.</param>
+        /// <param name="valueEditorService">The value editor service.</param>
         public ContentService(
+            IAssemblyService assemblyService,
             IAssetManager assetManager,
             IBuildService buildService,
             IFileSystemService fileSystem,
             ILoggingService loggingService,
             IPathService pathService,
-            ISerializer serializer) {
+            ISerializer serializer,
+            IUndoService undoService,
+            IValueEditorService valueEditorService) : base(assemblyService, undoService, valueEditorService) {
             this._assetManager = assetManager;
             this._buildService = buildService;
             this._fileSystem = fileSystem;
@@ -80,7 +88,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             this._pathService = pathService;
             this._serializer = serializer;
         }
-
 
         /// <inheritdoc />
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
@@ -112,6 +119,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 this.BuildContentForProject();
                 this.RaisePropertyChanged(nameof(this.RootContentDirectory));
             }
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
+            return new[] { typeof(ContentDirectory), typeof(Scene) };
         }
 
         private void BuildContentForProject() {

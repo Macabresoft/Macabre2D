@@ -22,14 +22,10 @@
                         Content="{StaticResource AddIcon}"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
                     <Button.ContextMenu>
-                        <ContextMenu Items="{Binding SystemService.AvailableTypes}">
+                        <ContextMenu Items="{Binding $parent[local:SystemsView].AddMenuItems}">
                             <ContextMenu.Styles>
                                 <Style Selector="MenuItem">
-                                    <Setter Property="Header"
-                                            Value="{Binding Converter={StaticResource ToDisplayNameConverter}}" />
-                                    <Setter Property="ToolTip.Tip" Value="{Binding FullName}" />
                                     <Setter Property="Command" Value="{Binding $parent[Button].Command}" />
-                                    <Setter Property="CommandParameter" Value="{Binding}" />
                                 </Style>
                             </ContextMenu.Styles>
                         </ContextMenu>

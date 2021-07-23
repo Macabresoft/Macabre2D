@@ -18,12 +18,9 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// A view model for the content tree.
     /// </summary>
     public class ContentTreeViewModel : ViewModelBase {
-        private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISceneService _sceneService;
-        private readonly ObservableCollection<IContentDirectory> _treeRoot = new();
-        private IContentNode _selectedNode;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
@@ -45,34 +42,37 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             IDialogService dialogService,
             IFileSystemService fileSystem,
             ISceneService sceneService) {
-            this._contentService = contentService;
+            this.ContentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
             this._sceneService = sceneService;
-            this.ResetRoot();
-            this._contentService.PropertyChanged += this.ProjectService_PropertyChanged;
 
             this.AddFolderCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.AddFolder,
-                this.WhenAny(x => x.SelectedNode, y => y.Value is IContentDirectory));
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
 
             this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.OpenContentLocation,
-                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
 
             this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
                 this.RemoveContent,
-                this.WhenAny(x => x.SelectedNode, y => y.Value is { } and not RootContentDirectory));
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value is { } and not RootContentDirectory));
 
             this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(
                 async x => await this.RenameContent(x),
-                this.WhenAny(x => x.SelectedNode, y => y.Value != null));
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
         }
 
         /// <summary>
         /// Gets the add folder command.
         /// </summary>
         public ICommand AddFolderCommand { get; }
+
+        /// <summary>
+        /// Gets the content service.
+        /// </summary>
+        public IContentService ContentService { get; }
 
         /// <summary>
         /// Gets a command to open the file explorer to the content's location.
@@ -90,19 +90,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public ICommand RenameContentCommand { get; }
 
         /// <summary>
-        /// Gets the root of the asset tree.
-        /// </summary>
-        public IReadOnlyCollection<IContentDirectory> Root => this._treeRoot;
-
-        /// <summary>
-        /// Gets or sets the
-        /// </summary>
-        public IContentNode SelectedNode {
-            get => this._selectedNode;
-            set => this.RaiseAndSetIfChanged(ref this._selectedNode, value);
-        }
-
-        /// <summary>
         /// Moves the source content node to be a child of the target directory.
         /// </summary>
         /// <param name="sourceNode">The source node.</param>
@@ -118,7 +105,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                         $"Directory '{targetDirectory.Name}' already contains a folder named '{sourceNode.Name}'.");
                 }
                 else {
-                    Dispatcher.UIThread.Post(() => this._contentService.MoveContent(sourceNode, targetDirectory));
+                    Dispatcher.UIThread.Post(() => this.ContentService.MoveContent(sourceNode, targetDirectory));
                 }
             }
         }
@@ -159,12 +146,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             return Unit.Default;
         }
 
-        private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IContentService.RootContentDirectory)) {
-                this.ResetRoot();
-            }
-        }
-
         private Unit RemoveContent(IContentNode node) {
             var openSceneMetadataId = this._sceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
             switch (node) {
@@ -191,7 +172,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         }
 
         private async Task RenameContent(string updatedName) {
-            if (this.SelectedNode is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
+            if (this.ContentService.Selected is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
                 var typeName = node is IContentDirectory ? "Directory" : "File";
                 if (this._fileSystem.IsValidFileOrDirectoryName(updatedName)) {
                     await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
@@ -206,18 +187,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                         }
                         else {
                             node.Name = updatedName;
-                            this._selectedNode = node;
+                            this.ContentService.Selected = node;
                         }
                     }
                 }
-            }
-        }
-
-        private void ResetRoot() {
-            this._treeRoot.Clear();
-
-            if (this._contentService.RootContentDirectory != null) {
-                this._treeRoot.Add(this._contentService.RootContentDirectory);
             }
         }
     }

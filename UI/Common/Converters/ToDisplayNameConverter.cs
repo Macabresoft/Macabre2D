@@ -9,6 +9,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
     /// Converts from a <see cref="Type" /> or <see cref="Enum" /> to a display name.
     /// </summary>
     public class ToDisplayNameConverter : IValueConverter {
+
+        /// <summary>
+        /// A static instance of this converter.
+        /// </summary>
+        public static readonly ToDisplayNameConverter Instance = new();
+        
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return value switch {

@@ -2,12 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+    </UserControl.Resources>
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
@@ -23,8 +27,8 @@
                     ToolTip.Tip="Remove the selected content node and all of its children from your computer" />
         </StackPanel>
         <TreeView Grid.Row="1"
-                  Items="{Binding Root, Mode=OneWay}"
-                  SelectedItem="{Binding SelectedNode, Mode=TwoWay}">
+                  Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
+                  SelectedItem="{Binding ContentService.Selected, Mode=TwoWay}">
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True" />

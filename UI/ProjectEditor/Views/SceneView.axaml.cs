@@ -1,20 +1,15 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Reactive.Subjects;
-    using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
-    using Avalonia.Data;
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Converters;
     using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
+    using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
 
     public class SceneView : UserControl {
         public static readonly DirectProperty<SceneView, IReadOnlyCollection<IControl>> AddMenuItemsProperty =
@@ -34,40 +29,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
             this.DataContext = Resolver.Resolve<SceneViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
-            this.AddMenuItems = this.CreateAddMenuItems();
+            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.EntityService.AvailableTypes, true);
         }
 
         public IReadOnlyCollection<IControl> AddMenuItems { get; }
 
         public SceneViewModel ViewModel => this.DataContext as SceneViewModel;
 
-        private static MenuItem CreateMenuItem(Type type) {
-            var menuItem = new MenuItem {
-                Header = ToDisplayNameConverter.Convert(type, typeof(Type), null, CultureInfo.CurrentCulture),
-                Tag = type.FullName,
-                CommandParameter = type
-            };
-            
-            return menuItem;
-        }
-        
-        private IReadOnlyCollection<IControl> CreateAddMenuItems() {
-            var items = new List<IControl>();
-            if (this.ViewModel is SceneViewModel { EntityService: IEntityService entityService } viewModel) {
-                items.Add(new MenuItem {
-                    Header = "Find...",
-                    Tag = "Open a window to find and select an entity type to add",
-                    CommandParameter = null!
-                });
 
-                items.Add(new Separator());
-
-                items.AddRange(entityService.AvailableTypes.Select(CreateMenuItem));
-            }
-
-            return items;
-        }
-        
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&
                 e.Data.Get(string.Empty) is IEntity sourceEntity) {

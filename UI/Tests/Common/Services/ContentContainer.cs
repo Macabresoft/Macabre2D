@@ -47,12 +47,15 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
 
             this.FileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
             this.Instance = new ContentService(
+                Substitute.For<IAssemblyService>(),
                 this.AssetManager,
                 Substitute.For<IBuildService>(),
                 this.FileSystem,
                 Substitute.For<ILoggingService>(),
                 this._pathService,
-                this.Serializer);
+                this.Serializer,
+                Substitute.For<IUndoService>(),
+                Substitute.For<IValueEditorService>());
         }
 
         public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
