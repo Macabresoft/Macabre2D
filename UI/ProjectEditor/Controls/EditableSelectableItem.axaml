@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.EditableSelectableItem">
@@ -8,13 +9,21 @@
                                        RequireAllTrue="True" />
     </UserControl.Resources>
 
-    <Grid>
-        <TextBlock Text="{Binding $parent[local:EditableSelectableItem].Text}"
+    <Grid ColumnDefinitions="Auto, *"
+          HorizontalAlignment="Stretch">
+        <controls:Icon Grid.Column="0"
+                       Content="{Binding $parent[local:EditableSelectableItem].Icon}"
+                       IsVisible="{Binding $parent[local:EditableSelectableItem].Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Margin="{StaticResource DoubleMarginRight}"/>
+        
+        <TextBlock Grid.Column="1"
+                   Text="{Binding $parent[local:EditableSelectableItem].Text}"
                    IsVisible="{Binding !#_editableTextBox.IsVisible}"
                    HorizontalAlignment="Stretch"
                    Background="Transparent"
                    DoubleTapped="Item_OnDoubleTapped" />
-        <TextBox x:Name="_editableTextBox"
+        <TextBox Grid.Column="1"
+                 x:Name="_editableTextBox"
                  Background="Transparent"
                  BorderThickness="0"
                  HorizontalAlignment="Stretch"

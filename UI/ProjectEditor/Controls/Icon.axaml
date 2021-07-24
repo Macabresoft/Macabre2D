@@ -1,0 +1,21 @@
+<ContentControl xmlns="https://github.com/avaloniaui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Icon">
+    <ContentControl.Template>
+        <ControlTemplate>
+            <Canvas Height="{DynamicResource ControlContentThemeFontSize}"
+                    Width="24"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="{StaticResource StandardMarginAll}">
+                <Path Height="{Binding $parent[Canvas].Height}"
+                      Width="{Binding $parent[Canvas].Width}"
+                      Stretch="Uniform"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Fill="{DynamicResource TextControlForeground}"
+                      Data="{TemplateBinding Content}" />
+            </Canvas>
+        </ControlTemplate>
+    </ContentControl.Template>
+</ContentControl>

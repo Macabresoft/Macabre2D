@@ -6,6 +6,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
+    using Avalonia.Media;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
     using ReactiveUI;
@@ -14,6 +15,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         public static readonly StyledProperty<bool> IsEditableProperty =
             AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsEditable), true);
 
+        public static readonly StyledProperty<StreamGeometry> IconProperty =
+            AvaloniaProperty.Register<EditableSelectableItem, StreamGeometry>(nameof(Icon));
+        
         public static readonly DirectProperty<EditableSelectableItem, bool> IsEditingProperty =
             AvaloniaProperty.RegisterDirect<EditableSelectableItem, bool>(
                 nameof(IsEditing),
@@ -24,7 +28,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
             AvaloniaProperty.RegisterDirect<EditableSelectableItem, ICommand>(
                 nameof(EditCommand),
                 editor => editor.EditCommand);
-
+        
         public static readonly StyledProperty<bool> IsFileNameProperty =
             AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsFileName));
 
@@ -46,6 +50,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         
         public ICommand EditCommand { get; }
 
+        public StreamGeometry Icon {
+            get => this.GetValue(IconProperty);
+            set => this.SetValue(IconProperty, value);
+        }
+        
         public bool IsEditable {
             get => this.GetValue(IsEditableProperty);
             set => this.SetValue(IsEditableProperty, value);

@@ -68,5 +68,9 @@
       <DependentUpon>ContentTreeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\Icon.axaml.cs">
+      <DependentUpon>Icon.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

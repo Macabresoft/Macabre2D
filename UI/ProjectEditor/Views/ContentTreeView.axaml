@@ -25,6 +25,7 @@
                     Classes="Icon"
                     Content="{StaticResource RemoveIcon}"
                     ToolTip.Tip="Remove the selected content node and all of its children from your computer" />
+
         </StackPanel>
         <TreeView Grid.Row="1"
                   Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
@@ -48,18 +49,18 @@
                                     <MenuItem Header="Open Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Open the directory in the file explorer"/>
-                                    
+                                              ToolTip.Tip="Open the directory in the file explorer" />
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Add Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
                                               ToolTip.Tip="Adds a directory as the child of the current node" />
-                                    
+
                                     <MenuItem Header="Add Scene"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
                                               ToolTip.Tip="Adds a scene as the child of the current node" />
-                                    
+
                                     <MenuItem Header="Import Content"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
                                               ToolTip.Tip="Import a piece of content from elsewhere" />
@@ -78,38 +79,39 @@
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableSelectableItem x:Name="_directoryControl"
-                                                       VerticalAlignment="Center"
-                                                       IsEditable="True"
-                                                       IsFileName="True"
-                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                       Text="{Binding Name}">
+                                                         VerticalAlignment="Center"
+                                                         Icon="{StaticResource Directory}"
+                                                         IsEditable="True"
+                                                         IsFileName="True"
+                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
+                                                         Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this entity" />
-                                    
+
                                     <MenuItem Header="Open Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Open the directory in the file explorer"/>
-                                    
+                                              ToolTip.Tip="Open the directory in the file explorer" />
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Add Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
                                               ToolTip.Tip="Adds a directory as the child of the current node" />
-                                    
+
                                     <MenuItem Header="Add Scene"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
                                               ToolTip.Tip="Adds a scene as the child of the current node" />
-                                    
+
                                     <MenuItem Header="Import Content"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
                                               ToolTip.Tip="Import a piece of content from elsewhere" />
-                                    
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Delete"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"
@@ -127,23 +129,24 @@
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableSelectableItem VerticalAlignment="Center"
-                                                       IsEditable="True"
-                                                       IsFileName="True"
-                                                       TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                       Text="{Binding Name}">
+                                                         Icon="{StaticResource File}"
+                                                         IsEditable="True"
+                                                         IsFileName="True"
+                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
+                                                         Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this entity" />
-                                    
+
                                     <MenuItem Header="Open Containing Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Open the directory which contains this file in the file explorer"/>
-                                    
+                                              ToolTip.Tip="Open the directory which contains this file in the file explorer" />
+
                                     <Separator />
-                                    
+
                                     <MenuItem Header="Delete"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"
