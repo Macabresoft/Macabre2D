@@ -1,11 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using System.Reactive;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
@@ -47,15 +43,23 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this._fileSystem = fileSystem;
             this._sceneService = sceneService;
 
-            this.AddFolderCommand = ReactiveCommand.Create<IContentNode, Unit>(
-                this.AddFolder,
+            this.AddDirectoryCommand = ReactiveCommand.Create(
+                this.ContentService.AddDirectory,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
 
-            this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode, Unit>(
+            this.AddSceneCommand = ReactiveCommand.Create(
+                this.ContentService.AddScene,
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
+
+            this.ImportCommand = ReactiveCommand.Create(
+                this.Import,
+                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
+
+            this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode>(
                 this.OpenContentLocation,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
 
-            this.RemoveContentCommand = ReactiveCommand.Create<IContentNode, Unit>(
+            this.RemoveContentCommand = ReactiveCommand.Create<IContentNode>(
                 this.RemoveContent,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value is { } and not RootContentDirectory));
 
@@ -65,14 +69,24 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         }
 
         /// <summary>
-        /// Gets the add folder command.
+        /// Gets the add directory command.
         /// </summary>
-        public ICommand AddFolderCommand { get; }
+        public ICommand AddDirectoryCommand { get; }
+
+        /// <summary>
+        /// Gets the add scene command.
+        /// </summary>
+        public ICommand AddSceneCommand { get; }
 
         /// <summary>
         /// Gets the content service.
         /// </summary>
         public IContentService ContentService { get; }
+
+        /// <summary>
+        /// Gets the import command.
+        /// </summary>
+        public ICommand ImportCommand { get; }
 
         /// <summary>
         /// Gets a command to open the file explorer to the content's location.
@@ -110,43 +124,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             }
         }
 
-        private Unit AddFolder(IContentNode parent) {
-            if (parent is IContentDirectory parentDirectory) {
-                this.CreateDirectory("New Folder", parentDirectory);
-            }
-
-            return Unit.Default;
+        private void Import() {
         }
 
-        private IContentDirectory CreateDirectory(string name, IContentDirectory parent) {
-            var parentPath = parent.GetFullPath();
-            var fullPath = Path.Combine(parentPath, name);
-            var currentCount = 0;
-
-            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
-                currentCount++;
-                if (currentCount >= 100) {
-                    throw new NotSupportedException("What the hell are you even doing with 100 folders named New Folder????");
-                }
-
-                name = $"New Folder ({currentCount})";
-                fullPath = Path.Combine(parentPath, name);
-            }
-
-            this._fileSystem.CreateDirectory(fullPath);
-            return new ContentDirectory(name, parent);
-        }
-
-        private Unit OpenContentLocation(IContentNode node) {
+        private void OpenContentLocation(IContentNode node) {
             var directory = node as IContentDirectory ?? node?.Parent;
             if (directory != null) {
                 this._fileSystem.OpenDirectoryInFileExplorer(directory.GetFullPath());
             }
-
-            return Unit.Default;
         }
 
-        private Unit RemoveContent(IContentNode node) {
+        private void RemoveContent(IContentNode node) {
             var openSceneMetadataId = this._sceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
             switch (node) {
                 case RootContentDirectory:
@@ -167,8 +155,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                     node.Parent?.RemoveChild(node);
                     break;
             }
-
-            return Unit.Default;
         }
 
         private async Task RenameContent(string updatedName) {

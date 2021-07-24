@@ -22,6 +22,16 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         IContentDirectory RootContentDirectory { get; }
 
         /// <summary>
+        /// Adds a directory as a child to selected directory.
+        /// </summary>
+        void AddDirectory();
+
+        /// <summary>
+        /// Adds a scene to the selected directory.
+        /// </summary>
+        void AddScene();
+
+        /// <summary>
         /// Moves the content to a new folder.
         /// </summary>
         /// <param name="contentToMove">The content to move.</param>
@@ -93,6 +103,66 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
         /// <inheritdoc />
+        public void AddDirectory() {
+            if (this.Selected is IContentDirectory parent) {
+                this.CreateDirectory("New Directory", parent);
+            }
+        }
+
+        /// <inheritdoc />
+        public void AddScene() {
+            if (this.Selected is IContentDirectory parent) {
+                var name = this.CreateSafeName("New Scene", parent);
+                var scene = new Scene() {
+                    Name = name
+                };
+
+                var fileName = $"{name}{SceneAsset.FileExtension}";
+                var fullPath = Path.Combine(parent.GetFullPath(), fileName);
+                this._serializer.Serialize(scene, fullPath);
+                this.CreateContentFile(parent, fileName);
+            }
+        }
+        
+        private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
+            var name = baseName;
+            var parentPath = parent.GetFullPath();
+            var fullPath = Path.Combine(parentPath, name);
+            var currentCount = 0;
+
+            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
+                currentCount++;
+                if (currentCount >= 100) {
+                    throw new NotSupportedException("What the hell are you even doing with 100 directories named the same????");
+                }
+
+                name = $"{baseName} ({currentCount})";
+                fullPath = Path.Combine(parentPath, name);
+            }
+
+            this._fileSystem.CreateDirectory(fullPath);
+            return new ContentDirectory(name, parent);
+        }
+
+        private string CreateSafeName(string baseName, IContentNode parent) {
+            var name = baseName;
+            var parentPath = parent.GetFullPath();
+            var currentCount = 0;
+            var files = this._fileSystem.GetFiles(parentPath).ToList();
+
+            while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
+                currentCount++;
+                if (currentCount >= 100) {
+                    throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
+                }
+
+                name = $"{baseName} ({currentCount})";
+            }
+
+            return name;
+        }
+
+        /// <inheritdoc />
         public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
             contentToMove.ChangeParent(newParent);
         }
@@ -123,7 +193,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
 
         /// <inheritdoc />
         protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
-            return new[] { typeof(ContentDirectory), typeof(Scene) };
+            return Enumerable.Empty<Type>();
         }
 
         private void BuildContentForProject() {

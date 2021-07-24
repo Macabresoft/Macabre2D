@@ -15,7 +15,7 @@
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <Button Command="{Binding AddFolderCommand, Mode=OneWay}"
+            <Button Command="{Binding AddDirectoryCommand, Mode=OneWay}"
                     CommandParameter="{Binding SelectedNode}"
                     Classes="Icon"
                     Content="{StaticResource AddIcon}"
@@ -49,6 +49,20 @@
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory in the file explorer"/>
+                                    
+                                    <Separator />
+                                    
+                                    <MenuItem Header="Add Directory"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
+                                              ToolTip.Tip="Adds a directory as the child of the current node" />
+                                    
+                                    <MenuItem Header="Add Scene"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
+                                              ToolTip.Tip="Adds a scene as the child of the current node" />
+                                    
+                                    <MenuItem Header="Import Content"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
+                                              ToolTip.Tip="Import a piece of content from elsewhere" />
                                 </ContextMenu>
                             </TextBlock.ContextMenu>
                         </TextBlock>
@@ -79,6 +93,20 @@
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory in the file explorer"/>
+                                    
+                                    <Separator />
+                                    
+                                    <MenuItem Header="Add Directory"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
+                                              ToolTip.Tip="Adds a directory as the child of the current node" />
+                                    
+                                    <MenuItem Header="Add Scene"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
+                                              ToolTip.Tip="Adds a scene as the child of the current node" />
+                                    
+                                    <MenuItem Header="Import Content"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
+                                              ToolTip.Tip="Import a piece of content from elsewhere" />
                                     
                                     <Separator />
                                     
