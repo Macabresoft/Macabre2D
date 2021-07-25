@@ -7,9 +7,6 @@
 
         <system:String x:Key="AddIcon">+</system:String>
         <system:String x:Key="RemoveIcon">-</system:String>
-        <system:String x:Key="BulletPointIcon">&#65517;</system:String>
-        <system:String x:Key="FolderIcon">&#8627;</system:String>
         <system:String x:Key="WarningIcon">&#9888;</system:String>
-        <system:String x:Key="GridIcon">&#8983;</system:String>
     </Style.Resources>
 </Style>

@@ -41,7 +41,7 @@
                             Background="Transparent"
                             DragDrop.AllowDrop="True">
                         <controls:EditableSelectableItem VerticalAlignment="Center"
-                                                         Icon="{StaticResource Directory}"
+                                                         Icon="{StaticResource DirectoryIcon}"
                                                          IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                          IsEditable="False"
                                                          IsFileName="True"
@@ -81,7 +81,7 @@
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableSelectableItem VerticalAlignment="Center"
-                                                         Icon="{StaticResource Directory}"
+                                                         Icon="{StaticResource DirectoryIcon}"
                                                          IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                          IsEditable="True"
                                                          IsFileName="True"
@@ -131,7 +131,7 @@
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
                         <controls:EditableSelectableItem VerticalAlignment="Center"
-                                                         Icon="{StaticResource File}"
+                                                         Icon="{StaticResource FileIcon}"
                                                          IconForeground="{StaticResource TextControlForeground}"
                                                          IsEditable="True"
                                                          IsFileName="True"
