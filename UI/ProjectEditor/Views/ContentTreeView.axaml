@@ -40,10 +40,13 @@
                     <Border HorizontalAlignment="Stretch"
                             Background="Transparent"
                             DragDrop.AllowDrop="True">
-                        <TextBlock VerticalAlignment="Center"
-                                   HorizontalAlignment="Stretch"
-                                   Text="{Binding Name}">
-                            <TextBlock.ContextMenu>
+                        <controls:EditableSelectableItem VerticalAlignment="Center"
+                                                         Icon="{StaticResource Directory}"
+                                                         IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                         IsEditable="False"
+                                                         IsFileName="True"
+                                                         Text="{Binding Name}">
+                            <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Open Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
@@ -64,8 +67,8 @@
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
                                               ToolTip.Tip="Import a piece of content from elsewhere" />
                                 </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
+                            </controls:EditableSelectableItem.ContextMenu>
+                        </controls:EditableSelectableItem>
                     </Border>
                 </TreeDataTemplate>
 
@@ -77,8 +80,7 @@
                             PointerReleased="Node_OnPointerReleased"
                             PointerMoved="Node_OnPointerMoved"
                             DragDrop.AllowDrop="True">
-                        <controls:EditableSelectableItem x:Name="_directoryControl"
-                                                         VerticalAlignment="Center"
+                        <controls:EditableSelectableItem VerticalAlignment="Center"
                                                          Icon="{StaticResource Directory}"
                                                          IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                          IsEditable="True"
