@@ -18,6 +18,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         public static readonly StyledProperty<StreamGeometry> IconProperty =
             AvaloniaProperty.Register<EditableSelectableItem, StreamGeometry>(nameof(Icon));
         
+        public static readonly StyledProperty<SolidColorBrush> IconForegroundProperty =
+            AvaloniaProperty.Register<EditableSelectableItem, SolidColorBrush>(nameof(IconForeground));
+        
         public static readonly DirectProperty<EditableSelectableItem, bool> IsEditingProperty =
             AvaloniaProperty.RegisterDirect<EditableSelectableItem, bool>(
                 nameof(IsEditing),
@@ -53,6 +56,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         public StreamGeometry Icon {
             get => this.GetValue(IconProperty);
             set => this.SetValue(IconProperty, value);
+        }
+        
+        public Brush IconForeground {
+            get => this.GetValue(IconForegroundProperty);
+            set => this.SetValue(IconForegroundProperty, value);
         }
         
         public bool IsEditable {

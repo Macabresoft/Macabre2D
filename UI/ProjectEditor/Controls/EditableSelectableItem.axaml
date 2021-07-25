@@ -14,7 +14,8 @@
         <controls:Icon Grid.Column="0"
                        Content="{Binding $parent[local:EditableSelectableItem].Icon}"
                        IsVisible="{Binding $parent[local:EditableSelectableItem].Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                       Margin="{StaticResource DoubleMarginRight}"/>
+                       Margin="{StaticResource StandardMarginRight}"
+                       Foreground="{Binding $parent[local:EditableSelectableItem].IconForeground}"/>
         
         <TextBlock Grid.Column="1"
                    Text="{Binding $parent[local:EditableSelectableItem].Text}"

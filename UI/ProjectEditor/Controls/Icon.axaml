@@ -4,7 +4,7 @@
     <ContentControl.Template>
         <ControlTemplate>
             <Canvas Height="{DynamicResource ControlContentThemeFontSize}"
-                    Width="24"
+                    Width="{DynamicResource ControlContentThemeFontSize}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Margin="{StaticResource StandardMarginAll}">
@@ -13,7 +13,7 @@
                       Stretch="Uniform"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      Fill="{DynamicResource TextControlForeground}"
+                      Fill="{TemplateBinding Foreground}"
                       Data="{TemplateBinding Content}" />
             </Canvas>
         </ControlTemplate>
