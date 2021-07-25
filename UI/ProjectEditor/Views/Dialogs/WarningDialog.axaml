@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.WarningDialog"
         Height="128"
@@ -12,15 +13,14 @@
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto">
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, 4, *"
+              ColumnDefinitions="Auto, *"
               HorizontalAlignment="Left"
               VerticalAlignment="Top">
-            <TextBlock Grid.Column="0"
-                       Text="{StaticResource WarningIcon}"
-                       VerticalAlignment="Center"
-                       Height="{Binding #_titleBlock.Height}" />
-            <TextBlock x:Name="_titleBlock"
-                       Grid.Column="2"
+            <controls:Icon Grid.Column="0"
+                           Foreground="{StaticResource SystemAccentColorLightBrush1}"
+                           Content="{StaticResource WarningIcon}" />
+
+            <TextBlock Grid.Column="1"
                        Text="{Binding $parent[local:WarningDialog].Title}"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"

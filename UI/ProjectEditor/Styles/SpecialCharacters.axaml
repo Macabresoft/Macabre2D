@@ -7,6 +7,5 @@
 
         <system:String x:Key="AddIcon">+</system:String>
         <system:String x:Key="RemoveIcon">-</system:String>
-        <system:String x:Key="WarningIcon">&#9888;</system:String>
     </Style.Resources>
 </Style>

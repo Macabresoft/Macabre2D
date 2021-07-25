@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.YesNoCancelDialog"
         Height="128"
@@ -14,12 +15,20 @@
     </Design.DataContext>
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto">
-        <TextBlock Grid.Row="0"
-                   Text="{Binding Title}"
-                   TextTrimming="CharacterEllipsis"
-                   TextWrapping="NoWrap"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top" />
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top">
+            <controls:Icon Grid.Column="0"
+                           Foreground="{StaticResource SystemAccentColorLightBrush1}"
+                           Content="{StaticResource WarningIcon}" />
+
+            <TextBlock Grid.Column="1"
+                       Text="{Binding Title}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       VerticalAlignment="Center" />
+        </Grid>
 
         <TextBlock Grid.Row="1"
                    Text="{Binding Question}"
