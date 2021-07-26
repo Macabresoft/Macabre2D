@@ -1,5 +1,6 @@
 <HeaderedContentControl xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
                         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.GroupBox">
     <HeaderedContentControl.Styles>
         <Style Selector="Button.groupBoxButton">
@@ -23,24 +24,34 @@
                         Classes="groupBoxButton"
                         Command="{TemplateBinding ToggleContentCommand}"
                         Margin="{StaticResource DoubleMarginVertical}">
-                    <Grid ColumnDefinitions="Auto, *"
+                    <Grid ColumnDefinitions="Auto, 4, *"
                           Margin="{StaticResource DoubleMarginVertical}">
-                        <TextBlock Grid.Column="0"
+                        <!--<TextBlock Grid.Column="0"
                                    IsVisible="{TemplateBinding HideContent}"
                                    Text="{StaticResource TriangleRightCharacter}">
                             <TextBlock.RenderTransform>
                                 <ScaleTransform ScaleX="0.5" />
                             </TextBlock.RenderTransform>
-                        </TextBlock>
-                        <TextBlock Grid.Column="0"
-                                   IsVisible="{TemplateBinding ShowContent}"
-                                   Text="{StaticResource TriangleDownCharacter}">
-                            <TextBlock.RenderTransform>
-                                <ScaleTransform ScaleY="0.5" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
+                        </TextBlock>-->
+                        
+                        <local:Icon Grid.Column="0"
+                                    IsVisible="{TemplateBinding HideContent}"
+                                    Content="{StaticResource CaretRightIcon}"/>
+                        
+                        <local:Icon Grid.Column="0"
+                                    VerticalAlignment="Bottom"
+                                    IsVisible="{TemplateBinding ShowContent}"
+                                    Content="{StaticResource CaretDownIcon}"/>
+                        
+                        <!-- <TextBlock Grid.Column="0" -->
+                        <!--            IsVisible="{TemplateBinding ShowContent}" -->
+                        <!--            Text="{StaticResource TriangleDownCharacter}"> -->
+                        <!--     <TextBlock.RenderTransform> -->
+                        <!--         <ScaleTransform ScaleY="0.5" /> -->
+                        <!--     </TextBlock.RenderTransform> -->
+                        <!-- </TextBlock> -->
 
-                        <TextBlock Grid.Column="1"
+                        <TextBlock Grid.Column="2"
                                    ToolTip.Tip="{TemplateBinding Header}"
                                    Text="{TemplateBinding Header}"
                                    TextTrimming="CharacterEllipsis" />

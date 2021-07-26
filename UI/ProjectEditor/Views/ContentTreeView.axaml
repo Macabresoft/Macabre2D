@@ -17,13 +17,15 @@
                     Orientation="Horizontal">
             <Button Command="{Binding AddDirectoryCommand, Mode=OneWay}"
                     Classes="Icon"
-                    Content="{StaticResource AddIcon}"
-                    ToolTip.Tip="Add content as a child of the selected node" />
+                    ToolTip.Tip="Add content as a child of the selected node">
+                <controls:Icon Content="{StaticResource AddIcon}" />
+            </Button>
             <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
                     CommandParameter="{Binding ContentService.Selected}"
                     Classes="Icon"
-                    Content="{StaticResource RemoveIcon}"
-                    ToolTip.Tip="Remove the selected content node and all of its children from your computer" />
+                    ToolTip.Tip="Remove the selected content node and all of its children from your computer">
+                <controls:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
 
         </StackPanel>
         <TreeView Grid.Row="1"

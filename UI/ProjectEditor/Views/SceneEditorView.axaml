@@ -62,6 +62,7 @@
 
         <monoGameInterop:MonoGameControl Grid.Row="1"
                                          HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Stretch" />
+                                         VerticalAlignment="Stretch"
+                                         Margin="{StaticResource StandardMarginAll}"/>
     </Grid>
 </UserControl>

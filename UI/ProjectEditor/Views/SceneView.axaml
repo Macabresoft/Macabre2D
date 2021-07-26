@@ -19,7 +19,6 @@
                         Orientation="Horizontal">
                 <Button Command="{Binding AddEntityCommand}"
                         Classes="Icon"
-                        Content="{StaticResource AddIcon}"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
                     <Button.ContextMenu>
                         <ContextMenu Items="{Binding $parent[local:SceneView].AddMenuItems}">
@@ -30,12 +29,15 @@
                             </ContextMenu.Styles>
                         </ContextMenu>
                     </Button.ContextMenu>
+                    
+                    <controls:Icon Content="{StaticResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveEntityCommand}"
                         CommandParameter="{Binding EntityService.Selected}"
                         Classes="Icon"
-                        Content="{StaticResource RemoveIcon}"
-                        ToolTip.Tip="Remove the selected entity and all of its children from the scene" />
+                        ToolTip.Tip="Remove the selected entity and all of its children from the scene">
+                    <controls:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
             </StackPanel>
 
             <TreeView Grid.Row="1"

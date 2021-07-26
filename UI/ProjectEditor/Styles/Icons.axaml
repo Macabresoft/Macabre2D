@@ -6,6 +6,22 @@
         <!-- Licensed under the MIT license https://github.com/microsoft/fluentui-system-icons/blob/master/LICENSE -->
 
         <!-- Misc -->
+        <StreamGeometry x:Key="AddIcon">
+            M11.8834 3.00673L12 3C12.5128 3 12.9355 3.38604 12.9933 3.88338L13 4V11H20C20.5128 11 20.9355 11.386 20.9933 11.8834L21 12C21 12.5128 20.614 12.9355 20.1166 12.9933L20 13H13V20C13 20.5128 12.614 20.9355 12.1166 20.9933L12 21C11.4872 21 11.0645 20.614 11.0067 20.1166L11 20V13H4C3.48716 13 3.06449 12.614 3.00673 12.1166L3 12C3 11.4872 3.38604 11.0645 3.88338 11.0067L4 11H11V4C11 3.48716 11.386 3.06449 11.8834 3.00673L12 3L11.8834 3.00673Z
+        </StreamGeometry>
+        
+        <StreamGeometry x:Key="RemoveIcon">
+            M3.99658 13H20.0001C20.5524 13 21.0001 12.5523 21.0001 12C21.0001 11.4477 20.5524 11 20.0001 11H3.99658C3.4443 11 2.99658 11.4477 2.99658 12C2.99658 12.5523 3.4443 13 3.99658 13Z
+        </StreamGeometry>
+        
+        <StreamGeometry x:Key="CaretDownIcon">
+            M6.10204 8C5.0281 8 4.45412 9.2649 5.16132 10.0731L10.6831 16.3838C11.3804 17.1806 12.6199 17.1806 13.3172 16.3838L18.839 10.0731C19.5462 9.2649 18.9722 8 17.8983 8H6.10204Z
+        </StreamGeometry>
+        
+        <StreamGeometry x:Key="CaretRightIcon">
+            M9 17.8983C9 18.9722 10.2649 19.5462 11.0731 18.839L17.3838 13.3172C18.1806 12.6199 18.1806 11.3804 17.3838 10.6831L11.0731 5.16132C10.2649 4.45412 9 5.02809 9 6.10204V17.8983Z
+        </StreamGeometry>
+        
         <StreamGeometry x:Key="WarningIcon">
             M10.9085 2.78216C11.9483 2.20625 13.2463 2.54089 13.8841 3.5224L13.9669 3.66023L21.7259 17.6685C21.9107 18.0021 22.0076 18.3773 22.0076 18.7587C22.0076 19.9495 21.0825 20.9243 19.9117 21.0035L19.7576 21.0087H4.24187C3.86056 21.0087 3.4855 20.9118 3.15192 20.7271C2.11208 20.1513 1.70704 18.8734 2.20059 17.812L2.27349 17.6687L10.0303 3.66046C10.2348 3.2911 10.5391 2.98674 10.9085 2.78216Z
             M12.0004 16.0018C11.4489 16.0018 11.0018 16.4489 11.0018 17.0004C11.0018 17.552 11.4489 17.9991 12.0004 17.9991C12.552 17.9991 12.9991 17.552 12.9991 17.0004C12.9991 16.4489 12.552 16.0018 12.0004 16.0018Z
@@ -46,11 +62,11 @@
     </Styles.Resources>
 
     <Style Selector="controls|Icon">
-        <Setter Property="Foreground" Value="{StaticResource TextControlForeground}" />
         <Setter Property="Width" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="Height" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 </Styles>

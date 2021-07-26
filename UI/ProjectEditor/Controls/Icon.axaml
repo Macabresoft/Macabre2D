@@ -3,19 +3,13 @@
                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Icon">
     <ContentControl.Template>
         <ControlTemplate>
-            <Canvas Height="{TemplateBinding Height}"
-                    Width="{TemplateBinding Width}"
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                    VerticalAlignment="{TemplateBinding HorizontalAlignment}"
-                    Margin="{TemplateBinding Margin}">
-                <Path Height="{Binding $parent[Canvas].Height}"
-                      Width="{Binding $parent[Canvas].Width}"
-                      Stretch="Uniform"
-                      HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                      VerticalAlignment="{TemplateBinding HorizontalAlignment}"
-                      Fill="{TemplateBinding Foreground}"
-                      Data="{TemplateBinding Content}" />
-            </Canvas>
+            <Path MaxHeight="{TemplateBinding Height}"
+                  MaxWidth="{TemplateBinding Width}"
+                  Stretch="Uniform"
+                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                  Fill="{TemplateBinding Foreground}"
+                  Data="{TemplateBinding Content}" />
         </ControlTemplate>
     </ContentControl.Template>
 </ContentControl>

@@ -19,7 +19,6 @@
                         Orientation="Horizontal">
                 <Button Command="{Binding AddSystemCommand}"
                         Classes="Icon"
-                        Content="{StaticResource AddIcon}"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
                     <Button.ContextMenu>
                         <ContextMenu Items="{Binding $parent[local:SystemsView].AddMenuItems}">
@@ -30,12 +29,15 @@
                             </ContextMenu.Styles>
                         </ContextMenu>
                     </Button.ContextMenu>
+                    
+                    <controls:Icon Content="{StaticResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveSystemCommand}"
                         CommandParameter="{Binding SystemService.Selected}"
                         Classes="Icon"
-                        Content="{StaticResource RemoveIcon}"
-                        ToolTip.Tip="Remove the selected system from the scene" />
+                        ToolTip.Tip="Remove the selected system from the scene">
+                    <controls:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
             </StackPanel>
 
             <ListBox Grid.Row="1"
