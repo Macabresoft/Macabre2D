@@ -30,6 +30,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
                 .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
+                .RegisterType<IEditorSettingsService, EditorSettingsService>(new SingletonLifetimeManager())
                 .RegisterType<IEntityService, EntityService>(new SingletonLifetimeManager())
                 .RegisterType<IFileSystemService, FileSystemService>(new SingletonLifetimeManager())
                 .RegisterType<ILoggingService, LoggingService>(new SingletonLifetimeManager())

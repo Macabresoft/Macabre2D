@@ -37,6 +37,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private readonly IPathService _pathService;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
+        private readonly IEditorSettingsService _settingsService;
         private GameProject _currentProject;
 
         /// <summary>
@@ -47,17 +48,20 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="pathService">The path service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="settingsService">The editor settings service.</param>
         public ProjectService(
             IContentService contentService,
             IFileSystemService fileSystem,
             IPathService pathService,
             ISceneService sceneService,
-            ISerializer serializer) {
+            ISerializer serializer,
+            IEditorSettingsService settingsService) {
             this._contentService = contentService;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._sceneService = sceneService;
             this._serializer = serializer;
+            this._settingsService = settingsService;
         }
 
         /// <inheritdoc />
@@ -84,7 +88,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             }
             else {
                 this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
-                if (!this._sceneService.TryLoadScene(this.CurrentProject.StartupSceneContentId, out var sceneAsset) && sceneAsset != null) {
+                var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
+                if (!this._sceneService.TryLoadScene(sceneId, out var sceneAsset) && sceneAsset != null) {
                     this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
                 }
             }

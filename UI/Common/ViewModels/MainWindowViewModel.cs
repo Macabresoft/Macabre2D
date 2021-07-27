@@ -16,6 +16,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// </summary>
     public class MainWindowViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
+        private readonly IEditorSettingsService _settingsService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -30,14 +31,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
+        /// <param name="settingsService">The editor settings service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
             IDialogService dialogService,
             IEntityService entityService,
             ISaveService saveService,
+            IEditorSettingsService settingsService,
             IUndoService undoService) : base() {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
 
@@ -106,7 +110,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                     this.SaveService.Save();
                 }
             }
-
+            
+            this._settingsService.Save();
             return result;
         }
 

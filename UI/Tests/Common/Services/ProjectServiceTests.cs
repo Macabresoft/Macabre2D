@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using NSubstitute;
@@ -60,7 +61,8 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 fileSystem,
                 pathService,
                 sceneService,
-                serializer);
+                serializer, 
+                Substitute.For<IEditorSettingsService>());
 
             var project = projectService.LoadProject();
 
@@ -80,12 +82,16 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var serializer = Substitute.For<ISerializer>();
             var project = new GameProject();
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
+            var settingsService = Substitute.For<IEditorSettingsService>();
+            settingsService.Settings.Returns(new EditorSettings());
+            
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer);
+                serializer, 
+                settingsService);
 
             var loadedProject = projectService.LoadProject();
 
@@ -109,7 +115,8 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer);
+                serializer, 
+                Substitute.For<IEditorSettingsService>());
 
             projectService.SaveProject();
 
@@ -126,13 +133,16 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var serializer = Substitute.For<ISerializer>();
             var project = new GameProject();
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
-
+            var settingsService = Substitute.For<IEditorSettingsService>();
+            settingsService.Settings.Returns(new EditorSettings());
+            
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer);
+                serializer, 
+                settingsService);
 
             projectService.LoadProject();
             projectService.SaveProject();

@@ -3,11 +3,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
 
     public class MainWindow : Window {
+        private readonly IEditorSettingsService _settingsService;
         private bool _shouldClose;
-
+        
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
 
         protected override async void OnClosing(CancelEventArgs e) {

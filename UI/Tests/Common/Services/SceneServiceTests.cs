@@ -4,6 +4,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using NSubstitute;
@@ -21,12 +22,13 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var fileSystem = Substitute.For<IFileSystemService>();
             var pathService = new PathService(string.Empty, ProjectDirectoryPath);
             var serializer = Substitute.For<ISerializer>();
+            var settingsService = Substitute.For<IEditorSettingsService>();
+            settingsService.Settings.Returns(new EditorSettings());
             var contentDirectory = Substitute.For<IContentDirectory>();
             contentDirectory.GetFullPath().Returns(pathService.ContentDirectoryPath);
             fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
             var sceneFilePath = Path.Combine(pathService.ContentDirectoryPath, $"{SceneName}{SceneAsset.FileExtension}");
             fileSystem.DoesFileExist(sceneFilePath).Returns(false);
-
             var scene = new Scene();
             fileSystem.DoesFileExist(sceneFilePath).Returns(true);
             serializer.Deserialize<Scene>(sceneFilePath).Returns(scene);
@@ -36,7 +38,8 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var metadataFilePath = pathService.GetMetadataFilePath(metadata.ContentId);
             fileSystem.DoesFileExist(metadataFilePath).Returns(true);
             serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer);
+            
+            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, settingsService);
             var result = sceneService.TryLoadScene(metadata.ContentId, out var loadedSceneAsset);
 
             using (new AssertionScope()) {

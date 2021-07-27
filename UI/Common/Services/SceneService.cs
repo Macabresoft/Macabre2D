@@ -47,6 +47,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
+        private readonly IEditorSettingsService _settingsService;
         private ContentMetadata _currentSceneMetadata;
 
         /// <summary>
@@ -56,15 +57,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="settingsService">The settings service.</param>
         public SceneService(
             IAssetManager assetManager,
             IFileSystemService fileSystem,
             IPathService pathService,
-            ISerializer serializer) {
+            ISerializer serializer,
+            IEditorSettingsService settingsService) {
             this._assetManager = assetManager;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._serializer = serializer;
+            this._settingsService = settingsService;
         }
 
         /// <inheritdoc />
@@ -114,6 +118,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                             if (scene != null) {
                                 sceneAsset.LoadContent(scene);
                                 this.CurrentSceneMetadata = metadata;
+                                this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
                             }
                         }
                     }
