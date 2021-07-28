@@ -26,7 +26,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         /// <inheritdoc />
         public async Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection) {
             IContentNode selectedNode = null;
-            var window = Resolver.Resolve<AssetSelectionDialog>(new ParameterOverride(typeof(Type), baseAssetType), new ParameterOverride(typeof(bool), allowDirectorySelection));
+            var window = Resolver.Resolve<ContentSelectionDialog>(new ParameterOverride(typeof(Type), baseAssetType), new ParameterOverride(typeof(bool), allowDirectorySelection));
             var result = await window.ShowDialog<bool>(this._mainWindow);
 
             if (result && window.ViewModel != null) {

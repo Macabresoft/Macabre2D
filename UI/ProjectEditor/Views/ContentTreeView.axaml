@@ -93,7 +93,7 @@
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
-                                              ToolTip.Tip="Rename this entity" />
+                                              ToolTip.Tip="Rename this directory" />
 
                                     <MenuItem Header="Open Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
@@ -143,7 +143,13 @@
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
-                                              ToolTip.Tip="Rename this entity" />
+                                              ToolTip.Tip="Rename this content" />
+                                    
+                                                                        
+                                    <MenuItem Header="Open"
+                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Open the directory in the file explorer" />
 
                                     <MenuItem Header="Open Containing Directory"
                                               Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"

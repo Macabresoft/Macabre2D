@@ -5,6 +5,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
+    using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
@@ -16,6 +18,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     public class ContentTreeViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
+        private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
 
         /// <summary>
@@ -31,16 +34,19 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="fileSystem">The file system.</param>
+        /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
         public ContentTreeViewModel(
             IContentService contentService,
             IDialogService dialogService,
             IFileSystemService fileSystem,
+            ISaveService saveService,
             ISceneService sceneService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
+            this._saveService = saveService;
             this._sceneService = sceneService;
 
             this.AddDirectoryCommand = ReactiveCommand.Create(
@@ -54,6 +60,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this.ImportCommand = ReactiveCommand.Create(
                 this.Import,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
+
+            this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
+                this.OpenSelectedContent,
+                this.ContentService.WhenAny(x => x.Selected, y => CanOpenContent(y.Value)));
 
             this.OpenContentLocationCommand = ReactiveCommand.Create<IContentNode>(
                 this.OpenContentLocation,
@@ -87,6 +97,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the import command.
         /// </summary>
         public ICommand ImportCommand { get; }
+
+        /// <summary>
+        /// Gets the open command.
+        /// </summary>
+        public ICommand OpenCommand { get; }
 
         /// <summary>
         /// Gets a command to open the file explorer to the content's location.
@@ -124,6 +139,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             }
         }
 
+        private static bool CanOpenContent(IContentNode node) {
+            return node is ContentFile { Asset: SceneAsset };
+        }
+
         private void Import() {
         }
 
@@ -131,6 +150,12 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             var directory = node as IContentDirectory ?? node?.Parent;
             if (directory != null) {
                 this._fileSystem.OpenDirectoryInFileExplorer(directory.GetFullPath());
+            }
+        }
+
+        private async Task OpenSelectedContent(IContentNode node) {
+            if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel) {
+                this._sceneService.TryLoadScene(node.Id, out _);
             }
         }
 

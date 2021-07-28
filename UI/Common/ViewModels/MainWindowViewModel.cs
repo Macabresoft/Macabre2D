@@ -6,6 +6,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using Avalonia.Controls;
     using Avalonia.Platform;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
@@ -16,6 +17,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// </summary>
     public class MainWindowViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
+        private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
 
         /// <summary>
@@ -31,6 +33,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
+        /// <param name="sceneService"></param>
         /// <param name="settingsService">The editor settings service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
@@ -38,18 +41,20 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             IDialogService dialogService,
             IEntityService entityService,
             ISaveService saveService,
+            ISceneService sceneService,
             IEditorSettingsService settingsService,
             IUndoService undoService) : base() {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this._sceneService = sceneService;
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
+            this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.RedoCommand = ReactiveCommand.Create(
                 undoService.Redo,
                 undoService.WhenAnyValue(x => x.CanRedo));
-
             this.SaveCommand = ReactiveCommand.Create(this.SaveService.Save, this.SaveService.WhenAnyValue(x => x.HasChanges));
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
@@ -66,6 +71,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to exit the application.
         /// </summary>
         public ICommand ExitCommand { get; }
+
+        /// <summary>
+        /// Gets the open scene command.
+        /// </summary>
+        public ICommand OpenSceneCommand { get; }
 
         /// <summary>
         /// Gets the command to redo a previously undone operation.
@@ -102,21 +112,28 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         /// <returns>A value indicating whether or not the window should close.</returns>
         public async Task<YesNoCancelResult> TryClose() {
-            var result = YesNoCancelResult.No;
-            if (this.SaveService.HasChanges) {
-                result = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?", true);
-
-                if (result == YesNoCancelResult.Yes) {
-                    this.SaveService.Save();
-                }
+            var result = await this.SaveService.RequestSave();
+            if (result != YesNoCancelResult.Cancel) {
+                this._settingsService.Save();
             }
-            
-            this._settingsService.Save();
+
             return result;
         }
 
         private static void Exit(Window window) {
             window?.Close();
+        }
+
+        private async Task OpenScene() {
+            var saveResult = await this.SaveService.RequestSave();
+
+            if (saveResult != YesNoCancelResult.Cancel) {
+                var result = await this._dialogService.OpenAssetSelectionDialog(typeof(SceneAsset), false);
+
+                if (result != null && !this._sceneService.TryLoadScene(result.Id, out _)) {
+                    await this._dialogService.ShowWarningDialog("Error", "The scene could not be loaded");
+                }
+            }
         }
 
         private static void ViewSource() {

@@ -5,13 +5,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
-    public class AssetSelectionDialog : Window {
+    public class ContentSelectionDialog : Window {
         
-        public AssetSelectionDialog() {
+        public ContentSelectionDialog() {
         }
         
         [InjectionConstructor]
-        public AssetSelectionDialog(AssetSelectionViewModel viewModel) {
+        public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
             this.DataContext = viewModel;
             viewModel.CloseRequested += OnCloseRequested;
             this.InitializeComponent();
@@ -21,7 +21,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
             this.Close(e);
         }
 
-        public AssetSelectionViewModel ViewModel => this.DataContext as AssetSelectionViewModel;
+        public ContentSelectionViewModel ViewModel => this.DataContext as ContentSelectionViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

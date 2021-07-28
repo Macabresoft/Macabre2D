@@ -8,20 +8,20 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     /// <summary>
     /// A view model for the asset selection dialog.
     /// </summary>
-    public class AssetSelectionViewModel : BaseDialogViewModel {
+    public class ContentSelectionViewModel : BaseDialogViewModel {
         private readonly bool _allowDirectorySelection;
         private readonly Type _desiredAssetType;
         private FilteredContentWrapper _selectedContentNode;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssetSelectionViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ContentSelectionViewModel" /> class.
         /// </summary>
-        public AssetSelectionViewModel() : base() {
+        public ContentSelectionViewModel() : base() {
             this.IsOkEnabled = false;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssetSelectionViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ContentSelectionViewModel" /> class.
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="desiredAssetType">The desired asset type.</param>
@@ -30,7 +30,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// directory node.
         /// </param>
         [InjectionConstructor]
-        public AssetSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection) : this() {
+        public ContentSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection) : this() {
             this._desiredAssetType = desiredAssetType;
             this._allowDirectorySelection = allowDirectorySelection;
             this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, desiredAssetType);
@@ -48,8 +48,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
             get => this._selectedContentNode;
             set {
                 this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
-                this.IsOkEnabled = this._desiredAssetType.IsInstanceOfType(this._selectedContentNode?.Node) ||
-                                   this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
+                this.IsOkEnabled = (this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset)) ||
+                                   (this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory);
             }
         }
     }

@@ -52,5 +52,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// Gets the node this is wrapping.
         /// </summary>
         public IContentNode Node { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not this is a directory.
+        /// </summary>
+        private bool IsDirectory => this.Node is IContentDirectory;
     }
 }

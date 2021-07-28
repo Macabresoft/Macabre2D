@@ -24,7 +24,7 @@
     <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\Dialogs\AssetSelectionDialog.axaml.cs">
+    <Compile Update="Views\Dialogs\ContentSelectionDialog.axaml.cs">
       <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

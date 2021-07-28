@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.ComponentModel;
+    using System.Threading.Tasks;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
 
     /// <summary>
@@ -13,6 +15,12 @@
         bool HasChanges { get; }
 
         /// <summary>
+        /// Requests a save with a dialog.
+        /// </summary>
+        /// <returns>The dialog result.</returns>
+        Task<YesNoCancelResult> RequestSave();
+
+        /// <summary>
         /// Saves the scene and project.
         /// </summary>
         void Save();
@@ -22,6 +30,7 @@
     /// A service which handles saving.
     /// </summary>
     public class SaveService : ReactiveObject, ISaveService {
+        private readonly IDialogService _dialogService;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
@@ -33,7 +42,8 @@
         /// <param name="projectService">The project service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
-        public SaveService(IProjectService projectService, ISceneService sceneService, IUndoService undoService) {
+        public SaveService(IDialogService dialogService, IProjectService projectService, ISceneService sceneService, IUndoService undoService) {
+            this._dialogService = dialogService;
             this._projectService = projectService;
             this._sceneService = sceneService;
             this._undoService = undoService;
@@ -42,6 +52,20 @@
 
         /// <inheritdoc />
         public bool HasChanges => this._undoService.LatestChangeId != this._savedChangeId;
+
+        /// <inheritdoc />
+        public async Task<YesNoCancelResult> RequestSave() {
+            var result = YesNoCancelResult.No;
+            if (this.HasChanges) {
+                result = await this._dialogService.ShowYesNoDialog("Unsaved Changes", "Save changes before closing?", true);
+
+                if (result == YesNoCancelResult.Yes) {
+                    this.Save();
+                }
+            }
+
+            return result;
+        }
 
         /// <inheritdoc />
         public void Save() {

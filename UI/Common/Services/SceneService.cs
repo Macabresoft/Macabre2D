@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -43,32 +44,36 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// A service which handles the <see cref="IScene" /> open in the editor.
     /// </summary>
     public sealed class SceneService : ReactiveObject, ISceneService {
-        private readonly IAssetManager _assetManager;
+        private readonly IEntityService _entityService;
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISerializer _serializer;
         private readonly IEditorSettingsService _settingsService;
+        private readonly ISystemService _systemService;
         private ContentMetadata _currentSceneMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneService" /> class.
         /// </summary>
-        /// <param name="assetManager">The asset manager.</param>
+        /// <param name="entityService">The entity service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
         /// <param name="settingsService">The settings service.</param>
+        /// <param name="systemService">The system service.</param>
         public SceneService(
-            IAssetManager assetManager,
+            IEntityService entityService,
             IFileSystemService fileSystem,
             IPathService pathService,
             ISerializer serializer,
-            IEditorSettingsService settingsService) {
-            this._assetManager = assetManager;
+            IEditorSettingsService settingsService,
+            ISystemService systemService) {
+            this._entityService = entityService;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._serializer = serializer;
             this._settingsService = settingsService;
+            this._systemService = systemService;
         }
 
         /// <inheritdoc />
@@ -119,6 +124,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                                 sceneAsset.LoadContent(scene);
                                 this.CurrentSceneMetadata = metadata;
                                 this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
+                                this._entityService.Selected = scene;
+                                this._systemService.Selected = scene.Systems.FirstOrDefault();
                             }
                         }
                     }

@@ -18,7 +18,6 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
         [Test]
         [Category("Unit Tests")]
         public void TryLoadScene_LoadsScene_WhenSceneExists() {
-            var assetManager = Substitute.For<IAssetManager>();
             var fileSystem = Substitute.For<IFileSystemService>();
             var pathService = new PathService(string.Empty, ProjectDirectoryPath);
             var serializer = Substitute.For<ISerializer>();
@@ -39,7 +38,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             fileSystem.DoesFileExist(metadataFilePath).Returns(true);
             serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
             
-            var sceneService = new SceneService(assetManager, fileSystem, pathService, serializer, settingsService);
+            var sceneService = new SceneService(Substitute.For<IEntityService>(), fileSystem, pathService, serializer, settingsService, Substitute.For<ISystemService>());
             var result = sceneService.TryLoadScene(metadata.ContentId, out var loadedSceneAsset);
 
             using (new AssertionScope()) {
