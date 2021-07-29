@@ -129,8 +129,8 @@
                 </TabItem>
             </TabControl>
 
-            <GridSplitter Width="3"
-                          Grid.Column="1" />
+            <GridSplitter Grid.Column="1"
+                          Margin="{StaticResource StandardMarginLeft}"/>
 
             <scene:SceneEditorView Grid.Column="2" />
         </Grid>

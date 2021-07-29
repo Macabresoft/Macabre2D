@@ -104,19 +104,27 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not editors should be loaded.
-        /// </summary>
-        /// <returns>A value indicating whether or not editors should be loaded.</returns>
-        protected virtual bool ShouldLoadEditors() {
-            return this.Selected != null;
-        }
-
-        /// <summary>
         /// Gets the available types.
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <returns>The available types.</returns>
         protected abstract IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService);
+
+        /// <summary>
+        /// Gets the editable object for which to create editors.
+        /// </summary>
+        /// <returns>The editable object.</returns>
+        protected virtual object GetEditableObject() {
+            return this.Selected;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not editors should be loaded.
+        /// </summary>
+        /// <returns>A value indicating whether or not editors should be loaded.</returns>
+        protected virtual bool ShouldLoadEditors() {
+            return this.GetEditableObject() != null;
+        }
 
         private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
             if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
@@ -141,7 +149,7 @@
                     try {
                         Dispatcher.UIThread.Post(() => this.IsBusy = true);
 
-                        var editorCollections = this._valueEditorService.CreateEditors(this.Selected).ToList();
+                        var editorCollections = this._valueEditorService.CreateEditors(this.GetEditableObject()).ToList();
 
                         foreach (var editorCollection in this._editors) {
                             editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;

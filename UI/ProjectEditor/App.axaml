@@ -14,6 +14,7 @@
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Button.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/CheckBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ComboBox.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/GridSplitter.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Icons.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Image.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ListBox.axaml" />

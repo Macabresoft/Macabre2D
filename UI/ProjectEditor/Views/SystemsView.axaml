@@ -12,7 +12,6 @@
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, Auto, 0.6*">
-
         <Grid Grid.Row="0"
               RowDefinitions="Auto, *">
             <StackPanel Grid.Row="0"
@@ -70,10 +69,11 @@
             </ListBox>
         </Grid>
 
-        <GridSplitter Height="3"
-                      Grid.Row="1" />
-
+        <GridSplitter Grid.Row="1"
+                      Margin="{StaticResource StandardMarginHorizontal}" />
+        
         <controls:ValueEditorListControl Grid.Row="2"
+                                         Margin="{StaticResource StandardMarginAll}"
                                          Collections="{Binding SystemService.Editors}"
                                          IsBusy="{Binding SystemService.IsBusy}" />
     </Grid>

@@ -96,10 +96,11 @@
             </TreeView>
         </Grid>
         
-        <GridSplitter Height="3"
-                      Grid.Row="1" />
+        <GridSplitter Grid.Row="1"
+                      Margin="{StaticResource StandardMarginHorizontal}" />
         
         <controls:ValueEditorListControl Grid.Row="2"
+                                         Margin="{StaticResource StandardMarginAll}"
                                          Collections="{Binding EntityService.Editors}"
                                          IsBusy="{Binding EntityService.IsBusy}"/>
     </Grid>

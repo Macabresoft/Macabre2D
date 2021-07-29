@@ -8,7 +8,8 @@
             <ItemsControl Items="{Binding Collections}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <local:GroupBox Header="{Binding Name}">
+                        <local:GroupBox Header="{Binding Name}"
+                                        Margin="{StaticResource DoubleMarginBottom}">
                             <ItemsControl Items="{Binding ValueEditors}" />
                         </local:GroupBox>
                     </DataTemplate>

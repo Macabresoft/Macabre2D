@@ -1,9 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -113,7 +110,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         public void AddScene() {
             if (this.Selected is IContentDirectory parent) {
                 var name = this.CreateSafeName("New Scene", parent);
-                var scene = new Scene() {
+                var scene = new Scene {
                     Name = name
                 };
 
@@ -122,44 +119,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 this._serializer.Serialize(scene, fullPath);
                 this.CreateContentFile(parent, fileName);
             }
-        }
-        
-        private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
-            var name = baseName;
-            var parentPath = parent.GetFullPath();
-            var fullPath = Path.Combine(parentPath, name);
-            var currentCount = 0;
-
-            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
-                currentCount++;
-                if (currentCount >= 100) {
-                    throw new NotSupportedException("What the hell are you even doing with 100 directories named the same????");
-                }
-
-                name = $"{baseName} ({currentCount})";
-                fullPath = Path.Combine(parentPath, name);
-            }
-
-            this._fileSystem.CreateDirectory(fullPath);
-            return new ContentDirectory(name, parent);
-        }
-
-        private string CreateSafeName(string baseName, IContentNode parent) {
-            var name = baseName;
-            var parentPath = parent.GetFullPath();
-            var currentCount = 0;
-            var files = this._fileSystem.GetFiles(parentPath).ToList();
-
-            while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
-                currentCount++;
-                if (currentCount >= 100) {
-                    throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
-                }
-
-                name = $"{baseName} ({currentCount})";
-            }
-
-            return name;
         }
 
         /// <inheritdoc />
@@ -194,6 +153,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <inheritdoc />
         protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
             return Enumerable.Empty<Type>();
+        }
+
+        /// <inheritdoc />
+        protected override object GetEditableObject() {
+            return this.Selected is ContentFile file ? file.Asset : null;
         }
 
         private void BuildContentForProject() {
@@ -264,6 +228,44 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     this._assetManager.RegisterMetadata(contentFile.Metadata);
                 }
             }
+        }
+
+        private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
+            var name = baseName;
+            var parentPath = parent.GetFullPath();
+            var fullPath = Path.Combine(parentPath, name);
+            var currentCount = 0;
+
+            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
+                currentCount++;
+                if (currentCount >= 100) {
+                    throw new NotSupportedException("What the hell are you even doing with 100 directories named the same????");
+                }
+
+                name = $"{baseName} ({currentCount})";
+                fullPath = Path.Combine(parentPath, name);
+            }
+
+            this._fileSystem.CreateDirectory(fullPath);
+            return new ContentDirectory(name, parent);
+        }
+
+        private string CreateSafeName(string baseName, IContentNode parent) {
+            var name = baseName;
+            var parentPath = parent.GetFullPath();
+            var currentCount = 0;
+            var files = this._fileSystem.GetFiles(parentPath).ToList();
+
+            while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
+                currentCount++;
+                if (currentCount >= 100) {
+                    throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
+                }
+
+                name = $"{baseName} ({currentCount})";
+            }
+
+            return name;
         }
 
         private IEnumerable<ContentMetadata> GetMetadata() {

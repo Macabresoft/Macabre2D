@@ -17,8 +17,7 @@
     </HeaderedContentControl.Styles>
     <HeaderedContentControl.Template>
         <ControlTemplate>
-            <Grid RowDefinitions="Auto, *"
-                  Margin="{StaticResource DoubleMarginAll}">
+            <Grid RowDefinitions="Auto, *">
                 <Button Grid.Row="0"
                         HorizontalAlignment="Stretch"
                         Classes="groupBoxButton"
