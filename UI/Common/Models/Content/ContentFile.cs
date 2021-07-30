@@ -9,20 +9,19 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
-        /// <param name="contentService">The content service.</param>
         /// <param name="parent"></param>
         /// <param name="metadata">The metadata.</param>
         public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
-            this.Metadata = metadata;
+            this.Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         }
 
         /// <summary>
         /// Gets the asset.
         /// </summary>
-        public IAsset Asset => this.Metadata?.Asset;
+        public IAsset Asset => this.Metadata.Asset;
 
         /// <inheritdoc />
-        public override Guid Id => this.Metadata?.ContentId ?? Guid.Empty;
+        public override Guid Id => this.Metadata.ContentId;
 
         /// <summary>
         /// The metadata.
