@@ -176,9 +176,9 @@
         <GridSplitter Grid.Row="1"
                       Margin="{StaticResource StandardMarginHorizontal}" />
 
-        <!--<controls:ValueEditorListControl Grid.Row="2"
+        <controls:ValueEditorListControl Grid.Row="2"
                                          Margin="{StaticResource StandardMarginAll}"
                                          Collections="{Binding ContentService.Editors}"
-                                         IsBusy="{Binding ContentService.IsBusy}" />-->
+                                         IsBusy="{Binding ContentService.IsBusy}" />
     </Grid>
 </UserControl>

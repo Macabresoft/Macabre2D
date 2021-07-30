@@ -74,6 +74,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [Category("File")]
         public string Name {
             get => this._name;
             set => this.Set(ref this._name, value);
