@@ -21,7 +21,7 @@
                         <NativeMenuItem Header="Save"
                                         Command="{Binding SaveCommand}" />
                         <NativeMenuItem Header="Open Scene"
-                                        IsEnabled="False" />
+                                        Command="{Binding OpenSceneCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
