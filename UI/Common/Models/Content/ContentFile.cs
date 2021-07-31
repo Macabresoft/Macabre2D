@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     using System;
+    using System.ComponentModel;
     using System.IO;
+    using System.Runtime.Serialization;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -19,6 +21,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// <summary>
         /// Gets the asset.
         /// </summary>
+        [DataMember]
+        [Category(nameof(Asset))]
         public IAsset Asset => this.Metadata.Asset;
 
         /// <inheritdoc />
