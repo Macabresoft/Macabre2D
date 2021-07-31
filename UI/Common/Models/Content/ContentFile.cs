@@ -9,6 +9,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     /// A content file for the project.
     /// </summary>
     public class ContentFile : ContentNode {
+        private bool _hasChanges;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
@@ -16,6 +18,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// <param name="metadata">The metadata.</param>
         public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
             this.Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
+            this.Asset.PropertyChanged += this.Asset_PropertyChanged;
         }
 
         /// <summary>
@@ -33,9 +36,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// </summary>
         public ContentMetadata Metadata { get; }
 
-        /// <inheritdoc />
-        protected override string GetNameWithoutExtension() {
-            return Path.GetFileNameWithoutExtension(this.Name);
+        /// <summary>
+        /// Gets a value indicating whether or not this content has changes.
+        /// </summary>
+        public bool HasChanges {
+            get => this._hasChanges;
+            set => this.Set(ref this._hasChanges, value);
         }
 
         /// <inheritdoc />
@@ -44,9 +50,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         }
 
         /// <inheritdoc />
+        protected override string GetNameWithoutExtension() {
+            return Path.GetFileNameWithoutExtension(this.Name);
+        }
+
+        /// <inheritdoc />
         protected override void OnPathChanged(string originalPath) {
             this.Metadata.SetContentPath(this.GetContentPath());
             base.OnPathChanged(originalPath);
+        }
+
+        private void Asset_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.HasChanges = true;
         }
     }
 }

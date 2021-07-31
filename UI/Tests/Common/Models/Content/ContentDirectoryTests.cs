@@ -31,14 +31,14 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
 
             var firstA = new ContentDirectory(Guid.NewGuid().ToString(), root);
             var firstB = new ContentDirectory(Guid.NewGuid().ToString(), root);
-            var firstC = new ContentFile(root, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var firstC = new ContentFile(root, new ContentMetadata(Substitute.For<IAsset>(), new[] { Guid.NewGuid().ToString() }, ".m2d"));
             var secondA = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
             var secondB = new ContentDirectory(Guid.NewGuid().ToString(), firstA);
-            var secondC = new ContentFile(firstB, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var secondC = new ContentFile(firstB, new ContentMetadata(Substitute.For<IAsset>(), new[] { Guid.NewGuid().ToString() }, ".m2d"));
             var thirdA = new ContentDirectory(Guid.NewGuid().ToString(), secondA);
             var thirdB = new ContentDirectory(Guid.NewGuid().ToString(), secondB);
-            var thirdC = new ContentFile(secondA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
-            var fourth = new ContentFile(thirdA, new ContentMetadata(null, new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var thirdC = new ContentFile(secondA, new ContentMetadata(Substitute.For<IAsset>(), new[] { Guid.NewGuid().ToString() }, ".m2d"));
+            var fourth = new ContentFile(thirdA, new ContentMetadata(Substitute.For<IAsset>(), new[] { Guid.NewGuid().ToString() }, ".m2d"));
 
             using (new AssertionScope()) {
                 firstA.GetContentPath().Should().Be(firstA.Name);

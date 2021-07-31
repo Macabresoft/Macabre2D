@@ -39,6 +39,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Refreshes the content.
         /// </summary>
         void RefreshContent();
+
+        /// <summary>
+        /// Saves content with changes.
+        /// </summary>
+        void Save();
     }
 
     /// <summary>
@@ -147,6 +152,15 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 this.ResolveNewContentFiles(this._rootContentDirectory);
                 this.BuildContentForProject();
                 this.RaisePropertyChanged(nameof(this.RootContentDirectory));
+            }
+        }
+
+        /// <inheritdoc />
+        public void Save() {
+            var files = this.RootContentDirectory.GetAllContentFiles().Where(x => x.HasChanges);
+            foreach (var file in files) {
+                this.SaveMetadata(file.Metadata);
+                file.HasChanges = false;
             }
         }
 

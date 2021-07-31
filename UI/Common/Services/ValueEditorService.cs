@@ -87,8 +87,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
 
             foreach (var member in membersWithAttributes) {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
-                var memberType = member.MemberInfo.GetMemberReturnType();
                 var value = member.MemberInfo.GetValue(editableObject);
+                var memberType = value?.GetType() ?? member.MemberInfo.GetMemberReturnType();
+
                 var editors = this.CreateEditorsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }

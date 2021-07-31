@@ -30,6 +30,7 @@
     /// A service which handles saving.
     /// </summary>
     public class SaveService : ReactiveObject, ISaveService {
+        private readonly IContentService _contentService;
         private readonly IDialogService _dialogService;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
@@ -39,10 +40,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveService" /> class.
         /// </summary>
+        /// <param name="contentService"></param>
+        /// <param name="dialogService">The dialog service.</param>
         /// <param name="projectService">The project service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
-        public SaveService(IDialogService dialogService, IProjectService projectService, ISceneService sceneService, IUndoService undoService) {
+        public SaveService(
+            IContentService contentService,
+            IDialogService dialogService, 
+            IProjectService projectService,
+            ISceneService sceneService, 
+            IUndoService undoService) {
+            this._contentService = contentService;
             this._dialogService = dialogService;
             this._projectService = projectService;
             this._sceneService = sceneService;
@@ -72,6 +81,7 @@
             if (this.HasChanges) {
                 this._sceneService.SaveScene();
                 this._projectService.SaveProject();
+                this._contentService.Save();
                 this._savedChangeId = this._undoService.LatestChangeId;
                 this.RaisePropertyChanged(nameof(this.HasChanges));
             }

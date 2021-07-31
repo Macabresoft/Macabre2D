@@ -12,6 +12,7 @@
         public void HasChanges_IsFalse_AfterSaving() {
             var undoService = new UndoService();
             var saveService = new SaveService(
+                Substitute.For<IContentService>(),
                 Substitute.For<IDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
@@ -37,6 +38,7 @@
         public void HasChanges_IsFalse_AfterUndoingChanges(int numberOfChanges) {
             var undoService = new UndoService();
             var saveService = new SaveService(
+                Substitute.For<IContentService>(),
                 Substitute.For<IDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
@@ -67,6 +69,7 @@
         public void HasChanges_IsFalse_AfterUndoingChangesSinceSave(int numberOfChanges) {
             var undoService = new UndoService();
             var saveService = new SaveService(
+                Substitute.For<IContentService>(),
                 Substitute.For<IDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
@@ -100,6 +103,7 @@
         public void HasChanges_IsTrue_AfterChanges(int numberOfChanges) {
             var undoService = new UndoService();
             var saveService = new SaveService(
+                Substitute.For<IContentService>(),
                 Substitute.For<IDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
@@ -119,6 +123,7 @@
         public void HasChanges_IsTrue_WhenUndoServiceHasNewChange() {
             var undoService = new UndoService();
             var saveService = new SaveService(
+                Substitute.For<IContentService>(),
                 Substitute.For<IDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
