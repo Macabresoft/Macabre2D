@@ -10,6 +10,7 @@
         <contentViewModel:ContentTreeViewModel />
     </Design.DataContext>
     <UserControl.Resources>
+        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
         <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, Auto, 0.6*">
@@ -135,7 +136,7 @@
                                 PointerMoved="Node_OnPointerMoved"
                                 DragDrop.AllowDrop="True">
                             <controls:EditableSelectableItem VerticalAlignment="Center"
-                                                             Icon="{StaticResource FileIcon}"
+                                                             Icon="{Binding Converter={StaticResource AssetToIconConverter}}"
                                                              IconForeground="{StaticResource TextControlForeground}"
                                                              IsEditable="True"
                                                              IsFileName="True"

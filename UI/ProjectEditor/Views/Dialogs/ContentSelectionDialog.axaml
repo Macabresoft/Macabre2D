@@ -15,6 +15,7 @@
         <viewModels:ContentSelectionViewModel />
     </Design.DataContext>
     <Window.Resources>
+        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
         <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </Window.Resources>
     <Grid Margin="{StaticResource DoubleMarginAll}"
@@ -41,7 +42,7 @@
                                        Foreground="{StaticResource SystemAccentColorLightBrush1}"/>
                         
                         <controls:Icon Grid.Column="0"
-                                       Content="{StaticResource FileIcon}"
+                                       Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
                                        IsVisible="{Binding !IsDirectory}"
                                        Margin="{StaticResource StandardMarginRight}"
                                        Foreground="{StaticResource TextControlForeground}"/>
