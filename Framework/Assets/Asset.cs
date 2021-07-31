@@ -7,7 +7,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// Interface for an object that is an asset.
     /// </summary>
-    public interface IAsset : INameable, INotifyPropertyChanged {
+    public interface IAsset : INotifyPropertyChanged {
         /// <summary>
         /// Gets the content identifier.
         /// </summary>
@@ -50,7 +50,6 @@ namespace Macabresoft.Macabre2D.Framework {
     [DataContract]
     public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> {
         private TContent? _content;
-        private string _name = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Asset{TContent}" /> class.
@@ -71,14 +70,6 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <inheritdoc />
         [DataMember]
         public Guid ContentId { get; private set; }
-
-        /// <inheritdoc />
-        [DataMember]
-        [Category("File")]
-        public string Name {
-            get => this._name;
-            set => this.Set(ref this._name, value);
-        }
 
         /// <inheritdoc />
         public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {

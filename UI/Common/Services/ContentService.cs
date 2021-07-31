@@ -156,8 +156,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        protected override object GetEditableObject() {
-            return this.Selected is ContentFile file ? file.Asset : null;
+        protected override bool ShouldLoadEditors() {
+            return this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
         }
 
         private void BuildContentForProject() {

@@ -89,10 +89,7 @@
             set {
                 if (this._selected != value) {
                     this.RaiseAndSetIfChanged(ref this._selected, value);
-
-                    if (this.ShouldLoadEditors()) {
-                        this.ResetEditors();
-                    }
+                    this.ResetEditors();
                 }
             }
         }
@@ -111,19 +108,11 @@
         protected abstract IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService);
 
         /// <summary>
-        /// Gets the editable object for which to create editors.
-        /// </summary>
-        /// <returns>The editable object.</returns>
-        protected virtual object GetEditableObject() {
-            return this.Selected;
-        }
-
-        /// <summary>
         /// Gets a value indicating whether or not editors should be loaded.
         /// </summary>
         /// <returns>A value indicating whether or not editors should be loaded.</returns>
         protected virtual bool ShouldLoadEditors() {
-            return this.GetEditableObject() != null;
+            return this.Selected != null;
         }
 
         private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
@@ -149,7 +138,7 @@
                     try {
                         Dispatcher.UIThread.Post(() => this.IsBusy = true);
 
-                        var editorCollections = this._valueEditorService.CreateEditors(this.GetEditableObject()).ToList();
+                        var editorCollections = this._valueEditorService.CreateEditors(this.Selected).ToList();
 
                         foreach (var editorCollection in this._editors) {
                             editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;

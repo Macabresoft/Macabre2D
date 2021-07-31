@@ -1,9 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     using System;
+    using System.ComponentModel;
     using System.IO;
+    using System.Runtime.Serialization;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// Interface for a node in the content tree.
@@ -15,24 +16,24 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         event EventHandler<ValueChangedEventArgs<string>> PathChanged;
 
         /// <summary>
-        /// Gets the name.
-        /// </summary>
-        string Name { get; set; }
-        
-        /// <summary>
         /// Gets the identifier.
         /// </summary>
         Guid Id { get; }
 
         /// <summary>
-        /// Gets the name without an extension.
+        /// Gets or sets the name without an extension.
         /// </summary>
-        string NameWithoutExtension { get; }
+        string NameWithoutExtension { get; set; }
 
         /// <summary>
         /// Gets the parent.
         /// </summary>
         IContentDirectory Parent { get; }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        string Name { get; set; }
 
         /// <summary>
         /// Changes the parent of this node.
@@ -86,12 +87,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         }
 
         /// <inheritdoc />
-        public virtual string NameWithoutExtension => Path.GetFileNameWithoutExtension(this.Name);
-
-        /// <inheritdoc />
-        public IContentDirectory Parent { get; private set; }
-        
-        /// <inheritdoc />
         public abstract Guid Id { get; }
 
         /// <inheritdoc />
@@ -107,10 +102,22 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
                         directory.RemoveChild(this);
                         directory.AddChild(this);
                     }
+
                     this.OnPathChanged(originalPath);
                 }
             }
         }
+
+        /// <inheritdoc />
+        [DataMember(Name = "Name")]
+        [Category("File System")]
+        public string NameWithoutExtension {
+            get => this.GetNameWithoutExtension();
+            set => this.Name = $"{value}{this.GetFileExtension()}";
+        }
+
+        /// <inheritdoc />
+        public IContentDirectory Parent { get; private set; }
 
         /// <inheritdoc />
         public void ChangeParent(IContentDirectory newParent) {
@@ -118,7 +125,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             if (newParent != originalParent && newParent != this) {
                 var originalPath = originalParent != null ? this.GetFullPath() : string.Empty;
                 originalParent?.RemoveChild(this);
-            
+
                 if (newParent?.AddChild(this) == true) {
                     this.Parent = newParent;
 
@@ -140,6 +147,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
             return this.NameWithoutExtension ?? string.Empty;
         }
+
+        /// <summary>
+        /// Gets the name without its file extension.
+        /// </summary>
+        /// <returns>The name without its file extension.</returns>
+        protected abstract string GetNameWithoutExtension();
 
         /// <inheritdoc />
         public int GetDepth() {
@@ -164,6 +177,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
             return isDescendent;
         }
+
+        /// <summary>
+        /// Gets the file extension.
+        /// </summary>
+        /// <returns>The file extension.</returns>
+        protected abstract string GetFileExtension();
 
         /// <summary>
         /// Called when the path changes.

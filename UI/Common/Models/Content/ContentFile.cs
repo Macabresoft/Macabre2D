@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
-    using Macabresoft.Macabre2D.Framework;
     using System;
+    using System.IO;
+    using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// A content file for the project.
@@ -27,6 +28,16 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// The metadata.
         /// </summary>
         public ContentMetadata Metadata { get; }
+
+        /// <inheritdoc />
+        protected override string GetNameWithoutExtension() {
+            return Path.GetFileNameWithoutExtension(this.Name);
+        }
+
+        /// <inheritdoc />
+        protected override string GetFileExtension() {
+            return this.Metadata.ContentFileExtension;
+        }
 
         /// <inheritdoc />
         protected override void OnPathChanged(string originalPath) {

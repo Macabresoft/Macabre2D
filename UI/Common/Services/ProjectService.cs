@@ -124,9 +124,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             scene.AddSystem<RenderSystem>();
             scene.AddChild<Camera>();
 
-            var sceneAsset = new SceneAsset {
-                Name = scene.Name
-            };
+            var sceneAsset = new SceneAsset();
 
             sceneAsset.LoadContent(scene);
             var contentPath = Path.Combine(parent.GetContentPath(), sceneName);

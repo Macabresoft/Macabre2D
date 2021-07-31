@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.UI.Common.Services;
 
@@ -21,6 +20,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// </summary>
         /// <param name="node">The child node to add.</param>
         bool AddChild(IContentNode node);
+
+        /// <summary>
+        /// Gets a value indicating whether or not the specified metadata is a descendent of this directory.
+        /// </summary>
+        /// <param name="contentId">The metadata identifier.</param>
+        /// <returns>A value indicating whether or not the specified metadata is a descendent of this directory.</returns>
+        bool ContainsMetadata(Guid contentId);
 
         /// <summary>
         /// Finds a content node if it exists.
@@ -54,13 +60,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// <param name="node">The found content node.</param>
         /// <returns>A value indicating whether or not the node was found.</returns>
         bool TryFindNode(string[] splitContentPath, out IContentNode node);
-
-        /// <summary>
-        /// Gets a value indicating whether or not the specified metadata is a descendent of this directory.
-        /// </summary>
-        /// <param name="contentId">The metadata identifier.</param>
-        /// <returns>A value indicating whether or not the specified metadata is a descendent of this directory.</returns>
-        bool ContainsMetadata(Guid contentId);
     }
 
     /// <summary>
@@ -79,9 +78,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
         /// <inheritdoc />
         public IReadOnlyCollection<IContentNode> Children => this._children;
-
-        /// <inheritdoc />
-        public override string NameWithoutExtension => this.Name;
 
         /// <inheritdoc />
         public override Guid Id { get; } = Guid.NewGuid();
@@ -128,6 +124,22 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        public bool ContainsMetadata(Guid contentId) {
+            if (contentId != Guid.Empty) {
+                for (var i = this._children.Count - 1; i >= 0; i--) {
+                    var child = this._children[i];
+                    switch (child) {
+                        case ContentFile file when file.Metadata?.ContentId == contentId:
+                        case IContentDirectory directory when directory.ContainsMetadata(contentId):
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
 
@@ -187,19 +199,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         }
 
         /// <inheritdoc />
-        public bool ContainsMetadata(Guid contentId) {
-            if (contentId != Guid.Empty) {
-                for (var i = this._children.Count - 1; i >= 0; i--) {
-                    var child = this._children[i];
-                    switch (child) {
-                        case ContentFile file when file.Metadata?.ContentId == contentId:
-                        case IContentDirectory directory when directory.ContainsMetadata(contentId):
-                            return true;
-                    }
-                }
-            }
+        protected override string GetFileExtension() {
+            return string.Empty;
+        }
 
-            return false;
+        /// <inheritdoc />
+        protected override string GetNameWithoutExtension() {
+            return this.Name;
         }
 
         /// <summary>
