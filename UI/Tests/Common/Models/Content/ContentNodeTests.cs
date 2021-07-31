@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
     using System.IO;
+    using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
@@ -25,7 +26,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
 
             var fileName = "File";
             var fileExtension = ".jpg";
-            var file = new ContentFile(directory1, new ContentMetadata(null, new[] { directory1.Name, fileName }, fileExtension));
+            var file = new ContentFile(directory1, new ContentMetadata(Substitute.For<IAsset>(), new[] { directory1.Name, fileName }, fileExtension));
             file.ChangeParent(directory2);
 
             using (new AssertionScope()) {
@@ -42,7 +43,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
         public void IsDescendentOf_ShouldReturnFalse_WhenChildOfDirectParent() {
             var parent = new ContentDirectory(string.Empty, null);
             var otherDirectory = new ContentDirectory(string.Empty, parent);
-            var node = new ContentFile(parent, null);
+            var node = new ContentFile(parent, this.CreateTestMetadata());
             var result = node.IsDescendentOf(otherDirectory);
             result.Should().BeFalse();
         }
@@ -51,7 +52,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
         [Category("Unit Tests")]
         public void IsDescendentOf_ShouldReturnTrue_WhenDirectParent() {
             var parent = new ContentDirectory(string.Empty, null);
-            var node = new ContentFile(parent, null);
+            var node = new ContentFile(parent, this.CreateTestMetadata());
             var result = node.IsDescendentOf(parent);
             result.Should().BeTrue();
         }
@@ -73,9 +74,13 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
                 parent = new ContentDirectory(string.Empty, parent);
             }
 
-            var node = new ContentFile(parent, null);
+            var node = new ContentFile(parent, this.CreateTestMetadata());
             var result = node.IsDescendentOf(root);
             result.Should().BeTrue();
+        }
+
+        private ContentMetadata CreateTestMetadata() {
+            return new ContentMetadata(Substitute.For<IAsset>(), Enumerable.Empty<string>(), string.Empty);
         }
     }
 }
