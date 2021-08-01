@@ -3,6 +3,6 @@
 	<Styles.Resources>
 		<x:Double x:Key="TabItemHeaderFontSize">18</x:Double>
 		<Thickness x:Key="TabItemMargin">0,0,0,0</Thickness>
-		<Thickness x:Key="TabItemHeaderMargin">2,2,16,4</Thickness>
+		<Thickness x:Key="TabItemHeaderMargin">2,0,16,4</Thickness>
 	</Styles.Resources>
 </Styles>
