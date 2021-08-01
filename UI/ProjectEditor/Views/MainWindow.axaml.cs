@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     public class MainWindow : Window {
         private readonly IEditorSettingsService _settingsService;
         private bool _shouldClose;
-        
+
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
 
         protected override async void OnClosing(CancelEventArgs e) {
@@ -28,6 +28,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         internal void InitializeComponent() {
             this.DataContext = Resolver.Resolve<MainWindowViewModel>();
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (sender is TabControl { SelectedItem: TabItem { Tag: TabHeaders header } }) {
+                this.ViewModel.SelectedTab = header;
+            }
         }
     }
 }

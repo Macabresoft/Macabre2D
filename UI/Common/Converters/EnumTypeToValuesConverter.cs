@@ -14,7 +14,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var result = new List<object>();
             
-            if (value is Type enumType && enumType.IsEnum) {
+            if (value is Type { IsEnum: true } enumType) {
                 var values = Enum.GetValues(enumType);
                 var intValues = values.Cast<Enum>().Select(System.Convert.ToInt32).ToList();
                 

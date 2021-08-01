@@ -9,72 +9,60 @@
         <viewModels:SystemsViewModel />
     </Design.DataContext>
     <UserControl.Resources>
-        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </UserControl.Resources>
-    <Grid RowDefinitions="0.4*, Auto, 0.6*">
-        <Grid Grid.Row="0"
-              RowDefinitions="Auto, *">
-            <StackPanel Grid.Row="0"
-                        Orientation="Horizontal">
-                <Button Command="{Binding AddSystemCommand}"
-                        Classes="Icon"
-                        ToolTip.Tip="Add an entity as a child of the selected entity">
-                    <Button.ContextMenu>
-                        <ContextMenu Items="{Binding $parent[local:SystemsView].AddMenuItems}">
-                            <ContextMenu.Styles>
-                                <Style Selector="MenuItem">
-                                    <Setter Property="Command" Value="{Binding $parent[Button].Command}" />
-                                </Style>
-                            </ContextMenu.Styles>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                    
-                    <controls:Icon Content="{StaticResource AddIcon}" />
-                </Button>
-                <Button Command="{Binding RemoveSystemCommand}"
-                        CommandParameter="{Binding SystemService.Selected}"
-                        Classes="Icon"
-                        ToolTip.Tip="Remove the selected system from the scene">
-                    <controls:Icon Content="{StaticResource RemoveIcon}" />
-                </Button>
-            </StackPanel>
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddSystemCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Add an entity as a child of the selected entity">
+                <Button.ContextMenu>
+                    <ContextMenu Items="{Binding $parent[local:SystemsView].AddMenuItems}">
+                        <ContextMenu.Styles>
+                            <Style Selector="MenuItem">
+                                <Setter Property="Command" Value="{Binding $parent[Button].Command}" />
+                            </Style>
+                        </ContextMenu.Styles>
+                    </ContextMenu>
+                </Button.ContextMenu>
 
-            <ListBox Grid.Row="1"
-                     Items="{Binding Systems}"
-                     SelectedItem="{Binding SystemService.Selected}"
-                     SelectionMode="Single">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <controls:EditableSelectableItem IsEditable="True"
-                                                         HorizontalAlignment="Stretch"
-                                                         TextCommittedCommand="{Binding $parent[local:SystemsView].ViewModel.RenameCommand}"
-                                                         Text="{Binding Path=Name, Mode=TwoWay}">
-                            <controls:EditableSelectableItem.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Rename"
-                                              Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
-                                              ToolTip.Tip="Rename this system" />
-                                    
-                                    <Separator />
-                                    
-                                    <MenuItem Header="Remove"
-                                              Command="{Binding $parent[local:SystemsView].ViewModel.RemoveSystemCommand}"
-                                              CommandParameter="{Binding}"
-                                              ToolTip.Tip="Remove this system from the scene" />
-                                </ContextMenu>
-                            </controls:EditableSelectableItem.ContextMenu>
-                        </controls:EditableSelectableItem>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
+                <controls:Icon Content="{StaticResource AddIcon}" />
+            </Button>
+            <Button Command="{Binding RemoveSystemCommand}"
+                    CommandParameter="{Binding SystemService.Selected}"
+                    Classes="Icon"
+                    ToolTip.Tip="Remove the selected system from the scene">
+                <controls:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
+        </StackPanel>
 
-        <GridSplitter Grid.Row="1"
-                      Margin="{StaticResource StandardMarginHorizontal}" />
-        
-        <controls:ValueEditorListControl Grid.Row="2"
-                                         Margin="{StaticResource StandardMarginAll}"
-                                         Collections="{Binding SystemService.Editors}"
-                                         IsBusy="{Binding SystemService.IsBusy}" />
+        <ListBox Grid.Row="1"
+                 Items="{Binding Systems}"
+                 SelectedItem="{Binding SystemService.Selected}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <controls:EditableSelectableItem IsEditable="True"
+                                                     HorizontalAlignment="Stretch"
+                                                     TextCommittedCommand="{Binding $parent[local:SystemsView].ViewModel.RenameCommand}"
+                                                     Text="{Binding Path=Name, Mode=TwoWay}">
+                        <controls:EditableSelectableItem.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rename"
+                                          Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                          ToolTip.Tip="Rename this system" />
+
+                                <Separator />
+
+                                <MenuItem Header="Remove"
+                                          Command="{Binding $parent[local:SystemsView].ViewModel.RemoveSystemCommand}"
+                                          CommandParameter="{Binding}"
+                                          ToolTip.Tip="Remove this system from the scene" />
+                            </ContextMenu>
+                        </controls:EditableSelectableItem.ContextMenu>
+                    </controls:EditableSelectableItem>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

@@ -1,8 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
-        xmlns:scene="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
-        xmlns:systems="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+        xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
+        xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.MainWindow"
         Name="Macabre2D"
@@ -13,6 +14,9 @@
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
+    <Window.Resources>
+        <converters:EqualityConverter x:Key="EqualityConverter" />
+    </Window.Resources>
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="File">
@@ -73,7 +77,7 @@
                               Command="{Binding SaveCommand}"
                               InputGesture="Ctrl + S"
                               HotKey="Ctrl + S" />
-                    
+
                     <MenuItem Header="_Open Scene"
                               Command="{Binding OpenSceneCommand}"
                               InputGesture="Ctrl + O"
@@ -109,30 +113,65 @@
                        Text="Macabre2D" />
         </Grid>
 
-        <Grid DockPanel.Dock="Bottom"
-              Margin="{StaticResource DoubleMarginAll}">
+        <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.25*"
                                   MinWidth="300" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="0" />
                 <ColumnDefinition Width="0.75*" />
             </Grid.ColumnDefinitions>
-            <TabControl Grid.Column="0">
-                <TabItem Header="Scene">
-                    <scene:SceneView />
-                </TabItem>
-                <TabItem Header="Systems">
-                    <systems:SystemsView />
-                </TabItem>
-                <TabItem Header="Content">
-                    <content:ContentTreeView />
-                </TabItem>
-            </TabControl>
+
+            <views:SceneEditorView Grid.Column="0"
+                                   Grid.ColumnSpan="3" />
+
+            <Grid Grid.Column="0"
+                  RowDefinitions="0.4*, 0, 0.6*"
+                  Margin="{StaticResource DoubleMarginLeftTopBottom}">
+                <Border Grid.Row="0"
+                        Classes="Card"
+                        Margin="{StaticResource DoubleMarginLeftTopBottom}">
+                    <TabControl SelectionChanged="TabControl_OnSelectionChanged">
+                        <TabItem Header="Entities"
+                                 Tag="{x:Static models:TabHeaders.Entities}">
+                            <views:SceneView />
+                        </TabItem>
+                        <TabItem Header="Systems"
+                                 Tag="{x:Static models:TabHeaders.Systems}">
+                            <views:SystemsView />
+                        </TabItem>
+                        <TabItem Header="Content"
+                                 Tag="{x:Static models:TabHeaders.Content}">
+                            <views:ContentTreeView />
+                        </TabItem>
+                    </TabControl>
+                </Border>
+
+                <GridSplitter Grid.Row="1"
+                              Classes="CardSplitter" />
+
+                <Border Grid.Row="2"
+                        Classes="Card"
+                        Margin="{StaticResource DoubleMarginLeftTopBottom}">
+                    <Grid>
+                        <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                                                         Collections="{Binding EntityService.Editors}"
+                                                         IsBusy="{Binding EntityService.IsBusy}"
+                                                         IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:TabHeaders.Entities}}" />
+                        <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                                                         Collections="{Binding SystemService.Editors}"
+                                                         IsBusy="{Binding SystemService.IsBusy}"
+                                                         IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:TabHeaders.Systems}}" />
+                        <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                                                         Collections="{Binding ContentService.Editors}"
+                                                         IsBusy="{Binding ContentService.IsBusy}"
+                                                         IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:TabHeaders.Content}}" />
+                    </Grid>
+                </Border>
+
+            </Grid>
 
             <GridSplitter Grid.Column="1"
-                          Margin="{StaticResource StandardMarginLeft}"/>
-
-            <scene:SceneEditorView Grid.Column="2" />
+                          Classes="CardSplitter" />
         </Grid>
     </DockPanel>
 </Window>

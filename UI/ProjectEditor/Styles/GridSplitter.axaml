@@ -1,8 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style Selector="GridSplitter">
-		<Setter Property="Background" Value="{DynamicResource TextControlBorderBrushDisabled}" />
-		<Setter Property="MinHeight" Value="3" />
-		<Setter Property="MinWidth" Value="3" />
-	</Style>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="GridSplitter.CardSplitter">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
 </Styles>

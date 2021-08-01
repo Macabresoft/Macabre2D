@@ -11,6 +11,8 @@
         <FluentTheme Mode="Dark" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Colors.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Margins.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/BoxShadows.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Border.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Button.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/CheckBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ComboBox.axaml" />

@@ -11,7 +11,7 @@
     /// <summary>
     /// An interface for a generic service which handles the selection and loading of objects and their editors.
     /// </summary>
-    public interface ISelectionService<T> : INotifyPropertyChanged where T : class {
+    public interface ISelectionService : INotifyPropertyChanged {
         /// <summary>
         /// Gets the available entity types.
         /// </summary>
@@ -28,15 +28,20 @@
         bool IsBusy { get; }
 
         /// <summary>
-        /// Gets or sets the selected object.
-        /// </summary>
-        T Selected { get; set; }
-
-        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <returns>A task.</returns>
         void Initialize();
+    }
+
+    /// <summary>
+    /// An interface for a generic service which handles the selection and loading of objects and their editors.
+    /// </summary>
+    public interface ISelectionService<T> : ISelectionService where T : class {
+        /// <summary>
+        /// Gets or sets the selected object.
+        /// </summary>
+        T Selected { get; set; }
     }
 
     public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T> where T : class {

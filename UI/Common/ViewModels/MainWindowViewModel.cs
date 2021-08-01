@@ -19,6 +19,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
+        private TabHeaders _selectedTab = TabHeaders.Entities;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -30,25 +32,31 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
+        /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService"></param>
         /// <param name="settingsService">The editor settings service.</param>
+        /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
+            IContentService contentService,
             IDialogService dialogService,
             IEntityService entityService,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
+            ISystemService systemService,
             IUndoService undoService) : base() {
+            this.ContentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-            this._sceneService = sceneService;
-            this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
+            this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
+            this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            this.SystemService = systemService ?? throw new ArgumentNullException(nameof(systemService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
@@ -66,6 +74,16 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the selection service.
         /// </summary>
         public IEntityService EntityService { get; }
+        
+        /// <summary>
+        /// Gets the content service.
+        /// </summary>
+        public IContentService ContentService { get; }
+        
+        /// <summary>
+        /// Gets the system service.
+        /// </summary>
+        public ISystemService SystemService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.
@@ -106,6 +124,14 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to view the source code.
         /// </summary>
         public ICommand ViewSourceCommand { get; }
+
+        /// <summary>
+        /// Gets or sets the selected tab.
+        /// </summary>
+        public TabHeaders SelectedTab {
+            get => this._selectedTab;
+            set => this.RaiseAndSetIfChanged(ref this._selectedTab, value);
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the window should close.
