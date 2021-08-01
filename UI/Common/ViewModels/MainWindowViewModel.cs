@@ -19,7 +19,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
-        private TabHeaders _selectedTab = TabHeaders.Entities;
 
 
         /// <summary>
@@ -71,19 +70,14 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         }
 
         /// <summary>
-        /// Gets the selection service.
-        /// </summary>
-        public IEntityService EntityService { get; }
-        
-        /// <summary>
         /// Gets the content service.
         /// </summary>
         public IContentService ContentService { get; }
-        
+
         /// <summary>
-        /// Gets the system service.
+        /// Gets the selection service.
         /// </summary>
-        public ISystemService SystemService { get; }
+        public IEntityService EntityService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.
@@ -116,6 +110,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public bool ShowNonNativeMenu => AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem != OperatingSystemType.OSX;
 
         /// <summary>
+        /// Gets the system service.
+        /// </summary>
+        public ISystemService SystemService { get; }
+
+        /// <summary>
         /// Gets the command to undo the previous operation.
         /// </summary>
         public ICommand UndoCommand { get; }
@@ -128,9 +127,12 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <summary>
         /// Gets or sets the selected tab.
         /// </summary>
-        public TabHeaders SelectedTab {
-            get => this._selectedTab;
-            set => this.RaiseAndSetIfChanged(ref this._selectedTab, value);
+        public EditorTabs SelectedTab {
+            get => this._settingsService.Settings.LastTabSelected;
+            set {
+                this._settingsService.Settings.LastTabSelected = value;
+                this.RaisePropertyChanged();
+            }
         }
 
         /// <summary>

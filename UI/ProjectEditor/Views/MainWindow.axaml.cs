@@ -32,7 +32,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         }
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (sender is TabControl { SelectedItem: TabItem { Tag: TabHeaders header } }) {
+            if (sender is TabControl { SelectedItem: TabItem { Tag: EditorTabs header } }) {
                 this.ViewModel.SelectedTab = header;
             }
         }

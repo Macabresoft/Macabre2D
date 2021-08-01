@@ -55,14 +55,23 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
+        private readonly IEditorSettingsService _settingsService;
+        
         private Color _colliderColor = DefinedColors.MacabresoftBone;
         private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
         private byte _gridDivisions = 5;
-        private GizmoKind _selectedGizmo = GizmoKind.Translation;
         private Color _selectionColor = DefinedColors.MacabresoftYellow;
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorService" /> class.
+        /// </summary>
+        /// <param name="settingsService">The editor settings service.</param>
+        public EditorService(IEditorSettingsService settingsService) : base() {
+            this._settingsService = settingsService;
+        }
 
         /// <inheritdoc />
         public Color ColliderColor {
@@ -84,8 +93,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
 
         /// <inheritdoc />
         public GizmoKind SelectedGizmo {
-            get => this._selectedGizmo;
-            set => this.RaiseAndSetIfChanged(ref this._selectedGizmo, value);
+            get => this._settingsService.Settings.LastGizmoSelected;
+            set {
+                this._settingsService.Settings.LastGizmoSelected = value;
+                this.RaisePropertyChanged();
+            }
         }
 
         /// <inheritdoc />

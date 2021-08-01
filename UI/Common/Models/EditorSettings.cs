@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.Models {
     using System;
     using System.Runtime.Serialization;
+    using Macabresoft.Macabre2D.UI.Common.MonoGame;
 
     /// <summary>
     /// Settings for the editor. What a novel idea!
@@ -18,5 +19,17 @@
         /// </summary>
         [DataMember]
         public Guid LastSceneOpened { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last tab selected.
+        /// </summary>
+        [DataMember]
+        public EditorTabs LastTabSelected { get; set; } = EditorTabs.Entities;
+        
+        /// <summary>
+        /// Gets or sets the last gizmo opened.
+        /// </summary>
+        [DataMember]
+        public GizmoKind LastGizmoSelected { get; set; }
     }
 }
