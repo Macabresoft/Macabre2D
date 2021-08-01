@@ -70,7 +70,7 @@
               IsVisible="{Binding ShowNonNativeMenu}">
             <Border Grid.ColumnSpan="3"
                     HorizontalAlignment="Stretch"
-                    IsHitTestVisible="False"
+                    PointerPressed="TitleBar_OnPointerPressed"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
                     Padding="{StaticResource DoubleMarginAll}"
                     BoxShadow="{StaticResource DefaultBoxShadow}"

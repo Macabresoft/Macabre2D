@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using System.ComponentModel;
     using Avalonia.Controls;
+    using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
@@ -34,6 +35,10 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
             if (sender is TabControl { SelectedItem: TabItem { Tag: TabHeaders header } }) {
                 this.ViewModel.SelectedTab = header;
             }
+        }
+
+        private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
+            this.BeginMoveDrag(e);
         }
     }
 }
