@@ -1,5 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
+    using System;
     using System.ComponentModel;
+    using System.Linq;
     using Avalonia.Controls;
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
@@ -29,6 +31,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         internal void InitializeComponent() {
             this.DataContext = Resolver.Resolve<MainWindowViewModel>();
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void TabControl_OnInitialized(object sender, EventArgs e) {
+            if (sender is TabControl tabControl && this.ViewModel is MainWindowViewModel viewModel) {
+                var itemToSelect = tabControl.Items.Cast<TabItem>().FirstOrDefault(x => x.Tag != null && (EditorTabs)x.Tag == viewModel.SelectedTab);
+                if (itemToSelect != null) {
+                    tabControl.SelectedItem = itemToSelect;
+                }
+
+                tabControl.Initialized -= this.TabControl_OnInitialized;
+            }
         }
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
