@@ -26,13 +26,22 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         /// <param name="editorService">The editor service.</param>
         /// <param name="sceneEditor">The scene editor.</param>
-        /// <exception cref="ArgumentNullException">editorService</exception>
+        /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
-        public SceneEditorViewModel(IEditorService editorService, IAvaloniaGame sceneEditor) : base(sceneEditor) {
+        public SceneEditorViewModel(
+            IEditorService editorService,
+            IAvaloniaGame sceneEditor,
+            ISceneService sceneService) : base(sceneEditor) {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+            this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this.CenterCameraCommand = ReactiveCommand.Create(this.CenterCamera);
             this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind, Unit>(this.SetSelectedGizmo);
         }
+        
+        /// <summary>
+        /// Gets the scene service.
+        /// </summary>
+        public ISceneService SceneService { get; }
 
         /// <summary>
         /// Gets a command that centers the <see cref="ISceneEditor" /> camera.

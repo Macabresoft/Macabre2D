@@ -11,15 +11,19 @@
     </Design.DataContext>
     <UserControl.Resources>
         <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
+        <converters:MonoGameColorToAvaloniaBrushConverter x:Key="MonoGameColorToAvaloniaBrushConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="*, Auto">
-        <monoGameInterop:MonoGameControl Grid.Row="0"
-                                         Grid.RowSpan="2"
-                                         Grid.Column="0"
-                                         Grid.ColumnSpan="2"
-                                         HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Stretch" />
+        <Border Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Background="{Binding SceneService.CurrentScene.BackgroundColor, Converter={StaticResource MonoGameColorToAvaloniaBrushConverter}}">
+            <monoGameInterop:MonoGameControl HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch" />
+        </Border>
+
         <Panel Grid.Row="1"
                Grid.Column="1"
                Margin="{StaticResource DoubleMarginAll}">

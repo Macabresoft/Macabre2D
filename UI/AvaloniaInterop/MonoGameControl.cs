@@ -1,7 +1,9 @@
-using Macabresoft.Macabre2D.Framework;
-using ReactiveUI;
-
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Input;
@@ -11,26 +13,20 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
 
     /// <summary>
     /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
     public sealed class MonoGameControl : Border, IDisposable {
-        private readonly Dictionary<StandardCursorType, Cursor> _cursorTypeToCursor = new Dictionary<StandardCursorType, Cursor>() {
-            {StandardCursorType.None, null}
+        private readonly Dictionary<StandardCursorType, Cursor> _cursorTypeToCursor = new() {
+            { StandardCursorType.None, null }
         };
 
-        private readonly GameTime _gameTime = new GameTime();
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly GameTime _gameTime = new();
+        private readonly Stopwatch _stopwatch = new();
         private WriteableBitmap _bitmap;
-        private Microsoft.Xna.Framework.Color _currentBackground;
         private bool _isDisposed;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
@@ -46,13 +42,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             this.Focusable = true;
         }
 
-        /// <summary>
-        /// Finalizes an instance of the <see cref="MonoGameControl" /> class.
-        /// </summary>
-        ~MonoGameControl() {
-            this.Dispose(false);
-        }
-
         /// <inheritdoc />
         public void Dispose() {
             this.Dispose(true);
@@ -64,11 +53,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             base.Render(context);
 
             if (this._viewModel != null) {
-                if (this._viewModel.Game.Scene.BackgroundColor != this._currentBackground) {
-                    this._currentBackground = this._viewModel.Game.Scene.BackgroundColor;
-                    this.Background = this._currentBackground.ToAvaloniaBrush();
-                }
-
                 if (this._isFirstLoad) {
                     if (this.GetVisualRoot() is Window window) {
                         this._viewModel.RunFrame();
@@ -138,9 +122,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
             if (this._viewModel != null) {
                 this._viewModel.PropertyChanged += this.ViewModel_PropertyChanged;
-                this._currentBackground = this._viewModel.Game.Scene.BackgroundColor;
-                this.Background = this._currentBackground.ToAvaloniaBrush();
-                Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
+                Dispatcher.UIThread.InvokeAsync(this.InvalidateVisual, DispatcherPriority.Background);
             }
         }
 
@@ -210,8 +192,8 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                    this.Bounds.Width > 0 &&
                    this.Bounds.Height > 0 &&
                    (this._bitmap == null ||
-                    this._bitmap.PixelSize.Width != Math.Ceiling(this.Bounds.Width) ||
-                    this._bitmap.PixelSize.Height != Math.Ceiling(this.Bounds.Height));
+                    Math.Abs(this._bitmap.PixelSize.Width - Math.Ceiling(this.Bounds.Width)) > 0.01f ||
+                    Math.Abs(this._bitmap.PixelSize.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f);
         }
 
         private void Start() {
@@ -221,13 +203,16 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
             this._mouse = new MonoGameMouse(this);
             this._keyboard = new MonoGameKeyboard(this);
-            var window = this.GetVisualRoot() as Window;
-            window.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
+
+            if (this.GetVisualRoot() is Window window) {
+                window.Closing += (_, _) => this._viewModel?.OnExiting(this, EventArgs.Empty);
+            }
+
             this._stopwatch.Start();
             this._isInitialized = true;
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IMonoGameViewModel.CursorType)) {
                 if (!this._cursorTypeToCursor.TryGetValue(this._viewModel.CursorType, out var cursor)) {
                     cursor = new Cursor(this._viewModel.CursorType);
@@ -236,6 +221,13 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
                 this.Cursor = cursor;
             }
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="MonoGameControl" /> class.
+        /// </summary>
+        ~MonoGameControl() {
+            this.Dispose(false);
         }
     }
 }
