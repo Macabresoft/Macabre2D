@@ -5,8 +5,6 @@
 	</Style>
 	
 	<Style Selector="Button.Icon">
-		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="VerticalContentAlignment" Value="Stretch" />
 		<Setter Property="Width" Value="32" />
 		<Setter Property="Height" Value="32" />
 	</Style>

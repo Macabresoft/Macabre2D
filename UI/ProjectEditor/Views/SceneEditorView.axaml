@@ -24,14 +24,28 @@
                                              VerticalAlignment="Stretch" />
         </Border>
 
-        <Panel Grid.Row="1"
-               Grid.Column="1"
-               Margin="{StaticResource DoubleMarginAll}">
-            <Border Classes="Card">
-                <Grid ColumnDefinitions="Auto, Auto, Auto, *">
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Margin="{StaticResource DoubleMarginAll}"
+              ColumnDefinitions="Auto, Auto">
+            <Border Grid.Column="0"
+                    Classes="Card">
+                <Grid>
+                    <Button Command="{Binding CenterCameraCommand}"
+                            Classes="Icon"
+                            ToolTip.Tip="Centers the editor camera on (0, 0) in the scene.">
+                        <controls:Icon Content="{StaticResource CameraIcon}" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="Card">
+                <Grid ColumnDefinitions="Auto, Auto, Auto">
                     <ToggleButton Grid.Column="0"
                                   Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
+                                  Classes="Icon"
                                   ToolTip.Tip="Shows the selected entity's position">
                         <ToggleButton.IsChecked>
                             <Binding Path="EditorService.SelectedGizmo"
@@ -46,6 +60,7 @@
                     <ToggleButton Grid.Column="1"
                                   Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Translation}"
+                                  Classes="Icon"
                                   ToolTip.Tip="Alter the position of the currently selected entity">
                         <ToggleButton.IsChecked>
                             <Binding Path="EditorService.SelectedGizmo"
@@ -60,6 +75,7 @@
                     <ToggleButton Grid.Column="2"
                                   Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Scale}"
+                                  Classes="Icon"
                                   ToolTip.Tip="Alter the scale of the currently selected entity">
                         <ToggleButton.IsChecked>
                             <Binding Path="EditorService.SelectedGizmo"
@@ -73,6 +89,6 @@
                     </ToggleButton>
                 </Grid>
             </Border>
-        </Panel>
+        </Grid>
     </Grid>
 </UserControl>
