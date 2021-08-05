@@ -69,6 +69,10 @@
                                 <MenuItem Header="Rename"
                                           Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
                                           ToolTip.Tip="Rename this entity" />
+                                
+                                <MenuItem Header="Focus"
+                                          Command="{Binding $parent[local:SceneView].ViewModel.EntityService.RequestFocusCommand}"
+                                          ToolTip.Tip="Focus on this entity in the scene editor" />
 
                                 <Separator />
 

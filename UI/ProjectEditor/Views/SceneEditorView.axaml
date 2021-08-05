@@ -24,26 +24,29 @@
                                              VerticalAlignment="Stretch" />
         </Border>
 
-        <Grid Grid.Row="1"
-              Grid.Column="1"
-              Margin="{StaticResource DoubleMarginAll}"
-              ColumnDefinitions="Auto, Auto">
-            <Border Grid.Column="0"
-                    Classes="Card">
-                <Grid>
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="{StaticResource DoubleMarginAll}"
+                    Orientation="Horizontal">
+            <Border Classes="Card">
+                <StackPanel Orientation="Horizontal">
                     <Button Command="{Binding CenterCameraCommand}"
                             Classes="Icon"
                             ToolTip.Tip="Centers the editor camera on (0, 0) in the scene.">
                         <controls:Icon Content="{StaticResource CameraIcon}" />
                     </Button>
-                </Grid>
+                    <Button Command="{Binding FocusCameraCommand}"
+                            Classes="Icon"
+                            ToolTip.Tip="Focuses the editor camera on the currently selected entity.">
+                        <controls:Icon Content="{StaticResource FocusIcon}"
+                                       IsHitTestVisible="False" />
+                    </Button>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Column="1"
-                    Classes="Card">
-                <Grid ColumnDefinitions="Auto, Auto, Auto">
-                    <ToggleButton Grid.Column="0"
-                                  Command="{Binding SetSelectedGizmoCommand}"
+            <Border Classes="Card">
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
                                   Classes="Icon"
                                   ToolTip.Tip="Shows the selected entity's position">
@@ -57,8 +60,7 @@
 
                         <controls:Icon Content="{StaticResource SelectIcon}" />
                     </ToggleButton>
-                    <ToggleButton Grid.Column="1"
-                                  Command="{Binding SetSelectedGizmoCommand}"
+                    <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Translation}"
                                   Classes="Icon"
                                   ToolTip.Tip="Alter the position of the currently selected entity">
@@ -72,8 +74,7 @@
 
                         <controls:Icon Content="{StaticResource TranslateIcon}" />
                     </ToggleButton>
-                    <ToggleButton Grid.Column="2"
-                                  Command="{Binding SetSelectedGizmoCommand}"
+                    <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Scale}"
                                   Classes="Icon"
                                   ToolTip.Tip="Alter the scale of the currently selected entity">
@@ -87,8 +88,8 @@
 
                         <controls:Icon Content="{StaticResource ScaleIcon}" />
                     </ToggleButton>
-                </Grid>
+                </StackPanel>
             </Border>
-        </Grid>
+        </StackPanel>
     </Grid>
 </UserControl>
