@@ -17,14 +17,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
                 nameof(EnumType),
                 editor => editor.ToggleValueCommand);
 
-        private readonly ReactiveCommand<object, Unit> _toggleValueCommand;
 
         public FlagsEnumEditor() {
-            this._toggleValueCommand = ReactiveCommand.Create<object, Unit>(this.ToggleValue);
+            this.ToggleValueCommand = ReactiveCommand.Create<object>(this.ToggleValue);
             this.InitializeComponent();
         }
 
-        public ICommand ToggleValueCommand => this._toggleValueCommand;
+        public ICommand ToggleValueCommand { get; }
 
         public Type EnumType {
             get => this.GetValue(EnumTypeProperty);
@@ -41,7 +40,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             AvaloniaXamlLoader.Load(this);
         }
 
-        private Unit ToggleValue(object value) {
+        private void ToggleValue(object value) {
             var original = Convert.ToInt32(this.Value);
             var toggled = Convert.ToInt32(value);
 
@@ -51,8 +50,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             else {
                 this.Value = Enum.Parse(this.EnumType, (original | toggled).ToString());
             }
-
-            return Unit.Default;
         }
 
         private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {

@@ -41,7 +41,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                     this._focusElement.Focus();
                 }
 
-                e.Handled = true;
                 var scrollWheelValue = this.State.ScrollWheelValue + (int)e.Delta.Y;
 
                 this.State = new MouseState(
@@ -67,7 +66,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                 }
 
                 var position = e.GetPosition(this._focusElement);
-                e.Handled = true;
 
                 this.State = new MouseState(
                     (int)position.X,
@@ -92,7 +90,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                 }
 
                 var position = e.GetPosition(this._focusElement);
-                e.Handled = true;
 
                 var leftButtonState = ButtonState.Released;
                 var rightButtonState = ButtonState.Released;

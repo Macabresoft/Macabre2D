@@ -56,7 +56,7 @@
       <DependentUpon>SystemsView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\SceneView.axaml.cs">
+    <Compile Update="Views\SceneTreeView.axaml.cs">
       <DependentUpon>SceneView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

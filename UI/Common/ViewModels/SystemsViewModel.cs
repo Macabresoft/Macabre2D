@@ -2,7 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Reactive;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
@@ -50,11 +49,11 @@
                 async x => await this.AddSystem(x),
                 this._sceneService.WhenAny(x => x.CurrentScene, y => y.Value != null));
 
-            this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem, Unit>(
+            this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(
                 this.RemoveSystem,
                 this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
-            
-            this.RenameCommand = ReactiveCommand.Create<string, Unit>(
+
+            this.RenameCommand = ReactiveCommand.Create<string>(
                 this.RenameEntity,
                 this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
         }
@@ -68,7 +67,7 @@
         /// Gets a command to remove a system.
         /// </summary>
         public ICommand RemoveSystemCommand { get; }
-        
+
         /// <summary>
         /// Gets a command for renaming a system.
         /// </summary>
@@ -105,7 +104,7 @@
             }
         }
 
-        private Unit RemoveSystem(IUpdateableSystem system) {
+        private void RemoveSystem(IUpdateableSystem system) {
             if (this._sceneService.CurrentScene is IScene scene) {
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
@@ -119,19 +118,15 @@
                     });
                 });
             }
-
-            return Unit.Default;
         }
-        
-        private Unit RenameEntity(string updatedName) {
+
+        private void RenameEntity(string updatedName) {
             if (this.SystemService.Selected is IUpdateableSystem system && system.Name != updatedName) {
                 var originalName = system.Name;
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { system.Name = updatedName; }); },
                     () => { Dispatcher.UIThread.Post(() => { system.Name = originalName; }); });
             }
-
-            return Unit.Default;
         }
 
         private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -8,6 +8,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.MonoGame;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -33,9 +34,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
-        /// <param name="sceneService"></param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
         /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
@@ -43,6 +45,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public MainWindowViewModel(
             IContentService contentService,
             IDialogService dialogService,
+            IEditorService editorService,
             IEntityService entityService,
             ISaveService saveService,
             ISceneService sceneService,
@@ -51,6 +54,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             IUndoService undoService) : base() {
             this.ContentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
@@ -63,6 +67,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 undoService.Redo,
                 undoService.WhenAnyValue(x => x.CanRedo));
             this.SaveCommand = ReactiveCommand.Create(this.SaveService.Save, this.SaveService.WhenAnyValue(x => x.HasChanges));
+            this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind>(this.SetSelectedGizmo);
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
                 undoService.WhenAnyValue(x => x.CanUndo));
@@ -73,6 +78,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the content service.
         /// </summary>
         public IContentService ContentService { get; }
+
+        /// <summary>
+        /// Gets the editor service.
+        /// </summary>
+        public IEditorService EditorService { get; }
 
         /// <summary>
         /// Gets the selection service.
@@ -103,6 +113,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the save service.
         /// </summary>
         public ISaveService SaveService { get; }
+
+        /// <summary>
+        /// Gets a command to set the selected gizmo.
+        /// </summary>
+        public ICommand SetSelectedGizmoCommand { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.
@@ -162,6 +177,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                     await this._dialogService.ShowWarningDialog("Error", "The scene could not be loaded");
                 }
             }
+        }
+
+        private void SetSelectedGizmo(GizmoKind kind) {
+            this.EditorService.SelectedGizmo = kind;
         }
 
         private static void ViewSource() {

@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Reactive;
     using System.Reflection;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
@@ -17,31 +16,38 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// <summary>
     /// A view model for the scene view.
     /// </summary>
-    public sealed class SceneViewModel : ViewModelBase {
+    public sealed class SceneTreeViewModel : ViewModelBase {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public SceneViewModel() {
+        public SceneTreeViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
-        /// <param name="sceneService">The scene service.</param>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
+        /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneViewModel(IDialogService dialogService, ISceneService sceneService, IEntityService entityService, IUndoService undoService) {
+        public SceneTreeViewModel(
+            IDialogService dialogService,
+            IEditorService editorService,
+            IEntityService entityService,
+            ISceneService sceneService,
+            IUndoService undoService) {
             this._dialogService = dialogService;
-            this._sceneService = sceneService;
+            this.EditorService = editorService;
             this.EntityService = entityService;
+            this._sceneService = sceneService;
             this._undoService = undoService;
             this.ResetRoot();
             this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
@@ -50,11 +56,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 async x => await this.AddEntity(x),
                 this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
 
-            this.RemoveEntityCommand = ReactiveCommand.Create<IEntity, Unit>(
+            this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
                 this.RemoveEntity,
                 this.EntityService.WhenAny(x => x.Selected, y => y.Value != null && y.Value.Parent != y.Value));
 
-            this.RenameCommand = ReactiveCommand.Create<string, Unit>(
+            this.RenameCommand = ReactiveCommand.Create<string>(
                 this.RenameEntity,
                 this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
         }
@@ -63,6 +69,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets a command to add an entity.
         /// </summary>
         public ICommand AddEntityCommand { get; }
+
+        /// <summary>
+        /// Gets the editor service.
+        /// </summary>
+        public IEditorService EditorService { get; }
 
         /// <summary>
         /// Gets the selection service.
@@ -130,7 +141,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                    !targetEntity.IsDescendentOf(sourceEntity);
         }
 
-        private Unit RemoveEntity(IEntity entity) {
+        private void RemoveEntity(IEntity entity) {
             var parent = entity.Parent;
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
@@ -143,18 +154,14 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                     this.EntityService.Selected = entity;
                 });
             });
-
-            return Unit.Default;
         }
 
-        private Unit RenameEntity(string updatedName) {
+        private void RenameEntity(string updatedName) {
             if (this.EntityService.Selected is IEntity entity && entity.Name != updatedName) {
                 var originalName = entity.Name;
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { entity.Name = updatedName; }); }, () => { Dispatcher.UIThread.Post(() => { entity.Name = originalName; }); });
             }
-
-            return Unit.Default;
         }
 
         private void ResetRoot() {

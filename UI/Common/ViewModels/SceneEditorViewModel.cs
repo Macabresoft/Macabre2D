@@ -40,30 +40,15 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-            
-            this.CenterCameraCommand = ReactiveCommand.Create(this.CenterCamera);
-            this.FocusCameraCommand = ReactiveCommand.Create(
-                () => this.FocusCamera(this._entityService.Selected),
-                this._entityService.WhenAny(x => x.Selected, y => y.Value != null));
-            this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind, Unit>(this.SetSelectedGizmo);
 
-            this._entityService.FocusRequested += this.EntityService_FocusRequested;
+            this.EditorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
+            this.EditorService.FocusRequested += this.EntityService_FocusRequested;
         }
-
-        /// <summary>
-        /// Gets a command that centers the <see cref="ISceneEditor" /> camera.
-        /// </summary>
-        public ICommand CenterCameraCommand { get; }
 
         /// <summary>
         /// Gets the editor service.
         /// </summary>
         public IEditorService EditorService { get; }
-
-        /// <summary>
-        /// Gets a command that focuses the <see cref="ISceneEditor" /> camera on the currently selected entity.
-        /// </summary>
-        public ICommand FocusCameraCommand { get; }
 
         /// <summary>
         /// Gets the scene editor.
@@ -76,28 +61,14 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         public ISceneService SceneService { get; }
 
-        /// <summary>
-        /// Gets a command to set the selected gizmo.
-        /// </summary>
-        public ICommand SetSelectedGizmoCommand { get; }
-
-        private void CenterCamera() {
+        private void EditorService_CenterCameraRequested(object sender, EventArgs e) {
             this.SceneEditor.Camera.LocalPosition = Vector2.Zero;
         }
 
         private void EntityService_FocusRequested(object sender, IEntity e) {
-            this.FocusCamera(e);
-        }
-
-        private void FocusCamera(ITransformable transformable) {
-            if (transformable != null) {
-                this.SceneEditor.Camera.LocalPosition = transformable.Transform.Position;
+            if (e != null) {
+                this.SceneEditor.Camera.LocalPosition = e.Transform.Position;
             }
-        }
-
-        private Unit SetSelectedGizmo(GizmoKind kind) {
-            this.EditorService.SelectedGizmo = kind;
-            return Unit.Default;
         }
     }
 }

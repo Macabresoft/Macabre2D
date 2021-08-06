@@ -6,41 +6,38 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Converters;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Helpers;
 
-    public class SceneView : UserControl {
-        public static readonly DirectProperty<SceneView, IReadOnlyCollection<IControl>> AddMenuItemsProperty =
-            AvaloniaProperty.RegisterDirect<SceneView, IReadOnlyCollection<IControl>>(
+    public class SceneTreeView : UserControl {
+        public static readonly DirectProperty<SceneTreeView, IReadOnlyCollection<IControl>> AddMenuItemsProperty =
+            AvaloniaProperty.RegisterDirect<SceneTreeView, IReadOnlyCollection<IControl>>(
                 nameof(AddMenuItems),
                 editor => editor.AddMenuItems);
 
-        public static readonly DirectProperty<SceneView, SceneViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<SceneView, SceneViewModel>(
-                nameof(ViewModel),
-                editor => editor.ViewModel);
+        public static readonly DirectProperty<SceneTreeView, SceneTreeViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeViewModel>(
+                nameof(TreeViewModel),
+                editor => editor.TreeViewModel);
 
-        private static readonly ToDisplayNameConverter ToDisplayNameConverter = new();
         private Guid _dragTarget;
 
-        public SceneView() {
-            this.DataContext = Resolver.Resolve<SceneViewModel>();
+        public SceneTreeView() {
+            this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
-            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.EntityService.AvailableTypes, true);
+            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.TreeViewModel.EntityService.AvailableTypes, true);
         }
 
         public IReadOnlyCollection<IControl> AddMenuItems { get; }
 
-        public SceneViewModel ViewModel => this.DataContext as SceneViewModel;
-
+        public SceneTreeViewModel TreeViewModel => this.DataContext as SceneTreeViewModel;
 
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&
                 e.Data.Get(string.Empty) is IEntity sourceEntity) {
-                this.ViewModel.MoveEntity(sourceEntity, targetEntity);
+                this.TreeViewModel.MoveEntity(sourceEntity, targetEntity);
             }
 
             this._dragTarget = Guid.Empty;

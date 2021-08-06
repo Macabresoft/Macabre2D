@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System;
-    using System.Reactive;
     using System.Windows.Input;
     using Macabresoft.Core;
     using ReactiveUI;
@@ -20,9 +19,9 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// Initializes a new instance of the <see cref="BaseDialogViewModel" /> class.
         /// </summary>
         protected BaseDialogViewModel() {
-            this.CancelCommand = ReactiveCommand.Create<Unit, Unit>(x => this.RequestClose(true));
-            this.OkCommand = ReactiveCommand.Create<Unit, Unit>(
-                x => this.OnOk(),
+            this.CancelCommand = ReactiveCommand.Create(() => this.RequestClose(true));
+            this.OkCommand = ReactiveCommand.Create(
+                () => this.RequestClose(false),
                 this.WhenAny(x => x.IsOkEnabled, y => y.Value));
         }
 
@@ -44,22 +43,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
             set => this.RaiseAndSetIfChanged(ref this._isOkEnabled, value);
         }
 
-        /// <summary>
-        /// Called when the 'Ok' button is pressed.
-        /// </summary>
-        /// <returns>A unit.</returns>
-        protected virtual Unit OnOk() {
-            return this.RequestClose(false);
-        }
-
-        /// <summary>
-        /// Requests the dialog to be closed.
-        /// </summary>
-        /// <param name="isCancel"></param>
-        /// <returns></returns>
-        protected Unit RequestClose(bool isCancel) {
+        private void RequestClose(bool isCancel) {
             this.CloseRequested.SafeInvoke(this, !isCancel);
-            return Unit.Default;
         }
     }
 }

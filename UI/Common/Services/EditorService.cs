@@ -1,7 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
+    using System;
     using System.ComponentModel;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
+    using System.Windows.Input;
+    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.MonoGame;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
 
@@ -9,6 +12,26 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// Interface for interacting with the editor and its many gizmos.
     /// </summary>
     public interface IEditorService : INotifyPropertyChanged {
+        /// <summary>
+        /// Occurs when camera centering is requested.
+        /// </summary>
+        event EventHandler CenterCameraRequested;
+
+        /// <summary>
+        /// Occurs when focus is requested for an entity.
+        /// </summary>
+        event EventHandler<IEntity> FocusRequested;
+
+        /// <summary>
+        /// Gets a command to request the camera to be centered on the scene.
+        /// </summary>
+        ICommand RequestCenterCameraCommand { get; }
+
+        /// <summary>
+        /// Gets a command to request focus of the currently selected entity.
+        /// </summary>
+        ICommand RequestFocusCommand { get; }
+
         /// <summary>
         /// Gets or sets the color of selected colliders.
         /// </summary>
@@ -55,8 +78,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// A service for interacting with the editor and its many gizmos.
     /// </summary>
     public class EditorService : ReactiveObject, IEditorService {
+        private readonly IEntityService _entityService;
         private readonly IEditorSettingsService _settingsService;
-        
+
         private Color _colliderColor = DefinedColors.MacabresoftBone;
         private Color _dropShadowColor = DefinedColors.MacabresoftBlack * 0.4f;
         private byte _gridDivisions = 5;
@@ -65,13 +89,32 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
 
+        /// <inheritdoc />
+        public event EventHandler CenterCameraRequested;
+
+        /// <inheritdoc />
+        public event EventHandler<IEntity> FocusRequested;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorService" /> class.
         /// </summary>
+        /// <param name="entityService"></param>
         /// <param name="settingsService">The editor settings service.</param>
-        public EditorService(IEditorSettingsService settingsService) : base() {
+        public EditorService(IEntityService entityService, IEditorSettingsService settingsService) : base() {
+            this._entityService = entityService;
             this._settingsService = settingsService;
+
+            this.RequestCenterCameraCommand = ReactiveCommand.Create(this.RequestCenterCamera);
+            this.RequestFocusCommand = ReactiveCommand.Create(
+                this.RequestFocus,
+                this._entityService.WhenAny(x => x.Selected, y => y.Value != null));
         }
+
+        /// <inheritdoc />
+        public ICommand RequestCenterCameraCommand { get; }
+
+        /// <inheritdoc />
+        public ICommand RequestFocusCommand { get; }
 
         /// <inheritdoc />
         public Color ColliderColor {
@@ -122,6 +165,15 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         public Color YAxisColor {
             get => this._yAxisColor;
             set => this.RaiseAndSetIfChanged(ref this._yAxisColor, value);
+        }
+
+        private void RequestCenterCamera() {
+            this.CenterCameraRequested.SafeInvoke(this);
+        }
+
+
+        private void RequestFocus() {
+            this.FocusRequested.SafeInvoke(this, this._entityService.Selected);
         }
     }
 }

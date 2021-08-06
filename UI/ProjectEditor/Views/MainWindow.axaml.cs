@@ -10,7 +10,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
 
     public class MainWindow : Window {
-        private readonly IEditorSettingsService _settingsService;
         private bool _shouldClose;
 
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
