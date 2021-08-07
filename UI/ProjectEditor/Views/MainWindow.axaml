@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+        xmlns:popups="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
         xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Common.MonoGame;assembly=Macabre2D.UI.Common"
         xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
@@ -53,7 +54,7 @@
             </NativeMenuItem>
         </NativeMenu>
     </NativeMenu.Menu>
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, Auto, *">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.25*"
                               MinWidth="300" />
@@ -62,6 +63,7 @@
         </Grid.ColumnDefinitions>
 
         <views:SceneEditorView Grid.Row="1"
+                               Grid.RowSpan="2"
                                Grid.Column="0"
                                Grid.ColumnSpan="3" />
 
@@ -116,8 +118,11 @@
                               HotKey="Ctrl + Y" />
                 </MenuItem>
                 <MenuItem Header="_Help">
-                    <MenuItem Header="_View Source"
+                    <MenuItem Header="View _Source"
                               Command="{Binding ViewSourceCommand}" />
+                    
+                    <MenuItem Header="View _License"
+                              Command="{Binding $parent[views:MainWindow].ViewLicenseCommand}" />
                 </MenuItem>
             </Menu>
 
@@ -129,6 +134,7 @@
         </Grid>
 
         <Grid Grid.Row="1"
+              Grid.RowSpan="2"
               Grid.Column="0"
               RowDefinitions="0.4*, 0, 0.6*"
               Margin="{StaticResource DoubleMarginLeftTopBottom}">
@@ -174,18 +180,15 @@
                 </Grid>
             </Border>
         </Grid>
-
-        <GridSplitter Grid.Row="1"
-                      Grid.Column="1"
-                      Classes="CardSplitter" />
         
         <StackPanel Grid.Row="1"
                     Grid.Column="2"
-                    Margin="{StaticResource DoubleMarginAll}"
+                    Margin="{StaticResource DoubleMarginHorizontal}"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top">
-            <Border Classes="Card">
+            <Border Classes="Card"
+                    Margin="{StaticResource DoubleMarginTop}">
                 <StackPanel Orientation="Horizontal">
                     <Button Command="{Binding EditorService.RequestCenterCameraCommand}"
                             Classes="Icon"
@@ -200,7 +203,8 @@
                 </StackPanel>
             </Border>
 
-            <Border Classes="Card">
+            <Border Classes="Card"
+                    Margin="{StaticResource DoubleMarginTop}">
                 <StackPanel Orientation="Horizontal">
                     <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
@@ -247,5 +251,24 @@
                 </StackPanel>
             </Border>
         </StackPanel>
+        
+        <Border Grid.Row="1"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Background="{StaticResource SystemControlBackgroundBaseLowBrush}"
+                IsVisible="{Binding PopupService.IsPopupActive}" />
+        
+        <popups:PopupContainer Grid.Row="2"
+                               Grid.Column="2"
+                               IsVisible="{Binding PopupService.IsPopupActive}" 
+                               Content="{Binding PopupService.CurrentPopup}"
+                               CloseCommand="{Binding ClosePopupCommand}"
+                               Margin="{StaticResource DoubleMarginAll}"/>
+        
+        <GridSplitter Grid.Row="1"
+                      Grid.RowSpan="2"
+                      Grid.Column="1"
+                      Classes="CardSplitter" />
     </Grid>
 </Window>

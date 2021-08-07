@@ -1,0 +1,35 @@
+<HeaderedContentControl xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups"
+                        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups.PopupContainer">
+    <HeaderedContentControl.Template>
+        <ControlTemplate>
+            <Border Classes="Card"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                <Grid RowDefinitions="Auto, *"
+                      ColumnDefinitions="*, Auto"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                    
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               ToolTip.Tip="{Binding $parent[local:PopupContainer].Popup.Header}"
+                               Text="{Binding $parent[local:PopupContainer].Popup.Header}"
+                               TextTrimming="CharacterEllipsis" />
+                    
+                    <Button Grid.Row="0"
+                            Grid.Column="1"
+                            Command="{Binding $parent[local:PopupContainer].CloseCommand}"
+                            Content="Close"
+                            HorizontalAlignment="Right" />
+
+                    <ContentPresenter Grid.Row="1"
+                                      Grid.Column="0"
+                                      Grid.ColumnSpan="2"
+                                      Content="{TemplateBinding Content}" />
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </HeaderedContentControl.Template>
+</HeaderedContentControl>

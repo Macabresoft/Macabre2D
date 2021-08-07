@@ -72,5 +72,13 @@
       <DependentUpon>Icon.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\Popups\LicensePopup.axaml.cs">
+      <DependentUpon>ColorSlider.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\Popups\PopupContainer.axaml.cs">
+      <DependentUpon>GroupBox.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
