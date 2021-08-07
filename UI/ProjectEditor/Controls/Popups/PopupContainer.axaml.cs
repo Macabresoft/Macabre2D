@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups {
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls.Primitives;
+    using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
 

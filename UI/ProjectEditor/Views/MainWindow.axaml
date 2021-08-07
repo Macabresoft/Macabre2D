@@ -12,7 +12,8 @@
         Title="Macabre2D"
         ExtendClientAreaToDecorationsHint="{Binding ShowNonNativeMenu}"
         WindowState="Maximized"
-        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
+        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}"
+        KeyDown="Window_OnKeyDown">
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>

@@ -64,7 +64,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.SystemService = systemService ?? throw new ArgumentNullException(nameof(systemService));
 
-            this.ClosePopupCommand = ReactiveCommand.Create(this.ClosePopup);
+            this.ClosePopupCommand = ReactiveCommand.Create(this.ClosePopup, this.PopupService.WhenAnyValue(x => x.IsPopupActive));
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.RedoCommand = ReactiveCommand.Create(

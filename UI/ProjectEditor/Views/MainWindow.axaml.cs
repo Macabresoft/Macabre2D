@@ -10,6 +10,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups;
     using ReactiveUI;
+    using Key = Avalonia.Remote.Protocol.Input.Key;
 
     public class MainWindow : Window {
         private bool _shouldClose;
@@ -62,7 +63,15 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         }
 
         private void ViewLicense() {
-            this.ViewModel?.PopupService.ShowPopup<LicensePopup>(out _);
+            if (this.ViewModel?.PopupService.ShowPopup<LicensePopup>(out _) == true) {
+                this.Focus();
+            }
+        }
+
+        private void Window_OnKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Avalonia.Input.Key.Escape && this.ViewModel.ClosePopupCommand.CanExecute(null)) {
+                this.ViewModel.ClosePopupCommand.Execute(null);
+            }
         }
     }
 }

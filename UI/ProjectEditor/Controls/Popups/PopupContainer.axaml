@@ -10,19 +10,28 @@
                 <Grid RowDefinitions="Auto, *"
                       ColumnDefinitions="*, Auto"
                       HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch">
+                      VerticalAlignment="Stretch"
+                      Margin="{DynamicResource DoubleMarginAll}">
                     
                     <TextBlock Grid.Row="0"
                                Grid.Column="0"
+                               VerticalAlignment="Bottom"
+                               FontSize="{DynamicResource TabItemHeaderFontSize}"
+                               FontWeight="{DynamicResource TabItemHeaderThemeFontWeight}"
                                ToolTip.Tip="{Binding $parent[local:PopupContainer].Popup.Header}"
                                Text="{Binding $parent[local:PopupContainer].Popup.Header}"
                                TextTrimming="CharacterEllipsis" />
                     
                     <Button Grid.Row="0"
                             Grid.Column="1"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
                             Command="{Binding $parent[local:PopupContainer].CloseCommand}"
-                            Content="Close"
-                            HorizontalAlignment="Right" />
+                            Padding="0"
+                            Content=" x "
+                            FontSize="{DynamicResource TabItemHeaderFontSize}"
+                            FontWeight="{DynamicResource TabItemHeaderThemeFontWeight}"
+                            Background="Transparent" />
 
                     <ContentPresenter Grid.Row="1"
                                       Grid.Column="0"
