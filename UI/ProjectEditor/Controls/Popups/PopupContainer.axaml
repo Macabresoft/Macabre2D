@@ -36,6 +36,7 @@
                     <ContentPresenter Grid.Row="1"
                                       Grid.Column="0"
                                       Grid.ColumnSpan="2"
+                                      Margin="{StaticResource DoubleMarginTop}"
                                       Content="{TemplateBinding Content}" />
                 </Grid>
             </Border>
