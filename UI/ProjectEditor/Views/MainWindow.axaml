@@ -48,6 +48,8 @@
                     <NativeMenu>
                         <NativeMenuItem Header="View Source"
                                         Command="{Binding ViewSourceCommand}" />
+                        <NativeMenuItem Header="View License"
+                                        Command="{Binding ViewLicensesCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
