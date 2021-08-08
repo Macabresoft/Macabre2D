@@ -2,24 +2,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using System;
     using System.ComponentModel;
     using System.Linq;
-    using System.Windows.Input;
     using Avalonia.Controls;
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.ViewModels;
-    using Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups;
-    using ReactiveUI;
-    using Key = Avalonia.Remote.Protocol.Input.Key;
 
     public class MainWindow : Window {
         private bool _shouldClose;
-
-        public MainWindow() : base() {
-            this.ViewLicenseCommand = ReactiveCommand.Create(this.ViewLicense);
-        }
-
-        public ICommand ViewLicenseCommand { get; }
 
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
 
@@ -60,18 +50,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
 
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
             this.BeginMoveDrag(e);
-        }
-
-        private void ViewLicense() {
-            if (this.ViewModel?.PopupService.ShowPopup<LicensePopup>(out _) == true) {
-                this.Focus();
-            }
-        }
-
-        private void Window_OnKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Avalonia.Input.Key.Escape && this.ViewModel.ClosePopupCommand.CanExecute(null)) {
-                this.ViewModel.ClosePopupCommand.Execute(null);
-            }
         }
     }
 }

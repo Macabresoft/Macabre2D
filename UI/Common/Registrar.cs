@@ -35,7 +35,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 .RegisterType<IFileSystemService, FileSystemService>(new SingletonLifetimeManager())
                 .RegisterType<ILoggingService, LoggingService>(new SingletonLifetimeManager())
                 .RegisterType<IPathService, PathService>(new SingletonLifetimeManager())
-                .RegisterType<IPopupService, PopupService>(new SingletonLifetimeManager())
                 .RegisterType<IProcessService, ProcessService>(new SingletonLifetimeManager())
                 .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
                 .RegisterType<ISaveService, SaveService>(new SingletonLifetimeManager())

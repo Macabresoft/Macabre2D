@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-        xmlns:popups="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.Popups"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
         xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Common.MonoGame;assembly=Macabre2D.UI.Common"
         xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
@@ -12,8 +11,7 @@
         Title="Macabre2D"
         ExtendClientAreaToDecorationsHint="{Binding ShowNonNativeMenu}"
         WindowState="Maximized"
-        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}"
-        KeyDown="Window_OnKeyDown">
+        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
@@ -122,8 +120,7 @@
                     <MenuItem Header="View _Source"
                               Command="{Binding ViewSourceCommand}" />
                     
-                    <MenuItem Header="View _License"
-                              Command="{Binding $parent[views:MainWindow].ViewLicenseCommand}" />
+                    <MenuItem Header="View _License" />
                 </MenuItem>
             </Menu>
 
@@ -252,20 +249,6 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        
-        <Border Grid.Row="1"
-                Grid.RowSpan="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Background="{StaticResource SystemControlBackgroundBaseLowBrush}"
-                IsVisible="{Binding PopupService.IsPopupActive}" />
-        
-        <popups:PopupContainer Grid.Row="2"
-                               Grid.Column="2"
-                               IsVisible="{Binding PopupService.IsPopupActive}" 
-                               Content="{Binding PopupService.CurrentPopup}"
-                               CloseCommand="{Binding ClosePopupCommand}"
-                               Margin="{StaticResource DoubleMarginAll}"/>
         
         <GridSplitter Grid.Row="1"
                       Grid.RowSpan="2"

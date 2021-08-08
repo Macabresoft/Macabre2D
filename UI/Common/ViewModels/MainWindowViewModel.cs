@@ -48,7 +48,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             IDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
-            IPopupService popupService,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
@@ -58,13 +57,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
-            this.PopupService = popupService ?? throw new ArgumentNullException(nameof(popupService));
             this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.SystemService = systemService ?? throw new ArgumentNullException(nameof(systemService));
 
-            this.ClosePopupCommand = ReactiveCommand.Create(this.ClosePopup, this.PopupService.WhenAnyValue(x => x.IsPopupActive));
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.RedoCommand = ReactiveCommand.Create(
@@ -77,11 +74,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 undoService.WhenAnyValue(x => x.CanUndo));
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
-
-        /// <summary>
-        /// Gets a command to close a popup.
-        /// </summary>
-        public ICommand ClosePopupCommand { get; }
 
         /// <summary>
         /// Gets the content service.
@@ -107,11 +99,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the open scene command.
         /// </summary>
         public ICommand OpenSceneCommand { get; }
-
-        /// <summary>
-        /// Gets the popup service.
-        /// </summary>
-        public IPopupService PopupService { get; }
 
         /// <summary>
         /// Gets the command to redo a previously undone operation.
@@ -175,10 +162,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             }
 
             return result;
-        }
-
-        private void ClosePopup() {
-            this.PopupService.TryCloseCurrentPopup(out _);
         }
 
         private static void Exit(Window window) {
