@@ -119,8 +119,9 @@
                 <MenuItem Header="_Help">
                     <MenuItem Header="View _Source"
                               Command="{Binding ViewSourceCommand}" />
-                    
-                    <MenuItem Header="View _License" />
+
+                    <MenuItem Header="View _Licenses"
+                              Command="{Binding ViewLicensesCommand}" />
                 </MenuItem>
             </Menu>
 
@@ -178,7 +179,7 @@
                 </Grid>
             </Border>
         </Grid>
-        
+
         <StackPanel Grid.Row="1"
                     Grid.Column="2"
                     Margin="{StaticResource DoubleMarginHorizontal}"
@@ -249,7 +250,7 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        
+
         <GridSplitter Grid.Row="1"
                       Grid.RowSpan="2"
                       Grid.Column="1"

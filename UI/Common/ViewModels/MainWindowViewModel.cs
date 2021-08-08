@@ -72,7 +72,12 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this.UndoCommand = ReactiveCommand.Create(
                 undoService.Undo,
                 undoService.WhenAnyValue(x => x.CanUndo));
+            this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
+        }
+
+        private async Task ViewLicenses() {
+            await this._dialogService.OpenLicenseDialog();
         }
 
         /// <summary>
@@ -94,7 +99,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to exit the application.
         /// </summary>
         public ICommand ExitCommand { get; }
-
+        
         /// <summary>
         /// Gets the open scene command.
         /// </summary>
@@ -134,6 +139,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to undo the previous operation.
         /// </summary>
         public ICommand UndoCommand { get; }
+        
+        /// <summary>
+        /// Gets the command to view licenses.
+        /// </summary>
+        public ICommand ViewLicensesCommand { get; }
 
         /// <summary>
         /// Gets the command to view the source code.

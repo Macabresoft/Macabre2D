@@ -22,6 +22,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
 
         /// <summary>
+        /// Opens a dialog to show the licenses.
+        /// </summary>
+        /// <returns>A task.</returns>
+        Task OpenLicenseDialog();
+
+        /// <summary>
         /// Opens a dialog that allows the user to pick a <see cref="Type" />.
         /// </summary>
         /// <param name="types">The types to select from.</param>

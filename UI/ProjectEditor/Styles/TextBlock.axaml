@@ -9,6 +9,15 @@
                 Value="{DynamicResource StandardMarginAll}" />
     </Style>
 
+    <Style Selector="TextBlock.Header">
+        <Setter Property="FontSize" 
+                Value="{StaticResource TabItemHeaderFontSize}" />
+        <Setter Property="FontWeight" 
+                Value="{StaticResource TabItemHeaderThemeFontWeight}" />
+        <Setter Property="Foreground"
+                Value="{StaticResource SystemAccentColorLightBrush1}" />
+    </Style>
+
     <Style Selector="TextBlock.ValueEditorLabel">
         <Setter Property="FontWeight"
                 Value="Bold" />
@@ -20,7 +29,7 @@
                 Value="Center" />
         <Setter Property="Width"
                 Value="96" />
-        <Setter Property="ToolTip.Tip" 
+        <Setter Property="ToolTip.Tip"
                 Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
 </Styles>

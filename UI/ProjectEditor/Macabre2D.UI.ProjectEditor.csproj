@@ -72,5 +72,9 @@
       <DependentUpon>Icon.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\LicenseDialog.axaml.cs">
+      <DependentUpon>LicenseDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

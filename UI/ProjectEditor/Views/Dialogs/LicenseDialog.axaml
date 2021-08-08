@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.LicenseDialog"
+        Height="600"
+        SizeToContent="Width"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        ExtendClientAreaToDecorationsHint="True"
+        SystemDecorations="None">
+    <Grid Margin="{StaticResource DoubleMarginAll}"
+          RowDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top">
+            <controls:Icon Grid.Column="0"
+                           Content="{StaticResource LicenseIcon}" />
+
+            <TextBlock Grid.Column="1"
+                       Text="Licenses"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       VerticalAlignment="Center" />
+        </Grid>
+        
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="{StaticResource DoubleMarginAll}">
+            <ItemsControl Items="{Binding $parent[local:LicenseDialog].Licenses}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid RowDefinitions="Auto, Auto"
+                              Margin="{StaticResource DoubleMarginVertical}">
+                            <TextBlock Grid.Row="0"
+                                       Classes="Header"
+                                       Text="{Binding Product}"
+                                       Margin="{StaticResource DoubleMarginBottom}"/>
+                            <TextBlock Grid.Row="1"
+                                       Text="{Binding License}"
+                                       Margin="{StaticResource DoubleMarginVertical}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <Button Grid.Row="2"
+                Content="OK"
+                Command="{Binding $parent[local:LicenseDialog].OkCommand}"
+                HorizontalAlignment="Right"
+                IsDefault="True" />
+    </Grid>
+</Window>

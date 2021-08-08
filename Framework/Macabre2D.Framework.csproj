@@ -56,4 +56,19 @@
 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Licenses.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Licenses.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Licenses.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Licenses.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
 </Project>

@@ -37,6 +37,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
+        public async Task OpenLicenseDialog() {
+            var window = Resolver.Resolve<LicenseDialog>();
+            await window.ShowDialog(this._mainWindow);
+        }
+
+        /// <inheritdoc />
         public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types) {
             Type selectedType = null;
             var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(IEnumerable<Type>), types));
