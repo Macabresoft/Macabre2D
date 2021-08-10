@@ -48,7 +48,7 @@
       <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\ValueEditorListControl.axaml.cs">
+    <Compile Update="Controls\ValueCollectionsControl.axaml.cs">
       <DependentUpon>EntityEditorView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

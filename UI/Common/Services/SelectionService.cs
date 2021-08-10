@@ -20,7 +20,7 @@
         /// <summary>
         /// Gets the editors.
         /// </summary>
-        IReadOnlyCollection<ValueEditorCollection> Editors { get; }
+        IReadOnlyCollection<ValueControlCollection> Editors { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the value editor service is busy.
@@ -47,7 +47,7 @@
     public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T> where T : class {
         private readonly IAssemblyService _assemblyService;
         private readonly ObservableCollectionExtended<Type> _availableTypes = new();
-        private readonly ObservableCollectionExtended<ValueEditorCollection> _editors = new();
+        private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
         private readonly object _editorsLock = new();
 
         private readonly IUndoService _undoService;
@@ -74,7 +74,7 @@
         public IReadOnlyCollection<Type> AvailableTypes => this._availableTypes;
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ValueEditorCollection> Editors {
+        public IReadOnlyCollection<ValueControlCollection> Editors {
             get {
                 lock (this._editorsLock) {
                     return this._editors;

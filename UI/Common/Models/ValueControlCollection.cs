@@ -1,0 +1,112 @@
+namespace Macabresoft.Macabre2D.UI.Common.Models {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using Macabresoft.Core;
+
+    /// <summary>
+    /// A collection of value controls.
+    /// </summary>
+    public class ValueControlCollection : IReadOnlyCollection<IValueControl>, IDisposable {
+        private readonly ObservableCollection<IValueControl> _valueControls = new();
+
+        /// <summary>
+        /// Raised when a value editor owned by this collection has its value change.
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs<object>> OwnedValueChanged;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueControlCollection" /> class.
+        /// </summary>
+        /// <param name="valueEditors">The value editors.</param>
+        /// <param name="owner">The owner.</param>
+        /// <param name="name">The name of the encompassing object being edited.</param>
+        public ValueControlCollection(IEnumerable<IValueControl> valueEditors, object owner, string name) {
+            this.Owner = owner;
+            this.Name = name;
+
+            this.AddControls(valueEditors);
+        }
+
+        /// <inheritdoc />
+        public int Count => this.ValueControls.Count;
+
+        /// <summary>
+        /// Gets the name of the object being edited.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Gets the owner.
+        /// </summary>
+        public object Owner { get; }
+
+        /// <summary>
+        /// Gets the controls in this collection.
+        /// </summary>
+        public IReadOnlyCollection<IValueControl> ValueControls => this._valueControls;
+
+        /// <summary>
+        /// Adds the controls.
+        /// </summary>
+        /// <param name="valueControls">The controls to add.</param>
+        public void AddControls(IEnumerable<IValueControl> valueControls) {
+            if (valueControls != null) {
+                foreach (var valueControl in valueControls) {
+                    if (valueControl is IValueEditor editor) {
+                        editor.ValueChanged += this.ValueEditor_ValueChanged;
+                    }
+
+                    this._valueControls.Add(valueControl);
+                    valueControl.Collection = this;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose() {
+            foreach (var valueControl in this.ValueControls) {
+                if (valueControl is IValueEditor editor) {
+                    editor.ValuePropertyName = null;
+                    editor.ValueChanged -= this.ValueEditor_ValueChanged;
+                }
+
+                valueControl.Collection = null;
+            }
+
+            this._valueControls.Clear();
+            this.OwnedValueChanged = null;
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<IValueControl> GetEnumerator() {
+            return this.ValueControls.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Removes the controls.
+        /// </summary>
+        /// <param name="valueControls">The editors to remove.</param>
+        public void RemoveControls(IEnumerable<IValueControl> valueControls) {
+            if (valueControls != null) {
+                foreach (var valueControl in valueControls) {
+                    if (valueControl is IValueEditor editor) {
+                        editor.ValueChanged -= this.ValueEditor_ValueChanged;
+                    }
+
+                    this._valueControls.Remove(valueControl);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.GetEnumerator();
+        }
+
+        private void ValueEditor_ValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            this.OwnedValueChanged.SafeInvoke(sender, e);
+        }
+    }
+}

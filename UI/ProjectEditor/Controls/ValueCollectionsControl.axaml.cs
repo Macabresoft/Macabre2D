@@ -6,18 +6,18 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
 
-    public class ValueEditorListControl : UserControl {
-        public static readonly StyledProperty<IEnumerable<ValueEditorCollection>> CollectionsProperty =
-            AvaloniaProperty.Register<ValueEditorListControl, IEnumerable<ValueEditorCollection>>(nameof(Collections), Enumerable.Empty<ValueEditorCollection>());
+    public class ValueCollectionsControl : UserControl {
+        public static readonly StyledProperty<IEnumerable<ValueControlCollection>> CollectionsProperty =
+            AvaloniaProperty.Register<ValueCollectionsControl, IEnumerable<ValueControlCollection>>(nameof(Collections), Enumerable.Empty<ValueControlCollection>());
 
         public static readonly StyledProperty<bool> IsBusyProperty =
-            AvaloniaProperty.Register<ValueEditorListControl, bool>(nameof(IsBusy));
+            AvaloniaProperty.Register<ValueCollectionsControl, bool>(nameof(IsBusy));
 
-        public ValueEditorListControl() {
+        public ValueCollectionsControl() {
             this.InitializeComponent();
         }
 
-        public IEnumerable<ValueEditorCollection> Collections {
+        public IEnumerable<ValueControlCollection> Collections {
             get => this.GetValue(CollectionsProperty);
             set => this.SetValue(CollectionsProperty, value);
         }

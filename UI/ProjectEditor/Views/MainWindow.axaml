@@ -166,15 +166,15 @@
                     Classes="Card"
                     Margin="{StaticResource DoubleMarginLeftTopBottom}">
                 <Grid>
-                    <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                    <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                      Collections="{Binding EntityService.Editors}"
                                                      IsBusy="{Binding EntityService.IsBusy}"
                                                      IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Entities}}" />
-                    <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                    <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                      Collections="{Binding SystemService.Editors}"
                                                      IsBusy="{Binding SystemService.IsBusy}"
                                                      IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Systems}}" />
-                    <controls:ValueEditorListControl Margin="{StaticResource StandardMarginAll}"
+                    <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                      Collections="{Binding ContentService.Editors}"
                                                      IsBusy="{Binding ContentService.IsBusy}"
                                                      IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}" />

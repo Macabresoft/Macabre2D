@@ -21,7 +21,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="editableObject">The editable object.</param>
         /// <param name="name">The name.</param>
         /// <returns>The editor collection.</returns>
-        ValueEditorCollection CreateEditor(object editableObject, string name);
+        ValueControlCollection CreateEditor(object editableObject, string name);
 
         /// <summary>
         /// Creates value editors for an object based on its properties and fields that contain a
@@ -30,13 +30,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="editableObject">The editable object for which to make editors..</param>
         /// <param name="typesToIgnore"></param>
         /// <returns>The value editors in collections split by their category.</returns>
-        IReadOnlyCollection<ValueEditorCollection> CreateEditors(object editableObject, params Type[] typesToIgnore);
+        IReadOnlyCollection<ValueControlCollection> CreateEditors(object editableObject, params Type[] typesToIgnore);
 
         /// <summary>
         /// Returns the editors to a cache to be reused. Waste not, want not!
         /// </summary>
         /// <param name="editorCollections">The editor collections to return.</param>
-        void ReturnEditors(params ValueEditorCollection[] editorCollections);
+        void ReturnEditors(params ValueControlCollection[] editorCollections);
     }
 
     /// <summary>
@@ -58,19 +58,19 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public ValueEditorCollection CreateEditor(object editableObject, string name) {
+        public ValueControlCollection CreateEditor(object editableObject, string name) {
             var editors = this.CreateEditors(string.Empty, editableObject, editableObject);
-            return new ValueEditorCollection(editors, editableObject, name);
+            return new ValueControlCollection(editors, editableObject, name);
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ValueEditorCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
+        public IReadOnlyCollection<ValueControlCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
             var valueEditors = this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
-            return valueEditors.GroupBy(x => x.Category).Select(x => new ValueEditorCollection(x, editableObject, x.Key)).ToList();
+            return valueEditors.GroupBy(x => x.Category).Select(x => new ValueControlCollection(x, editableObject, x.Key)).ToList();
         }
 
         /// <inheritdoc />
-        public void ReturnEditors(params ValueEditorCollection[] editorCollections) {
+        public void ReturnEditors(params ValueControlCollection[] editorCollections) {
             foreach (var editorCollection in editorCollections) {
                 editorCollection.Dispose();
             }

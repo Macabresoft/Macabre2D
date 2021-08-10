@@ -17,8 +17,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
         public static readonly StyledProperty<string> CategoryProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Category));
 
-        public static readonly DirectProperty<ValueEditorControl<T>, ValueEditorCollection> CollectionProperty =
-            AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, ValueEditorCollection>(
+        public static readonly DirectProperty<ValueEditorControl<T>, ValueControlCollection> CollectionProperty =
+            AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, ValueControlCollection>(
                 nameof(Collection),
                 editor => editor.Collection,
                 (editor, value) => editor.Collection = value);
@@ -35,7 +35,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
         public static readonly StyledProperty<Type> ValueTypeProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
 
-        private ValueEditorCollection _collection;
+        private ValueControlCollection _collection;
         
         public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
@@ -44,7 +44,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             set => this.SetValue(CategoryProperty, value);
         }
 
-        public ValueEditorCollection Collection {
+        public ValueControlCollection Collection {
             get => this._collection;
             set => this.SetAndRaise(CollectionProperty, ref this._collection, value);
         }

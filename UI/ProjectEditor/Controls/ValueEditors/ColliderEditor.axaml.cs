@@ -24,11 +24,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
 
         private readonly IAssemblyService _assemblyService = Resolver.Resolve<IAssemblyService>();
 
-        private readonly HashSet<IValueEditor> _childEditors = new();
+        private readonly HashSet<IValueControl> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
         private readonly IValueEditorService _valueEditorService = Resolver.Resolve<IValueEditorService>();
 
-        private ValueEditorCollection _editorCollection;
+        private ValueControlCollection _controlCollection;
         private Type _selectedType;
 
         public ColliderEditor() {
@@ -71,19 +71,19 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
         }
 
         private void ClearEditors() {
-            if (this._editorCollection != null) {
-                this._editorCollection.OwnedValueChanged -= this.ColliderEditor_ValueChanged;
+            if (this._controlCollection != null) {
+                this._controlCollection.OwnedValueChanged -= this.ColliderControlValueChanged;
             }
 
             if (this._childEditors.Any()) {
-                this.Collection.RemoveEditors(this._childEditors);
+                this.Collection.RemoveControls(this._childEditors);
                 this._childEditors.Clear();
-                this._valueEditorService.ReturnEditors(this._editorCollection);
-                this._editorCollection = null;
+                this._valueEditorService.ReturnEditors(this._controlCollection);
+                this._controlCollection = null;
             }
         }
 
-        private void ColliderEditor_ValueChanged(object sender, ValueChangedEventArgs<object> e) {
+        private void ColliderControlValueChanged(object sender, ValueChangedEventArgs<object> e) {
             this.RaiseValueChanged(sender, e);
         }
 
@@ -98,12 +98,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
 
                 if (this._valueEditorService != null && this.Collection != null && this.Value is Collider value) {
                     this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
-                    this._editorCollection = this._valueEditorService.CreateEditor(value, string.Empty);
-                    if (this._editorCollection != null) {
-                        this._editorCollection.OwnedValueChanged += this.ColliderEditor_ValueChanged;
+                    this._controlCollection = this._valueEditorService.CreateEditor(value, string.Empty);
+                    if (this._controlCollection != null) {
+                        this._controlCollection.OwnedValueChanged += this.ColliderControlValueChanged;
                         this._childEditors.Clear();
-                        this._childEditors.AddRange(this._editorCollection.ValueEditors);
-                        this.Collection.AddEditors(this._childEditors);
+                        this._childEditors.AddRange(this._controlCollection.ValueControls);
+                        this.Collection.AddControls(this._childEditors);
                     }
                 }
             }
