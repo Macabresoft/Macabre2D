@@ -22,10 +22,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// <param name="valueEditors">The value editors.</param>
         /// <param name="owner">The owner.</param>
         /// <param name="name">The name of the encompassing object being edited.</param>
-        public ValueControlCollection(IEnumerable<IValueControl> valueEditors, object owner, string name) {
-            this.Owner = owner;
+        public ValueControlCollection(IEnumerable<IValueControl> valueEditors, string name) {
             this.Name = name;
-
             this.AddControls(valueEditors);
         }
 
@@ -36,11 +34,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// Gets the name of the object being edited.
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        /// Gets the owner.
-        /// </summary>
-        public object Owner { get; }
 
         /// <summary>
         /// Gets the controls in this collection.
@@ -68,7 +61,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         public void Dispose() {
             foreach (var valueControl in this.ValueControls) {
                 if (valueControl is IValueEditor editor) {
-                    editor.ValuePropertyName = null;
                     editor.ValueChanged -= this.ValueEditor_ValueChanged;
                 }
 

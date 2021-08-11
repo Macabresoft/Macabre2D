@@ -60,13 +60,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <inheritdoc />
         public ValueControlCollection CreateEditor(object editableObject, string name) {
             var editors = this.CreateEditors(string.Empty, editableObject, editableObject);
-            return new ValueControlCollection(editors, editableObject, name);
+            return new ValueControlCollection(editors, name);
         }
 
         /// <inheritdoc />
         public IReadOnlyCollection<ValueControlCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
             var valueEditors = this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
-            return valueEditors.GroupBy(x => x.Category).Select(x => new ValueControlCollection(x, editableObject, x.Key)).ToList();
+            return valueEditors.GroupBy(x => x.Category).Select(x => new ValueControlCollection(x, x.Key)).ToList();
         }
 
         /// <inheritdoc />

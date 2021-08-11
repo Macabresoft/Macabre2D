@@ -12,9 +12,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
 
         /// <summary>
-        /// Gets or sets the value's property name. This is only required if not directly binding to the value.
+        /// Gets the value's property name. This is only required if not directly binding to the value.
         /// </summary>
-        string ValuePropertyName { get; set; }
+        string ValuePropertyName { get; }
 
         /// <summary>
         /// Sets the value.

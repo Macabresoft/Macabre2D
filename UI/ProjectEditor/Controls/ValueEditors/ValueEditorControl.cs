@@ -2,86 +2,29 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
     using System;
     using System.ComponentModel;
     using Avalonia;
-    using Avalonia.Controls;
-    using Avalonia.Data;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo;
 
-    public abstract class ValueEditorControl<T> : UserControl, IValueEditor<T> {
-        public static readonly StyledProperty<object> OwnerProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, object>(nameof(Owner));
-
-        public static readonly StyledProperty<T> ValueProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
-
-        public static readonly StyledProperty<string> CategoryProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Category));
-
-        public static readonly DirectProperty<ValueEditorControl<T>, ValueControlCollection> CollectionProperty =
-            AvaloniaProperty.RegisterDirect<ValueEditorControl<T>, ValueControlCollection>(
-                nameof(Collection),
-                editor => editor.Collection,
-                (editor, value) => editor.Collection = value);
-
-        public static readonly StyledProperty<string> TitleProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(Title));
-
+    public abstract class ValueEditorControl<T> : ValueInfoControl<T>, IValueEditor<T> {
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
 
-        public static readonly StyledProperty<string> ValuePropertyNameProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, string>(nameof(ValuePropertyName));
-
-        public static readonly StyledProperty<Type> ValueTypeProperty =
-            AvaloniaProperty.Register<ValueEditorControl<T>, Type>(nameof(ValueType));
-
-        private ValueControlCollection _collection;
-        
         public event EventHandler<ValueChangedEventArgs<object>> ValueChanged;
-
-        public string Category {
-            get => this.GetValue(CategoryProperty);
-            set => this.SetValue(CategoryProperty, value);
-        }
-
-        public ValueControlCollection Collection {
-            get => this._collection;
-            set => this.SetAndRaise(CollectionProperty, ref this._collection, value);
-        }
-
-        public object Owner {
-            get => this.GetValue(OwnerProperty);
-            set => this.SetValue(OwnerProperty, value);
-        }
-
-        public string Title {
-            get => this.GetValue(TitleProperty);
-            set => this.SetValue(TitleProperty, value);
-        }
 
         public bool UpdateOnLostFocus {
             get => this.GetValue(UpdateOnLostFocusProperty);
             set => this.SetValue(UpdateOnLostFocusProperty, value);
         }
 
-        public T Value {
-            get => this.GetValue(ValueProperty);
-            set => this.SetValue(ValueProperty, value);
-        }
+        public string ValuePropertyName { get; private set; }
 
-        public string ValuePropertyName {
-            get => this.GetValue(ValuePropertyNameProperty);
-            set => this.SetValue(ValuePropertyNameProperty, value);
-        }
+        protected bool IgnoreUpdates { get; set; }
 
-        public virtual void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            if (value is T typedValue) {
-                this.Value = typedValue;
-            }
+        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
+            base.Initialize(value, valueType, valuePropertyName, title, owner);
 
-            this.Owner = owner;
             this.ValuePropertyName = valuePropertyName;
-            this.Title = title;
 
             if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
                 notifyPropertyChanged.PropertyChanged += this.Owner_PropertyChanged;
@@ -94,17 +37,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             }
         }
 
-        protected bool IgnoreUpdates { get; set; }
-
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnDetachedFromVisualTree(e);
+
+            this.ValuePropertyName = null;
 
             if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
                 notifyPropertyChanged.PropertyChanged -= this.Owner_PropertyChanged;
             }
         }
 
-        protected virtual void OnValueChanged(T updatedValue) {
+        protected override void OnValueChanged(T updatedValue) {
             if (!this.IgnoreUpdates && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
                 var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
                 this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
@@ -118,12 +61,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
         protected void SetEditorValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
             this.RaiseValueChanged(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
-        }
-
-        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ValueEditorControl<T> valueEditor) {
-                valueEditor.OnValueChanged(valueEditor.Value);
-            }
         }
 
         private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
