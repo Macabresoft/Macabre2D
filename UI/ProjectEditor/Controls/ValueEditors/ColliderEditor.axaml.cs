@@ -26,7 +26,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
 
         private readonly HashSet<IValueControl> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
-        private readonly IValueEditorService _valueEditorService = Resolver.Resolve<IValueEditorService>();
+        private readonly IValueControlService _valueControlService = Resolver.Resolve<IValueControlService>();
 
         private ValueControlCollection _controlCollection;
         private Type _selectedType;
@@ -78,7 +78,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             if (this._childEditors.Any()) {
                 this.Collection.RemoveControls(this._childEditors);
                 this._childEditors.Clear();
-                this._valueEditorService.ReturnEditors(this._controlCollection);
+                this._valueControlService.ReturnControls(this._controlCollection);
                 this._controlCollection = null;
             }
         }
@@ -96,9 +96,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
                 this.IgnoreUpdates = true;
                 this.ClearEditors();
 
-                if (this._valueEditorService != null && this.Collection != null && this.Value is Collider value) {
+                if (this._valueControlService != null && this.Collection != null && this.Value is Collider value) {
                     this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
-                    this._controlCollection = this._valueEditorService.CreateEditor(value, string.Empty);
+                    this._controlCollection = this._valueControlService.CreateControl(value, string.Empty);
                     if (this._controlCollection != null) {
                         this._controlCollection.OwnedValueChanged += this.ColliderControlValueChanged;
                         this._childEditors.Clear();

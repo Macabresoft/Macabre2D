@@ -41,7 +41,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
                 .RegisterType<ISystemService, SystemService>(new SingletonLifetimeManager())
                 .RegisterType<IUndoService, UndoService>(new SingletonLifetimeManager())
-                .RegisterType<IValueEditorService, ValueEditorService>(new SingletonLifetimeManager());
+                .RegisterType<IValueControlService, ValueControlService>(new SingletonLifetimeManager());
         }
 
         /// <summary>

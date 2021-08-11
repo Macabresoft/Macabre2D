@@ -18,11 +18,11 @@
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="undoService">The undo service.</param>
-        /// <param name="valueEditorService">The value editor service.</param>
+        /// <param name="valueControlService">The value editor service.</param>
         public SystemService(
             IAssemblyService assemblyService,
             IUndoService undoService,
-            IValueEditorService valueEditorService) : base(assemblyService, undoService, valueEditorService) {
+            IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
         }
 
         /// <inheritdoc />

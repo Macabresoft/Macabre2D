@@ -14,96 +14,102 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// An interface for a service which produces value editor controls given an object that contains a
     /// <see cref="DataContractAttribute" />.
     /// </summary>
-    public interface IValueEditorService {
+    public interface IValueControlService {
         /// <summary>
-        /// Creates a single editor collection for an editable object.
+        /// Creates a single control collection for an object.
         /// </summary>
-        /// <param name="editableObject">The editable object.</param>
+        /// <param name="owner">The owner.</param>
         /// <param name="name">The name.</param>
         /// <returns>The editor collection.</returns>
-        ValueControlCollection CreateEditor(object editableObject, string name);
+        ValueControlCollection CreateControl(object owner, string name);
 
         /// <summary>
-        /// Creates value editors for an object based on its properties and fields that contain a
+        /// Creates value controls for an object based on its properties and fields that contain a
         /// <see cref="DataMemberAttribute" />.
         /// </summary>
-        /// <param name="editableObject">The editable object for which to make editors..</param>
-        /// <param name="typesToIgnore"></param>
-        /// <returns>The value editors in collections split by their category.</returns>
-        IReadOnlyCollection<ValueControlCollection> CreateEditors(object editableObject, params Type[] typesToIgnore);
+        /// <param name="owner">The owner for which to make controls.</param>
+        /// <param name="typesToIgnore">The types to ignore.</param>
+        /// <returns>The value controls in collections split by their category.</returns>
+        IReadOnlyCollection<ValueControlCollection> CreateControls(object owner, params Type[] typesToIgnore);
 
         /// <summary>
-        /// Returns the editors to a cache to be reused. Waste not, want not!
+        /// Returns the controls and disposes them.
         /// </summary>
-        /// <param name="editorCollections">The editor collections to return.</param>
-        void ReturnEditors(params ValueControlCollection[] editorCollections);
+        /// <param name="controlCollections">The control collections to return.</param>
+        void ReturnControls(params ValueControlCollection[] controlCollections);
     }
 
     /// <summary>
     /// A service which produces value editor controls given an object that contains a <see cref="DataContractAttribute" />.
     /// </summary>
-    public class ValueEditorService : ReactiveObject, IValueEditorService {
+    public class ValueControlService : ReactiveObject, IValueControlService {
         private const string DefaultCategoryName = "Uncategorized";
+        private const string DefaultCategoryNameForInfo = "Info";
         private readonly IAssemblyService _assemblyService;
         private readonly IValueEditorTypeMapper _typeMapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueEditorService" /> class.
+        /// Initializes a new instance of the <see cref="ValueControlService" /> class.
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="typeMapper">The value editor type mapper.</param>
-        public ValueEditorService(IAssemblyService assemblyService, IValueEditorTypeMapper typeMapper) {
+        public ValueControlService(IAssemblyService assemblyService, IValueEditorTypeMapper typeMapper) {
             this._assemblyService = assemblyService;
             this._typeMapper = typeMapper;
         }
 
         /// <inheritdoc />
-        public ValueControlCollection CreateEditor(object editableObject, string name) {
-            var editors = this.CreateEditors(string.Empty, editableObject, editableObject);
+        public ValueControlCollection CreateControl(object owner, string name) {
+            var editors = this.CreateControls(string.Empty, owner, owner);
             return new ValueControlCollection(editors, name);
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ValueControlCollection> CreateEditors(object editableObject, params Type[] typesToIgnore) {
-            var valueEditors = this.CreateEditors(string.Empty, editableObject, editableObject, typesToIgnore);
+        public IReadOnlyCollection<ValueControlCollection> CreateControls(object owner, params Type[] typesToIgnore) {
+            var valueEditors = this.CreateControls(string.Empty, owner, owner, typesToIgnore);
             return valueEditors.GroupBy(x => x.Category).Select(x => new ValueControlCollection(x, x.Key)).ToList();
         }
 
         /// <inheritdoc />
-        public void ReturnEditors(params ValueControlCollection[] editorCollections) {
-            foreach (var editorCollection in editorCollections) {
+        public void ReturnControls(params ValueControlCollection[] controlCollections) {
+            foreach (var editorCollection in controlCollections) {
                 editorCollection.Dispose();
             }
         }
 
-        private IReadOnlyCollection<IValueEditor> CreateEditors(string currentPath, object editableObject, object originalObject, params Type[] typesToIgnore) {
-            var result = new List<IValueEditor>();
-            var editableObjectType = editableObject.GetType();
-            var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : editableObject.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
+        private IReadOnlyCollection<IValueControl> CreateControls(string currentPath, object owner, object originalObject, params Type[] typesToIgnore) {
+            var result = new List<IValueControl>();
+            var editableObjectType = owner.GetType();
+            var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : owner.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
 
             var membersWithAttributes = members
                 .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))
                 .OrderBy(x => x.Attribute.Order);
+            
+            if (this.TryCreateValueInfo(originalObject,owner, out var info)) {
+                result.Add(info);
+            }
 
             foreach (var member in membersWithAttributes) {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
-                var value = member.MemberInfo.GetValue(editableObject);
+                var value = member.MemberInfo.GetValue(owner);
                 var memberType = value?.GetType() ?? member.MemberInfo.GetMemberReturnType();
 
-                var editors = this.CreateEditorsForMember(originalObject, value, memberType, member, propertyPath);
+                var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }
 
             return result;
         }
 
-        private ICollection<IValueEditor> CreateEditorsForMember(
+        private ICollection<IValueControl> CreateControlsForMember(
             object originalObject,
             object value,
             Type memberType,
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
-            var result = new List<IValueEditor>();
+            var result = new List<IValueControl>();
+            
             var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
             if (editorType != null) {
                 var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, member, propertyPath);
@@ -128,7 +134,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 }
             }
             else if (!memberType.IsValueType && memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) {
-                var editors = this.CreateEditors(propertyPath, value, originalObject);
+                var editors = this.CreateControls(propertyPath, value, originalObject);
                 result.AddRange(editors);
             }
 
@@ -163,6 +169,22 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             }
 
             return null;
+        }
+
+        private bool TryCreateValueInfo(object originalOwner, object value, out IValueControl info) {
+            info = null;
+
+            if (value.GetType() is Type ownerType) {
+                var controlType = this._assemblyService.LoadFirstType(typeof(IValueInfo<>).MakeGenericType(ownerType));
+
+                if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && Activator.CreateInstance(controlType) is IValueControl control) {
+                    info = control;
+                    control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalOwner);
+                    control.Category = $"{DefaultCategoryNameForInfo} ({ownerType.Name})";
+                }
+            }
+
+            return info != null;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 this._pathService,
                 this.Serializer,
                 Substitute.For<IUndoService>(),
-                Substitute.For<IValueEditorService>());
+                Substitute.For<IValueControlService>());
         }
 
         public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();

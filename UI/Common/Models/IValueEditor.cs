@@ -27,7 +27,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
     /// Interface for a control that can generically edit values. Generally used for serialized game components.
     /// </summary>
     /// <typeparam name="T">The type being edited.</typeparam>
-    public interface IValueEditor<T> :  IValueEditor {
+    public interface IValueEditor<T> : IValueEditor {
         /// <summary>
         /// Gets or sets the value.
         /// </summary>

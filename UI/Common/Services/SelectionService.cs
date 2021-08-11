@@ -51,7 +51,7 @@
         private readonly object _editorsLock = new();
 
         private readonly IUndoService _undoService;
-        private readonly IValueEditorService _valueEditorService;
+        private readonly IValueControlService _valueControlService;
         private bool _isBusy;
         private T _selected;
 
@@ -60,14 +60,14 @@
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="undoService">The undo service.</param>
-        /// <param name="valueEditorService">The value editor service.</param>
+        /// <param name="valueControlService">The value editor service.</param>
         protected SelectionService(
             IAssemblyService assemblyService,
             IUndoService undoService,
-            IValueEditorService valueEditorService) {
+            IValueControlService valueControlService) {
             this._assemblyService = assemblyService;
             this._undoService = undoService;
-            this._valueEditorService = valueEditorService;
+            this._valueControlService = valueControlService;
         }
 
         /// <inheritdoc />
@@ -143,7 +143,7 @@
                     try {
                         Dispatcher.UIThread.Post(() => this.IsBusy = true);
 
-                        var editorCollections = this._valueEditorService.CreateEditors(this.Selected).ToList();
+                        var editorCollections = this._valueControlService.CreateControls(this.Selected).ToList();
 
                         foreach (var editorCollection in this._editors) {
                             editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;

@@ -6,7 +6,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo;
 
-    public abstract class ValueEditorControl<T> : ValueInfoControl<T>, IValueEditor<T> {
+    public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
             AvaloniaProperty.Register<ValueEditorControl<T>, bool>(nameof(UpdateOnLostFocus), true);
 

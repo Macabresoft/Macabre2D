@@ -82,7 +82,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="pathService">The path service.</param>
         /// <param name="serializer">The serializer.</param>
         /// <param name="undoService">The undo service.</param>
-        /// <param name="valueEditorService">The value editor service.</param>
+        /// <param name="valueControlService">The value editor service.</param>
         public ContentService(
             IAssemblyService assemblyService,
             IAssetManager assetManager,
@@ -92,7 +92,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             IPathService pathService,
             ISerializer serializer,
             IUndoService undoService,
-            IValueEditorService valueEditorService) : base(assemblyService, undoService, valueEditorService) {
+            IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
             this._assetManager = assetManager;
             this._buildService = buildService;
             this._fileSystem = fileSystem;

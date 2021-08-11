@@ -24,11 +24,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="undoService">The undo service.</param>
-        /// <param name="valueEditorService">The value editor service.</param>
+        /// <param name="valueControlService">The value editor service.</param>
         public EntityService(
             IAssemblyService assemblyService,
             IUndoService undoService,
-            IValueEditorService valueEditorService) : base(assemblyService, undoService, valueEditorService) {
+            IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
 
         }
 

@@ -1,28 +1,28 @@
-﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
+﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using System;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
     using Macabresoft.Macabre2D.UI.Common.Models;
 
-    public class ValueInfoControl<T> : UserControl, IValueInfo<T> {
-        public static readonly DirectProperty<ValueInfoControl<T>, ValueControlCollection> CollectionProperty =
-            AvaloniaProperty.RegisterDirect<ValueInfoControl<T>, ValueControlCollection>(
+    public class ValueControl<T> : UserControl, IValueInfo<T> {
+        public static readonly DirectProperty<ValueControl<T>, ValueControlCollection> CollectionProperty =
+            AvaloniaProperty.RegisterDirect<ValueControl<T>, ValueControlCollection>(
                 nameof(Collection),
                 editor => editor.Collection,
                 (editor, value) => editor.Collection = value);
 
         public static readonly StyledProperty<object> OwnerProperty =
-            AvaloniaProperty.Register<ValueInfoControl<T>, object>(nameof(Owner));
+            AvaloniaProperty.Register<ValueControl<T>, object>(nameof(Owner));
 
         public static readonly StyledProperty<string> TitleProperty =
-            AvaloniaProperty.Register<ValueInfoControl<T>, string>(nameof(Title));
+            AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Title));
 
         public static readonly StyledProperty<T> ValueProperty =
-            AvaloniaProperty.Register<ValueInfoControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
+            AvaloniaProperty.Register<ValueControl<T>, T>(nameof(Value), notifying: OnValueChanging, defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly StyledProperty<string> CategoryProperty =
-            AvaloniaProperty.Register<ValueInfoControl<T>, string>(nameof(Category));
+            AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Category));
 
 
         private ValueControlCollection _collection;
@@ -65,7 +65,7 @@
         }
 
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ValueInfoControl<T> valueControl) {
+            if (!isBeforeChange && control is ValueControl<T> valueControl) {
                 valueControl.OnValueChanged(valueControl.Value);
             }
         }
