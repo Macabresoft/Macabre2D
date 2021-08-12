@@ -8,13 +8,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     /// <summary>
     /// A content file for the project.
     /// </summary>
+    [DataContract(Name = "File")]
     public class ContentFile : ContentNode {
         private bool _hasChanges;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentNode" /> class.
         /// </summary>
-        /// <param name="parent"></param>
+        /// <param name="parent">The parent.</param>
         /// <param name="metadata">The metadata.</param>
         public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
             this.Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));

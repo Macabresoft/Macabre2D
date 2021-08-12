@@ -76,8 +76,16 @@
       <DependentUpon>LicenseDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\ValueInfo\SpriteSheetInfoControl.axaml.cs">
+    <Compile Update="Controls\ValueInfo\ContentFileInfoControl.axaml.cs">
       <DependentUpon>Vector2Editor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueInfo\ContentDirectoryInfoControl.axaml.cs">
+      <DependentUpon>ContentDirectoryInfoControl.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueInfo\SpriteSheetInfoControl.axaml.cs">
+      <DependentUpon>SpriteSheetInfoControl.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

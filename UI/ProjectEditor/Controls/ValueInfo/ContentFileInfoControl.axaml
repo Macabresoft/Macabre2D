@@ -1,0 +1,30 @@
+<controls:ValueControl xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+                       xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo"
+                       x:TypeArguments="content:ContentFile"
+                       x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.ContentFileInfoControl">
+    <Grid RowDefinitions="Auto, Auto"
+          ColumnDefinitions="Auto, *">
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="Created" />
+
+        <TextBox Grid.Row="0"
+                 Grid.Column="1"
+                 IsReadOnly="True"
+                 Text="{Binding $parent[local:ContentFileInfoControl].FileInfo.CreationTime}" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="Last Edited" />
+
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 IsReadOnly="True"
+                 Text="{Binding $parent[local:ContentFileInfoControl].FileInfo.LastWriteTime}" />
+    </Grid>
+</controls:ValueControl>

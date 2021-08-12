@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using System.Text;
     using Microsoft.Xna.Framework;
@@ -12,7 +13,8 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// A sprite sheet tied to a single <see cref="Texture2D" /> which also defines sprites, animations, and tile sets.
     /// </summary>
-    [DataContract]
+    [DataContract(Name = "Sprite Sheet")]
+    [Category("Sprite Sheet")]
     public class SpriteSheet : AssetPackage<Texture2D> {
         /// <summary>
         /// The valid file extensions for a <see cref="Texture2D" />.

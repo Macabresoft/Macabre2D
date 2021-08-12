@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.UI.Common.Services;
 
@@ -65,6 +66,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
     /// <summary>
     /// A directory content node.
     /// </summary>
+    [DataContract(Name = "Directory")]
     public class ContentDirectory : ContentNode, IContentDirectory {
         private readonly ObservableCollectionExtended<IContentNode> _children = new();
 

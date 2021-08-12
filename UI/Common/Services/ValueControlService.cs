@@ -85,8 +85,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             var membersWithAttributes = members
                 .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))
                 .OrderBy(x => x.Attribute.Order);
-            
-            if (this.TryCreateValueInfo(originalObject,owner, out var info)) {
+
+            if (this.TryCreateValueInfo(originalObject, owner, out var info)) {
                 result.Add(info);
             }
 
@@ -109,7 +109,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
             var result = new List<IValueControl>();
-            
+
             var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
             if (editorType != null) {
                 var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, member, propertyPath);
@@ -174,13 +174,19 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private bool TryCreateValueInfo(object originalOwner, object value, out IValueControl info) {
             info = null;
 
-            if (value.GetType() is Type ownerType) {
+            if (value?.GetType() is Type ownerType) {
                 var controlType = this._assemblyService.LoadFirstType(typeof(IValueInfo<>).MakeGenericType(ownerType));
 
                 if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && Activator.CreateInstance(controlType) is IValueControl control) {
                     info = control;
                     control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalOwner);
-                    control.Category = $"{DefaultCategoryNameForInfo} ({ownerType.Name})";
+
+                    if (Attribute.GetCustomAttribute(ownerType, typeof(DataContractAttribute), false) is DataContractAttribute dataContractAttribute && !string.IsNullOrEmpty(dataContractAttribute.Name)) {
+                        control.Category = $"{dataContractAttribute.Name} {DefaultCategoryNameForInfo}";
+                    }
+                    else {
+                        control.Category = $"{DefaultCategoryNameForInfo} ({ownerType.Name})";
+                    }
                 }
             }
 

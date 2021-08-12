@@ -4,27 +4,27 @@
                        xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo"
                        x:TypeArguments="framework:SpriteSheet"
-                       x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.SpriteSheetControl">
-    <Grid RowDefinitions="Auto, Auto"
-          ColumnDefinitions="Auto, *">
-        <TextBlock Grid.Row="0"
-                   Grid.Column="0"
-                   Classes="ValueEditorLabel"
-                   Text="Created" />
+                       x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.SpriteSheetInfoControl">
+    <Design.DataContext>
+        <local:SpriteSheetInfoControl />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, Auto">
+        <Border Grid.Row="0">
+            <Image Source="{Binding Bitmap}"
+                   ToolTip.Tip="{Binding FileInfo.FullName}"
+                   Margin="{StaticResource DoubleMarginAll}" />
+        </Border>
 
-        <TextBox Grid.Row="0"
-                 Grid.Column="1"
-                 IsReadOnly="True"
-                 Text="{Binding $parent[local:SpriteSheetControl].FileInfo.CreationTime}" />
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="{StaticResource DoubleMarginAll}">
+            <TextBlock Text="{Binding FileInfo.Name}"
+                       ToolTip.Tip="{Binding FileInfo.FullName}"
+                       Margin="{StaticResource DoubleMarginRight}" />
+            <TextBlock FontStyle="Italic"
+                       Text="{Binding Bitmap.PixelSize, StringFormat=(\{0\})}" />
+        </StackPanel>
 
-        <TextBlock Grid.Row="1"
-                   Grid.Column="0"
-                   Classes="ValueEditorLabel"
-                   Text="Last Edited" />
-
-        <TextBox Grid.Row="1"
-                 Grid.Column="1"
-                 IsReadOnly="True"
-                 Text="{Binding $parent[local:SpriteSheetControl].FileInfo.LastWriteTime}" />
     </Grid>
 </controls:ValueControl>
