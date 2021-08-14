@@ -9,11 +9,22 @@
         <local:SpriteSheetInfoControl />
     </Design.DataContext>
     <Grid RowDefinitions="Auto, Auto">
-        <Border Grid.Row="0">
-            <Image Source="{Binding Bitmap}"
-                   ToolTip.Tip="{Binding FileInfo.FullName}"
-                   Margin="{StaticResource DoubleMarginAll}" />
-        </Border>
+        <ItemsControl Grid.Row="0"
+                      Items="{Binding Sprites}"
+                      HorizontalAlignment="Stretch">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding Bitmap}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding Value.Columns}"
+                                 Rows="{Binding Value.Rows}"
+                                 Margin="0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
 
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"

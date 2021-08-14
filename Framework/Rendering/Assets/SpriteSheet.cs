@@ -175,6 +175,25 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <summary>
+        /// Gets the sprite index given a column and row. Normalized to exist on the sprite sheet.
+        /// </summary>
+        /// <param name="column">The column.</param>
+        /// <param name="row">The row.</param>
+        /// <returns>The normalized sprite index.</returns>
+        public byte GetSpriteIndex(byte column, byte row) {
+            while (column > this.Columns) {
+                column -= this.Columns;
+            }
+
+            while (row > this.Rows) {
+                row -= this.Rows;
+            }
+
+
+            return (byte)(row * this.Columns + column);
+        }
+
+        /// <summary>
         /// Gets the sprite location based on its index
         /// </summary>
         /// <param name="spriteIndex">The index of the sprite. Counts from left to right, top to bottom.</param>
@@ -182,11 +201,39 @@ namespace Macabresoft.Macabre2D.Framework {
         public Point GetSpriteLocation(byte spriteIndex) {
             if (!this._spriteIndexToLocation.TryGetValue(spriteIndex, out var location) && this._columns > 0) {
                 var row = Math.DivRem(spriteIndex, this._columns, out var column);
-                location = new Point(row * this.SpriteSize.X, column * this.SpriteSize.Y);
+                location = new Point(column * this.SpriteSize.X, row * this.SpriteSize.Y);
                 this._spriteIndexToLocation[spriteIndex] = location;
             }
 
             return location;
+        }
+
+        /// <summary>
+        /// Gets the sprite size and location.
+        /// </summary>
+        /// <param name="imageSize">The image size in pixels.</param>
+        /// <param name="columns">The number of columns in the sprite sheet.</param>
+        /// <param name="rows">The number of rows in the sprite sheet.</param>
+        /// <param name="index">The sprite index.</param>
+        /// <returns>The sprite size and location as a <see cref="Rectangle"/>.</returns>
+        public static Rectangle GetSpriteSizeAndLocation(Point imageSize, byte columns, byte rows, byte index) {
+            var size = GetSpriteSize(imageSize, columns, rows);
+            var row = Math.DivRem(index, columns, out var column);
+            var location =  new Point(column * size.X, row * size.Y);
+            return new Rectangle(location, size);
+        }
+
+        /// <summary>
+        /// Gets the sprite size.
+        /// </summary>
+        /// <param name="imageSize">The image size in pixels.</param>
+        /// <param name="columns">The number of columns in the sprite sheet.</param>
+        /// <param name="rows">The number of rows in the sprite sheet.</param>
+        /// <returns>The sprite size.</returns>
+        public static Point GetSpriteSize(Point imageSize, byte columns, byte rows) {
+            return new Point(
+                GetColumnWidth(imageSize.X, columns),
+                GetRowHeight(imageSize.Y, rows));
         }
 
         /// <inheritdoc />
@@ -204,17 +251,23 @@ namespace Macabresoft.Macabre2D.Framework {
             this.Content = null;
         }
 
+        private static int GetColumnWidth(int imageWidth, byte columns) {
+            return columns != 0 ? imageWidth / columns : 0;
+        }
+
+        private static int GetRowHeight(int imageHeight, byte rows) {
+            return rows != 0 ? imageHeight / rows : 0;
+        }
+
         private void ResetColumnWidth() {
             if (this.Content != null && this._columns != 0) {
-                var columnWidthInPixels = this.Content.Width / this._columns;
-                this.SpriteSize = new Point(columnWidthInPixels, this.SpriteSize.Y);
+                this.SpriteSize = new Point(GetColumnWidth(this.Content.Width, this._columns), this.SpriteSize.Y);
             }
         }
 
         private void ResetRowHeight() {
             if (this.Content != null && this._rows > 0) {
-                var rowHeightInPixels = this.Content.Height / this._rows;
-                this.SpriteSize = new Point(this.SpriteSize.X, rowHeightInPixels);
+                this.SpriteSize = new Point(this.SpriteSize.X, GetRowHeight(this.Content.Height, this._rows));
             }
         }
     }
