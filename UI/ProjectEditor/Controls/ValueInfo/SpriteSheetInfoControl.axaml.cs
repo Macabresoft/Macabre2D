@@ -18,10 +18,10 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
                 nameof(Bitmap),
                 control => control.Bitmap);
 
-        public static readonly DirectProperty<SpriteSheetInfoControl, FileInfo> FileInfoProperty =
-            AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, FileInfo>(
-                nameof(FileInfo),
-                control => control.FileInfo);
+        public static readonly DirectProperty<SpriteSheetInfoControl, ContentFile> FileProperty =
+            AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, ContentFile>(
+                nameof(File),
+                control => control.File);
 
         public static readonly DirectProperty<SpriteSheetInfoControl, ObservableCollection<SpriteDisplayModel>> SpritesProperty =
             AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, ObservableCollection<SpriteDisplayModel>>(
@@ -30,7 +30,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
 
         private readonly ObservableCollectionExtended<SpriteDisplayModel> _sprites = new();
         private Bitmap _bitmap;
-        private FileInfo _fileInfo;
+        private ContentFile _file;
 
         public SpriteSheetInfoControl() {
             this.DataContext = this;
@@ -44,18 +44,19 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
             private set => this.SetAndRaise(BitmapProperty, ref this._bitmap, value);
         }
 
-        public FileInfo FileInfo {
-            get => this._fileInfo;
-            private set => this.SetAndRaise(FileInfoProperty, ref this._fileInfo, value);
+        public ContentFile File {
+            get => this._file;
+            private set => this.SetAndRaise(FileProperty, ref this._file, value);
         }
 
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             base.Initialize(value, valueType, valuePropertyName, title, owner);
 
             if (owner is ContentFile file) {
-                this.FileInfo = new FileInfo(file.GetFullPath());
-                if (this.FileInfo.Exists) {
-                    this.Bitmap = new Bitmap(this.FileInfo.FullName);
+                this.File = file;
+                var fileInfo = new FileInfo(file.GetFullPath());
+                if (fileInfo.Exists) {
+                    this.Bitmap = new Bitmap(fileInfo.FullName);
                     this.Value.PropertyChanged += this.Value_PropertyChanged;
                     this.ResetSprites();
                 }

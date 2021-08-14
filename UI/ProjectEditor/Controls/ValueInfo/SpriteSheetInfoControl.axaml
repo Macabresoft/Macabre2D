@@ -30,8 +30,8 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Margin="{StaticResource DoubleMarginAll}">
-            <TextBlock Text="{Binding FileInfo.Name}"
-                       ToolTip.Tip="{Binding FileInfo.FullName}"
+            <TextBlock Text="{Binding File.Name}"
+                       ToolTip.Tip="{Binding File.Name}"
                        Margin="{StaticResource DoubleMarginRight}" />
             <TextBlock FontStyle="Italic"
                        Text="{Binding Bitmap.PixelSize, StringFormat=(\{0\})}" />
