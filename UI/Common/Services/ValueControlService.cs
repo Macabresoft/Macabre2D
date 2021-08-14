@@ -93,7 +93,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             foreach (var member in membersWithAttributes) {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var value = member.MemberInfo.GetValue(owner);
-                var memberType = value?.GetType() ?? member.MemberInfo.GetMemberReturnType();
+                var memberType = member.MemberInfo.GetMemberReturnType();
 
                 var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
@@ -110,9 +110,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             string propertyPath) {
             var result = new List<IValueControl>();
 
-            var editorType = this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType));
-            if (editorType != null) {
-                var editor = this.CreateValueEditorFromType(editorType, originalObject, value, memberType, member, propertyPath);
+            if (this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType)) is Type memberEditorType) {
+                var editor = this.CreateValueEditorFromType(memberEditorType, originalObject, value, memberType, member, propertyPath);
                 if (editor != null) {
                     result.Add(editor);
                 }
@@ -133,7 +132,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     }
                 }
             }
-            else if (!memberType.IsValueType && memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) {
+            else if ((!memberType.IsValueType && 
+                     memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) ||
+                     (value?.GetType() is Type { IsValueType: false } actualType &&
+                      actualType.GetCustomAttribute(typeof(DataContractAttribute), true) != null)) {
                 var editors = this.CreateControls(propertyPath, value, originalObject);
                 result.AddRange(editors);
             }

@@ -61,12 +61,20 @@
             this.Title = title;
         }
 
-        protected virtual void OnValueChanged(T updatedValue) {
+        protected virtual void OnValueChanged() {
+        }
+
+        protected virtual void OnValueChanging() {
         }
 
         private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ValueControl<T> valueControl) {
-                valueControl.OnValueChanged(valueControl.Value);
+            if (control is ValueControl<T> valueControl) {
+                if (isBeforeChange) {
+                    valueControl.OnValueChanging();
+                }
+                else {
+                    valueControl.OnValueChanged();
+                }
             }
         }
     }

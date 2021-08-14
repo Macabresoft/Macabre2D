@@ -27,8 +27,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             }
         }
 
-        protected override void OnValueChanged(string updatedValue) {
-            base.OnValueChanged(updatedValue);
+        protected override void OnValueChanged() {
+            base.OnValueChanged();
             
             if (this.HasValueChanged()) {
                 this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, this.Value);

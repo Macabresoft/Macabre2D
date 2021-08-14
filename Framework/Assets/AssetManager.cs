@@ -33,6 +33,14 @@ namespace Macabresoft.Macabre2D.Framework {
         bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
 
         /// <summary>
+        /// Tries sto get metadata.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <param name="metadata"></param>
+        /// <returns></returns>
+        bool TryGetMetadata(Guid contentId, out ContentMetadata? metadata);
+
+        /// <summary>
         /// Loads the asset at the specified path.
         /// </summary>
         /// <typeparam name="T">The type of asset to load.</typeparam>
@@ -105,6 +113,27 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
+        public bool TryGetMetadata(Guid contentId, out ContentMetadata? metadata) {
+            if (contentId != Guid.Empty) {
+                if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId) is ContentMetadata cachedMetadata) {
+                    metadata = cachedMetadata;
+                }
+                else if (this.TryLoadContent(ContentMetadata.GetMetadataPath(contentId), out ContentMetadata? foundMetadata) && foundMetadata != null) {
+                    metadata = foundMetadata;
+                    this.RegisterMetadata(foundMetadata);
+                }
+                else {
+                    metadata = null;
+                }
+            }
+            else {
+                metadata = null;
+            }
+
+            return metadata != null;
+        }
+
+        /// <inheritdoc />
         public bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class {
             loaded = null;
             if (this._contentManager != null) {
@@ -142,6 +171,7 @@ namespace Macabresoft.Macabre2D.Framework {
             return loaded != null;
         }
 
+
         /// <inheritdoc />
         public void Unload() {
             this._contentManager?.Unload();
@@ -153,7 +183,7 @@ namespace Macabresoft.Macabre2D.Framework {
                 if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId)?.Asset is TAsset asset) {
                     result = asset;
                 }
-                else if (this.TryGetContentMetadata(contentId, out var metadata) && metadata != null) {
+                else if (this.TryGetMetadata(contentId, out var metadata) && metadata != null) {
                     result = metadata.Asset as TAsset;
                 }
             }
@@ -170,23 +200,8 @@ namespace Macabresoft.Macabre2D.Framework {
             }
         }
 
-        private bool TryGetContentMetadata(Guid contentId, out ContentMetadata? metadata) {
-            if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId) is ContentMetadata cachedMetadata) {
-                metadata = cachedMetadata;
-            }
-            else if (this.TryLoadContent(ContentMetadata.GetMetadataPath(contentId), out ContentMetadata? foundMetadata) && foundMetadata != null) {
-                metadata = foundMetadata;
-                this.RegisterMetadata(foundMetadata);
-            }
-            else {
-                metadata = null;
-            }
-
-            return metadata != null;
-        }
-
         private bool TryGetContentPath(Guid contentId, out string? contentPath) {
-            if (this.TryGetContentMetadata(contentId, out var metadata) && metadata != null) {
+            if (this.TryGetMetadata(contentId, out var metadata) && metadata != null) {
                 contentPath = metadata.GetContentPath();
             }
             else {
@@ -211,6 +226,12 @@ namespace Macabresoft.Macabre2D.Framework {
 
             /// <inheritdoc />
             public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
+                return false;
+            }
+
+            /// <inheritdoc />
+            public bool TryGetMetadata(Guid contentId, out ContentMetadata? metadata) {
+                metadata = null;
                 return false;
             }
 

@@ -47,10 +47,10 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             }
         }
 
-        protected override void OnValueChanged(T updatedValue) {
+        protected override void OnValueChanged() {
             if (!this.IgnoreUpdates && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
                 var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
-                this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
+                this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, this.Value));
             }
         }
 

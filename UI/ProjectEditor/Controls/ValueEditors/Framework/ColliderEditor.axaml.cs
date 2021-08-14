@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
+namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -65,8 +65,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
             }
         }
 
-        protected override void OnValueChanged(Collider updatedValue) {
-            base.OnValueChanged(updatedValue);
+        protected override void OnValueChanged() {
+            base.OnValueChanged();
             this.ResetColliderEditors();
         }
 
