@@ -20,7 +20,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
         /// Initializes a new instance of the <see cref="ValueControlCollection" /> class.
         /// </summary>
         /// <param name="valueEditors">The value editors.</param>
-        /// <param name="owner">The owner.</param>
         /// <param name="name">The name of the encompassing object being edited.</param>
         public ValueControlCollection(IEnumerable<IValueControl> valueEditors, string name) {
             this.Name = name;

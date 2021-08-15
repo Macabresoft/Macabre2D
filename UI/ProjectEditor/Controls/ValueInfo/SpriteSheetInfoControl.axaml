@@ -10,7 +10,7 @@
     </Design.DataContext>
     <Grid RowDefinitions="Auto, Auto">
         <ItemsControl Grid.Row="0"
-                      Items="{Binding Sprites}"
+                      Items="{Binding SpriteCollection.Sprites}"
                       HorizontalAlignment="Stretch">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -30,11 +30,11 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Margin="{StaticResource DoubleMarginAll}">
-            <TextBlock Text="{Binding File.Name}"
-                       ToolTip.Tip="{Binding File.Name}"
+            <TextBlock Text="{Binding SpriteCollection.Name}"
+                       ToolTip.Tip="{Binding SpriteCollection.Name}"
                        Margin="{StaticResource DoubleMarginRight}" />
             <TextBlock FontStyle="Italic"
-                       Text="{Binding Bitmap.PixelSize, StringFormat=(\{0\})}" />
+                       Text="{Binding SpriteCollection.Size, StringFormat=(\{0\})}" />
         </StackPanel>
 
     </Grid>
