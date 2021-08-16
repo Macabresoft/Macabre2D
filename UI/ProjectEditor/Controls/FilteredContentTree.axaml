@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.FilteredContentTree">
+    <UserControl.Resources>
+        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+    </UserControl.Resources>
+    <TreeView BorderThickness="0"
+              Items="{Binding  $parent[controls:FilteredContentTree].Root, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
+              SelectedItem="{Binding $parent[controls:FilteredContentTree].SelectedItem, Mode=TwoWay}">
+        <TreeView.Styles>
+            <Style Selector="TreeViewItem">
+                <Setter Property="IsExpanded" Value="True" />
+            </Style>
+        </TreeView.Styles>
+        <TreeView.DataTemplates>
+            <TreeDataTemplate DataType="content:FilteredContentWrapper"
+                              ItemsSource="{Binding Children}">
+                <Grid ColumnDefinitions="Auto, *">
+                    <controls:Icon Grid.Column="0"
+                                   Content="{StaticResource DirectoryIcon}"
+                                   IsVisible="{Binding IsDirectory}"
+                                   Margin="{StaticResource StandardMarginRight}"
+                                   Foreground="{StaticResource SystemAccentColorLightBrush1}" />
+
+                    <controls:Icon Grid.Column="0"
+                                   Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
+                                   IsVisible="{Binding !IsDirectory}"
+                                   Margin="{StaticResource StandardMarginRight}"
+                                   Foreground="{StaticResource TextControlForeground}" />
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Node.Name}"
+                               HorizontalAlignment="Stretch" />
+                </Grid>
+            </TreeDataTemplate>
+        </TreeView.DataTemplates>
+    </TreeView>
+</UserControl>

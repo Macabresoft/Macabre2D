@@ -96,5 +96,9 @@
       <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\FilteredContentTree.axaml.cs">
+      <DependentUpon>FilteredContentTree.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

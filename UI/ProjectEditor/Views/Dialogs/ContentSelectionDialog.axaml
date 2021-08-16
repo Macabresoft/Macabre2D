@@ -1,8 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.ContentSelectionDialog"
         Height="480"
@@ -14,47 +12,13 @@
     <Design.DataContext>
         <viewModels:ContentSelectionViewModel />
     </Design.DataContext>
-    <Window.Resources>
-        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
-    </Window.Resources>
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="*, Auto">
-        <TreeView Grid.Row="0"
-                  Margin="{StaticResource StandardMarginAll}"
-                  BorderThickness="0"
-                  Name="_treeView"
-                  Items="{Binding RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                  SelectedItem="{Binding SelectedContentNode, Mode=TwoWay}">
-            <TreeView.Styles>
-                <Style Selector="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="True" />
-                </Style>
-            </TreeView.Styles>
-            <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="content:FilteredContentWrapper"
-                                  ItemsSource="{Binding Children}">
-                    <Grid ColumnDefinitions="Auto, *">
-                        <controls:Icon Grid.Column="0"
-                                       Content="{StaticResource DirectoryIcon}"
-                                       IsVisible="{Binding IsDirectory}"
-                                       Margin="{StaticResource StandardMarginRight}"
-                                       Foreground="{StaticResource SystemAccentColorLightBrush1}"/>
-                        
-                        <controls:Icon Grid.Column="0"
-                                       Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
-                                       IsVisible="{Binding !IsDirectory}"
-                                       Margin="{StaticResource StandardMarginRight}"
-                                       Foreground="{StaticResource TextControlForeground}"/>
-                        
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding Node.Name}"
-                                   HorizontalAlignment="Stretch"/>
-
-                    </Grid>
-                </TreeDataTemplate>
-            </TreeView.DataTemplates>
-        </TreeView>
+        
+        <controls:FilteredContentTree Grid.Row="0"
+                                      Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                      SelectedItem="{Binding SelectedContentNode}"
+                                      Margin="{StaticResource StandardMarginAll}" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
