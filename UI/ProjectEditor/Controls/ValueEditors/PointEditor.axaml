@@ -5,27 +5,32 @@
                           x:TypeArguments="monoGame:Point"
                           x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.PointEditor"
                           UpdateOnLostFocus="False">
-    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *"
+          DataContext="{Binding $parent[local:PointEditor]}">
+        <Design.DataContext>
+            <local:PointEditor />
+        </Design.DataContext>
+        
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:PointEditor].Title}" />
+                   Text="{Binding Title}" />
 
         <TextBlock Grid.Column="1"
                    Text="X: "
                    VerticalAlignment="Center" />
 
         <local:FloatEditor Grid.Column="2"
-                           Value="{Binding $parent[local:PointEditor].XValue}"
-                           ValueMinimum="{Binding $parent[local:PointEditor].XMinimum}"
-                           ValueMaximum="{Binding $parent[local:PointEditor].XMaximum}" />
+                           Value="{Binding XValue}"
+                           ValueMinimum="{Binding XMinimum}"
+                           ValueMaximum="{Binding XMaximum}" />
 
         <TextBlock Grid.Column="3"
                    Text="Y: "
                    VerticalAlignment="Center" />
 
         <local:FloatEditor Grid.Column="4"
-                           Value="{Binding $parent[local:PointEditor].YValue}"
-                           ValueMinimum="{Binding $parent[local:PointEditor].YMinimum}"
-                           ValueMaximum="{Binding $parent[local:PointEditor].YMaximum}" />
+                           Value="{Binding YValue}"
+                           ValueMinimum="{Binding YMinimum}"
+                           ValueMaximum="{Binding YMaximum}" />
     </Grid>
 </local:ValueEditorControl>

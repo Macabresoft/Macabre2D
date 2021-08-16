@@ -23,7 +23,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
         private SpriteDisplayCollection _spriteCollection;
 
         public SpriteSheetInfoControl() {
-            this.DataContext = this;
             this.InitializeComponent();
         }
 

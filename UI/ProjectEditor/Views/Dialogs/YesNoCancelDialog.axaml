@@ -10,11 +10,12 @@
         WindowStartupLocation="CenterOwner"
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="None">
-    <Design.DataContext>
-        <local:YesNoCancelDialog />
-    </Design.DataContext>
-    <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, *, Auto">
+    <Grid RowDefinitions="Auto, *, Auto"
+          Margin="{StaticResource DoubleMarginAll}"
+          DataContext="{Binding $parent[local:YesNoCancelDialog]}">
+        <Design.DataContext>
+            <local:YesNoCancelDialog />
+        </Design.DataContext>
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *"
               HorizontalAlignment="Left"

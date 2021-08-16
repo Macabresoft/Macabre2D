@@ -8,21 +8,26 @@
         <converters:MultiBoolConverter x:Key="MultiBoolConverter"
                                        RequireAllTrue="True" />
     </UserControl.Resources>
-
     <Grid ColumnDefinitions="Auto, *"
-          HorizontalAlignment="Stretch">
-        <controls:Icon Grid.Column="0"
-                       Content="{Binding $parent[local:EditableSelectableItem].Icon}"
-                       IsVisible="{Binding $parent[local:EditableSelectableItem].Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                       Margin="{StaticResource StandardMarginRight}"
-                       Foreground="{Binding $parent[local:EditableSelectableItem].IconForeground}"/>
+          HorizontalAlignment="Stretch"
+          DataContext="{Binding $parent[local:EditableSelectableItem]}">
+        <Design.DataContext>
+            <local:EditableSelectableItem />
+        </Design.DataContext>
         
+        <controls:Icon Grid.Column="0"
+                       Content="{Binding Icon}"
+                       IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Margin="{StaticResource StandardMarginRight}"
+                       Foreground="{Binding IconForeground}" />
+
         <TextBlock Grid.Column="1"
-                   Text="{Binding $parent[local:EditableSelectableItem].Text}"
+                   Text="{Binding Text}"
                    IsVisible="{Binding !#_editableTextBox.IsVisible}"
                    HorizontalAlignment="Stretch"
                    Background="Transparent"
                    DoubleTapped="Item_OnDoubleTapped" />
+        
         <TextBox Grid.Column="1"
                  x:Name="_editableTextBox"
                  Background="Transparent"
@@ -34,7 +39,7 @@
             <TextBox.IsVisible>
                 <MultiBinding Converter="{StaticResource MultiBoolConverter}">
                     <Binding Path="$parent[ISelectable].IsSelected" />
-                    <Binding Path="$parent[local:EditableSelectableItem].IsEditing" />
+                    <Binding Path="IsEditing" />
                 </MultiBinding>
             </TextBox.IsVisible>
         </TextBox>

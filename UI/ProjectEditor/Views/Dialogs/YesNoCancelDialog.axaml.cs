@@ -15,7 +15,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
             AvaloniaProperty.Register<YesNoCancelDialog, string>(nameof(Question));
 
         public YesNoCancelDialog() {
-            this.DataContext = this;
             this.CancelCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.Cancel));
             this.NoCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.No));
             this.YesCommand = ReactiveCommand.Create<Unit, Unit>(x => this.Close(x, YesNoCancelResult.Yes));

@@ -6,7 +6,11 @@
                        x:TypeArguments="content:ContentDirectory"
                        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.ContentDirectoryInfoControl">
     <Grid RowDefinitions="Auto, Auto"
-          ColumnDefinitions="Auto, *">
+          ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ContentDirectoryInfoControl]}">
+        <Design.DataContext>
+            <local:ContentDirectoryInfoControl />
+        </Design.DataContext>
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    Classes="ValueEditorLabel"
@@ -15,7 +19,7 @@
         <TextBox Grid.Row="0"
                  Grid.Column="1"
                  IsReadOnly="True"
-                 Text="{Binding $parent[local:ContentDirectoryInfoControl].DirectoryInfo.CreationTime}" />
+                 Text="{Binding DirectoryInfo.CreationTime}" />
 
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
@@ -25,6 +29,6 @@
         <TextBox Grid.Row="1"
                  Grid.Column="1"
                  IsReadOnly="True"
-                 Text="{Binding $parent[local:ContentDirectoryInfoControl].DirectoryInfo.LastWriteTime}" />
+                 Text="{Binding DirectoryInfo.LastWriteTime}" />
     </Grid>
 </controls:ValueControl>

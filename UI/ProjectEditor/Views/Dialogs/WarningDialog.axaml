@@ -11,7 +11,11 @@
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="None">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, *, Auto">
+          RowDefinitions="Auto, *, Auto"
+          DataContext="{Binding $parent[local:WarningDialog]}">
+        <Design.DataContext>
+            <local:WarningDialog />
+        </Design.DataContext>
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *"
               HorizontalAlignment="Left"
@@ -21,21 +25,21 @@
                            Content="{StaticResource WarningIcon}" />
 
             <TextBlock Grid.Column="1"
-                       Text="{Binding $parent[local:WarningDialog].Title}"
+                       Text="{Binding Title}"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"
                        VerticalAlignment="Center" />
         </Grid>
 
         <TextBlock Grid.Row="1"
-                   Text="{Binding $parent[local:WarningDialog].WarningMessage}"
+                   Text="{Binding WarningMessage}"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center" />
 
         <Button Grid.Row="2"
                 Content="OK"
-                Command="{Binding $parent[local:WarningDialog].OkCommand}"
+                Command="{Binding OkCommand}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>

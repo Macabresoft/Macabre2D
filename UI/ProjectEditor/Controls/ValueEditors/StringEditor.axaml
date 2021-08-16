@@ -4,13 +4,18 @@
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:String"
                           x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.StringEditor">
-    <Grid ColumnDefinitions="Auto, *">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:StringEditor]}">
+        <Design.DataContext>
+            <local:StringEditor />
+        </Design.DataContext>
+        
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:StringEditor].Title}" />
+                   Text="{Binding Title}" />
 
         <TextBox Grid.Column="1"
                  LostFocus="ValueEditor_OnLostFocus"
-                 Text="{Binding $parent[local:StringEditor].IntermediaryValue}" />
+                 Text="{Binding IntermediaryValue}" />
     </Grid>
 </local:ValueEditorControl>

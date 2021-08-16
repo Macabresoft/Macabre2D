@@ -10,17 +10,22 @@
         <converters:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
-    <Grid ColumnDefinitions="Auto, *">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:FlagsEnumEditor]}">
+        <Design.DataContext>
+            <local:FlagsEnumEditor />
+        </Design.DataContext>
+        
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:FlagsEnumEditor].Title}" />
+                   Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
-                  Items="{Binding $parent[local:FlagsEnumEditor].EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
+                  Items="{Binding EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
                   SelectedItem="{x:Null}"
                   SelectionChanged="SelectingItemsControl_OnSelectionChanged"
-                  PlaceholderText="{Binding $parent[local:FlagsEnumEditor].Value}"
-                  ToolTip.Tip="{Binding $parent[local:FlagsEnumEditor].Value}">
+                  PlaceholderText="{Binding Value}"
+                  ToolTip.Tip="{Binding Value}">
             <ComboBox.Styles>
                 <Style Selector="ComboBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

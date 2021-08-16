@@ -6,7 +6,11 @@
                        x:TypeArguments="content:ContentFile"
                        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.ContentFileInfoControl">
     <Grid RowDefinitions="Auto, Auto"
-          ColumnDefinitions="Auto, *">
+          ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ContentFileInfoControl]}">
+        <Design.DataContext>
+            <local:ContentFileInfoControl />
+        </Design.DataContext>
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    Classes="ValueEditorLabel"
@@ -15,7 +19,7 @@
         <TextBox Grid.Row="0"
                  Grid.Column="1"
                  IsReadOnly="True"
-                 Text="{Binding $parent[local:ContentFileInfoControl].FileInfo.CreationTime}" />
+                 Text="{Binding FileInfo.CreationTime}" />
 
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
@@ -25,6 +29,6 @@
         <TextBox Grid.Row="1"
                  Grid.Column="1"
                  IsReadOnly="True"
-                 Text="{Binding $parent[local:ContentFileInfoControl].FileInfo.LastWriteTime}" />
+                 Text="{Binding FileInfo.LastWriteTime}" />
     </Grid>
 </controls:ValueControl>

@@ -5,6 +5,9 @@
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
         <Grid DataContext="{Binding $parent[local:ValueCollectionsControl]}">
+            <Design.DataContext>
+                <local:ValueCollectionsControl />
+            </Design.DataContext>
             <ItemsControl Items="{Binding Collections}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

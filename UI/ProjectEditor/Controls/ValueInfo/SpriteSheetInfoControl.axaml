@@ -5,10 +5,12 @@
                        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo"
                        x:TypeArguments="framework:SpriteSheet"
                        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo.SpriteSheetInfoControl">
-    <Design.DataContext>
-        <local:SpriteSheetInfoControl />
-    </Design.DataContext>
-    <Grid RowDefinitions="Auto, Auto">
+    <Grid RowDefinitions="Auto, Auto"
+          DataContext="{Binding $parent[local:SpriteSheetInfoControl]}">
+        <Design.DataContext>
+            <local:SpriteSheetInfoControl />
+        </Design.DataContext>
+        
         <ItemsControl Grid.Row="0"
                       Items="{Binding SpriteCollection.Sprites}"
                       HorizontalAlignment="Stretch">

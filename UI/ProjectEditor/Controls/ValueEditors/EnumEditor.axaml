@@ -9,14 +9,19 @@
         <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
-    <Grid ColumnDefinitions="Auto, *">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:EnumEditor]}">
+        <Design.DataContext>
+            <local:EnumEditor />
+        </Design.DataContext>
+        
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:EnumEditor].Title}" />
+                   Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"
-                  Items="{Binding $parent[local:EnumEditor].EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
-                  SelectedItem="{Binding $parent[local:EnumEditor].Value}">
+                  Items="{Binding EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
+                  SelectedItem="{Binding Value}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Stretch"

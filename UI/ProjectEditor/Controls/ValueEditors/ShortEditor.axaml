@@ -5,14 +5,19 @@
                          x:TypeArguments="system:Int16"
                          x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.ShortEditor"
                          UpdateOnLostFocus="False">
-    <Grid ColumnDefinitions="Auto, *">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ShortEditor]}">
+        <Design.DataContext>
+            <local:ShortEditor />
+        </Design.DataContext>
+        
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:ShortEditor].Title}" />
+                   Text="{Binding Title}" />
 
         <TextBox Grid.Column="1"
                  KeyDown="InputElement_OnKeyDown"
                  LostFocus="ValueDisplay_OnLostFocus"
-                 Text="{Binding $parent[local:ShortEditor].ValueDisplay}" />
+                 Text="{Binding ValueDisplay}" />
     </Grid>
 </local:BaseNumericEditor>

@@ -11,12 +11,16 @@
         <converters:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, Auto, Auto, *"
-          RowDefinitions="Auto, Auto, Auto, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto"
+          DataContext="{Binding $parent[local:ColorEditor]}">
+        <Design.DataContext>
+            <local:ColorEditor />
+        </Design.DataContext>
         
         <TextBlock Grid.Column="0"
                    Grid.Row="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:ColorEditor].Title}" />
+                   Text="{Binding Title}" />
         
         <Border Grid.Column="0"
                 Grid.Row="1"
@@ -27,7 +31,7 @@
                 VerticalAlignment="Top"
                 CornerRadius="{StaticResource ControlCornerRadius}"
                 Margin="{StaticResource StandardMarginAll}"
-                Background="{Binding $parent[local:ColorEditor].Value, Converter={StaticResource ColorConverter}}"
+                Background="{Binding Value, Converter={StaticResource ColorConverter}}"
                 BorderBrush="{StaticResource ComboBoxBorderBrush}"
                 BorderThickness="1"/>
 
@@ -38,11 +42,11 @@
 
         <local:ByteEditor Grid.Column="2"
                           Grid.Row="0"
-                          Value="{Binding $parent[local:ColorEditor].RedValue}" />
+                          Value="{Binding RedValue}" />
         
         <controls:ColorSlider Grid.Column="3"
                               Grid.Row="0"
-                              Value="{Binding $parent[local:ColorEditor].RedValue}" />
+                              Value="{Binding RedValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
@@ -51,11 +55,11 @@
 
         <local:ByteEditor Grid.Column="2"
                           Grid.Row="1"
-                          Value="{Binding $parent[local:ColorEditor].GreenValue}" />
+                          Value="{Binding GreenValue}" />
         
         <controls:ColorSlider Grid.Column="3"
                               Grid.Row="1"
-                              Value="{Binding $parent[local:ColorEditor].GreenValue}" />
+                              Value="{Binding GreenValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="2"
@@ -64,11 +68,11 @@
 
         <local:ByteEditor Grid.Column="2"
                           Grid.Row="2"
-                          Value="{Binding $parent[local:ColorEditor].BlueValue}" />
+                          Value="{Binding BlueValue}" />
         
         <controls:ColorSlider Grid.Column="3"
                               Grid.Row="2"
-                              Value="{Binding $parent[local:ColorEditor].BlueValue}" />
+                              Value="{Binding BlueValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="3"
@@ -77,10 +81,10 @@
 
         <local:ByteEditor Grid.Column="2"
                           Grid.Row="3"
-                          Value="{Binding $parent[local:ColorEditor].AlphaValue}" />
+                          Value="{Binding AlphaValue}" />
         
         <controls:ColorSlider Grid.Column="3"
                               Grid.Row="3"
-                              Value="{Binding $parent[local:ColorEditor].AlphaValue}" />
+                              Value="{Binding AlphaValue}" />
     </Grid>
 </local:ValueEditorControl>

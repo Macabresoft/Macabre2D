@@ -5,10 +5,9 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
                                  x:TypeArguments="framework:SpriteReference"
                                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.SpriteReferenceEditor">
-    <Design.DataContext>
-        <local:SpriteReferenceEditor />
-    </Design.DataContext>
-    <Grid>
-
+    <Grid DataContext="{Binding $parent[local:SpriteReferenceEditor]}">
+        <Design.DataContext>
+            <local:SpriteReferenceEditor />
+        </Design.DataContext>
     </Grid>
 </valueEditors:ValueEditorControl>

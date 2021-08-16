@@ -22,7 +22,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private SpriteDisplayModel _sprite;
 
         public SpriteReferenceEditor() {
-            this.DataContext = this;
             this.InitializeComponent();
         }
 

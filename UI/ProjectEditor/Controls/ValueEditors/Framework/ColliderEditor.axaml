@@ -9,9 +9,12 @@
     <valueEditors:ValueEditorControl.Resources>
         <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </valueEditors:ValueEditorControl.Resources>
-    <Grid>
-        <ComboBox Items="{Binding $parent[local:ColliderEditor].DerivedTypes}"
-                  SelectedItem="{Binding $parent[local:ColliderEditor].SelectedType}">
+    <Grid DataContext="{Binding $parent[local:ColliderEditor]}">
+        <Design.DataContext>
+            <local:ColliderEditor />
+        </Design.DataContext>
+        <ComboBox Items="{Binding DerivedTypes}"
+                  SelectedItem="{Binding SelectedType}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Stretch"

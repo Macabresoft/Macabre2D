@@ -11,7 +11,11 @@
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="None">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, *, Auto">
+          RowDefinitions="Auto, *, Auto"
+          DataContext="{Binding $parent[local:LicenseDialog]}">
+        <Design.DataContext>
+            <local:LicenseDialog />
+        </Design.DataContext>
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *"
               HorizontalAlignment="Left"
@@ -30,7 +34,7 @@
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="{StaticResource DoubleMarginAll}">
-            <ItemsControl Items="{Binding $parent[local:LicenseDialog].Licenses}">
+            <ItemsControl Items="{Binding Licenses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid RowDefinitions="Auto, Auto"
@@ -50,7 +54,7 @@
         
         <Button Grid.Row="2"
                 Content="OK"
-                Command="{Binding $parent[local:LicenseDialog].OkCommand}"
+                Command="{Binding OkCommand}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>

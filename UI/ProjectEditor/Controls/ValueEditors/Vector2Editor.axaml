@@ -5,27 +5,31 @@
                           x:TypeArguments="monoGame:Vector2"
                           x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Vector2Editor"
                           UpdateOnLostFocus="False">
-    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *"
+          DataContext="{Binding $parent[local:Vector2Editor]}">
+        <Design.DataContext>
+            <local:Vector2Editor />
+        </Design.DataContext>
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
-                   Text="{Binding $parent[local:Vector2Editor].Title}" />
+                   Text="{Binding Title}" />
 
         <TextBlock Grid.Column="1"
                    Text="X: "
                    VerticalAlignment="Center" />
 
         <local:FloatEditor Grid.Column="2"
-                           Value="{Binding $parent[local:Vector2Editor].XValue}"
-                           ValueMinimum="{Binding $parent[local:Vector2Editor].XMinimum}"
-                           ValueMaximum="{Binding $parent[local:Vector2Editor].XMaximum}" />
+                           Value="{Binding XValue}"
+                           ValueMinimum="{Binding XMinimum}"
+                           ValueMaximum="{Binding XMaximum}" />
 
         <TextBlock Grid.Column="3"
                    Text="Y: "
                    VerticalAlignment="Center" />
 
         <local:FloatEditor Grid.Column="4"
-                           Value="{Binding $parent[local:Vector2Editor].YValue}"
-                           ValueMinimum="{Binding $parent[local:Vector2Editor].YMinimum}"
-                           ValueMaximum="{Binding $parent[local:Vector2Editor].YMaximum}" />
+                           Value="{Binding YValue}"
+                           ValueMinimum="{Binding YMinimum}"
+                           ValueMaximum="{Binding YMaximum}" />
     </Grid>
 </local:ValueEditorControl>
