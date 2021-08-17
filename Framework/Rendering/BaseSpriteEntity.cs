@@ -10,6 +10,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
     /// </summary>
+    [Category("Render")]
     public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;

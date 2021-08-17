@@ -34,7 +34,15 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// </summary>
         /// <param name="splitContentPath"></param>
         /// <returns>The content node or null.</returns>
-        IContentNode FindNode(string[] splitContentPath);
+        IContentNode TryFindNode(string[] splitContentPath);
+
+        /// <summary>
+        /// Tries to find a content node by its identifier.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <param name="file">The file.</param>
+        /// <returns>A value indicating whether or not the file was found.</returns>
+        bool TryFindNode(Guid contentId, out ContentFile file);
 
         /// <summary>
         /// Gets all content files that are descendants of this directory.
@@ -146,7 +154,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
 
         /// <inheritdoc />
-        public IContentNode FindNode(string[] splitContentPath) {
+        public IContentNode TryFindNode(string[] splitContentPath) {
             IContentNode node = null;
             var parentDepth = splitContentPath.Length - 1;
             var currentDepth = this.GetDepth();
@@ -158,11 +166,25 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             else if (currentDepth < parentDepth) {
                 var parentName = splitContentPath[currentDepth];
                 if (this._children.FirstOrDefault(x => x.Name == parentName) is IContentDirectory child) {
-                    node = child.FindNode(splitContentPath);
+                    node = child.TryFindNode(splitContentPath);
                 }
             }
 
             return node;
+        }
+
+        /// <inheritdoc />
+        public bool TryFindNode(Guid contentId, out ContentFile file) {
+            file = this.Children.FirstOrDefault(x => x.Id == contentId) as ContentFile;
+            if (file == null) {
+                foreach (var child in this.Children.OfType<IContentDirectory>()) {
+                    if (child.TryFindNode(contentId, out file)) {
+                        break;
+                    }
+                }
+            }
+
+            return file != null;
         }
 
         /// <inheritdoc />
@@ -196,7 +218,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
 
         /// <inheritdoc />
         public bool TryFindNode(string[] splitContentPath, out IContentNode node) {
-            node = this.FindNode(splitContentPath);
+            node = this.TryFindNode(splitContentPath);
             return node != null;
         }
 

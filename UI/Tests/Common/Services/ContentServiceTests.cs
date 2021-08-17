@@ -23,9 +23,9 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
             container.RunRefreshContentTest();
 
-            var directory1 = container.Instance.RootContentDirectory.FindNode(new[] { ContentContainer.Folder1 });
+            var directory1 = container.Instance.RootContentDirectory.TryFindNode(new[] { ContentContainer.Folder1 });
             var originalPath = directory1.GetFullPath();
-            var directory2 = container.Instance.RootContentDirectory.FindNode(new[] { ContentContainer.Folder2 }) as IContentDirectory;
+            var directory2 = container.Instance.RootContentDirectory.TryFindNode(new[] { ContentContainer.Folder2 }) as IContentDirectory;
             container.Instance.MoveContent(directory1, directory2);
             var newPath = directory1.GetFullPath();
 
@@ -49,9 +49,9 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
             container.RunRefreshContentTest();
 
-            var contentFile = container.Instance.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
+            var contentFile = container.Instance.RootContentDirectory.TryFindNode(metadata.SplitContentPath.ToArray());
             var originalPath = contentFile.GetFullPath();
-            var secondFolder = container.Instance.RootContentDirectory.FindNode(new[] { ContentContainer.Folder2 }) as IContentDirectory;
+            var secondFolder = container.Instance.RootContentDirectory.TryFindNode(new[] { ContentContainer.Folder2 }) as IContentDirectory;
             container.Instance.MoveContent(contentFile, secondFolder);
             var newPath = contentFile.GetFullPath();
 

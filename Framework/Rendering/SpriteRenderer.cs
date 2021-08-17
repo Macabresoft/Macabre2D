@@ -8,6 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// An entity which will render a single sprite.
     /// </summary>
     [Display(Name = "Sprite Renderer")]
+    [Category("Render")]
     public sealed class SpriteRenderer : BaseSpriteEntity {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderer" /> class.
@@ -22,8 +23,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <summary>
         /// Gets the sprite reference this entity will render.
         /// </summary>
-        [DataMember(Order = 0)]
-        [Display(Name = "Sprite")]
+        [DataMember(Order = 0, Name = "Sprite")]
         public SpriteReference SpriteReference { get; } = new();
 
         /// <inheritdoc />

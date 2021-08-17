@@ -123,7 +123,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             foreach (var metadata in this.ExistingMetadata) {
                 this.AssetManager.Received().RegisterMetadata(metadata);
 
-                var contentFile = this.Instance.RootContentDirectory.FindNode(metadata.SplitContentPath.ToArray());
+                var contentFile = this.Instance.RootContentDirectory.TryFindNode(metadata.SplitContentPath.ToArray());
                 contentFile.Should().NotBeNull();
                 contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
                 contentFile.Name.Should().Be(metadata.GetFileName());
@@ -147,7 +147,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             foreach (var file in this.NewContentFiles) {
                 var splitContentPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
                 splitContentPath[^1] = Path.GetFileNameWithoutExtension(splitContentPath[^1]);
-                var contentFile = this.Instance.RootContentDirectory.FindNode(splitContentPath.ToArray()) as ContentFile;
+                var contentFile = this.Instance.RootContentDirectory.TryFindNode(splitContentPath.ToArray()) as ContentFile;
                 contentFile.Should().NotBeNull();
 
                 if (contentFile != null) {

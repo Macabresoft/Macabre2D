@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using System;
     using System.IO;
     using Avalonia;
+    using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
@@ -13,6 +14,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, SpriteDisplayModel>(
                 nameof(Sprite),
                 editor => editor.Sprite);
+        
+        public static readonly DirectProperty<SpriteReferenceEditor, BaseSpriteEntity> RenderEntityProperty =
+            AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, BaseSpriteEntity>(
+                nameof(RenderEntity),
+                editor => editor.RenderEntity);
 
         private readonly IAssetManager _assetManager = Resolver.Resolve<IAssetManager>();
         private readonly IDialogService _dialogService = Resolver.Resolve<IDialogService>();
@@ -24,6 +30,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         public SpriteReferenceEditor() {
             this.InitializeComponent();
         }
+        
+        public BaseSpriteEntity RenderEntity => this.Owner as BaseSpriteEntity;
 
         public SpriteDisplayModel Sprite {
             get => this._sprite;
@@ -32,13 +40,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
 
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             base.Initialize(value, valueType, valuePropertyName, title, owner);
+            this.RaisePropertyChanged(RenderEntityProperty, null, new BindingValue<BaseSpriteEntity>(this.RenderEntity));
             this.ResetBitmap();
         }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }
-
 
         private void ResetBitmap() {
             if (this.Value != null && this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) && metadata != null) {

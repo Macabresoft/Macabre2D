@@ -314,7 +314,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     parentDirectory = this._rootContentDirectory;
                 }
                 else {
-                    parentDirectory = this._rootContentDirectory.FindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
+                    parentDirectory = this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
                 }
 
                 if (parentDirectory != null) {
