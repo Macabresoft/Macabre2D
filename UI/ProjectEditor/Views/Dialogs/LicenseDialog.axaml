@@ -37,7 +37,7 @@
             <ItemsControl Items="{Binding Licenses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid RowDefinitions="Auto, Auto"
+                        <Grid RowDefinitions="Auto, Auto, Auto"
                               Margin="{StaticResource DoubleMarginVertical}">
                             <TextBlock Grid.Row="0"
                                        Classes="Header"
@@ -45,6 +45,8 @@
                                        Margin="{StaticResource DoubleMarginBottom}"/>
                             <TextBlock Grid.Row="1"
                                        Text="{Binding License}"
+                                       Margin="{StaticResource DoubleMarginVertical}"/>
+                            <Separator Grid.Row="2"
                                        Margin="{StaticResource DoubleMarginVertical}"/>
                         </Grid>
                     </DataTemplate>

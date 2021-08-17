@@ -11,7 +11,8 @@
         public static IReadOnlyCollection<LicenseDefinition> Definitions { get; } = new LicenseDefinition[] {
             new("Macabre2D", Licenses.Macabre2D),
             new("MonoGame", Licenses.MonoGame),
-            new("Mono.Xna", Licenses.Mono_Xna)
+            new("Mono.Xna", Licenses.Mono_Xna),
+            new("Fluent UI System Icons (Microsoft)", Licenses.Fluent_UI_System_Icons)
         };
     }
 }
