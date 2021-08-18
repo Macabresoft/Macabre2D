@@ -7,4 +7,15 @@
 		<Setter Property="Margin" Value="{StaticResource DoubleMarginAll}" />
 		<Setter Property="Padding" Value="{StaticResource DoubleMarginAll}" />
 	</Style>
+	
+	<Style Selector="Border.Preview">
+		<Setter Property="Width" Value="64" />
+		<Setter Property="Height" Value="64" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
+		<Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+		<Setter Property="BorderBrush" Value="{StaticResource ComboBoxBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
 </Styles>

@@ -24,16 +24,15 @@
         
         <Border Grid.Column="0"
                 Grid.Row="1"
-                Height="64"
-                Width="64"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                CornerRadius="{StaticResource ControlCornerRadius}"
-                Margin="{StaticResource StandardMarginAll}"
-                Background="{Binding RenderEntity.Color, Converter={StaticResource ColorConverter}}"
-                BorderBrush="{StaticResource ComboBoxBorderBrush}"
-                BorderThickness="1">
-            <Image Source="{Binding Sprite.Bitmap}" />
+                Classes="Preview"
+                Background="{Binding RenderEntity.Color, Converter={StaticResource ColorConverter}}">
+            <Image Source="{Binding Sprite.Bitmap}">
+                <ToolTip.Tip>
+                    <Image Source="{Binding Sprite.Bitmap}"
+                           MaxWidth="512"
+                           MaxHeight="512" />
+                </ToolTip.Tip>
+            </Image>
         </Border>
         
         <TextBlock Grid.Row="2"

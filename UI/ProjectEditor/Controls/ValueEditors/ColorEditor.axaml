@@ -25,15 +25,8 @@
         <Border Grid.Column="0"
                 Grid.Row="1"
                 Grid.RowSpan="3"
-                Height="64"
-                Width="64"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                CornerRadius="{StaticResource ControlCornerRadius}"
-                Margin="{StaticResource StandardMarginAll}"
-                Background="{Binding Value, Converter={StaticResource ColorConverter}}"
-                BorderBrush="{StaticResource ComboBoxBorderBrush}"
-                BorderThickness="1"/>
+                Classes="Preview"
+                Background="{Binding Value, Converter={StaticResource ColorConverter}}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="0"
