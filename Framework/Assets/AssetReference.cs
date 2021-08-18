@@ -9,16 +9,37 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]
     public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class, IAsset {
+        private Guid _contentId;
+        private TAsset? _asset;
+
         /// <summary>
         /// Gets the asset.
         /// </summary>
-        public TAsset? Asset { get; private set; }
+        public TAsset? Asset {
+            get => this._asset;
+            private set => this.Set(ref this._asset, value);
+        }
 
         /// <summary>
         /// Gets or sets the asset identifier.
         /// </summary>
         [DataMember]
-        public Guid ContentId { get; private set; }
+        public Guid ContentId {
+            get => this._contentId;
+            private set => this.Set(ref this._contentId, value);
+        }
+
+        /// <summary>
+        /// Clears the asset reference.
+        /// </summary>
+        public virtual void Clear() {
+            if (this.Asset != null) {
+                this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
+            }
+
+            this.Asset = null;
+            this.ContentId = Guid.Empty;
+        }
 
         /// <summary>
         /// Initializes this instance with an asset.

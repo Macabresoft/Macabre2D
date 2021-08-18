@@ -2,6 +2,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Reactive.Linq;
+    using System.Windows.Input;
     using Avalonia;
     using Avalonia.Data;
     using Avalonia.Markup.Xaml;
@@ -9,8 +11,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
 
     public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
+        public static readonly DirectProperty<SpriteReferenceEditor, ICommand> ClearSpriteCommandProperty =
+            AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, ICommand>(
+                nameof(ClearSpriteCommand),
+                editor => editor.ClearSpriteCommand);
+
         public static readonly DirectProperty<SpriteReferenceEditor, string> ContentPathProperty =
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, string>(
                 nameof(ContentPath),
@@ -21,6 +29,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 nameof(RenderEntity),
                 editor => editor.RenderEntity);
 
+        public static readonly DirectProperty<SpriteReferenceEditor, ICommand> SelectSpriteCommandProperty =
+            AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, ICommand>(
+                nameof(SelectSpriteCommand),
+                editor => editor.SelectSpriteCommand);
+
         public static readonly DirectProperty<SpriteReferenceEditor, SpriteDisplayModel> SpriteProperty =
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, SpriteDisplayModel>(
                 nameof(Sprite),
@@ -30,15 +43,25 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private readonly IDialogService _dialogService = Resolver.Resolve<IDialogService>();
         private readonly IFileSystemService _fileSystem = Resolver.Resolve<IFileSystemService>();
         private readonly IPathService _pathService = Resolver.Resolve<IPathService>();
+        private readonly IUndoService _undoService = Resolver.Resolve<IUndoService>();
 
+        private ICommand _clearSpriteCommand;
         private string _contentPath;
         private SpriteDisplayModel _sprite;
 
         public SpriteReferenceEditor() {
+            this.SelectSpriteCommand = ReactiveCommand.Create(this.SelectSprite);
             this.InitializeComponent();
         }
 
+        public ICommand ClearSpriteCommand {
+            get => this._clearSpriteCommand;
+            private set => this.SetAndRaise(ClearSpriteCommandProperty, ref this._clearSpriteCommand, value);
+        }
+
         public BaseSpriteEntity RenderEntity => this.Owner as BaseSpriteEntity;
+
+        public ICommand SelectSpriteCommand { get; }
 
         public string ContentPath {
             get => this._contentPath;
@@ -49,7 +72,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             get => this._sprite;
             private set => this.SetAndRaise(SpriteProperty, ref this._sprite, value);
         }
-
+        
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             base.Initialize(value, valueType, valuePropertyName, title, owner);
             this.RaisePropertyChanged(RenderEntityProperty, null, new BindingValue<BaseSpriteEntity>(this.RenderEntity));
@@ -59,6 +82,10 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             base.OnValueChanged();
 
             if (this.Value != null) {
+                this.ClearSpriteCommand = ReactiveCommand.Create(
+                    this.ClearSprite,
+                    this.Value.WhenAny(x => x.ContentId, y => y.Value != Guid.Empty));
+                
                 this.ResetBitmap();
                 this.Value.PropertyChanged += this.Value_PropertyChanged;
             }
@@ -72,12 +99,31 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             }
         }
 
+        private void ClearSprite() {
+            var asset = this.Value.Asset;
+            var spriteIndex = this.Value.SpriteIndex;
+
+            if (asset != null) {
+                this._undoService.Do(() => { this.Value.Clear(); }, () => {
+                    this.Value.SpriteIndex = spriteIndex;
+                    this.Value.Initialize(asset);
+                });
+            }
+        }
+
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }
 
         private void ResetBitmap() {
-            if (this.Value != null && this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) && metadata != null) {
+            this.Sprite?.Dispose();
+            this.ContentPath = null;
+            this.Sprite = null;
+            
+            if (this.Value != null &&
+                this.Value.ContentId != Guid.Empty &&
+                this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
+                metadata != null) {
                 this.ContentPath = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
                 var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, this.ContentPath);
                 if (this._fileSystem.DoesFileExist(fullPath)) {
@@ -87,9 +133,10 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                     }
                 }
             }
-            else {
-                this.Sprite = null;
-            }
+        }
+
+        private void SelectSprite() {
+            // TODO: show a dialog to select a sprite and then do basically what the clear command does
         }
 
         private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {

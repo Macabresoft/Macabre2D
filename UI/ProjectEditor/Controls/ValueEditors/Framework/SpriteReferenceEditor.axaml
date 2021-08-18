@@ -51,6 +51,7 @@
                 Grid.Row="1"
                 VerticalAlignment="Top"
                 Classes="Icon"
+                Command="{Binding SelectSpriteCommand}"
                 ToolTip.Tip="Search for a sprite">
             <controls:Icon Content="{StaticResource ImageSearchIcon}" />
         </Button>
@@ -58,6 +59,7 @@
                 Grid.Row="1"
                 VerticalAlignment="Top"
                 Classes="Icon"
+                Command="{Binding ClearSpriteCommand}"
                 ToolTip.Tip="Clear the sprite">
             <controls:Icon Content="{StaticResource TrashIcon}" />
         </Button>
