@@ -2,7 +2,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Reactive.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Data;
@@ -50,18 +50,18 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private SpriteDisplayModel _sprite;
 
         public SpriteReferenceEditor() {
-            this.SelectSpriteCommand = ReactiveCommand.Create(this.SelectSprite);
+            this.SelectSpriteCommand = ReactiveCommand.CreateFromTask(this.SelectSprite);
             this.InitializeComponent();
-        }
-
-        public ICommand ClearSpriteCommand {
-            get => this._clearSpriteCommand;
-            private set => this.SetAndRaise(ClearSpriteCommandProperty, ref this._clearSpriteCommand, value);
         }
 
         public BaseSpriteEntity RenderEntity => this.Owner as BaseSpriteEntity;
 
         public ICommand SelectSpriteCommand { get; }
+
+        public ICommand ClearSpriteCommand {
+            get => this._clearSpriteCommand;
+            private set => this.SetAndRaise(ClearSpriteCommandProperty, ref this._clearSpriteCommand, value);
+        }
 
         public string ContentPath {
             get => this._contentPath;
@@ -72,7 +72,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             get => this._sprite;
             private set => this.SetAndRaise(SpriteProperty, ref this._sprite, value);
         }
-        
+
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             base.Initialize(value, valueType, valuePropertyName, title, owner);
             this.RaisePropertyChanged(RenderEntityProperty, null, new BindingValue<BaseSpriteEntity>(this.RenderEntity));
@@ -85,7 +85,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 this.ClearSpriteCommand = ReactiveCommand.Create(
                     this.ClearSprite,
                     this.Value.WhenAny(x => x.ContentId, y => y.Value != Guid.Empty));
-                
+
                 this.ResetBitmap();
                 this.Value.PropertyChanged += this.Value_PropertyChanged;
             }
@@ -104,10 +104,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             var spriteIndex = this.Value.SpriteIndex;
 
             if (asset != null) {
-                this._undoService.Do(() => { this.Value.Clear(); }, () => {
-                    this.Value.SpriteIndex = spriteIndex;
-                    this.Value.Initialize(asset);
-                });
+                this._undoService.Do(
+                    () => this.Value.Clear(),
+                    () => {
+                        this.Value.SpriteIndex = spriteIndex;
+                        this.Value.Initialize(asset);
+                    });
             }
         }
 
@@ -119,7 +121,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             this.Sprite?.Dispose();
             this.ContentPath = null;
             this.Sprite = null;
-            
+
             if (this.Value != null &&
                 this.Value.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
@@ -135,8 +137,26 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             }
         }
 
-        private void SelectSprite() {
-            // TODO: show a dialog to select a sprite and then do basically what the clear command does
+        private async Task SelectSprite() {
+            var (spriteSheet, spriteIndex) = await this._dialogService.OpenSpriteSelectionDialog();
+            if (spriteSheet != null) {
+                var originalAsset = this.Value.Asset;
+                var originalIndex = this.Value.SpriteIndex;
+                this._undoService.Do(
+                    () => {
+                        this.Value.SpriteIndex = spriteIndex;
+                        this.Value.Initialize(spriteSheet);
+                    },
+                    () => {
+                        if (originalAsset != null) {
+                            this.Value.SpriteIndex = originalIndex;
+                            this.Value.Initialize(originalAsset);
+                        }
+                        else {
+                            this.Value.Clear();
+                        }
+                    });
+            }
         }
 
         private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {

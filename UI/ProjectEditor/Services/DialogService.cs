@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
@@ -40,6 +41,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         public async Task OpenLicenseDialog() {
             var window = Resolver.Resolve<LicenseDialog>();
             await window.ShowDialog(this._mainWindow);
+        }
+
+        /// <inheritdoc />
+        public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
+            // TODO: actually open a dialog here.
+            await Task.CompletedTask;
+            return (null, 0);
         }
 
         /// <inheritdoc />

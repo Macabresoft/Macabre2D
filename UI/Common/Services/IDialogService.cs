@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
@@ -26,6 +27,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// </summary>
         /// <returns>A task.</returns>
         Task OpenLicenseDialog();
+
+        /// <summary>
+        /// Opens a dialog that allows the user to pick a sprite.
+        /// </summary>
+        /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
+        Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a <see cref="Type" />.
