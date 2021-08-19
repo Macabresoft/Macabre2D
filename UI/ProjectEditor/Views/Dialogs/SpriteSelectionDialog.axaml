@@ -1,0 +1,83 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
+        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.SpriteSelectionDialog"
+        Height="768"
+        Width="1024"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Title="Make a Selection">
+    <Design.DataContext>
+        <viewModels:SpriteSelectionViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="*, Auto"
+          ColumnDefinitions="0.4*, 0.6*"
+          Margin="{StaticResource DoubleMarginAll}">
+        
+        <controls:FilteredContentTree Grid.Row="0"
+                                      Grid.Column="0"
+                                      Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                      SelectedItem="{Binding SelectedContentNode}"
+                                      Margin="{StaticResource StandardMarginAll}" />
+
+        <ScrollViewer Grid.Row="0"
+                      Grid.Column="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible">
+            <Grid>
+                <ItemsControl Items="{Binding SpriteSheets}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:GroupBox Header="{Binding Name}"
+                                               Margin="{StaticResource DoubleMarginBottom}">
+                                <ListBox Items="{Binding Sprites}"
+                                         SelectedItem="{Binding $parent[local:SpriteSelectionDialog].ViewModel.SelectedSprite}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Classes="Preview"
+                                                    Padding="{StaticResource StandardMarginAll}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch">
+                                                <Image Source="{Binding Bitmap}"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </controls:GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            
+                <ProgressBar IsIndeterminate="True"
+                             IsVisible="{Binding IsBusy}"/>
+            </Grid>
+        </ScrollViewer>
+        
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

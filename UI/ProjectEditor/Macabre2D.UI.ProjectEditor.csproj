@@ -100,5 +100,9 @@
       <DependentUpon>FilteredContentTree.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\SpriteSelectionDialog.axaml.cs">
+      <DependentUpon>SpriteSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

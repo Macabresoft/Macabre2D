@@ -8,6 +8,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs;
+    using Unity;
     using Unity.Resolution;
 
     /// <summary>
@@ -45,8 +46,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
 
         /// <inheritdoc />
         public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
-            // TODO: actually open a dialog here.
-            await Task.CompletedTask;
+            using var window = Resolver.Resolve<SpriteSelectionDialog>();
+            if (await window.ShowDialog<bool>(this._mainWindow) && window.ViewModel.SelectedSprite is SpriteDisplayModel sprite) {
+                return (sprite.SpriteSheet, sprite.Index);
+            }
+
             return (null, 0);
         }
 

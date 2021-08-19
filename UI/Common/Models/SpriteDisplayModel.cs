@@ -17,11 +17,12 @@
         /// <param name="spriteSheet">The sprite sheet.</param>
         public SpriteDisplayModel(Bitmap bitmap, byte index, SpriteSheet spriteSheet) {
             this.Index = index;
+            this.SpriteSheet = spriteSheet;
 
             var sizeAndLocation = SpriteSheet.GetSpriteSizeAndLocation(
                 new Point(bitmap.PixelSize.Width, bitmap.PixelSize.Height),
-                spriteSheet.Columns,
-                spriteSheet.Rows,
+                this.SpriteSheet.Columns,
+                this.SpriteSheet.Rows,
                 index);
 
             var rect = new PixelRect(
@@ -40,6 +41,11 @@
         /// Gets the index of the sprite on its sprite sheet.
         /// </summary>
         public byte Index { get; }
+        
+        /// <summary>
+        /// Gets the sprite sheet.
+        /// </summary>
+        public SpriteSheet SpriteSheet { get; }
 
         /// <inheritdoc />
         public void Dispose() {
