@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
-    using System;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
@@ -8,14 +7,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
 
     public class FilteredContentTree : UserControl {
         public static readonly StyledProperty<FilteredContentWrapper> RootProperty =
-            AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(nameof(Root),
-                notifying: Notifying);
-
-        private static void Notifying(IAvaloniaObject arg1, bool arg2) {
-            if (arg1 is FilteredContentTree tree) {
-                Console.WriteLine();
-            }
-        }
+            AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(nameof(Root));
 
         public static readonly StyledProperty<FilteredContentWrapper> SelectedItemProperty =
             AvaloniaProperty.Register<FilteredContentTree, FilteredContentWrapper>(

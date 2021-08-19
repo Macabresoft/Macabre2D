@@ -115,6 +115,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
             }
 
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            base.LoadContent();
         }
 
         private IScene CreateScene() {

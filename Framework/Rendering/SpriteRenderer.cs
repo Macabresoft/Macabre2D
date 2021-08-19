@@ -38,7 +38,11 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.SpriteSheet.SpriteSize)) {
+            if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+                this.Reset();
+            }
+            else if (e.PropertyName == nameof(SpriteSheet.ContentId)) {
+                this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
                 this.Reset();
             }
         }
