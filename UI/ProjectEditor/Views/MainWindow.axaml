@@ -184,12 +184,12 @@
 
         <StackPanel Grid.Row="1"
                     Grid.Column="2"
-                    Margin="{StaticResource DoubleMarginHorizontal}"
+                    Margin="{StaticResource DoubleMarginAll}"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top">
             <Border Classes="Card"
-                    Margin="{StaticResource DoubleMarginTop}">
+                    Margin="{StaticResource DoubleMarginAll}">
                 <StackPanel Orientation="Horizontal">
                     <Button Command="{Binding EditorService.RequestCenterCameraCommand}"
                             Classes="Icon"
@@ -205,7 +205,7 @@
             </Border>
 
             <Border Classes="Card"
-                    Margin="{StaticResource DoubleMarginTop}">
+                    Margin="{StaticResource DoubleMarginAll}">
                 <StackPanel Orientation="Horizontal">
                     <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                                   CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
