@@ -5,7 +5,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
-    public class SpriteSelectionDialog : Window, IDisposable {
+    public class SpriteSelectionDialog : Window {
         public SpriteSelectionDialog() {
         }
 
@@ -17,10 +17,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
         }
 
         public SpriteSelectionViewModel ViewModel => this.DataContext as SpriteSelectionViewModel;
-
-        public void Dispose() {
-            this.ViewModel.Dispose();
-        }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

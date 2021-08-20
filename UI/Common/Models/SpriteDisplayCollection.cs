@@ -5,6 +5,7 @@
     using System.ComponentModel;
     using System.IO;
     using Avalonia;
+    using Avalonia.Media;
     using Avalonia.Media.Imaging;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
@@ -14,7 +15,7 @@
     /// A collection of <see cref="SpriteDisplayModel" />.
     /// </summary>
     public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollection<SpriteDisplayModel>, IDisposable {
-        private readonly Bitmap _bitmap;
+        private readonly IImage _bitmap;
         private readonly ContentFile _file;
 
         private readonly ObservableCollectionExtended<SpriteDisplayModel> _sprites = new();
@@ -55,7 +56,7 @@
         /// <summary>
         /// Gets the size of the sprite sheet.
         /// </summary>
-        public PixelSize Size => this._bitmap.PixelSize;
+        public Size Size => this._bitmap.Size;
 
         /// <inheritdoc />
         public IEnumerator<SpriteDisplayModel> GetEnumerator() {
@@ -65,15 +66,10 @@
         /// <inheritdoc />
         protected override void OnDisposing() {
             base.OnDisposing();
-
-            foreach (var sprite in this._sprites) {
-                sprite.Dispose();
-            }
             
             this._sprites.Clear();
             this._spriteSheet.PropertyChanged -= this.SpriteSheet_PropertyChanged;
             this._file.PropertyChanged -= this.File_PropertyChanged;
-            this._bitmap?.Dispose();
         }
 
         private void File_PropertyChanged(object sender, PropertyChangedEventArgs e) {

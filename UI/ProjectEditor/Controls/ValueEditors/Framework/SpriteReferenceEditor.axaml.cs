@@ -118,7 +118,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private void ResetBitmap() {
-            this.Sprite?.Dispose();
             this.ContentPath = null;
             this.Sprite = null;
 

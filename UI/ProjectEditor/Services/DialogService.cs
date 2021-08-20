@@ -46,7 +46,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
 
         /// <inheritdoc />
         public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
-            using var window = Resolver.Resolve<SpriteSelectionDialog>();
+            var window = Resolver.Resolve<SpriteSelectionDialog>();
             if (await window.ShowDialog<bool>(this._mainWindow) && window.ViewModel.SelectedSprite is SpriteDisplayModel sprite) {
                 return (sprite.SpriteSheet, sprite.Index);
             }

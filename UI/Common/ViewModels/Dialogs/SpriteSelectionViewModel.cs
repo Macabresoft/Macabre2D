@@ -13,7 +13,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     /// <summary>
     /// A view model for the asset selection dialog.
     /// </summary>
-    public sealed class SpriteSelectionViewModel : BaseDialogViewModel, IDisposable {
+    public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
         private readonly ObservableCollectionExtended<SpriteDisplayCollection> _spriteSheets = new();
         private FilteredContentWrapper _selectedContentNode;
         private SpriteDisplayModel _selectedSprite;
@@ -72,11 +72,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
                 this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
                 this.IsOkEnabled = this.SelectedSprite != null;
             }
-        }
-
-        /// <inheritdoc />
-        public void Dispose() {
-            this._selectedSprite?.Dispose();
         }
 
         private void ResetSpriteSheets() {
