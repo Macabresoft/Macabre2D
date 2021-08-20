@@ -109,6 +109,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         protected override void LoadContent() {
+            base.LoadContent();
             this.Assets.Initialize(this.Content, new Serializer());
         }
 

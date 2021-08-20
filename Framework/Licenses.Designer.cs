@@ -61,6 +61,25 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) .NET Foundation and Contributors
+        ///All Rights Reserved
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to the  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AvaloniaUI {
+            get {
+                return ResourceManager.GetString("AvaloniaUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MIT License
         ///
         ///Copyright (c) 2020 Microsoft Corporation
@@ -81,6 +100,30 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apache License
+        ///Version 2.0, January 2004
+        ///http://www.apache.org/licenses/
+        ///
+        ///TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        ///
+        ///1. Definitions.
+        ///
+        ///&quot;License&quot; shall mean the terms and conditions for use, reproduction, and
+        ///distribution as defined by Sections 1 through 9 of this document.
+        ///
+        ///&quot;Licensor&quot; shall mean the copyright owner or entity authorized by the copyright
+        ///owner that is granting the License.
+        ///
+        ///&quot;Legal Entity&quot; shall mean the union of the acting entity and all other entities
+        ///that co [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FluentAssertions {
+            get {
+                return ResourceManager.GetString("FluentAssertions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MIT License (MIT)
         ///
         ///Copyright (c) 2016 Macabresoft, Brett Story
@@ -96,6 +139,62 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static string Macabre2D {
             get {
                 return ResourceManager.GetString("Macabre2D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MIT License
+        ///
+        ///Copyright (c) 2020 Macabresoft
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to the following conditions:
+        ///
+        ///The above copyright no [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Macabresoft_Core {
+            get {
+                return ResourceManager.GetString("Macabresoft.Core", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MICROSOFT SOFTWARE LICENSE TERMS
+        ///
+        ///MICROSOFT .NET LIBRARY
+        ///
+        ///These license terms are an agreement between you and Microsoft Corporation (or based on where you live, one of its affiliates). They apply to the software named above. The terms also apply to any Microsoft services or updates for the software, except to the extent those have different terms.
+        ///
+        ///IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+        ///
+        ///1.    INSTALLATION AND USE RIGHTS.
+        ///You may install and use any number of copies of  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Microsoft_NET_Test_Sdk {
+            get {
+                return ResourceManager.GetString("Microsoft.NET.Test.Sdk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2008 - 2015 Jb Evain
+        ///Copyright (c) 2008 - 2011 Novell, Inc.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining
+        ///a copy of this software and associated documentation files (the
+        ///&quot;Software&quot;), to deal in the Software without restriction, including
+        ///without limitation the rights to use, copy, modify, merge, publish,
+        ///distribute, sublicense, and/or sell copies of the Software, and to
+        ///permit persons to whom the Software is furnished to do so, subject to
+        ///the following conditi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Mono_Cecil {
+            get {
+                return ResourceManager.GetString("Mono.Cecil", resourceCulture);
             }
         }
         
@@ -138,6 +237,91 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static string MonoGame {
             get {
                 return ResourceManager.GetString("MonoGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) 2007 James Newton-King
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+        ///
+        ///The above c [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Newtonsoft_Json {
+            get {
+                return ResourceManager.GetString("Newtonsoft.Json", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2009 Anthony Egerton (nsubstitute@delfish.com) and David Tchepak (dave@davesquared.net)
+        ///All rights reserved.
+        /// 
+        ///Redistribution and use in source and binary forms, with or without modification,
+        ///are permitted provided that the following conditions are met:
+        /// 
+        ///    * Redistributions of source code must retain the above copyright notice,
+        ///    this list of conditions and the following disclaimer.
+        ///    * Redistributions in binary form must reproduce the above copyright notice,
+        ///    this list of c [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string NSubstitute {
+            get {
+                return ResourceManager.GetString("NSubstitute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2021 Charlie Poole, Rob Prouse
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to the following conditions:
+        ///
+        ///The above copyright not [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string NUnit {
+            get {
+                return ResourceManager.GetString("NUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MIT License
+        ///
+        ///Copyright (c) 2011-2021 Charlie Poole, 2014-2021 Terje Sandstrom
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditio [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string NUnit3TestAdapter {
+            get {
+                return ResourceManager.GetString("NUnit3TestAdapter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to                                  Apache License
+        ///                           Version 2.0, January 2004
+        ///                        http://www.apache.org/licenses/
+        ///
+        ///   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        ///
+        ///   1. Definitions.
+        ///
+        ///      &quot;License&quot; shall mean the terms and conditions for use, reproduction,
+        ///      and distribution as defined by Sections 1 through 9 of this document.
+        ///
+        ///      &quot;Licensor&quot; shall mean the copyright owner or entity authorized by
+        ///      the copyright owner that is [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Unity {
+            get {
+                return ResourceManager.GetString("Unity", resourceCulture);
             }
         }
     }

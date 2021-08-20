@@ -3,8 +3,8 @@
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.LicenseDialog"
-        Height="600"
-        SizeToContent="Width"
+        Height="1024"
+        Width="768"
         CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -44,6 +44,7 @@
                                        Text="{Binding Product}"
                                        Margin="{StaticResource DoubleMarginBottom}"/>
                             <TextBlock Grid.Row="1"
+                                       TextWrapping="Wrap"
                                        Text="{Binding License}"
                                        Margin="{StaticResource DoubleMarginVertical}"/>
                             <Separator Grid.Row="2"

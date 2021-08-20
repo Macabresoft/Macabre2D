@@ -69,7 +69,8 @@
             foreach (var sprite in this._sprites) {
                 sprite.Dispose();
             }
-
+            
+            this._sprites.Clear();
             this._spriteSheet.PropertyChanged -= this.SpriteSheet_PropertyChanged;
             this._file.PropertyChanged -= this.File_PropertyChanged;
             this._bitmap?.Dispose();
