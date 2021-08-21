@@ -180,7 +180,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex)) {
+            if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex) or nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns)) {
                 this.ResetBitmap();
             }
         }
