@@ -45,9 +45,9 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
+        [DataMember]
         public int RenderOrder {
             get => this._renderOrder;
-
             set => this.Set(ref this._renderOrder, value);
         }
 

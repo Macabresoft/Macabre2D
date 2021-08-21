@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
+    using System.Text.RegularExpressions;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.UI.Common.Mappers;
     using Macabresoft.Macabre2D.UI.Common.Models;
@@ -132,10 +133,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     }
                 }
             }
-            else if ((!memberType.IsValueType && 
-                     memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) ||
-                     (value?.GetType() is Type { IsValueType: false } actualType &&
-                      actualType.GetCustomAttribute(typeof(DataContractAttribute), true) != null)) {
+            else if (!memberType.IsValueType &&
+                     memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null ||
+                     value?.GetType() is Type { IsValueType: false } actualType &&
+                     actualType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) {
                 var editors = this.CreateControls(propertyPath, value, originalObject);
                 result.AddRange(editors);
             }
@@ -151,7 +152,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
             if (Activator.CreateInstance(editorType) is IValueEditor editor) {
-                var title = !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : member.MemberInfo.Name;
+                var title = GetTitle(member);
                 editor.Initialize(value, memberType, propertyPath, title, originalObject);
                 editor.Category = DefaultCategoryName;
 
@@ -171,6 +172,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             }
 
             return null;
+        }
+
+        private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) {
+            return !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
         }
 
         private bool TryCreateValueInfo(object originalOwner, object value, out IValueControl info) {
