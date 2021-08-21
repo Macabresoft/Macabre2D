@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework {
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -15,6 +16,17 @@ namespace Macabresoft.Macabre2D.Framework {
         public byte SpriteIndex {
             get => this._spriteIndex;
             set => this.Set(ref this._spriteIndex, value);
+        }
+
+        /// <inheritdoc />
+        protected override void OnAssetPropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            base.OnAssetPropertyChanged(sender, e);
+
+            if (e.PropertyName is nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns) && sender is SpriteSheet spriteSheet) {
+                if (this.SpriteIndex > spriteSheet.Rows * spriteSheet.Columns) {
+                    this.SpriteIndex = 0;
+                }
+            }
         }
 
         /// <inheritdoc />

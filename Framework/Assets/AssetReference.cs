@@ -9,8 +9,8 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
     [DataContract]
     public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class, IAsset {
-        private Guid _contentId;
         private TAsset? _asset;
+        private Guid _contentId;
 
         /// <summary>
         /// Gets the asset.
@@ -55,6 +55,15 @@ namespace Macabresoft.Macabre2D.Framework {
             this.ContentId = this.Asset.ContentId;
         }
 
+        /// <summary>
+        /// Called when an asset property changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
+        protected virtual void OnAssetPropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            this.RaisePropertyChanged(sender ?? this, e);
+        }
+
         /// <inheritdoc />
         protected override void OnDisposing() {
             base.OnDisposing();
@@ -65,7 +74,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         private void Asset_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            this.RaisePropertyChanged(sender ?? this, e);
+            this.OnAssetPropertyChanged(sender, e);
         }
     }
 }
