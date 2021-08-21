@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style Selector="Border.Card">
 		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
 		<Setter Property="BoxShadow" Value="{StaticResource DefaultBoxShadow}" />
@@ -9,8 +9,8 @@
 	</Style>
 	
 	<Style Selector="Border.Preview">
-		<Setter Property="Width" Value="64" />
-		<Setter Property="Height" Value="64" />
+		<Setter Property="MaxWidth" Value="64" />
+		<Setter Property="MaxHeight" Value="64" />
 		<Setter Property="HorizontalAlignment" Value="Left" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
