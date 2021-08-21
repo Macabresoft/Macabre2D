@@ -10,6 +10,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using Macabresoft.Macabre2D.UI.Common.Mappers;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
+    using Unity;
 
     /// <summary>
     /// An interface for a service which produces value editor controls given an object that contains a
@@ -48,14 +49,17 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private const string DefaultCategoryNameForInfo = "Info";
         private readonly IAssemblyService _assemblyService;
         private readonly IValueEditorTypeMapper _typeMapper;
+        private readonly IUnityContainer _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueControlService" /> class.
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
+        /// <param name="container">The unity container.</param>
         /// <param name="typeMapper">The value editor type mapper.</param>
-        public ValueControlService(IAssemblyService assemblyService, IValueEditorTypeMapper typeMapper) {
+        public ValueControlService(IAssemblyService assemblyService, IUnityContainer container, IValueEditorTypeMapper typeMapper) {
             this._assemblyService = assemblyService;
+            this._container = container;
             this._typeMapper = typeMapper;
         }
 
@@ -151,7 +155,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             Type memberType,
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
-            if (Activator.CreateInstance(editorType) is IValueEditor editor) {
+            if (this._container.Resolve(editorType) is IValueEditor editor) {
                 var title = GetTitle(member);
                 editor.Initialize(value, memberType, propertyPath, title, originalObject);
                 editor.Category = DefaultCategoryName;
@@ -184,7 +188,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             if (value?.GetType() is Type ownerType) {
                 var controlType = this._assemblyService.LoadFirstType(typeof(IValueInfo<>).MakeGenericType(ownerType));
 
-                if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && Activator.CreateInstance(controlType) is IValueControl control) {
+                if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && this._container.Resolve(controlType) is IValueControl control) {
                     info = control;
                     control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalOwner);
 

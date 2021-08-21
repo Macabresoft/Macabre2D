@@ -9,6 +9,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using Unity;
 
     public class ColliderEditor : ValueEditorControl<Collider> {
         public static readonly DirectProperty<ColliderEditor, IReadOnlyCollection<Type>> DerivedTypesProperty =
@@ -22,16 +23,21 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 editor => editor.SelectedType,
                 (editor, value) => editor.SelectedType = value);
 
-        private readonly IAssemblyService _assemblyService = Resolver.Resolve<IAssemblyService>();
-
+        private readonly IAssemblyService _assemblyService;
         private readonly HashSet<IValueControl> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
-        private readonly IValueControlService _valueControlService = Resolver.Resolve<IValueControlService>();
+        private readonly IValueControlService _valueControlService;
 
         private ValueControlCollection _controlCollection;
         private Type _selectedType;
 
-        public ColliderEditor() {
+        public ColliderEditor() : this(Resolver.Resolve<IAssemblyService>(), Resolver.Resolve<IValueControlService>()) {
+        }
+
+        [InjectionConstructor]
+        public ColliderEditor(IAssemblyService assemblyService, IValueControlService valueControlService) {
+            this._assemblyService = assemblyService;
+            this._valueControlService = valueControlService;
             this.InitializeComponent();
         }
 

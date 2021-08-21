@@ -12,6 +12,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
+    using Unity;
 
     public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
         public static readonly DirectProperty<SpriteReferenceEditor, ICommand> ClearSpriteCommandProperty =
@@ -39,17 +40,37 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 nameof(Sprite),
                 editor => editor.Sprite);
 
-        private readonly IAssetManager _assetManager = Resolver.Resolve<IAssetManager>();
-        private readonly IDialogService _dialogService = Resolver.Resolve<IDialogService>();
-        private readonly IFileSystemService _fileSystem = Resolver.Resolve<IFileSystemService>();
-        private readonly IPathService _pathService = Resolver.Resolve<IPathService>();
-        private readonly IUndoService _undoService = Resolver.Resolve<IUndoService>();
+        private readonly IAssetManager _assetManager;
+        private readonly IDialogService _dialogService;
+        private readonly IFileSystemService _fileSystem;
+        private readonly IPathService _pathService;
+        private readonly IUndoService _undoService;
 
         private ICommand _clearSpriteCommand;
         private string _contentPath;
         private SpriteDisplayModel _sprite;
 
-        public SpriteReferenceEditor() {
+        public SpriteReferenceEditor() : this(
+            Resolver.Resolve<IAssetManager>(),
+            Resolver.Resolve<IDialogService>(),
+            Resolver.Resolve<IFileSystemService>(),
+            Resolver.Resolve<IPathService>(),
+            Resolver.Resolve<IUndoService>()) {
+        }
+
+        [InjectionConstructor]
+        public SpriteReferenceEditor(
+            IAssetManager assetManager,
+            IDialogService dialogService,
+            IFileSystemService fileSystem,
+            IPathService pathService,
+            IUndoService undoService) {
+            this._assetManager = assetManager;
+            this._dialogService = dialogService;
+            this._fileSystem = fileSystem;
+            this._pathService = pathService;
+            this._undoService = undoService;
+            
             this.SelectSpriteCommand = ReactiveCommand.CreateFromTask(this.SelectSprite);
             this.InitializeComponent();
         }

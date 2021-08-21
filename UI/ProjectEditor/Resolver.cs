@@ -36,7 +36,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
         /// <param name="overrides">The overrides.</param>
         /// <returns>The resolved object.</returns>
         public static T Resolve<T>(params ResolverOverride[] overrides) {
-            return Resolver.Container.Resolve<T>(overrides);
+            return Container.Resolve<T>(overrides);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
         /// <param name="overrides">The overrides.</param>
         /// <returns>The resolved object.</returns>
         public static T Resolve<T>(string name, params ResolverOverride[] overrides) {
-            return Resolver.Container.Resolve<T>(name, overrides);
+            return Container.Resolve<T>(name, overrides);
         }
     }
 }
