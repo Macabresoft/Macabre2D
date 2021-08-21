@@ -62,7 +62,6 @@ namespace Macabresoft.Macabre2D.Framework {
     [Display(Name = "Physics Body")]
     [Category("Body")]
     public abstract class PhysicsBody : Entity, IPhysicsBody {
-        [DataMember]
         private int _updateOrder;
 
         /// <inheritdoc />
@@ -83,6 +82,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public PhysicsMaterial PhysicsMaterial { get; set; } = PhysicsMaterial.Default;
 
         /// <inheritdoc />
+        [DataMember]
         public int UpdateOrder {
             get => this._updateOrder;
             set => this.Set(ref this._updateOrder, value);
