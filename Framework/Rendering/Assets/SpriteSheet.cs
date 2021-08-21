@@ -68,7 +68,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
                 if (this.Set(ref this._rows, value)) {
                     this._spriteIndexToLocation.Clear();
-                    this.ResetColumnWidth();
+                    this.ResetRowHeight();
                 }
             }
         }
