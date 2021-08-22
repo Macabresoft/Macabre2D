@@ -24,7 +24,7 @@ namespace Macabresoft.Macabre2D.Framework {
         private readonly Dictionary<byte, Point> _spriteIndexToLocation = new();
 
         [DataMember]
-        private ObservableCollection<AutoTileSet> _autoTileSets = new();
+        private AutoTileSetCollection _autoTileSets = new();
 
         private byte _columns = 1;
         private byte _rows = 1;
