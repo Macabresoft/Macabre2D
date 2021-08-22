@@ -22,7 +22,19 @@
             new("NSubstitute", Licenses.NSubstitute),
             new("NUnit", Licenses.NUnit),
             new("NUnit 3 Test Adapter", Licenses.NUnit3TestAdapter),
-            new("Unity", Licenses.Unity)
+            new("Unity", Licenses.Unity),
+            new("AssimpNet", Licenses.AssimpNet),
+            new("Castle.Core", Licenses.Castle_Core),
+            new("DynamicData", Licenses.DynamicData),
+            new("HalfBuzzSharp", Licenses.SkiaSharp),
+            new("JetBRains.Annotations", Licenses.Jetbrains_Annotations),
+            new("Microsoft .NET Library", Licenses.Microsoft__NET_Library),
+            new("NuGet", Licenses.NuGet),
+            new("ReactiveUI", Licenses.ReactiveUI),
+            new("SkiaSharp", Licenses.SkiaSharp),
+            new("Splat", Licenses.Splat),
+            new("System.Reactive", Licenses.System_Reactive),
+            new("Tmds.DBus", Licenses.Tmds_DBus)
         };
     }
 }

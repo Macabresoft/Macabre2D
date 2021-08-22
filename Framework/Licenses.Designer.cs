@@ -61,6 +61,24 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2012-2020 AssimpNet - Nicholas Woodfield
+        /// 
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to the following conditions:
+        ///
+        ///The above co [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AssimpNet {
+            get {
+                return ResourceManager.GetString("AssimpNet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MIT License (MIT)
         ///
         ///Copyright (c) .NET Foundation and Contributors
@@ -76,6 +94,46 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static string AvaloniaUI {
             get {
                 return ResourceManager.GetString("AvaloniaUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright 2004-2021 Castle Project - http://www.castleproject.org/
+        ///
+        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+        ///you may not use this file except in compliance with the License.
+        ///You may obtain a copy of the License at
+        ///
+        ///     http://www.apache.org/licenses/LICENSE-2.0
+        ///
+        ///Unless required by applicable law or agreed to in writing, software
+        ///distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+        ///WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        ///See the [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Castle_Core {
+            get {
+                return ResourceManager.GetString("Castle.Core", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) Roland Pheasant 2011-2020
+        ///
+        ///All rights reserved.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to the foll [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DynamicData {
+            get {
+                return ResourceManager.GetString("DynamicData", resourceCulture);
             }
         }
         
@@ -124,6 +182,15 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MIT License.
+        /// </summary>
+        internal static string Jetbrains_Annotations {
+            get {
+                return ResourceManager.GetString("Jetbrains.Annotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MIT License (MIT)
         ///
         ///Copyright (c) 2016 Macabresoft, Brett Story
@@ -159,6 +226,24 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static string Macabresoft_Core {
             get {
                 return ResourceManager.GetString("Macabresoft.Core", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MICROSOFT SOFTWARE LICENSE TERMS
+        ///
+        ///MICROSOFT .NET LIBRARY
+        ///
+        ///These license terms are an agreement between you and Microsoft Corporation (or based on where you live, one of its affiliates). They apply to the software named above. The terms also apply to any Microsoft services or updates for the software, except to the extent those have different terms.
+        ///
+        ///IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+        ///
+        ///1.    INSTALLATION AND USE RIGHTS.
+        ///You may install and use any number of copies of  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Microsoft__NET_Library {
+            get {
+                return ResourceManager.GetString("Microsoft .NET Library", resourceCulture);
             }
         }
         
@@ -274,6 +359,26 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) .NET Foundation. All rights reserved.
+        ///
+        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
+        ///these files except in compliance with the License. You may obtain a copy of the
+        ///License at
+        ///
+        ///http://www.apache.org/licenses/LICENSE-2.0
+        ///
+        ///Unless required by applicable law or agreed to in writing, software distributed
+        ///under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR
+        ///CONDITIONS OF ANY KIND, either express or implied. See the License for the
+        ///s [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string NuGet {
+            get {
+                return ResourceManager.GetString("NuGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright (c) 2021 Charlie Poole, Rob Prouse
         ///
         ///Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -301,6 +406,87 @@ namespace Macabresoft.Macabre2D.Framework {
         internal static string NUnit3TestAdapter {
             get {
                 return ResourceManager.GetString("NUnit3TestAdapter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) .NET Foundation and Contributors
+        ///
+        ///All rights reserved.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to t [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ReactiveUI {
+            get {
+                return ResourceManager.GetString("ReactiveUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2015-2016 Xamarin, Inc.  
+        ///Copyright (c) 2017-2018 Microsoft Corporation.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SkiaSharp {
+            get {
+                return ResourceManager.GetString("SkiaSharp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) .NET Foundation and Contributors
+        ///
+        ///All rights reserved.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to t [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Splat {
+            get {
+                return ResourceManager.GetString("Splat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MIT License (MIT)
+        ///
+        ///Copyright (c) .NET Foundation and Contributors
+        ///
+        ///All rights reserved.
+        ///
+        ///Permission is hereby granted, free of charge, to any person obtaining a copy
+        ///of this software and associated documentation files (the &quot;Software&quot;), to deal
+        ///in the Software without restriction, including without limitation the rights
+        ///to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        ///copies of the Software, and to permit persons to whom the Software is
+        ///furnished to do so, subject to t [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string System_Reactive {
+            get {
+                return ResourceManager.GetString("System.Reactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MIT License.
+        /// </summary>
+        internal static string Tmds_DBus {
+            get {
+                return ResourceManager.GetString("Tmds.DBus", resourceCulture);
             }
         }
         

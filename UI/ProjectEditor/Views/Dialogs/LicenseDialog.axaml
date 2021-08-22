@@ -5,11 +5,10 @@
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.LicenseDialog"
         Height="1024"
         Width="768"
-        CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         ExtendClientAreaToDecorationsHint="True"
-        SystemDecorations="None">
+        SystemDecorations="Full">
     <Grid Margin="{StaticResource DoubleMarginAll}"
           RowDefinitions="Auto, *, Auto"
           DataContext="{Binding $parent[local:LicenseDialog]}">
