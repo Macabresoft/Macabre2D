@@ -24,6 +24,7 @@
         
         <Border Grid.Column="0"
                 Grid.Row="1"
+                IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}}"
                 Classes="Preview"
                 Background="{Binding RenderEntity.Color, Converter={StaticResource ColorConverter}}">
             <Image Source="{Binding Sprite.Bitmap}">
