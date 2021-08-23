@@ -1,0 +1,38 @@
+<valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+                                 xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
+                                 x:TypeArguments="framework:AutoTileSetCollection"
+                                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.AutoTileSetCollectionEditor">
+    <Grid RowDefinitions="Auto, Auto"
+          DataContext="{Binding $parent[local:AutoTileSetCollectionEditor]}">
+        <Design.DataContext>
+            <local:AutoTileSetCollectionEditor />
+        </Design.DataContext>
+        
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddTileSetCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Add a new tile set to the sprite sheet">
+                <controls:Icon Content="{StaticResource AddIcon}" />
+            </Button>
+            <Button Command="{Binding RemoveTileSetCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Remove the selected tile set from the sprite sheet">
+                <controls:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
+            
+            <Button Command="{Binding EditTileSetCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Edit the selected tile set">
+                <controls:Icon Content="{StaticResource EditIcon}" />
+            </Button>
+        </StackPanel>
+        
+        <TextBlock Grid.Row="1">nothing here</TextBlock>
+    </Grid>
+</valueEditors:ValueEditorControl>

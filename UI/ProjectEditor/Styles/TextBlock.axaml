@@ -32,4 +32,19 @@
         <Setter Property="ToolTip.Tip"
                 Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
+        
+        <Style Selector="TextBlock.Caption">
+                <Setter Property="FontStyle"
+                        Value="Italic" />
+                <Setter Property="FontSize"
+                        Value="8" />
+                <Setter Property="TextTrimming"
+                        Value="CharacterEllipsis" />
+                <Setter Property="TextAlignment"
+                        Value="Center" />
+                <Setter Property="VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="ToolTip.Tip"
+                        Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+        </Style>
 </Styles>

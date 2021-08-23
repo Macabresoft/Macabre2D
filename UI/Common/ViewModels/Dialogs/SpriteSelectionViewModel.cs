@@ -1,7 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
@@ -17,6 +15,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         private readonly ObservableCollectionExtended<SpriteDisplayCollection> _spriteSheets = new();
         private FilteredContentWrapper _selectedContentNode;
         private SpriteDisplayModel _selectedSprite;
+        private ThumbnailSize _selectedThumbnailSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentSelectionViewModel" /> class.
@@ -36,9 +35,19 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not this is busy.
+        /// </summary>
+        public bool IsBusy => false;
+
+        /// <summary>
         /// Gets the root content directory as a <see cref="FilteredContentWrapper" />.
         /// </summary>
         public FilteredContentWrapper RootContentDirectory { get; }
+
+        /// <summary>
+        /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
+        /// </summary>
+        public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
 
         /// <summary>
         /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
@@ -54,16 +63,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         }
 
         /// <summary>
-        /// Gets the sprite sheets via <see cref="SpriteDisplayCollection"/>.
-        /// </summary>
-        public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
-
-        /// <summary>
-        /// Gets a value indicating whether or not this is busy.
-        /// </summary>
-        public bool IsBusy => false;
-
-        /// <summary>
         /// Gets or sets the selected sprite.
         /// </summary>
         public SpriteDisplayModel SelectedSprite {
@@ -74,9 +73,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected thumbnail size.
+        /// </summary>
+        public ThumbnailSize SelectedThumbnailSize {
+            get => this._selectedThumbnailSize;
+            set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        }
+
         private void ResetSpriteSheets() {
             this._spriteSheets.Clear();
-            
+
             if (this.SelectedContentNode != null) {
                 if (this.SelectedContentNode.Node is ContentDirectory directory) {
                     var spriteCollections = new List<SpriteDisplayCollection>();
@@ -85,7 +92,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
                             spriteCollections.Add(new SpriteDisplayCollection(spriteSheet, file));
                         }
                     }
-                    
+
                     this._spriteSheets.Reset(spriteCollections);
                 }
                 else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheet spriteSheet } file) {

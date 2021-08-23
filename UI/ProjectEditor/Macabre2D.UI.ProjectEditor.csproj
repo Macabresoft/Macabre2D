@@ -104,5 +104,9 @@
       <DependentUpon>SpriteSelectionDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AutoTileSetCollectionEditor.axaml.cs">
+      <DependentUpon>AutoTileSetsEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

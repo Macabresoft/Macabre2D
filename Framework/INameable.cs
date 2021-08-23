@@ -9,6 +9,6 @@
         public string Name { get; set; }
 
         /// <inheritdoc cref="object" />
-        string ToString() => this.Name;
+        string? ToString() => this.Name;
     }
 }

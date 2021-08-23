@@ -3,17 +3,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
     using System.Globalization;
     using Avalonia;
     using Avalonia.Data.Converters;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.MonoGame;
 
     /// <summary>
     /// A converter that takes two objects and returns a value indicating whether or not they are equal.
     /// </summary>
-    public class GizmoKindToBoolConverter : IValueConverter {
+    public class ThumbnailSizeToBoolConverter : IValueConverter {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var result = false;
-            if (value is GizmoKind valueKind && parameter is GizmoKind parameterKind) {
-                result = valueKind == parameterKind;
+            if (value is ThumbnailSize valueSize && parameter is ThumbnailSize parameterSize) {
+                result = valueSize == parameterSize;
             }
             
             return result;

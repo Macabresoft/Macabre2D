@@ -38,6 +38,5 @@
             <TextBlock FontStyle="Italic"
                        Text="{Binding SpriteCollection.Size, StringFormat=(\{0\})}" />
         </StackPanel>
-
     </Grid>
 </controls:ValueControl>

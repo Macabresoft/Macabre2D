@@ -24,6 +24,7 @@
         
         <Border Grid.Column="0"
                 Grid.Row="1"
+                Name="_spriteBorder"
                 IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}}"
                 Classes="Preview"
                 Background="{Binding RenderEntity.Color, Converter={StaticResource ColorConverter}}">
@@ -38,6 +39,9 @@
         
         <TextBlock Grid.Row="2"
                    Grid.Column="0"
+                   Classes="Caption"
+                   HorizontalAlignment="Left"
+                   Width="{Binding #_spriteBorder.Bounds.Width}"
                    Text="{Binding Sprite.Bitmap.Size, StringFormat=(\{0\})}" />
         
         <TextBox Grid.Column="1"
