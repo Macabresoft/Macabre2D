@@ -15,24 +15,54 @@
         
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <Button Command="{Binding AddTileSetCommand}"
+            <Button Command="{Binding AddCommand}"
                     Classes="Icon"
                     ToolTip.Tip="Add a new tile set to the sprite sheet">
                 <controls:Icon Content="{StaticResource AddIcon}" />
             </Button>
-            <Button Command="{Binding RemoveTileSetCommand}"
+            <Button Command="{Binding RemoveCommand}"
+                    CommandParameter="{Binding SelectedTileSet}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the selected tile set from the sprite sheet">
                 <controls:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
             
-            <Button Command="{Binding EditTileSetCommand}"
+            <Button Command="{Binding EditCommand}"
+                    CommandParameter="{Binding SelectedTileSet}"
                     Classes="Icon"
                     ToolTip.Tip="Edit the selected tile set">
                 <controls:Icon Content="{StaticResource EditIcon}" />
             </Button>
         </StackPanel>
         
-        <TextBlock Grid.Row="1">nothing here</TextBlock>
+        <ListBox Grid.Row="1"
+                 Height="256"
+                 Items="{Binding Value}"
+                 SelectedItem="{Binding SelectedTileSet}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <controls:EditableSelectableItem IsEditable="True"
+                                                     HorizontalAlignment="Stretch"
+                                                     TextCommittedCommand="{Binding $parent[local:AutoTileSetCollectionEditor].RenameCommand}"
+                                                     Text="{Binding Path=Name, Mode=TwoWay}">
+                        <controls:EditableSelectableItem.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rename"
+                                          Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                          ToolTip.Tip="Rename this tile set" />
+
+                                <Separator />
+
+                                <MenuItem Header="Remove"
+                                          Command="{Binding $parent[local:AutoTileSetCollectionEditor].RemoveCommand}"
+                                          CommandParameter="{Binding}"
+                                          ToolTip.Tip="Remove this tile set from the sprite sheet" />
+                            </ContextMenu>
+                        </controls:EditableSelectableItem.ContextMenu>
+                    </controls:EditableSelectableItem>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </valueEditors:ValueEditorControl>
