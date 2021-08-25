@@ -36,14 +36,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 editor => editor.SelectedTileSet,
                 (editor, value) => editor.SelectedTileSet = value);
 
+        private readonly IDialogService _dialogService;
+
         private readonly IUndoService _undoService;
         private AutoTileSet _selectedTileSet;
 
-        public AutoTileSetCollectionEditor() : this(Resolver.Resolve<IUndoService>()) {
+        public AutoTileSetCollectionEditor() {
         }
 
         [InjectionConstructor]
-        public AutoTileSetCollectionEditor(IUndoService undoService) {
+        public AutoTileSetCollectionEditor(IDialogService dialogService, ISerializer serializer, IUndoService undoService) {
+            this._dialogService = dialogService;
             this._undoService = undoService;
 
             var canExecute = this.WhenAny(x => x.SelectedTileSet, y => y.Value != null);
@@ -51,7 +54,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             this.EditCommand = ReactiveCommand.CreateFromTask<AutoTileSet>(async x => await this.EditTileSet(x), canExecute);
             this.RemoveCommand = ReactiveCommand.Create<AutoTileSet>(this.RemoveTileSet, canExecute);
             this.RenameCommand = ReactiveCommand.Create<string>(this.RenameTileSet, canExecute);
-
+            
             this.InitializeComponent();
         }
 
@@ -72,18 +75,55 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             if (this.Value is AutoTileSetCollection collection) {
                 // TODO: open edit window;
                 var tileSet = new AutoTileSet {
-                    Name = "AutoTileSet"
+                    Name = AutoTileSet.DefaultName
                 };
+
+                tileSet = await this._dialogService.OpenAutoTileSetEditor(tileSet);
 
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { collection.Add(tileSet); }); },
                     () => { Dispatcher.UIThread.Post(() => { collection.Remove(tileSet); }); });
             }
-
-            await Task.CompletedTask;
         }
 
         private async Task EditTileSet(AutoTileSet tileSet) {
+            if (tileSet != null && this.Value is AutoTileSetCollection collection) {
+                var index = collection.IndexOf(tileSet);
+                var updatedTileSet = await this._dialogService.OpenAutoTileSetEditor(tileSet);
+
+                if (updatedTileSet != null) {
+                    this._undoService.Do(
+                        () => {
+                            if (index < 0 || index >= collection.Count) {
+                                Dispatcher.UIThread.Post(() => {
+                                    collection.Remove(tileSet);
+                                    collection.Add(updatedTileSet);
+                                });
+                            }
+                            else {
+                                Dispatcher.UIThread.Post(() => {
+                                    collection.Remove(tileSet);
+                                    collection.Insert(index, updatedTileSet);
+                                });
+                            }
+                        },
+                        () => {
+                            if (index < 0 || index >= collection.Count) {
+                                Dispatcher.UIThread.Post(() => {
+                                    collection.Remove(updatedTileSet);
+                                    collection.Add(tileSet);
+                                });
+                            }
+                            else {
+                                Dispatcher.UIThread.Post(() => {
+                                    collection.Remove(updatedTileSet);
+                                    collection.Insert(index, tileSet);
+                                });
+                            }
+                        });
+                }
+            }
+
             await Task.CompletedTask;
         }
 
@@ -93,11 +133,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
 
         private void RemoveTileSet(AutoTileSet tileSet) {
             if (tileSet != null && this.Value is AutoTileSetCollection collection) {
-                var index = this.Value.IndexOf(tileSet);
+                var index = collection.IndexOf(tileSet);
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { collection.Remove(tileSet); }); },
                     () => {
-                        if (index < 0 || index >= this.Value.Count) {
+                        if (index < 0 || index >= collection.Count) {
                             Dispatcher.UIThread.Post(() => { collection.Add(tileSet); });
                         }
                         else {

@@ -8,7 +8,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs;
-    using Unity;
     using Unity.Resolution;
 
     /// <summary>
@@ -36,6 +35,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
             }
 
             return selectedNode;
+        }
+
+        /// <inheritdoc />
+        public async Task<AutoTileSet> OpenAutoTileSetEditor(AutoTileSet tileSet) {
+            var window = Resolver.Resolve<AutoTileSetEditorDialog>();
+            await window.ShowDialog(this._mainWindow);
+            return tileSet;
         }
 
         /// <inheritdoc />

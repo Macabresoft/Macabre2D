@@ -29,6 +29,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         Task OpenLicenseDialog();
 
         /// <summary>
+        /// Opens the auto tile set editor.
+        /// </summary>
+        /// <param name="tileSet">The tile set to edit.</param>
+        /// <returns>A cloned copy of the edited tile set.</returns>
+        Task<AutoTileSet> OpenAutoTileSetEditor(AutoTileSet tileSet);
+
+        /// <summary>
         /// Opens a dialog that allows the user to pick a sprite.
         /// </summary>
         /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
