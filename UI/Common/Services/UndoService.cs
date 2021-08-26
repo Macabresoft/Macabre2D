@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// <summary>
     /// Interface for a service which handles undo/redo operations.
     /// </summary>
-    public interface IUndoService : INotifyPropertyChanged {
+    public interface IUndoService : IDisposable, INotifyPropertyChanged {
         /// <summary>
         /// Gets a value indicating whether or not a redo operation is possible.
         /// </summary>
@@ -21,14 +21,20 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         bool CanUndo { get; }
 
         /// <summary>
+        /// Gets the most recent change identifier. If no changes, will be <see cref="Guid.Empty" />.
+        /// </summary>
+        Guid LatestChangeId { get; }
+
+        /// <summary>
         /// Clears the queue of undo and redo operations.
         /// </summary>
         void Clear();
-        
+
         /// <summary>
-        /// Gets the most recent change identifier. If no changes, will be <see cref="Guid.Empty"/>.
+        /// Creates a child undo service.
         /// </summary>
-        Guid LatestChangeId { get; }
+        /// <returns>The child undo service.</returns>
+        IChildUndoService CreateChild();
 
         /// <summary>
         /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property
@@ -61,6 +67,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// A service which handles undo/redo operations.
     /// </summary>
     public class UndoService : ReactiveObject, IUndoService {
+        private readonly HashSet<IChildUndoService> _children = new();
         private readonly object _lock = new();
 
         private readonly Stack<UndoCommand> _redoStack = new(50);
@@ -85,6 +92,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
+        public Guid LatestChangeId => this._undoStack.Any() ? this._undoStack.Peek().ChangeId : Guid.Empty;
+
+        /// <summary>
+        /// Gets a stack of all undo operations associated with this service.
+        /// </summary>
+        protected IReadOnlyCollection<UndoCommand> UndoStack => this._undoStack;
+
+        /// <inheritdoc />
         public void Clear() {
             lock (this._lock) {
                 this._redoStack.Clear();
@@ -94,7 +109,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public Guid LatestChangeId => this._undoStack.Any() ? this._undoStack.Peek().ChangeId : Guid.Empty;
+        public IChildUndoService CreateChild() {
+            var child = new ChildUndoService();
+            child.CommitRequested += this.Child_CommitRequested;
+            this._children.Add(child);
+            return child;
+        }
+
+        /// <inheritdoc />
+        public virtual void Dispose() {
+            this._undoStack.Clear();
+            this._redoStack.Clear();
+        }
 
         /// <inheritdoc />
         public void Do(Action action, Action undoAction) {
@@ -103,13 +129,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
 
         /// <inheritdoc />
         public void Do(Action action, Action undoAction, Action propertyChangedAction) {
-            var undoCommand = new UndoCommand(action, undoAction, propertyChangedAction);
-            lock (this._lock) {
-                undoCommand.Do();
-                this._undoStack.Push(undoCommand);
-                this._redoStack.Clear();
-                this.RaiseProperties();
-            }
+            var command = new UndoCommand(action, undoAction, propertyChangedAction);
+            this.CommitCommand(command);
+            command.Do();
         }
 
         /// <inheritdoc />
@@ -133,6 +155,26 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     this._redoStack.Push(command);
                     this.RaiseProperties();
                 }
+            }
+        }
+
+        private void Child_CommitRequested(object sender, UndoCommand e) {
+            if (sender is IChildUndoService child) {
+                child.CommitRequested -= this.Child_CommitRequested;
+                this._children.Remove(child);
+                child.Dispose();
+
+                if (e != null) {
+                    this.CommitCommand(e);
+                }
+            }
+        }
+
+        private void CommitCommand(UndoCommand command) {
+            lock (this._lock) {
+                this._undoStack.Push(command);
+                this._redoStack.Clear();
+                this.RaiseProperties();
             }
         }
 
