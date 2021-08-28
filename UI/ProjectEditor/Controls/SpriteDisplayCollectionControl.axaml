@@ -1,0 +1,53 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+             x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.SpriteDisplayCollectionControl">
+    <UserControl.Resources>
+        <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+    </UserControl.Resources>
+    <Panel DataContext="{Binding $parent[local:SpriteDisplayCollectionControl]}">
+        <Design.DataContext>
+            <local:SpriteDisplayCollectionControl />
+        </Design.DataContext>
+        <local:GroupBox Header="{Binding  Collection.Name}"
+                        Margin="{StaticResource DoubleMarginBottom}">
+            <ListBox Items="{Binding Collection.Sprites}"
+                     SelectedItem="{Binding SelectedSprite}">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="Preview"
+                                MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                Padding="{StaticResource DoubleMarginAll}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Background="{Binding $parent[ListBoxItem].Background}">
+                            <Image Source="{Binding Bitmap}"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <ToolTip.Tip>
+                                    <Image Source="{Binding Bitmap}"
+                                           MaxWidth="512"
+                                           MaxHeight="512" />
+                                </ToolTip.Tip>
+                            </Image>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </local:GroupBox>
+    </Panel>
+</UserControl>
