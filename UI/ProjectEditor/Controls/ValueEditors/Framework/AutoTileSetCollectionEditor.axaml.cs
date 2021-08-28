@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -84,8 +85,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private async Task EditTileSet(AutoTileSet tileSet) {
-            if (tileSet != null) {
-                await this._dialogService.OpenAutoTileSetEditor(tileSet);
+            if (tileSet != null && this.Owner is ContentFile { Asset: SpriteSheet spriteSheet } file) {
+                await this._dialogService.OpenAutoTileSetEditor(tileSet, spriteSheet, file);
             }
 
             await Task.CompletedTask;

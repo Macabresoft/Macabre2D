@@ -38,8 +38,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
-        public async Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet) {
-            var window = Resolver.Resolve<AutoTileSetEditorDialog>(new ParameterOverride(typeof(AutoTileSet), tileSet));
+        public async Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet, SpriteSheet spriteSheet, ContentFile file) {
+            var window = Resolver.Resolve<AutoTileSetEditorDialog>(
+                new ParameterOverride(typeof(AutoTileSet), tileSet),
+                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                new ParameterOverride(typeof(ContentFile), file));
             return await window.ShowDialog<bool>(this._mainWindow);
         }
 

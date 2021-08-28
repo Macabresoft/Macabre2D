@@ -26,8 +26,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Opens the auto tile set editor.
         /// </summary>
         /// <param name="tileSet">The tile set to edit.</param>
+        /// <param name="spriteSheet">The sprite sheet which owns the tile set.</param>
+        /// <param name="file">The content file representing the sprite sheet.</param>
         /// <returns>A value indicating whether or not the user pressed ok.</returns>
-        Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet);
+        Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet, SpriteSheet spriteSheet, ContentFile file);
 
         /// <summary>
         /// Opens a dialog to show the licenses.
