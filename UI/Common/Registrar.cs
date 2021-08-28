@@ -28,6 +28,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public static IUnityContainer RegisterLibraryServices(this IUnityContainer container) {
             return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
                 .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
+                .RegisterType<IChildUndoService, ChildUndoService>(new PerResolveLifetimeManager())
                 .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())
                 .RegisterType<IEditorSettingsService, EditorSettingsService>(new SingletonLifetimeManager())

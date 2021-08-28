@@ -31,10 +31,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         void Clear();
 
         /// <summary>
-        /// Creates a child undo service.
+        /// Commits external changes which have already been performed.
         /// </summary>
-        /// <returns>The child undo service.</returns>
-        IChildUndoService CreateChild();
+        /// <param name="command">The external changes as a command.</param>
+        void CommitExternalChanges(UndoCommand command);
 
         /// <summary>
         /// Performs the specified action and makes it available to be undone. When undoing or redoing the action, the property
@@ -67,7 +67,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// A service which handles undo/redo operations.
     /// </summary>
     public class UndoService : ReactiveObject, IUndoService {
-        private readonly HashSet<IChildUndoService> _children = new();
         private readonly object _lock = new();
 
         private readonly Stack<UndoCommand> _redoStack = new(50);
@@ -109,11 +108,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         }
 
         /// <inheritdoc />
-        public IChildUndoService CreateChild() {
-            var child = new ChildUndoService();
-            child.CommitRequested += this.Child_CommitRequested;
-            this._children.Add(child);
-            return child;
+        public void CommitExternalChanges(UndoCommand command) {
+            if (command != null) {
+                this.CommitCommand(command);
+            }
         }
 
         /// <inheritdoc />
@@ -154,18 +152,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     command.Undo();
                     this._redoStack.Push(command);
                     this.RaiseProperties();
-                }
-            }
-        }
-
-        private void Child_CommitRequested(object sender, UndoCommand e) {
-            if (sender is IChildUndoService child) {
-                child.CommitRequested -= this.Child_CommitRequested;
-                this._children.Remove(child);
-                child.Dispose();
-
-                if (e != null) {
-                    this.CommitCommand(e);
                 }
             }
         }

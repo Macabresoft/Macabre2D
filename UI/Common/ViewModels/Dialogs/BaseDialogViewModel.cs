@@ -19,9 +19,9 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// Initializes a new instance of the <see cref="BaseDialogViewModel" /> class.
         /// </summary>
         protected BaseDialogViewModel() {
-            this.CancelCommand = ReactiveCommand.Create(() => this.RequestClose(true));
+            this.CancelCommand = ReactiveCommand.Create(this.OnCancel);
             this.OkCommand = ReactiveCommand.Create(
-                () => this.RequestClose(false),
+                this.OnOk,
                 this.WhenAny(x => x.IsOkEnabled, y => y.Value));
         }
 
@@ -41,6 +41,20 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         public bool IsOkEnabled {
             get => this._isOkEnabled;
             set => this.RaiseAndSetIfChanged(ref this._isOkEnabled, value);
+        }
+
+        /// <summary>
+        /// Called when a user has regrets and sheepishly cancels.
+        /// </summary>
+        protected virtual void OnCancel() {
+            this.RequestClose(false);
+        }
+
+        /// <summary>
+        /// Called when the user smashes that OK button.
+        /// </summary>
+        protected virtual void OnOk() {
+            this.RequestClose(true);
         }
 
         private void RequestClose(bool isCancel) {

@@ -23,17 +23,17 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection);
 
         /// <summary>
+        /// Opens the auto tile set editor.
+        /// </summary>
+        /// <param name="tileSet">The tile set to edit.</param>
+        /// <returns>A value indicating whether or not the user pressed ok.</returns>
+        Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet);
+
+        /// <summary>
         /// Opens a dialog to show the licenses.
         /// </summary>
         /// <returns>A task.</returns>
         Task OpenLicenseDialog();
-
-        /// <summary>
-        /// Opens the auto tile set editor.
-        /// </summary>
-        /// <param name="tileSet">The tile set to edit.</param>
-        /// <returns>A cloned copy of the edited tile set.</returns>
-        Task<AutoTileSet> OpenAutoTileSetEditor(AutoTileSet tileSet);
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a sprite.

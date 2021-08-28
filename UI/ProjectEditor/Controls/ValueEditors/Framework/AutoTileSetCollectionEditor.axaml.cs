@@ -45,16 +45,16 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         [InjectionConstructor]
-        public AutoTileSetCollectionEditor(IDialogService dialogService, ISerializer serializer, IUndoService undoService) {
+        public AutoTileSetCollectionEditor(IDialogService dialogService, IUndoService undoService) {
             this._dialogService = dialogService;
             this._undoService = undoService;
 
             var canExecute = this.WhenAny(x => x.SelectedTileSet, y => y.Value != null);
-            this.AddCommand = ReactiveCommand.CreateFromTask(async () => await this.AddTileSet());
+            this.AddCommand = ReactiveCommand.Create(this.AddTileSet);
             this.EditCommand = ReactiveCommand.CreateFromTask<AutoTileSet>(async x => await this.EditTileSet(x), canExecute);
             this.RemoveCommand = ReactiveCommand.Create<AutoTileSet>(this.RemoveTileSet, canExecute);
             this.RenameCommand = ReactiveCommand.Create<string>(this.RenameTileSet, canExecute);
-            
+
             this.InitializeComponent();
         }
 
@@ -71,14 +71,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             set => this.SetAndRaise(SelectedTileSetProperty, ref this._selectedTileSet, value);
         }
 
-        private async Task AddTileSet() {
+        private void AddTileSet() {
             if (this.Value is AutoTileSetCollection collection) {
-                // TODO: open edit window;
                 var tileSet = new AutoTileSet {
                     Name = AutoTileSet.DefaultName
                 };
-
-                tileSet = await this._dialogService.OpenAutoTileSetEditor(tileSet);
 
                 this._undoService.Do(
                     () => { Dispatcher.UIThread.Post(() => { collection.Add(tileSet); }); },
@@ -87,41 +84,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private async Task EditTileSet(AutoTileSet tileSet) {
-            if (tileSet != null && this.Value is AutoTileSetCollection collection) {
-                var index = collection.IndexOf(tileSet);
-                var updatedTileSet = await this._dialogService.OpenAutoTileSetEditor(tileSet);
-
-                if (updatedTileSet != null) {
-                    this._undoService.Do(
-                        () => {
-                            if (index < 0 || index >= collection.Count) {
-                                Dispatcher.UIThread.Post(() => {
-                                    collection.Remove(tileSet);
-                                    collection.Add(updatedTileSet);
-                                });
-                            }
-                            else {
-                                Dispatcher.UIThread.Post(() => {
-                                    collection.Remove(tileSet);
-                                    collection.Insert(index, updatedTileSet);
-                                });
-                            }
-                        },
-                        () => {
-                            if (index < 0 || index >= collection.Count) {
-                                Dispatcher.UIThread.Post(() => {
-                                    collection.Remove(updatedTileSet);
-                                    collection.Add(tileSet);
-                                });
-                            }
-                            else {
-                                Dispatcher.UIThread.Post(() => {
-                                    collection.Remove(updatedTileSet);
-                                    collection.Insert(index, tileSet);
-                                });
-                            }
-                        });
-                }
+            if (tileSet != null) {
+                await this._dialogService.OpenAutoTileSetEditor(tileSet);
             }
 
             await Task.CompletedTask;
