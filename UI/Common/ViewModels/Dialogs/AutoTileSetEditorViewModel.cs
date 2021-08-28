@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using Unity;
 
     /// <summary>
     /// A view model for editing auto tile sets.
@@ -11,9 +12,16 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
         /// </summary>
+        public AutoTileSetEditorViewModel() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
+        /// </summary>
         /// <param name="childUndoService">The child undo service.</param>
         /// <param name="parentUndoService">The parent undo service.</param>
         /// <param name="tileSet">The tile set being edited.</param>
+        [InjectionConstructor]
         public AutoTileSetEditorViewModel(IChildUndoService childUndoService, IUndoService parentUndoService, AutoTileSet tileSet) {
             this.UndoService = childUndoService;
             this._parentUndoService = parentUndoService;
