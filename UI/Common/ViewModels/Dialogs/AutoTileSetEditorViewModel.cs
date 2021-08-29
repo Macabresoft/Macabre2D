@@ -1,17 +1,19 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
-    using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
     using Unity;
 
     /// <summary>
     /// A view model for editing auto tile sets.
     /// </summary>
     public class AutoTileSetEditorViewModel : BaseDialogViewModel {
+        private readonly ContentFile _file;
         private readonly IUndoService _parentUndoService;
         private readonly SpriteSheet _spriteSheet;
-        private readonly ContentFile _file;
+        private ThumbnailSize _selectedThumbnailSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
@@ -29,7 +31,7 @@
         /// <param name="file">The content file.</param>
         [InjectionConstructor]
         public AutoTileSetEditorViewModel(
-            IChildUndoService childUndoService, 
+            IChildUndoService childUndoService,
             IUndoService parentUndoService,
             AutoTileSet tileSet,
             SpriteSheet spriteSheet,
@@ -39,9 +41,14 @@
             this.TileSet = tileSet;
             this._spriteSheet = spriteSheet;
             this._file = file;
-            this.Bitmap = new Bitmap(this._file.GetFullPath());
+            this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
             this.IsOkEnabled = true;
         }
+
+        /// <summary>
+        /// Gets the sprite collection.
+        /// </summary>
+        public SpriteDisplayCollection SpriteCollection { get; }
 
         /// <summary>
         /// Gets the tile set.
@@ -52,11 +59,14 @@
         /// Gets the undo service.
         /// </summary>
         public IChildUndoService UndoService { get; }
-        
+
         /// <summary>
-        /// Gets the bitmap.
+        /// Gets or sets the selected thumbnail size.
         /// </summary>
-        public Bitmap Bitmap { get; }
+        public ThumbnailSize SelectedThumbnailSize {
+            get => this._selectedThumbnailSize;
+            set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        }
 
         /// <inheritdoc />
         protected override void OnCancel() {
