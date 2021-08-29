@@ -3,8 +3,9 @@
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetEditorDialog"
-        Width="1024"
-        Height="768"
+        CanResize="False"
+        SizeToContent="Height"
+        Width="1280"
         Title="Auto Tile Set Editor">
     <Design.DataContext>
         <viewModels:AutoTileSetEditorViewModel />
@@ -14,263 +15,253 @@
           Margin="{StaticResource DoubleMarginAll}">
         <Grid Grid.Row="0"
               Grid.Column="0"
-              RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
-              ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
+              x:Name="_tileSetGrid"
+              RowDefinitions="Auto, Auto, Auto"
+              ColumnDefinitions="Auto, Auto, Auto">
 
-            <!-- Backgrounds -->
+            <!-- Top Left -->
             <Border Grid.Row="0"
                     Grid.Column="0"
-                    Grid.RowSpan="5"
-                    Grid.ColumnSpan="5"
-                    Margin="{StaticResource DoubleMarginAll}"
-                    Padding="{StaticResource DoubleMarginAll}"
-                    Background="Red" />
-            
-            <Border Grid.Row="6"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="5"
-                    Margin="{StaticResource DoubleMarginAll}"
-                    Padding="{StaticResource DoubleMarginAll}"
-                    Background="Red" />
-            
+                    Classes="Card"
+                    Background="{StaticResource ButtonBackground}">
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+                      ColumnDefinitions="Auto, Auto, Auto, Auto, Auto">
+                    <!-- Row 0 -->
+                    <ToggleButton Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="0" />
+
+                    <controls:Icon Grid.Row="0"
+                                   Grid.Column="1"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="0"
+                                  Grid.Column="2"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="1" />
+
+                    <controls:Icon Grid.Row="0"
+                                   Grid.Column="3"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="0"
+                                  Grid.Column="4"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="2" />
+
+                    <!-- Row 1 -->
+                    <controls:Icon Grid.Row="1"
+                                   Grid.Column="0"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <controls:Icon Grid.Row="1"
+                                   Grid.Column="2"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <controls:Icon Grid.Row="1"
+                                   Grid.Column="4"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <!-- Row 2 -->
+                    <ToggleButton Grid.Row="2"
+                                  Grid.Column="0"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="3" />
+
+                    <controls:Icon Grid.Row="2"
+                                   Grid.Column="1"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="2"
+                                  Grid.Column="2"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="4" />
+
+                    <controls:Icon Grid.Row="2"
+                                   Grid.Column="3"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="2"
+                                  Grid.Column="4"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="5" />
+
+                    <!-- Row 3 -->
+                    <controls:Icon Grid.Row="3"
+                                   Grid.Column="0"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <controls:Icon Grid.Row="3"
+                                   Grid.Column="2"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <controls:Icon Grid.Row="3"
+                                   Grid.Column="4"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <!-- Row 4 -->
+                    <ToggleButton Grid.Row="4"
+                                  Grid.Column="0"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="6" />
+
+                    <controls:Icon Grid.Row="4"
+                                   Grid.Column="1"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="4"
+                                  Grid.Column="2"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="7" />
+
+                    <controls:Icon Grid.Row="4"
+                                   Grid.Column="3"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                    <ToggleButton Grid.Row="4"
+                                  Grid.Column="4"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="8" />
+                </Grid>
+            </Border>
+
+            <!-- Top Right -->
             <Border Grid.Row="0"
-                    Grid.RowSpan="5"
-                    Grid.Column="6"
-                    Margin="{StaticResource DoubleMarginAll}"
-                    Padding="{StaticResource DoubleMarginAll}"
-                    Background="Red" />
-            
-            <Border Grid.Row="6"
-                    Grid.Column="6"
-                    Margin="{StaticResource DoubleMarginAll}"
-                    Padding="{StaticResource DoubleMarginAll}"
-                    Background="Red" />
-            
-            <!-- Row 0 -->
-            <ToggleButton Grid.Row="0"
-                          Grid.Column="0"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="0" />
+                    Grid.Column="2"
+                    Classes="Card"
+                    Background="{StaticResource ButtonBackground}">
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
+                    <ToggleButton Grid.Row="0"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="9" />
 
-            <controls:Icon Grid.Row="0"
-                           Grid.Column="1"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <controls:Icon Grid.Row="1"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
 
-            <ToggleButton Grid.Row="0"
-                          Grid.Column="2"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="1" />
+                    <ToggleButton Grid.Row="2"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="10" />
 
-            <controls:Icon Grid.Row="0"
-                           Grid.Column="3"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <controls:Icon Grid.Row="3"
+                                   Content="{StaticResource ConnectionVerticalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
 
-            <ToggleButton Grid.Row="0"
-                          Grid.Column="4"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="2" />
+                    <ToggleButton Grid.Row="4"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="11" />
+                </Grid>
+            </Border>
 
-            <ToggleButton Grid.Row="0"
-                          Grid.Column="6"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="9" />
+            <!-- Bottom Left -->
+            <Border Grid.Row="2"
+                    Grid.Column="0"
+                    Classes="Card"
+                    Background="{StaticResource ButtonBackground}">
+                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto">
+                    <ToggleButton Grid.Column="0"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="12" />
 
-            <!-- Row 0 / 2 Connectors -->
-            <controls:Icon Grid.Row="1"
-                           Grid.Column="0"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <controls:Icon Grid.Column="1"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
 
-            <controls:Icon Grid.Row="1"
-                           Grid.Column="2"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <ToggleButton Grid.Column="2"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="13" />
 
-            <controls:Icon Grid.Row="1"
-                           Grid.Column="4"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <controls:Icon Grid.Column="3"
+                                   Content="{StaticResource ConnectionHorizontalIcon}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
 
-            <controls:Icon Grid.Row="1"
-                           Grid.Column="6"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                    <ToggleButton Grid.Column="4"
+                                  Margin="{StaticResource DoubleMarginAll}"
+                                  Width="128"
+                                  Height="128"
+                                  Content="14" />
+                </Grid>
+            </Border>
 
-            <!-- Row 2 -->
-            <ToggleButton Grid.Row="2"
-                          Grid.Column="0"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="3" />
-
-            <controls:Icon Grid.Row="2"
-                           Grid.Column="1"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="2"
-                          Grid.Column="2"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="4" />
-
-            <controls:Icon Grid.Row="2"
-                           Grid.Column="3"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="2"
-                          Grid.Column="4"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="5" />
-
-            <ToggleButton Grid.Row="2"
-                          Grid.Column="6"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="10" />
-
-            <!-- Row 2 / 4 Connectors -->
-            <controls:Icon Grid.Row="3"
-                           Grid.Column="0"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <controls:Icon Grid.Row="3"
-                           Grid.Column="2"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <controls:Icon Grid.Row="3"
-                           Grid.Column="4"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <controls:Icon Grid.Row="3"
-                           Grid.Column="6"
-                           Content="{StaticResource ConnectionVerticalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <!-- Row 4 -->
-            <ToggleButton Grid.Row="4"
-                          Grid.Column="0"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="6" />
-
-            <controls:Icon Grid.Row="4"
-                           Grid.Column="1"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="4"
-                          Grid.Column="2"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="7" />
-
-            <controls:Icon Grid.Row="4"
-                           Grid.Column="3"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="4"
-                          Grid.Column="4"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="8" />
-
-            <ToggleButton Grid.Row="4"
-                          Grid.Column="6"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="11" />
-
-            <!-- Row 5 -->
-            <ToggleButton Grid.Row="6"
-                          Grid.Column="0"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="12" />
-
-            <controls:Icon Grid.Row="6"
-                           Grid.Column="1"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="6"
-                          Grid.Column="2"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="13" />
-
-            <controls:Icon Grid.Row="6"
-                           Grid.Column="3"
-                           Content="{StaticResource ConnectionHorizontalIcon}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-
-            <ToggleButton Grid.Row="6"
-                          Grid.Column="4"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="14" />
-
-            <ToggleButton Grid.Row="6"
-                          Grid.Column="6"
-                          Margin="{StaticResource DoubleMarginAll}"
-                          Width="128"
-                          Height="128"
-                          Content="15" />
+            <!-- Bottom Right -->
+            <Border Grid.Row="2"
+                    Grid.Column="2"
+                    Classes="Card"
+                    Background="{StaticResource ButtonBackground}">
+                <ToggleButton Margin="{StaticResource DoubleMarginAll}"
+                              Width="128"
+                              Height="128"
+                              Content="15" />
+            </Border>
 
             <!-- Separators -->
             <Separator Grid.Row="0"
-                       Grid.RowSpan="7"
-                       Grid.Column="5"
+                       Grid.RowSpan="3"
+                       Grid.Column="1"
                        Width="1"
                        Background="{StaticResource TextControlForeground}"
                        Margin="{StaticResource DoubleMarginHorizontal}" />
-            
-            <Separator Grid.Row="5"
+
+            <Separator Grid.Row="1"
                        Grid.Column="0"
-                       Grid.ColumnSpan="7"
+                       Grid.ColumnSpan="3"
                        Height="1"
                        Background="{StaticResource TextControlForeground}"
                        Margin="{StaticResource DoubleMarginVertical}" />
@@ -278,13 +269,14 @@
 
         <Grid Grid.Row="0"
               Grid.Column="1"
-              RowDefinitions="Auto, *">
+              RowDefinitions="Auto, *"
+              Height="{Binding #_tileSetGrid.Bounds.Height}">
             <controls:ThumbnailSizeToggle Grid.Row="0"
                                           SelectedSize="{Binding SelectedThumbnailSize}" />
 
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Visible">
                 <controls:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
                                                          ThumbnailSize="{Binding SelectedThumbnailSize}" />
             </ScrollViewer>
