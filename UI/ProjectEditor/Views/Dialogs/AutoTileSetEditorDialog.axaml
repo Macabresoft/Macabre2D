@@ -32,7 +32,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="0" />
+                                  Content="12" />
 
                     <controls:Icon Grid.Row="0"
                                    Grid.Column="1"
@@ -45,7 +45,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="1" />
+                                  Content="14" />
 
                     <controls:Icon Grid.Row="0"
                                    Grid.Column="3"
@@ -58,7 +58,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="2" />
+                                  Content="10" />
 
                     <!-- Row 1 -->
                     <controls:Icon Grid.Row="1"
@@ -85,7 +85,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="3" />
+                                  Content="13" />
 
                     <controls:Icon Grid.Row="2"
                                    Grid.Column="1"
@@ -98,7 +98,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="4" />
+                                  Content="15" />
 
                     <controls:Icon Grid.Row="2"
                                    Grid.Column="3"
@@ -111,7 +111,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="5" />
+                                  Content="11" />
 
                     <!-- Row 3 -->
                     <controls:Icon Grid.Row="3"
@@ -138,7 +138,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="6" />
+                                  Content="5" />
 
                     <controls:Icon Grid.Row="4"
                                    Grid.Column="1"
@@ -164,7 +164,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="8" />
+                                  Content="3" />
                 </Grid>
             </Border>
 
@@ -178,7 +178,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="9" />
+                                  Content="8" />
 
                     <controls:Icon Grid.Row="1"
                                    Content="{StaticResource ConnectionVerticalIcon}"
@@ -189,7 +189,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="10" />
+                                  Content="9" />
 
                     <controls:Icon Grid.Row="3"
                                    Content="{StaticResource ConnectionVerticalIcon}"
@@ -200,7 +200,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="11" />
+                                  Content="1" />
                 </Grid>
             </Border>
 
@@ -214,7 +214,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="12" />
+                                  Content="4" />
 
                     <controls:Icon Grid.Column="1"
                                    Content="{StaticResource ConnectionHorizontalIcon}"
@@ -225,7 +225,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="13" />
+                                  Content="6" />
 
                     <controls:Icon Grid.Column="3"
                                    Content="{StaticResource ConnectionHorizontalIcon}"
@@ -236,7 +236,7 @@
                                   Margin="{StaticResource DoubleMarginAll}"
                                   Width="128"
                                   Height="128"
-                                  Content="14" />
+                                  Content="2" />
                 </Grid>
             </Border>
 
@@ -248,7 +248,8 @@
                 <ToggleButton Margin="{StaticResource DoubleMarginAll}"
                               Width="128"
                               Height="128"
-                              Content="15" />
+                              Tag="0"
+                              Content="0" />
             </Border>
 
             <!-- Separators -->

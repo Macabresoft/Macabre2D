@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.Framework {
-    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Newtonsoft.Json;
@@ -12,46 +11,18 @@ namespace Macabresoft.Macabre2D.Framework {
         /// The default name.
         /// </summary>
         public const string DefaultName = "Tile Set";
+
         private const byte CardinalSize = 16;
-        private const byte IntermediateSize = 48;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<byte, byte> _tileIndexToSpriteIndex = new();
-
-        private bool _useIntermediateDirections;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSet" /> class.
-        /// </summary>
-        public AutoTileSet() : base() {
-        }
-
+        
         /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>
-        public int Size => this.UseIntermediateDirections ? IntermediateSize : CardinalSize;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this should use intermediate directions when
-        /// calculating tiles or just the cardinal directions.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this is using intermediate directions in addition to cardinal directions;
-        /// otherwise, <c>false</c>.
-        /// </value>
-        [DataMember(Name = "Use Intermediate Directions")]
-        public bool UseIntermediateDirections {
-            get => this._useIntermediateDirections;
-
-            set {
-                if (this.Set(ref this._useIntermediateDirections, value)) {
-                    this._useIntermediateDirections = value;
-                    this._tileIndexToSpriteIndex.Clear();
-                }
-            }
-        }
-
+        public int Size => CardinalSize;
+        
         /// <summary>
         /// Gets the sprite at the specified index.
         /// </summary>
@@ -71,6 +42,15 @@ namespace Macabresoft.Macabre2D.Framework {
             if (tileIndex < this.Size) {
                 this._tileIndexToSpriteIndex[tileIndex] = spriteIndex;
             }
+        }
+
+        /// <summary>
+        /// Sets the sprite for the tile with the connected directions specified.
+        /// </summary>
+        /// <param name="spriteIndex">The sprite index.</param>
+        /// <param name="connectedDirections">The directions in which this tile connects to other tiles.</param>
+        public void SetSprite(byte spriteIndex, CardinalDirections connectedDirections) {
+            this.SetSprite(spriteIndex, (byte)connectedDirections);
         }
 
         /// <summary>

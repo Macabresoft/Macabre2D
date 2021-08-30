@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.Framework {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
@@ -86,12 +85,12 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         protected override Point GetMaximumTile() {
-            return new(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
+            return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Max(), this._activeTileToIndex.Keys.Select(t => t.Y).Max());
         }
 
         /// <inheritdoc />
         protected override Point GetMinimumTile() {
-            return new(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
+            return new Point(this._activeTileToIndex.Keys.Select(t => t.X).Min(), this._activeTileToIndex.Keys.Select(t => t.Y).Min());
         }
 
         /// <inheritdoc />
@@ -139,65 +138,24 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         private byte GetIndex(Point tile) {
-            byte index;
-            if (this.TileSetReference.PackagedAsset?.UseIntermediateDirections == true) {
-                var direction = IntermediateDirections.None;
-                if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-                    direction |= IntermediateDirections.North;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-                    direction |= IntermediateDirections.East;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-                    direction |= IntermediateDirections.South;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-                    direction |= IntermediateDirections.West;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 1))) {
-                    direction |= IntermediateDirections.NorthEast;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(-1, 1))) {
-                    direction |= IntermediateDirections.NorthWest;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 1))) {
-                    direction |= IntermediateDirections.SouthWest;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(-1, 1))) {
-                    direction |= IntermediateDirections.SouthEast;
-                }
-
-                index = (byte)direction;
-            }
-            else {
-                var direction = CardinalDirections.None;
-                if (this.HasActiveTileAt(tile + new Point(0, 1))) {
-                    direction |= CardinalDirections.North;
-                }
-
-                if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-                    direction |= CardinalDirections.East;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(0, 1))) {
-                    direction |= CardinalDirections.South;
-                }
-
-                if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-                    direction |= CardinalDirections.West;
-                }
-
-                index = (byte)direction;
+            var direction = CardinalDirections.None;
+            if (this.HasActiveTileAt(tile + new Point(0, 1))) {
+                direction |= CardinalDirections.North;
             }
 
-            return index;
+            if (this.HasActiveTileAt(tile + new Point(1, 0))) {
+                direction |= CardinalDirections.East;
+            }
+
+            if (this.HasActiveTileAt(tile - new Point(0, 1))) {
+                direction |= CardinalDirections.South;
+            }
+
+            if (this.HasActiveTileAt(tile - new Point(1, 0))) {
+                direction |= CardinalDirections.West;
+            }
+
+            return (byte)direction;
         }
 
         private void ReevaluateIndex(Point tile) {
@@ -231,23 +189,6 @@ namespace Macabresoft.Macabre2D.Framework {
             if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
                 this.ResetBoundingArea();
             }
-        }
-
-        /// <summary>
-        /// Represents eight directions from a single tile.
-        /// </summary>
-        [Flags]
-        private enum IntermediateDirections : byte {
-            None = 0,
-            NorthWest = 1 << 0,
-            North = 1 << 1,
-            NorthEast = 1 << 2,
-            West = 1 << 3,
-            East = 1 << 4,
-            SouthWest = 1 << 5,
-            South = 1 << 6,
-            SouthEast = 1 << 7,
-            All = NorthWest | North | NorthEast | West | East | SouthWest | South | SouthEast
         }
     }
 }

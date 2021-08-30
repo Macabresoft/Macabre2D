@@ -14,6 +14,7 @@
         private readonly IUndoService _parentUndoService;
         private readonly SpriteSheet _spriteSheet;
         private ThumbnailSize _selectedThumbnailSize;
+        private byte _selectedTile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
@@ -66,6 +67,15 @@
         public ThumbnailSize SelectedThumbnailSize {
             get => this._selectedThumbnailSize;
             set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the selected tile. This value comes from converting the connected <see cref="CardinalDirections" /> of the
+        /// tile to a byte.
+        /// </summary>
+        public byte SelectedTile {
+            get => this._selectedTile;
+            set => this.RaiseAndSetIfChanged(ref this._selectedTile, value);
         }
 
         /// <inheritdoc />
