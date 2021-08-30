@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -16,22 +15,12 @@ namespace Macabresoft.Macabre2D.Framework {
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<byte, byte> _tileIndexToSpriteIndex = new();
-        
+
         /// <summary>
         /// Gets the size.
         /// </summary>
         /// <value>The size.</value>
         public int Size => CardinalSize;
-        
-        /// <summary>
-        /// Gets the sprite at the specified index.
-        /// </summary>
-        /// <param name="tileIndex">The index.</param>
-        /// <returns>The sprite at the specified index.</returns>
-        public byte GetSpriteIndex(byte tileIndex) {
-            this._tileIndexToSpriteIndex.TryGetValue(tileIndex, out var spriteIndex);
-            return spriteIndex;
-        }
 
         /// <summary>
         /// Sets the sprite at the specified index.
@@ -51,6 +40,16 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <param name="connectedDirections">The directions in which this tile connects to other tiles.</param>
         public void SetSprite(byte spriteIndex, CardinalDirections connectedDirections) {
             this.SetSprite(spriteIndex, (byte)connectedDirections);
+        }
+
+        /// <summary>
+        /// Tries to get the sprite index used by the specified tile.
+        /// </summary>
+        /// <param name="tileIndex">The tile index.</param>
+        /// <param name="spriteIndex">The sprite index.</param>
+        /// <returns>A value indicating whether or not the sprite was found.</returns>
+        public bool TryGetSpriteIndex(byte tileIndex, out byte spriteIndex) {
+            return this._tileIndexToSpriteIndex.TryGetValue(tileIndex, out spriteIndex);
         }
 
         /// <summary>

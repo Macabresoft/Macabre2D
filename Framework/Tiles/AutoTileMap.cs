@@ -64,8 +64,7 @@ namespace Macabresoft.Macabre2D.Framework {
             if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.PackagedAsset is AutoTileSet tileSet && this.TileSetReference.Asset is SpriteSheet spriteSheet) {
                 foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                     var boundingArea = this.GetTileBoundingArea(activeTile);
-                    if (boundingArea.Overlaps(viewBoundingArea)) {
-                        var spriteIndex = tileSet.GetSpriteIndex(tileIndex);
+                    if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex)) {
                         spriteBatch.Draw(
                             this.Scene.Game.Project.Settings.PixelsPerUnit,
                             spriteSheet,
