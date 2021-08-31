@@ -5,6 +5,7 @@
     using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using ReactiveUI;
 
     public class ThumbnailSizeToggle : UserControl {

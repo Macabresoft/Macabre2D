@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models {
+﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
     using System;
     using System.Collections;
     using System.Collections.Generic;

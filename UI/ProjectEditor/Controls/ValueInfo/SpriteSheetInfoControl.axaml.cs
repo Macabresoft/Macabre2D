@@ -6,6 +6,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueInfo {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
         public static readonly DirectProperty<SpriteSheetInfoControl, Bitmap> BitmapProperty =

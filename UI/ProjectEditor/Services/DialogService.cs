@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs;

@@ -4,6 +4,7 @@
     using Avalonia;
     using Avalonia.Data.Converters;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     public class ThumbnailSizeToPixelSizeConverter : IValueConverter {
         private const double Large = Medium * 2d;

@@ -4,6 +4,7 @@
     using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     public class SpriteDisplayCollectionControl : UserControl {
         public static readonly StyledProperty<SpriteDisplayCollection> CollectionProperty =

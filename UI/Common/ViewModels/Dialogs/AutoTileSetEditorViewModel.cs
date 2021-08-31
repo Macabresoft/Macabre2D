@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+    using System.Collections.Generic;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
@@ -43,13 +45,27 @@
             this._spriteSheet = spriteSheet;
             this._file = file;
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
+
+            var tiles = new AutoTileIndexModel[this.TileSet.Size];
+            for (byte i = 0; i < tiles.Length; i++) {
+                tiles[i] = new AutoTileIndexModel(this.TileSet, i);
+            }
+
+            this.Tiles = tiles;
             this.IsOkEnabled = true;
+            
+            
         }
 
         /// <summary>
         /// Gets the sprite collection.
         /// </summary>
         public SpriteDisplayCollection SpriteCollection { get; }
+        
+        /// <summary>
+        /// Gets the tiles.
+        /// </summary>
+        public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
 
         /// <summary>
         /// Gets the tile set.
