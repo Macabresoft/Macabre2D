@@ -2,11 +2,10 @@
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
-    /// A model for a single tile of an <see cref="AutoTileSet"/>.
+    /// A model for a single tile of an <see cref="AutoTileSet" />.
     /// </summary>
     public class AutoTileIndexModel : NotifyPropertyChanged {
         private readonly AutoTileSet _tileSet;
-        private readonly byte _tileIndex;
         private byte? _spriteIndex;
 
         /// <summary>
@@ -16,12 +15,17 @@
         /// <param name="tileIndex">The tile index.</param>
         public AutoTileIndexModel(AutoTileSet tileSet, byte tileIndex) {
             this._tileSet = tileSet;
-            this._tileIndex = tileIndex;
+            this.TileIndex = tileIndex;
 
             if (this._tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex)) {
                 this._spriteIndex = spriteIndex;
             }
         }
+
+        /// <summary>
+        /// Gets the tile index.
+        /// </summary>
+        public byte TileIndex { get; }
 
         /// <summary>
         /// Gets or sets the sprite index.
@@ -31,10 +35,10 @@
             set {
                 if (this.Set(ref this._spriteIndex, value)) {
                     if (this._spriteIndex == null) {
-                        this._tileSet.UnsetSprite(this._tileIndex);
+                        this._tileSet.UnsetSprite(this.TileIndex);
                     }
                     else {
-                        this._tileSet.SetSprite(this._spriteIndex.Value, this._tileIndex);
+                        this._tileSet.SetSprite(this._spriteIndex.Value, this.TileIndex);
                     }
                 }
             }

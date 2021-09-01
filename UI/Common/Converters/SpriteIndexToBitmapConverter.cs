@@ -16,7 +16,7 @@
         public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
             if (values.OfType<SpriteDisplayCollection>().FirstOrDefault() is SpriteDisplayCollection collection &&
                 values.OfType<byte>().FirstOrDefault() is var index and > 0) {
-                return collection.Sprites.FirstOrDefault(x => x.Index == index);
+                return collection.Sprites.FirstOrDefault(x => x.Index == index)?.Bitmap;
             }
 
             return AvaloniaProperty.UnsetValue;

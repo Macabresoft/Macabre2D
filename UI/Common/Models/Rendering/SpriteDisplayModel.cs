@@ -26,9 +26,11 @@
                 this.SpriteSheet.Rows,
                 index);
 
+            this.Size = new PixelSize(sizeAndLocation.Size.X, sizeAndLocation.Size.Y);
+
             var rect = new PixelRect(
                 new PixelPoint(sizeAndLocation.Location.X, sizeAndLocation.Location.Y),
-                new PixelSize(sizeAndLocation.Size.X, sizeAndLocation.Size.Y));
+                this.Size);
 
             this.Bitmap = new CroppedBitmap(image, rect);
         }
@@ -47,5 +49,10 @@
         /// Gets the sprite sheet.
         /// </summary>
         public SpriteSheet SpriteSheet { get; }
+        
+        /// <summary>
+        /// Gets the size of the sprite.
+        /// </summary>
+        public PixelSize Size { get; }
     }
 }

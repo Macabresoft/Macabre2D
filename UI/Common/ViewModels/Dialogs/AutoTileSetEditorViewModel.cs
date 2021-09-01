@@ -1,7 +1,9 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Avalonia;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using Macabresoft.Macabre2D.UI.Common.Services;
@@ -12,6 +14,7 @@
     /// A view model for editing auto tile sets.
     /// </summary>
     public class AutoTileSetEditorViewModel : BaseDialogViewModel {
+        private const double MaxTileSize = 128;
         private readonly ContentFile _file;
         private readonly IUndoService _parentUndoService;
         private readonly SpriteSheet _spriteSheet;
@@ -52,16 +55,15 @@
             }
 
             this.Tiles = tiles;
+            this.TileSize = this.GetTileSize();
             this.IsOkEnabled = true;
-            
-            
         }
 
         /// <summary>
         /// Gets the sprite collection.
         /// </summary>
         public SpriteDisplayCollection SpriteCollection { get; }
-        
+
         /// <summary>
         /// Gets the tiles.
         /// </summary>
@@ -71,6 +73,11 @@
         /// Gets the tile set.
         /// </summary>
         public AutoTileSet TileSet { get; }
+
+        /// <summary>
+        /// Gets the size of a tile in pixels.
+        /// </summary>
+        public Size TileSize { get; }
 
         /// <summary>
         /// Gets the undo service.
@@ -106,6 +113,25 @@
             var command = this.UndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
             base.OnOk();
+        }
+
+        private Size GetTileSize() {
+            var size = Size.Empty;
+            if (this.SpriteCollection.Sprites.FirstOrDefault() is SpriteDisplayModel { Size: { Width: > 0, Height: > 0 } spriteSize }) {
+                if (spriteSize.Width == spriteSize.Height) {
+                    size = new Size(MaxTileSize, MaxTileSize);
+                }
+                else if (spriteSize.Width > spriteSize.Height) {
+                    var ratio = spriteSize.Height / (double)spriteSize.Width;
+                    size = new Size(MaxTileSize, MaxTileSize * ratio);
+                }
+                else {
+                    var ratio = spriteSize.Width / (double)spriteSize.Height;
+                    size = new Size(MaxTileSize * ratio, MaxTileSize);
+                }
+            }
+
+            return size;
         }
     }
 }

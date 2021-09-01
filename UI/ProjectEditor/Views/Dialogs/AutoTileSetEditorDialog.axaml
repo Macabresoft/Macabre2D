@@ -1,15 +1,42 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetEditorDialog"
         CanResize="False"
         SizeToContent="Height"
         Width="1280"
+        MinHeight="600"
         Title="Auto Tile Set Editor">
     <Design.DataContext>
         <viewModels:AutoTileSetEditorViewModel />
     </Design.DataContext>
+    <Window.Resources>
+        <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+    </Window.Resources>
+    <Window.Styles>
+        <Style Selector="ToggleButton">
+            <Setter Property="Margin" Value="{StaticResource DoubleMarginAll}" />
+            <Setter Property="Width" Value="{Binding TileSize.Width}" />
+            <Setter Property="Height" Value="{Binding TileSize.Height}" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Template>
+                        <Image>
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
+                                    <Binding Path="$parent[ToggleButton].Tag.SpriteIndex" />
+                                    <Binding Path="SpriteCollection" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+                    </Template>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Styles>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="Auto, *"
           Margin="{StaticResource DoubleMarginAll}">
@@ -29,10 +56,7 @@
                     <!-- Row 0 -->
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="0"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="12" />
+                                  Tag="{Binding Tiles[12]}" />
 
                     <controls:Icon Grid.Row="0"
                                    Grid.Column="1"
@@ -42,10 +66,7 @@
 
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="2"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="14" />
+                                  Tag="{Binding Tiles[14]}" />
 
                     <controls:Icon Grid.Row="0"
                                    Grid.Column="3"
@@ -55,10 +76,7 @@
 
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="4"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="10" />
+                                  Tag="{Binding Tiles[10]}" />
 
                     <!-- Row 1 -->
                     <controls:Icon Grid.Row="1"
@@ -82,10 +100,7 @@
                     <!-- Row 2 -->
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="0"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="13" />
+                                  Tag="{Binding Tiles[13]}" />
 
                     <controls:Icon Grid.Row="2"
                                    Grid.Column="1"
@@ -95,10 +110,7 @@
 
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="2"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="15" />
+                                  Tag="{Binding Tiles[15]}" />
 
                     <controls:Icon Grid.Row="2"
                                    Grid.Column="3"
@@ -108,10 +120,7 @@
 
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="4"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="11" />
+                                  Tag="{Binding Tiles[11]}" />
 
                     <!-- Row 3 -->
                     <controls:Icon Grid.Row="3"
@@ -135,10 +144,7 @@
                     <!-- Row 4 -->
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="0"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="5" />
+                                  Tag="{Binding Tiles[5]}" />
 
                     <controls:Icon Grid.Row="4"
                                    Grid.Column="1"
@@ -148,10 +154,7 @@
 
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="2"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="7" />
+                                  Tag="{Binding Tiles[7]}" />
 
                     <controls:Icon Grid.Row="4"
                                    Grid.Column="3"
@@ -161,10 +164,7 @@
 
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="4"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="3" />
+                                  Tag="{Binding Tiles[3]}" />
                 </Grid>
             </Border>
 
@@ -175,10 +175,7 @@
                     Background="{StaticResource ButtonBackground}">
                 <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
                     <ToggleButton Grid.Row="0"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="8" />
+                                  Tag="{Binding Tiles[8]}" />
 
                     <controls:Icon Grid.Row="1"
                                    Content="{StaticResource ConnectionVerticalIcon}"
@@ -186,10 +183,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Row="2"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="9" />
+                                  Tag="{Binding Tiles[9]}" />
 
                     <controls:Icon Grid.Row="3"
                                    Content="{StaticResource ConnectionVerticalIcon}"
@@ -197,10 +191,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Row="4"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="1" />
+                                  Tag="{Binding Tiles[1]}" />
                 </Grid>
             </Border>
 
@@ -211,10 +202,7 @@
                     Background="{StaticResource ButtonBackground}">
                 <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto">
                     <ToggleButton Grid.Column="0"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="4" />
+                                  Tag="{Binding Tiles[4]}" />
 
                     <controls:Icon Grid.Column="1"
                                    Content="{StaticResource ConnectionHorizontalIcon}"
@@ -222,10 +210,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Column="2"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="6" />
+                                  Tag="{Binding Tiles[6]}" />
 
                     <controls:Icon Grid.Column="3"
                                    Content="{StaticResource ConnectionHorizontalIcon}"
@@ -233,10 +218,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Column="4"
-                                  Margin="{StaticResource DoubleMarginAll}"
-                                  Width="128"
-                                  Height="128"
-                                  Content="2" />
+                                  Tag="{Binding Tiles[2]}" />
                 </Grid>
             </Border>
 
@@ -245,11 +227,7 @@
                     Grid.Column="2"
                     Classes="Card"
                     Background="{StaticResource ButtonBackground}">
-                <ToggleButton Margin="{StaticResource DoubleMarginAll}"
-                              Width="128"
-                              Height="128"
-                              Tag="0"
-                              Content="0" />
+                <ToggleButton Tag="{Binding Tiles[0]}" />
             </Border>
 
             <!-- Separators -->
