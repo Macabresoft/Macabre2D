@@ -13,18 +13,29 @@
         <viewModels:AutoTileSetEditorViewModel />
     </Design.DataContext>
     <Window.Resources>
+        <converters:MultiEqualityConverter x:Key="MultiEqualityConverter" />
         <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
     </Window.Resources>
     <Window.Styles>
-        <Style Selector="ToggleButton">
+        <Style Selector="ToggleButton.Tile">
             <Setter Property="Margin" Value="{StaticResource DoubleMarginAll}" />
+            <Setter Property="Padding" Value="0" />
             <Setter Property="Width" Value="{Binding TileSize.Width}" />
             <Setter Property="Height" Value="{Binding TileSize.Height}" />
-            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Command" Value="{Binding SelectTileCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding $self.Tag}" />
+            <Setter Property="IsChecked">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource MultiEqualityConverter}">
+                        <Binding Path="$self.Tag" />
+                        <Binding Path="SelectedTile" />
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Content">
                 <Setter.Value>
                     <Template>
-                        <Image>
+                        <Image Stretch="Fill">
                             <Image.Source>
                                 <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                     <Binding Path="$parent[ToggleButton].Tag.SpriteIndex" />
@@ -56,6 +67,7 @@
                     <!-- Row 0 -->
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="0"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[12]}" />
 
                     <controls:Icon Grid.Row="0"
@@ -66,6 +78,7 @@
 
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="2"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[14]}" />
 
                     <controls:Icon Grid.Row="0"
@@ -76,6 +89,7 @@
 
                     <ToggleButton Grid.Row="0"
                                   Grid.Column="4"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[10]}" />
 
                     <!-- Row 1 -->
@@ -100,6 +114,7 @@
                     <!-- Row 2 -->
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="0"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[13]}" />
 
                     <controls:Icon Grid.Row="2"
@@ -110,6 +125,7 @@
 
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="2"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[15]}" />
 
                     <controls:Icon Grid.Row="2"
@@ -120,6 +136,7 @@
 
                     <ToggleButton Grid.Row="2"
                                   Grid.Column="4"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[11]}" />
 
                     <!-- Row 3 -->
@@ -144,6 +161,7 @@
                     <!-- Row 4 -->
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="0"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[5]}" />
 
                     <controls:Icon Grid.Row="4"
@@ -154,6 +172,7 @@
 
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="2"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[7]}" />
 
                     <controls:Icon Grid.Row="4"
@@ -164,6 +183,7 @@
 
                     <ToggleButton Grid.Row="4"
                                   Grid.Column="4"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[3]}" />
                 </Grid>
             </Border>
@@ -175,6 +195,7 @@
                     Background="{StaticResource ButtonBackground}">
                 <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
                     <ToggleButton Grid.Row="0"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[8]}" />
 
                     <controls:Icon Grid.Row="1"
@@ -183,6 +204,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Row="2"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[9]}" />
 
                     <controls:Icon Grid.Row="3"
@@ -191,6 +213,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Row="4"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[1]}" />
                 </Grid>
             </Border>
@@ -202,6 +225,7 @@
                     Background="{StaticResource ButtonBackground}">
                 <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto">
                     <ToggleButton Grid.Column="0"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[4]}" />
 
                     <controls:Icon Grid.Column="1"
@@ -210,6 +234,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Column="2"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[6]}" />
 
                     <controls:Icon Grid.Column="3"
@@ -218,6 +243,7 @@
                                    VerticalAlignment="Center" />
 
                     <ToggleButton Grid.Column="4"
+                                  Classes="Tile"
                                   Tag="{Binding Tiles[2]}" />
                 </Grid>
             </Border>
@@ -227,7 +253,8 @@
                     Grid.Column="2"
                     Classes="Card"
                     Background="{StaticResource ButtonBackground}">
-                <ToggleButton Tag="{Binding Tiles[0]}" />
+                <ToggleButton Classes="Tile"
+                              Tag="{Binding Tiles[0]}" />
             </Border>
 
             <!-- Separators -->
@@ -257,6 +284,7 @@
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible">
                 <controls:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                         SelectedSprite="{Binding SelectedSprite}"
                                                          ThumbnailSize="{Binding SelectedThumbnailSize}" />
             </ScrollViewer>
         </Grid>

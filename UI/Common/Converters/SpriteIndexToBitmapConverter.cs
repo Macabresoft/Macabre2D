@@ -5,7 +5,6 @@
     using System.Linq;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     /// <summary>
@@ -15,7 +14,7 @@
         /// <inheritdoc />
         public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
             if (values.OfType<SpriteDisplayCollection>().FirstOrDefault() is SpriteDisplayCollection collection &&
-                values.OfType<byte>().FirstOrDefault() is var index and > 0) {
+                values.OfType<byte?>().FirstOrDefault() is { } index) {
                 return collection.Sprites.FirstOrDefault(x => x.Index == index)?.Bitmap;
             }
 

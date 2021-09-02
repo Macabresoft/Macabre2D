@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// A model for a single tile of an <see cref="AutoTileSet" />.
@@ -13,6 +14,7 @@
         /// </summary>
         /// <param name="tileSet">The tile set.</param>
         /// <param name="tileIndex">The tile index.</param>
+        /// <param name="undoService">The undo service.</param>
         public AutoTileIndexModel(AutoTileSet tileSet, byte tileIndex) {
             this._tileSet = tileSet;
             this.TileIndex = tileIndex;

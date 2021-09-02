@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Input;
     using Avalonia;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
@@ -18,8 +18,9 @@
         private readonly ContentFile _file;
         private readonly IUndoService _parentUndoService;
         private readonly SpriteSheet _spriteSheet;
+        private SpriteDisplayModel _selectedSprite;
         private ThumbnailSize _selectedThumbnailSize;
-        private byte _selectedTile;
+        private AutoTileIndexModel _selectedTile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSetEditorViewModel" /> class.
@@ -47,6 +48,7 @@
             this.TileSet = tileSet;
             this._spriteSheet = spriteSheet;
             this._file = file;
+            this.SelectTileCommand = ReactiveCommand.Create<AutoTileIndexModel>(this.SelectTile);
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
             var tiles = new AutoTileIndexModel[this.TileSet.Size];
@@ -55,9 +57,15 @@
             }
 
             this.Tiles = tiles;
+            this.SelectedTile = this.Tiles.First();
             this.TileSize = this.GetTileSize();
             this.IsOkEnabled = true;
         }
+
+        /// <summary>
+        /// Gets the select tile command.
+        /// </summary>
+        public ICommand SelectTileCommand { get; }
 
         /// <summary>
         /// Gets the sprite collection.
@@ -85,6 +93,25 @@
         public IChildUndoService UndoService { get; }
 
         /// <summary>
+        /// Gets or sets the selected sprite.
+        /// </summary>
+        public SpriteDisplayModel SelectedSprite {
+            get => this._selectedSprite;
+            set {
+                if (this._selectedTile is AutoTileIndexModel selectedTile) {
+                    var previousSprite = this._selectedSprite;
+                    this.UndoService.Do(() => {
+                        this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
+                        selectedTile.SpriteIndex = this._selectedSprite?.Index;
+                    }, () => {
+                        this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
+                        selectedTile.SpriteIndex = this._selectedSprite?.Index;
+                    });
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the selected thumbnail size.
         /// </summary>
         public ThumbnailSize SelectedThumbnailSize {
@@ -93,12 +120,17 @@
         }
 
         /// <summary>
-        /// Gets or sets the selected tile. This value comes from converting the connected <see cref="CardinalDirections" /> of the
-        /// tile to a byte.
+        /// Gets or sets the selected tile.
         /// </summary>
-        public byte SelectedTile {
+        public AutoTileIndexModel SelectedTile {
             get => this._selectedTile;
-            set => this.RaiseAndSetIfChanged(ref this._selectedTile, value);
+            private set {
+                if (this._selectedTile != value) {
+                    this.RaiseAndSetIfChanged(ref this._selectedTile, value);
+                    this._selectedSprite = this._selectedTile != null ? this.SpriteCollection.FirstOrDefault(x => x.Index == this._selectedTile.SpriteIndex) : null;
+                    this.RaisePropertyChanged(nameof(this.SelectedSprite));
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -132,6 +164,12 @@
             }
 
             return size;
+        }
+
+        private void SelectTile(AutoTileIndexModel tile) {
+            if (tile != null) {
+                this.SelectedTile = tile;
+            }
         }
     }
 }
