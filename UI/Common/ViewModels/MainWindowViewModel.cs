@@ -16,11 +16,11 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// <summary>
     /// The view model for the main window.
     /// </summary>
-    public class MainWindowViewModel : ViewModelBase {
+    public class MainWindowViewModel : UndoBaseViewModel {
         private readonly IDialogService _dialogService;
+        private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -36,7 +36,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
-        /// <param name="popupService">The popup service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
@@ -52,32 +51,24 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             ISceneService sceneService,
             IEditorSettingsService settingsService,
             ISystemService systemService,
-            IUndoService undoService) : base() {
+            IUndoService undoService) : base(undoService) {
             this.ContentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
-            this.SaveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
+            this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             this.SystemService = systemService ?? throw new ArgumentNullException(nameof(systemService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
-            this.RedoCommand = ReactiveCommand.Create(
-                undoService.Redo,
-                undoService.WhenAnyValue(x => x.CanRedo));
-            this.SaveCommand = ReactiveCommand.Create(this.SaveService.Save, this.SaveService.WhenAnyValue(x => x.HasChanges));
+
+            this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
             this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind>(this.SetSelectedGizmo);
-            this.UndoCommand = ReactiveCommand.Create(
-                undoService.Undo,
-                undoService.WhenAnyValue(x => x.CanUndo));
+
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
-        }
-
-        private async Task ViewLicenses() {
-            await this._dialogService.OpenLicenseDialog();
         }
 
         /// <summary>
@@ -99,26 +90,16 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to exit the application.
         /// </summary>
         public ICommand ExitCommand { get; }
-        
+
         /// <summary>
         /// Gets the open scene command.
         /// </summary>
         public ICommand OpenSceneCommand { get; }
 
         /// <summary>
-        /// Gets the command to redo a previously undone operation.
-        /// </summary>
-        public ICommand RedoCommand { get; }
-
-        /// <summary>
         /// Gets the command to save the current scene.
         /// </summary>
         public ICommand SaveCommand { get; }
-
-        /// <summary>
-        /// Gets the save service.
-        /// </summary>
-        public ISaveService SaveService { get; }
 
         /// <summary>
         /// Gets a command to set the selected gizmo.
@@ -135,11 +116,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         public ISystemService SystemService { get; }
 
-        /// <summary>
-        /// Gets the command to undo the previous operation.
-        /// </summary>
-        public ICommand UndoCommand { get; }
-        
         /// <summary>
         /// Gets the command to view licenses.
         /// </summary>
@@ -166,7 +142,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// </summary>
         /// <returns>A value indicating whether or not the window should close.</returns>
         public async Task<YesNoCancelResult> TryClose() {
-            var result = await this.SaveService.RequestSave();
+            var result = await this._saveService.RequestSave();
             if (result != YesNoCancelResult.Cancel) {
                 this._settingsService.Save();
             }
@@ -179,7 +155,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         }
 
         private async Task OpenScene() {
-            var saveResult = await this.SaveService.RequestSave();
+            var saveResult = await this._saveService.RequestSave();
 
             if (saveResult != YesNoCancelResult.Cancel) {
                 var result = await this._dialogService.OpenAssetSelectionDialog(typeof(SceneAsset), false);
@@ -192,6 +168,10 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
 
         private void SetSelectedGizmo(GizmoKind kind) {
             this.EditorService.SelectedGizmo = kind;
+        }
+
+        private async Task ViewLicenses() {
+            await this._dialogService.OpenLicenseDialog();
         }
 
         private static void ViewSource() {

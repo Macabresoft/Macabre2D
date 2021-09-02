@@ -10,20 +10,20 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
     using System;
 
     public class ContentTreeView : UserControl {
-        public static readonly DirectProperty<ContentTreeView, ContentTreeViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<ContentTreeView, ContentTreeViewModel>(
-                nameof(ViewModel),
-                editor => editor.ViewModel);
+        public static readonly DirectProperty<ContentTreeView, ContentTreeBaseViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<ContentTreeView, ContentTreeBaseViewModel>(
+                nameof(BaseViewModel),
+                editor => editor.BaseViewModel);
 
         private Guid _dragTarget;
         
         public ContentTreeView() {
-            this.DataContext = Resolver.Resolve<ContentTreeViewModel>();
+            this.DataContext = Resolver.Resolve<ContentTreeBaseViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
         }
 
-        public ContentTreeViewModel ViewModel => this.DataContext as ContentTreeViewModel;
+        public ContentTreeBaseViewModel BaseViewModel => this.DataContext as ContentTreeBaseViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
@@ -38,7 +38,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
         private async void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IContentDirectory targetDirectory } &&
                 e.Data.Get(string.Empty) is IContentNode sourceNode) {
-                await this.ViewModel.MoveNode(sourceNode, targetDirectory);
+                await this.BaseViewModel.MoveNode(sourceNode, targetDirectory);
             }
 
             this._dragTarget = Guid.Empty;

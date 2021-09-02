@@ -48,10 +48,26 @@
             </Setter>
         </Style>
     </Window.Styles>
-    <Grid RowDefinitions="*, Auto"
+    <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions="Auto, *"
           Margin="{StaticResource DoubleMarginAll}">
-        <Grid Grid.Row="0"
+
+        <Menu Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="2">
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"
+                          Command="{Binding UndoCommand}"
+                          InputGesture="Ctrl + Z"
+                          HotKey="Ctrl + Z" />
+                <MenuItem Header="_Redo"
+                          Command="{Binding RedoCommand}"
+                          InputGesture="Ctrl + Y"
+                          HotKey="Ctrl + Y" />
+            </MenuItem>
+        </Menu>
+
+        <Grid Grid.Row="1"
               Grid.Column="0"
               x:Name="_tileSetGrid"
               RowDefinitions="Auto, Auto, Auto"
@@ -273,7 +289,7 @@
                        Margin="{StaticResource DoubleMarginVertical}" />
         </Grid>
 
-        <Grid Grid.Row="0"
+        <Grid Grid.Row="1"
               Grid.Column="1"
               RowDefinitions="Auto, *"
               Height="{Binding #_tileSetGrid.Bounds.Height}">
@@ -289,7 +305,7 @@
             </ScrollViewer>
         </Grid>
 
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal"

@@ -6,7 +6,7 @@
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.SceneTreeView">
     <Design.DataContext>
-        <viewModels:SceneTreeViewModel />
+        <viewModels:SceneTreeBaseViewModel />
     </Design.DataContext>
     <UserControl.Resources>
     </UserControl.Resources>
@@ -57,7 +57,7 @@
                 <TreeDataTemplate DataType="framework:IEntity"
                                   ItemsSource="{Binding Children}">
                     <controls:EditableSelectableItem IsEditable="True"
-                                                     TextCommittedCommand="{Binding $parent[local:SceneTreeView].TreeViewModel.RenameCommand}"
+                                                     TextCommittedCommand="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.RenameCommand}"
                                                      Text="{Binding Path=Name, Mode=TwoWay}"
                                                      PointerPressed="Entity_OnPointerPressed"
                                                      PointerReleased="Entity_OnPointerReleased"
@@ -71,7 +71,7 @@
                                           ToolTip.Tip="Rename this entity" />
                                 
                                 <MenuItem Header="Focus"
-                                          Command="{Binding $parent[local:SceneTreeView].TreeViewModel.EditorService.RequestFocusCommand}"
+                                          Command="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.EditorService.RequestFocusCommand}"
                                           ToolTip.Tip="Focus on this entity in the scene editor" />
 
                                 <Separator />
@@ -81,12 +81,12 @@
                                     <MenuItem.Styles>
                                         <Style Selector="MenuItem">
                                             <Setter Property="Command"
-                                                    Value="{Binding $parent[local:SceneTreeView].TreeViewModel.AddEntityCommand}" />
+                                                    Value="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.AddEntityCommand}" />
                                         </Style>
                                     </MenuItem.Styles>
                                 </MenuItem>
                                 <MenuItem Header="Remove"
-                                          Command="{Binding $parent[local:SceneTreeView].TreeViewModel.RemoveEntityCommand}"
+                                          Command="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.RemoveEntityCommand}"
                                           CommandParameter="{Binding}"
                                           ToolTip.Tip="Remove this entity and all of its children from the scene" />
                             </ContextMenu>

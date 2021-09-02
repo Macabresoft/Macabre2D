@@ -6,7 +6,7 @@
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.SystemsView">
     <Design.DataContext>
-        <viewModels:SystemsViewModel />
+        <viewModels:SystemsBaseViewModel />
     </Design.DataContext>
     <UserControl.Resources>
     </UserControl.Resources>
@@ -44,7 +44,7 @@
                 <DataTemplate>
                     <controls:EditableSelectableItem IsEditable="True"
                                                      HorizontalAlignment="Stretch"
-                                                     TextCommittedCommand="{Binding $parent[local:SystemsView].ViewModel.RenameCommand}"
+                                                     TextCommittedCommand="{Binding $parent[local:SystemsView].BaseViewModel.RenameCommand}"
                                                      Text="{Binding Path=Name, Mode=TwoWay}">
                         <controls:EditableSelectableItem.ContextMenu>
                             <ContextMenu>
@@ -55,7 +55,7 @@
                                 <Separator />
 
                                 <MenuItem Header="Remove"
-                                          Command="{Binding $parent[local:SystemsView].ViewModel.RemoveSystemCommand}"
+                                          Command="{Binding $parent[local:SystemsView].BaseViewModel.RemoveSystemCommand}"
                                           CommandParameter="{Binding}"
                                           ToolTip.Tip="Remove this system from the scene" />
                             </ContextMenu>

@@ -15,9 +15,8 @@
     /// </summary>
     public class AutoTileSetEditorViewModel : BaseDialogViewModel {
         private const double MaxTileSize = 128;
-        private readonly ContentFile _file;
+        private readonly IChildUndoService _childUndoService;
         private readonly IUndoService _parentUndoService;
-        private readonly SpriteSheet _spriteSheet;
         private SpriteDisplayModel _selectedSprite;
         private ThumbnailSize _selectedThumbnailSize;
         private AutoTileIndexModel _selectedTile;
@@ -42,18 +41,15 @@
             IUndoService parentUndoService,
             AutoTileSet tileSet,
             SpriteSheet spriteSheet,
-            ContentFile file) {
-            this.UndoService = childUndoService;
+            ContentFile file) : base(childUndoService) {
+            this._childUndoService = childUndoService;
             this._parentUndoService = parentUndoService;
-            this.TileSet = tileSet;
-            this._spriteSheet = spriteSheet;
-            this._file = file;
             this.SelectTileCommand = ReactiveCommand.Create<AutoTileIndexModel>(this.SelectTile);
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
-            var tiles = new AutoTileIndexModel[this.TileSet.Size];
+            var tiles = new AutoTileIndexModel[tileSet.Size];
             for (byte i = 0; i < tiles.Length; i++) {
-                tiles[i] = new AutoTileIndexModel(this.TileSet, i);
+                tiles[i] = new AutoTileIndexModel(tileSet, i);
             }
 
             this.Tiles = tiles;
@@ -78,19 +74,9 @@
         public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
 
         /// <summary>
-        /// Gets the tile set.
-        /// </summary>
-        public AutoTileSet TileSet { get; }
-
-        /// <summary>
         /// Gets the size of a tile in pixels.
         /// </summary>
         public Size TileSize { get; }
-
-        /// <summary>
-        /// Gets the undo service.
-        /// </summary>
-        public IChildUndoService UndoService { get; }
 
         /// <summary>
         /// Gets or sets the selected sprite.
@@ -135,14 +121,14 @@
 
         /// <inheritdoc />
         protected override void OnCancel() {
-            var command = this.UndoService.GetChanges();
+            var command = this._childUndoService.GetChanges();
             command?.Undo();
             base.OnCancel();
         }
 
         /// <inheritdoc />
         protected override void OnOk() {
-            var command = this.UndoService.GetChanges();
+            var command = this._childUndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
             base.OnOk();
         }

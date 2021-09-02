@@ -7,14 +7,14 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
 
     public class SystemsView : UserControl {
         public SystemsView() {
-            this.DataContext = Resolver.Resolve<SystemsViewModel>();
+            this.DataContext = Resolver.Resolve<SystemsBaseViewModel>();
             this.InitializeComponent();
-            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.SystemService.AvailableTypes, true);
+            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.BaseViewModel.SystemService.AvailableTypes, true);
         }
 
         public IReadOnlyCollection<IControl> AddMenuItems { get; }
 
-        public SystemsViewModel ViewModel => this.DataContext as SystemsViewModel;
+        public SystemsBaseViewModel BaseViewModel => this.DataContext as SystemsBaseViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

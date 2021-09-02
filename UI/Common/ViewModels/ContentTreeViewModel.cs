@@ -15,21 +15,21 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// <summary>
     /// A view model for the content tree.
     /// </summary>
-    public class ContentTreeViewModel : ViewModelBase {
+    public class ContentTreeBaseViewModel : BaseViewModel {
         private readonly IDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ContentTreeBaseViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public ContentTreeViewModel() {
+        public ContentTreeBaseViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ContentTreeBaseViewModel" /> class.
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
@@ -37,7 +37,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(
+        public ContentTreeBaseViewModel(
             IContentService contentService,
             IDialogService dialogService,
             IFileSystemService fileSystem,

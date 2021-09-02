@@ -2,12 +2,13 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System;
     using System.Windows.Input;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
 
     /// <summary>
-    /// A base dialog view models.
+    /// A base dialog view model.
     /// </summary>
-    public class BaseDialogViewModel : ViewModelBase {
+    public class BaseDialogViewModel : UndoBaseViewModel {
         /// <summary>
         /// An event that occurs when the dialog should close.
         /// </summary>
@@ -18,7 +19,18 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseDialogViewModel" /> class.
         /// </summary>
-        protected BaseDialogViewModel() {
+        /// <param name="undoService">The undo service.</param>
+        protected BaseDialogViewModel(IUndoService undoService) : base(undoService) {
+            this.CancelCommand = ReactiveCommand.Create(this.OnCancel);
+            this.OkCommand = ReactiveCommand.Create(
+                this.OnOk,
+                this.WhenAny(x => x.IsOkEnabled, y => y.Value));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseDialogViewModel" /> class.
+        /// </summary>
+        protected BaseDialogViewModel() : base() {
             this.CancelCommand = ReactiveCommand.Create(this.OnCancel);
             this.OkCommand = ReactiveCommand.Create(
                 this.OnOk,

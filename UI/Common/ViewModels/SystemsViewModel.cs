@@ -13,27 +13,27 @@
     /// <summary>
     /// View model for the systems view.
     /// </summary>
-    public sealed class SystemsViewModel : ViewModelBase {
+    public sealed class SystemsBaseViewModel : BaseViewModel {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SystemsViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SystemsBaseViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public SystemsViewModel() {
+        public SystemsBaseViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SystemsViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SystemsBaseViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SystemsViewModel(
+        public SystemsBaseViewModel(
             IDialogService dialogService,
             ISceneService sceneService,
             ISystemService systemService,

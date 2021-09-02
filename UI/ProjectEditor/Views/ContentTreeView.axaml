@@ -7,7 +7,7 @@
              xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.ContentTreeView">
     <Design.DataContext>
-        <contentViewModel:ContentTreeViewModel />
+        <contentViewModel:ContentTreeBaseViewModel />
     </Design.DataContext>
     <UserControl.Resources>
         <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
@@ -52,22 +52,22 @@
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Open Directory"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory in the file explorer" />
 
                                     <Separator />
 
                                     <MenuItem Header="Add Directory"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddDirectoryCommand}"
                                               ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                     <MenuItem Header="Add Scene"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddSceneCommand}"
                                               ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                     <MenuItem Header="Import Content"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.ImportCommand}"
                                               ToolTip.Tip="Import a piece of content from elsewhere" />
                                 </ContextMenu>
                             </controls:EditableSelectableItem.ContextMenu>
@@ -88,7 +88,7 @@
                                                          IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                          IsEditable="True"
                                                          IsFileName="True"
-                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
+                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].BaseViewModel.RenameContentCommand}"
                                                          Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
@@ -97,28 +97,28 @@
                                               ToolTip.Tip="Rename this directory" />
 
                                     <MenuItem Header="Open Directory"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory in the file explorer" />
 
                                     <Separator />
 
                                     <MenuItem Header="Add Directory"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddDirectoryCommand}"
                                               ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                     <MenuItem Header="Add Scene"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddSceneCommand}"
                                               ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                     <MenuItem Header="Import Content"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.ImportCommand}"
                                               ToolTip.Tip="Import a piece of content from elsewhere" />
 
                                     <Separator />
 
                                     <MenuItem Header="Delete"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Delete this directory from your computer" />
                                 </ContextMenu>
@@ -138,7 +138,7 @@
                                                          IconForeground="{StaticResource TextControlForeground}"
                                                          IsEditable="True"
                                                          IsFileName="True"
-                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
+                                                         TextCommittedCommand="{Binding $parent[local:ContentTreeView].BaseViewModel.RenameContentCommand}"
                                                          Text="{Binding Name}">
                             <controls:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
@@ -148,19 +148,19 @@
 
 
                                     <MenuItem Header="Open"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory in the file explorer" />
 
                                     <MenuItem Header="Open Containing Directory"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Open the directory which contains this file in the file explorer" />
 
                                     <Separator />
 
                                     <MenuItem Header="Delete"
-                                              Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
+                                              Command="{Binding $parent[local:ContentTreeView].BaseViewModel.RemoveContentCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Delete this content from your computer" />
                                 </ContextMenu>

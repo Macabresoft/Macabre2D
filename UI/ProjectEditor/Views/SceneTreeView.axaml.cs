@@ -16,28 +16,28 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views {
                 nameof(AddMenuItems),
                 editor => editor.AddMenuItems);
 
-        public static readonly DirectProperty<SceneTreeView, SceneTreeViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeViewModel>(
-                nameof(TreeViewModel),
-                editor => editor.TreeViewModel);
+        public static readonly DirectProperty<SceneTreeView, SceneTreeBaseViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeBaseViewModel>(
+                nameof(TreeBaseViewModel),
+                editor => editor.TreeBaseViewModel);
 
         private Guid _dragTarget;
 
         public SceneTreeView() {
-            this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
+            this.DataContext = Resolver.Resolve<SceneTreeBaseViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
-            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.TreeViewModel.EntityService.AvailableTypes, true);
+            this.AddMenuItems = MenuItemHelper.CreateAddMenuItems(this.TreeBaseViewModel.EntityService.AvailableTypes, true);
         }
 
         public IReadOnlyCollection<IControl> AddMenuItems { get; }
 
-        public SceneTreeViewModel TreeViewModel => this.DataContext as SceneTreeViewModel;
+        public SceneTreeBaseViewModel TreeBaseViewModel => this.DataContext as SceneTreeBaseViewModel;
 
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&
                 e.Data.Get(string.Empty) is IEntity sourceEntity) {
-                this.TreeViewModel.MoveEntity(sourceEntity, targetEntity);
+                this.TreeBaseViewModel.MoveEntity(sourceEntity, targetEntity);
             }
 
             this._dragTarget = Guid.Empty;

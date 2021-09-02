@@ -16,21 +16,21 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     /// <summary>
     /// A view model for the scene view.
     /// </summary>
-    public sealed class SceneTreeViewModel : ViewModelBase {
+    public sealed class SceneTreeBaseViewModel : BaseViewModel {
         private readonly IDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeBaseViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public SceneTreeViewModel() {
+        public SceneTreeBaseViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeBaseViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
@@ -38,7 +38,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// <param name="sceneService">The scene service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeViewModel(
+        public SceneTreeBaseViewModel(
             IDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
