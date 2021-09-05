@@ -15,30 +15,22 @@
             <ListBox Items="{Binding Collection.Sprites}"
                      SelectedItem="{Binding SelectedSprite}">
                 <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="Padding" Value="0" />
-                    </Style>
+                    <StyleInclude Source="/Styles/SpriteListBoxItem.axaml" />
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border Classes="Preview"
-                                MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                Padding="{StaticResource DoubleMarginAll}"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Background="{Binding $parent[ListBoxItem].Background}">
-                            <Image Source="{Binding Bitmap}"
-                                   Stretch="Uniform"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center">
-                                <ToolTip.Tip>
-                                    <Image Source="{Binding Bitmap}"
-                                           MaxWidth="512"
-                                           MaxHeight="512" />
-                                </ToolTip.Tip>
-                            </Image>
-                        </Border>
+                        <Image Source="{Binding Bitmap}"
+                               MaxWidth="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                               MaxHeight="{Binding $parent[local:SpriteDisplayCollectionControl].ThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <ToolTip.Tip>
+                                <Image Source="{Binding Bitmap}"
+                                       MaxWidth="512"
+                                       MaxHeight="512" />
+                            </ToolTip.Tip>
+                        </Image>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 

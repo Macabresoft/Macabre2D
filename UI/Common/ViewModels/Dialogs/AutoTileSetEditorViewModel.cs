@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Avalonia;
+    using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
@@ -155,6 +156,7 @@
         private void SelectTile(AutoTileIndexModel tile) {
             if (tile != null) {
                 this.SelectedTile = tile;
+                Dispatcher.UIThread.Post(() => this.RaisePropertyChanged(nameof(this.SelectedTile)), DispatcherPriority.ApplicationIdle);
             }
         }
     }
