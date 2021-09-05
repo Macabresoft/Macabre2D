@@ -59,14 +59,14 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         /// Called when a user has regrets and sheepishly cancels.
         /// </summary>
         protected virtual void OnCancel() {
-            this.RequestClose(false);
+            this.RequestClose(true);
         }
 
         /// <summary>
         /// Called when the user smashes that OK button.
         /// </summary>
         protected virtual void OnOk() {
-            this.RequestClose(true);
+            this.RequestClose(false);
         }
 
         private void RequestClose(bool isCancel) {
