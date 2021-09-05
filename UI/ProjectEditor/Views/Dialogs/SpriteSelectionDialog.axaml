@@ -30,6 +30,7 @@
               Grid.Column="1"
               RowDefinitions="Auto, *">
             <controls:ThumbnailSizeToggle Grid.Row="0"
+                                          HorizontalAlignment="Right"
                                           SelectedSize="{Binding SelectedThumbnailSize}" />
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"

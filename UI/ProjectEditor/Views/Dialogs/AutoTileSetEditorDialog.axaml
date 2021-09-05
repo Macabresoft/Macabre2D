@@ -304,6 +304,7 @@
               RowDefinitions="Auto, *"
               Height="{Binding #_tileSetGrid.Bounds.Height}">
             <controls:ThumbnailSizeToggle Grid.Row="0"
+                                          HorizontalAlignment="Right"
                                           SelectedSize="{Binding SelectedThumbnailSize}" />
 
             <ScrollViewer Grid.Row="1"

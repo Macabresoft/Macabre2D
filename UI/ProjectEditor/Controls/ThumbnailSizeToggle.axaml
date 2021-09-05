@@ -6,7 +6,7 @@
              xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Rendering;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ThumbnailSizeToggle">
     <UserControl.Resources>
-        <converters:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter"></converters:ThumbnailSizeToBoolConverter>
+        <converters:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 DataContext="{Binding $parent[local:ThumbnailSizeToggle]}">
@@ -45,6 +45,7 @@
         <ToggleButton Command="{Binding SelectSizeCommand}"
                       CommandParameter="{x:Static models:ThumbnailSize.Large}"
                       Classes="Icon"
+                      Margin="{StaticResource StandardMarginLeft}"
                       ToolTip.Tip="Large thumbnails">
             <ToggleButton.IsChecked>
                 <Binding Path="SelectedSize"

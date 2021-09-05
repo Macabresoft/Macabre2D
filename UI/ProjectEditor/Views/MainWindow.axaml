@@ -186,7 +186,7 @@
                     Grid.Column="2"
                     Margin="{StaticResource DoubleMarginAll}"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Top">
             <Border Classes="Card"
                     Margin="{StaticResource DoubleMarginAll}">
