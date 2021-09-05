@@ -13,10 +13,16 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
         private readonly ObservableCollectionExtended<LicenseDefinition> _filteredLicenses = new();
 
         public LicenseDialog() {
+            this.CollapseCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(false));
+            this.ExpandCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(true));
             this.OkCommand = ReactiveCommand.Create(() => this.Close(true));
             this.FilterLicenses(string.Empty);
             this.InitializeComponent();
         }
+
+        public ICommand CollapseCommand { get; }
+
+        public ICommand ExpandCommand { get; }
 
         public IReadOnlyCollection<LicenseDefinition> FilteredLicenses => this._filteredLicenses;
 
@@ -24,20 +30,24 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
 
         public ICommand OkCommand { get; }
 
-        private void FilterLicenses(string filterText) {
-            this._filteredLicenses.Reset(!string.IsNullOrEmpty(filterText) ? 
-                this.Licenses.Where(x => x.Product.Contains(filterText, StringComparison.OrdinalIgnoreCase)) :
-                this.Licenses);
-        }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
+        private void AdjustGroupBoxes(bool showContent) {
+            foreach (var license in this.Licenses) {
+                license.IsExpanded = showContent;
+            }
         }
 
         private void AutoCompleteBox_OnTextChanged(object sender, EventArgs e) {
             if (sender is AutoCompleteBox autoCompleteBox) {
                 this.FilterLicenses(autoCompleteBox.Text);
             }
+        }
+
+        private void FilterLicenses(string filterText) {
+            this._filteredLicenses.Reset(!string.IsNullOrEmpty(filterText) ? this.Licenses.Where(x => x.Product.Contains(filterText, StringComparison.OrdinalIgnoreCase)) : this.Licenses);
+        }
+
+        private void InitializeComponent() {
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

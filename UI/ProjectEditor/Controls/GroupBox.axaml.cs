@@ -7,17 +7,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
     using ReactiveUI;
 
     public class GroupBox : HeaderedContentControl {
-        private static readonly DirectProperty<GroupBox, bool> HideContentProperty =
+        public static readonly DirectProperty<GroupBox, bool> HideContentProperty =
             AvaloniaProperty.RegisterDirect<GroupBox, bool>(nameof(HideContent), x => !x.ShowContent);
 
-        private static readonly DirectProperty<GroupBox, bool> ShowContentProperty =
-            AvaloniaProperty.RegisterDirect<GroupBox, bool>(nameof(ShowContent), x => x.ShowContent);
+        public static readonly StyledProperty<bool> ShowContentProperty = AvaloniaProperty.Register<GroupBox, bool>(
+            nameof(ShowContent),
+            true,
+            notifying: OnValueChanging,
+            defaultBindingMode: BindingMode.TwoWay);
 
-        // ReSharper disable once UnusedMember.Local
-        private static readonly DirectProperty<GroupBox, ICommand> ToggleContentCommandProperty =
+        public static readonly DirectProperty<GroupBox, ICommand> ToggleContentCommandProperty =
             AvaloniaProperty.RegisterDirect<GroupBox, ICommand>(nameof(ToggleContentCommand), x => x.ToggleContentCommand);
-
-        private bool _showContent = true;
 
         public GroupBox() {
             this.ToggleContentCommand = ReactiveCommand.Create(this.CollapseContent);
@@ -29,11 +29,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
         public ICommand ToggleContentCommand { get; }
 
         public bool ShowContent {
-            get => this._showContent;
-            private set {
-                this.SetAndRaise(ShowContentProperty, ref this._showContent, value);
-                this.RaisePropertyChanged(HideContentProperty, Optional<bool>.Empty, !this.ShowContent);
-            }
+            get => this.GetValue(ShowContentProperty);
+            set => this.SetValue(ShowContentProperty, value);
         }
 
         private void CollapseContent() {
@@ -42,6 +39,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls {
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
+            if (!isBeforeChange && control is GroupBox groupBox) {
+                groupBox.RaisePropertyChanged(HideContentProperty, Optional<bool>.Empty, !groupBox.ShowContent);
+            }
         }
     }
 }
