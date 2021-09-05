@@ -45,6 +45,9 @@
             ContentFile file) : base(childUndoService) {
             this._childUndoService = childUndoService;
             this._parentUndoService = parentUndoService;
+            this.ClearSpriteCommand = ReactiveCommand.Create(
+                this.ClearSprite,
+                this.WhenAny(x => x.SelectedTile, x => x.Value != null));
             this.SelectTileCommand = ReactiveCommand.Create<AutoTileIndexModel>(this.SelectTile);
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
 
@@ -58,6 +61,11 @@
             this.TileSize = this.GetTileSize();
             this.IsOkEnabled = true;
         }
+
+        /// <summary>
+        /// Clears the selected sprite from the selected tile.
+        /// </summary>
+        public ICommand ClearSpriteCommand { get; }
 
         /// <summary>
         /// Gets the select tile command.
@@ -132,6 +140,12 @@
             var command = this._childUndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
             base.OnOk();
+        }
+
+        private void ClearSprite() {
+            if (this.SelectedTile != null && this.SelectedTile.SpriteIndex != null) {
+                this.SelectedSprite = null;
+            }
         }
 
         private Size GetTileSize() {
