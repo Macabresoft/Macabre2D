@@ -10,7 +10,7 @@
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="Full">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, *, Auto"
+          RowDefinitions="Auto, Auto, *, Auto"
           DataContext="{Binding $parent[local:LicenseDialog]}">
         <Design.DataContext>
             <local:LicenseDialog />
@@ -20,41 +20,42 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Top">
             <controls:Icon Grid.Column="0"
-                           Content="{StaticResource LicenseIcon}" />
+                           Content="{StaticResource LicenseIcon}"
+                           Margin="{StaticResource DoubleMarginAll}"/>
 
             <TextBlock Grid.Column="1"
+                       Margin="{StaticResource DoubleMarginAll}"
                        Text="Licenses"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"
                        VerticalAlignment="Center" />
         </Grid>
         
-        <ScrollViewer Grid.Row="1"
+        <AutoCompleteBox Grid.Row="1"
+                         Items="{Binding Licenses}"
+                         ValueMemberBinding="{Binding Product}"
+                         FilterMode="Contains"
+                         Watermark="Filter..."
+                         TextChanged="AutoCompleteBox_OnTextChanged" />
+        
+        <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="{StaticResource DoubleMarginAll}">
-            <ItemsControl Items="{Binding Licenses}">
+            <ItemsControl Items="{Binding FilteredLicenses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid RowDefinitions="Auto, Auto, Auto"
-                              Margin="{StaticResource DoubleMarginVertical}">
-                            <TextBlock Grid.Row="0"
-                                       Classes="Header"
-                                       Text="{Binding Product}"
-                                       Margin="{StaticResource DoubleMarginBottom}"/>
-                            <TextBlock Grid.Row="1"
-                                       TextWrapping="Wrap"
+                        <controls:GroupBox Header="{Binding Product}">
+                            <TextBlock TextWrapping="Wrap"
                                        Text="{Binding License}"
                                        Margin="{StaticResource DoubleMarginVertical}"/>
-                            <Separator Grid.Row="2"
-                                       Margin="{StaticResource DoubleMarginVertical}"/>
-                        </Grid>
+                        </controls:GroupBox>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
         
-        <Button Grid.Row="2"
+        <Button Grid.Row="3"
                 Content="OK"
                 Command="{Binding OkCommand}"
                 HorizontalAlignment="Right"
