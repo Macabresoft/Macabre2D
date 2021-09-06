@@ -7,7 +7,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
 
-    public class YesNoCancelDialog : Window {
+    public class YesNoCancelDialog : BaseDialog {
         public static readonly StyledProperty<bool> AllowCancelProperty =
             AvaloniaProperty.Register<YesNoCancelDialog, bool>(nameof(AllowCancel), true);
 

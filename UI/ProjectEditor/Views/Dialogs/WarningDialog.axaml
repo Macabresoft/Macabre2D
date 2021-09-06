@@ -1,46 +1,32 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
-        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.WarningDialog"
-        Height="128"
-        Width="320"
-        CanResize="False"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        ExtendClientAreaToDecorationsHint="True"
-        SystemDecorations="None">
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.WarningDialog"
+                  Height="128"
+                  Width="320"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  ExtendClientAreaToDecorationsHint="True"
+                  SystemDecorations="None"
+                  VectorIcon="{StaticResource WarningIcon}">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, *, Auto"
+          RowDefinitions="*, Auto"
           DataContext="{Binding $parent[local:WarningDialog]}">
         <Design.DataContext>
             <local:WarningDialog />
         </Design.DataContext>
-        <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, *"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Top">
-            <controls:Icon Grid.Column="0"
-                           Foreground="{StaticResource SystemAccentColorLightBrush1}"
-                           Content="{StaticResource WarningIcon}" />
 
-            <TextBlock Grid.Column="1"
-                       Text="{Binding Title}"
-                       TextTrimming="CharacterEllipsis"
-                       TextWrapping="NoWrap"
-                       VerticalAlignment="Center" />
-        </Grid>
-
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="0"
                    Text="{Binding WarningMessage}"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center" />
 
-        <Button Grid.Row="2"
+        <Button Grid.Row="1"
                 Content="OK"
                 Command="{Binding OkCommand}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>
-</Window>
+</local:BaseDialog>
