@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
-    using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
@@ -7,7 +6,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     public class ContentSelectionDialog : BaseDialog {
         public ContentSelectionDialog() {
         }
-        
+
         [InjectionConstructor]
         public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
             this.DataContext = viewModel;

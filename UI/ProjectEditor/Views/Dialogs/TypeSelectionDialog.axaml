@@ -1,6 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.TypeSelectionDialog"
         Height="480"
@@ -49,4 +50,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</Window>
+</local:BaseDialog>
