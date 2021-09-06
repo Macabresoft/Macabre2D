@@ -4,7 +4,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
-    public class ContentSelectionDialog : Window {
+    public class ContentSelectionDialog : BaseDialog {
         public ContentSelectionDialog() {
         }
         
