@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
-    public class LicenseDialog : Window {
+    public class LicenseDialog : BaseDialog {
         private readonly ObservableCollectionExtended<LicenseDefinition> _filteredLicenses = new();
 
         public LicenseDialog() {

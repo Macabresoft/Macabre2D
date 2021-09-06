@@ -1,37 +1,21 @@
-<Window xmlns="https://github.com/avaloniaui"
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.LicenseDialog"
+        Title="Licenses"
+        VectorIcon="{StaticResource LicenseIcon}"
         Height="1024"
         Width="768"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="Full">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, Auto, *, Auto"
+          RowDefinitions="Auto, *, Auto"
           DataContext="{Binding $parent[local:LicenseDialog]}">
         <Design.DataContext>
             <local:LicenseDialog />
         </Design.DataContext>
+
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, *"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Top">
-            <controls:Icon Grid.Column="0"
-                           Content="{StaticResource LicenseIcon}"
-                           Margin="{StaticResource DoubleMarginAll}" />
-
-            <TextBlock Grid.Column="1"
-                       Margin="{StaticResource DoubleMarginAll}"
-                       Text="Licenses"
-                       TextTrimming="CharacterEllipsis"
-                       TextWrapping="NoWrap"
-                       VerticalAlignment="Center" />
-        </Grid>
-
-        <Grid Grid.Row="1"
               ColumnDefinitions="*, Auto, Auto">
             <AutoCompleteBox Grid.Column="0"
                              Items="{Binding Licenses}"
@@ -55,7 +39,7 @@
             </Button>
         </Grid>
 
-        <ScrollViewer Grid.Row="2"
+        <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="{StaticResource DoubleMarginAll}">
@@ -73,10 +57,10 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Button Grid.Row="3"
+        <Button Grid.Row="2"
                 Content="OK"
                 Command="{Binding OkCommand}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>
-</Window>
+</local:BaseDialog>
