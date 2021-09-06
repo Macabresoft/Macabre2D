@@ -19,7 +19,7 @@
                     <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
                               Margin="{StaticResource DoubleMarginAll}"
-                              ColumnDefinitions="Auto, *"
+                              ColumnDefinitions="Auto, Auto, *"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
                             <controls:Icon Grid.Column="0"
@@ -27,8 +27,11 @@
                                            Content="{TemplateBinding VectorIcon}"
                                            Margin="{StaticResource DoubleMarginAll}" />
 
+                            <ContentPresenter Grid.Column="1"
+                                              Content="{TemplateBinding Menu}" />
+                            
                             <TextBlock Grid.Column="0"
-                                       Grid.ColumnSpan="2"
+                                       Grid.ColumnSpan="3"
                                        IsHitTestVisible="False"
                                        Margin="{StaticResource DoubleMarginAll}"
                                        Text="{TemplateBinding Title}"

@@ -1,13 +1,15 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
-        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetEditorDialog"
-        SizeToContent="Height"
-        Width="1280"
-        MinHeight="480"
-        Title="Auto Tile Set Editor">
+﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetEditorDialog"
+                  SizeToContent="Height"
+                  Width="1024"
+                  MinHeight="480"
+                  Title="Auto Tile Set Editor"
+                  VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
         <viewModels:AutoTileSetEditorViewModel />
     </Design.DataContext>
@@ -57,10 +59,7 @@
             <Setter Property="TextBlock.Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
         </Style>
     </Window.Styles>
-    <Grid RowDefinitions="Auto, *, Auto"
-          ColumnDefinitions="Auto, *"
-          Margin="{StaticResource DoubleMarginAll}">
-
+    <local:BaseDialog.Menu>
         <Menu Grid.Row="0"
               Grid.Column="0"
               Grid.ColumnSpan="2">
@@ -75,8 +74,12 @@
                           HotKey="Ctrl + Y" />
             </MenuItem>
         </Menu>
+    </local:BaseDialog.Menu>
+    <Grid RowDefinitions="*, Auto"
+          ColumnDefinitions="Auto, *"
+          Margin="{StaticResource DoubleMarginAll}">
 
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="0"
               Grid.Column="0"
               x:Name="_tileSetGrid"
               RowDefinitions="Auto, Auto"
@@ -283,7 +286,7 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="0"
               Grid.Column="1"
               RowDefinitions="Auto, *"
               ColumnDefinitions="Auto, *"
@@ -312,7 +315,7 @@
             </ScrollViewer>
         </Grid>
 
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="1"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal"
@@ -327,4 +330,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</Window>
+</local:BaseDialog>
