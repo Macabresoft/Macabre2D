@@ -4,10 +4,9 @@
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetEditorDialog"
-        CanResize="False"
         SizeToContent="Height"
         Width="1280"
-        MinHeight="600"
+        MinHeight="480"
         Title="Auto Tile Set Editor">
     <Design.DataContext>
         <viewModels:AutoTileSetEditorViewModel />
@@ -80,8 +79,8 @@
         <Grid Grid.Row="1"
               Grid.Column="0"
               x:Name="_tileSetGrid"
-              RowDefinitions="Auto, Auto, Auto"
-              ColumnDefinitions="Auto, Auto, Auto">
+              RowDefinitions="Auto, Auto"
+              ColumnDefinitions="Auto, Auto">
 
             <!-- Top Left -->
             <Border Grid.Row="0"
@@ -216,7 +215,7 @@
 
             <!-- Top Right -->
             <Border Grid.Row="0"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Classes="Card"
                     Background="{StaticResource ButtonBackground}">
                 <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
@@ -245,7 +244,7 @@
             </Border>
 
             <!-- Bottom Left -->
-            <Border Grid.Row="2"
+            <Border Grid.Row="1"
                     Grid.Column="0"
                     Classes="Card"
                     Background="{StaticResource ButtonBackground}">
@@ -275,28 +274,13 @@
             </Border>
 
             <!-- Bottom Right -->
-            <Border Grid.Row="2"
-                    Grid.Column="2"
+            <Border Grid.Row="1"
+                    Grid.Column="1"
                     Classes="Card"
                     Background="{StaticResource ButtonBackground}">
                 <ToggleButton Classes="Tile"
                               Tag="{Binding Tiles[0]}" />
             </Border>
-
-            <!-- Separators -->
-            <Separator Grid.Row="0"
-                       Grid.RowSpan="3"
-                       Grid.Column="1"
-                       Width="1"
-                       Background="{StaticResource TextControlForeground}"
-                       Margin="{StaticResource DoubleMarginHorizontal}" />
-
-            <Separator Grid.Row="1"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="3"
-                       Height="1"
-                       Background="{StaticResource TextControlForeground}"
-                       Margin="{StaticResource DoubleMarginVertical}" />
         </Grid>
 
         <Grid Grid.Row="1"
