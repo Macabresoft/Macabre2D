@@ -18,6 +18,16 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
         /// <summary>
         /// Used in scaling (changing size) <see cref="ITransformable"/> in the scene editor.
         /// </summary>
-        Scale = 2
+        Scale = 2,
+        
+        /// <summary>
+        /// Used in rotating <see cref="IRotatable"/> in the scene editor.
+        /// </summary>
+        Rotation = 3,
+        
+        /// <summary>
+        /// Used in placing tiles for <see cref="ITileableEntity"/> in the scene editor.
+        /// </summary>
+        Tile = 4
     }
 }

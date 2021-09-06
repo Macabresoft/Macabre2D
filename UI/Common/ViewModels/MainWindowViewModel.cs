@@ -65,7 +65,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
 
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
-            this.SetSelectedGizmoCommand = ReactiveCommand.Create<GizmoKind>(this.SetSelectedGizmo);
 
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
@@ -100,11 +99,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         /// Gets the command to save the current scene.
         /// </summary>
         public ICommand SaveCommand { get; }
-
-        /// <summary>
-        /// Gets a command to set the selected gizmo.
-        /// </summary>
-        public ICommand SetSelectedGizmoCommand { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.
@@ -166,9 +160,7 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
             }
         }
 
-        private void SetSelectedGizmo(GizmoKind kind) {
-            this.EditorService.SelectedGizmo = kind;
-        }
+
 
         private async Task ViewLicenses() {
             await this._dialogService.OpenLicenseDialog();
