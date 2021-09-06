@@ -5,7 +5,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
-    public class SpriteSelectionDialog : Window {
+    public class SpriteSelectionDialog : BaseDialog {
         public SpriteSelectionDialog() {
         }
 

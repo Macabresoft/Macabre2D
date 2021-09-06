@@ -1,8 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.SpriteSelectionDialog"
         Height="768"
@@ -10,9 +9,8 @@
         CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Title="Make a Selection">
-    <Window.Resources>
-    </Window.Resources>
+        Title="Make a Selection"
+        VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
         <viewModels:SpriteSelectionViewModel />
     </Design.DataContext>
@@ -67,4 +65,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</Window>
+</local:BaseDialog>
