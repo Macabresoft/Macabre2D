@@ -65,7 +65,6 @@
                               CommandParameter="{x:Static monoGame:GizmoKind.Rotation}"
                               Classes="Icon"
                               IsVisible="{Binding IsRotatable}"
-                              IsEnabled="False"
                               ToolTip.Tip="Alter the rotation of the selected entity">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"

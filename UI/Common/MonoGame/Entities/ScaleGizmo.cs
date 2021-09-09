@@ -46,7 +46,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
             if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
                 var settings = this.Scene.Game.Project.Settings;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
                 var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Scene.Game.ViewportSize.Y);

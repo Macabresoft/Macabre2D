@@ -11,7 +11,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     /// <summary>
     /// A base class for gizmos that can operate on one axis or the other.
     /// </summary>
-    internal abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
+    public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         /// <summary>
         /// The size used on a gizmo's point (the place where the gizmo can be grabbed by the mouse).
         /// </summary>
@@ -87,6 +87,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// <inheritdoc />
         public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
+            this.LineThickness = 3f;
 
             if (this.TryGetParentEntity(out this._camera)) {
                 this.Camera.PropertyChanged += this.Camera_PropertyChanged;
@@ -100,18 +101,17 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
-                var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
+                var lineOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit * -0.5f;
+                var lineOffsetVector = new Vector2(-lineOffset, lineOffset);
                 var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
 
-                if (this.PrimitiveDrawer != null) {
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.XAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + shadowOffsetVector, this.YAxisPosition + shadowOffsetVector, this.EditorService.DropShadowColor, lineThickness);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.XAxisColor, lineThickness);
-                    this.PrimitiveDrawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.YAxisColor, lineThickness);
-                }
+                drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.DropShadowColor, lineThickness);
+                drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.DropShadowColor, lineThickness);
+                drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + lineOffsetVector, this.XAxisPosition + lineOffsetVector, this.EditorService.XAxisColor, lineThickness);
+                drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + lineOffsetVector, this.YAxisPosition + lineOffsetVector, this.EditorService.YAxisColor, lineThickness);
+                
             }
         }
 

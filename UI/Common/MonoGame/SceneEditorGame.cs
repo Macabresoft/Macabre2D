@@ -136,6 +136,10 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
             this.Camera.AddChild(scaleGizmo);
             this._gizmos.Add(scaleGizmo);
 
+            var rotationGizmo = new RotationGizmo(this._editorService, this._entityService, this._sceneService, this._undoService);
+            this.Camera.AddChild(rotationGizmo);
+            this._gizmos.Add(rotationGizmo);
+
             var tileGizmo = new TileGizmo(this._entityService, this._undoService);
             this.Camera.AddChild(tileGizmo);
             this._gizmos.Add(tileGizmo);

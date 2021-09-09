@@ -45,10 +45,10 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 return;
             }
 
-            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
                 var settings = this.Scene.Game.Project.Settings;
                 var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-                var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
+                var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
                 var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
                 if (!this.BoundingArea.IsEmpty) {
@@ -59,8 +59,8 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
                     var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
 
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadowPoints);
-                    this.PrimitiveDrawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this.Color, lineThickness, points);
+                    drawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadowPoints);
+                    drawer.DrawPolygon(spriteBatch, settings.PixelsPerUnit, this.Color, lineThickness, points);
                 }
 
                 if (this._entityService.Selected != null) {
@@ -74,31 +74,31 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                         var bottom = new Vector2(position.X, position.Y - crosshairLength);
 
                         var verticalShadowOffset = new Vector2(0f, shadowOffset);
-                        this.PrimitiveDrawer.DrawLine(
+                        drawer.DrawLine(
                             spriteBatch,
                             settings.PixelsPerUnit,
-                            left + verticalShadowOffset,
-                            right + verticalShadowOffset,
+                            left + shadowOffsetVector,
+                            right + shadowOffsetVector,
                             this._editorService.DropShadowColor,
                             lineThickness);
 
                         var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
-                        this.PrimitiveDrawer.DrawLine(
+                        drawer.DrawLine(
                             spriteBatch,
                             settings.PixelsPerUnit,
-                            top + horizontalShadowOffset,
-                            bottom + horizontalShadowOffset,
+                            top + shadowOffsetVector,
+                            bottom + shadowOffsetVector,
                             this._editorService.DropShadowColor,
                             lineThickness);
 
-                        this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this.Color, lineThickness);
-                        this.PrimitiveDrawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this.Color, lineThickness);
+                        drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this.Color, lineThickness);
+                        drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this.Color, lineThickness);
                     }
 
                     if (this._entityService.Selected is IPhysicsBody body) {
                         var colliders = body.GetColliders();
                         foreach (var collider in colliders) {
-                            this.PrimitiveDrawer.DrawCollider(
+                            drawer.DrawCollider(
                                 collider, 
                                 spriteBatch, 
                                 settings.PixelsPerUnit,
@@ -106,7 +106,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                                 lineThickness, 
                                 shadowOffsetVector);
                             
-                            this.PrimitiveDrawer.DrawCollider(
+                            drawer.DrawCollider(
                                 collider, 
                                 spriteBatch, 
                                 settings.PixelsPerUnit,
