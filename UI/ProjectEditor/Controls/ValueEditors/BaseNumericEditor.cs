@@ -6,13 +6,15 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.LogicalTree;
+    using Avalonia.Threading;
 
     public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric> where TNumeric : struct, IComparable {
         public static readonly DirectProperty<BaseNumericEditor<TNumeric>, string> ValueDisplayProperty =
             AvaloniaProperty.RegisterDirect<BaseNumericEditor<TNumeric>, string>(
                 nameof(ValueDisplay),
                 editor => editor.ValueDisplay,
-                (editor, value) => editor.ValueDisplay = value);
+                (editor, value) => editor.ValueDisplay = value,
+                defaultBindingMode: BindingMode.TwoWay);
         
         public static readonly StyledProperty<TNumeric> ValueMaximumProperty =
             AvaloniaProperty.Register<BaseNumericEditor<TNumeric>, TNumeric>(nameof(ValueMaximum), GetMinValue());
@@ -117,8 +119,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors {
         }
 
         private void UpdateDisplayValue() {
-            this._valueDisplay = this.Value.ToString();
-            this.RaisePropertyChanged(ValueDisplayProperty, Optional<string>.Empty, this._valueDisplay);
+            Dispatcher.UIThread.Post(() => {
+                this.ValueDisplay = this.Value.ToString();
+            });
         }
     }
 }
