@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+    using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Services;
@@ -120,13 +121,14 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
 
                     var newLineLength = Vector2.Distance(newPosition, this.NeutralAxisPosition);
                     var multiplier = this.GetScaleSign(newPosition, lineLength) * newLineLength / lineLength;
-                    var newScale = this._unmovedScale;
+                    var newScale = this._unmovedScale * multiplier;
 
-                    if (inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftShift)) {
-                        newScale *= multiplier;
+                    if (inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl)) {
+                        newScale = new Vector2((float)Math.Round(newScale.X, MidpointRounding.AwayFromZero), (float)Math.Round(newScale.Y, MidpointRounding.AwayFromZero));
                     }
-                    else {
-                        newScale = this.CurrentAxis == GizmoAxis.X ? new Vector2(newScale.X * multiplier, newScale.Y) : new Vector2(newScale.X, newScale.Y * multiplier);
+                    
+                    if (!inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftShift)) {
+                        newScale = this.CurrentAxis == GizmoAxis.X ? new Vector2(newScale.X, this._unmovedScale.Y) : new Vector2(this._unmovedScale.X, newScale.Y);
                     }
 
                     UpdateScale(entity, newScale);

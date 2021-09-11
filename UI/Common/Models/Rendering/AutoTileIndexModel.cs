@@ -14,7 +14,6 @@
         /// </summary>
         /// <param name="tileSet">The tile set.</param>
         /// <param name="tileIndex">The tile index.</param>
-        /// <param name="undoService">The undo service.</param>
         public AutoTileIndexModel(AutoTileSet tileSet, byte tileIndex) {
             this._tileSet = tileSet;
             this.TileIndex = tileIndex;

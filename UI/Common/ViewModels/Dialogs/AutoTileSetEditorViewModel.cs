@@ -16,6 +16,14 @@
     /// </summary>
     public class AutoTileSetEditorViewModel : BaseDialogViewModel {
         private const double MaxTileSize = 128;
+
+        private static readonly byte[] TileIndexToAutoSpriteIndex = {
+            15, 11, 14, 10,
+            12, 8, 13, 9,
+            3, 7, 2, 6,
+            0, 4, 1, 5
+        };
+
         private readonly IChildUndoService _childUndoService;
         private readonly IUndoService _parentUndoService;
         private SpriteDisplayModel _selectedSprite;
@@ -59,8 +67,21 @@
             this.Tiles = tiles;
             this.SelectedTile = this.Tiles.First();
             this.TileSize = this.GetTileSize();
+
+            this.CanPerformAutoLayout = spriteSheet.Rows * spriteSheet.Columns == tileSet.Size;
+            this.AutoLayoutCommand = ReactiveCommand.Create(this.PerformAutoLayout, this.WhenAnyValue(x => x.CanPerformAutoLayout));
             this.IsOkEnabled = true;
         }
+
+        /// <summary>
+        /// Gets the auto layout command.
+        /// </summary>
+        public ICommand AutoLayoutCommand { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not auto layout can be performed for this tile set.
+        /// </summary>
+        public bool CanPerformAutoLayout { get; }
 
         /// <summary>
         /// Clears the selected sprite from the selected tile.
@@ -165,6 +186,23 @@
             }
 
             return size;
+        }
+
+        private void PerformAutoLayout() {
+            if (this.CanPerformAutoLayout) {
+                var tiles = this.Tiles.ToList();
+                var spriteIndexes = tiles.Select(x => x.SpriteIndex).ToList();
+
+                this._childUndoService.Do(() => {
+                    foreach (var tile in tiles) {
+                        tile.SpriteIndex = TileIndexToAutoSpriteIndex[tile.TileIndex];
+                    }
+                }, () => {
+                    for (var i = 0; i < tiles.Count; i++) {
+                        tiles[i].SpriteIndex = spriteIndexes[i];
+                    }
+                });
+            }
         }
 
         private void SelectTile(AutoTileIndexModel tile) {

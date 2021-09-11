@@ -292,12 +292,23 @@
               ColumnDefinitions="Auto, *"
               Height="{Binding #_tileSetGrid.Bounds.Height}">
 
-            <Button Grid.Row="0"
-                    Grid.Column="0"
-                    Command="{Binding ClearSpriteCommand}"
-                    Content="Clear"
-                    Margin="{StaticResource StandardMarginVertical}"
-                    ToolTip.Tip="Clear the selected tile's sprite assignment" />
+            <StackPanel Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="{StaticResource StandardMarginVertical}"
+                        Orientation="Horizontal">
+                <Button Classes="Icon"
+                        Command="{Binding ClearSpriteCommand}"
+                        ToolTip.Tip="Clear the selected tile's sprite assignment">
+                    <controls:Icon Content="{StaticResource EraserIcon}" />
+                </Button>
+                
+                <Button Classes="Icon"
+                        Command="{Binding AutoLayoutCommand}"
+                        Margin="{StaticResource StandardMarginLeft}"
+                        ToolTip.Tip="Automatically create an auto tile set from a sprite sheet laid out the same as the tiles to the left">
+                    <controls:Icon Content="{StaticResource AutoLayoutIcon}" />
+                </Button>
+            </StackPanel>
 
             <controls:ThumbnailSizeToggle Grid.Row="0"
                                           Grid.Column="1"
