@@ -79,11 +79,6 @@
         public ICommand AutoLayoutCommand { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not auto layout can be performed for this tile set.
-        /// </summary>
-        public bool CanPerformAutoLayout { get; }
-
-        /// <summary>
         /// Clears the selected sprite from the selected tile.
         /// </summary>
         public ICommand ClearSpriteCommand { get; }
@@ -149,6 +144,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether or not auto layout can be performed for this tile set.
+        /// </summary>
+        private bool CanPerformAutoLayout { get; }
+
         /// <inheritdoc />
         protected override void OnCancel() {
             var command = this._childUndoService.GetChanges();
@@ -164,7 +164,7 @@
         }
 
         private void ClearSprite() {
-            if (this.SelectedTile != null && this.SelectedTile.SpriteIndex != null) {
+            if (this.SelectedTile is { SpriteIndex: { } }) {
                 this.SelectedSprite = null;
             }
         }
