@@ -42,6 +42,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// </summary>
         /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
         Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+        
+        /// <summary>
+        /// Opens a dialog that allows the user to pick an <see cref="AutoTileSet"/>.
+        /// </summary>
+        /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="AutoTileSet"/>.</returns>
+        Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog();
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a <see cref="Type" />.

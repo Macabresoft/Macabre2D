@@ -112,5 +112,9 @@
       <DependentUpon>BaseDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AutoTileSetEditor.axaml.cs">
+      <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

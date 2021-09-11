@@ -64,6 +64,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
+        public Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public async Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types) {
             Type selectedType = null;
             var window = Resolver.Resolve<TypeSelectionDialog>(new ParameterOverride(typeof(IEnumerable<Type>), types));

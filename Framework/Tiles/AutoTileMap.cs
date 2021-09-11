@@ -34,7 +34,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the animation reference.
         /// </summary>
         [DataMember(Order = 0, Name = "Tile Set")]
-        public SpriteSheetAssetReference<AutoTileSet> TileSetReference { get; } = new();
+        public AutoTileSetReference TileSetReference { get; } = new();
 
         /// <summary>
         /// Gets or sets the color.
