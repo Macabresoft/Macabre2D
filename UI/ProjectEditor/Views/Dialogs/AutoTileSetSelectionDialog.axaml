@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetSelectionDialog"
         Height="768"
@@ -11,6 +12,9 @@
         WindowStartupLocation="CenterOwner"
         Title="Make a Selection"
         VectorIcon="{StaticResource SpriteSheetIcon}">
+    <local:BaseDialog.Resources>
+        <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+    </local:BaseDialog.Resources>
     <Design.DataContext>
         <viewModels:AutoTileSetSelectionViewModel />
     </Design.DataContext>
@@ -36,19 +40,37 @@
                 <ItemsControl Items="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
                                 <controls:GroupBox Header="{Binding Name}">
-                                    <ListBox Items="{Binding TileSets}"
-                                             SelectedItem="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedAutoTileSet}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Name}"
-                                                           HorizontalAlignment="Stretch" />
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                    <Grid ColumnDefinitions="Auto, *"
+                                          Margin="{StaticResource DoubleMarginVertical}">
+                                        <Image Source="{Binding Image}"
+                                               MaxWidth="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                               MaxHeight="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                               Stretch="Uniform"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="{StaticResource DoubleMarginRight}">
+                                            <ToolTip.Tip>
+                                                <Image Source="{Binding Image}"
+                                                       MaxWidth="512"
+                                                       MaxHeight="512" />
+                                            </ToolTip.Tip>
+                                        </Image>
+                                        
+                                        <ListBox Grid.Column="1"
+                                                 Items="{Binding TileSets}"
+                                                 SelectedItem="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedAutoTileSet}"
+                                                 Margin="{StaticResource DoubleMarginLeft}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               HorizontalAlignment="Stretch" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Grid>
+
                                 </controls:GroupBox>
-                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
