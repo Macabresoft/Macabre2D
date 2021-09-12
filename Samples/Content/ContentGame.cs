@@ -71,7 +71,7 @@ namespace Macabresoft.Macabre2D.Samples.Content {
                 step.Frames = 2;
             }
 
-            this._colorfulSquares.AddPackage(spriteAnimation);
+            this._colorfulSquares.AddAnimation(spriteAnimation);
             spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
             spriteAnimator.AnimationReference.Initialize(this._colorfulSquares);
 

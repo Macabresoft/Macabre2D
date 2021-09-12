@@ -42,33 +42,33 @@
         /// <inheritdoc />
         public bool Update(FrameTime frameTime, InputState inputState) {
             if (this._camera != null && this._entityService.Selected is ITileableEntity tileable) {
-                if (this._currentButton == null) {
-                    if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
+                switch (this._currentButton) {
+                    case null when inputState.IsButtonNewlyPressed(MouseButton.Left):
                         this.AddTile(tileable, inputState);
+                        break;
+                    case null: {
+                        if (inputState.IsButtonNewlyPressed(MouseButton.Right)) {
+                            this.RemoveTile(tileable, inputState);
+                        }
+
+                        break;
                     }
-                    else if (inputState.IsButtonNewlyPressed(MouseButton.Right)) {
-                        this.RemoveTile(tileable, inputState);
-                    }
-                }
-                else if (this._currentButton == MouseButton.Left){
-                    if (inputState.IsButtonHeld(MouseButton.Left)) {
+                    case MouseButton.Left when inputState.IsButtonHeld(MouseButton.Left):
                         this.AddTile(tileable, inputState);
-                    }
-                    else {
+                        break;
+                    case MouseButton.Left:
                         this.CommitAdd(tileable);
-                    }
-                }
-                else if (this._currentButton == MouseButton.Right) {
-                    if (inputState.IsButtonHeld(MouseButton.Right)) {
+                        break;
+                    case MouseButton.Right when inputState.IsButtonHeld(MouseButton.Right):
                         this.RemoveTile(tileable, inputState);
-                    }
-                    else {
+                        break;
+                    case MouseButton.Right:
                         this.CommitRemove(tileable);
-                    }
+                        break;
                 }
             }
 
-            return false;
+            return true;
         }
 
         private void AddTile(ITileableEntity tileable, InputState inputState) {

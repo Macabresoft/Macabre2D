@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models;
@@ -64,8 +65,16 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
-        public Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
-            throw new NotImplementedException();
+        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
+            var window = Resolver.Resolve<AutoTileSetSelectionDialog>();
+            
+            if (await window.ShowDialog<bool>(this._mainWindow) &&
+                window.ViewModel.SelectedAutoTileSet is AutoTileSet tileSet && 
+                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.AutoTileSets.Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
+                return (spriteSheet, tileSet.Id);
+            }
+
+            return (null, Guid.Empty);
         }
 
         /// <inheritdoc />

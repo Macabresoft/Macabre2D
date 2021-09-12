@@ -116,5 +116,9 @@
       <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\AutoTileSetSelectionDialog.axaml.cs">
+      <DependentUpon>AutoTileSetSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

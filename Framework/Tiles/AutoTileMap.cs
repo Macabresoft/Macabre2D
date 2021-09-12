@@ -53,7 +53,8 @@ namespace Macabresoft.Macabre2D.Framework {
 
         public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
-
+            
+            this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.TileSetReference);
             this._previousWorldScale = this.Transform.Scale;
             this.ReevaluateIndexes();
             this.ResetSpriteScale();

@@ -35,10 +35,10 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
     /// </summary>
     public class SceneEditorGame : AvaloniaGame, ISceneEditor {
         private readonly IEditorService _editorService;
+        private readonly IEntityService _entityService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
-        private readonly IEntityService _entityService;
         private readonly IUndoService _undoService;
         private bool _isInitialized;
 
@@ -144,7 +144,11 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
             this.Camera.AddChild(tileGizmo);
             this._gizmos.Add(tileGizmo);
 
-            scene.AddSystem(new EditorUpdateSystem(this._editorService, selectorGizmo));
+            if (this._editorService.SelectedGizmo == GizmoKind.Tile && this._entityService.Selected is not ITileableEntity) {
+                this._editorService.SelectedGizmo = GizmoKind.Selector;
+            }
+
+            scene.AddSystem(new EditorUpdateSystem(this._entityService, selectorGizmo));
             return scene;
         }
 

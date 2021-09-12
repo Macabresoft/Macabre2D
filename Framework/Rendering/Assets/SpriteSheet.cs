@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
     using Microsoft.Xna.Framework;
@@ -42,6 +43,16 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;
+
+        /// <summary>
+        /// Adds an animation.
+        /// </summary>
+        /// <param name="animation">The animation.</param>
+        public void AddAnimation(SpriteAnimation animation) {
+            if (this._spriteAnimations.All(x => x.Id != animation.Id)) {
+                this._spriteAnimations.Add(animation);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
@@ -275,6 +286,13 @@ namespace Macabresoft.Macabre2D.Framework {
             if (this.Content != null && this._rows > 0) {
                 this.SpriteSize = new Point(this.SpriteSize.X, GetRowHeight(this.Content.Height, this._rows));
             }
+        }
+
+        protected override IEnumerable<IIdentifiable> GetPackages() {
+            var packages = new List<IIdentifiable>();
+            packages.AddRange(this._autoTileSets);
+            packages.AddRange(this._spriteAnimations);
+            return packages;
         }
     }
 }

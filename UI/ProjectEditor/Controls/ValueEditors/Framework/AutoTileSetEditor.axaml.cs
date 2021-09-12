@@ -9,13 +9,16 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
     public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
+        public static readonly DirectProperty<AutoTileSetEditor, Bitmap> BitmapProperty =
+            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, Bitmap>(
+                nameof(Bitmap),
+                editor => editor.Bitmap);
+
         public static readonly DirectProperty<AutoTileSetEditor, ICommand> ClearTileSetCommandProperty =
             AvaloniaProperty.RegisterDirect<AutoTileSetEditor, ICommand>(
                 nameof(ClearTileSetCommand),
@@ -26,30 +29,25 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 nameof(PathText),
                 editor => editor.PathText);
 
-        public static readonly DirectProperty<AutoTileSetEditor, AutoTileMap> TileMapProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, AutoTileMap>(
-                nameof(TileMap),
-                editor => editor.TileMap);
-
         public static readonly DirectProperty<AutoTileSetEditor, ICommand> SelectTileSetCommandProperty =
             AvaloniaProperty.RegisterDirect<AutoTileSetEditor, ICommand>(
                 nameof(SelectTileSetCommand),
                 editor => editor.SelectTileSetCommand);
 
-        public static readonly DirectProperty<AutoTileSetEditor, Bitmap> BitmapProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, Bitmap>(
-                nameof(Bitmap),
-                editor => editor.Bitmap);
+        public static readonly DirectProperty<AutoTileSetEditor, AutoTileMap> TileMapProperty =
+            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, AutoTileMap>(
+                nameof(TileMap),
+                editor => editor.TileMap);
 
         private readonly IAssetManager _assetManager;
         private readonly IDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly IUndoService _undoService;
+        private Bitmap _bitmap;
 
         private ICommand _clearTileSetCommand;
         private string _pathText;
-        private Bitmap _bitmap;
 
         public AutoTileSetEditor() : this(
             Resolver.Resolve<IAssetManager>(),
@@ -71,14 +69,19 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._undoService = undoService;
-            
+
             this.SelectTileSetCommand = ReactiveCommand.CreateFromTask(this.SelectTileSet);
             this.InitializeComponent();
         }
 
+        public ICommand SelectTileSetCommand { get; }
+
         public AutoTileMap TileMap => this.Owner as AutoTileMap;
 
-        public ICommand SelectTileSetCommand { get; }
+        public Bitmap Bitmap {
+            get => this._bitmap;
+            private set => this.SetAndRaise(BitmapProperty, ref this._bitmap, value);
+        }
 
         public ICommand ClearTileSetCommand {
             get => this._clearTileSetCommand;
@@ -88,11 +91,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         public string PathText {
             get => this._pathText;
             private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
-        }
-
-        public Bitmap Bitmap {
-            get => this._bitmap;
-            private set => this.SetAndRaise(BitmapProperty, ref this._bitmap, value);
         }
 
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
@@ -167,7 +165,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                     () => {
                         this.Value.Initialize(spriteSheet);
                         this.Value.PackagedAssetId = tileSetId;
-
                     },
                     () => {
                         if (originalAsset != null) {

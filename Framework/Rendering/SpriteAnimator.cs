@@ -26,7 +26,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the animation reference.
         /// </summary>
         [DataMember(Order = 10, Name = "Animation")]
-        public SpriteSheetAssetReference<SpriteAnimation> AnimationReference { get; } = new();
+        public SpriteAnimationReference AnimationReference { get; } = new();
 
         /// <summary>
         /// Gets the current animation.
@@ -57,6 +57,8 @@ namespace Macabresoft.Macabre2D.Framework {
                 }
             }
         }
+        
+        
 
         /// <summary>
         /// Enqueues the specified animation.
@@ -92,6 +94,8 @@ namespace Macabresoft.Macabre2D.Framework {
             base.Initialize(scene, parent);
             
             this._millisecondsPerFrame = 1000u / this._frameRate;
+            this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.AnimationReference);
+
             if (this.AnimationReference.PackagedAsset is SpriteAnimation animation) {
                 this.Play(animation, true);
 

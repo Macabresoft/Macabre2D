@@ -13,7 +13,6 @@
     /// </summary>
     public class AutoTileSetDisplayCollection : NotifyPropertyChanged, IReadOnlyCollection<AutoTileSet> {
         private readonly ContentFile _file;
-        private readonly SpriteSheet _spriteSheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoTileSetDisplayCollection" /> class.
@@ -21,7 +20,7 @@
         /// <param name="spriteSheet">The sprite sheet.</param>
         /// <param name="file">The file.</param>
         public AutoTileSetDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
-            this._spriteSheet = spriteSheet;
+            this.SpriteSheet = spriteSheet;
             this._file = file;
 
             var fileInfo = new FileInfo(file.GetFullPath());
@@ -31,7 +30,7 @@
         }
 
         /// <inheritdoc />
-        public int Count => this._spriteSheet.AutoTileSets.Count;
+        public int Count => this.SpriteSheet.AutoTileSets.Count;
 
         /// <summary>
         /// Gets the image.
@@ -51,11 +50,16 @@
         /// <summary>
         /// Gets the tile sets.
         /// </summary>
-        public IReadOnlyCollection<AutoTileSet> TileSets => this._spriteSheet.AutoTileSets;
+        public IReadOnlyCollection<AutoTileSet> TileSets => this.SpriteSheet.AutoTileSets;
+        
+        /// <summary>
+        /// Gets the sprite sheet.
+        /// </summary>
+        public SpriteSheet SpriteSheet { get; }
 
         /// <inheritdoc />
         public IEnumerator<AutoTileSet> GetEnumerator() {
-            return this._spriteSheet.AutoTileSets.GetEnumerator();
+            return this.SpriteSheet.AutoTileSets.GetEnumerator();
         }
 
         /// <inheritdoc />
