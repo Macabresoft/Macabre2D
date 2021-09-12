@@ -145,8 +145,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                 this.Value.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
                 metadata != null) {
-                this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}/{this.Value.PackagedAsset.Name}";
-                var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, this.PathText);
+                var fileName = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
+                this.PathText = $"{this.Value.PackagedAsset.Name} ({fileName})";
+                var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, fileName);
                 if (this._fileSystem.DoesFileExist(fullPath)) {
                     var bitmap = new Bitmap(fullPath);
                     if (bitmap.PixelSize != PixelSize.Empty) {
@@ -165,11 +166,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                     () => {
                         this.Value.Initialize(spriteSheet);
                         this.Value.PackagedAssetId = tileSetId;
+                        this.ResetBitmap();
                     },
                     () => {
                         if (originalAsset != null) {
                             this.Value.PackagedAssetId = originalTileSetId;
                             this.Value.Initialize(originalAsset);
+                            this.ResetBitmap();
                         }
                         else {
                             this.Value.Clear();
