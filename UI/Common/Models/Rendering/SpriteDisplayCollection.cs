@@ -14,7 +14,7 @@
     /// <summary>
     /// A collection of <see cref="SpriteDisplayModel" />.
     /// </summary>
-    public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollection<SpriteDisplayModel>, IDisposable {
+    public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollection<SpriteDisplayModel> {
         private readonly IImage _bitmap;
         private readonly ContentFile _file;
 

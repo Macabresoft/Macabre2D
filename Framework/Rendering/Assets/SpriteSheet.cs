@@ -35,6 +35,11 @@ namespace Macabresoft.Macabre2D.Framework {
 
         private Point _spriteSize;
 
+        /// <summary>
+        /// Gets the collection of <see cref="AutoTileSet" /> for this sprite sheet.
+        /// </summary>
+        public IReadOnlyCollection<AutoTileSet> AutoTileSets => this._autoTileSets;
+
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;
 
@@ -210,21 +215,6 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <summary>
-        /// Gets the sprite size and location.
-        /// </summary>
-        /// <param name="imageSize">The image size in pixels.</param>
-        /// <param name="columns">The number of columns in the sprite sheet.</param>
-        /// <param name="rows">The number of rows in the sprite sheet.</param>
-        /// <param name="index">The sprite index.</param>
-        /// <returns>The sprite size and location as a <see cref="Rectangle"/>.</returns>
-        public static Rectangle GetSpriteSizeAndLocation(Point imageSize, byte columns, byte rows, byte index) {
-            var size = GetSpriteSize(imageSize, columns, rows);
-            var row = Math.DivRem(index, columns, out var column);
-            var location =  new Point(column * size.X, row * size.Y);
-            return new Rectangle(location, size);
-        }
-
-        /// <summary>
         /// Gets the sprite size.
         /// </summary>
         /// <param name="imageSize">The image size in pixels.</param>
@@ -235,6 +225,21 @@ namespace Macabresoft.Macabre2D.Framework {
             return new Point(
                 GetColumnWidth(imageSize.X, columns),
                 GetRowHeight(imageSize.Y, rows));
+        }
+
+        /// <summary>
+        /// Gets the sprite size and location.
+        /// </summary>
+        /// <param name="imageSize">The image size in pixels.</param>
+        /// <param name="columns">The number of columns in the sprite sheet.</param>
+        /// <param name="rows">The number of rows in the sprite sheet.</param>
+        /// <param name="index">The sprite index.</param>
+        /// <returns>The sprite size and location as a <see cref="Rectangle" />.</returns>
+        public static Rectangle GetSpriteSizeAndLocation(Point imageSize, byte columns, byte rows, byte index) {
+            var size = GetSpriteSize(imageSize, columns, rows);
+            var row = Math.DivRem(index, columns, out var column);
+            var location = new Point(column * size.X, row * size.Y);
+            return new Rectangle(location, size);
         }
 
         /// <inheritdoc />
