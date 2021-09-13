@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
+    using Avalonia.Controls;
     using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
@@ -25,6 +26,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, string>(
                 nameof(ContentPath),
                 editor => editor.ContentPath);
+                
+        public static readonly DirectProperty<SpriteReferenceEditor, int> MaxIndexProperty =
+            AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, int>(
+                nameof(MaxIndex),
+                editor => editor.MaxIndex);
 
         public static readonly DirectProperty<SpriteReferenceEditor, BaseSpriteEntity> RenderEntityProperty =
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, BaseSpriteEntity>(
@@ -50,6 +56,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private ICommand _clearSpriteCommand;
         private string _contentPath;
         private SpriteDisplayModel _sprite;
+        private int _maxIndex;
 
         public SpriteReferenceEditor() : this(
             Resolver.Resolve<IAssetManager>(),
@@ -88,6 +95,11 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         public string ContentPath {
             get => this._contentPath;
             private set => this.SetAndRaise(ContentPathProperty, ref this._contentPath, value);
+        }
+        
+        public int MaxIndex {
+            get => this._maxIndex;
+            private set => this.SetAndRaise(MaxIndexProperty, ref this._maxIndex, value);
         }
 
         public SpriteDisplayModel Sprite {
@@ -142,17 +154,18 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private void ResetBitmap() {
             this.ContentPath = null;
             this.Sprite = null;
+            this.MaxIndex = 0;
 
-            if (this.Value != null &&
-                this.Value.ContentId != Guid.Empty &&
-                this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
-                metadata != null) {
+            if (this.Value is SpriteReference { Asset: { } } reference &&
+                reference.ContentId != Guid.Empty &&
+                this._assetManager.TryGetMetadata(reference.ContentId, out var metadata) && metadata != null) {
+                this.MaxIndex = (reference.Asset.Rows * reference.Asset.Columns) - 1;
                 this.ContentPath = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
                 var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, this.ContentPath);
                 if (this._fileSystem.DoesFileExist(fullPath)) {
                     var bitmap = new Bitmap(fullPath);
                     if (bitmap.PixelSize != PixelSize.Empty) {
-                        this.Sprite = new SpriteDisplayModel(bitmap, this.Value.SpriteIndex, this.Value.Asset);
+                        this.Sprite = new SpriteDisplayModel(bitmap, reference.SpriteIndex, reference.Asset);
                     }
                 }
             }
@@ -183,6 +196,20 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex) or nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns)) {
                 this.ResetBitmap();
+            }
+        }
+
+        private void NumericUpDown_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
+            if (this.Value != null) {
+                var oldValue = (byte)e.OldValue;
+                var newValue = (byte)e.NewValue;
+                if (oldValue != newValue && this.Value.SpriteIndex != newValue) {
+                    this._undoService.Do(() => {
+                        this.Value.SpriteIndex = newValue;
+                    }, () => {
+                        this.Value.SpriteIndex = oldValue;
+                    });
+                }
             }
         }
     }

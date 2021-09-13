@@ -23,6 +23,7 @@
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Image.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ListBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/ListBoxItem.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/NumericUpDown.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Slider.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TabItem.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/TextBlock.axaml" />
