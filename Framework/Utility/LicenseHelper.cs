@@ -14,6 +14,7 @@
             new("MonoGame", Licenses.MonoGame),
             new("Mono.Xna", Licenses.Mono_Xna),
             new("AvaloniaUI", Licenses.AvaloniaUI),
+            new("Public Sans", Licenses.Public_Sans),
             new("Fluent UI System Icons (Microsoft)", Licenses.Fluent_UI_System_Icons),
             new("Newtonsoft.Json", Licenses.Newtonsoft_Json),
             new("Fluent Assertions", Licenses.AvaloniaUI),

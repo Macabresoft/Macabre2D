@@ -9,6 +9,7 @@
 
     <Application.Styles>
         <FluentTheme Mode="Dark" />
+        <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Font.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Colors.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/Margins.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.ProjectEditor/Styles/BoxShadows.axaml" />

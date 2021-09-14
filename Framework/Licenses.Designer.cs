@@ -410,6 +410,28 @@ namespace Macabresoft.Macabre2D.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright (c) 2015, Impallari Type (www.impallari.com)
+        ///
+        ///This Font Software is licensed under the SIL Open Font License, Version 1.1.
+        ///This license is copied below, and is also available with a FAQ at:
+        ///http://scripts.sil.org/OFL
+        ///
+        ///
+        ///-----------------------------------------------------------
+        ///SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+        ///-----------------------------------------------------------
+        ///
+        ///PREAMBLE
+        ///The goals of the Open Font License (OFL) are to stimulate worldwide
+        ///development of coll [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Public_Sans {
+            get {
+                return ResourceManager.GetString("Public Sans", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MIT License (MIT)
         ///
         ///Copyright (c) .NET Foundation and Contributors
