@@ -14,7 +14,7 @@
     <Design.DataContext>
         <viewModels:ContentSelectionViewModel />
     </Design.DataContext>
-    <Grid Margin="{StaticResource DoubleMarginAll}"
+    <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
         
         <controls:FilteredContentTree Grid.Row="0"

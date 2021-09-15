@@ -12,7 +12,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:GroupBox Header="{Binding Name}"
-                                        Margin="{StaticResource DoubleMarginBottom}">
+                                        Margin="{StaticResource StandardMarginBottom}">
                             <ItemsControl Items="{Binding ValueControls}" />
                         </local:GroupBox>
                     </DataTemplate>

@@ -1,6 +1,16 @@
 <Styles xmlns="https://github.com/avaloniaui"
 	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	
+	<Styles.Resources>
+		<Thickness x:Key="AutoCompleteBoxPadding">10,3,3,5</Thickness>
+	</Styles.Resources>
+	
+	<Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+	</Style>
+	
 	<Style Selector="AutoCompleteBox">
-		<Setter Property="Margin" Value="{DynamicResource DoubleMarginAll}" />
+		<Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
+		<Setter Property="Padding" Value="{StaticResource AutoCompleteBoxPadding}" />
 	</Style>
 </Styles>

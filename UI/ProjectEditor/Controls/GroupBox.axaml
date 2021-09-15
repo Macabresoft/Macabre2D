@@ -8,7 +8,7 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Margin" Value="{StaticResource StandardMarginHorizontal}" />
-            <Setter Property="Padding" Value="{StaticResource DoubleMarginHorizontal}" />
+            <Setter Property="Padding" Value="{StaticResource StandardMarginHorizontal}" />
         </Style>
 
         <Style Selector="Button.groupBoxButton:pointerover">
@@ -22,9 +22,9 @@
                         HorizontalAlignment="Stretch"
                         Classes="groupBoxButton"
                         Command="{TemplateBinding ToggleContentCommand}"
-                        Margin="{StaticResource DoubleMarginVertical}">
+                        Margin="{StaticResource StandardMarginVertical}">
                     <Grid ColumnDefinitions="Auto, 4, *"
-                          Margin="{StaticResource DoubleMarginVertical}">
+                          Margin="{StaticResource StandardMarginVertical}">
                         <local:Icon Grid.Column="0"
                                     IsVisible="{TemplateBinding HideContent}"
                                     Content="{StaticResource CaretRightIcon}"/>
@@ -41,7 +41,7 @@
                 </Button>
 
                 <Border Grid.Row="1"
-                        Padding="{StaticResource DoubleMarginHorizontal}">
+                        Padding="{StaticResource StandardMarginHorizontal}">
                     <ContentPresenter Content="{TemplateBinding Content}"
                                       IsVisible="{TemplateBinding ShowContent}" />
                 </Border>

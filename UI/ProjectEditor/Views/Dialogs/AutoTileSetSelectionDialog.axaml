@@ -20,7 +20,7 @@
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"
-          Margin="{StaticResource DoubleMarginAll}">
+          Margin="{StaticResource StandardMarginAll}">
 
         <controls:FilteredContentTree Grid.Row="0"
                                       Grid.Column="0"
@@ -42,14 +42,14 @@
                         <DataTemplate>
                                 <controls:GroupBox Header="{Binding Name}">
                                     <Grid ColumnDefinitions="Auto, *"
-                                          Margin="{StaticResource DoubleMarginVertical}">
+                                          Margin="{StaticResource StandardMarginVertical}">
                                         <Image Source="{Binding Image}"
                                                MaxWidth="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
                                                MaxHeight="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
                                                Stretch="Uniform"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               Margin="{StaticResource DoubleMarginRight}">
+                                               Margin="{StaticResource StandardMarginRight}">
                                             <ToolTip.Tip>
                                                 <Image Source="{Binding Image}"
                                                        MaxWidth="512"
@@ -60,7 +60,7 @@
                                         <ListBox Grid.Column="1"
                                                  Items="{Binding TileSets}"
                                                  SelectedItem="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedAutoTileSet}"
-                                                 Margin="{StaticResource DoubleMarginLeft}">
+                                                 Margin="{StaticResource StandardMarginLeft}">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Name}"

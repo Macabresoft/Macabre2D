@@ -31,10 +31,10 @@
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
-                    Margin="{StaticResource DoubleMarginAll}">
+                    Margin="{StaticResource StandardMarginAll}">
             <TextBlock Text="{Binding SpriteCollection.Name}"
                        ToolTip.Tip="{Binding SpriteCollection.Name}"
-                       Margin="{StaticResource DoubleMarginRight}" />
+                       Margin="{StaticResource StandardMarginRight}" />
             <TextBlock FontStyle="Italic"
                        Text="{Binding SpriteCollection.Size, StringFormat=(\{0\})}" />
         </StackPanel>

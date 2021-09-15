@@ -16,7 +16,7 @@
     <Design.DataContext>
         <viewModels:TypeSelectionViewModel />
     </Design.DataContext>
-    <Grid Margin="{StaticResource DoubleMarginAll}" 
+    <Grid Margin="{StaticResource StandardMarginAll}" 
           RowDefinitions="*, Auto">
         <ListBox Grid.Row="0"
                  Margin="{StaticResource StandardMarginAll}"

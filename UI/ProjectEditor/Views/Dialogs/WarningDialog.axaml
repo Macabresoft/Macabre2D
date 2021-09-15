@@ -10,7 +10,7 @@
                   ExtendClientAreaToDecorationsHint="True"
                   SystemDecorations="None"
                   VectorIcon="{StaticResource WarningIcon}">
-    <Grid Margin="{StaticResource DoubleMarginAll}"
+    <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto"
           DataContext="{Binding $parent[local:WarningDialog]}">
         <Design.DataContext>

@@ -75,14 +75,14 @@
                     HorizontalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
-                    Padding="{StaticResource DoubleMarginAll}"
+                    Padding="{StaticResource StandardMarginAll}"
                     BoxShadow="{StaticResource DefaultBoxShadow}"
                     ZIndex="-1" />
 
             <Image Grid.Column="0"
                    Width="24"
                    Height="24"
-                   Margin="{StaticResource DoubleMarginHorizontal}"
+                   Margin="{StaticResource StandardMarginHorizontal}"
                    Source="/Assets/icon.ico" />
 
             <Menu Grid.Column="1"
@@ -136,10 +136,10 @@
               Grid.RowSpan="2"
               Grid.Column="0"
               RowDefinitions="0.4*, 0, 0.6*"
-              Margin="{StaticResource DoubleMarginLeftTopBottom}">
+              Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Grid.Row="0"
                     Classes="Card"
-                    Margin="{StaticResource DoubleMarginLeftTopBottom}">
+                    Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <TabControl SelectionChanged="TabControl_OnSelectionChanged"
                             Initialized="TabControl_OnInitialized">
                     <TabItem Header="Entities"
@@ -162,7 +162,7 @@
 
             <Border Grid.Row="2"
                     Classes="Card"
-                    Margin="{StaticResource DoubleMarginLeftTopBottom}">
+                    Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Grid>
                     <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                      Collections="{Binding EntityService.Editors}"
@@ -182,7 +182,7 @@
         
         <views:GizmoSelectionView Grid.Row="1"
                                   Grid.Column="2"
-                                  Margin="{StaticResource DoubleMarginAll}" />
+                                  Margin="{StaticResource StandardMarginAll}" />
 
         <GridSplitter Grid.Row="1"
                       Grid.RowSpan="2"

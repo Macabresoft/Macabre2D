@@ -18,14 +18,14 @@
 
                     <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
-                              Margin="{StaticResource DoubleMarginAll}"
+                              Margin="{StaticResource StandardMarginAll}"
                               ColumnDefinitions="Auto, Auto, *"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
                             <controls:Icon Grid.Column="0"
                                            IsHitTestVisible="False"
                                            Content="{TemplateBinding VectorIcon}"
-                                           Margin="{StaticResource DoubleMarginAll}" />
+                                           Margin="{StaticResource StandardMarginAll}" />
 
                             <ContentPresenter Grid.Column="1"
                                               Content="{TemplateBinding Menu}" />
@@ -33,7 +33,7 @@
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="3"
                                        IsHitTestVisible="False"
-                                       Margin="{StaticResource DoubleMarginAll}"
+                                       Margin="{StaticResource StandardMarginAll}"
                                        Text="{TemplateBinding Title}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
@@ -43,7 +43,7 @@
                         </Grid>
 
                         <ContentPresenter Grid.Row="1"
-                                          Margin="{StaticResource DoubleMarginAll}"
+                                          Margin="{StaticResource StandardMarginAll}"
                                           Content="{TemplateBinding Content}" />
                     </Grid>
                 </VisualLayerManager>

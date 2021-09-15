@@ -11,7 +11,7 @@
                   SystemDecorations="None"
                   VectorIcon="{StaticResource WarningIcon}">
     <Grid RowDefinitions="*, Auto"
-          Margin="{StaticResource DoubleMarginAll}"
+          Margin="{StaticResource StandardMarginAll}"
           DataContext="{Binding $parent[local:YesNoCancelDialog]}">
         <Design.DataContext>
             <local:YesNoCancelDialog />

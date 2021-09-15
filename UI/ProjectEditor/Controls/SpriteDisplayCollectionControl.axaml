@@ -11,7 +11,7 @@
             <local:SpriteDisplayCollectionControl />
         </Design.DataContext>
         <local:GroupBox Header="{Binding  Collection.Name}"
-                        Margin="{StaticResource DoubleMarginBottom}">
+                        Margin="{StaticResource StandardMarginBottom}">
             <ListBox Items="{Binding Collection.Sprites}"
                      SelectedItem="{Binding SelectedSprite}">
                 <ListBox.Styles>

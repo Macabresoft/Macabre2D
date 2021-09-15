@@ -8,7 +8,7 @@
         Height="1024"
         Width="768"
         SystemDecorations="Full">
-    <Grid Margin="{StaticResource DoubleMarginAll}"
+    <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="Auto, *, Auto"
           DataContext="{Binding $parent[local:LicenseDialog]}">
         <Design.DataContext>
@@ -42,7 +42,7 @@
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
-                      Margin="{StaticResource DoubleMarginAll}">
+                      Margin="{StaticResource StandardMarginAll}">
             <ItemsControl Items="{Binding FilteredLicenses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -50,7 +50,7 @@
                                            ShowContent="{Binding IsExpanded}">
                             <TextBlock TextWrapping="Wrap"
                                        Text="{Binding License}"
-                                       Margin="{StaticResource DoubleMarginVertical}" />
+                                       Margin="{StaticResource StandardMarginVertical}" />
                         </controls:GroupBox>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

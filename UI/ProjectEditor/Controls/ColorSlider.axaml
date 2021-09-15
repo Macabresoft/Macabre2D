@@ -6,7 +6,7 @@
             Minimum="0"
             Maximum="255"
             Padding="0"
-            Margin="{StaticResource DoubleMarginHorizontal}"
+            Margin="{StaticResource StandardMarginHorizontal}"
             TickFrequency="1"
             IsSnapToTickEnabled="True" />
 </UserControl>
