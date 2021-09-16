@@ -49,9 +49,40 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
+        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
+            var window = Resolver.Resolve<AutoTileSetSelectionDialog>();
+
+            if (await window.ShowDialog<bool>(this._mainWindow) &&
+                window.ViewModel.SelectedAutoTileSet is AutoTileSet tileSet &&
+                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.AutoTileSets.Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
+                return (spriteSheet, tileSet.Id);
+            }
+
+            return (null, Guid.Empty);
+        }
+
+        /// <inheritdoc />
         public async Task OpenLicenseDialog() {
             var window = Resolver.Resolve<LicenseDialog>();
             await window.ShowDialog(this._mainWindow);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteAnimationSelectionDialog() {
+            var window = Resolver.Resolve<SpriteAnimationSelectionDialog>();
+
+            if (await window.ShowDialog<bool>(this._mainWindow) &&
+                window.ViewModel.SelectedSpriteAnimation is SpriteAnimation animation &&
+                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.SpriteAnimations.Any(y => y.Id == animation.Id)) is SpriteSheet spriteSheet) {
+                return (spriteSheet, animation.Id);
+            }
+
+            return (null, Guid.Empty);
         }
 
         /// <inheritdoc />
@@ -62,19 +93,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
             }
 
             return (null, 0);
-        }
-
-        /// <inheritdoc />
-        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
-            var window = Resolver.Resolve<AutoTileSetSelectionDialog>();
-            
-            if (await window.ShowDialog<bool>(this._mainWindow) &&
-                window.ViewModel.SelectedAutoTileSet is AutoTileSet tileSet && 
-                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.AutoTileSets.Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
-                return (spriteSheet, tileSet.Id);
-            }
-
-            return (null, Guid.Empty);
         }
 
         /// <inheritdoc />

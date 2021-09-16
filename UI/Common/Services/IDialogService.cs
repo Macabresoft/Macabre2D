@@ -30,7 +30,16 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="file">The content file representing the sprite sheet.</param>
         /// <returns>A value indicating whether or not the user pressed ok.</returns>
         Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet, SpriteSheet spriteSheet, ContentFile file);
-
+        
+        /// <summary>
+        /// Opens the animation editor.
+        /// </summary>
+        /// <param name="animation">The animation to edit.</param>
+        /// <param name="spriteSheet">The sprite sheet which owns the animation.</param>
+        /// <param name="file">The content file representing the sprite sheet.</param>
+        /// <returns>A value indicating whether or not the user pressed ok.</returns>
+        Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file);
+        
         /// <summary>
         /// Opens a dialog to show the licenses.
         /// </summary>
@@ -48,6 +57,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// </summary>
         /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="AutoTileSet"/>.</returns>
         Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog();
+        
+        /// <summary>
+        /// Opens a dialog that allows the user to pick a <see cref="SpriteAnimation"/>.
+        /// </summary>
+        /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteAnimation"/>.</returns>
+        Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteAnimationSelectionDialog();
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a <see cref="Type" />.

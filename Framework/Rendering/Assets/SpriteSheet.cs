@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -32,7 +31,7 @@ namespace Macabresoft.Macabre2D.Framework {
         private byte _rows = 1;
 
         [DataMember]
-        private ObservableCollection<SpriteAnimation> _spriteAnimations = new();
+        private SpriteAnimationCollection _spriteAnimations = new();
 
         private Point _spriteSize;
 
@@ -45,14 +44,9 @@ namespace Macabresoft.Macabre2D.Framework {
         public override bool IncludeFileExtensionInContentPath => false;
 
         /// <summary>
-        /// Adds an animation.
+        /// Gets the collection of <see cref="SpriteAnimation" /> for this sprite sheet.
         /// </summary>
-        /// <param name="animation">The animation.</param>
-        public void AddAnimation(SpriteAnimation animation) {
-            if (this._spriteAnimations.All(x => x.Id != animation.Id)) {
-                this._spriteAnimations.Add(animation);
-            }
-        }
+        public IReadOnlyCollection<SpriteAnimation> SpriteAnimations => this._spriteAnimations;
 
         /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
@@ -96,6 +90,16 @@ namespace Macabresoft.Macabre2D.Framework {
         public Point SpriteSize {
             get => this._spriteSize;
             private set => this.Set(ref this._spriteSize, value);
+        }
+
+        /// <summary>
+        /// Adds an animation.
+        /// </summary>
+        /// <param name="animation">The animation.</param>
+        public void AddAnimation(SpriteAnimation animation) {
+            if (this._spriteAnimations.All(x => x.Id != animation.Id)) {
+                this._spriteAnimations.Add(animation);
+            }
         }
 
         /// <summary>
@@ -268,6 +272,13 @@ namespace Macabresoft.Macabre2D.Framework {
             this.Content = null;
         }
 
+        protected override IEnumerable<IIdentifiable> GetPackages() {
+            var packages = new List<IIdentifiable>();
+            packages.AddRange(this._autoTileSets);
+            packages.AddRange(this._spriteAnimations);
+            return packages;
+        }
+
         private static int GetColumnWidth(int imageWidth, byte columns) {
             return columns != 0 ? imageWidth / columns : 0;
         }
@@ -286,13 +297,6 @@ namespace Macabresoft.Macabre2D.Framework {
             if (this.Content != null && this._rows > 0) {
                 this.SpriteSize = new Point(this.SpriteSize.X, GetRowHeight(this.Content.Height, this._rows));
             }
-        }
-
-        protected override IEnumerable<IIdentifiable> GetPackages() {
-            var packages = new List<IIdentifiable>();
-            packages.AddRange(this._autoTileSets);
-            packages.AddRange(this._spriteAnimations);
-            return packages;
         }
     }
 }

@@ -1,20 +1,16 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-                                 xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
-                                 x:TypeArguments="framework:AutoTileSetReference"
-                                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.AutoTileSetEditor">
-    <valueEditors:ValueEditorControl.Resources>
-        <converters:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </valueEditors:ValueEditorControl.Resources>
+                                 x:TypeArguments="framework:SpriteAnimationReference"
+                                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.SpriteAnimationEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           RowDefinitions="Auto, Auto, Auto"
-          DataContext="{Binding $parent[local:AutoTileSetEditor]}">
+          DataContext="{Binding $parent[local:SpriteAnimationEditor]}">
         <Design.DataContext>
-            <local:AutoTileSetEditor />
+            <local:SpriteAnimationEditor />
         </Design.DataContext>
         
         <TextBlock Grid.Column="0"
@@ -26,8 +22,7 @@
                 Grid.Row="1"
                 Name="_spriteBorder"
                 IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Classes="Preview"
-                Background="{Binding TileMap.Color, Converter={StaticResource ColorConverter}}">
+                Classes="Preview">
             <Image Source="{Binding Bitmap}">
                 <ToolTip.Tip>
                     <Image Source="{Binding Bitmap}"
@@ -55,7 +50,7 @@
                 Grid.Row="1"
                 VerticalAlignment="Top"
                 Classes="Icon"
-                Command="{Binding SelectTileSetCommand}"
+                Command="{Binding SelectAnimationCommand}"
                 ToolTip.Tip="Search for a sprite">
             <controls:Icon Content="{StaticResource ImageSearchIcon}" />
         </Button>
@@ -64,7 +59,7 @@
                 VerticalAlignment="Top"
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
-                ToolTip.Tip="Clear the tile set">
+                ToolTip.Tip="Clear the animation">
             <controls:Icon Content="{StaticResource TrashIcon}" />
         </Button>
     </Grid>

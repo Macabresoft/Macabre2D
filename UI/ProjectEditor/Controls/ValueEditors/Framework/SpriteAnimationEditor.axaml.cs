@@ -13,31 +13,31 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using ReactiveUI;
     using Unity;
 
-    public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
-        public static readonly DirectProperty<AutoTileSetEditor, Bitmap> BitmapProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, Bitmap>(
+    public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference> {
+        public static readonly DirectProperty<SpriteAnimationEditor, Bitmap> BitmapProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, Bitmap>(
                 nameof(Bitmap),
                 editor => editor.Bitmap);
 
-        public static readonly DirectProperty<AutoTileSetEditor, ICommand> ClearCommandProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, ICommand>(
+        public static readonly DirectProperty<SpriteAnimationEditor, ICommand> ClearCommandProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, ICommand>(
                 nameof(ClearCommand),
                 editor => editor.ClearCommand);
 
-        public static readonly DirectProperty<AutoTileSetEditor, string> PathTextProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, string>(
+        public static readonly DirectProperty<SpriteAnimationEditor, string> PathTextProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, string>(
                 nameof(PathText),
                 editor => editor.PathText);
 
-        public static readonly DirectProperty<AutoTileSetEditor, ICommand> SelectTileSetCommandProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, ICommand>(
-                nameof(SelectTileSetCommand),
-                editor => editor.SelectTileSetCommand);
+        public static readonly DirectProperty<SpriteAnimationEditor, ICommand> SelectAnimationCommandProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, ICommand>(
+                nameof(SelectAnimationCommand),
+                editor => editor.SelectAnimationCommand);
 
-        public static readonly DirectProperty<AutoTileSetEditor, AutoTileMap> TileMapProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetEditor, AutoTileMap>(
-                nameof(TileMap),
-                editor => editor.TileMap);
+        public static readonly DirectProperty<SpriteAnimationEditor, SpriteAnimation> AnimationProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, SpriteAnimation>(
+                nameof(Animation),
+                editor => editor.Animation);
 
         private readonly IAssetManager _assetManager;
         private readonly IDialogService _dialogService;
@@ -49,7 +49,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         private ICommand _clearCommand;
         private string _pathText;
 
-        public AutoTileSetEditor() : this(
+        public SpriteAnimationEditor() : this(
             Resolver.Resolve<IAssetManager>(),
             Resolver.Resolve<IDialogService>(),
             Resolver.Resolve<IFileSystemService>(),
@@ -58,7 +58,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         [InjectionConstructor]
-        public AutoTileSetEditor(
+        public SpriteAnimationEditor(
             IAssetManager assetManager,
             IDialogService dialogService,
             IFileSystemService fileSystem,
@@ -70,13 +70,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             this._pathService = pathService;
             this._undoService = undoService;
 
-            this.SelectTileSetCommand = ReactiveCommand.CreateFromTask(this.SelectTileSet);
+            this.SelectAnimationCommand = ReactiveCommand.CreateFromTask(this.SelectAnimation);
             this.InitializeComponent();
         }
 
-        public ICommand SelectTileSetCommand { get; }
+        public ICommand SelectAnimationCommand { get; }
 
-        public AutoTileMap TileMap => this.Owner as AutoTileMap;
+        public SpriteAnimation Animation => this.Owner as SpriteAnimation;
 
         public Bitmap Bitmap {
             get => this._bitmap;
@@ -95,7 +95,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
 
         public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
             base.Initialize(value, valueType, valuePropertyName, title, owner);
-            this.RaisePropertyChanged(TileMapProperty, null, new BindingValue<AutoTileMap>(this.TileMap));
+            this.RaisePropertyChanged(AnimationProperty, null, new BindingValue<SpriteAnimation>(this.Animation));
         }
 
         protected override void OnValueChanged() {
@@ -103,7 +103,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
 
             if (this.Value != null) {
                 this.ClearCommand = ReactiveCommand.Create(
-                    this.ClearTileSet,
+                    this.ClearAnimation,
                     this.Value.WhenAny(x => x.ContentId, y => y.Value != Guid.Empty));
 
                 this.ResetBitmap();
@@ -119,16 +119,16 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             }
         }
 
-        private void ClearTileSet() {
+        private void ClearAnimation() {
             var asset = this.Value.Asset;
-            var tileSetId = this.Value.PackagedAssetId;
+            var animationId = this.Value.PackagedAssetId;
 
             if (asset != null) {
                 this._undoService.Do(
                     () => this.Value.Clear(),
                     () => {
                         this.Value.Initialize(asset);
-                        this.Value.PackagedAssetId = tileSetId;
+                        this.Value.PackagedAssetId = animationId;
                     });
             }
         }
@@ -157,20 +157,20 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             }
         }
 
-        private async Task SelectTileSet() {
-            var (spriteSheet, tileSetId) = await this._dialogService.OpenAutoTileSetSelectionDialog();
+        private async Task SelectAnimation() {
+            var (spriteSheet, animationId) = await this._dialogService.OpenSpriteAnimationSelectionDialog();
             if (spriteSheet != null) {
                 var originalAsset = this.Value.Asset;
-                var originalTileSetId = this.Value.PackagedAssetId;
+                var originalAnimationId = this.Value.PackagedAssetId;
                 this._undoService.Do(
                     () => {
                         this.Value.Initialize(spriteSheet);
-                        this.Value.PackagedAssetId = tileSetId;
+                        this.Value.PackagedAssetId = animationId;
                         this.ResetBitmap();
                     },
                     () => {
                         if (originalAsset != null) {
-                            this.Value.PackagedAssetId = originalTileSetId;
+                            this.Value.PackagedAssetId = originalAnimationId;
                             this.Value.Initialize(originalAsset);
                             this.ResetBitmap();
                         }

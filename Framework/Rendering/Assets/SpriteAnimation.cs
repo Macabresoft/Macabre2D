@@ -6,6 +6,12 @@ namespace Macabresoft.Macabre2D.Framework {
     /// An animation that explicitly uses sprites.
     /// </summary>
     public sealed class SpriteAnimation : SpriteSheetAsset {
+        
+        /// <summary>
+        /// The default name.
+        /// </summary>
+        public const string DefaultName = "Animation";
+        
         [DataMember]
         private readonly List<SpriteAnimationStep> _steps = new();
 

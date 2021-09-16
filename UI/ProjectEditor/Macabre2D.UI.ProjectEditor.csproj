@@ -120,5 +120,17 @@
       <DependentUpon>AutoTileSetSelectionDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\SpriteAnimationCollectionEditor.axaml.cs">
+      <DependentUpon>SpriteAnimationCollectionEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\SpriteAnimationEditor.axaml.cs">
+      <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\SpriteAnimationSelectionDialog.axaml.cs">
+      <DependentUpon>SpriteAnimationSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
