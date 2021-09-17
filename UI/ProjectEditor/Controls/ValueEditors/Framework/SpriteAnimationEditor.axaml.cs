@@ -158,7 +158,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private async Task SelectAnimation() {
-            var (spriteSheet, animationId) = await this._dialogService.OpenSpriteAnimationSelectionDialog();
+            var (spriteSheet, animationId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<SpriteAnimation>();
             if (spriteSheet != null) {
                 var originalAsset = this.Value.Asset;
                 var originalAnimationId = this.Value.PackagedAssetId;

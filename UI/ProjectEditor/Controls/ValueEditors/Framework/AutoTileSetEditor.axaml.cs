@@ -158,7 +158,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private async Task SelectTileSet() {
-            var (spriteSheet, tileSetId) = await this._dialogService.OpenAutoTileSetSelectionDialog();
+            var (spriteSheet, tileSetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>();
             if (spriteSheet != null) {
                 var originalAsset = this.Value.Asset;
                 var originalTileSetId = this.Value.PackagedAssetId;

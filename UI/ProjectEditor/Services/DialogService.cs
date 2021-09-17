@@ -8,6 +8,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
     using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views;
     using Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs;
     using Unity.Resolution;
@@ -49,19 +50,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
-        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog() {
-            var window = Resolver.Resolve<AutoTileSetSelectionDialog>();
-
-            if (await window.ShowDialog<bool>(this._mainWindow) &&
-                window.ViewModel.SelectedAsset is AutoTileSet tileSet &&
-                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<AutoTileSet>().Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
-                return (spriteSheet, tileSet.Id);
-            }
-
-            return (null, Guid.Empty);
-        }
-
-        /// <inheritdoc />
         public async Task OpenLicenseDialog() {
             var window = Resolver.Resolve<LicenseDialog>();
             await window.ShowDialog(this._mainWindow);
@@ -73,19 +61,6 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
-        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteAnimationSelectionDialog() {
-            var window = Resolver.Resolve<SpriteAnimationSelectionDialog>();
-
-            if (await window.ShowDialog<bool>(this._mainWindow) &&
-                window.ViewModel.SelectedAsset is SpriteAnimation animation &&
-                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<SpriteAnimation>().Any(y => y.Id == animation.Id)) is SpriteSheet spriteSheet) {
-                return (spriteSheet, animation.Id);
-            }
-
-            return (null, Guid.Empty);
-        }
-
-        /// <inheritdoc />
         public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
             var window = Resolver.Resolve<SpriteSelectionDialog>();
             if (await window.ShowDialog<bool>(this._mainWindow) && window.ViewModel.SelectedSprite is SpriteDisplayModel sprite) {
@@ -93,6 +68,21 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
             }
 
             return (null, 0);
+        }
+
+        /// <inheritdoc />
+        public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetAsset {
+            var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(
+                new ParameterOverride("viewModel",
+                    Resolver.Resolve<SpriteSheetAssetSelectionViewModel<TAsset>>()));
+
+            if (await window.ShowDialog<bool>(this._mainWindow) &&
+                window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: TAsset tileSet } viewModel &&
+                viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
+                return (spriteSheet, tileSet.Id);
+            }
+
+            return (null, Guid.Empty);
         }
 
         /// <inheritdoc />

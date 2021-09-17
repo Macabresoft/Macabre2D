@@ -8,7 +8,7 @@
     using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
-
+    
     /// <summary>
     /// A view model for the sprite sheet asset selection dialog.
     /// </summary>

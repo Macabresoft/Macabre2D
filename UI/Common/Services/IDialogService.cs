@@ -30,7 +30,13 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="file">The content file representing the sprite sheet.</param>
         /// <returns>A value indicating whether or not the user pressed ok.</returns>
         Task<bool> OpenAutoTileSetEditor(AutoTileSet tileSet, SpriteSheet spriteSheet, ContentFile file);
-        
+
+        /// <summary>
+        /// Opens a dialog to show the licenses.
+        /// </summary>
+        /// <returns>A task.</returns>
+        Task OpenLicenseDialog();
+
         /// <summary>
         /// Opens the animation editor.
         /// </summary>
@@ -39,30 +45,18 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="file">The content file representing the sprite sheet.</param>
         /// <returns>A value indicating whether or not the user pressed ok.</returns>
         Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file);
-        
-        /// <summary>
-        /// Opens a dialog to show the licenses.
-        /// </summary>
-        /// <returns>A task.</returns>
-        Task OpenLicenseDialog();
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a sprite.
         /// </summary>
         /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
         Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
-        
+
         /// <summary>
-        /// Opens a dialog that allows the user to pick an <see cref="AutoTileSet"/>.
+        /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetAsset" />.
         /// </summary>
-        /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="AutoTileSet"/>.</returns>
-        Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenAutoTileSetSelectionDialog();
-        
-        /// <summary>
-        /// Opens a dialog that allows the user to pick a <see cref="SpriteAnimation"/>.
-        /// </summary>
-        /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteAnimation"/>.</returns>
-        Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteAnimationSelectionDialog();
+        /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetAsset" />.</returns>
+        Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetAsset;
 
         /// <summary>
         /// Opens a dialog that allows the user to pick a <see cref="Type" />.

@@ -5,7 +5,7 @@
                   xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
                   xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                   xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
-                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.SpriteAnimationSelectionDialog"
+                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.SpriteSheetAssetSelectionDialog"
                   Height="768"
                   Width="1024"
                   CanResize="False"
@@ -17,7 +17,7 @@
         <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </local:BaseDialog.Resources>
     <Design.DataContext>
-        <viewModels:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteAnimation" />
+        <viewModels:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"
@@ -45,8 +45,8 @@
                                 <Grid ColumnDefinitions="Auto, *"
                                       Margin="{StaticResource StandardMarginVertical}">
                                     <Image Source="{Binding Image}"
-                                           MaxWidth="{Binding $parent[local:SpriteAnimationSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                           MaxHeight="{Binding $parent[local:SpriteAnimationSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxWidth="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxHeight="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
                                            Stretch="Uniform"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
@@ -60,7 +60,7 @@
 
                                     <ListBox Grid.Column="1"
                                              Items="{Binding Assets}"
-                                             SelectedItem="{Binding $parent[local:SpriteAnimationSelectionDialog].ViewModel.SelectedAsset}"
+                                             SelectedItem="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedAsset}"
                                              Margin="{StaticResource StandardMarginLeft}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>

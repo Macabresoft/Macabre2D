@@ -1,22 +1,21 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.ViewModels;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
-    public class SpriteAnimationSelectionDialog : BaseDialog {
-        public SpriteAnimationSelectionDialog() {
+    public class SpriteSheetAssetSelectionDialog : BaseDialog  {
+        public SpriteSheetAssetSelectionDialog() {
         }
 
         [InjectionConstructor]
-        public SpriteAnimationSelectionDialog(SpriteSheetAssetSelectionViewModel<SpriteAnimation> viewModel) {
+        public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) {
             this.DataContext = viewModel;
             viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
-
-        public SpriteSheetAssetSelectionViewModel<SpriteAnimation> ViewModel => this.DataContext as SpriteSheetAssetSelectionViewModel<SpriteAnimation>;
-
+        
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }
