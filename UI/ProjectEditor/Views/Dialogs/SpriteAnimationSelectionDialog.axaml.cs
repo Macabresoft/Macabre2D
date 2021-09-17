@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
@@ -8,13 +9,13 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
         }
 
         [InjectionConstructor]
-        public SpriteAnimationSelectionDialog(SpriteAnimationSelectionViewModel viewModel) {
+        public SpriteAnimationSelectionDialog(SpriteSheetAssetSelectionViewModel<SpriteAnimation> viewModel) {
             this.DataContext = viewModel;
             viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
 
-        public SpriteAnimationSelectionViewModel ViewModel => this.DataContext as SpriteAnimationSelectionViewModel;
+        public SpriteSheetAssetSelectionViewModel<SpriteAnimation> ViewModel => this.DataContext as SpriteSheetAssetSelectionViewModel<SpriteAnimation>;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

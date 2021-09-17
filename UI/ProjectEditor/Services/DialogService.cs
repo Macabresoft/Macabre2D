@@ -53,8 +53,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
             var window = Resolver.Resolve<AutoTileSetSelectionDialog>();
 
             if (await window.ShowDialog<bool>(this._mainWindow) &&
-                window.ViewModel.SelectedAutoTileSet is AutoTileSet tileSet &&
-                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.AutoTileSets.Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
+                window.ViewModel.SelectedAsset is AutoTileSet tileSet &&
+                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<AutoTileSet>().Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
                 return (spriteSheet, tileSet.Id);
             }
 
@@ -77,8 +77,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
             var window = Resolver.Resolve<SpriteAnimationSelectionDialog>();
 
             if (await window.ShowDialog<bool>(this._mainWindow) &&
-                window.ViewModel.SelectedSpriteAnimation is SpriteAnimation animation &&
-                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.SpriteAnimations.Any(y => y.Id == animation.Id)) is SpriteSheet spriteSheet) {
+                window.ViewModel.SelectedAsset is SpriteAnimation animation &&
+                window.ViewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<SpriteAnimation>().Any(y => y.Id == animation.Id)) is SpriteSheet spriteSheet) {
                 return (spriteSheet, animation.Id);
             }
 

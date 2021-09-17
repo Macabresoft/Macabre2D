@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using System.Collections.Generic;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
@@ -10,27 +10,27 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
     using Unity;
 
     /// <summary>
-    /// A view model for the auto tile set selection dialog.
+    /// A view model for the sprite sheet asset selection dialog.
     /// </summary>
-    public sealed class AutoTileSetSelectionViewModel : BaseDialogViewModel {
-        private readonly ObservableCollectionExtended<AutoTileSetDisplayCollection> _spriteSheets = new();
+    public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetAsset {
+        private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
         private FilteredContentWrapper _selectedContentNode;
-        private AutoTileSet _selectedAutoTileSet;
+        private TAsset _selectedAsset;
         private ThumbnailSize _selectedThumbnailSize;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSetSelectionViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel{T}" /> class.
         /// </summary>
-        public AutoTileSetSelectionViewModel() : base() {
+        public SpriteSheetAssetSelectionViewModel() : base() {
             this.IsOkEnabled = false;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoTileSetSelectionViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SpriteSheetAssetSelectionViewModel{T}" /> class.
         /// </summary>
         /// <param name="contentService">The content service.</param>
         [InjectionConstructor]
-        public AutoTileSetSelectionViewModel(IContentService contentService) : this() {
+        public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
             this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet));
             this.SelectedContentNode = this.RootContentDirectory;
         }
@@ -41,9 +41,9 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         public FilteredContentWrapper RootContentDirectory { get; }
 
         /// <summary>
-        /// Gets the sprite sheets via <see cref="AutoTileSetDisplayCollection" />.
+        /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
         /// </summary>
-        public IReadOnlyCollection<AutoTileSetDisplayCollection> SpriteSheets => this._spriteSheets;
+        public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
 
         /// <summary>
         /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
@@ -59,13 +59,13 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
         }
 
         /// <summary>
-        /// Gets or sets the selected sprite.
+        /// Gets or sets the selected asset.
         /// </summary>
-        public AutoTileSet SelectedAutoTileSet {
-            get => this._selectedAutoTileSet;
+        public TAsset SelectedAsset {
+            get => this._selectedAsset;
             set {
-                this.RaiseAndSetIfChanged(ref this._selectedAutoTileSet, value);
-                this.IsOkEnabled = this.SelectedAutoTileSet != null;
+                this.RaiseAndSetIfChanged(ref this._selectedAsset, value);
+                this.IsOkEnabled = this.SelectedAsset != null;
             }
         }
 
@@ -82,17 +82,17 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
 
             if (this.SelectedContentNode != null) {
                 if (this.SelectedContentNode.Node is ContentDirectory directory) {
-                    var spriteCollections = new List<AutoTileSetDisplayCollection>();
+                    var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
                     foreach (var file in directory.GetAllContentFiles()) {
                         if (file.Asset is SpriteSheet spriteSheet) {
-                            spriteCollections.Add(new AutoTileSetDisplayCollection(spriteSheet, file));
+                            spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
                         }
                     }
 
                     this._spriteSheets.Reset(spriteCollections);
                 }
                 else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheet spriteSheet } file) {
-                    var spriteCollection = new AutoTileSetDisplayCollection(spriteSheet, file);
+                    var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
                     this._spriteSheets.Add(spriteCollection);
                 }
             }

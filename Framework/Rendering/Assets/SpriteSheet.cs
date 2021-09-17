@@ -31,22 +31,13 @@ namespace Macabresoft.Macabre2D.Framework {
         private byte _rows = 1;
 
         [DataMember]
+        [Category("Animations")]
         private SpriteAnimationCollection _spriteAnimations = new();
 
         private Point _spriteSize;
 
-        /// <summary>
-        /// Gets the collection of <see cref="AutoTileSet" /> for this sprite sheet.
-        /// </summary>
-        public IReadOnlyCollection<AutoTileSet> AutoTileSets => this._autoTileSets;
-
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;
-
-        /// <summary>
-        /// Gets the collection of <see cref="SpriteAnimation" /> for this sprite sheet.
-        /// </summary>
-        public IReadOnlyCollection<SpriteAnimation> SpriteAnimations => this._spriteAnimations;
 
         /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
@@ -174,6 +165,26 @@ namespace Macabresoft.Macabre2D.Framework {
             Color color,
             SpriteEffects orientation) {
             this.Draw(spriteBatch, pixelsPerUnit, spriteIndex, transform, transform.Rotation, color, orientation);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="SpriteSheetAsset" /> collection of the specified type.
+        /// </summary>
+        /// <typeparam name="TAsset">The type of asset.</typeparam>
+        /// <returns>A collection of <see cref="SpriteSheetAsset" />.</returns>
+        public IReadOnlyCollection<TAsset> GetAssets<TAsset>() where TAsset : SpriteSheetAsset {
+            IReadOnlyCollection<TAsset> result;
+            if (typeof(TAsset) == typeof(SpriteAnimation)) {
+                result = (IReadOnlyCollection<TAsset>)this._spriteAnimations;
+            }
+            else if (typeof(TAsset) == typeof(AutoTileSet)) {
+                result = (IReadOnlyCollection<TAsset>)this._autoTileSets;
+            }
+            else {
+                result = new List<TAsset>();
+            }
+
+            return result;
         }
 
         /// <inheritdoc />

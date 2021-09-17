@@ -1,22 +1,23 @@
 <local:BaseDialog xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
-        x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetSelectionDialog"
-        Height="768"
-        Width="1024"
-        CanResize="False"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        Title="Make a Selection"
-        VectorIcon="{StaticResource SpriteSheetIcon}">
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
+                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.AutoTileSetSelectionDialog"
+                  Height="768"
+                  Width="1024"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  Title="Make a Selection"
+                  VectorIcon="{StaticResource SpriteSheetIcon}">
     <local:BaseDialog.Resources>
         <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </local:BaseDialog.Resources>
     <Design.DataContext>
-        <viewModels:AutoTileSetSelectionViewModel />
+        <viewModels:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:AutoTileSet" />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"
@@ -40,37 +41,37 @@
                 <ItemsControl Items="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                                <controls:GroupBox Header="{Binding Name}">
-                                    <Grid ColumnDefinitions="Auto, *"
-                                          Margin="{StaticResource StandardMarginVertical}">
-                                        <Image Source="{Binding Image}"
-                                               MaxWidth="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                               MaxHeight="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
-                                               Stretch="Uniform"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Margin="{StaticResource StandardMarginRight}">
-                                            <ToolTip.Tip>
-                                                <Image Source="{Binding Image}"
-                                                       MaxWidth="512"
-                                                       MaxHeight="512" />
-                                            </ToolTip.Tip>
-                                        </Image>
-                                        
-                                        <ListBox Grid.Column="1"
-                                                 Items="{Binding TileSets}"
-                                                 SelectedItem="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedAutoTileSet}"
-                                                 Margin="{StaticResource StandardMarginLeft}">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Name}"
-                                                               HorizontalAlignment="Stretch" />
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </Grid>
+                            <controls:GroupBox Header="{Binding Name}">
+                                <Grid ColumnDefinitions="Auto, *"
+                                      Margin="{StaticResource StandardMarginVertical}">
+                                    <Image Source="{Binding Image}"
+                                           MaxWidth="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxHeight="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="{StaticResource StandardMarginRight}">
+                                        <ToolTip.Tip>
+                                            <Image Source="{Binding Image}"
+                                                   MaxWidth="512"
+                                                   MaxHeight="512" />
+                                        </ToolTip.Tip>
+                                    </Image>
 
-                                </controls:GroupBox>
+                                    <ListBox Grid.Column="1"
+                                             Items="{Binding Assets}"
+                                             SelectedItem="{Binding $parent[local:AutoTileSetSelectionDialog].ViewModel.SelectedAsset}"
+                                             Margin="{StaticResource StandardMarginLeft}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}"
+                                                           HorizontalAlignment="Stretch" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
+
+                            </controls:GroupBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
