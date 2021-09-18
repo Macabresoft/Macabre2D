@@ -11,6 +11,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A tile map that is either "on" or "off". The on tiles will show the selected sprite.
     /// </summary>
     [Display(Name = "Binary Tile Map")]
+    [Category(CommonCategories.TileMap)]
     public sealed class BinaryTileMap : RenderableTileMap {
         [DataMember]
         private readonly HashSet<Point> _activeTiles = new();

@@ -1,0 +1,26 @@
+﻿namespace Macabresoft.Macabre2D.Framework {
+    /// <summary>
+    /// Contains common categories for editable properties.
+    /// </summary>
+    public static class CommonCategories {
+        /// <summary>
+        /// Category for animation properties.
+        /// </summary>
+        public const string Animation = "Animation";
+
+        /// <summary>
+        /// Category for rendering properties.
+        /// </summary>
+        public const string Rendering = "Rendering";
+
+        /// <summary>
+        /// Category for tile map properties.
+        /// </summary>
+        public const string TileMap = "Tile Map";
+
+        /// <summary>
+        /// Category for transform properties.
+        /// </summary>
+        public const string Transform = "Transform";
+    }
+}

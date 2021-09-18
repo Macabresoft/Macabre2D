@@ -30,6 +30,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A <see cref="IEntity" /> which has a default implementation of
     /// <see cref="IRenderableEntity" />.
     /// </summary>
+    [Category(CommonCategories.Rendering)]
     public abstract class RenderableEntity : Entity, IRenderableEntity {
         private bool _isVisible = true;
         private int _renderOrder;
@@ -39,6 +40,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [Category(CommonCategories.Rendering)]
         public bool IsVisible {
             get => this._isVisible && this.IsEnabled;
             set => this.Set(ref this._isVisible, value, this.IsEnabled);
@@ -46,6 +48,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [Category(CommonCategories.Rendering)]
         public int RenderOrder {
             get => this._renderOrder;
             set => this.Set(ref this._renderOrder, value);

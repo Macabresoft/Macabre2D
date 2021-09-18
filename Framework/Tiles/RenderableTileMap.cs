@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// A base renderable tile map.
     /// </summary>
+    [Category(CommonCategories.Rendering)]
     public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
         private bool _isVisible = true;
         private int _renderOrder;
@@ -17,6 +18,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
+        [DataMember]
         public int RenderOrder {
             get => this._renderOrder;
             set => this.Set(ref this._renderOrder, value);

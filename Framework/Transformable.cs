@@ -96,7 +96,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// expected way.
     /// </summary>
     [DataContract]
-    [Category("Transform")]
+    [Category(CommonCategories.Transform)]
     public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         private readonly ResettableLazy<Matrix> _transformMatrix;
         private bool _isTransformUpToDate;

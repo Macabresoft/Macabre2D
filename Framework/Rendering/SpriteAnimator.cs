@@ -11,6 +11,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Animates sprites at the specified frame rate.
     /// </summary>
     [Display(Name = "Sprite Animator")]
+    [Category(CommonCategories.Animation)]
     public sealed class SpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
         private QueueableSpriteAnimation? _currentAnimation;

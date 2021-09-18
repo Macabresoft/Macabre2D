@@ -9,9 +9,10 @@ namespace Macabresoft.Macabre2D.Framework {
     using Newtonsoft.Json;
 
     /// <summary>
-    /// An entity which maps <see cref="AutoTileSet" /> onto a <see cref="TileGrid" />.
+    /// An entity which maps <see cref="AutoTileSet" /> onto a grid.
     /// </summary>
     [Display(Name = "Auto Tile Map")]
+    [Category(CommonCategories.TileMap)]
     public sealed class AutoTileMap : RenderableTileMap {
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Point, byte> _activeTileToIndex = new();

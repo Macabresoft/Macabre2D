@@ -10,7 +10,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
     /// </summary>
-    [Category("Render")]
+    [Category(CommonCategories.Rendering)]
     public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
         private readonly ResettableLazy<Transform> _pixelTransform;
@@ -60,6 +60,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember(Order = 3)]
+        [Category(CommonCategories.Transform)]
         public float Rotation {
             get => this._snapToPixels ? 0f : this._rotation;
 
