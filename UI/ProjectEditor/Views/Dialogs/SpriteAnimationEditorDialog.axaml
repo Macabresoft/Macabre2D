@@ -1,6 +1,7 @@
 ﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs"
                   xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.SpriteAnimationEditorDialog"
@@ -9,8 +10,12 @@
                   Title="Sprite Animation Editor"
                   VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
-        <viewModels:AutoTileSetEditorViewModel />
+        <viewModels:SpriteAnimationEditorViewModel />
     </Design.DataContext>
+    <local:BaseDialog.Resources>
+        <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+        <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+    </local:BaseDialog.Resources>
     <local:BaseDialog.Menu>
         <Menu Grid.Row="0"
               Grid.Column="0"
@@ -32,10 +37,81 @@
           Margin="{StaticResource StandardMarginAll}">
 
         <Grid Grid.Row="0"
-              Grid.Column="0">
-            <TextBlock Text="Steps go here"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+              Grid.Column="0"
+              RowDefinitions="Auto, *">
+            
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal">
+                <Button Command="{Binding InsertCommand}"
+                        CommandParameter="{Binding SelectedStep}"
+                        Classes="Icon"
+                        ToolTip.Tip="Insert a step after the selected step">
+                    <controls:Icon Content="{StaticResource InsertIcon}" />
+                </Button>
+                <Button Command="{Binding AddCommand}"
+                        CommandParameter="{x:Null}"
+                        Classes="Icon"
+                        ToolTip.Tip="Add a step to the end of the animation">
+                    <controls:Icon Content="{StaticResource AddIcon}" />
+                </Button>
+                <Button Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding SelectedStep}"
+                        Classes="Icon"
+                        ToolTip.Tip="Remove the step from the animation">
+                    <controls:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
+            </StackPanel>
+            
+            <ListBox Grid.Row="1"
+                     Items="{Binding Steps}"
+                     SelectedItem="{Binding SelectedStep}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid RowDefinitions="Auto, Auto"
+                              ColumnDefinitions="Auto, Auto, *">
+                            <Image Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.RowSpan="2"
+                                   Width="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
+                                   Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
+                                        <Binding Path="SpriteIndex" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=local:SpriteAnimationEditorDialog}"
+                                                 Path="ViewModel.SpriteCollection" />
+                                    </MultiBinding>
+                                </Image.Source>
+                                <ToolTip.Tip>
+                                    <Image Source="{Binding $parent[Image].Source}"
+                                           MaxWidth="512"
+                                           MaxHeight="512" />
+                                </ToolTip.Tip>
+                            </Image>
+                            
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Classes="ValueEditorLabel"
+                                       Text="Sprite Index" />
+                            
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="2"
+                                       Text="{Binding SpriteIndex}" />
+
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Classes="ValueEditorLabel"
+                                       Text="Frames" />
+                            
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="2"
+                                       Text="{Binding Frames}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
         
         <GridSplitter Grid.Row="0"
@@ -61,7 +137,7 @@
             <controls:ThumbnailSizeToggle Grid.Row="0"
                                           Grid.Column="1"
                                           HorizontalAlignment="Right"
-                                          SelectedSize="{Binding SelectedThumbnailSize}" />
+                                          SelectedSize="{Binding ThumbnailSize}" />
 
             <ScrollViewer Grid.Row="1"
                           Grid.Column="0"
@@ -70,7 +146,7 @@
                           VerticalScrollBarVisibility="Visible">
                 <controls:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
                                                          SelectedSprite="{Binding SelectedSprite}"
-                                                         ThumbnailSize="{Binding SelectedThumbnailSize}" />
+                                                         ThumbnailSize="{Binding ThumbnailSize}" />
             </ScrollViewer>
         </Grid>
 

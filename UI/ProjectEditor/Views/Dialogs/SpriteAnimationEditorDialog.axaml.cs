@@ -13,6 +13,8 @@
             viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
+        
+        public SpriteAnimationEditorViewModel ViewModel => this.DataContext as SpriteAnimationEditorViewModel;
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

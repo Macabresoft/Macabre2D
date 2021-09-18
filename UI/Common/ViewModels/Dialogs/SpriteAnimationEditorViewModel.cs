@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Avalonia;
+    using DynamicData;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
@@ -50,6 +51,16 @@
             this.ClearSpriteCommand = ReactiveCommand.Create(
                 this.ClearSprite,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+
+            this.AddCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep);
+            this.InsertCommand = ReactiveCommand.Create<SpriteAnimationStep>(
+                this.AddStep,
+                this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+            this.RemoveCommand = ReactiveCommand.Create<SpriteAnimationStep>(
+                this.RemoveStep,
+                this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+
+
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
             this.SelectedStep = this.Steps.FirstOrDefault();
             this.StepSize = this.GetStepSize();
@@ -57,10 +68,24 @@
         }
 
         /// <summary>
+        /// Gets a command to add a new step.
+        /// </summary>
+        public ICommand AddCommand { get; }
+
+        /// <summary>
         /// Clears the selected sprite from the selected step.
         /// </summary>
         public ICommand ClearSpriteCommand { get; }
 
+        /// <summary>
+        /// Gets a command to insert a new step after the selected step.
+        /// </summary>
+        public ICommand InsertCommand { get; }
+
+        /// <summary>
+        /// Gets a command to remove the selected step.
+        /// </summary>
+        public ICommand RemoveCommand { get; }
 
         /// <summary>
         /// Gets the sprite collection.
@@ -111,9 +136,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the selected thumbnail size.
+        /// Gets or sets the thumbnail size.
         /// </summary>
-        public ThumbnailSize SelectedThumbnailSize {
+        public ThumbnailSize ThumbnailSize {
             get => this._selectedThumbnailSize;
             set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
         }
@@ -130,6 +155,23 @@
             var command = this._childUndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
             base.OnOk();
+        }
+
+        private void AddStep(SpriteAnimationStep selectedStep) {
+            var index = -1;
+
+            if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
+                index = this._animation.Steps.IndexOf(selectedStep) + 1;
+            }
+
+            SpriteAnimationStep step = null;
+            this._childUndoService.Do(() => {
+                step = this._animation.AddStep(index);
+            }, () => {
+                if (step != null) {
+                    this._animation.RemoveStep(step);
+                }
+            });
         }
 
         private void ClearSprite() {
@@ -155,6 +197,13 @@
             }
 
             return size;
+        }
+
+        private void RemoveStep(SpriteAnimationStep selectedStep) {
+            if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
+                var index = this._animation.Steps.IndexOf(selectedStep);
+                this._childUndoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => { this._animation.AddStep(selectedStep, index); });
+            }
         }
     }
 }
