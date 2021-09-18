@@ -208,6 +208,7 @@
         private void SelectTile(AutoTileIndexModel tile) {
             if (tile != null) {
                 this.SelectedTile = tile;
+                // HACK: this makes things work well in the UI, just trust me.
                 Dispatcher.UIThread.Post(() => this.RaisePropertyChanged(nameof(this.SelectedTile)), DispatcherPriority.ApplicationIdle);
             }
         }

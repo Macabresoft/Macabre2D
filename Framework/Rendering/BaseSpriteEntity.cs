@@ -34,7 +34,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <summary>
         /// Gets the sprite index.
         /// </summary>
-        public abstract byte SpriteIndex { get; }
+        public abstract byte? SpriteIndex { get; }
 
         /// <summary>
         /// Gets the sprite sheet.
@@ -107,11 +107,11 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-            if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteSheet is SpriteSheet spriteSheet) {
+            if (this.SpriteIndex.HasValue && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteSheet is SpriteSheet spriteSheet) {
                 spriteSheet.Draw(
                     spriteBatch,
                     this.Scene.Game.Project.Settings.PixelsPerUnit,
-                    this.SpriteIndex,
+                    this.SpriteIndex.Value,
                     this.GetRenderTransform(),
                     this.Color,
                     this.RenderSettings.Orientation);

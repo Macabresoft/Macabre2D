@@ -15,7 +15,7 @@ namespace Macabresoft.Macabre2D.Framework {
         private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
         private QueueableSpriteAnimation? _currentAnimation;
         private uint _currentFrameIndex;
-        private byte _currentSpriteIndex;
+        private byte? _currentSpriteIndex;
         private uint _currentStepIndex;
         private byte _frameRate = 30;
         private bool _isPlaying;
@@ -35,7 +35,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
 
         /// <inheritdoc />
-        public override byte SpriteIndex => this._currentSpriteIndex;
+        public override byte? SpriteIndex => this._currentSpriteIndex;
 
         /// <inheritdoc />
         public override SpriteSheet? SpriteSheet => this.AnimationReference.Asset;

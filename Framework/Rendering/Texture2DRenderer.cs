@@ -8,7 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
         private Texture2D? _texture;
 
         /// <inheritdoc />
-        public override byte SpriteIndex => 0;
+        public override byte? SpriteIndex => 0;
 
         /// <inheritdoc />
         public override SpriteSheet SpriteSheet { get; } = new();

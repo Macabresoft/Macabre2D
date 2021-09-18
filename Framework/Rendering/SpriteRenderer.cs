@@ -18,7 +18,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
-        public override byte SpriteIndex => this.SpriteReference.SpriteIndex;
+        public override byte? SpriteIndex => this.SpriteReference.SpriteIndex;
 
         /// <summary>
         /// Gets the sprite reference this entity will render.

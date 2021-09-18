@@ -8,7 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
     [DataContract]
     public sealed class SpriteAnimationStep : NotifyPropertyChanged {
         private int _frames = 1;
-        private byte _spriteIndex;
+        private byte? _spriteIndex;
 
         /// <summary>
         /// Gets or sets the number of frames this sprite will be seen.
@@ -29,7 +29,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <value>The sprite.</value>
         [DataMember]
-        public byte SpriteIndex {
+        public byte? SpriteIndex {
             get => this._spriteIndex;
             set => this.Set(ref this._spriteIndex, value);
         }
