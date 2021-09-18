@@ -56,8 +56,12 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Services {
         }
 
         /// <inheritdoc />
-        public Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file) {
-            throw new NotImplementedException();
+        public async Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file) {
+            var window = Resolver.Resolve<SpriteAnimationEditorDialog>(
+                new ParameterOverride(typeof(SpriteAnimation), animation),
+                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                new ParameterOverride(typeof(ContentFile), file));
+            return await window.ShowDialog<bool>(this._mainWindow);
         }
 
         /// <inheritdoc />

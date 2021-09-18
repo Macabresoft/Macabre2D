@@ -51,7 +51,7 @@
                 this.ClearSprite,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
-            this.SelectedStep = this.Steps.First();
+            this.SelectedStep = this.Steps.FirstOrDefault();
             this.StepSize = this.GetStepSize();
             this.IsOkEnabled = true;
         }
