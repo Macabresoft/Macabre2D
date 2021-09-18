@@ -67,11 +67,8 @@
                      SelectedItem="{Binding SelectedStep}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid RowDefinitions="Auto, Auto"
-                              ColumnDefinitions="Auto, Auto, *">
-                            <Image Grid.Row="0"
-                                   Grid.Column="0"
-                                   Grid.RowSpan="2"
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Image Grid.Column="0"
                                    Width="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
                                    Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
                                    Stretch="Uniform"
@@ -91,23 +88,38 @@
                                 </ToolTip.Tip>
                             </Image>
                             
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="1"
-                                       Classes="ValueEditorLabel"
-                                       Text="Sprite Index" />
+                            <Grid Grid.Column="1"
+                                  RowDefinitions="Auto, Auto, *"
+                                  ColumnDefinitions="Auto, *"
+                                  VerticalAlignment="Top">
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Classes="ValueEditorLabel"
+                                           Text="Sprite Index" />
                             
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="2"
-                                       Text="{Binding SpriteIndex}" />
+                                <NumericUpDown Grid.Row="0"
+                                               Grid.Column="1"
+                                               ValueChanged="SpriteIndex_OnValueChanged"
+                                               Value="{Binding SpriteIndex, Mode=OneWay}"
+                                               Maximum="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.MaxIndex}"
+                                               Minimum="0"
+                                               VerticalAlignment="Top"
+                                               ToolTip.Tip="Adjust the sprite index"/>
 
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="1"
-                                       Classes="ValueEditorLabel"
-                                       Text="Frames" />
-                            
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="2"
-                                       Text="{Binding Frames}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="0"
+                                           Classes="ValueEditorLabel"
+                                           Text="Frames" />
+                                
+                                <NumericUpDown Grid.Row="1"
+                                               Grid.Column="1"
+                                               ValueChanged="Frames_OnValueChanged"
+                                               Value="{Binding Frames, Mode=OneWay}"
+                                               Maximum="255"
+                                               Minimum="1"
+                                               VerticalAlignment="Top"
+                                               ToolTip.Tip="Adjust the number of frames for this step"/>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

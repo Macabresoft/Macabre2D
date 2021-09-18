@@ -159,7 +159,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
             if (this.Value is SpriteReference { Asset: { } } reference &&
                 reference.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(reference.ContentId, out var metadata) && metadata != null) {
-                this.MaxIndex = (reference.Asset.Rows * reference.Asset.Columns) - 1;
+                this.MaxIndex = reference.Asset.MaxIndex;
                 this.ContentPath = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
                 var fullPath = Path.Combine(this._pathService.ContentDirectoryPath, this.ContentPath);
                 if (this._fileSystem.DoesFileExist(fullPath)) {

@@ -40,6 +40,11 @@ namespace Macabresoft.Macabre2D.Framework {
         public override bool IncludeFileExtensionInContentPath => false;
 
         /// <summary>
+        /// Gets the max index.
+        /// </summary>
+        public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
+
+        /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
         /// </summary>
         [DataMember]

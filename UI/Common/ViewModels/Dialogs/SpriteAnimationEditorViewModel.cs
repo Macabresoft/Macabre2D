@@ -15,7 +15,7 @@
     /// A view model for editing sprite animations.
     /// </summary>
     public class SpriteAnimationEditorViewModel : BaseDialogViewModel {
-        private const double MaxStepSize = 128;
+        private const double MaxStepSize = 64;
         private readonly SpriteAnimation _animation;
         private readonly IChildUndoService _childUndoService;
         private readonly IUndoService _parentUndoService;
@@ -47,7 +47,8 @@
             this._childUndoService = childUndoService;
             this._parentUndoService = parentUndoService;
             this._animation = animation;
-
+            this.MaxIndex = spriteSheet.MaxIndex;
+            
             this.ClearSpriteCommand = ReactiveCommand.Create(
                 this.ClearSprite,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
@@ -101,6 +102,11 @@
         /// Gets the size of a step's sprite in pixels.
         /// </summary>
         public Size StepSize { get; }
+        
+        /// <summary>
+        /// Gets the max index for the sprite sheet.
+        /// </summary>
+        public byte MaxIndex { get; }
 
         /// <summary>
         /// Gets or sets the selected sprite.
@@ -141,6 +147,36 @@
         public ThumbnailSize ThumbnailSize {
             get => this._selectedThumbnailSize;
             set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
+        }
+
+        /// <summary>
+        /// Commits a changed sprite index.
+        /// </summary>
+        /// <param name="oldValue">The old value.</param>
+        /// <param name="newValue">The new value.</param>
+        public void CommitSpriteIndex(byte oldValue, byte newValue) {
+            if (this.SelectedStep is SpriteAnimationStep step && step.SpriteIndex != newValue && oldValue != newValue) {
+                this._childUndoService.Do(() => {
+                    step.SpriteIndex = newValue;
+                }, () => {
+                    step.SpriteIndex = oldValue;
+                });
+            }
+        }
+        
+        /// <summary>
+        /// Commits a changed sprite index.
+        /// </summary>
+        /// <param name="oldValue">The old value.</param>
+        /// <param name="newValue">The new value.</param>
+        public void CommitFrames(int oldValue, int newValue) {
+            if (this.SelectedStep is SpriteAnimationStep step && step.Frames != newValue && oldValue != newValue) {
+                this._childUndoService.Do(() => {
+                    step.Frames = newValue;
+                }, () => {
+                    step.Frames = oldValue;
+                });
+            }
         }
 
         /// <inheritdoc />
