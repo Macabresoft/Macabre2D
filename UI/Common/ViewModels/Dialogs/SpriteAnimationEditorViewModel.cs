@@ -19,6 +19,7 @@
         private readonly SpriteAnimation _animation;
         private readonly IChildUndoService _childUndoService;
         private readonly IUndoService _parentUndoService;
+        private bool _isSettingSpriteIndexToNull;
         private SpriteDisplayModel _selectedSprite;
         private SpriteAnimationStep _selectedStep;
         private ThumbnailSize _selectedThumbnailSize;
@@ -49,18 +50,18 @@
             this._animation = animation;
             this.MaxIndex = spriteSheet.MaxIndex;
 
-            this.ClearSpriteCommand = ReactiveCommand.Create(
-                this.ClearSprite,
+            this.ClearSpriteCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.ClearSprite,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
 
             this.AddCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep);
+
             this.InsertCommand = ReactiveCommand.Create<SpriteAnimationStep>(
                 this.AddStep,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+
             this.RemoveCommand = ReactiveCommand.Create<SpriteAnimationStep>(
                 this.RemoveStep,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
-
 
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
             this.SelectedStep = this.Steps.FirstOrDefault();
@@ -87,6 +88,26 @@
         /// Gets the max index for the sprite sheet.
         /// </summary>
         public byte MaxIndex { get; }
+
+        /// <summary>
+        /// Gets a command to move a step down.
+        /// </summary>
+        public ICommand MoveDownCommand { get; }
+
+        /// <summary>
+        /// Gets a command to move a step to the end of the animation.
+        /// </summary>
+        public ICommand MoveToEndCommand { get; }
+
+        /// <summary>
+        /// Gets a command to move a step to the start of the animation.
+        /// </summary>
+        public ICommand MoveToStartCommand { get; }
+
+        /// <summary>
+        /// Gets a command to move a step up.
+        /// </summary>
+        public ICommand MoveUpCommand { get; }
 
         /// <summary>
         /// Gets a command to remove the selected step.
@@ -117,11 +138,23 @@
                 if (this._selectedStep is SpriteAnimationStep selectedStep) {
                     var previousSprite = this._selectedSprite;
                     this.UndoService.Do(() => {
-                        this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
-                        selectedStep.SpriteIndex = this._selectedSprite?.Index;
+                        try {
+                            this._isSettingSpriteIndexToNull = value == null;
+                            this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
+                            selectedStep.SpriteIndex = this._selectedSprite?.Index;
+                        }
+                        finally {
+                            this._isSettingSpriteIndexToNull = false;
+                        }
                     }, () => {
-                        this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
-                        selectedStep.SpriteIndex = this._selectedSprite?.Index;
+                        try {
+                            this._isSettingSpriteIndexToNull = value == null;
+                            this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
+                            selectedStep.SpriteIndex = this._selectedSprite?.Index;
+                        }
+                        finally {
+                            this._isSettingSpriteIndexToNull = false;
+                        }
                     });
                 }
             }
@@ -168,7 +201,7 @@
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
         public void CommitSpriteIndex(SpriteAnimationStep step, byte oldValue, byte newValue) {
-            if (step != null && step.SpriteIndex != newValue && oldValue != newValue) {
+            if (step != null && !this._isSettingSpriteIndexToNull && step.SpriteIndex != newValue && oldValue != newValue) {
                 this._childUndoService.Do(() => { step.SpriteIndex = newValue; }, () => { step.SpriteIndex = oldValue; });
             }
         }
@@ -202,8 +235,8 @@
             });
         }
 
-        private void ClearSprite() {
-            if (this.SelectedStep is { SpriteIndex: { } }) {
+        private void ClearSprite(SpriteAnimationStep step) {
+            if (step?.SpriteIndex != null) {
                 this.SelectedSprite = null;
             }
         }
@@ -225,6 +258,18 @@
             }
 
             return size;
+        }
+
+        private void MoveDown(SpriteAnimationStep step) {
+        }
+
+        private void MoveToEnd(SpriteAnimationStep step) {
+        }
+
+        private void MoveToStart(SpriteAnimationStep step) {
+        }
+
+        private void MoveUp(SpriteAnimationStep step) {
         }
 
         private void RemoveStep(SpriteAnimationStep selectedStep) {
