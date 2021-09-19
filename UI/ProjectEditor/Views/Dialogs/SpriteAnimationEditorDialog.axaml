@@ -21,28 +21,28 @@
             <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}" />
         </Style>
     </local:BaseDialog.Styles>
-    <local:BaseDialog.Menu>
-        <Menu Grid.Row="0"
-              Grid.Column="0"
-              Grid.ColumnSpan="2">
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo"
-                          Command="{Binding UndoCommand}"
-                          InputGesture="Ctrl + Z"
-                          HotKey="Ctrl + Z" />
-                <MenuItem Header="_Redo"
-                          Command="{Binding RedoCommand}"
-                          InputGesture="Ctrl + Y"
-                          HotKey="Ctrl + Y" />
-            </MenuItem>
-        </Menu>
-    </local:BaseDialog.Menu>
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions=".35*, Auto, .65*"
           Margin="{StaticResource StandardMarginAll}">
         <StackPanel Grid.Row="0"
                     Grid.Column="0"
                     Orientation="Horizontal">
+            <Button Classes="Icon"
+                    Command="{Binding UndoCommand}"
+                    HotKey="Ctrl + Z"
+                    ToolTip.Tip="Undo">
+                <controls:Icon Content="{StaticResource UndoIcon}" />
+            </Button>
+            
+            <Button Classes="Icon"
+                    Command="{Binding RedoCommand}"
+                    HotKey="Ctrl + Y"
+                    ToolTip.Tip="Redo">
+                <controls:Icon Content="{StaticResource RedoIcon}" />
+            </Button>
+            
+            <Border Classes="VerticalSeparator" />
+            
             <Button Command="{Binding AddCommand}"
                     CommandParameter="{x:Null}"
                     Classes="Icon"

@@ -59,22 +59,6 @@
             <Setter Property="TextBlock.Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
         </Style>
     </Window.Styles>
-    <local:BaseDialog.Menu>
-        <Menu Grid.Row="0"
-              Grid.Column="0"
-              Grid.ColumnSpan="2">
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo"
-                          Command="{Binding UndoCommand}"
-                          InputGesture="Ctrl + Z"
-                          HotKey="Ctrl + Z" />
-                <MenuItem Header="_Redo"
-                          Command="{Binding RedoCommand}"
-                          InputGesture="Ctrl + Y"
-                          HotKey="Ctrl + Y" />
-            </MenuItem>
-        </Menu>
-    </local:BaseDialog.Menu>
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions="Auto, *"
           Margin="{StaticResource StandardMarginAll}">
@@ -83,6 +67,22 @@
                     Margin="{StaticResource StandardMarginVertical}"
                     Orientation="Horizontal">
             <Button Classes="Icon"
+                    Command="{Binding UndoCommand}"
+                    HotKey="Ctrl + Z"
+                    ToolTip.Tip="Undo">
+                <controls:Icon Content="{StaticResource UndoIcon}" />
+            </Button>
+            
+            <Button Classes="Icon"
+                    Command="{Binding RedoCommand}"
+                    HotKey="Ctrl + Y"
+                    ToolTip.Tip="Redo">
+                <controls:Icon Content="{StaticResource RedoIcon}" />
+            </Button>
+            
+            <Border Classes="VerticalSeparator" />
+
+            <Button Classes="Icon"
                     Command="{Binding ClearSpriteCommand}"
                     ToolTip.Tip="Clear the selected tile's sprite assignment">
                 <controls:Icon Content="{StaticResource EraserIcon}" />
@@ -90,10 +90,10 @@
 
             <Button Classes="Icon"
                     Command="{Binding AutoLayoutCommand}"
-                    Margin="{StaticResource StandardMarginLeft}"
                     ToolTip.Tip="Automatically create an auto tile set from a sprite sheet laid out the same as the tiles to the left">
                 <controls:Icon Content="{StaticResource AutoLayoutIcon}" />
             </Button>
+            
         </StackPanel>
 
         <controls:ThumbnailSizeToggle Grid.Row="0"
