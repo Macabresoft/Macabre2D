@@ -78,7 +78,6 @@
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions="Auto, *"
           Margin="{StaticResource StandardMarginAll}">
-
         <StackPanel Grid.Row="0"
                     Grid.Column="0"
                     Margin="{StaticResource StandardMarginVertical}"
@@ -106,8 +105,8 @@
               Grid.Column="0"
               x:Name="_tileSetGrid"
               RowDefinitions="Auto, Auto"
-              ColumnDefinitions="Auto, Auto">
-
+              ColumnDefinitions="Auto, Auto"
+              Margin="{StaticResource StandardMarginRight}">
             <!-- Top Left -->
             <Border Grid.Row="0"
                     Grid.Column="0"
@@ -308,7 +307,7 @@
                               Tag="{Binding Tiles[0]}" />
             </Border>
         </Grid>
-        
+
         <ScrollViewer Grid.Row="1"
                       Grid.Column="1"
                       Height="{Binding #_tileSetGrid.Bounds.Height}"
