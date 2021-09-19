@@ -50,18 +50,24 @@
             this._animation = animation;
             this.MaxIndex = spriteSheet.MaxIndex;
 
-            this.ClearSpriteCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.ClearSprite,
-                this.WhenAny(x => x.SelectedStep, x => x.Value != null));
-
+            var selectedNotNull = this.WhenAny(x => x.SelectedStep, x => x.Value != null);
+            this.ClearSpriteCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.ClearSprite, selectedNotNull);
             this.AddCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep);
+            this.InsertCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep, selectedNotNull);
+            this.RemoveCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.RemoveStep, selectedNotNull);
 
-            this.InsertCommand = ReactiveCommand.Create<SpriteAnimationStep>(
-                this.AddStep,
-                this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+            var notAtStart = this.WhenAny(
+                x => x.SelectedStep,
+                x => !this.IsStepAtStart(x.Value));
+            this.MoveUpCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveUp, notAtStart);
+            this.MoveToStartCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveToStart, notAtStart);
 
-            this.RemoveCommand = ReactiveCommand.Create<SpriteAnimationStep>(
-                this.RemoveStep,
-                this.WhenAny(x => x.SelectedStep, x => x.Value != null));
+            var notAtEnd = this.WhenAny(
+                x => x.SelectedStep,
+                x => !this.IsStepAtEnd(x.Value));
+            this.MoveDownCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveDown, notAtEnd);
+            this.MoveToEndCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveToEnd, notAtEnd);
+
 
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
             this.SelectedStep = this.Steps.FirstOrDefault();
@@ -228,9 +234,16 @@
             }
 
             SpriteAnimationStep step = null;
-            this._childUndoService.Do(() => { step = this._animation.AddStep(index); }, () => {
+            this._childUndoService.Do(() => {
+                step = this._animation.AddStep(index);
+                this.SelectedStep = step;
+            }, () => {
                 if (step != null) {
                     this._animation.RemoveStep(step);
+                }
+
+                if (selectedStep != null) {
+                    this.SelectedStep = selectedStep;
                 }
             });
         }
@@ -260,22 +273,85 @@
             return size;
         }
 
+        private bool IsStepAtEnd(SpriteAnimationStep step) {
+            return step == null || !this._animation.Steps.Contains(step) || this._animation.Steps.IndexOf(step) >= this._animation.Steps.Count - 1;
+        }
+
+        private bool IsStepAtStart(SpriteAnimationStep step) {
+            return step == null || !this._animation.Steps.Contains(step) || this._animation.Steps.IndexOf(step) == 0;
+        }
+
         private void MoveDown(SpriteAnimationStep step) {
+            if (!this.IsStepAtEnd(step)) {
+                var originalIndex = this._animation.Steps.IndexOf(step);
+                var newIndex = originalIndex + 1;
+                this._childUndoService.Do(() => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, newIndex);
+                    this.SelectedStep = step;
+                }, () => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, originalIndex);
+                    this.SelectedStep = step;
+                });
+            }
         }
 
         private void MoveToEnd(SpriteAnimationStep step) {
+            if (!this.IsStepAtEnd(step)) {
+                var originalIndex = this._animation.Steps.IndexOf(step);
+                this._childUndoService.Do(() => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step);
+                    this.SelectedStep = step;
+                }, () => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, originalIndex);
+                    this.SelectedStep = step;
+                });
+            }
         }
 
         private void MoveToStart(SpriteAnimationStep step) {
+            if (!this.IsStepAtStart(step)) {
+                var originalIndex = this._animation.Steps.IndexOf(step);
+                this._childUndoService.Do(() => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, 0);
+                    this.SelectedStep = step;
+                }, () => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, originalIndex);
+                    this.SelectedStep = step;
+                });
+            }
         }
 
         private void MoveUp(SpriteAnimationStep step) {
+            if (!this.IsStepAtStart(step)) {
+                var originalIndex = this._animation.Steps.IndexOf(step);
+                var newIndex = originalIndex - 1;
+                this._childUndoService.Do(() => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, newIndex);
+                    this.SelectedStep = step;
+                }, () => {
+                    this._animation.RemoveStep(step);
+                    this._animation.AddStep(step, originalIndex);
+                    this.SelectedStep = step;
+                });
+            }
         }
 
         private void RemoveStep(SpriteAnimationStep selectedStep) {
             if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
                 var index = this._animation.Steps.IndexOf(selectedStep);
-                this._childUndoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => { this._animation.AddStep(selectedStep, index); });
+                this._childUndoService.Do(() => {
+                    this._animation.RemoveStep(selectedStep);
+                }, () => {
+                    this._animation.AddStep(selectedStep, index);
+                    this.SelectedStep = selectedStep;
+                });
             }
         }
     }
