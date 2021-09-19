@@ -58,8 +58,6 @@ namespace Macabresoft.Macabre2D.Framework {
                 }
             }
         }
-        
-        
 
         /// <summary>
         /// Enqueues the specified animation.
@@ -93,7 +91,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <inheritdoc />
         public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);
-            
+
             this._millisecondsPerFrame = 1000u / this._frameRate;
             this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.AnimationReference);
 
