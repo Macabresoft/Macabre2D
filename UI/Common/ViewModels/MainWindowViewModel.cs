@@ -101,11 +101,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
         public ICommand SaveCommand { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the non-native menu should be shown. The native menu is for MacOS only.
-        /// </summary>
-        public bool ShowNonNativeMenu => AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem != OperatingSystemType.OSX;
-
-        /// <summary>
         /// Gets the system service.
         /// </summary>
         public ISystemService SystemService { get; }

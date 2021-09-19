@@ -1,10 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
+        xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs.BaseDialog"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}">
     <Window.Template>
         <ControlTemplate>
             <Panel>
@@ -23,6 +24,7 @@
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
                             <controls:Icon Grid.Column="0"
+                                           IsVisible="{x:Static root:App.ShowNonNativeMenu}"
                                            IsHitTestVisible="False"
                                            Content="{TemplateBinding VectorIcon}"
                                            Margin="{StaticResource StandardMarginAll}" />
@@ -32,6 +34,7 @@
                             
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="3"
+                                       IsVisible="{x:Static root:App.ShowNonNativeMenu}"
                                        IsHitTestVisible="False"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Text="{TemplateBinding Title}"

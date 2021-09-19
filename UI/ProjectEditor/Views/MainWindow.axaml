@@ -3,12 +3,11 @@
         xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
+        xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor"
         xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Views"
         xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Views.MainWindow"
-        Name="Macabre2D"
-        Title="Macabre2D"
-        ExtendClientAreaToDecorationsHint="{Binding ShowNonNativeMenu}"
+        ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}"
         WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Design.DataContext>
@@ -17,6 +16,7 @@
     <Window.Resources>
         <converters:EqualityConverter x:Key="EqualityConverter" />
     </Window.Resources>
+    <Window.Name>Macabre2D</Window.Name>
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="File">
@@ -70,7 +70,7 @@
               Grid.Column="0"
               Grid.ColumnSpan="3"
               ColumnDefinitions="Auto, Auto, *"
-              IsVisible="{Binding ShowNonNativeMenu}">
+              IsVisible="{x:Static root:App.ShowNonNativeMenu}">
             <Border Grid.ColumnSpan="3"
                     HorizontalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
