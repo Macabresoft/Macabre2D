@@ -48,7 +48,7 @@
             this._parentUndoService = parentUndoService;
             this._animation = animation;
             this.MaxIndex = spriteSheet.MaxIndex;
-            
+
             this.ClearSpriteCommand = ReactiveCommand.Create(
                 this.ClearSprite,
                 this.WhenAny(x => x.SelectedStep, x => x.Value != null));
@@ -84,6 +84,11 @@
         public ICommand InsertCommand { get; }
 
         /// <summary>
+        /// Gets the max index for the sprite sheet.
+        /// </summary>
+        public byte MaxIndex { get; }
+
+        /// <summary>
         /// Gets a command to remove the selected step.
         /// </summary>
         public ICommand RemoveCommand { get; }
@@ -102,11 +107,6 @@
         /// Gets the size of a step's sprite in pixels.
         /// </summary>
         public Size StepSize { get; }
-        
-        /// <summary>
-        /// Gets the max index for the sprite sheet.
-        /// </summary>
-        public byte MaxIndex { get; }
 
         /// <summary>
         /// Gets or sets the selected sprite.
@@ -152,30 +152,24 @@
         /// <summary>
         /// Commits a changed sprite index.
         /// </summary>
+        /// <param name="step">The step.</param>
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
-        public void CommitSpriteIndex(byte oldValue, byte newValue) {
-            if (this.SelectedStep is SpriteAnimationStep step && step.SpriteIndex != newValue && oldValue != newValue) {
-                this._childUndoService.Do(() => {
-                    step.SpriteIndex = newValue;
-                }, () => {
-                    step.SpriteIndex = oldValue;
-                });
+        public void CommitFrames(SpriteAnimationStep step, int oldValue, int newValue) {
+            if (step != null && step.Frames != newValue && oldValue != newValue) {
+                this._childUndoService.Do(() => { step.Frames = newValue; }, () => { step.Frames = oldValue; });
             }
         }
-        
+
         /// <summary>
         /// Commits a changed sprite index.
         /// </summary>
+        /// <param name="step">The step.</param>
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
-        public void CommitFrames(int oldValue, int newValue) {
-            if (this.SelectedStep is SpriteAnimationStep step && step.Frames != newValue && oldValue != newValue) {
-                this._childUndoService.Do(() => {
-                    step.Frames = newValue;
-                }, () => {
-                    step.Frames = oldValue;
-                });
+        public void CommitSpriteIndex(SpriteAnimationStep step, byte oldValue, byte newValue) {
+            if (step != null && step.SpriteIndex != newValue && oldValue != newValue) {
+                this._childUndoService.Do(() => { step.SpriteIndex = newValue; }, () => { step.SpriteIndex = oldValue; });
             }
         }
 
@@ -201,9 +195,7 @@
             }
 
             SpriteAnimationStep step = null;
-            this._childUndoService.Do(() => {
-                step = this._animation.AddStep(index);
-            }, () => {
+            this._childUndoService.Do(() => { step = this._animation.AddStep(index); }, () => {
                 if (step != null) {
                     this._animation.RemoveStep(step);
                 }

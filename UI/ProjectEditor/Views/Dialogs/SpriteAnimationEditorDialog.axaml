@@ -16,6 +16,12 @@
         <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
         <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </local:BaseDialog.Resources>
+    <local:BaseDialog.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="{StaticResource StandardMarginAll}" />
+            <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}" />
+        </Style>
+    </local:BaseDialog.Styles>
     <local:BaseDialog.Menu>
         <Menu Grid.Row="0"
               Grid.Column="0"
@@ -33,7 +39,7 @@
         </Menu>
     </local:BaseDialog.Menu>
     <Grid RowDefinitions="*, Auto"
-          ColumnDefinitions="*, Auto, *"
+          ColumnDefinitions=".35*, Auto, .65*"
           Margin="{StaticResource StandardMarginAll}">
 
         <Grid Grid.Row="0"
@@ -42,16 +48,22 @@
             
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal">
-                <Button Command="{Binding InsertCommand}"
-                        CommandParameter="{Binding SelectedStep}"
-                        Classes="Icon"
-                        ToolTip.Tip="Insert a step after the selected step">
-                    <controls:Icon Content="{StaticResource InsertIcon}" />
-                </Button>
                 <Button Command="{Binding AddCommand}"
                         CommandParameter="{x:Null}"
                         Classes="Icon"
                         ToolTip.Tip="Add a step to the end of the animation">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add"
+                                      Command="{Binding AddCommand}"
+                                      CommandParameter="{x:Null}"
+                                      ToolTip.Tip="Add a step to the end of the animation" />
+                            <MenuItem Header="Insert"
+                                      Command="{Binding InsertCommand}"
+                                      CommandParameter="{Binding SelectedStep}"
+                                      ToolTip.Tip="Insert a step after the selected step" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
                     <controls:Icon Content="{StaticResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveCommand}"
@@ -68,10 +80,14 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid ColumnDefinitions="Auto, *, Auto">
-                            <Image Grid.Column="0"
-                                   Width="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
-                                   Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
-                                   Stretch="Uniform"
+                            <Border Grid.Column="0"
+                                    Classes="Preview"
+                                    VerticalAlignment="Center"
+                                    Width="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
+                                    Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
+                                    MaxWidth="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
+                                    MaxHeight="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}">
+                            <Image Stretch="Uniform"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
                                 <Image.Source>
@@ -87,6 +103,7 @@
                                            MaxHeight="512" />
                                 </ToolTip.Tip>
                             </Image>
+                                </Border>
                             
                             <Grid Grid.Column="1"
                                   RowDefinitions="Auto, Auto, *"
@@ -104,6 +121,7 @@
                                                Maximum="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.MaxIndex}"
                                                Minimum="0"
                                                VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"
                                                ToolTip.Tip="Adjust the sprite index"/>
 
                                 <TextBlock Grid.Row="1"
@@ -118,6 +136,7 @@
                                                Maximum="255"
                                                Minimum="1"
                                                VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"
                                                ToolTip.Tip="Adjust the number of frames for this step"/>
                             </Grid>
                         </Grid>

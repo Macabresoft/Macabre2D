@@ -1,6 +1,8 @@
 ﻿namespace Macabresoft.Macabre2D.UI.ProjectEditor.Views.Dialogs {
+    using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
     using Unity;
 
@@ -18,10 +20,10 @@
         public SpriteAnimationEditorViewModel ViewModel => this.DataContext as SpriteAnimationEditorViewModel;
 
         private void Frames_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
-            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel) {
+            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
                 var oldValue = (int)e.OldValue;
                 var newValue = (int)e.NewValue;
-                viewModel.CommitFrames(oldValue, newValue);
+                viewModel.CommitFrames(step, oldValue, newValue);
             }
         }
 
@@ -34,10 +36,10 @@
         }
 
         private void SpriteIndex_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
-            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel) {
+            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
                 var oldValue = (byte)e.OldValue;
                 var newValue = (byte)e.NewValue;
-                viewModel.CommitSpriteIndex(oldValue, newValue);
+                viewModel.CommitSpriteIndex(step, oldValue, newValue);
             }
         }
     }
