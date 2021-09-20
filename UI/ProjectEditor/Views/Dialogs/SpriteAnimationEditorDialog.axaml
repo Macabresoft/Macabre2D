@@ -15,12 +15,6 @@
     <local:BaseDialog.Resources>
         <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
     </local:BaseDialog.Resources>
-    <local:BaseDialog.Styles>
-        <Style Selector="ListBoxItem">
-            <Setter Property="Padding" Value="{StaticResource StandardMarginAll}" />
-            <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}" />
-        </Style>
-    </local:BaseDialog.Styles>
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions=".35*, Auto, .65*"
           Margin="{StaticResource StandardMarginAll}">
@@ -118,6 +112,13 @@
                  Grid.Column="0"
                  Items="{Binding Steps}"
                  SelectedItem="{Binding SelectedStep}">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Margin" Value="{StaticResource StandardMarginVertical}" />
+                    <Setter Property="Padding" Value="{StaticResource StandardMarginAll}" />
+                    <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}" />
+                </Style>
+            </ListBox.Styles>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="Auto, *, Auto">
@@ -128,9 +129,7 @@
                                 Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
                                 MaxWidth="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
                                 MaxHeight="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}">
-                            <Image Stretch="Uniform"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center">
+                            <Image>
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
@@ -139,11 +138,6 @@
                                             Path="ViewModel.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
-                                <ToolTip.Tip>
-                                    <Image Source="{Binding $parent[Image].Source}"
-                                           MaxWidth="512"
-                                           MaxHeight="512" />
-                                </ToolTip.Tip>
                             </Image>
                         </Border>
 

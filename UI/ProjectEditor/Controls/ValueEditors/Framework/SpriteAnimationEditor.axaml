@@ -23,13 +23,7 @@
                 Name="_spriteBorder"
                 IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
                 Classes="Preview">
-            <Image Source="{Binding Bitmap}">
-                <ToolTip.Tip>
-                    <Image Source="{Binding Bitmap}"
-                           MaxWidth="512"
-                           MaxHeight="512" />
-                </ToolTip.Tip>
-            </Image>
+            <Image Source="{Binding Bitmap}" />
         </Border>
         
         <TextBlock Grid.Row="2"

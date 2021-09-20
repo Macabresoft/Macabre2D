@@ -27,14 +27,9 @@
                 Name="_spriteBorder"
                 IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
                 Classes="Preview"
-                Background="{Binding TileMap.Color, Converter={StaticResource ColorConverter}}">
-            <Image Source="{Binding Bitmap}">
-                <ToolTip.Tip>
-                    <Image Source="{Binding Bitmap}"
-                           MaxWidth="512"
-                           MaxHeight="512" />
-                </ToolTip.Tip>
-            </Image>
+                Background="{Binding TileMap.Color, Converter={StaticResource ColorConverter}}"
+                BorderBrush="{Binding $self.Background}">
+            <Image Source="{Binding Bitmap}" />
         </Border>
         
         <TextBlock Grid.Row="2"

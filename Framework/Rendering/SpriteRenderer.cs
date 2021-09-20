@@ -8,7 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// An entity which will render a single sprite.
     /// </summary>
     [Display(Name = "Sprite Renderer")]
-    [Category("Render")]
+    [Category(CommonCategories.Rendering)]
     public sealed class SpriteRenderer : BaseSpriteEntity {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteRenderer" /> class.
