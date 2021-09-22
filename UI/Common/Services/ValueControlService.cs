@@ -2,11 +2,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
     using System.Text.RegularExpressions;
+    using JetBrains.Annotations;
     using Macabresoft.Core;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Mappers;
     using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
@@ -100,6 +103,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 var value = member.MemberInfo.GetValue(owner);
                 var memberType = member.MemberInfo.GetMemberReturnType();
 
+                if (memberType == typeof(RenderSettings)) {
+                    Debugger.Break();
+                }
+
                 var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }
@@ -137,10 +144,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     }
                 }
             }
-            else if (!memberType.IsValueType &&
-                     memberType.GetCustomAttribute(typeof(DataContractAttribute), true) != null ||
-                     value?.GetType() is Type { IsValueType: false } actualType &&
-                     actualType.GetCustomAttribute(typeof(DataContractAttribute), true) != null) {
+            else if (!memberType.IsValueType) {
                 var editors = this.CreateControls(propertyPath, value, originalObject);
                 result.AddRange(editors);
             }

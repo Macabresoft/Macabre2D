@@ -70,7 +70,7 @@
                 Classes="Icon"
                 Command="{Binding ClearSpriteCommand}"
                 ToolTip.Tip="Clear the sprite">
-            <controls:Icon Content="{StaticResource TrashIcon}" />
+            <controls:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
 </valueEditors:ValueEditorControl>

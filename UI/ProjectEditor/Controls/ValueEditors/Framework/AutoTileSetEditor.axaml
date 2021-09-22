@@ -60,7 +60,7 @@
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
                 ToolTip.Tip="Clear the tile set">
-            <controls:Icon Content="{StaticResource TrashIcon}" />
+            <controls:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
 </valueEditors:ValueEditorControl>

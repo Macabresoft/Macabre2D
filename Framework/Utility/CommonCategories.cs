@@ -9,6 +9,16 @@
         public const string Animation = "Animation";
 
         /// <summary>
+        /// Category for grids.
+        /// </summary>
+        public const string Grid = "Grid";
+
+        /// <summary>
+        /// Category for offset.
+        /// </summary>
+        public const string Offset = "Offset";
+
+        /// <summary>
         /// Category for rendering properties.
         /// </summary>
         public const string Rendering = "Rendering";

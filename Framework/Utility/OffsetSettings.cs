@@ -3,12 +3,14 @@ namespace Macabresoft.Macabre2D.Framework {
     using Macabresoft.Core;
     using Microsoft.Xna.Framework;
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Settings that define offset.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.Offset)]
     public class OffsetSettings : NotifyPropertyChanged {
         [DataMember(Order = 1, Name = "Offset")]
         private Vector2 _offset;

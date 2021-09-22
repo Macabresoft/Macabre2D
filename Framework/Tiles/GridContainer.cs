@@ -55,7 +55,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember(Name = "Tile Size")]
-        [Category("Grid")]
+        [Category(CommonCategories.Grid)]
         public Vector2 LocalTileSize {
             get => this._tileSize;
             set {

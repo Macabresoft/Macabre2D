@@ -1,5 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework {
-
+    using System.ComponentModel;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using System.Runtime.Serialization;
@@ -23,6 +23,8 @@ namespace Macabresoft.Macabre2D.Framework {
     /// <summary>
     /// Render settings for rendering a sprite or text. Handles offset and flipping of the sprite.
     /// </summary>
+    [DataContract]
+    [Category(CommonCategories.Rendering)]
     public sealed class RenderSettings : OffsetSettings {
         private bool _flipHorizontal;
         private bool _flipVertical;
