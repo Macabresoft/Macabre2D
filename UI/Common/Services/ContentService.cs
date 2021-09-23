@@ -69,6 +69,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             foreach (var extension in SpriteSheet.ValidFileExtensions) {
                 FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
             }
+
+            foreach (var extension in AudioClip.ValidFileExtensions) {
+                FileExtensionToAssetType.Add(extension, typeof(AudioClip));
+            }
         }
 
         /// <summary>

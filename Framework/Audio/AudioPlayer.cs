@@ -20,7 +20,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the audio clip reference.
         /// </summary>
         [DataMember(Order = 0, Name = "Audio Clip")]
-        public AssetReference<AudioClip> AudioClipReference { get; } = new();
+        public AudioClipReference AudioClipReference { get; } = new();
 
         /// <summary>
         /// Gets the state.

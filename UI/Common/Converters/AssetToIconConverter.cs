@@ -19,6 +19,7 @@
                 _ = asset switch {
                     SceneAsset => Application.Current.TryFindResource("SceneAssetIcon", out result),
                     SpriteSheet => Application.Current.TryFindResource("SpriteSheetIcon", out result),
+                    AudioClip => Application.Current.TryFindResource("AudioClipIcon", out result),
                     _ => Application.Current.TryFindResource("FileIcon", out result)
                 };
             }

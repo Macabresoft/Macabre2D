@@ -138,5 +138,9 @@
       <DependentUpon>SpriteAnimationEditorDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AudioClipEditor.axaml.cs">
+      <DependentUpon>AudioClipEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

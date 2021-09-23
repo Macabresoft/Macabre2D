@@ -8,6 +8,11 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A single audio clip.
     /// </summary>
     public sealed class AudioClip : Asset<SoundEffect> {
+        /// <summary>
+        /// The valid file extensions for a <see cref="SoundEffectInstance" />.
+        /// </summary>
+        public static readonly string[] ValidFileExtensions = { ".wav", ".mp3", ".wma" };
+        
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;
 
