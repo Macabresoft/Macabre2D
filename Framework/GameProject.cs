@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -27,6 +28,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Defines a single project within the engine.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.Miscellaneous)]
     public class GameProject : IGameProject {
         /// <summary>
         /// The default project name.
@@ -62,7 +64,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
-        [DataMember]
+        [DataMember(Order = 1)]
         public IGameSettings Settings { get; }
 
         /// <inheritdoc />

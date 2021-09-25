@@ -1,9 +1,12 @@
 namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common.Models;
     using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
@@ -15,6 +18,16 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// Gets the currently loaded project.
         /// </summary>
         GameProject CurrentProject { get; }
+
+        /// <summary>
+        /// Gets the editors.
+        /// </summary>
+        IReadOnlyCollection<ValueControlCollection> Editors { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not this service is busy.
+        /// </summary>
+        bool IsBusy { get; }
 
         /// <summary>
         /// Loads the project.
@@ -33,11 +46,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         private readonly IContentService _contentService;
+        private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISceneService _sceneService;
         private readonly ISerializer _serializer;
         private readonly IEditorSettingsService _settingsService;
+        private readonly IUndoService _undoService;
+        private readonly IValueControlService _valueControlService;
         private GameProject _currentProject;
 
         /// <summary>
@@ -49,20 +65,32 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         /// <param name="sceneService">The scene service.</param>
         /// <param name="serializer">The serializer.</param>
         /// <param name="settingsService">The editor settings service.</param>
+        /// <param name="undoService">The undo service.</param>
+        /// <param name="valueControlService">The value control service.</param>
         public ProjectService(
             IContentService contentService,
             IFileSystemService fileSystem,
             IPathService pathService,
             ISceneService sceneService,
             ISerializer serializer,
-            IEditorSettingsService settingsService) {
+            IEditorSettingsService settingsService,
+            IUndoService undoService,
+            IValueControlService valueControlService) {
             this._contentService = contentService;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._sceneService = sceneService;
             this._serializer = serializer;
             this._settingsService = settingsService;
+            this._undoService = undoService;
+            this._valueControlService = valueControlService;
         }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
+
+        /// <inheritdoc />
+        public bool IsBusy => false;
 
         /// <inheritdoc />
         public GameProject CurrentProject {
@@ -92,6 +120,17 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 if (!this._sceneService.TryLoadScene(sceneId, out var sceneAsset) && sceneAsset != null) {
                     this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
                 }
+            }
+
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+            }
+
+            var editors = this._valueControlService.CreateControls(this.CurrentProject);
+            this._editors.Reset(editors);
+
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
             }
 
             return this.CurrentProject;
@@ -136,6 +175,23 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
             this._sceneService.SaveScene(metadata, scene);
             var content = new ContentFile(parent, metadata);
             return this._sceneService.TryLoadScene(content.Id, out var asset) ? asset.ContentId : Guid.Empty;
+        }
+
+        private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
+            if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+                var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
+                var newValue = e.UpdatedValue;
+
+                if (originalValue != newValue) {
+                    this._undoService.Do(() => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                        valueEditor.SetValue(newValue);
+                    }, () => {
+                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                        valueEditor.SetValue(originalValue);
+                    });
+                }
+            }
         }
 
         private void SaveProjectFile(IGameProject project, string projectFilePath) {

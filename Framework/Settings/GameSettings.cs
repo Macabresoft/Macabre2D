@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
     using Newtonsoft.Json;
@@ -59,12 +60,6 @@ namespace Macabresoft.Macabre2D.Framework {
         ushort PixelsPerUnit { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the project.
-        /// </summary>
-        /// <value>The name of the project.</value>
-        string ProjectName { get; set; }
-
-        /// <summary>
         /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
         /// screen regardless of the current view size.
         /// </summary>
@@ -86,6 +81,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A place for common game settings to be serialized across scenes.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.Settings)]
     public sealed class GameSettings : IGameSettings {
         /// <summary>
         /// The content file name for <see cref="GameSettings" />.
@@ -111,10 +107,12 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [Category(CommonCategories.Fallback)]
         public Color ErrorSpritesColor { get; set; } = Color.HotPink;
 
         /// <inheritdoc />
         [DataMember]
+        [Category(CommonCategories.Fallback)]
         public Color FallbackBackgroundColor { get; set; } = Color.Black;
 
         /// <inheritdoc />
@@ -134,10 +132,6 @@ namespace Macabresoft.Macabre2D.Framework {
                 this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
             }
         }
-
-        /// <inheritdoc />
-        [DataMember]
-        public string ProjectName { get; set; } = "Project Name";
 
         /// <summary>
         /// Adds the custom setting.

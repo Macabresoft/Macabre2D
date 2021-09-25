@@ -102,11 +102,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var value = member.MemberInfo.GetValue(owner);
                 var memberType = member.MemberInfo.GetMemberReturnType();
-
-                if (memberType == typeof(RenderSettings)) {
-                    Debugger.Break();
-                }
-
+                
                 var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }

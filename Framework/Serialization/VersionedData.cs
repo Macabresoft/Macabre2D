@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.Framework {
-
     using System;
     using System.Runtime.Serialization;
 
@@ -7,7 +6,6 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Interface for data that can be versioned.
     /// </summary>
     public interface IVersionedData {
-
         /// <summary>
         /// Gets the name of the type.
         /// </summary>
@@ -27,8 +25,9 @@ namespace Macabresoft.Macabre2D.Framework {
     /// Data that can be versioned.
     /// </summary>
     [DataContract]
-    public class VersionedData : IVersionedData {
-
+    public class VersionedData : NotifyPropertyChanged, IVersionedData {
+        private Version _version = new();
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="VersionedData" /> class.
         /// </summary>
@@ -45,11 +44,13 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
-        [DataMember]
-        public string TypeName { get; private set; } = string.Empty;
+        public string TypeName { get; }
 
         /// <inheritdoc />
         [DataMember]
-        public Version Version { get; set; } = new Version();
+        public Version Version {
+            get => this._version;
+            set => this.Set(ref this._version, value);
+        }
     }
 }

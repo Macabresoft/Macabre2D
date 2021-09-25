@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using System;
     using System.IO;
-    using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
@@ -27,7 +26,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);
             return fileSystem;
         }
-        
+
         [Test]
         [Category("Unit Tests")]
         public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
@@ -61,8 +60,10 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 fileSystem,
                 pathService,
                 sceneService,
-                serializer, 
-                Substitute.For<IEditorSettingsService>());
+                serializer,
+                Substitute.For<IEditorSettingsService>(),
+                Substitute.For<IUndoService>(),
+                Substitute.For<IValueControlService>());
 
             var project = projectService.LoadProject();
 
@@ -84,14 +85,16 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var settingsService = Substitute.For<IEditorSettingsService>();
             settingsService.Settings.Returns(new EditorSettings());
-            
+
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer, 
-                settingsService);
+                serializer,
+                settingsService,
+                Substitute.For<IUndoService>(),
+                Substitute.For<IValueControlService>());
 
             var loadedProject = projectService.LoadProject();
 
@@ -115,8 +118,10 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer, 
-                Substitute.For<IEditorSettingsService>());
+                serializer,
+                Substitute.For<IEditorSettingsService>(),
+                Substitute.For<IUndoService>(),
+                Substitute.For<IValueControlService>());
 
             projectService.SaveProject();
 
@@ -135,14 +140,16 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var settingsService = Substitute.For<IEditorSettingsService>();
             settingsService.Settings.Returns(new EditorSettings());
-            
+
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
                 Substitute.For<ISceneService>(),
-                serializer, 
-                settingsService);
+                serializer,
+                settingsService,
+                Substitute.For<IUndoService>(),
+                Substitute.For<IValueControlService>());
 
             projectService.LoadProject();
             projectService.SaveProject();

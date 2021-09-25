@@ -9,9 +9,24 @@
         public const string Animation = "Animation";
 
         /// <summary>
+        /// Fallback values.
+        /// </summary>
+        public const string Fallback = "Fallback";
+
+        /// <summary>
+        /// Category for default graphics.
+        /// </summary>
+        public const string DefaultGraphics = "Default DefaultGraphics";
+
+        /// <summary>
         /// Category for grids.
         /// </summary>
         public const string Grid = "Grid";
+
+        /// <summary>
+        /// Category for miscellaneous.
+        /// </summary>
+        public const string Miscellaneous = "Miscellaneous";
 
         /// <summary>
         /// Category for offset.
@@ -22,6 +37,11 @@
         /// Category for rendering properties.
         /// </summary>
         public const string Rendering = "Rendering";
+
+        /// <summary>
+        /// Category for settings.
+        /// </summary>
+        public const string Settings = "Settings";
 
         /// <summary>
         /// Category for tile map properties.

@@ -1,9 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework {
-
-    using Macabresoft.Core;
-    using Microsoft.Xna.Framework;
-    using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
 
     /// <summary>
     /// The display mode.
@@ -15,20 +13,17 @@ namespace Macabresoft.Macabre2D.Framework {
     }
 
     /// <summary>
-    /// Graphics settings such as resolution and display mode.
+    /// DefaultGraphics settings such as resolution and display mode.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.DefaultGraphics)]
     public sealed class GraphicsSettings : VersionedData {
-
         /// <summary>
         /// The settings file name.
         /// </summary>
-        public const string SettingsFileName = "Graphics.m2d";
+        public const string SettingsFileName = "DefaultGraphics.m2d";
 
-        [DataMember]
         private DisplayModes _displayMode = DisplayModes.Windowed;
-
-        [DataMember]
         private Point _resolution = new(1920, 1080);
 
         /// <summary>
@@ -48,42 +43,23 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <summary>
-        /// Occurs when either <see cref="DisplayMode" /> or <see cref="Resolution" /> has changed.
-        /// </summary>
-        public event EventHandler? SettingsChanged;
-
-        /// <summary>
         /// Gets or sets the display mode.
         /// </summary>
         /// <value>The display mode.</value>
+        [DataMember]
         public DisplayModes DisplayMode {
-            get {
-                return this._displayMode;
-            }
-
-            set {
-                if (this._displayMode != value) {
-                    this._displayMode = value;
-                    this.SettingsChanged.SafeInvoke(this);
-                }
-            }
+            get => this._displayMode;
+            set => this.Set(ref this._displayMode, value);
         }
 
         /// <summary>
         /// Gets or sets the resolution.
         /// </summary>
         /// <value>The resolution.</value>
+        [DataMember]
         public Point Resolution {
-            get {
-                return this._resolution;
-            }
-
-            set {
-                if (this._resolution != value) {
-                    this._resolution = value;
-                    this.SettingsChanged.SafeInvoke(this);
-                }
-            }
+            get => this._resolution;
+            set => this.Set(ref this._resolution, value);
         }
 
         /// <summary>
@@ -91,7 +67,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <returns>A clone of this instance.</returns>
         public GraphicsSettings Clone() {
-            return new(this.DisplayMode, this.Resolution);
+            return new GraphicsSettings(this.DisplayMode, this.Resolution);
         }
     }
 }
