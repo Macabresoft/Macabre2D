@@ -3,11 +3,11 @@
 	<Styles.Resources>
 		<x:Double x:Key="TabItemHeaderFontSize">18</x:Double>
 		<Thickness x:Key="TabItemMargin">0,0,0,0</Thickness>
-		<Thickness x:Key="TabItemHeaderMargin">2,4,16,4</Thickness>
+		<Thickness x:Key="TabItemHeaderMargin">9,3,9,3</Thickness>
 		<x:Double x:Key="TabItemMinHeight">40</x:Double>
 	</Styles.Resources>
 	
 	<Style Selector="TabItem">
-		<Setter Property="VerticalContentAlignment" Value="Top" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 </Styles>
