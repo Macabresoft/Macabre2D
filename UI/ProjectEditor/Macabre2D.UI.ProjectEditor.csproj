@@ -142,5 +142,9 @@
       <DependentUpon>AudioClipEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AssetGuidEditor.axaml.cs">
+      <DependentUpon>AssetReferenceEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

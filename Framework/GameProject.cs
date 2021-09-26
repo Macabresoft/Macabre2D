@@ -73,6 +73,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [AssetGuid(typeof(SceneAsset))]
         public Guid StartupSceneContentId { get; set; }
     }
 }

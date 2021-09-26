@@ -125,7 +125,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 }
             }
             else if (memberType.IsEnum) {
-                if (memberType.GetCustomAttributes<FlagsAttribute>().Any()) {
+                if (memberType.GetCustomAttribute<FlagsAttribute>() != null) {
                     if (this._typeMapper.FlagsEnumEditorType != null) {
                         var editor = this.CreateValueEditorFromType(this._typeMapper.FlagsEnumEditorType, originalObject, value, memberType, member, propertyPath);
                         if (editor != null) {
@@ -135,6 +135,14 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 }
                 else if (this._typeMapper.EnumEditorType != null) {
                     var editor = this.CreateValueEditorFromType(this._typeMapper.EnumEditorType, originalObject, value, memberType, member, propertyPath);
+                    if (editor != null) {
+                        result.Add(editor);
+                    }
+                }
+            }
+            else if (memberType == typeof(Guid)) {
+                if (memberType.GetCustomAttribute<AssetGuidAttribute>() != null && this._typeMapper.AssetReferenceType != null) {
+                    var editor = this.CreateValueEditorFromType(this._typeMapper.AssetReferenceType, originalObject, value, memberType, member, propertyPath);
                     if (editor != null) {
                         result.Add(editor);
                     }

@@ -1,6 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls"
         xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
         xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor"
@@ -157,24 +156,28 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <Panel IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Entities}}">
-                    <views:SceneTreeView  />
+                <Panel
+                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Entities}}">
+                    <views:SceneTreeView />
                 </Panel>
-                
-                <Panel IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Systems}}">
-                    <views:SystemsView  />
+
+                <Panel
+                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Systems}}">
+                    <views:SystemsView />
                 </Panel>
-                
-                <Panel IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}">
-                    <views:ContentTreeView  />
+
+                <Panel
+                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}">
+                    <views:ContentTreeView />
                 </Panel>
-                
-                <Panel IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Project}}">
-                    <views:ProjectView  />
+
+                <Panel
+                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Project}}">
+                    <views:ProjectView />
                 </Panel>
             </Grid>
         </Grid>
-        
+
         <views:GizmoSelectionView Grid.Row="1"
                                   Grid.Column="2"
                                   Margin="{StaticResource StandardMarginAll}" />

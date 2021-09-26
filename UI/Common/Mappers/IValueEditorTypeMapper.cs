@@ -7,6 +7,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Mappers {
     /// </summary>
     public interface IValueEditorTypeMapper {
         /// <summary>
+        /// The type for an asset reference editor.
+        /// </summary>
+        Type AssetReferenceType { get; }
+
+        /// <summary>
         /// The type for an editor of enums.
         /// </summary>
         Type EnumEditorType { get; }

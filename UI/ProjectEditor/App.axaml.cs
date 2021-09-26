@@ -38,6 +38,9 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
         /// <inheritdoc />
         public override void OnFrameworkInitializationCompleted() {
             if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+                var mainWindow = new MainWindow();
+                Resolver.Container.RegisterInstance(mainWindow);
+
                 // TODO: show a splash screen while all this is happening
                 Resolver.Resolve<IEditorSettingsService>().Initialize();
 
@@ -48,8 +51,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor {
                 Resolver.Resolve<IEntityService>().Initialize();
                 Resolver.Resolve<ISystemService>().Initialize();
 
-                var mainWindow = new MainWindow();
-                Resolver.Container.RegisterInstance(mainWindow);
+
                 mainWindow.InitializeComponent();
                 desktop.MainWindow = mainWindow;
             }

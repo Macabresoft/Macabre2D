@@ -6,11 +6,11 @@
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
                                  x:TypeArguments="framework:AutoTileSetReference"
-                                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.AudioClipEditor">
+                                 x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.AssetGuidEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-          DataContext="{Binding $parent[local:AudioClipEditor]}">
+          DataContext="{Binding $parent[local:AssetGuidEditor]}">
         <Design.DataContext>
-            <local:AudioClipEditor />
+            <local:AssetGuidEditor />
         </Design.DataContext>
         
         <TextBlock Grid.Column="0"
