@@ -14,6 +14,12 @@ namespace Macabresoft.Macabre2D.Framework {
 
         [DataMember(Name = "Collision Resolver", Order = 0)]
         private ICollisionResolver _collisionResolver = new DefaultCollisionResolver();
+        
+        /// <summary>
+        /// Gets the collision map.
+        /// </summary>
+        [DataMember]
+        public CollisionMap CollisionMap { get; } = new();
 
         private float _groundedness = 0.35f;
         private float _minimumPostBounceMagnitude = 1.5f;
@@ -30,7 +36,6 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <value>The collision resolver.</value>
         public ICollisionResolver CollisionResolver {
             get => this._collisionResolver;
-
             private set => this.Set(ref this._collisionResolver, value);
         }
 
@@ -38,7 +43,6 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Order = 2)]
         public float Groundedness {
             get => this._groundedness;
-
             set => this.Set(ref this._groundedness, value);
         }
 
@@ -46,7 +50,6 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Order = 4, Name = "Minimum Post-Bounce Magnitude")]
         public float MinimumPostBounceMagnitude {
             get => this._minimumPostBounceMagnitude;
-
             set => this.Set(ref this._minimumPostBounceMagnitude, value);
         }
 
@@ -54,7 +57,6 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Order = 5, Name = "Minimum Post-Friction Magnitude")]
         public float MinimumPostFrictionMagnitude {
             get => this._minimumPostFrictionMagnitude;
-
             set => this.Set(ref this._minimumPostFrictionMagnitude, value);
         }
 
@@ -62,7 +64,6 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Order = 3)]
         public float Stickiness {
             get => this._stickiness;
-
             set => this.Set(ref this._stickiness, value);
         }
 
@@ -93,7 +94,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
                 foreach (var collider in body.GetColliders()) {
                     var potentials = this.ColliderTree.RetrievePotentialCollisions(collider);
-                    foreach (var otherCollider in potentials.Where(c => c != collider && this.Scene.Game.Project.Settings.Layers.GetShouldCollide(c.Layers, collider.Layers))) {
+                    foreach (var otherCollider in potentials.Where(c => c != collider && this.CollisionMap.GetShouldCollide(c.Layers, collider.Layers))) {
                         if (otherCollider.Body != null) {
                             var hasCollisionAlreadyResolved = this._collisionsHandled.TryGetValue(otherCollider.Body.Id, out var collisions) &&
                                                               collisions.Contains(body.Id);

@@ -22,11 +22,9 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
             bool raycastHit) {
             var scene = new Scene();
             var project = Substitute.For<IGameProject>();
-            var layerSettings = new LayerSettings();
             var gameSettings = Substitute.For<IGameSettings>();
             var raycastLayer = Layers.Layer12;
 
-            gameSettings.Layers.Returns(layerSettings);
             project.Settings.Returns(gameSettings);
 
             if (!layersCompatible) {
@@ -56,10 +54,9 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Physics {
             bool raycastHit) {
             var scene = new Scene();
             var project = Substitute.For<IGameProject>();
-            var layerSettings = new LayerSettings();
+            var layerSettings = new CollisionMap();
             var gameSettings = Substitute.For<IGameSettings>();
 
-            gameSettings.Layers.Returns(layerSettings);
             project.Settings.Returns(gameSettings);
 
             var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();

@@ -37,12 +37,6 @@ namespace Macabresoft.Macabre2D.Framework {
         float InversePixelsPerUnit { get; }
 
         /// <summary>
-        /// Gets the layer settings.
-        /// </summary>
-        /// <value>The layer settings.</value>
-        LayerSettings Layers { get; }
-
-        /// <summary>
         /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
         /// </summary>
         Color ErrorSpritesColor { get; set; }
@@ -96,11 +90,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <inheritdoc />
         [DataMember]
         public GraphicsSettings DefaultGraphicsSettings { get; } = new();
-
-        /// <inheritdoc />
-        [DataMember]
-        public LayerSettings Layers { get; } = new();
-
+        
         /// <inheritdoc />
         [DataMember]
         public Point DefaultResolution { get; set; }

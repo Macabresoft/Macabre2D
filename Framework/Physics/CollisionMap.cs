@@ -1,25 +1,25 @@
 namespace Macabresoft.Macabre2D.Framework {
-
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
-    
+    using Newtonsoft.Json;
+
     /// <summary>
-    /// Represents a layer collision map.
+    /// Represents a collision map of <see cref="Layers" />. Can define on the <see cref="IGamePhysicsSystem" /> level to
+    /// determine which layers should collide.
     /// </summary>
     [DataContract]
-    public sealed class LayerCollisionMap {
+    public sealed class CollisionMap {
         private readonly List<Layers> _layers;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new Dictionary<Layers, Layers>();
+        private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LayerCollisionMap"/> class.
+        /// Initializes a new instance of the <see cref="CollisionMap" /> class.
         /// </summary>
-        public LayerCollisionMap() {
+        public CollisionMap() {
             this._layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().ToList();
             this._layers.Remove(Layers.None);
 
@@ -40,7 +40,8 @@ namespace Macabresoft.Macabre2D.Framework {
                 if (result) {
                     break;
                 }
-                else if (firstLayer.HasFlag(layer)) {
+
+                if (firstLayer.HasFlag(layer)) {
                     if (this._layerToCollisionMask.TryGetValue(layer, out var layerMask)) {
                         result = (layerMask & secondLayer) != Layers.None;
                     }
@@ -61,7 +62,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public void ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {
             if (this._layerToCollisionMask.TryGetValue(rootLayer, out var collisionMask)) {
                 if ((collisionMask & collisionBit) == collisionBit) {
-                    this._layerToCollisionMask[rootLayer] = collisionMask & (~collisionBit);
+                    this._layerToCollisionMask[rootLayer] = collisionMask & ~collisionBit;
                 }
                 else {
                     this._layerToCollisionMask[rootLayer] = collisionMask | collisionBit;
@@ -86,6 +87,7 @@ namespace Macabresoft.Macabre2D.Framework {
                     collisionBit = layer;
                     break;
                 }
+
                 if (twoLayers.HasFlag(layer)) {
                     if (rootLayer == Layers.None) {
                         rootLayer = layer;
