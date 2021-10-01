@@ -7,19 +7,19 @@ namespace Macabresoft.Macabre2D.Framework {
     using System.Runtime.Serialization;
     
     /// <summary>
-    /// The layer settings.
+    /// Represents a layer collision map.
     /// </summary>
     [DataContract]
-    public sealed class LayerSettings {
+    public sealed class LayerCollisionMap {
         private readonly List<Layers> _layers;
 
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         private readonly Dictionary<Layers, Layers> _layerToCollisionMask = new Dictionary<Layers, Layers>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LayerSettings"/> class.
+        /// Initializes a new instance of the <see cref="LayerCollisionMap"/> class.
         /// </summary>
-        public LayerSettings() {
+        public LayerCollisionMap() {
             this._layers = Enum.GetValues(typeof(Layers)).Cast<Layers>().ToList();
             this._layers.Remove(Layers.None);
 

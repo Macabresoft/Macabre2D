@@ -27,7 +27,7 @@ namespace Macabresoft.Macabre2D.Framework {
     [DataContract]
     public class VersionedData : NotifyPropertyChanged, IVersionedData {
         private Version _version = new();
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VersionedData" /> class.
         /// </summary>
@@ -44,7 +44,8 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <inheritdoc />
-        public string TypeName { get; }
+        [DataMember]
+        public string TypeName { get; private set; }
 
         /// <inheritdoc />
         [DataMember]
