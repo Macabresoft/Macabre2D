@@ -24,7 +24,7 @@
                   Items="{Binding EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
                   SelectedItem="{x:Null}"
                   SelectionChanged="SelectingItemsControl_OnSelectionChanged"
-                  PlaceholderText="{Binding Value}"
+                  PlaceholderText="{Binding Value, Converter={StaticResource ToDisplayNameConverter}}"
                   ToolTip.Tip="{Binding Value}">
             <ComboBox.Styles>
                 <Style Selector="ComboBoxItem">

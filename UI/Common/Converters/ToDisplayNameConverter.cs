@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common.Converters {
     using System;
     using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
     using Avalonia.Data.Converters;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
@@ -18,7 +20,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return value switch {
-                Enum enumValue => enumValue.GetEnumDisplayName(),
+                Enum enumValue => GetEnumName(enumValue),
                 Type type => type.GetTypeDisplayName(),
                 INameable nameable => nameable.Name,
                 _ => value?.GetType().GetTypeDisplayName() ?? string.Empty
@@ -28,6 +30,23 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
         /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
+        }
+
+        private static string GetEnumName(Enum enumValue) {
+            var enumType = enumValue.GetType();
+            if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
+                var displayName = string.Empty;
+                foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag)) {
+                    displayName = string.IsNullOrEmpty(displayName) ?
+                        value.GetEnumDisplayName() :
+                        $"{displayName}, {value.GetEnumDisplayName()}";
+                }
+
+                return displayName;
+            }
+            else {
+                return enumValue.GetEnumDisplayName();
+            }
         }
     }
 }
