@@ -26,6 +26,21 @@
                 Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
 
+    <Style Selector="TextBlock.SmallLabel">
+        <Setter Property="Margin" 
+                Value="{StaticResource StandardMarginRight}" />
+        <Setter Property="TextTrimming"
+                Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Right" />
+        <Setter Property="FontSize"
+                Value="12" />
+        <Setter Property="MaxWidth" 
+                Value="64" />
+    </Style>
+
     <Style Selector="TextBlock.Caption">
         <Setter Property="FontStyle"
                 Value="Italic" />

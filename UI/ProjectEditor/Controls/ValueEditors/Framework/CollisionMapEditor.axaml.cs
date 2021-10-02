@@ -2,20 +2,17 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using System;
     using System.Globalization;
     using System.Linq;
-    using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Layout;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media;
-    using Avalonia.VisualTree;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Converters;
     using Unity;
 
     public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
-
         private readonly ToDisplayNameConverter _displayNameConverter = new();
-        
+
         [InjectionConstructor]
         public CollisionMapEditor() {
             this.InitializeComponent();
@@ -23,61 +20,75 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
         }
 
         private void CreateMap() {
-            var grid = this.LogicalChildren.OfType<Grid>().First();
+            var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
+            var grid = new Grid();
+            viewBox.Child = grid;
+
             var rowValues = Enum.GetValues<Layers>().ToList();
             rowValues.Remove(Layers.Default);
             rowValues.Remove(Layers.None);
             var columnValues = rowValues.ToList();
 
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            for (var i = 0; i <= rowValues.Count + 1; i++) {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+                grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            }
+
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
             var row = 1;
-            var column = 1;
+            var column = columnValues.Count + 1;
 
             foreach (var columnValue in columnValues) {
-                grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+                var textControl = new TextBlock {
+                    Text = this._displayNameConverter.Convert(columnValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
+                    [ToolTip.TipProperty] = columnValue
+                };
+
+                textControl.Classes.Add("SmallLabel");
+
+                var container = new Decorator {
+                    Child = textControl
+                };
 
                 var layoutTransform = new LayoutTransformControl {
                     ClipToBounds = false,
                     LayoutTransform = new RotateTransform(90),
                     [Grid.RowProperty] = 0,
-                    [Grid.ColumnProperty] = column
-                };
-                
-                var textControl = new TextBlock() {
-                    Text = this._displayNameConverter.Convert(columnValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
-                    VerticalAlignment = VerticalAlignment.Bottom,
-                    HorizontalAlignment = HorizontalAlignment.Left
+                    [Grid.ColumnProperty] = column,
+                    Child = container
                 };
 
-                layoutTransform.Child = textControl;
-                
                 grid.Children.Add(layoutTransform);
-                column++;
+                column--;
             }
 
             foreach (var rowValue in rowValues) {
-                column = 1;
-                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+                column = columnValues.Count + 1;
+
                 var textControl = new TextBlock {
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Right,
                     Text = this._displayNameConverter.Convert(rowValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
+                    [ToolTip.TipProperty] = rowValue,
                     [Grid.RowProperty] = row,
                     [Grid.ColumnProperty] = 0
                 };
-                
+
+                textControl.Classes.Add("SmallLabel");
                 grid.Children.Add(textControl);
 
                 foreach (var columnValue in columnValues) {
-                    var checkBox = new CheckBox() {
+                    var checkBox = new CheckBox {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
                         [Grid.RowProperty] = row,
                         [Grid.ColumnProperty] = column
                     };
-                    
+
+                    checkBox.Classes.Add("NoText");
+
                     grid.Children.Add(checkBox);
-                    column++;
+                    column--;
                 }
 
                 columnValues.Remove(rowValue);

@@ -1,17 +1,9 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors"
                                  x:TypeArguments="framework:CollisionMap"
                                  x:Class="Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework.CollisionMapEditor">
-    <valueEditors:ValueEditorControl.Resources>
-        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
-    </valueEditors:ValueEditorControl.Resources>
-    <Grid DataContext="{Binding $parent[local:CollisionMapEditor]}">
-        <Design.DataContext>
-            <local:CollisionMapEditor />
-        </Design.DataContext>
-    </Grid>
+    <Viewbox />
 </valueEditors:ValueEditorControl>
