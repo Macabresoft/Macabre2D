@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
     using Newtonsoft.Json;
@@ -10,6 +11,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// determine which layers should collide.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.CollisionMap)]
     public sealed class CollisionMap {
         private readonly List<Layers> _layers;
 

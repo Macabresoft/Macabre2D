@@ -9,14 +9,19 @@
         public const string Animation = "Animation";
 
         /// <summary>
-        /// Fallback values.
+        /// Category for collision map.
         /// </summary>
-        public const string Fallback = "Fallback";
+        public const string CollisionMap = "Collision Map";
 
         /// <summary>
         /// Category for default graphics.
         /// </summary>
         public const string DefaultGraphics = "Default DefaultGraphics";
+
+        /// <summary>
+        /// Fallback values.
+        /// </summary>
+        public const string Fallback = "Fallback";
 
         /// <summary>
         /// Category for grids.
@@ -34,6 +39,11 @@
         public const string Offset = "Offset";
 
         /// <summary>
+        /// Category for physics.
+        /// </summary>
+        public const string Physics = "Physics";
+
+        /// <summary>
         /// Category for rendering properties.
         /// </summary>
         public const string Rendering = "Rendering";
@@ -47,6 +57,11 @@
         /// Category for tile map properties.
         /// </summary>
         public const string TileMap = "Tile Map";
+
+        /// <summary>
+        /// Category for timing.
+        /// </summary>
+        public const string Timing = "Timing";
 
         /// <summary>
         /// Category for transform properties.

@@ -146,5 +146,9 @@
       <DependentUpon>AssetReferenceEditor.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\CollisionMapEditor.axaml.cs">
+      <DependentUpon>CollisionMapEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

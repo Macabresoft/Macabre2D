@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Microsoft.Xna.Framework;
 
@@ -7,6 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
     /// </summary>
     /// <seealso cref="FixedTimeStepSystem" />
+    [Category(CommonCategories.Physics)]
     public class SimplePhysicsSystem : FixedTimeStepSystem {
         /// <summary>
         /// Gets the collider tree.

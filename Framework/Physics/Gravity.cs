@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework {
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
 
@@ -7,6 +8,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// things like the gravity direction and perpendicular.
     /// </summary>
     [DataContract]
+    [Category(CommonCategories.Physics)]
     public sealed class Gravity : NotifyPropertyChanged {
         private Vector2 _value;
 
@@ -38,7 +40,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets or sets the vector value of this gravity.
         /// </summary>
         /// <value>The value.</value>
-        [DataMember]
+        [DataMember(Name = "Gravity")]
         public Vector2 Value {
             get => this._value;
 

@@ -18,6 +18,8 @@
                 Value="CharacterEllipsis" />
         <Setter Property="VerticalAlignment"
                 Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Left" />
         <Setter Property="Width"
                 Value="96" />
         <Setter Property="ToolTip.Tip"

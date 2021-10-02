@@ -1,12 +1,14 @@
 namespace Macabresoft.Macabre2D.Framework {
 
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A system which updates at a fixed time step.
     /// </summary>
-    /// <seealso cref="BaseModule" />
+    /// <seealso cref="UpdateSystem" />
+    [Category(CommonCategories.Timing)]
     public abstract class FixedTimeStepSystem : UpdateSystem {
         private float _timePassed;
         private float _timeStep = 1f / 30f;

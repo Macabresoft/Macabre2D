@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A system which allows for raycasting and handles rigidbody physics interactions.
     /// </summary>
     /// <seealso cref="SimplePhysicsSystem" />
+    [Category(CommonCategories.Physics)]
     public sealed class PhysicsSystem : SimplePhysicsSystem, IGamePhysicsSystem {
         private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new();
 
