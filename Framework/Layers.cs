@@ -9,6 +9,7 @@ namespace Macabresoft.Macabre2D.Framework {
     /// </summary>
     [Flags]
     public enum Layers : ushort {
+        [Display(Name = null)]
         None = 0,
         
         [Display(Name = "Default")]

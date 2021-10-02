@@ -21,6 +21,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the collision map.
         /// </summary>
         [DataMember]
+        [Category(CommonCategories.CollisionMap)]
         public CollisionMap CollisionMap { get; } = new();
 
         private float _groundedness = 0.35f;
