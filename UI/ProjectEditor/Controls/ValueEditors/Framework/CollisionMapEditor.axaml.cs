@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using Avalonia.Controls;
@@ -8,18 +9,34 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
     using Avalonia.Media;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Converters;
+    using Macabresoft.Macabre2D.UI.Common.Services;
+    using ReactiveUI;
     using Unity;
 
     public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
         private readonly ToDisplayNameConverter _displayNameConverter = new();
+        private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new();
+        private readonly IUndoService _undoService;
+
+        public CollisionMapEditor() : this(Resolver.Resolve<IUndoService>()) {
+        }
 
         [InjectionConstructor]
-        public CollisionMapEditor() {
+        public CollisionMapEditor(IUndoService undoService) {
+            this._undoService = undoService;
             this.InitializeComponent();
+        }
+
+        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
+            base.Initialize(value, valueType, valuePropertyName, title, owner);
             this.CreateMap();
         }
 
         private void CreateMap() {
+            if (this.Value == null) {
+                return;
+            }
+
             var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
             var grid = new Grid();
             viewBox.Child = grid;
@@ -81,6 +98,7 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                     var checkBox = new CheckBox {
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
+                        Command = ReactiveCommand.Create(() => this.ToggleCheckedWithUndo(rowValue, columnValue)),
                         [Grid.RowProperty] = row,
                         [Grid.ColumnProperty] = column
                     };
@@ -88,6 +106,8 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
                     checkBox.Classes.Add("NoText");
 
                     grid.Children.Add(checkBox);
+                    checkBox.IsChecked = this.Value.GetShouldCollide(rowValue, columnValue);
+                    this._layersToCheckBox[rowValue | columnValue] = checkBox;
                     column--;
                 }
 
@@ -98,6 +118,18 @@ namespace Macabresoft.Macabre2D.UI.ProjectEditor.Controls.ValueEditors.Framework
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void ToggleChecked(Layers firstLayer, Layers secondLayer) {
+            var isChecked = this.Value.ToggleShouldCollide(firstLayer, secondLayer);
+
+            if (this._layersToCheckBox.TryGetValue(firstLayer | secondLayer, out var checkBox)) {
+                checkBox.IsChecked = isChecked;
+            }
+        }
+
+        private void ToggleCheckedWithUndo(Layers firstLayer, Layers secondLayer) {
+            this._undoService.Do(() => { this.ToggleChecked(firstLayer, secondLayer); }, () => { this.ToggleChecked(firstLayer, secondLayer); });
         }
     }
 }

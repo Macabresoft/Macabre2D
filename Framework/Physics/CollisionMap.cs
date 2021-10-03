@@ -61,25 +61,32 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <param name="rootLayer">The root layer.</param>
         /// <param name="collisionBit">The collision bit.</param>
-        public void ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {
+        /// <returns>A value indicating whether or not the layers collide.</returns>
+        public bool ToggleShouldCollide(Layers rootLayer, Layers collisionBit) {
+            var result = false;
+
             if (this._layerToCollisionMask.TryGetValue(rootLayer, out var collisionMask)) {
                 if ((collisionMask & collisionBit) == collisionBit) {
                     this._layerToCollisionMask[rootLayer] = collisionMask & ~collisionBit;
                 }
                 else {
                     this._layerToCollisionMask[rootLayer] = collisionMask | collisionBit;
+                    result = true;
                 }
             }
             else {
                 this._layerToCollisionMask[rootLayer] = ~collisionBit;
             }
+
+            return result;
         }
 
         /// <summary>
         /// Toggles collisions.
         /// </summary>
         /// <param name="twoLayers">The two layers.</param>
-        public void ToggleShouldCollide(Layers twoLayers) {
+        /// <returns>A value indicating whether or not the layers collide.</returns>
+        public bool ToggleShouldCollide(Layers twoLayers) {
             var rootLayer = Layers.None;
             var collisionBit = Layers.None;
 
@@ -102,8 +109,10 @@ namespace Macabresoft.Macabre2D.Framework {
             }
 
             if (rootLayer != Layers.None && collisionBit != Layers.None) {
-                this.ToggleShouldCollide(rootLayer, collisionBit);
+                return this.ToggleShouldCollide(rootLayer, collisionBit);
             }
+
+            return false;
         }
     }
 }
