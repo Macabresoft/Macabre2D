@@ -1,10 +1,9 @@
-<controls:ValueControl xmlns="https://github.com/avaloniaui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                       xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo"
-                       x:TypeArguments="content:ContentFile"
-                       x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo.ContentFileInfoControl">
+<local:ValueControl xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                    x:TypeArguments="content:ContentFile"
+                    x:Class="Macabresoft.Macabre2D.UI.Editor.ContentFileInfoControl">
     <Grid RowDefinitions="Auto, Auto"
           ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:ContentFileInfoControl]}">
@@ -31,4 +30,4 @@
                  IsReadOnly="True"
                  Text="{Binding FileInfo.LastWriteTime}" />
     </Grid>
-</controls:ValueControl>
+</local:ValueControl>

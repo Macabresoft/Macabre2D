@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Views {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.Collections.Generic;
     using Avalonia;
@@ -7,7 +7,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor.Helpers;
 
     public class SceneTreeView : UserControl {
         public static readonly DirectProperty<SceneTreeView, IReadOnlyCollection<IControl>> AddMenuItemsProperty =

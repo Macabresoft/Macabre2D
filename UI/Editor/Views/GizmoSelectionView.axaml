@@ -1,8 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Views.GizmoSelectionView">
+             x:Class="Macabresoft.Macabre2D.UI.Editor.GizmoSelectionView">
     <UserControl.Resources>
         <common:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>
@@ -28,7 +28,7 @@
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
-                    <controls:Icon Content="{StaticResource SelectIcon}" />
+                    <local:Icon Content="{StaticResource SelectIcon}" />
                 </ToggleButton>
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                               CommandParameter="{x:Static common:GizmoKind.Translation}"
@@ -42,7 +42,7 @@
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
-                    <controls:Icon Content="{StaticResource TranslateIcon}" />
+                    <local:Icon Content="{StaticResource TranslateIcon}" />
                 </ToggleButton>
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
                               CommandParameter="{x:Static common:GizmoKind.Scale}"
@@ -56,7 +56,7 @@
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
-                    <controls:Icon Content="{StaticResource ScaleIcon}" />
+                    <local:Icon Content="{StaticResource ScaleIcon}" />
                 </ToggleButton>
 
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
@@ -72,7 +72,7 @@
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
-                    <controls:Icon Content="{StaticResource RotateIcon}" />
+                    <local:Icon Content="{StaticResource RotateIcon}" />
                 </ToggleButton>
 
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
@@ -88,7 +88,7 @@
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
-                    <controls:Icon Content="{StaticResource TileIcon}" />
+                    <local:Icon Content="{StaticResource TileIcon}" />
                 </ToggleButton>
             </StackPanel>
         </Border>
@@ -99,12 +99,12 @@
                 <Button Command="{Binding EditorService.RequestCenterCameraCommand}"
                         Classes="Icon"
                         ToolTip.Tip="Centers the editor camera on (0, 0) in the scene.">
-                    <controls:Icon Content="{StaticResource CameraIcon}" />
+                    <local:Icon Content="{StaticResource CameraIcon}" />
                 </Button>
                 <Button Command="{Binding EditorService.RequestFocusCommand}"
                         Classes="Icon"
                         ToolTip.Tip="Focuses the editor camera on the currently selected entity.">
-                    <controls:Icon Content="{StaticResource FocusIcon}" />
+                    <local:Icon Content="{StaticResource FocusIcon}" />
                 </Button>
             </StackPanel>
         </Border>

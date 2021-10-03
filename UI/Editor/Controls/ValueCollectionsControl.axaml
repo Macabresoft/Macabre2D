@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueCollectionsControl">
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.ValueCollectionsControl">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Visible">
         <Grid DataContext="{Binding $parent[local:ValueCollectionsControl]}">

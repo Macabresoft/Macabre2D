@@ -1,9 +1,8 @@
 <local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.ContentSelectionDialog"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.ContentSelectionDialog"
                   Height="480"
                   Width="640"
                   CanResize="False"
@@ -17,10 +16,10 @@
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
 
-        <controls:FilteredContentTree Grid.Row="0"
-                                      Root="{Binding RootContentDirectory, Mode=OneTime}"
-                                      SelectedItem="{Binding SelectedContentNode}"
-                                      Margin="{StaticResource StandardMarginAll}" />
+        <local:FilteredContentTree Grid.Row="0"
+                                   Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                   SelectedItem="{Binding SelectedContentNode}"
+                                   Margin="{StaticResource StandardMarginAll}" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"

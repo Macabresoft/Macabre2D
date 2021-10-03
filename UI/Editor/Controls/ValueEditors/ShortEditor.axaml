@@ -1,9 +1,9 @@
 <local:BaseNumericEditor xmlns="https://github.com/avaloniaui"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
+                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                          xmlns:system="clr-namespace:System;assembly=mscorlib"
                          x:TypeArguments="system:Int16"
-                         x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.ShortEditor"
+                         x:Class="Macabresoft.Macabre2D.UI.Editor.ShortEditor"
                          UpdateOnLostFocus="False">
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:ShortEditor]}">

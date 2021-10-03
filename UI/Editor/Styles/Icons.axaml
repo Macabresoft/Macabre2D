@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Styles.Resources>
         <!-- These icons are modified from their SVGs at https://github.com/microsoft/fluentui-system-icons        -->

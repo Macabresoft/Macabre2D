@@ -1,11 +1,10 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework"
-                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
+                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                                  x:TypeArguments="framework:AutoTileSetCollection"
-                                 x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework.AutoTileSetCollectionEditor">
+                                 x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetCollectionEditor">
     <Grid RowDefinitions="Auto, Auto"
           DataContext="{Binding $parent[local:AutoTileSetCollectionEditor]}">
         <Design.DataContext>
@@ -17,20 +16,20 @@
             <Button Command="{Binding AddCommand}"
                     Classes="Icon"
                     ToolTip.Tip="Add a new tile set to the sprite sheet">
-                <controls:Icon Content="{StaticResource AddIcon}" />
+                <local:Icon Content="{StaticResource AddIcon}" />
             </Button>
             <Button Command="{Binding RemoveCommand}"
                     CommandParameter="{Binding SelectedTileSet}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the selected tile set from the sprite sheet">
-                <controls:Icon Content="{StaticResource RemoveIcon}" />
+                <local:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
 
             <Button Command="{Binding EditCommand}"
                     CommandParameter="{Binding SelectedTileSet}"
                     Classes="Icon"
                     ToolTip.Tip="Edit the selected tile set">
-                <controls:Icon Content="{StaticResource EditIcon}" />
+                <local:Icon Content="{StaticResource EditIcon}" />
             </Button>
         </StackPanel>
 
@@ -41,14 +40,14 @@
                  SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <controls:EditableSelectableItem IsEditable="True"
-                                                     HorizontalAlignment="Stretch"
-                                                     TextCommittedCommand="{Binding $parent[local:AutoTileSetCollectionEditor].RenameCommand}"
-                                                     Text="{Binding Path=Name, Mode=TwoWay}">
-                        <controls:EditableSelectableItem.ContextMenu>
+                    <local:EditableSelectableItem IsEditable="True"
+                                                  HorizontalAlignment="Stretch"
+                                                  TextCommittedCommand="{Binding $parent[local:AutoTileSetCollectionEditor].RenameCommand}"
+                                                  Text="{Binding Path=Name, Mode=TwoWay}">
+                        <local:EditableSelectableItem.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Rename"
-                                          Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                          Command="{Binding $parent[local:EditableSelectableItem].EditCommand}"
                                           ToolTip.Tip="Rename this tile set" />
 
                                 <Separator />
@@ -58,8 +57,8 @@
                                           CommandParameter="{Binding}"
                                           ToolTip.Tip="Remove this tile set from the sprite sheet" />
                             </ContextMenu>
-                        </controls:EditableSelectableItem.ContextMenu>
-                    </controls:EditableSelectableItem>
+                        </local:EditableSelectableItem.ContextMenu>
+                    </local:EditableSelectableItem>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

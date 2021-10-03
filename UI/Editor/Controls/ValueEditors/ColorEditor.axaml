@@ -1,11 +1,10 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                          xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                           xmlns:monoGame="clr-namespace:Microsoft.Xna.Framework;assembly=MonoGame.Framework"
                           x:TypeArguments="monoGame:Vector2"
-                          x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.ColorEditor"
+                          x:Class="Macabresoft.Macabre2D.UI.Editor.ColorEditor"
                           UpdateOnLostFocus="False">
     <local:ValueEditorControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
@@ -39,9 +38,9 @@
                           Grid.Row="0"
                           Value="{Binding RedValue}" />
 
-        <controls:ColorSlider Grid.Column="3"
-                              Grid.Row="0"
-                              Value="{Binding RedValue}" />
+        <local:ColorSlider Grid.Column="3"
+                           Grid.Row="0"
+                           Value="{Binding RedValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
@@ -52,9 +51,9 @@
                           Grid.Row="1"
                           Value="{Binding GreenValue}" />
 
-        <controls:ColorSlider Grid.Column="3"
-                              Grid.Row="1"
-                              Value="{Binding GreenValue}" />
+        <local:ColorSlider Grid.Column="3"
+                           Grid.Row="1"
+                           Value="{Binding GreenValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="2"
@@ -65,9 +64,9 @@
                           Grid.Row="2"
                           Value="{Binding BlueValue}" />
 
-        <controls:ColorSlider Grid.Column="3"
-                              Grid.Row="2"
-                              Value="{Binding BlueValue}" />
+        <local:ColorSlider Grid.Column="3"
+                           Grid.Row="2"
+                           Value="{Binding BlueValue}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="3"
@@ -78,8 +77,8 @@
                           Grid.Row="3"
                           Value="{Binding AlphaValue}" />
 
-        <controls:ColorSlider Grid.Column="3"
-                              Grid.Row="3"
-                              Value="{Binding AlphaValue}" />
+        <local:ColorSlider Grid.Column="3"
+                           Grid.Row="3"
+                           Value="{Binding AlphaValue}" />
     </Grid>
 </local:ValueEditorControl>

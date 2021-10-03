@@ -1,9 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.EditableSelectableItem">
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.EditableSelectableItem">
     <UserControl.Resources>
         <common:MultiBoolConverter x:Key="MultiBoolConverter"
                                    RequireAllTrue="True" />
@@ -15,11 +14,11 @@
             <local:EditableSelectableItem />
         </Design.DataContext>
 
-        <controls:Icon Grid.Column="0"
-                       Content="{Binding Icon}"
-                       IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                       Margin="{StaticResource StandardMarginRight}"
-                       Foreground="{Binding IconForeground}" />
+        <local:Icon Grid.Column="0"
+                    Content="{Binding Icon}"
+                    IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Margin="{StaticResource StandardMarginRight}"
+                    Foreground="{Binding IconForeground}" />
 
         <TextBlock Grid.Column="1"
                    Text="{Binding Text}"

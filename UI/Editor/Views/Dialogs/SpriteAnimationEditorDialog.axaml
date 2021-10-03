@@ -1,9 +1,8 @@
 ﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteAnimationEditorDialog"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditorDialog"
                   Width="1024"
                   Height="768"
                   Title="Sprite Animation Editor"
@@ -24,14 +23,14 @@
                     Command="{Binding UndoCommand}"
                     HotKey="Ctrl + Z"
                     ToolTip.Tip="Undo">
-                <controls:Icon Content="{StaticResource UndoIcon}" />
+                <local:Icon Content="{StaticResource UndoIcon}" />
             </Button>
 
             <Button Classes="Icon"
                     Command="{Binding RedoCommand}"
                     HotKey="Ctrl + Y"
                     ToolTip.Tip="Redo">
-                <controls:Icon Content="{StaticResource RedoIcon}" />
+                <local:Icon Content="{StaticResource RedoIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -52,14 +51,14 @@
                                   ToolTip.Tip="Insert a step after the selected step" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                <controls:Icon Content="{StaticResource AddIcon}" />
+                <local:Icon Content="{StaticResource AddIcon}" />
             </Button>
 
             <Button Command="{Binding RemoveCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the step from the animation">
-                <controls:Icon Content="{StaticResource RemoveIcon}" />
+                <local:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -68,7 +67,7 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Clear the selected step's sprite assignment"
                     Classes="Icon">
-                <controls:Icon Content="{StaticResource EraserIcon}" />
+                <local:Icon Content="{StaticResource EraserIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -77,35 +76,35 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the beginning of the animation"
                     Classes="Icon">
-                <controls:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
+                <local:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveUpCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step up one spot in the list"
                     Classes="Icon">
-                <controls:Icon Content="{StaticResource ChevronUpIcon}" />
+                <local:Icon Content="{StaticResource ChevronUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveDownCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step down one spot in the list"
                     Classes="Icon">
-                <controls:Icon Content="{StaticResource ChevronDownIcon}" />
+                <local:Icon Content="{StaticResource ChevronDownIcon}" />
             </Button>
 
             <Button Command="{Binding MoveToEndCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the end of the animation"
                     Classes="Icon">
-                <controls:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
+                <local:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
             </Button>
         </StackPanel>
 
-        <controls:ThumbnailSizeToggle Grid.Row="0"
-                                      Grid.Column="2"
-                                      HorizontalAlignment="Right"
-                                      SelectedSize="{Binding ThumbnailSize}" />
+        <local:ThumbnailSizeToggle Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   SelectedSize="{Binding ThumbnailSize}" />
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
@@ -187,9 +186,9 @@
                       Grid.Column="2"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
-            <controls:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                     SelectedSprite="{Binding SelectedSprite}"
-                                                     ThumbnailSize="{Binding ThumbnailSize}" />
+            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                  SelectedSprite="{Binding SelectedSprite}"
+                                                  ThumbnailSize="{Binding ThumbnailSize}" />
         </ScrollViewer>
 
         <StackPanel Grid.Row="2"

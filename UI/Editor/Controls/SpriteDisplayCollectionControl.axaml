@@ -1,8 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.SpriteDisplayCollectionControl">
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteDisplayCollectionControl">
     <UserControl.Resources>
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </UserControl.Resources>

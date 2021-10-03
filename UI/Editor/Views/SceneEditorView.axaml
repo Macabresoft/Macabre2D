@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Views.SceneEditorView">
+             x:Class="Macabresoft.Macabre2D.UI.Editor.SceneEditorView">
     <Design.DataContext>
         <common:SceneEditorViewModel />
     </Design.DataContext>

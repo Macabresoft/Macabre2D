@@ -1,10 +1,9 @@
-<controls:ValueControl xmlns="https://github.com/avaloniaui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo"
-                       x:TypeArguments="framework:SpriteSheet"
-                       x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo.SpriteSheetInfoControl">
+<local:ValueControl xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                    x:TypeArguments="framework:SpriteSheet"
+                    x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetInfoControl">
     <Grid RowDefinitions="Auto, Auto"
           DataContext="{Binding $parent[local:SpriteSheetInfoControl]}">
         <Design.DataContext>
@@ -39,4 +38,4 @@
                        Text="{Binding SpriteCollection.Size, StringFormat=(\{0\})}" />
         </StackPanel>
     </Grid>
-</controls:ValueControl>
+</local:ValueControl>

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.Collections.Generic;
     using System.Linq;

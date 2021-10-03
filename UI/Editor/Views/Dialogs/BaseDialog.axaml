@@ -1,11 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-        xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.BaseDialog"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+        x:Class="Macabresoft.Macabre2D.UI.Editor.BaseDialog"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}">
+        ExtendClientAreaToDecorationsHint="{x:Static local:App.ShowNonNativeMenu}">
     <Window.Template>
         <ControlTemplate>
             <Panel>
@@ -23,18 +22,18 @@
                               ColumnDefinitions="Auto, Auto, *"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
-                            <controls:Icon Grid.Column="0"
-                                           IsVisible="{x:Static root:App.ShowNonNativeMenu}"
-                                           IsHitTestVisible="False"
-                                           Content="{TemplateBinding VectorIcon}"
-                                           Margin="{StaticResource StandardMarginAll}" />
+                            <local:Icon Grid.Column="0"
+                                        IsVisible="{x:Static local:App.ShowNonNativeMenu}"
+                                        IsHitTestVisible="False"
+                                        Content="{TemplateBinding VectorIcon}"
+                                        Margin="{StaticResource StandardMarginAll}" />
 
                             <ContentPresenter Grid.Column="1"
                                               Content="{TemplateBinding Menu}" />
 
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="3"
-                                       IsVisible="{x:Static root:App.ShowNonNativeMenu}"
+                                       IsVisible="{x:Static local:App.ShowNonNativeMenu}"
                                        IsHitTestVisible="False"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Text="{TemplateBinding Title}"

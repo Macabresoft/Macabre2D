@@ -1,9 +1,8 @@
 ﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.AutoTileSetEditorDialog"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditorDialog"
                   SizeToContent="Height"
                   Width="1024"
                   MinHeight="480"
@@ -69,14 +68,14 @@
                     Command="{Binding UndoCommand}"
                     HotKey="Ctrl + Z"
                     ToolTip.Tip="Undo">
-                <controls:Icon Content="{StaticResource UndoIcon}" />
+                <local:Icon Content="{StaticResource UndoIcon}" />
             </Button>
 
             <Button Classes="Icon"
                     Command="{Binding RedoCommand}"
                     HotKey="Ctrl + Y"
                     ToolTip.Tip="Redo">
-                <controls:Icon Content="{StaticResource RedoIcon}" />
+                <local:Icon Content="{StaticResource RedoIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -84,21 +83,21 @@
             <Button Classes="Icon"
                     Command="{Binding ClearSpriteCommand}"
                     ToolTip.Tip="Clear the selected tile's sprite assignment">
-                <controls:Icon Content="{StaticResource EraserIcon}" />
+                <local:Icon Content="{StaticResource EraserIcon}" />
             </Button>
 
             <Button Classes="Icon"
                     Command="{Binding AutoLayoutCommand}"
                     ToolTip.Tip="Automatically create an auto tile set from a sprite sheet laid out the same as the tiles to the left">
-                <controls:Icon Content="{StaticResource AutoLayoutIcon}" />
+                <local:Icon Content="{StaticResource AutoLayoutIcon}" />
             </Button>
 
         </StackPanel>
 
-        <controls:ThumbnailSizeToggle Grid.Row="0"
-                                      Grid.Column="1"
-                                      HorizontalAlignment="Right"
-                                      SelectedSize="{Binding SelectedThumbnailSize}" />
+        <local:ThumbnailSizeToggle Grid.Row="0"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Right"
+                                   SelectedSize="{Binding SelectedThumbnailSize}" />
         <Viewbox Grid.Row="1"
                  Grid.Column="0"
                  VerticalAlignment="Top">
@@ -120,22 +119,22 @@
                                       Classes="Tile"
                                       Tag="{Binding Tiles[12]}" />
 
-                        <controls:Icon Grid.Row="0"
-                                       Grid.Column="1"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="0"
+                                    Grid.Column="1"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="0"
                                       Grid.Column="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[14]}" />
 
-                        <controls:Icon Grid.Row="0"
-                                       Grid.Column="3"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="0"
+                                    Grid.Column="3"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="0"
                                       Grid.Column="4"
@@ -143,23 +142,23 @@
                                       Tag="{Binding Tiles[10]}" />
 
                         <!-- Row 1 -->
-                        <controls:Icon Grid.Row="1"
-                                       Grid.Column="0"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="1"
+                                    Grid.Column="0"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
-                        <controls:Icon Grid.Row="1"
-                                       Grid.Column="2"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="1"
+                                    Grid.Column="2"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
-                        <controls:Icon Grid.Row="1"
-                                       Grid.Column="4"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="1"
+                                    Grid.Column="4"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <!-- Row 2 -->
                         <ToggleButton Grid.Row="2"
@@ -167,22 +166,22 @@
                                       Classes="Tile"
                                       Tag="{Binding Tiles[13]}" />
 
-                        <controls:Icon Grid.Row="2"
-                                       Grid.Column="1"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="2"
+                                    Grid.Column="1"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Grid.Column="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[15]}" />
 
-                        <controls:Icon Grid.Row="2"
-                                       Grid.Column="3"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="2"
+                                    Grid.Column="3"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Grid.Column="4"
@@ -190,23 +189,23 @@
                                       Tag="{Binding Tiles[11]}" />
 
                         <!-- Row 3 -->
-                        <controls:Icon Grid.Row="3"
-                                       Grid.Column="0"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="3"
+                                    Grid.Column="0"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
-                        <controls:Icon Grid.Row="3"
-                                       Grid.Column="2"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="3"
+                                    Grid.Column="2"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
-                        <controls:Icon Grid.Row="3"
-                                       Grid.Column="4"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="3"
+                                    Grid.Column="4"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <!-- Row 4 -->
                         <ToggleButton Grid.Row="4"
@@ -214,22 +213,22 @@
                                       Classes="Tile"
                                       Tag="{Binding Tiles[5]}" />
 
-                        <controls:Icon Grid.Row="4"
-                                       Grid.Column="1"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="4"
+                                    Grid.Column="1"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Grid.Column="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[7]}" />
 
-                        <controls:Icon Grid.Row="4"
-                                       Grid.Column="3"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="4"
+                                    Grid.Column="3"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Grid.Column="4"
@@ -248,19 +247,19 @@
                                       Classes="Tile"
                                       Tag="{Binding Tiles[8]}" />
 
-                        <controls:Icon Grid.Row="1"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="1"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[9]}" />
 
-                        <controls:Icon Grid.Row="3"
-                                       Content="{StaticResource ConnectionVerticalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Row="3"
+                                    Content="{StaticResource ConnectionVerticalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Classes="Tile"
@@ -278,19 +277,19 @@
                                       Classes="Tile"
                                       Tag="{Binding Tiles[4]}" />
 
-                        <controls:Icon Grid.Column="1"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Column="1"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Column="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[6]}" />
 
-                        <controls:Icon Grid.Column="3"
-                                       Content="{StaticResource ConnectionHorizontalIcon}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                        <local:Icon Grid.Column="3"
+                                    Content="{StaticResource ConnectionHorizontalIcon}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Column="4"
                                       Classes="Tile"
@@ -316,9 +315,9 @@
                       VerticalContentAlignment="Top"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
-            <controls:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                     SelectedSprite="{Binding SelectedSprite}"
-                                                     ThumbnailSize="{Binding SelectedThumbnailSize}" />
+            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                  SelectedSprite="{Binding SelectedSprite}"
+                                                  ThumbnailSize="{Binding SelectedThumbnailSize}" />
         </ScrollViewer>
 
         <StackPanel Grid.Row="2"

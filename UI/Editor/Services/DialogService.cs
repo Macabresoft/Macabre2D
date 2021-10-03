@@ -1,12 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Services {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor.Views;
-    using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
     using Unity.Resolution;
 
     /// <summary>

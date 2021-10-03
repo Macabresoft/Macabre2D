@@ -1,9 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Views.SystemsView">
+             x:Class="Macabresoft.Macabre2D.UI.Editor.SystemsView">
     <Design.DataContext>
         <common:SystemsBaseViewModel />
     </Design.DataContext>
@@ -27,13 +26,13 @@
                             </ContextMenu>
                         </Button.ContextMenu>
 
-                        <controls:Icon Content="{StaticResource AddIcon}" />
+                        <local:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveSystemCommand}"
                             CommandParameter="{Binding SystemService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected system from the scene">
-                        <controls:Icon Content="{StaticResource RemoveIcon}" />
+                        <local:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
 
@@ -43,14 +42,14 @@
                          SelectionMode="Single">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <controls:EditableSelectableItem IsEditable="True"
-                                                             HorizontalAlignment="Stretch"
-                                                             TextCommittedCommand="{Binding $parent[local:SystemsView].BaseViewModel.RenameCommand}"
-                                                             Text="{Binding Path=Name, Mode=TwoWay}">
-                                <controls:EditableSelectableItem.ContextMenu>
+                            <local:EditableSelectableItem IsEditable="True"
+                                                          HorizontalAlignment="Stretch"
+                                                          TextCommittedCommand="{Binding $parent[local:SystemsView].BaseViewModel.RenameCommand}"
+                                                          Text="{Binding Path=Name, Mode=TwoWay}">
+                                <local:EditableSelectableItem.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Rename"
-                                                  Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                                  Command="{Binding $parent[local:EditableSelectableItem].EditCommand}"
                                                   ToolTip.Tip="Rename this system" />
 
                                         <Separator />
@@ -60,8 +59,8 @@
                                                   CommandParameter="{Binding}"
                                                   ToolTip.Tip="Remove this system from the scene" />
                                     </ContextMenu>
-                                </controls:EditableSelectableItem.ContextMenu>
-                            </controls:EditableSelectableItem>
+                                </local:EditableSelectableItem.ContextMenu>
+                            </local:EditableSelectableItem>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -76,9 +75,9 @@
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Grid>
 
-                <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                  Collections="{Binding SystemService.Editors}"
-                                                  IsBusy="{Binding SystemService.IsBusy}" />
+                <local:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                                               Collections="{Binding SystemService.Editors}"
+                                               IsBusy="{Binding SystemService.IsBusy}" />
 
             </Grid>
         </Border>

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using Avalonia;
     using Avalonia.Markup.Xaml;

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.ComponentModel;
     using System.IO;

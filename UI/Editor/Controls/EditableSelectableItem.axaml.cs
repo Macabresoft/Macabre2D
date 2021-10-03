@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Controls {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System.IO;
     using System.Windows.Input;
     using Avalonia;
@@ -8,7 +8,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
     using Avalonia.Markup.Xaml;
     using Avalonia.Media;
     using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Editor.Helpers;
     using ReactiveUI;
 
     public class EditableSelectableItem : UserControl {

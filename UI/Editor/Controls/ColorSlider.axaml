@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ColorSlider">
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.ColorSlider">
     <Slider Value="{Binding $parent[local:ColorSlider].ValueDisplay}"
             Minimum="0"
             Maximum="255"

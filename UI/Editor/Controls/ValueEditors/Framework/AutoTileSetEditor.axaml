@@ -1,12 +1,11 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
                                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework"
-                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
+                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                                  x:TypeArguments="framework:AutoTileSetReference"
-                                 x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework.AutoTileSetEditor">
+                                 x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
     <valueEditors:ValueEditorControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
     </valueEditors:ValueEditorControl.Resources>
@@ -52,7 +51,7 @@
                 Classes="Icon"
                 Command="{Binding SelectTileSetCommand}"
                 ToolTip.Tip="Search for a sprite">
-            <controls:Icon Content="{StaticResource ImageSearchIcon}" />
+            <local:Icon Content="{StaticResource ImageSearchIcon}" />
         </Button>
         <Button Grid.Column="3"
                 Grid.Row="1"
@@ -60,7 +59,7 @@
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
                 ToolTip.Tip="Clear the tile set">
-            <controls:Icon Content="{StaticResource EraserIcon}" />
+            <local:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
 </valueEditors:ValueEditorControl>

@@ -1,9 +1,8 @@
 <local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteSelectionDialog"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSelectionDialog"
                   Height="768"
                   Width="1024"
                   CanResize="False"
@@ -18,27 +17,27 @@
           ColumnDefinitions="0.4*, 0.6*"
           Margin="{StaticResource StandardMarginAll}">
 
-        <controls:FilteredContentTree Grid.Row="0"
-                                      Grid.Column="0"
-                                      Root="{Binding RootContentDirectory, Mode=OneTime}"
-                                      SelectedItem="{Binding SelectedContentNode}"
-                                      Margin="{StaticResource StandardMarginAll}" />
+        <local:FilteredContentTree Grid.Row="0"
+                                   Grid.Column="0"
+                                   Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                   SelectedItem="{Binding SelectedContentNode}"
+                                   Margin="{StaticResource StandardMarginAll}" />
 
         <Grid Grid.Row="0"
               Grid.Column="1"
               RowDefinitions="Auto, *">
-            <controls:ThumbnailSizeToggle Grid.Row="0"
-                                          HorizontalAlignment="Right"
-                                          SelectedSize="{Binding SelectedThumbnailSize}" />
+            <local:ThumbnailSizeToggle Grid.Row="0"
+                                       HorizontalAlignment="Right"
+                                       SelectedSize="{Binding SelectedThumbnailSize}" />
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible">
                 <ItemsControl Items="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <controls:SpriteDisplayCollectionControl Collection="{Binding}"
-                                                                     SelectedSprite="{Binding $parent[local:SpriteSelectionDialog].ViewModel.SelectedSprite}"
-                                                                     ThumbnailSize="{Binding $parent[local:SpriteSelectionDialog].ViewModel.SelectedThumbnailSize}" />
+                            <local:SpriteDisplayCollectionControl Collection="{Binding}"
+                                                                  SelectedSprite="{Binding $parent[local:SpriteSelectionDialog].ViewModel.SelectedSprite}"
+                                                                  ThumbnailSize="{Binding $parent[local:SpriteSelectionDialog].ViewModel.SelectedThumbnailSize}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

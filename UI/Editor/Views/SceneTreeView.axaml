@@ -1,10 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Views.SceneTreeView">
+             x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <Design.DataContext>
         <common:SceneTreeBaseViewModel />
     </Design.DataContext>
@@ -28,13 +27,13 @@
                             </ContextMenu>
                         </Button.ContextMenu>
 
-                        <controls:Icon Content="{StaticResource AddIcon}" />
+                        <local:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveEntityCommand}"
                             CommandParameter="{Binding EntityService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                        <controls:Icon Content="{StaticResource RemoveIcon}" />
+                        <local:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
 
@@ -58,18 +57,18 @@
                         </TreeDataTemplate>
                         <TreeDataTemplate DataType="framework:IEntity"
                                           ItemsSource="{Binding Children}">
-                            <controls:EditableSelectableItem IsEditable="True"
-                                                             TextCommittedCommand="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.RenameCommand}"
-                                                             Text="{Binding Path=Name, Mode=TwoWay}"
-                                                             PointerPressed="Entity_OnPointerPressed"
-                                                             PointerReleased="Entity_OnPointerReleased"
-                                                             PointerMoved="Entity_OnPointerMoved"
-                                                             DragDrop.AllowDrop="True">
-                                <controls:EditableSelectableItem.ContextMenu>
+                            <local:EditableSelectableItem IsEditable="True"
+                                                          TextCommittedCommand="{Binding $parent[local:SceneTreeView].TreeBaseViewModel.RenameCommand}"
+                                                          Text="{Binding Path=Name, Mode=TwoWay}"
+                                                          PointerPressed="Entity_OnPointerPressed"
+                                                          PointerReleased="Entity_OnPointerReleased"
+                                                          PointerMoved="Entity_OnPointerMoved"
+                                                          DragDrop.AllowDrop="True">
+                                <local:EditableSelectableItem.ContextMenu>
                                     <ContextMenu>
 
                                         <MenuItem Header="Rename"
-                                                  Command="{Binding $parent[controls:EditableSelectableItem].EditCommand}"
+                                                  Command="{Binding $parent[local:EditableSelectableItem].EditCommand}"
                                                   ToolTip.Tip="Rename this entity" />
 
                                         <MenuItem Header="Focus"
@@ -92,8 +91,8 @@
                                                   CommandParameter="{Binding}"
                                                   ToolTip.Tip="Remove this entity and all of its children from the scene" />
                                     </ContextMenu>
-                                </controls:EditableSelectableItem.ContextMenu>
-                            </controls:EditableSelectableItem>
+                                </local:EditableSelectableItem.ContextMenu>
+                            </local:EditableSelectableItem>
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>
                 </TreeView>
@@ -106,9 +105,9 @@
         <Border Grid.Row="2"
                 Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <controls:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                              Collections="{Binding EntityService.Editors}"
-                                              IsBusy="{Binding EntityService.IsBusy}" />
+            <local:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                                           Collections="{Binding EntityService.Editors}"
+                                           IsBusy="{Binding EntityService.IsBusy}" />
 
         </Border>
     </Grid>

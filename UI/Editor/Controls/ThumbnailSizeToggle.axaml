@@ -1,10 +1,9 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ThumbnailSizeToggle">
+             x:Class="Macabresoft.Macabre2D.UI.Editor.ThumbnailSizeToggle">
     <UserControl.Resources>
         <common:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
     </UserControl.Resources>
@@ -26,7 +25,7 @@
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <controls:Icon Content="{StaticResource SmallThumbnailIcon}" />
+            <local:Icon Content="{StaticResource SmallThumbnailIcon}" />
         </ToggleButton>
         <ToggleButton Command="{Binding SelectSizeCommand}"
                       CommandParameter="{x:Static models:ThumbnailSize.Medium}"
@@ -40,7 +39,7 @@
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <controls:Icon Content="{StaticResource MediumThumbnailIcon}" />
+            <local:Icon Content="{StaticResource MediumThumbnailIcon}" />
         </ToggleButton>
         <ToggleButton Command="{Binding SelectSizeCommand}"
                       CommandParameter="{x:Static models:ThumbnailSize.Large}"
@@ -55,7 +54,7 @@
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <controls:Icon Content="{StaticResource LargeThumbnailIcon}" />
+            <local:Icon Content="{StaticResource LargeThumbnailIcon}" />
         </ToggleButton>
     </StackPanel>
 </UserControl>

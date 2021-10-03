@@ -2,10 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-        xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-        xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views"
-        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.MainWindow"
-        ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+        x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
+        ExtendClientAreaToDecorationsHint="{x:Static local:App.ShowNonNativeMenu}"
         WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Design.DataContext>
@@ -59,7 +58,7 @@
             <ColumnDefinition Width="0.9*" />
         </Grid.ColumnDefinitions>
 
-        <views:SceneEditorView Grid.Row="1"
+        <local:SceneEditorView Grid.Row="1"
                                Grid.RowSpan="2"
                                Grid.Column="0"
                                Grid.ColumnSpan="3" />
@@ -68,7 +67,7 @@
               Grid.Column="0"
               Grid.ColumnSpan="3"
               ColumnDefinitions="Auto, Auto, *"
-              IsVisible="{x:Static root:App.ShowNonNativeMenu}">
+              IsVisible="{x:Static local:App.ShowNonNativeMenu}">
             <Border Grid.ColumnSpan="3"
                     HorizontalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
@@ -157,27 +156,27 @@
             <Grid Grid.Row="1">
                 <Panel
                     IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Entities}}">
-                    <views:SceneTreeView />
+                    <local:SceneTreeView />
                 </Panel>
 
                 <Panel
                     IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Systems}}">
-                    <views:SystemsView />
+                    <local:SystemsView />
                 </Panel>
 
                 <Panel
                     IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}">
-                    <views:ContentTreeView />
+                    <local:ContentTreeView />
                 </Panel>
 
                 <Panel
                     IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Project}}">
-                    <views:ProjectView />
+                    <local:ProjectView />
                 </Panel>
             </Grid>
         </Grid>
 
-        <views:GizmoSelectionView Grid.Row="1"
+        <local:GizmoSelectionView Grid.Row="1"
                                   Grid.Column="2"
                                   Margin="{StaticResource StandardMarginAll}" />
 

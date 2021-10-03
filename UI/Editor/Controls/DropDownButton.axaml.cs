@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor.Controls {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
 
