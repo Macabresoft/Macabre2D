@@ -85,7 +85,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private IReadOnlyCollection<IValueControl> CreateControls(string currentPath, object owner, object originalObject, params Type[] typesToIgnore) {
             var result = new List<IValueControl>();
             var editableObjectType = owner.GetType();
-            var members = typesToIgnore != null ? editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute)).Where(x => !typesToIgnore.Contains(x.DeclaringType)) : owner.GetType().GetAllFieldsAndProperties(typeof(DataMemberAttribute));
+            var members = editableObjectType.GetAllFieldsAndProperties(typeof(DataMemberAttribute))
+                .Where(x => typesToIgnore?.Contains(x.DeclaringType) == false && x.GetCustomAttribute<EditorExcludeAttribute>() == null);
 
             var membersWithAttributes = members
                 .Select(x => new AttributeMemberInfo<DataMemberAttribute>(x, x.GetCustomAttribute(typeof(DataMemberAttribute), false) as DataMemberAttribute))

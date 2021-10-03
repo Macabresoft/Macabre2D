@@ -141,6 +141,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [EditorExclude]
         public Guid Id {
             get => this._id;
             set => this.Set(ref this._id, value);
