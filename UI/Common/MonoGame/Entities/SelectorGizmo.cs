@@ -43,7 +43,22 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
                 inputState.PreviousMouseState.LeftButton == ButtonState.Released) {
                 var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-                var selected = this._sceneService.CurrentScene.RenderableEntities.FirstOrDefault(x => x.BoundingArea.Contains(mousePosition));
+                
+                IEntity selected = null;
+                var potentials = this._sceneService.CurrentScene.RenderableEntities.Where(x => x.BoundingArea.Contains(mousePosition));
+
+                foreach (var potential in potentials) {
+                    if (potential is ITileableEntity tileableEntity) {
+                        if (tileableEntity.HasActiveTileAt(mousePosition)) {
+                            selected = potential;
+                            break;
+                        }
+                    }
+                    else {
+                        selected = potential;
+                        break;
+                    }
+                }
 
                 if (this._entityService.Selected != selected) {
                     if (selected == null) {
