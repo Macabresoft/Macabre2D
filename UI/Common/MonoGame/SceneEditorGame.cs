@@ -1,13 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame.Entities;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame.Systems;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 

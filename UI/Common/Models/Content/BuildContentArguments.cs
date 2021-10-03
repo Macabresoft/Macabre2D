@@ -1,9 +1,6 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
-    using System;
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// Arguments for building content using MGCB.
@@ -69,7 +66,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         public IEnumerable<string> ToGlobalProperties() {
             return this.ToGlobalPropertiesInternal(PathService.BinDirectoryName);
         }
-        
+
         /// <summary>
         /// Gets the lines for the global properties section of an MGCB file.
         /// </summary>

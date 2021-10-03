@@ -3,12 +3,17 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using NUnit.Framework;
 
     [TestFixture]
     public class BuildServiceTests {
+        private const string BinDirectoryName = "bin";
+        private const string ContentFileName = "Content.mgcb";
+        private const string LeagueMonoXnbName = "League Mono.xnb";
+        private const string PlatformName = "DesktopGL";
+        private const string SkullXnbName = "skull.xnb";
+
         [Test]
         [Category("Integration Tests")]
         public void Build_ShouldRunMGCB() {
@@ -33,11 +38,5 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
                 File.Exists(leagueMonoFilePath).Should().BeTrue();
             }
         }
-
-        private const string BinDirectoryName = "bin";
-        private const string ContentFileName = "Content.mgcb";
-        private const string LeagueMonoXnbName = "League Mono.xnb";
-        private const string PlatformName = "DesktopGL";
-        private const string SkullXnbName = "skull.xnb";
     }
 }

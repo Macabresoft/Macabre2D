@@ -1,11 +1,11 @@
 <Styles xmlns="https://github.com/avaloniaui"
-	   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style Selector="ToggleButton">
-		<Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
-	</Style>
-	
-	<Style Selector="ToggleButton.Icon">
-		<Setter Property="Width" Value="32" />
-		<Setter Property="Height" Value="32" />
-	</Style>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="ToggleButton">
+        <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
+    </Style>
+
+    <Style Selector="ToggleButton.Icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+    </Style>
 </Styles>

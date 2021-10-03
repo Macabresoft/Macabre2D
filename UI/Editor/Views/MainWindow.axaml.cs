@@ -5,8 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views {
     using Avalonia.Controls;
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class MainWindow : Window {
         private bool _shouldClose;

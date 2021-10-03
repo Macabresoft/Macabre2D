@@ -1,11 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 

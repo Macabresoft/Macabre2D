@@ -4,9 +4,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo {
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
         public static readonly DirectProperty<SpriteSheetInfoControl, Bitmap> BitmapProperty =

@@ -2,9 +2,8 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
                   xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                   xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteSheetAssetSelectionDialog"
                   Height="768"
                   Width="1024"
@@ -14,10 +13,10 @@
                   Title="Make a Selection"
                   VectorIcon="{StaticResource SpriteSheetIcon}">
     <local:BaseDialog.Resources>
-        <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+        <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </local:BaseDialog.Resources>
     <Design.DataContext>
-        <viewModels:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
+        <common:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"

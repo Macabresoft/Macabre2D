@@ -12,26 +12,26 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
     using ReactiveUI;
 
     public class EditableSelectableItem : UserControl {
-        public static readonly StyledProperty<bool> IsEditableProperty =
-            AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsEditable), true);
+        public static readonly DirectProperty<EditableSelectableItem, ICommand> EditCommandProperty =
+            AvaloniaProperty.RegisterDirect<EditableSelectableItem, ICommand>(
+                nameof(EditCommand),
+                editor => editor.EditCommand);
+
+        public static readonly StyledProperty<SolidColorBrush> IconForegroundProperty =
+            AvaloniaProperty.Register<EditableSelectableItem, SolidColorBrush>(nameof(IconForeground));
 
         public static readonly StyledProperty<StreamGeometry> IconProperty =
             AvaloniaProperty.Register<EditableSelectableItem, StreamGeometry>(nameof(Icon));
-        
-        public static readonly StyledProperty<SolidColorBrush> IconForegroundProperty =
-            AvaloniaProperty.Register<EditableSelectableItem, SolidColorBrush>(nameof(IconForeground));
-        
+
+        public static readonly StyledProperty<bool> IsEditableProperty =
+            AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsEditable), true);
+
         public static readonly DirectProperty<EditableSelectableItem, bool> IsEditingProperty =
             AvaloniaProperty.RegisterDirect<EditableSelectableItem, bool>(
                 nameof(IsEditing),
                 editor => editor.IsEditing,
                 (editor, value) => editor.IsEditing = value);
-        
-        public static readonly DirectProperty<EditableSelectableItem, ICommand> EditCommandProperty =
-            AvaloniaProperty.RegisterDirect<EditableSelectableItem, ICommand>(
-                nameof(EditCommand),
-                editor => editor.EditCommand);
-        
+
         public static readonly StyledProperty<bool> IsFileNameProperty =
             AvaloniaProperty.Register<EditableSelectableItem, bool>(nameof(IsFileName));
 
@@ -47,22 +47,22 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             this.EditCommand = ReactiveCommand.Create(
                 () => Dispatcher.UIThread.Post(this.StartEdit),
                 this.WhenAnyValue(x => x.IsEditable));
-            
+
             this.InitializeComponent();
         }
-        
+
         public ICommand EditCommand { get; }
 
         public StreamGeometry Icon {
             get => this.GetValue(IconProperty);
             set => this.SetValue(IconProperty, value);
         }
-        
+
         public Brush IconForeground {
             get => this.GetValue(IconForegroundProperty);
             set => this.SetValue(IconForegroundProperty, value);
         }
-        
+
         public bool IsEditable {
             get => this.GetValue(IsEditableProperty);
             set => this.SetValue(IsEditableProperty, value);
@@ -122,9 +122,25 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void Item_OnDoubleTapped(object sender, RoutedEventArgs e) {
+            var item = this.FindAncestor<ISelectable>() as IControl;
+            this.StartEdit();
+            e.Handled |= this.IsEditing;
+        }
+
         private static void OnTextChanging(IAvaloniaObject control, bool isBeforeChange) {
             if (!isBeforeChange && control is EditableSelectableItem editableControl && editableControl.TryGetEditableTextBox(out var textBox)) {
                 textBox.Text = editableControl.GetEditableText(editableControl.Text);
+            }
+        }
+
+        private void StartEdit() {
+            if (this.FindAncestor<ISelectable>() is IControl item &&
+                this.IsEditable &&
+                CanEditItem(item) &&
+                this.TryGetEditableTextBox(out var textBox)) {
+                textBox.Text = this.GetEditableText(this.Text);
+                this.IsEditing = true;
             }
         }
 
@@ -147,22 +163,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             this.IsEditing = false;
             if (this.TryGetEditableTextBox(out var textBox)) {
                 textBox.Text = this.GetEditableText(this.Text);
-            }
-        }
-
-        private void Item_OnDoubleTapped(object sender, RoutedEventArgs e) {
-            var item = this.FindAncestor<ISelectable>() as IControl;
-            this.StartEdit();
-            e.Handled |= this.IsEditing;
-        }
-
-        private void StartEdit() {
-            if (this.FindAncestor<ISelectable>() is IControl item &&
-                this.IsEditable && 
-                CanEditItem(item) &&
-                this.TryGetEditableTextBox(out var textBox)) {
-                textBox.Text = this.GetEditableText(this.Text);
-                this.IsEditing = true;
             }
         }
 

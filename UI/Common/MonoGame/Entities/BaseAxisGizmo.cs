@@ -1,10 +1,9 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.ComponentModel;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
@@ -18,7 +17,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         protected const int GizmoPointSize = 16;
 
         private const float FloatingPointTolerance = 0.0001f;
-        
+
         private ICamera _camera;
 
         /// <summary>
@@ -53,16 +52,16 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         /// Gets the editor service.
         /// </summary>
         protected IEditorService EditorService { get; }
-        
-        /// <summary>
-        /// Gets the scene service.
-        /// </summary>
-        protected ISceneService SceneService { get; }
 
         /// <summary>
         /// Gets the selection service.
         /// </summary>
         protected IEntityService EntityService { get; }
+
+        /// <summary>
+        /// Gets the scene service.
+        /// </summary>
+        protected ISceneService SceneService { get; }
 
         /// <summary>
         /// Gets or sets the current axis being operated on.
@@ -111,7 +110,6 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                 drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.DropShadowColor, lineThickness);
                 drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + lineOffsetVector, this.XAxisPosition + lineOffsetVector, this.EditorService.XAxisColor, lineThickness);
                 drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition + lineOffsetVector, this.YAxisPosition + lineOffsetVector, this.EditorService.YAxisColor, lineThickness);
-                
             }
         }
 
@@ -166,7 +164,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
         protected Vector2 MoveAlongAxis(Vector2 start, Vector2 end, Vector2 moveToPosition) {
             var slope = Math.Abs(end.X - start.X) > FloatingPointTolerance ? (end.Y - start.Y) / (end.X - start.X) : 1f;
             var yIntercept = end.Y - slope * end.X;
-            
+
             Vector2 newPosition;
             if (Math.Abs(slope) <= 0.5f) {
                 if (Math.Abs(slope) < FloatingPointTolerance) {
@@ -186,7 +184,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                     newPosition = new Vector2(moveToPosition.X, newY);
                 }
             }
-            
+
             return newPosition;
         }
 

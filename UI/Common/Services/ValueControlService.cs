@@ -1,17 +1,14 @@
-namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
     using System.Text.RegularExpressions;
-    using JetBrains.Annotations;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common.Mappers;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
     using Unity;
 
@@ -51,8 +48,8 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
         private const string DefaultCategoryName = "Uncategorized";
         private const string DefaultCategoryNameForInfo = "Info";
         private readonly IAssemblyService _assemblyService;
-        private readonly IValueEditorTypeMapper _typeMapper;
         private readonly IUnityContainer _container;
+        private readonly IValueEditorTypeMapper _typeMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueControlService" /> class.
@@ -102,7 +99,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                 var propertyPath = currentPath == string.Empty ? member.MemberInfo.Name : $"{currentPath}.{member.MemberInfo.Name}";
                 var value = member.MemberInfo.GetValue(owner);
                 var memberType = member.MemberInfo.GetMemberReturnType();
-                
+
                 var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }

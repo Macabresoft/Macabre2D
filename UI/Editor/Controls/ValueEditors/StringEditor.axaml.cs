@@ -29,15 +29,9 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
 
         protected override void OnValueChanged() {
             base.OnValueChanged();
-            
+
             if (this.HasValueChanged()) {
                 this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, this.Value);
-            }
-        }
-
-        private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
-            if (this.UpdateOnLostFocus && this.HasValueChanged()) {
-                this.SetEditorValue(this.Value, this.IntermediaryValue);
             }
         }
 
@@ -51,6 +45,12 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
+            if (this.UpdateOnLostFocus && this.HasValueChanged()) {
+                this.SetEditorValue(this.Value, this.IntermediaryValue);
+            }
         }
     }
 }

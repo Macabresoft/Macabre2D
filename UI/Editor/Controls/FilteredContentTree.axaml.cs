@@ -3,7 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
     using Avalonia.Controls;
     using Avalonia.Data;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class FilteredContentTree : UserControl {
         public static readonly StyledProperty<FilteredContentWrapper> RootProperty =

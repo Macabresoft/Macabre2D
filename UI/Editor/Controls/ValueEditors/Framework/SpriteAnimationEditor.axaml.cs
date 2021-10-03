@@ -9,11 +9,16 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 
     public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference> {
+        public static readonly DirectProperty<SpriteAnimationEditor, SpriteAnimation> AnimationProperty =
+            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, SpriteAnimation>(
+                nameof(Animation),
+                editor => editor.Animation);
+
         public static readonly DirectProperty<SpriteAnimationEditor, Bitmap> BitmapProperty =
             AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, Bitmap>(
                 nameof(Bitmap),
@@ -33,11 +38,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, ICommand>(
                 nameof(SelectAnimationCommand),
                 editor => editor.SelectAnimationCommand);
-
-        public static readonly DirectProperty<SpriteAnimationEditor, SpriteAnimation> AnimationProperty =
-            AvaloniaProperty.RegisterDirect<SpriteAnimationEditor, SpriteAnimation>(
-                nameof(Animation),
-                editor => editor.Animation);
 
         private readonly IAssetManager _assetManager;
         private readonly IDialogService _dialogService;
@@ -74,9 +74,9 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             this.InitializeComponent();
         }
 
-        public ICommand SelectAnimationCommand { get; }
-
         public SpriteAnimation Animation => this.Owner as SpriteAnimation;
+
+        public ICommand SelectAnimationCommand { get; }
 
         public Bitmap Bitmap {
             get => this._bitmap;

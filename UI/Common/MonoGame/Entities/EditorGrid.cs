@@ -1,8 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +11,8 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     /// </summary>
     internal sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
-        private readonly ISceneService _sceneService;
         private readonly IEntityService _entityService;
+        private readonly ISceneService _sceneService;
         private Camera _camera;
 
         /// <summary>

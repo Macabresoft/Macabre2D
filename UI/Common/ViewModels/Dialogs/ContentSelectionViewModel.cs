@@ -1,7 +1,5 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
@@ -48,8 +46,8 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
             get => this._selectedContentNode;
             set {
                 this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
-                this.IsOkEnabled = (this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset)) ||
-                                   (this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory);
+                this.IsOkEnabled = this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset) ||
+                                   this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
             }
         }
     }

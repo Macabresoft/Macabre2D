@@ -1,21 +1,21 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                          xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.FlagsEnumEditor">
     <local:ValueEditorControl.Resources>
-        <converters:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
-        <converters:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
-        <converters:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
+        <common:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
+        <common:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
+        <common:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:FlagsEnumEditor]}">
         <Design.DataContext>
             <local:FlagsEnumEditor />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
                    Text="{Binding Title}" />

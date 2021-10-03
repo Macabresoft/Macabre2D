@@ -3,7 +3,7 @@
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
-    using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class ValueControl<T> : UserControl, IValueInfo<T> {
         public static readonly DirectProperty<ValueControl<T>, ValueControlCollection> CollectionProperty =

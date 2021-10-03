@@ -1,5 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
-    using System;
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia;
     using Avalonia.Media;
     using Avalonia.Media.Imaging;
@@ -44,15 +43,15 @@
         /// Gets the index of the sprite on its sprite sheet.
         /// </summary>
         public byte Index { get; }
-        
-        /// <summary>
-        /// Gets the sprite sheet.
-        /// </summary>
-        public SpriteSheet SpriteSheet { get; }
-        
+
         /// <summary>
         /// Gets the size of the sprite.
         /// </summary>
         public PixelSize Size { get; }
+
+        /// <summary>
+        /// Gets the sprite sheet.
+        /// </summary>
+        public SpriteSheet SpriteSheet { get; }
     }
 }

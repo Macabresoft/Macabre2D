@@ -1,5 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
-    
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// Represents the size of a thumbnail.
     /// </summary>

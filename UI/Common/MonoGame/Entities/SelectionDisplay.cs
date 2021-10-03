@@ -1,7 +1,6 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.ComponentModel;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
@@ -99,23 +98,22 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                         var colliders = body.GetColliders();
                         foreach (var collider in colliders) {
                             drawer.DrawCollider(
-                                collider, 
-                                spriteBatch, 
+                                collider,
+                                spriteBatch,
                                 settings.PixelsPerUnit,
-                                this._editorService.DropShadowColor, 
-                                lineThickness, 
+                                this._editorService.DropShadowColor,
+                                lineThickness,
                                 shadowOffsetVector);
-                            
+
                             drawer.DrawCollider(
-                                collider, 
-                                spriteBatch, 
+                                collider,
+                                spriteBatch,
                                 settings.PixelsPerUnit,
-                                this._editorService.ColliderColor, 
-                                lineThickness, 
+                                this._editorService.ColliderColor,
+                                lineThickness,
                                 Vector2.Zero);
                         }
                     }
-
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
@@ -6,7 +6,6 @@
     using Avalonia.Media;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
     /// <summary>
     /// Display collection for a <see cref="SpriteSheetAsset" />.

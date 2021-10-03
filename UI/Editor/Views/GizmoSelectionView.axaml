@@ -1,31 +1,29 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-             xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Common.MonoGame;assembly=Macabre2D.UI.Common"
-             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.Views.GizmoSelectionView">
     <UserControl.Resources>
-        <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
+        <common:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top">
         <Design.DataContext>
-            <viewModels:GizmoSelectionViewModel />
+            <common:GizmoSelectionViewModel />
         </Design.DataContext>
 
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginAll}">
             <StackPanel Orientation="Horizontal">
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
+                              CommandParameter="{x:Static common:GizmoKind.Selector}"
                               Classes="Icon"
                               ToolTip.Tip="Shows the selected entity's position">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"
                                  Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
+                                 ConverterParameter="{x:Static common:GizmoKind.Selector}"
                                  Mode="OneWay"
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
@@ -33,13 +31,13 @@
                     <controls:Icon Content="{StaticResource SelectIcon}" />
                 </ToggleButton>
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static monoGame:GizmoKind.Translation}"
+                              CommandParameter="{x:Static common:GizmoKind.Translation}"
                               Classes="Icon"
                               ToolTip.Tip="Alter the position of the selected entity">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"
                                  Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
+                                 ConverterParameter="{x:Static common:GizmoKind.Translation}"
                                  Mode="OneWay"
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
@@ -47,45 +45,45 @@
                     <controls:Icon Content="{StaticResource TranslateIcon}" />
                 </ToggleButton>
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static monoGame:GizmoKind.Scale}"
+                              CommandParameter="{x:Static common:GizmoKind.Scale}"
                               Classes="Icon"
                               ToolTip.Tip="Alter the scale of the selected entity">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"
                                  Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static monoGame:GizmoKind.Scale}"
+                                 ConverterParameter="{x:Static common:GizmoKind.Scale}"
                                  Mode="OneWay"
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
                     <controls:Icon Content="{StaticResource ScaleIcon}" />
                 </ToggleButton>
-                
+
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static monoGame:GizmoKind.Rotation}"
+                              CommandParameter="{x:Static common:GizmoKind.Rotation}"
                               Classes="Icon"
                               IsVisible="{Binding IsRotatable}"
                               ToolTip.Tip="Alter the rotation of the selected entity">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"
                                  Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static monoGame:GizmoKind.Rotation}"
+                                 ConverterParameter="{x:Static common:GizmoKind.Rotation}"
                                  Mode="OneWay"
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
 
                     <controls:Icon Content="{StaticResource RotateIcon}" />
                 </ToggleButton>
-                
+
                 <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
-                              CommandParameter="{x:Static monoGame:GizmoKind.Tile}"
+                              CommandParameter="{x:Static common:GizmoKind.Tile}"
                               Classes="Icon"
                               IsVisible="{Binding IsTileable}"
                               ToolTip.Tip="Edit the active tiles of the selected entity">
                     <ToggleButton.IsChecked>
                         <Binding Path="EditorService.SelectedGizmo"
                                  Converter="{StaticResource GizmoKindToBoolConverter}"
-                                 ConverterParameter="{x:Static monoGame:GizmoKind.Tile}"
+                                 ConverterParameter="{x:Static common:GizmoKind.Tile}"
                                  Mode="OneWay"
                                  TargetNullValue="False" />
                     </ToggleButton.IsChecked>
@@ -94,7 +92,7 @@
                 </ToggleButton>
             </StackPanel>
         </Border>
-        
+
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginAll}">
             <StackPanel Orientation="Horizontal">

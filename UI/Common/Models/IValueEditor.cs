@@ -1,6 +1,5 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
-    using Avalonia;
 
     /// <summary>
     /// A basic value untyped version of <see cref="IValueEditor{T}" />

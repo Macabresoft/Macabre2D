@@ -4,7 +4,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class ValueCollectionsControl : UserControl {
         public static readonly StyledProperty<IEnumerable<ValueControlCollection>> CollectionsProperty =

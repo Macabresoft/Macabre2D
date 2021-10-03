@@ -6,8 +6,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views {
     using Avalonia.Input;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels;
+    using Macabresoft.Macabre2D.UI.Common;
     using Macabresoft.Macabre2D.UI.Editor.Helpers;
 
     public class SceneTreeView : UserControl {

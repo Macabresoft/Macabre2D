@@ -1,12 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+             xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.FilteredContentTree">
     <UserControl.Resources>
-        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+        <common:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <TreeView BorderThickness="0"
               Items="{Binding  $parent[controls:FilteredContentTree].Root, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"

@@ -13,7 +13,7 @@
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Colors.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Margins.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/BoxShadows.axaml" />
-        
+
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/AutoCompleteBox.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Border.axaml" />
         <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Button.axaml" />

@@ -1,8 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
@@ -126,7 +125,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
                     if (inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl)) {
                         newScale = new Vector2((float)Math.Round(newScale.X, MidpointRounding.AwayFromZero), (float)Math.Round(newScale.Y, MidpointRounding.AwayFromZero));
                     }
-                    
+
                     if (!inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftShift)) {
                         newScale = this.CurrentAxis == GizmoAxis.X ? new Vector2(newScale.X, this._unmovedScale.Y) : new Vector2(this._unmovedScale.X, newScale.Y);
                     }

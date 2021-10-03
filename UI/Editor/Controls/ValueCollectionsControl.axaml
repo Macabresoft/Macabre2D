@@ -18,9 +18,9 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
+
             <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsBusy}"/>
+                         IsVisible="{Binding IsBusy}" />
         </Grid>
     </ScrollViewer>
 </UserControl>

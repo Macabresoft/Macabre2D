@@ -10,7 +10,7 @@
         <Design.DataContext>
             <local:UIntEditor />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
                    Text="{Binding Title}" />

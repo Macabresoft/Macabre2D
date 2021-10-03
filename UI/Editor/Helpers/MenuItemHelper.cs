@@ -4,7 +4,7 @@
     using System.Globalization;
     using System.Linq;
     using Avalonia.Controls;
-    using Macabresoft.Macabre2D.UI.Common.Converters;
+    using Macabresoft.Macabre2D.UI.Common;
 
     /// <summary>
     /// Helper for menu items.

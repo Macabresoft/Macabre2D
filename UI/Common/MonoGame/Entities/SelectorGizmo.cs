@@ -1,8 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Linq;
     using Avalonia.Threading;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Input;
 
@@ -10,8 +9,8 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
     internal class SelectorGizmo : Entity, IGizmo {
-        private readonly ISceneService _sceneService;
         private readonly IEntityService _entityService;
+        private readonly ISceneService _sceneService;
         private ICamera _camera;
 
         /// <summary>

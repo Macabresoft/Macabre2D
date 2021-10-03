@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -9,7 +9,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
     using System.Windows.Input;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.Linq;

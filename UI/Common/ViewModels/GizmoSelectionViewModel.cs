@@ -1,9 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.ComponentModel;
     using System.Windows.Input;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
@@ -63,7 +61,7 @@
                         this.EditorService.SelectedGizmo = GizmoKind.Tile;
                     }
                     else if (this.EditorService.SelectedGizmo == GizmoKind.Rotation && !this.IsRotatable ||
-                        this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable) {
+                             this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable) {
                         this.EditorService.SelectedGizmo = GizmoKind.Translation;
                     }
                 }

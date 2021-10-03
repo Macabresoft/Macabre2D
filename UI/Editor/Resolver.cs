@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
-
     using System;
     using Unity;
     using Unity.Resolution;
@@ -15,9 +14,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// </summary>
         /// <value>The container.</value>
         public static IUnityContainer Container {
-            get {
-                return _container;
-            }
+            get => _container;
 
             internal set {
                 if (_container == null) {

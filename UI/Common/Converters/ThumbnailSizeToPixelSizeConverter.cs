@@ -1,10 +1,8 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Globalization;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     public class ThumbnailSizeToPixelSizeConverter : IValueConverter {
         private const double Large = Medium * 2d;

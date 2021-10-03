@@ -8,7 +8,7 @@
         <Setter Property="MinHeight" Value="{DynamicResource TreeViewItemMinHeight}" />
         <Setter Property="Padding" Value="16,0,0,0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
@@ -64,15 +64,15 @@
     <Style Selector="ListBoxItem:selected:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource TreeViewItemForegroundSelectedPressed}" />
     </Style>
-    
-    
+
+
     <!-- Sprites -->
     <Style Selector="ListBoxItem.Sprite">
         <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItemBackground}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Padding" Value="0" />
     </Style>
-    
+
     <!--  Selected State  -->
     <Style Selector="ListBoxItem.Sprite:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItemForeground}" />

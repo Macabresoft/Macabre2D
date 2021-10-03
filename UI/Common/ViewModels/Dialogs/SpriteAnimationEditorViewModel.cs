@@ -1,13 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
     using Avalonia;
     using DynamicData;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
@@ -346,9 +343,7 @@
         private void RemoveStep(SpriteAnimationStep selectedStep) {
             if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
                 var index = this._animation.Steps.IndexOf(selectedStep);
-                this._childUndoService.Do(() => {
-                    this._animation.RemoveStep(selectedStep);
-                }, () => {
+                this._childUndoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => {
                     this._animation.AddStep(selectedStep, index);
                     this.SelectedStep = selectedStep;
                 });

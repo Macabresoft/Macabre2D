@@ -1,12 +1,12 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Rendering;assembly=Macabre2D.UI.Common"
+             xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ThumbnailSizeToggle">
     <UserControl.Resources>
-        <converters:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
+        <common:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 DataContext="{Binding $parent[local:ThumbnailSizeToggle]}">

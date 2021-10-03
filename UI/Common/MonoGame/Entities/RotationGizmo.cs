@@ -1,8 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using MouseButton = Macabresoft.Macabre2D.Framework.MouseButton;
@@ -13,9 +12,9 @@
     public class RotationGizmo : BaseAxisGizmo {
         private readonly IUndoService _undoService;
         private ICamera _camera;
+        private Vector2 _knobLocation;
         private float _originalRotation;
         private Texture2D _sprite;
-        private Vector2 _knobLocation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RotationGizmo" /> class.
@@ -60,7 +59,7 @@
                 var scale = new Vector2(viewRatio);
                 var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
                 var axisLength = this.GetAxisLength();
-                
+
                 drawer.DrawCircle(
                     spriteBatch,
                     settings.PixelsPerUnit,
@@ -106,7 +105,7 @@
 
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     if (this.CurrentAxis != GizmoAxis.None) {
-                        UpdateDrag(rotatable, mousePosition);
+                        this.UpdateDrag(rotatable, mousePosition);
                         result = true;
                     }
                     else {
@@ -127,6 +126,10 @@
             return result;
         }
 
+        private Vector2 GetKnobLocation(Vector2 entityPosition, Vector2 mousePosition) {
+            return entityPosition + (mousePosition - entityPosition).GetNormalized() * this.GetAxisLength();
+        }
+
         private static float GetNewAngle(ITransformable transformable, Vector2 mousePosition) {
             var worldPosition = transformable.Transform.Position;
             var (x, y) = mousePosition - worldPosition;
@@ -140,14 +143,14 @@
 
                 this._undoService.Do(() => { rotatable.Rotation = newRotation; }, () => { rotatable.Rotation = originalRotation; });
             }
-            
+
             this.CurrentAxis = GizmoAxis.None;
             this._knobLocation = this.XAxisPosition;
         }
 
         private bool TryStartDrag(IRotatable rotatable, Vector2 mousePosition) {
             var result = false;
-            
+
             if (this.GetAxisUnderMouse(mousePosition) == GizmoAxis.X) {
                 this._originalRotation = rotatable.Rotation;
                 this.CurrentAxis = GizmoAxis.X;
@@ -161,10 +164,6 @@
         private void UpdateDrag(IRotatable rotatable, Vector2 mousePosition) {
             rotatable.Rotation = GetNewAngle(rotatable, mousePosition);
             this._knobLocation = this.GetKnobLocation(rotatable.Transform.Position, mousePosition);
-        }
-
-        private Vector2 GetKnobLocation(Vector2 entityPosition, Vector2 mousePosition) {
-            return entityPosition + (mousePosition - entityPosition).GetNormalized() * this.GetAxisLength();
         }
     }
 }

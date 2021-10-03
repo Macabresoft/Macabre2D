@@ -10,9 +10,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 
@@ -26,7 +24,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, string>(
                 nameof(ContentPath),
                 editor => editor.ContentPath);
-                
+
         public static readonly DirectProperty<SpriteReferenceEditor, int> MaxIndexProperty =
             AvaloniaProperty.RegisterDirect<SpriteReferenceEditor, int>(
                 nameof(MaxIndex),
@@ -55,8 +53,8 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
 
         private ICommand _clearSpriteCommand;
         private string _contentPath;
-        private SpriteDisplayModel _sprite;
         private int _maxIndex;
+        private SpriteDisplayModel _sprite;
 
         public SpriteReferenceEditor() : this(
             Resolver.Resolve<IAssetManager>(),
@@ -78,7 +76,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             this._fileSystem = fileSystem;
             this._pathService = pathService;
             this._undoService = undoService;
-            
+
             this.SelectSpriteCommand = ReactiveCommand.CreateFromTask(this.SelectSprite);
             this.InitializeComponent();
         }
@@ -96,7 +94,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             get => this._contentPath;
             private set => this.SetAndRaise(ContentPathProperty, ref this._contentPath, value);
         }
-        
+
         public int MaxIndex {
             get => this._maxIndex;
             private set => this.SetAndRaise(MaxIndexProperty, ref this._maxIndex, value);
@@ -151,6 +149,16 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void NumericUpDown_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
+            if (this.Value != null) {
+                var oldValue = (byte)e.OldValue;
+                var newValue = (byte)e.NewValue;
+                if (oldValue != newValue && this.Value.SpriteIndex != newValue) {
+                    this._undoService.Do(() => { this.Value.SpriteIndex = newValue; }, () => { this.Value.SpriteIndex = oldValue; });
+                }
+            }
+        }
+
         private void ResetBitmap() {
             this.ContentPath = null;
             this.Sprite = null;
@@ -196,20 +204,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
         private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex) or nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns)) {
                 this.ResetBitmap();
-            }
-        }
-
-        private void NumericUpDown_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
-            if (this.Value != null) {
-                var oldValue = (byte)e.OldValue;
-                var newValue = (byte)e.NewValue;
-                if (oldValue != newValue && this.Value.SpriteIndex != newValue) {
-                    this._undoService.Do(() => {
-                        this.Value.SpriteIndex = newValue;
-                    }, () => {
-                        this.Value.SpriteIndex = oldValue;
-                    });
-                }
             }
         }
     }

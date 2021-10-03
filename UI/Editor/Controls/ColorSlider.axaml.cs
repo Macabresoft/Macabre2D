@@ -25,16 +25,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             this.InitializeComponent();
         }
 
-        protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
-            base.OnApplyTemplate(e);
-            
-            this._pointerReleaseDispose?.Dispose();
-
-            if (this.Content is Slider slider) {
-                this._pointerReleaseDispose = slider.AddDisposableHandler(PointerReleasedEvent, OnPointerReleased, RoutingStrategies.Tunnel);
-            }
-        }
-
         public byte Value {
             get => this.GetValue(ValueProperty);
             set => this.SetValue(ValueProperty, value);
@@ -45,14 +35,18 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             set => this.SetAndRaise(ValueDisplayProperty, ref this._valueDisplay, value);
         }
 
+        protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
+            base.OnApplyTemplate(e);
+
+            this._pointerReleaseDispose?.Dispose();
+
+            if (this.Content is Slider slider) {
+                this._pointerReleaseDispose = slider.AddDisposableHandler(PointerReleasedEvent, this.OnPointerReleased, RoutingStrategies.Tunnel);
+            }
+        }
+
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
-        }
-        
-        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
-            if (!isBeforeChange && control is ColorSlider slider && slider.Value != slider.ValueDisplay) {
-                slider.ValueDisplay = slider.Value;
-            }
         }
 
         private void OnPointerReleased(object sender, PointerReleasedEventArgs e) {
@@ -61,5 +55,10 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls {
             }
         }
 
+        private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
+            if (!isBeforeChange && control is ColorSlider slider && slider.Value != slider.ValueDisplay) {
+                slider.ValueDisplay = slider.Value;
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@
         <Design.DataContext>
             <local:SpriteSheetInfoControl />
         </Design.DataContext>
-        
+
         <ItemsControl Grid.Row="0"
                       Items="{Binding SpriteCollection.Sprites}"
                       HorizontalAlignment="Stretch">

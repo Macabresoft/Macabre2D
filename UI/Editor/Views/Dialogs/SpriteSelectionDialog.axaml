@@ -1,18 +1,18 @@
 <local:BaseDialog xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
-        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteSelectionDialog"
-        Height="768"
-        Width="1024"
-        CanResize="False"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        Title="Make a Selection"
-        VectorIcon="{StaticResource SpriteSheetIcon}">
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
+                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteSelectionDialog"
+                  Height="768"
+                  Width="1024"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  Title="Make a Selection"
+                  VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
-        <viewModels:SpriteSelectionViewModel />
+        <common:SpriteSelectionViewModel />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"

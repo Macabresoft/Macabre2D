@@ -3,8 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
     using System.ComponentModel;
     using Avalonia;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =

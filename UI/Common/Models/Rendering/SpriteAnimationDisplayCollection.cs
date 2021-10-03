@@ -1,7 +1,5 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
-    using System.Collections.Generic;
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
     /// <summary>
     /// A collection of <see cref="SpriteAnimation" /> for display.

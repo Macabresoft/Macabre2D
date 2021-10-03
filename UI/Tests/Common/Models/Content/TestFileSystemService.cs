@@ -3,7 +3,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
 
     internal class TestFileSystemService : IFileSystemService {
         public TestFileSystemService() {
@@ -87,10 +87,10 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
         public void MoveFile(string originalPath, string newPath) {
         }
 
-        public void WriteAllText(string filePath, string text) {
+        public void OpenDirectoryInFileExplorer(string directoryPath) {
         }
 
-        public void OpenDirectoryInFileExplorer(string directoryPath) {
+        public void WriteAllText(string filePath, string text) {
         }
 
         private void FillDirectoryStructure() {

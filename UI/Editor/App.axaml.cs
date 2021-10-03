@@ -5,7 +5,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Markup.Xaml;
     using Avalonia.Platform;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Editor.Views;
     using Unity;
 

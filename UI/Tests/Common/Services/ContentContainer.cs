@@ -5,15 +5,14 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using System.Linq;
     using FluentAssertions;
     using FluentAssertions.Execution;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.Common;
     using NSubstitute;
 
     public class ContentContainer {
         public const string Folder1 = "Folder1";
-        public const string Folder2 = "Folder2";
         public const string Folder1A = "Folder1A";
+        public const string Folder2 = "Folder2";
         private const string BinPath = "bin";
         private const string PlatformsPath = "Platforms";
 
@@ -71,7 +70,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
         public IReadOnlyCollection<ContentMetadata> MetadataToArchive { get; }
 
         public IReadOnlyCollection<string> NewContentFiles { get; }
-        
+
         public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
         public void RunRefreshContentTest() {

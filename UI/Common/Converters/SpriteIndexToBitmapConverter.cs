@@ -1,11 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
 
     /// <summary>
     /// Takes a sprite index and a <see cref="SpriteDisplayCollection" />

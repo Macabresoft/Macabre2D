@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
+namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -6,27 +6,27 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame {
     /// </summary>
     public enum GizmoKind {
         /// <summary>
-        /// Used in selecting <see cref="IBoundable"/> in the scene editor.
+        /// Used in selecting <see cref="IBoundable" /> in the scene editor.
         /// </summary>
         Selector = 0,
-        
+
         /// <summary>
-        /// Used in translating (moving) <see cref="ITransformable"/> in the scene editor.
+        /// Used in translating (moving) <see cref="ITransformable" /> in the scene editor.
         /// </summary>
         Translation = 1,
-        
+
         /// <summary>
-        /// Used in scaling (changing size) <see cref="ITransformable"/> in the scene editor.
+        /// Used in scaling (changing size) <see cref="ITransformable" /> in the scene editor.
         /// </summary>
         Scale = 2,
-        
+
         /// <summary>
-        /// Used in rotating <see cref="IRotatable"/> in the scene editor.
+        /// Used in rotating <see cref="IRotatable" /> in the scene editor.
         /// </summary>
         Rotation = 3,
-        
+
         /// <summary>
-        /// Used in placing tiles for <see cref="ITileableEntity"/> in the scene editor.
+        /// Used in placing tiles for <see cref="ITileableEntity" /> in the scene editor.
         /// </summary>
         Tile = 4
     }

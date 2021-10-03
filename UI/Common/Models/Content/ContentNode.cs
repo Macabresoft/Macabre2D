@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.ComponentModel;
     using System.IO;
@@ -21,11 +21,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         Guid Id { get; }
 
         /// <summary>
-        /// Gets or sets the name without an extension.
-        /// </summary>
-        string NameWithoutExtension { get; set; }
-
-        /// <summary>
         /// Gets the parent.
         /// </summary>
         IContentDirectory Parent { get; }
@@ -34,6 +29,11 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// Gets the name.
         /// </summary>
         string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name without an extension.
+        /// </summary>
+        string NameWithoutExtension { get; set; }
 
         /// <summary>
         /// Changes the parent of this node.
@@ -148,12 +148,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             return this.NameWithoutExtension ?? string.Empty;
         }
 
-        /// <summary>
-        /// Gets the name without its file extension.
-        /// </summary>
-        /// <returns>The name without its file extension.</returns>
-        protected abstract string GetNameWithoutExtension();
-
         /// <inheritdoc />
         public int GetDepth() {
             return this.Parent?.GetDepth() + 1 ?? 0;
@@ -183,6 +177,12 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// </summary>
         /// <returns>The file extension.</returns>
         protected abstract string GetFileExtension();
+
+        /// <summary>
+        /// Gets the name without its file extension.
+        /// </summary>
+        /// <returns>The name without its file extension.</returns>
+        protected abstract string GetNameWithoutExtension();
 
         /// <summary>
         /// Called when the path changes.

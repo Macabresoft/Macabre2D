@@ -1,13 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
-    using System.Reactive;
-    using System.Windows.Input;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Microsoft.Xna.Framework;
-    using ReactiveUI;
     using Unity;
 
     /// <summary>

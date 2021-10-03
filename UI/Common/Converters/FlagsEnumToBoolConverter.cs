@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.Converters {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -6,12 +6,10 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
     using Avalonia.Data.Converters;
 
     public class FlagsEnumToBoolConverter : IMultiValueConverter {
-
-
         public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
             object result = 0;
 
-            if (values.Count == 2 ) {
+            if (values.Count == 2) {
                 var value0 = values[0];
                 var value1 = values[1];
 

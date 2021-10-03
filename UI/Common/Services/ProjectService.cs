@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -6,8 +6,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
     using System.Linq;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
     using ReactiveUI;
 
     /// <summary>

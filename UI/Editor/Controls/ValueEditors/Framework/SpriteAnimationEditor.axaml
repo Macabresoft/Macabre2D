@@ -12,12 +12,12 @@
         <Design.DataContext>
             <local:SpriteAnimationEditor />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Column="0"
                    Grid.Row="0"
                    Classes="ValueEditorLabel"
                    Text="{Binding Title}" />
-        
+
         <Border Grid.Column="0"
                 Grid.Row="1"
                 Name="_spriteBorder"
@@ -25,21 +25,21 @@
                 Classes="Preview">
             <Image Source="{Binding Bitmap}" />
         </Border>
-        
+
         <TextBlock Grid.Row="2"
                    Grid.Column="0"
                    Classes="Caption"
                    HorizontalAlignment="Left"
                    Width="{Binding #_spriteBorder.Bounds.Width}"
                    Text="{Binding Bitmap.Size, StringFormat=(\{0\})}" />
-        
+
         <TextBox Grid.Column="1"
                  Grid.Row="1"
                  IsReadOnly="True"
                  VerticalAlignment="Top"
                  Text="{Binding PathText}"
-                 ToolTip.Tip="{Binding PathText}"/>
-        
+                 ToolTip.Tip="{Binding PathText}" />
+
         <Button Grid.Column="2"
                 Grid.Row="1"
                 VerticalAlignment="Top"

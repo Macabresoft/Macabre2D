@@ -27,11 +27,11 @@
                           Margin="{StaticResource StandardMarginVertical}">
                         <local:Icon Grid.Column="0"
                                     IsVisible="{TemplateBinding HideContent}"
-                                    Content="{StaticResource CaretRightIcon}"/>
-                        
+                                    Content="{StaticResource CaretRightIcon}" />
+
                         <local:Icon Grid.Column="0"
                                     IsVisible="{TemplateBinding ShowContent}"
-                                    Content="{StaticResource CaretDownIcon}"/>
+                                    Content="{StaticResource CaretDownIcon}" />
 
                         <TextBlock Grid.Column="2"
                                    ToolTip.Tip="{TemplateBinding Header}"

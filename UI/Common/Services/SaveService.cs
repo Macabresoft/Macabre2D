@@ -1,8 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
-    using Macabresoft.Macabre2D.UI.Common.Models;
     using ReactiveUI;
 
     /// <summary>
@@ -47,9 +46,9 @@
         /// <param name="undoService">The undo service.</param>
         public SaveService(
             IContentService contentService,
-            IDialogService dialogService, 
+            IDialogService dialogService,
             IProjectService projectService,
-            ISceneService sceneService, 
+            ISceneService sceneService,
             IUndoService undoService) {
             this._contentService = contentService;
             this._dialogService = dialogService;

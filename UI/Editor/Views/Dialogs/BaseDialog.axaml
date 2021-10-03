@@ -31,7 +31,7 @@
 
                             <ContentPresenter Grid.Column="1"
                                               Content="{TemplateBinding Menu}" />
-                            
+
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="3"
                                        IsVisible="{x:Static root:App.ShowNonNativeMenu}"

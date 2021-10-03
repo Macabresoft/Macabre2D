@@ -4,7 +4,7 @@
         <Setter Property="Margin"
                 Value="{DynamicResource StandardMarginAll}" />
     </Style>
-    
+
     <Style Selector="Border.Preview Image">
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="Margin" Value="0" />

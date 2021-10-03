@@ -5,28 +5,28 @@
         <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.7" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.7" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.7" />
-        <PackageReference Include="Mono.Cecil" Version="0.11.4" />
-        <PackageReference Include="Unity" Version="5.11.10" />
+        <PackageReference Include="Avalonia" Version="0.10.7"/>
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.7"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.7"/>
+        <PackageReference Include="Mono.Cecil" Version="0.11.4"/>
+        <PackageReference Include="Unity" Version="5.11.10"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
-        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
+        <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj"/>
+        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <UpToDateCheckInput Remove="Styles\Button.axaml" />
-      <UpToDateCheckInput Remove="Styles\CheckBox.axaml" />
-      <UpToDateCheckInput Remove="Styles\Colors.axaml" />
-      <UpToDateCheckInput Remove="Styles\ComboBox.axaml" />
-      <UpToDateCheckInput Remove="Styles\Image.axaml" />
-      <UpToDateCheckInput Remove="Styles\Margins.axaml" />
-      <UpToDateCheckInput Remove="Styles\Menu.axaml" />
-      <UpToDateCheckInput Remove="Styles\MenuItem.axaml" />
-      <UpToDateCheckInput Remove="Styles\SpecialCharacters.axaml" />
-      <UpToDateCheckInput Remove="Styles\TextBlock.axaml" />
-      <UpToDateCheckInput Remove="Styles\TextBox.axaml" />
-      <UpToDateCheckInput Remove="Styles\TreeView.axaml" />
+        <UpToDateCheckInput Remove="Styles\Button.axaml"/>
+        <UpToDateCheckInput Remove="Styles\CheckBox.axaml"/>
+        <UpToDateCheckInput Remove="Styles\Colors.axaml"/>
+        <UpToDateCheckInput Remove="Styles\ComboBox.axaml"/>
+        <UpToDateCheckInput Remove="Styles\Image.axaml"/>
+        <UpToDateCheckInput Remove="Styles\Margins.axaml"/>
+        <UpToDateCheckInput Remove="Styles\Menu.axaml"/>
+        <UpToDateCheckInput Remove="Styles\MenuItem.axaml"/>
+        <UpToDateCheckInput Remove="Styles\SpecialCharacters.axaml"/>
+        <UpToDateCheckInput Remove="Styles\TextBlock.axaml"/>
+        <UpToDateCheckInput Remove="Styles\TextBox.axaml"/>
+        <UpToDateCheckInput Remove="Styles\TreeView.axaml"/>
     </ItemGroup>
 </Project>

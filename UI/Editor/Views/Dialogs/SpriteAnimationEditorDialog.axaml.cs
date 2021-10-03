@@ -3,7 +3,7 @@
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
+    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
     public class SpriteAnimationEditorDialog : BaseDialog {

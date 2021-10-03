@@ -1,17 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             xmlns:contentViewModel="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views"
-             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.Views.ContentTreeView">
     <Design.DataContext>
         <contentViewModel:ContentTreeBaseViewModel />
     </Design.DataContext>
     <UserControl.Resources>
-        <converters:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <converters:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+        <common:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, 0, 0.6*">
         <Border Grid.Row="0"
@@ -42,7 +41,7 @@
                         </Style>
                     </TreeView.Styles>
                     <TreeView.DataTemplates>
-                        <TreeDataTemplate DataType="viewModels:RootContentDirectory"
+                        <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border HorizontalAlignment="Stretch"
                                     Background="Transparent"
@@ -79,7 +78,7 @@
                             </Border>
                         </TreeDataTemplate>
 
-                        <TreeDataTemplate DataType="viewModels:IContentDirectory"
+                        <TreeDataTemplate DataType="common:IContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border HorizontalAlignment="Stretch"
                                     Background="Transparent"
@@ -130,7 +129,7 @@
                                 </controls:EditableSelectableItem>
                             </Border>
                         </TreeDataTemplate>
-                        <TreeDataTemplate DataType="viewModels:IContentNode">
+                        <TreeDataTemplate DataType="common:IContentNode">
                             <Border HorizontalAlignment="Stretch"
                                     Background="Transparent"
                                     PointerPressed="Node_OnPointerPressed"

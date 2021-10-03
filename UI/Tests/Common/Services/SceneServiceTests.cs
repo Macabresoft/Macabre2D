@@ -4,9 +4,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using NSubstitute;
     using NUnit.Framework;
 
@@ -37,7 +35,7 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
             var metadataFilePath = pathService.GetMetadataFilePath(metadata.ContentId);
             fileSystem.DoesFileExist(metadataFilePath).Returns(true);
             serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
-            
+
             var sceneService = new SceneService(Substitute.For<IEntityService>(), fileSystem, pathService, serializer, settingsService, Substitute.For<ISystemService>());
             var result = sceneService.TryLoadScene(metadata.ContentId, out var loadedSceneAsset);
 

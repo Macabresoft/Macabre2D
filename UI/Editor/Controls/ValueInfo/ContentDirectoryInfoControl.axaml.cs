@@ -3,7 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo {
     using System.IO;
     using Avalonia;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class ContentDirectoryInfoControl : ValueControl<ContentDirectory> {
         public static readonly DirectProperty<ContentDirectoryInfoControl, DirectoryInfo> DirectoryInfoProperty =

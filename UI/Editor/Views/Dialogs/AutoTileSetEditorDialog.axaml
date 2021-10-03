@@ -1,9 +1,8 @@
 ﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.AutoTileSetEditorDialog"
                   SizeToContent="Height"
                   Width="1024"
@@ -11,11 +10,11 @@
                   Title="Auto Tile Set Editor"
                   VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
-        <viewModels:AutoTileSetEditorViewModel />
+        <common:AutoTileSetEditorViewModel />
     </Design.DataContext>
     <Window.Resources>
-        <converters:MultiEqualityConverter x:Key="MultiEqualityConverter" />
-        <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+        <common:MultiEqualityConverter x:Key="MultiEqualityConverter" />
+        <common:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
     </Window.Resources>
     <Window.Styles>
         <Style Selector="ToggleButton.Tile">

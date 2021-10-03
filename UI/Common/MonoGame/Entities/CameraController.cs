@@ -1,8 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Entities {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 

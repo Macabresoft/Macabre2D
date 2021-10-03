@@ -1,22 +1,22 @@
 <local:BaseDialog xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
-        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.ContentSelectionDialog"
-        Height="480"
-        Width="640"
-        CanResize="False"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        Title="Make a Selection"
-        VectorIcon="{StaticResource DirectoryIcon}">
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
+                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.ContentSelectionDialog"
+                  Height="480"
+                  Width="640"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  Title="Make a Selection"
+                  VectorIcon="{StaticResource DirectoryIcon}">
     <Design.DataContext>
-        <viewModels:ContentSelectionViewModel />
+        <common:ContentSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
-        
+
         <controls:FilteredContentTree Grid.Row="0"
                                       Root="{Binding RootContentDirectory, Mode=OneTime}"
                                       SelectedItem="{Binding SelectedContentNode}"

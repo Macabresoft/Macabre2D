@@ -1,21 +1,17 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
-    
+
     /// <summary>
     /// A view model for the sprite sheet asset selection dialog.
     /// </summary>
     public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetAsset {
         private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
-        private FilteredContentWrapper _selectedContentNode;
         private TAsset _selectedAsset;
+        private FilteredContentWrapper _selectedContentNode;
         private ThumbnailSize _selectedThumbnailSize;
 
         /// <summary>
@@ -46,6 +42,17 @@
         public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
 
         /// <summary>
+        /// Gets or sets the selected asset.
+        /// </summary>
+        public TAsset SelectedAsset {
+            get => this._selectedAsset;
+            set {
+                this.RaiseAndSetIfChanged(ref this._selectedAsset, value);
+                this.IsOkEnabled = this.SelectedAsset != null;
+            }
+        }
+
+        /// <summary>
         /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
         /// </summary>
         public FilteredContentWrapper SelectedContentNode {
@@ -55,17 +62,6 @@
                     this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
                     this.ResetSpriteSheets();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the selected asset.
-        /// </summary>
-        public TAsset SelectedAsset {
-            get => this._selectedAsset;
-            set {
-                this.RaiseAndSetIfChanged(ref this._selectedAsset, value);
-                this.IsOkEnabled = this.SelectedAsset != null;
             }
         }
 

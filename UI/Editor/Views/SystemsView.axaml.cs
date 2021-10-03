@@ -2,7 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views {
     using System.Collections.Generic;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels;
+    using Macabresoft.Macabre2D.UI.Common;
     using Macabresoft.Macabre2D.UI.Editor.Helpers;
 
     public class SystemsView : UserControl {

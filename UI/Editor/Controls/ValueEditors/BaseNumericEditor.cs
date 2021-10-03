@@ -15,13 +15,13 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
                 editor => editor.ValueDisplay,
                 (editor, value) => editor.ValueDisplay = value,
                 defaultBindingMode: BindingMode.TwoWay);
-        
+
         public static readonly StyledProperty<TNumeric> ValueMaximumProperty =
             AvaloniaProperty.Register<BaseNumericEditor<TNumeric>, TNumeric>(nameof(ValueMaximum), GetMinValue());
-        
+
         public static readonly StyledProperty<TNumeric> ValueMinimumProperty =
             AvaloniaProperty.Register<BaseNumericEditor<TNumeric>, TNumeric>(nameof(ValueMinimum), GetMaxValue());
-        
+
         private readonly DataTable _calculator = new();
         private string _valueDisplay;
 
@@ -119,9 +119,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
         }
 
         private void UpdateDisplayValue() {
-            Dispatcher.UIThread.Post(() => {
-                this.ValueDisplay = this.Value.ToString();
-            });
+            Dispatcher.UIThread.Post(() => { this.ValueDisplay = this.Value.ToString(); });
         }
     }
 }

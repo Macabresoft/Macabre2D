@@ -8,8 +8,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
     using Avalonia.Markup.Xaml;
     using Avalonia.Media;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Converters;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 

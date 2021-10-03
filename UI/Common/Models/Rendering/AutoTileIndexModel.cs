@@ -1,6 +1,5 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// A model for a single tile of an <see cref="AutoTileSet" />.

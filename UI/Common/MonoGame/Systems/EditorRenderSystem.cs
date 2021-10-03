@@ -1,9 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.Linq;
-    using Framework;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame.Entities;
+    using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework.Graphics;
-    using Services;
 
     /// <summary>
     /// A render system built explicitly for the <see cref="ISceneEditor" />.
@@ -32,15 +30,15 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
                 foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => x is EditorGrid)) {
                     this._renderTree.Insert(component);
                 }
-                
+
                 foreach (var component in this._sceneService.CurrentScene.RenderableEntities) {
                     this._renderTree.Insert(component);
                 }
-                
+
                 foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                     this._renderTree.Insert(component);
                 }
-                
+
                 var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
                 if (potentialRenderables.Any()) {
                     camera.Render(frameTime, spriteBatch, potentialRenderables);

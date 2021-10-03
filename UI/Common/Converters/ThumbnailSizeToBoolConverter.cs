@@ -1,11 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Common.Converters {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Globalization;
     using Avalonia;
     using Avalonia.Data.Converters;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Models.Rendering;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
 
     /// <summary>
     /// A converter that takes two objects and returns a value indicating whether or not they are equal.
@@ -17,7 +14,7 @@ namespace Macabresoft.Macabre2D.UI.Common.Converters {
             if (value is ThumbnailSize valueSize && parameter is ThumbnailSize parameterSize) {
                 result = valueSize == parameterSize;
             }
-            
+
             return result;
         }
 

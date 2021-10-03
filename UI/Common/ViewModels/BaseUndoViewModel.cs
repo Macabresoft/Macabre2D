@@ -1,6 +1,5 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Windows.Input;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
 
     /// <summary>

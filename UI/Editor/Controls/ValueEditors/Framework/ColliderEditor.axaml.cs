@@ -7,8 +7,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework {
     using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
     public class ColliderEditor : ValueEditorControl<Collider> {

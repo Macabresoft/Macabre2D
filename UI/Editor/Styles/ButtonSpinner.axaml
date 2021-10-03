@@ -3,7 +3,7 @@
     <Style Selector="RepeatButton.ButtonSpinnerRepeatButton">
         <Setter Property="MinWidth" Value="16" />
     </Style>
-    
+
     <!-- This whole template is a rewrite of the official avalonia fluent one to make minor changes that I couldn't get working with templating/styles -->
     <Style Selector="ButtonSpinner">
         <Setter Property="Template">

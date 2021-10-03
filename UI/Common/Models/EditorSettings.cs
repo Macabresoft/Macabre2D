@@ -1,19 +1,23 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Runtime.Serialization;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
 
     /// <summary>
     /// Settings for the editor. What a novel idea!
     /// </summary>
     [DataContract]
     public class EditorSettings {
-
         /// <summary>
         /// It's the editor settings file name.
         /// </summary>
         public const string FileName = "settings.m2deditor";
-        
+
+        /// <summary>
+        /// Gets or sets the last gizmo opened.
+        /// </summary>
+        [DataMember]
+        public GizmoKind LastGizmoSelected { get; set; }
+
         /// <summary>
         /// Gets or sets the last scene opened.
         /// </summary>
@@ -25,11 +29,5 @@
         /// </summary>
         [DataMember]
         public EditorTabs LastTabSelected { get; set; } = EditorTabs.Entities;
-        
-        /// <summary>
-        /// Gets or sets the last gizmo opened.
-        /// </summary>
-        [DataMember]
-        public GizmoKind LastGizmoSelected { get; set; }
     }
 }

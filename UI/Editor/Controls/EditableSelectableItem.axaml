@@ -1,12 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
              x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.EditableSelectableItem">
     <UserControl.Resources>
-        <converters:MultiBoolConverter x:Key="MultiBoolConverter"
-                                       RequireAllTrue="True" />
+        <common:MultiBoolConverter x:Key="MultiBoolConverter"
+                                   RequireAllTrue="True" />
     </UserControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
           HorizontalAlignment="Stretch"
@@ -14,7 +14,7 @@
         <Design.DataContext>
             <local:EditableSelectableItem />
         </Design.DataContext>
-        
+
         <controls:Icon Grid.Column="0"
                        Content="{Binding Icon}"
                        IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
@@ -27,7 +27,7 @@
                    HorizontalAlignment="Stretch"
                    Background="Transparent"
                    DoubleTapped="Item_OnDoubleTapped" />
-        
+
         <TextBox Grid.Column="1"
                  x:Name="_editableTextBox"
                  Background="Transparent"

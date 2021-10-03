@@ -1,8 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Windows.Input;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
 
     /// <summary>

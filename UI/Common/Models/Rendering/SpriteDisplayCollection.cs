@@ -1,5 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models.Rendering {
-    using System;
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -9,7 +8,6 @@
     using Avalonia.Media.Imaging;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
     /// <summary>
     /// A collection of <see cref="SpriteDisplayModel" />.
@@ -49,14 +47,14 @@
         public string Name => this._file.Name;
 
         /// <summary>
-        /// Gets the sprites.
-        /// </summary>
-        public IReadOnlyCollection<SpriteDisplayModel> Sprites => this._sprites;
-
-        /// <summary>
         /// Gets the size of the sprite sheet.
         /// </summary>
         public Size Size => this._bitmap.Size;
+
+        /// <summary>
+        /// Gets the sprites.
+        /// </summary>
+        public IReadOnlyCollection<SpriteDisplayModel> Sprites => this._sprites;
 
         /// <inheritdoc />
         public IEnumerator<SpriteDisplayModel> GetEnumerator() {
@@ -66,7 +64,7 @@
         /// <inheritdoc />
         protected override void OnDisposing() {
             base.OnDisposing();
-            
+
             this._sprites.Clear();
             this._spriteSheet.PropertyChanged -= this.SpriteSheet_PropertyChanged;
             this._file.PropertyChanged -= this.File_PropertyChanged;

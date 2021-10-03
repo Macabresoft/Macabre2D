@@ -1,10 +1,9 @@
-namespace Macabresoft.Macabre2D.UI.Common.Services {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.ComponentModel;
     using System.Windows.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
 

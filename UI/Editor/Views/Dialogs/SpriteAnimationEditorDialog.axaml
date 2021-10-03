@@ -1,19 +1,18 @@
 ﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
-                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteAnimationEditorDialog"
                   Width="1024"
                   Height="768"
                   Title="Sprite Animation Editor"
                   VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
-        <viewModels:SpriteAnimationEditorViewModel />
+        <common:SpriteAnimationEditorViewModel />
     </Design.DataContext>
     <local:BaseDialog.Resources>
-        <converters:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+        <common:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
     </local:BaseDialog.Resources>
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions=".35*, Auto, .65*"
@@ -27,16 +26,16 @@
                     ToolTip.Tip="Undo">
                 <controls:Icon Content="{StaticResource UndoIcon}" />
             </Button>
-            
+
             <Button Classes="Icon"
                     Command="{Binding RedoCommand}"
                     HotKey="Ctrl + Y"
                     ToolTip.Tip="Redo">
                 <controls:Icon Content="{StaticResource RedoIcon}" />
             </Button>
-            
+
             <Border Classes="VerticalSeparator" />
-            
+
             <Button Command="{Binding AddCommand}"
                     CommandParameter="{x:Null}"
                     Classes="Icon"

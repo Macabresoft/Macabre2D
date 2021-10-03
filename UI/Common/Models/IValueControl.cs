@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Models {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia;
 
@@ -12,6 +12,11 @@
         string Category { get; set; }
 
         /// <summary>
+        /// Gets or sets the collection to which this editor belongs.
+        /// </summary>
+        ValueControlCollection Collection { get; set; }
+
+        /// <summary>
         /// Gets or sets the owner of the value. This is only required if not directly binding to the value.
         /// </summary>
         object Owner { get; set; }
@@ -20,12 +25,7 @@
         /// Gets or sets the title.
         /// </summary>
         string Title { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the collection to which this editor belongs.
-        /// </summary>
-        ValueControlCollection Collection { get; set; }
-        
+
         /// <summary>
         /// Initializes the value editor.
         /// </summary>

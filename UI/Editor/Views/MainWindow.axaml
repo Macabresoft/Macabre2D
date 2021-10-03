@@ -1,19 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
-        xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models;assembly=Macabre2D.UI.Common"
+        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+        xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         xmlns:views="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views"
-        xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.Editor.Views.MainWindow"
         ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}"
         WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Design.DataContext>
-        <viewModels:MainWindowViewModel />
+        <common:MainWindowViewModel />
     </Design.DataContext>
     <Window.Resources>
-        <converters:EqualityConverter x:Key="EqualityConverter" />
+        <common:EqualityConverter x:Key="EqualityConverter" />
     </Window.Resources>
     <Window.Name>Macabre2D</Window.Name>
     <NativeMenu.Menu>

@@ -4,7 +4,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
     using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
-    using Microsoft.Xna.Framework;
     using Point = Microsoft.Xna.Framework.Point;
 
     public class PointEditor : ValueEditorControl<Point> {

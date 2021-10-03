@@ -1,6 +1,5 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Linq;
-    using Macabresoft.Macabre2D.UI.Common.Models;
 
     /// <summary>
     /// Interface for a child undo service. Generally an undo service that operates on a dialog and is committed into the main

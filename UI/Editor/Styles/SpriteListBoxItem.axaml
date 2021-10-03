@@ -5,7 +5,7 @@
         <Setter Property="BorderThickness" Value="3" />
         <Setter Property="Padding" Value="0" />
     </Style>
-    
+
     <!--  Selected State  -->
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItemForeground}" />

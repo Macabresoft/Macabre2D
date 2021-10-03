@@ -2,9 +2,8 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs {
     using System.Reactive;
     using System.Windows.Input;
     using Avalonia;
-    using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common.Models;
+    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
 
     public class YesNoCancelDialog : BaseDialog {

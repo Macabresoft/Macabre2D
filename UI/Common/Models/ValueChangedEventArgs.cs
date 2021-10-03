@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
 
     /// <summary>
@@ -6,7 +6,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models {
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
     public sealed class ValueChangedEventArgs<T> : EventArgs {
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueChangedEventArgs{T}" /> class.
         /// </summary>

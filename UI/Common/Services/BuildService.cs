@@ -1,9 +1,7 @@
-namespace Macabresoft.Macabre2D.UI.Common.Services {
-    using Macabresoft.Core;
+namespace Macabresoft.Macabre2D.UI.Common {
     using System.Diagnostics;
     using System.IO;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using System.Linq;
+    using Macabresoft.Core;
 
     /// <summary>
     /// Interface that abstracts out building content and projects.
@@ -58,11 +56,9 @@ namespace Macabresoft.Macabre2D.UI.Common.Services {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     WorkingDirectory = Path.GetDirectoryName(args.ContentFilePath) ?? string.Empty
                 };
-                
-                var arguments = !string.IsNullOrEmpty(outputDirectoryPath) ? 
-                    args.ToConsoleArguments(outputDirectoryPath) : 
-                    args.ToConsoleArguments();
-                
+
+                var arguments = !string.IsNullOrEmpty(outputDirectoryPath) ? args.ToConsoleArguments(outputDirectoryPath) : args.ToConsoleArguments();
+
                 startInfo.ArgumentList.AddRange(arguments);
                 exitCode = this._processService.StartProcess(startInfo);
             }

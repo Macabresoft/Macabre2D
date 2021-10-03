@@ -1,7 +1,6 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
-                                 xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors"
@@ -12,17 +11,17 @@
         <Design.DataContext>
             <local:AudioClipEditor />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
                    Text="{Binding Title}" />
-        
+
         <TextBox Grid.Column="1"
                  IsReadOnly="True"
                  VerticalAlignment="Top"
                  Text="{Binding PathText}"
-                 ToolTip.Tip="{Binding PathText}"/>
-        
+                 ToolTip.Tip="{Binding PathText}" />
+
         <Button Grid.Column="2"
                 VerticalAlignment="Top"
                 Classes="Icon"

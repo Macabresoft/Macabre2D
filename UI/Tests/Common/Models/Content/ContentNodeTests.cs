@@ -4,14 +4,17 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public sealed class ContentNodeTests {
         private const string ProjectPath = "Content";
+
+        private ContentMetadata CreateTestMetadata() {
+            return new ContentMetadata(Substitute.For<IAsset>(), Enumerable.Empty<string>(), string.Empty);
+        }
 
         [Test]
         [Category("Unit Tests")]
@@ -77,10 +80,6 @@ namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
             var node = new ContentFile(parent, this.CreateTestMetadata());
             var result = node.IsDescendentOf(root);
             result.Should().BeTrue();
-        }
-
-        private ContentMetadata CreateTestMetadata() {
-            return new ContentMetadata(Substitute.For<IAsset>(), Enumerable.Empty<string>(), string.Empty);
         }
     }
 }

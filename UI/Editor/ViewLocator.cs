@@ -1,9 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
-
+    using System;
     using Avalonia.Controls;
     using Avalonia.Controls.Templates;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels;
-    using System;
+    using Macabresoft.Macabre2D.UI.Common;
 
     public class ViewLocator : IDataTemplate {
         public bool SupportsRecycling => false;
@@ -15,9 +14,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             if (type != null) {
                 return (Control)Activator.CreateInstance(type);
             }
-            else {
-                return new TextBlock { Text = "Not Found: " + name };
-            }
+
+            return new TextBlock { Text = "Not Found: " + name };
         }
 
         public bool Match(object data) {

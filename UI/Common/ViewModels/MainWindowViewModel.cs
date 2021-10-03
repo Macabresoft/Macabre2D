@@ -1,15 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Avalonia;
     using Avalonia.Controls;
-    using Avalonia.Platform;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models;
-    using Macabresoft.Macabre2D.UI.Common.MonoGame;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using ReactiveUI;
     using Unity;
 
@@ -154,7 +149,6 @@ namespace Macabresoft.Macabre2D.UI.Common.ViewModels {
                 }
             }
         }
-
 
 
         private async Task ViewLicenses() {

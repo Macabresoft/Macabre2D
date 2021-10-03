@@ -1,11 +1,10 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common.Converters {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Globalization;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data.Converters;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Models.Content;
 
     /// <summary>
     /// Converts from an asset to an icon.

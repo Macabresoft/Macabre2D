@@ -1,6 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
-    using Macabresoft.Macabre2D.UI.Common.MonoGame.Entities;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
@@ -27,7 +25,7 @@ namespace Macabresoft.Macabre2D.UI.Common.MonoGame.Systems {
         public override void Update(FrameTime frameTime, InputState inputState) {
             if (this.Scene.Game is ISceneEditor sceneEditor) {
                 var performedActions = false;
-                
+
                 if (this._entityService.Selected != null && sceneEditor.SelectedGizmo is IGizmo gizmo) {
                     performedActions = gizmo.Update(frameTime, inputState);
                 }

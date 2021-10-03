@@ -10,7 +10,7 @@
         <Design.DataContext>
             <local:LongEditor />
         </Design.DataContext>
-        
+
         <TextBlock Grid.Column="0"
                    Classes="ValueEditorLabel"
                    Text="{Binding Title}" />

@@ -1,9 +1,8 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Avalonia.Input;
-    using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// A <see cref="IDataObject" /> that wraps an <see cref="object" />.

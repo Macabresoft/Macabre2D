@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
     using System;
-    using System.Reactive;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
@@ -40,6 +39,12 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (sender is ComboBox comboBox) {
+                comboBox.SelectedItem = null;
+            }
+        }
+
         private void ToggleValue(object value) {
             var original = Convert.ToInt32(this.Value);
             var toggled = Convert.ToInt32(value);
@@ -49,12 +54,6 @@ namespace Macabresoft.Macabre2D.UI.Editor.Controls.ValueEditors {
             }
             else {
                 this.Value = Enum.Parse(this.EnumType, (original | toggled).ToString());
-            }
-        }
-
-        private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (sender is ComboBox comboBox) {
-                comboBox.SelectedItem = null;
             }
         }
     }

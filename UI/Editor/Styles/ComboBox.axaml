@@ -1,7 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style Selector="ComboBox">
-		<Setter Property="Margin" Value="{DynamicResource StandardMarginAll}" />
-		<Setter Property="HorizontalAlignment" Value="Stretch" />
-	</Style>
+    <Style Selector="ComboBox">
+        <Setter Property="Margin" Value="{DynamicResource StandardMarginAll}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
 </Styles>

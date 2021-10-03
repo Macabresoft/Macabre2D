@@ -1,11 +1,9 @@
 namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs {
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels;
-    using Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;
+    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
-    public class SpriteSheetAssetSelectionDialog : BaseDialog  {
+    public class SpriteSheetAssetSelectionDialog : BaseDialog {
         public SpriteSheetAssetSelectionDialog() {
         }
 
@@ -15,7 +13,7 @@ namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs {
             viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
-        
+
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
         }

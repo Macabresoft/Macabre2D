@@ -1,8 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
-    using System.Collections.Generic;
     using FluentAssertions;
     using FluentAssertions.Execution;
-    using Macabresoft.Macabre2D.UI.Common.Services;
+    using Macabresoft.Macabre2D.UI.Common;
     using NUnit.Framework;
 
     [TestFixture]
@@ -19,16 +18,16 @@
                     () => count++,
                     () => count--);
             }
-            
+
             var changes = childUndoService.GetChanges();
 
             using (new AssertionScope()) {
                 childUndoService.CanUndo.Should().BeTrue();
                 count.Should().Be(max);
-                
+
                 changes.Undo();
                 count.Should().Be(0);
-                
+
                 changes.Do();
                 count.Should().Be(max);
             }

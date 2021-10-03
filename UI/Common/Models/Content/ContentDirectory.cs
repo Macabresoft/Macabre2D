@@ -1,11 +1,10 @@
-namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common.Services;
 
     /// <summary>
     /// Interface for a directory content node.
@@ -30,21 +29,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         bool ContainsMetadata(Guid contentId);
 
         /// <summary>
-        /// Finds a content node if it exists.
-        /// </summary>
-        /// <param name="splitContentPath"></param>
-        /// <returns>The content node or null.</returns>
-        IContentNode TryFindNode(string[] splitContentPath);
-
-        /// <summary>
-        /// Tries to find a content node by its identifier.
-        /// </summary>
-        /// <param name="contentId">The content identifier.</param>
-        /// <param name="file">The file.</param>
-        /// <returns>A value indicating whether or not the file was found.</returns>
-        bool TryFindNode(Guid contentId, out ContentFile file);
-
-        /// <summary>
         /// Gets all content files that are descendants of this directory.
         /// </summary>
         /// <returns>All content files that are descendants of this directory.</returns>
@@ -61,6 +45,21 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
         /// </summary>
         /// <param name="node">The child node to remove.</param>
         bool RemoveChild(IContentNode node);
+
+        /// <summary>
+        /// Finds a content node if it exists.
+        /// </summary>
+        /// <param name="splitContentPath"></param>
+        /// <returns>The content node or null.</returns>
+        IContentNode TryFindNode(string[] splitContentPath);
+
+        /// <summary>
+        /// Tries to find a content node by its identifier.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <param name="file">The file.</param>
+        /// <returns>A value indicating whether or not the file was found.</returns>
+        bool TryFindNode(Guid contentId, out ContentFile file);
 
         /// <summary>
         /// Tries to find a content node.
@@ -152,6 +151,35 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             return false;
         }
 
+        /// <inheritdoc />
+        public IEnumerable<ContentFile> GetAllContentFiles() {
+            var contentFiles = this.Children.OfType<ContentFile>().ToList();
+            foreach (var child in this.Children.OfType<IContentDirectory>()) {
+                contentFiles.AddRange(child.GetAllContentFiles());
+            }
+
+            return contentFiles;
+        }
+
+        /// <inheritdoc />
+        public virtual void LoadChildDirectories(IFileSystemService fileSystemService) {
+            var currentDirectoryPath = this.GetFullPath();
+
+            if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
+                var directories = fileSystemService.GetDirectories(currentDirectoryPath);
+
+                foreach (var directory in directories) {
+                    this.LoadDirectory(fileSystemService, directory);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool RemoveChild(IContentNode node) {
+            node.PathChanged -= this.Child_PathChanged;
+            return this._children.Remove(node);
+        }
+
 
         /// <inheritdoc />
         public IContentNode TryFindNode(string[] splitContentPath) {
@@ -185,35 +213,6 @@ namespace Macabresoft.Macabre2D.UI.Common.Models.Content {
             }
 
             return file != null;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<ContentFile> GetAllContentFiles() {
-            var contentFiles = this.Children.OfType<ContentFile>().ToList();
-            foreach (var child in this.Children.OfType<IContentDirectory>()) {
-                contentFiles.AddRange(child.GetAllContentFiles());
-            }
-
-            return contentFiles;
-        }
-
-        /// <inheritdoc />
-        public virtual void LoadChildDirectories(IFileSystemService fileSystemService) {
-            var currentDirectoryPath = this.GetFullPath();
-
-            if (fileSystemService.DoesDirectoryExist(currentDirectoryPath)) {
-                var directories = fileSystemService.GetDirectories(currentDirectoryPath);
-
-                foreach (var directory in directories) {
-                    this.LoadDirectory(fileSystemService, directory);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public bool RemoveChild(IContentNode node) {
-            node.PathChanged -= this.Child_PathChanged;
-            return this._children.Remove(node);
         }
 
         /// <inheritdoc />

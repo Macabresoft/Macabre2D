@@ -1,13 +1,13 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
+    using Macabresoft.Macabre2D.UI.Common;
     using Macabresoft.Macabre2D.UI.Common.Mappers;
-    using Macabresoft.Macabre2D.UI.Common.Services;
     using Macabresoft.Macabre2D.UI.Editor.Mappers;
     using Macabresoft.Macabre2D.UI.Editor.Services;
     using Unity;
     using Unity.Lifetime;
 
     /// <summary>
-    /// Registers required types to the <see cref="IUnityContainer"/>.
+    /// Registers required types to the <see cref="IUnityContainer" />.
     /// </summary>
     public static class Registrar {
         /// <summary>
