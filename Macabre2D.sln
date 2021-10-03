@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.Samples.AvaloniaW
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{286A8E80-F4CC-4212-B9BD-54FCC61B7F8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.ProjectEditor", "UI\ProjectEditor\Macabre2D.UI.ProjectEditor.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Macabre2D.UI.Editor", "UI\Editor\Macabre2D.UI.Editor.csproj", "{8F47C67E-BCA2-4131-8C58-C0BA7EC8E734}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{A707DA94-5554-4B3F-9E19-559D9EA577E9}"
 EndProject

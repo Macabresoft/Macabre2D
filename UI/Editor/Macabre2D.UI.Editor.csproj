@@ -1,0 +1,155 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Macabresoft.Macabre2D.UI.Editor</RootNamespace>
+    <LangVersion>9</LangVersion>
+    <PackageId>Macabre2D.UI.Editor</PackageId>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\..\bin\$(Configuration)</OutputPath>
+    <AssemblyName>Macabre2D.UI.Editor</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\PublicSans-Bold.otf" />
+    <EmbeddedResource Include="Assets\PublicSans-BoldItalic.otf" />
+    <EmbeddedResource Include="Assets\PublicSans-Italic.otf" />
+    <EmbeddedResource Include="Assets\PublicSans-Regular.otf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.7" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.7" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.7" />
+    <PackageReference Include="Macabresoft.Core" Version="1.0.9" />
+    <PackageReference Include="Unity" Version="5.11.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
+    <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
+    <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\Dialogs\ContentSelectionDialog.axaml.cs">
+      <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\ColorEditor.axaml.cs">
+      <DependentUpon>ColorEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ColorSlider.axaml.cs">
+      <DependentUpon>ColorSlider.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Assets\AssetTreeView.axaml.cs">
+      <DependentUpon>SceneTreeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\WarningDialog.axaml.cs">
+      <DependentUpon>WarningDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\YesNoCancelDialog.axaml.cs">
+      <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueCollectionsControl.axaml.cs">
+      <DependentUpon>EntityEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SystemsView.axaml.cs">
+      <DependentUpon>SystemsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SceneTreeView.axaml.cs">
+      <DependentUpon>SceneView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SceneEditorView.axaml.cs">
+      <DependentUpon>SceneEditorView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ContentTreeView.axaml.cs">
+      <DependentUpon>ContentTreeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\Icon.axaml.cs">
+      <DependentUpon>Icon.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\LicenseDialog.axaml.cs">
+      <DependentUpon>LicenseDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueInfo\ContentFileInfoControl.axaml.cs">
+      <DependentUpon>Vector2Editor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueInfo\ContentDirectoryInfoControl.axaml.cs">
+      <DependentUpon>ContentDirectoryInfoControl.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueInfo\SpriteSheetInfoControl.axaml.cs">
+      <DependentUpon>SpriteSheetInfoControl.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\ColliderEditor.axaml.cs">
+      <DependentUpon>ColliderEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\SpriteReferenceEditor.axaml.cs">
+      <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\FilteredContentTree.axaml.cs">
+      <DependentUpon>FilteredContentTree.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\SpriteSelectionDialog.axaml.cs">
+      <DependentUpon>SpriteSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AutoTileSetCollectionEditor.axaml.cs">
+      <DependentUpon>AutoTileSetsEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\BaseDialog.axaml.cs">
+      <DependentUpon>BaseDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AutoTileSetEditor.axaml.cs">
+      <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\SpriteAnimationCollectionEditor.axaml.cs">
+      <DependentUpon>SpriteAnimationCollectionEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\SpriteAnimationEditor.axaml.cs">
+      <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\SpriteSheetAssetSelectionDialog.axaml.cs">
+      <DependentUpon>SpriteSheetAssetSelectionDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\SpriteAnimationEditorDialog.axaml.cs">
+      <DependentUpon>SpriteAnimationEditorDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AudioClipEditor.axaml.cs">
+      <DependentUpon>AudioClipEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\AssetGuidEditor.axaml.cs">
+      <DependentUpon>AssetReferenceEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ValueEditors\Framework\CollisionMapEditor.axaml.cs">
+      <DependentUpon>CollisionMapEditor.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueCollectionsControl">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Visible">
+        <Grid DataContext="{Binding $parent[local:ValueCollectionsControl]}">
+            <Design.DataContext>
+                <local:ValueCollectionsControl />
+            </Design.DataContext>
+            <ItemsControl Items="{Binding Collections}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:GroupBox Header="{Binding Name}"
+                                        Margin="{StaticResource StandardMarginBottom}">
+                            <ItemsControl Items="{Binding ValueControls}" />
+                        </local:GroupBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsBusy}"/>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

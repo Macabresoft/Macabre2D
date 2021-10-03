@@ -1,0 +1,34 @@
+<controls:ValueControl xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:content="clr-namespace:Macabresoft.Macabre2D.UI.Common.Models.Content;assembly=Macabre2D.UI.Common"
+                       xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo"
+                       x:TypeArguments="content:ContentDirectory"
+                       x:Class="Macabresoft.Macabre2D.UI.Editor.Controls.ValueInfo.ContentDirectoryInfoControl">
+    <Grid RowDefinitions="Auto, Auto"
+          ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:ContentDirectoryInfoControl]}">
+        <Design.DataContext>
+            <local:ContentDirectoryInfoControl />
+        </Design.DataContext>
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="Created" />
+
+        <TextBox Grid.Row="0"
+                 Grid.Column="1"
+                 IsReadOnly="True"
+                 Text="{Binding DirectoryInfo.CreationTime}" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="Last Edited" />
+
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 IsReadOnly="True"
+                 Text="{Binding DirectoryInfo.LastWriteTime}" />
+    </Grid>
+</controls:ValueControl>

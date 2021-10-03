@@ -1,0 +1,66 @@
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
+        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.LicenseDialog"
+        Title="Licenses"
+        VectorIcon="{StaticResource LicenseIcon}"
+        Height="1024"
+        Width="768"
+        SystemDecorations="Full">
+    <Grid Margin="{StaticResource StandardMarginAll}"
+          RowDefinitions="Auto, *, Auto"
+          DataContext="{Binding $parent[local:LicenseDialog]}">
+        <Design.DataContext>
+            <local:LicenseDialog />
+        </Design.DataContext>
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, Auto, Auto">
+            <AutoCompleteBox Grid.Column="0"
+                             Items="{Binding Licenses}"
+                             ValueMemberBinding="{Binding Product}"
+                             FilterMode="Contains"
+                             Watermark="Filter..."
+                             TextChanged="AutoCompleteBox_OnTextChanged" />
+
+            <Button Grid.Column="1"
+                    Classes="Icon"
+                    Command="{Binding ExpandCommand}"
+                    ToolTip.Tip="Expand all licenses">
+                <controls:Icon Content="{StaticResource ExpandIcon}" />
+            </Button>
+
+            <Button Grid.Column="2"
+                    Classes="Icon"
+                    Command="{Binding CollapseCommand}"
+                    ToolTip.Tip="Collapse all licenses">
+                <controls:Icon Content="{StaticResource CollapseIcon}" />
+            </Button>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="{StaticResource StandardMarginAll}">
+            <ItemsControl Items="{Binding FilteredLicenses}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:GroupBox Header="{Binding Product}"
+                                           ShowContent="{Binding IsExpanded}">
+                            <TextBlock TextWrapping="Wrap"
+                                       Text="{Binding License}"
+                                       Margin="{StaticResource StandardMarginVertical}" />
+                        </controls:GroupBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Button Grid.Row="2"
+                Content="OK"
+                Command="{Binding OkCommand}"
+                HorizontalAlignment="Right"
+                IsDefault="True" />
+    </Grid>
+</local:BaseDialog>

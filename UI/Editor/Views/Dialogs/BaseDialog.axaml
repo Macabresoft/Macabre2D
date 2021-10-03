@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+        xmlns:root="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.BaseDialog"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        ExtendClientAreaToDecorationsHint="{x:Static root:App.ShowNonNativeMenu}">
+    <Window.Template>
+        <ControlTemplate>
+            <Panel>
+                <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
+                <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+                <VisualLayerManager>
+                    <VisualLayerManager.ChromeOverlayLayer>
+                        <TitleBar />
+                    </VisualLayerManager.ChromeOverlayLayer>
+
+                    <Grid RowDefinitions="Auto, *">
+                        <Grid Grid.Row="0"
+                              Margin="{StaticResource StandardMarginAll}"
+                              ColumnDefinitions="Auto, Auto, *"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Top">
+                            <controls:Icon Grid.Column="0"
+                                           IsVisible="{x:Static root:App.ShowNonNativeMenu}"
+                                           IsHitTestVisible="False"
+                                           Content="{TemplateBinding VectorIcon}"
+                                           Margin="{StaticResource StandardMarginAll}" />
+
+                            <ContentPresenter Grid.Column="1"
+                                              Content="{TemplateBinding Menu}" />
+                            
+                            <TextBlock Grid.Column="0"
+                                       Grid.ColumnSpan="3"
+                                       IsVisible="{x:Static root:App.ShowNonNativeMenu}"
+                                       IsHitTestVisible="False"
+                                       Margin="{StaticResource StandardMarginAll}"
+                                       Text="{TemplateBinding Title}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <ContentPresenter Grid.Row="1"
+                                          Margin="{StaticResource StandardMarginAll}"
+                                          Content="{TemplateBinding Content}" />
+                    </Grid>
+                </VisualLayerManager>
+            </Panel>
+        </ControlTemplate>
+    </Window.Template>
+</Window>

@@ -1,0 +1,114 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+             xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+             xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.Common.MonoGame;assembly=Macabre2D.UI.Common"
+             xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels;assembly=Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.Views.GizmoSelectionView">
+    <UserControl.Resources>
+        <converters:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top">
+        <Design.DataContext>
+            <viewModels:GizmoSelectionViewModel />
+        </Design.DataContext>
+
+        <Border Classes="Card"
+                Margin="{StaticResource StandardMarginAll}">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
+                              CommandParameter="{x:Static monoGame:GizmoKind.Selector}"
+                              Classes="Icon"
+                              ToolTip.Tip="Shows the selected entity's position">
+                    <ToggleButton.IsChecked>
+                        <Binding Path="EditorService.SelectedGizmo"
+                                 Converter="{StaticResource GizmoKindToBoolConverter}"
+                                 ConverterParameter="{x:Static monoGame:GizmoKind.Selector}"
+                                 Mode="OneWay"
+                                 TargetNullValue="False" />
+                    </ToggleButton.IsChecked>
+
+                    <controls:Icon Content="{StaticResource SelectIcon}" />
+                </ToggleButton>
+                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
+                              CommandParameter="{x:Static monoGame:GizmoKind.Translation}"
+                              Classes="Icon"
+                              ToolTip.Tip="Alter the position of the selected entity">
+                    <ToggleButton.IsChecked>
+                        <Binding Path="EditorService.SelectedGizmo"
+                                 Converter="{StaticResource GizmoKindToBoolConverter}"
+                                 ConverterParameter="{x:Static monoGame:GizmoKind.Translation}"
+                                 Mode="OneWay"
+                                 TargetNullValue="False" />
+                    </ToggleButton.IsChecked>
+
+                    <controls:Icon Content="{StaticResource TranslateIcon}" />
+                </ToggleButton>
+                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
+                              CommandParameter="{x:Static monoGame:GizmoKind.Scale}"
+                              Classes="Icon"
+                              ToolTip.Tip="Alter the scale of the selected entity">
+                    <ToggleButton.IsChecked>
+                        <Binding Path="EditorService.SelectedGizmo"
+                                 Converter="{StaticResource GizmoKindToBoolConverter}"
+                                 ConverterParameter="{x:Static monoGame:GizmoKind.Scale}"
+                                 Mode="OneWay"
+                                 TargetNullValue="False" />
+                    </ToggleButton.IsChecked>
+
+                    <controls:Icon Content="{StaticResource ScaleIcon}" />
+                </ToggleButton>
+                
+                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
+                              CommandParameter="{x:Static monoGame:GizmoKind.Rotation}"
+                              Classes="Icon"
+                              IsVisible="{Binding IsRotatable}"
+                              ToolTip.Tip="Alter the rotation of the selected entity">
+                    <ToggleButton.IsChecked>
+                        <Binding Path="EditorService.SelectedGizmo"
+                                 Converter="{StaticResource GizmoKindToBoolConverter}"
+                                 ConverterParameter="{x:Static monoGame:GizmoKind.Rotation}"
+                                 Mode="OneWay"
+                                 TargetNullValue="False" />
+                    </ToggleButton.IsChecked>
+
+                    <controls:Icon Content="{StaticResource RotateIcon}" />
+                </ToggleButton>
+                
+                <ToggleButton Command="{Binding SetSelectedGizmoCommand}"
+                              CommandParameter="{x:Static monoGame:GizmoKind.Tile}"
+                              Classes="Icon"
+                              IsVisible="{Binding IsTileable}"
+                              ToolTip.Tip="Edit the active tiles of the selected entity">
+                    <ToggleButton.IsChecked>
+                        <Binding Path="EditorService.SelectedGizmo"
+                                 Converter="{StaticResource GizmoKindToBoolConverter}"
+                                 ConverterParameter="{x:Static monoGame:GizmoKind.Tile}"
+                                 Mode="OneWay"
+                                 TargetNullValue="False" />
+                    </ToggleButton.IsChecked>
+
+                    <controls:Icon Content="{StaticResource TileIcon}" />
+                </ToggleButton>
+            </StackPanel>
+        </Border>
+        
+        <Border Classes="Card"
+                Margin="{StaticResource StandardMarginAll}">
+            <StackPanel Orientation="Horizontal">
+                <Button Command="{Binding EditorService.RequestCenterCameraCommand}"
+                        Classes="Icon"
+                        ToolTip.Tip="Centers the editor camera on (0, 0) in the scene.">
+                    <controls:Icon Content="{StaticResource CameraIcon}" />
+                </Button>
+                <Button Command="{Binding EditorService.RequestFocusCommand}"
+                        Classes="Icon"
+                        ToolTip.Tip="Focuses the editor camera on the currently selected entity.">
+                    <controls:Icon Content="{StaticResource FocusIcon}" />
+                </Button>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

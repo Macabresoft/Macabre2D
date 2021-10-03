@@ -1,0 +1,95 @@
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Views.Dialogs"
+                  xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Editor.Controls"
+                  xmlns:converters="clr-namespace:Macabresoft.Macabre2D.UI.Common.Converters;assembly=Macabre2D.UI.Common"
+                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                  xmlns:viewModels="clr-namespace:Macabresoft.Macabre2D.UI.Common.ViewModels.Dialogs;assembly=Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SpriteSheetAssetSelectionDialog"
+                  Height="768"
+                  Width="1024"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  Title="Make a Selection"
+                  VectorIcon="{StaticResource SpriteSheetIcon}">
+    <local:BaseDialog.Resources>
+        <converters:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+    </local:BaseDialog.Resources>
+    <Design.DataContext>
+        <viewModels:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
+    </Design.DataContext>
+    <Grid RowDefinitions="*, Auto"
+          ColumnDefinitions="0.4*, 0.6*"
+          Margin="{StaticResource StandardMarginAll}">
+
+        <controls:FilteredContentTree Grid.Row="0"
+                                      Grid.Column="0"
+                                      Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                      SelectedItem="{Binding SelectedContentNode}"
+                                      Margin="{StaticResource StandardMarginAll}" />
+
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              RowDefinitions="Auto, *">
+            <controls:ThumbnailSizeToggle Grid.Row="0"
+                                          HorizontalAlignment="Right"
+                                          SelectedSize="{Binding SelectedThumbnailSize}" />
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Visible">
+                <ItemsControl Items="{Binding SpriteSheets}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:GroupBox Header="{Binding Name}">
+                                <Grid ColumnDefinitions="Auto, *"
+                                      Margin="{StaticResource StandardMarginVertical}">
+                                    <Image Source="{Binding Image}"
+                                           MaxWidth="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           MaxHeight="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedThumbnailSize, Converter={StaticResource ThumbnailSizeConverter}}"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="{StaticResource StandardMarginRight}">
+                                        <ToolTip.Tip>
+                                            <Image Source="{Binding Image}"
+                                                   MaxWidth="512"
+                                                   MaxHeight="512" />
+                                        </ToolTip.Tip>
+                                    </Image>
+
+                                    <ListBox Grid.Column="1"
+                                             Items="{Binding Assets}"
+                                             SelectedItem="{Binding $parent[local:SpriteSheetAssetSelectionDialog].DataContext.SelectedAsset}"
+                                             Margin="{StaticResource StandardMarginLeft}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}"
+                                                           HorizontalAlignment="Stretch" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
+                            </controls:GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</local:BaseDialog>
