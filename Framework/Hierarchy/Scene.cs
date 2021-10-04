@@ -45,19 +45,24 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the systems.
         /// </summary>
         /// <value>The systems.</value>
-        IReadOnlyCollection<IUpdateableSystem> Systems => new IUpdateableSystem[0];
+        IReadOnlyCollection<IUpdateableSystem> Systems => Array.Empty<IUpdateableSystem>();
 
         /// <summary>
         /// Gets the updateable entities.
         /// </summary>
         /// <value>The updateable entities.</value>
-        IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => new IUpdateableEntity[0];
+        IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
 
         /// <summary>
         /// Gets or sets the color of the background.
         /// </summary>
         /// <value>The color of the background.</value>
         Color BackgroundColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version of this scene.
+        /// </summary>
+        Version Version { get; set; }
 
         /// <summary>
         /// Adds the system.
@@ -176,6 +181,7 @@ namespace Macabresoft.Macabre2D.Framework {
         private Color _backgroundColor = DefinedColors.MacabresoftBlack;
         private bool _isBusy;
         private bool _isInitialized;
+        private Version _version = new(0, 0, 0, 0);
 
         /// <inheritdoc />
         public IReadOnlyCollection<ICamera> Cameras => this._cameras;
@@ -204,6 +210,13 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         public IGame Game { get; private set; } = BaseGame.Empty;
+
+        /// <inheritdoc />
+        [DataMember]
+        public Version Version {
+            get => this._version;
+            set => this.Set(ref this._version, value);
+        }
 
         /// <inheritdoc />
         public T AddSystem<T>() where T : IUpdateableSystem, new() {
@@ -373,8 +386,11 @@ namespace Macabresoft.Macabre2D.Framework {
             }
 
             /// <inheritdoc />
+            public Version Version { get; set; } = new();
+
+            /// <inheritdoc />
             public T AddSystem<T>() where T : IUpdateableSystem, new() {
-                return new();
+                return new T();
             }
 
             /// <inheritdoc />
@@ -404,7 +420,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
             /// <inheritdoc />
             public T ResolveDependency<T>() where T : new() {
-                return new();
+                return new T();
             }
 
             /// <inheritdoc />

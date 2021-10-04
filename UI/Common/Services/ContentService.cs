@@ -71,6 +71,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
             foreach (var extension in AudioClip.ValidFileExtensions) {
                 FileExtensionToAssetType.Add(extension, typeof(AudioClip));
             }
+            
+            FileExtensionToAssetType.Add(".fx", typeof(Shader));
         }
 
         /// <summary>

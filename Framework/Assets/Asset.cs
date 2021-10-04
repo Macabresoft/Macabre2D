@@ -69,6 +69,7 @@ namespace Macabresoft.Macabre2D.Framework {
 
         /// <inheritdoc />
         [DataMember]
+        [EditorExclude]
         public Guid ContentId { get; private set; }
 
         /// <inheritdoc />

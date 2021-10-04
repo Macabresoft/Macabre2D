@@ -15,8 +15,8 @@ namespace Macabresoft.Macabre2D.Framework {
     public sealed class Camera : Entity, ICamera {
         private readonly ResettableLazy<BoundingArea> _boundingArea;
 
-        [DataMember]
-        private readonly AssetReference<Shader> _shaderReference = new();
+        [DataMember(Name = "Shader")]
+        private readonly ShaderReference _shaderReference = new();
 
         private Layers _layersToRender = ~Layers.None;
         private int _renderOrder;
@@ -45,11 +45,11 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Name = "Layers to Render")]
         public Layers LayersToRender {
             get => this._layersToRender;
-
             set => this.Set(ref this._layersToRender, value);
         }
 
         /// <inheritdoc />
+        [DataMember]
         public int RenderOrder {
             get => this._renderOrder;
             set => this.Set(ref this._renderOrder, value, true);
@@ -259,7 +259,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         private Vector2 CreateSize() {
-            return new(this.Scene.Game.ViewportSize.X, this.Scene.Game.ViewportSize.Y);
+            return new Vector2(this.Scene.Game.ViewportSize.X, this.Scene.Game.ViewportSize.Y);
         }
 
         private void Game_ViewportSizeChanged(object? sender, Point e) {

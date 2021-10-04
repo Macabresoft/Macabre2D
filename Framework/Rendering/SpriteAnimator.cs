@@ -161,6 +161,9 @@ namespace Macabresoft.Macabre2D.Framework {
                     if (step != null) {
                         this._currentSpriteIndex = step.SpriteIndex;
                     }
+                    else {
+                        this._currentAnimation = null;
+                    }
                 }
 
                 if (this._currentAnimation != null) {
