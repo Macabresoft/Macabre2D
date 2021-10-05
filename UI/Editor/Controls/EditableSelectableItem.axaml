@@ -8,20 +8,15 @@
                                    RequireAllTrue="True" />
     </UserControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
-          HorizontalAlignment="Stretch"
-          DataContext="{Binding $parent[local:EditableSelectableItem]}">
-        <Design.DataContext>
-            <local:EditableSelectableItem />
-        </Design.DataContext>
-
+          HorizontalAlignment="Stretch">
         <local:Icon Grid.Column="0"
-                    Content="{Binding Icon}"
-                    IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Content="{Binding  $parent[local:EditableSelectableItem].Icon}"
+                    IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                     Margin="{StaticResource StandardMarginRight}"
-                    Foreground="{Binding IconForeground}" />
+                    Foreground="{Binding $parent[local:EditableSelectableItem].IconForeground}" />
 
         <TextBlock Grid.Column="1"
-                   Text="{Binding Text}"
+                   Text="{Binding $parent[local:EditableSelectableItem].Text}"
                    IsVisible="{Binding !#_editableTextBox.IsVisible}"
                    HorizontalAlignment="Stretch"
                    Background="Transparent"
@@ -38,7 +33,7 @@
             <TextBox.IsVisible>
                 <MultiBinding Converter="{StaticResource MultiBoolConverter}">
                     <Binding Path="$parent[ISelectable].IsSelected" />
-                    <Binding Path="IsEditing" />
+                    <Binding Path="$parent[local:EditableSelectableItem].IsEditing" />
                 </MultiBinding>
             </TextBox.IsVisible>
         </TextBox>
