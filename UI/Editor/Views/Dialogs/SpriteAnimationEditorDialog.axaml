@@ -146,24 +146,9 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
                                        Classes="ValueEditorLabel"
-                                       Text="Sprite Index" />
-
-                            <NumericUpDown Grid.Row="0"
-                                           Grid.Column="1"
-                                           ValueChanged="SpriteIndex_OnValueChanged"
-                                           Value="{Binding SpriteIndex, Mode=OneWay}"
-                                           Maximum="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.MaxIndex}"
-                                           Minimum="0"
-                                           VerticalAlignment="Top"
-                                           HorizontalAlignment="Left"
-                                           ToolTip.Tip="Adjust the sprite index" />
-
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       Classes="ValueEditorLabel"
                                        Text="Frames" />
 
-                            <NumericUpDown Grid.Row="1"
+                            <NumericUpDown Grid.Row="0"
                                            Grid.Column="1"
                                            ValueChanged="Frames_OnValueChanged"
                                            Value="{Binding Frames, Mode=OneWay}"
@@ -172,6 +157,23 @@
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Left"
                                            ToolTip.Tip="Adjust the number of frames for this step" />
+                            
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Classes="ValueEditorLabel"
+                                       Text="Sprite Index"
+                                       IsVisible="{Binding SpriteIndex, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <NumericUpDown Grid.Row="1"
+                                           Grid.Column="1"
+                                           ValueChanged="SpriteIndex_OnValueChanged"
+                                           Value="{Binding SpriteIndex, Mode=OneWay}"
+                                           Maximum="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.MaxIndex}"
+                                           Minimum="0"
+                                           VerticalAlignment="Top"
+                                           HorizontalAlignment="Left"
+                                           IsVisible="{Binding SpriteIndex, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                           ToolTip.Tip="Adjust the sprite index" />
                         </Grid>
                     </Grid>
                 </DataTemplate>

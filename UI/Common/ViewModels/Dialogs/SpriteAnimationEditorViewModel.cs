@@ -203,7 +203,7 @@
         /// <param name="step">The step.</param>
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
-        public void CommitSpriteIndex(SpriteAnimationStep step, byte oldValue, byte newValue) {
+        public void CommitSpriteIndex(SpriteAnimationStep step, byte? oldValue, byte? newValue) {
             if (step != null && !this._isSettingSpriteIndexToNull && step.SpriteIndex != newValue && oldValue != newValue) {
                 this._childUndoService.Do(() => { step.SpriteIndex = newValue; }, () => { step.SpriteIndex = oldValue; });
             }

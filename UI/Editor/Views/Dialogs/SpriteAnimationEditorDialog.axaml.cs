@@ -36,9 +36,10 @@
         }
 
         private void SpriteIndex_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
-            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
-                var oldValue = (byte)e.OldValue;
-                var newValue = (byte)e.NewValue;
+            // IsActive gets set to true after all the bindings are first set, so this ignores initial settings.
+            if (this.IsActive && this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
+                var oldValue = (byte?)e.OldValue;
+                var newValue = (byte?)e.NewValue;
                 viewModel.CommitSpriteIndex(step, oldValue, newValue);
             }
         }
