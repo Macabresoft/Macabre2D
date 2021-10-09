@@ -1,25 +1,25 @@
-<local:BaseDialog xmlns="https://github.com/avaloniaui"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.ContentSelectionDialog"
-                  Height="480"
-                  Width="640"
-                  CanResize="False"
-                  ShowInTaskbar="False"
-                  WindowStartupLocation="CenterOwner"
-                  Title="Make a Selection"
-                  VectorIcon="{StaticResource DirectoryIcon}">
+<common:BaseDialog xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                   x:Class="Macabresoft.Macabre2D.UI.Editor.ContentSelectionDialog"
+                   Height="480"
+                   Width="640"
+                   CanResize="False"
+                   ShowInTaskbar="False"
+                   WindowStartupLocation="CenterOwner"
+                   Title="Make a Selection"
+                   VectorIcon="{StaticResource DirectoryIcon}">
     <Design.DataContext>
-        <common:ContentSelectionViewModel />
+        <local:ContentSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="*, Auto">
 
-        <local:FilteredContentTree Grid.Row="0"
-                                   Root="{Binding RootContentDirectory, Mode=OneTime}"
-                                   SelectedItem="{Binding SelectedContentNode}"
-                                   Margin="{StaticResource StandardMarginAll}" />
+        <common:FilteredContentTree Grid.Row="0"
+                                    Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                    SelectedItem="{Binding SelectedContentNode}"
+                                    Margin="{StaticResource StandardMarginAll}" />
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
@@ -34,4 +34,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</local:BaseDialog>
+</common:BaseDialog>

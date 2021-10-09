@@ -4,12 +4,12 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectView">
     <Design.DataContext>
-        <common:ProjectViewModel />
+        <local:ProjectViewModel />
     </Design.DataContext>
     <Border Classes="Card"
             Margin="{StaticResource StandardMarginLeftTopBottom}">
-        <local:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                       Collections="{Binding ProjectService.Editors}"
-                                       IsBusy="{Binding ProjectService.IsBusy}" />
+        <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                                        Collections="{Binding ProjectService.Editors}"
+                                        IsBusy="{Binding ProjectService.IsBusy}" />
     </Border>
 </UserControl>

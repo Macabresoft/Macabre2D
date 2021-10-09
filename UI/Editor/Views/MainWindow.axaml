@@ -4,11 +4,11 @@
         xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
-        ExtendClientAreaToDecorationsHint="{x:Static local:App.ShowNonNativeMenu}"
+        ExtendClientAreaToDecorationsHint="{x:Static common:WindowHelper.ShowNonNativeMenu}"
         WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
     <Design.DataContext>
-        <common:MainWindowViewModel />
+        <local:MainWindowViewModel />
     </Design.DataContext>
     <Window.Resources>
         <common:EqualityConverter x:Key="EqualityConverter" />
@@ -67,7 +67,7 @@
               Grid.Column="0"
               Grid.ColumnSpan="3"
               ColumnDefinitions="Auto, Auto, *"
-              IsVisible="{x:Static local:App.ShowNonNativeMenu}">
+              IsVisible="{x:Static common:WindowHelper.ShowNonNativeMenu}">
             <Border Grid.ColumnSpan="3"
                     HorizontalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
@@ -80,7 +80,7 @@
                    Width="24"
                    Height="24"
                    Margin="{StaticResource StandardMarginHorizontal}"
-                   Source="/Assets/icon.ico" />
+                   Source="avares://Macabre2D.UI.Common/Assets/icon.ico" />
 
             <Menu Grid.Column="1"
                   HorizontalAlignment="Left"

@@ -1,45 +1,45 @@
-<local:BaseDialog xmlns="https://github.com/avaloniaui"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetAssetSelectionDialog"
-                  Height="768"
-                  Width="1024"
-                  CanResize="False"
-                  ShowInTaskbar="False"
-                  WindowStartupLocation="CenterOwner"
-                  Title="Make a Selection"
-                  VectorIcon="{StaticResource SpriteSheetIcon}">
-    <local:BaseDialog.Resources>
+<common:BaseDialog xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                   xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                   x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetAssetSelectionDialog"
+                   Height="768"
+                   Width="1024"
+                   CanResize="False"
+                   ShowInTaskbar="False"
+                   WindowStartupLocation="CenterOwner"
+                   Title="Make a Selection"
+                   VectorIcon="{StaticResource SpriteSheetIcon}">
+    <common:BaseDialog.Resources>
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
-    </local:BaseDialog.Resources>
+    </common:BaseDialog.Resources>
     <Design.DataContext>
-        <common:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
+        <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"
           Margin="{StaticResource StandardMarginAll}">
 
-        <local:FilteredContentTree Grid.Row="0"
-                                   Grid.Column="0"
-                                   Root="{Binding RootContentDirectory, Mode=OneTime}"
-                                   SelectedItem="{Binding SelectedContentNode}"
-                                   Margin="{StaticResource StandardMarginAll}" />
+        <common:FilteredContentTree Grid.Row="0"
+                                    Grid.Column="0"
+                                    Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                    SelectedItem="{Binding SelectedContentNode}"
+                                    Margin="{StaticResource StandardMarginAll}" />
 
         <Grid Grid.Row="0"
               Grid.Column="1"
               RowDefinitions="Auto, *">
-            <local:ThumbnailSizeToggle Grid.Row="0"
-                                       HorizontalAlignment="Right"
-                                       SelectedSize="{Binding SelectedThumbnailSize}" />
+            <common:ThumbnailSizeToggle Grid.Row="0"
+                                        HorizontalAlignment="Right"
+                                        SelectedSize="{Binding SelectedThumbnailSize}" />
             <ScrollViewer Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible">
                 <ItemsControl Items="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:GroupBox Header="{Binding Name}">
+                            <common:GroupBox Header="{Binding Name}">
                                 <Grid ColumnDefinitions="Auto, *"
                                       Margin="{StaticResource StandardMarginVertical}">
                                     <Image Source="{Binding Image}"
@@ -68,7 +68,7 @@
                                         </ListBox.ItemTemplate>
                                     </ListBox>
                                 </Grid>
-                            </local:GroupBox>
+                            </common:GroupBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -90,4 +90,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</local:BaseDialog>
+</common:BaseDialog>

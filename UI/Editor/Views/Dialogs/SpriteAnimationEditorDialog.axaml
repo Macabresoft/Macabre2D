@@ -1,18 +1,18 @@
-﻿<local:BaseDialog xmlns="https://github.com/avaloniaui"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                  x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditorDialog"
-                  Width="1024"
-                  Height="768"
-                  Title="Sprite Animation Editor"
-                  VectorIcon="{StaticResource SpriteSheetIcon}">
+﻿<common:BaseDialog xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                   x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditorDialog"
+                   Width="1024"
+                   Height="768"
+                   Title="Sprite Animation Editor"
+                   VectorIcon="{StaticResource SpriteSheetIcon}">
     <Design.DataContext>
-        <common:SpriteAnimationEditorViewModel />
+        <local:SpriteAnimationEditorViewModel />
     </Design.DataContext>
-    <local:BaseDialog.Resources>
+    <common:BaseDialog.Resources>
         <common:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
-    </local:BaseDialog.Resources>
+    </common:BaseDialog.Resources>
     <Grid RowDefinitions="Auto, *, Auto"
           ColumnDefinitions=".35*, Auto, .65*"
           Margin="{StaticResource StandardMarginAll}">
@@ -23,14 +23,14 @@
                     Command="{Binding UndoCommand}"
                     HotKey="Ctrl + Z"
                     ToolTip.Tip="Undo">
-                <local:Icon Content="{StaticResource UndoIcon}" />
+                <common:Icon Content="{StaticResource UndoIcon}" />
             </Button>
 
             <Button Classes="Icon"
                     Command="{Binding RedoCommand}"
                     HotKey="Ctrl + Y"
                     ToolTip.Tip="Redo">
-                <local:Icon Content="{StaticResource RedoIcon}" />
+                <common:Icon Content="{StaticResource RedoIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -51,14 +51,14 @@
                                   ToolTip.Tip="Insert a step after the selected step" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                <local:Icon Content="{StaticResource AddIcon}" />
+                <common:Icon Content="{StaticResource AddIcon}" />
             </Button>
 
             <Button Command="{Binding RemoveCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the step from the animation">
-                <local:Icon Content="{StaticResource RemoveIcon}" />
+                <common:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -67,7 +67,7 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Clear the selected step's sprite assignment"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource EraserIcon}" />
+                <common:Icon Content="{StaticResource EraserIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -76,35 +76,35 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the beginning of the animation"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
+                <common:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveUpCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step up one spot in the list"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronUpIcon}" />
+                <common:Icon Content="{StaticResource ChevronUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveDownCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step down one spot in the list"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDownIcon}" />
+                <common:Icon Content="{StaticResource ChevronDownIcon}" />
             </Button>
 
             <Button Command="{Binding MoveToEndCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the end of the animation"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
+                <common:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
             </Button>
         </StackPanel>
 
-        <local:ThumbnailSizeToggle Grid.Row="0"
-                                   Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   SelectedSize="{Binding ThumbnailSize}" />
+        <common:ThumbnailSizeToggle Grid.Row="0"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    SelectedSize="{Binding ThumbnailSize}" />
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
@@ -157,7 +157,7 @@
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Left"
                                            ToolTip.Tip="Adjust the number of frames for this step" />
-                            
+
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
                                        Classes="ValueEditorLabel"
@@ -188,9 +188,9 @@
                       Grid.Column="2"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
-            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                  SelectedSprite="{Binding SelectedSprite}"
-                                                  ThumbnailSize="{Binding ThumbnailSize}" />
+            <common:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                   SelectedSprite="{Binding SelectedSprite}"
+                                                   ThumbnailSize="{Binding ThumbnailSize}" />
         </ScrollViewer>
 
         <StackPanel Grid.Row="2"
@@ -208,4 +208,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</local:BaseDialog>
+</common:BaseDialog>

@@ -8,31 +8,7 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme Mode="Dark" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Font.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Colors.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Margins.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/BoxShadows.axaml" />
 
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/AutoCompleteBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Border.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Button.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/ButtonSpinner.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/CheckBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/ComboBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/GridSplitter.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Icons.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Image.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/ListBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/ListBoxItem.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/NumericUpDown.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Slider.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/TabItem.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/TextBlock.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/TextBox.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/ToggleButton.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/TreeView.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/TreeViewItem.axaml" />
-        <StyleInclude Source="avares://Macabre2D.UI.Editor/Styles/Window.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Theme.axaml" />
     </Application.Styles>
 </Application>

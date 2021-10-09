@@ -1,0 +1,23 @@
+<local:BaseNumericEditor xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                         xmlns:system="clr-namespace:System;assembly=mscorlib"
+                         x:TypeArguments="system:Single"
+                         x:Class="Macabresoft.Macabre2D.UI.Common.FloatEditor"
+                         UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:FloatEditor]}">
+        <Design.DataContext>
+            <local:FloatEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="{Binding Title}" />
+
+        <TextBox Grid.Column="1"
+                 KeyDown="InputElement_OnKeyDown"
+                 LostFocus="ValueDisplay_OnLostFocus"
+                 Text="{Binding ValueDisplay}" />
+    </Grid>
+</local:BaseNumericEditor>

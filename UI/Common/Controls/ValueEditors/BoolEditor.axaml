@@ -1,0 +1,13 @@
+<local:BaseNumericEditor xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                         xmlns:system="clr-namespace:System;assembly=mscorlib"
+                         x:TypeArguments="system:Boolean"
+                         x:Class="Macabresoft.Macabre2D.UI.Common.BoolEditor">
+    <Design.DataContext>
+        <local:BoolEditor />
+    </Design.DataContext>
+    <CheckBox DataContext="{Binding $parent[local:BoolEditor]}"
+              Content="{Binding Title}"
+              IsChecked="{Binding Value}" />
+</local:BaseNumericEditor>
