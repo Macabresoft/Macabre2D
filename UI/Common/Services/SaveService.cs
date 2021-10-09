@@ -30,7 +30,7 @@
     /// </summary>
     public class SaveService : ReactiveObject, ISaveService {
         private readonly IContentService _contentService;
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
@@ -46,7 +46,7 @@
         /// <param name="undoService">The undo service.</param>
         public SaveService(
             IContentService contentService,
-            IDialogService dialogService,
+            ICommonDialogService dialogService,
             IProjectService projectService,
             ISceneService sceneService,
             IUndoService undoService) {

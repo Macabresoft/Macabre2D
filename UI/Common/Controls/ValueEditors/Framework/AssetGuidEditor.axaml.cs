@@ -7,7 +7,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 
@@ -28,7 +27,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 editor => editor.SelectCommand);
 
         private readonly IAssetManager _assetManager;
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly IUndoService _undoService;
         private Type _assetType;
 
@@ -37,14 +36,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         public AssetGuidEditor() : this(
             Resolver.Resolve<IAssetManager>(),
-            Resolver.Resolve<IDialogService>(),
+            Resolver.Resolve<ICommonDialogService>(),
             Resolver.Resolve<IUndoService>()) {
         }
 
         [InjectionConstructor]
         public AssetGuidEditor(
             IAssetManager assetManager,
-            IDialogService dialogService,
+            ICommonDialogService dialogService,
             IUndoService undoService) {
             this._assetManager = assetManager;
             this._dialogService = dialogService;

@@ -1,6 +1,5 @@
-namespace Macabresoft.Macabre2D.UI.Editor {
+namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
     public class ContentSelectionDialog : BaseDialog {

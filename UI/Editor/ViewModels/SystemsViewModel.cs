@@ -14,7 +14,7 @@
     /// View model for the systems view.
     /// </summary>
     public sealed class SystemsBaseViewModel : BaseViewModel {
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly IUndoService _undoService;
 
@@ -34,7 +34,7 @@
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public SystemsBaseViewModel(
-            IDialogService dialogService,
+            ICommonDialogService dialogService,
             ISceneService sceneService,
             ISystemService systemService,
             IUndoService undoService) {

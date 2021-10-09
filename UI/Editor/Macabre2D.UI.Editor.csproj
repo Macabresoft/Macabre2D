@@ -22,10 +22,6 @@
         <ProjectReference Include="..\Common\Macabre2D.UI.Common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="Views\Dialogs\ContentSelectionDialog.axaml.cs">
-            <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\Assets\AssetTreeView.axaml.cs">
             <DependentUpon>SceneTreeView.axaml</DependentUpon>
             <SubType>Code</SubType>
@@ -57,6 +53,34 @@
         <Compile Update="Views\Dialogs\SpriteAnimationEditorDialog.axaml.cs">
             <DependentUpon>SpriteAnimationEditorDialog.axaml</DependentUpon>
             <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\ShaderEditor.axaml.cs">
+          <DependentUpon>ShaderEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\SpriteAnimationCollectionEditor.axaml.cs">
+          <DependentUpon>SpriteAnimationCollectionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\SpriteAnimationEditor.axaml.cs">
+          <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\SpriteReferenceEditor.axaml.cs">
+          <DependentUpon>SpriteReferenceEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\AudioClipEditor.axaml.cs">
+          <DependentUpon>AudioClipEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\AutoTileSetCollectionEditor.axaml.cs">
+          <DependentUpon>AutoTileSetCollectionEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Controls\ValueEditors\AutoTileSetEditor.axaml.cs">
+          <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
+          <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 </Project>

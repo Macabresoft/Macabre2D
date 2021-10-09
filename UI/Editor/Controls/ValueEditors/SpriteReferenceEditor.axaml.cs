@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.ComponentModel;
     using System.IO;
@@ -11,6 +11,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
+    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -46,7 +47,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 editor => editor.Sprite);
 
         private readonly IAssetManager _assetManager;
-        private readonly IDialogService _dialogService;
+        private readonly ILocalDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly IUndoService _undoService;
@@ -58,7 +59,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         public SpriteReferenceEditor() : this(
             Resolver.Resolve<IAssetManager>(),
-            Resolver.Resolve<IDialogService>(),
+            Resolver.Resolve<ILocalDialogService>(),
             Resolver.Resolve<IFileSystemService>(),
             Resolver.Resolve<IPathService>(),
             Resolver.Resolve<IUndoService>()) {
@@ -67,7 +68,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         [InjectionConstructor]
         public SpriteReferenceEditor(
             IAssetManager assetManager,
-            IDialogService dialogService,
+            ILocalDialogService dialogService,
             IFileSystemService fileSystem,
             IPathService pathService,
             IUndoService undoService) {

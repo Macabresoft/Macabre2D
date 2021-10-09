@@ -13,7 +13,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// The view model for the main window.
     /// </summary>
     public class MainWindowViewModel : UndoBaseViewModel {
-        private readonly IDialogService _dialogService;
+        private readonly ILocalDialogService _dialogService;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
@@ -40,7 +40,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public MainWindowViewModel(
             IContentService contentService,
-            IDialogService dialogService,
+            ILocalDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
             ISaveService saveService,

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Common {
+namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
@@ -6,6 +6,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
+    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -36,7 +37,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 editor => editor.SelectedAnimation,
                 (editor, value) => editor.SelectedAnimation = value);
 
-        private readonly IDialogService _dialogService;
+        private readonly ILocalDialogService _dialogService;
 
         private readonly IUndoService _undoService;
         private SpriteAnimation _selectedAnimation;
@@ -45,7 +46,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         [InjectionConstructor]
-        public SpriteAnimationCollectionEditor(IDialogService dialogService, IUndoService undoService) {
+        public SpriteAnimationCollectionEditor(ILocalDialogService dialogService, IUndoService undoService) {
             this._dialogService = dialogService;
             this._undoService = undoService;
 

@@ -13,7 +13,7 @@
             var undoService = new UndoService();
             var saveService = new SaveService(
                 Substitute.For<IContentService>(),
-                Substitute.For<IDialogService>(),
+                Substitute.For<ICommonDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
                 undoService);
@@ -39,7 +39,7 @@
             var undoService = new UndoService();
             var saveService = new SaveService(
                 Substitute.For<IContentService>(),
-                Substitute.For<IDialogService>(),
+                Substitute.For<ICommonDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
                 undoService);
@@ -70,7 +70,7 @@
             var undoService = new UndoService();
             var saveService = new SaveService(
                 Substitute.For<IContentService>(),
-                Substitute.For<IDialogService>(),
+                Substitute.For<ICommonDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
                 undoService);
@@ -104,7 +104,7 @@
             var undoService = new UndoService();
             var saveService = new SaveService(
                 Substitute.For<IContentService>(),
-                Substitute.For<IDialogService>(),
+                Substitute.For<ICommonDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
                 undoService);
@@ -124,7 +124,7 @@
             var undoService = new UndoService();
             var saveService = new SaveService(
                 Substitute.For<IContentService>(),
-                Substitute.For<IDialogService>(),
+                Substitute.For<ICommonDialogService>(),
                 Substitute.For<IProjectService>(),
                 Substitute.For<ISceneService>(),
                 undoService);

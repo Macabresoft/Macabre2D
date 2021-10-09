@@ -1,0 +1,36 @@
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                  x:Class="Macabresoft.Macabre2D.UI.Common.ContentSelectionDialog"
+                  Height="480"
+                  Width="640"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  Title="Make a Selection"
+                  VectorIcon="{StaticResource DirectoryIcon}">
+    <Design.DataContext>
+        <local:ContentSelectionViewModel />
+    </Design.DataContext>
+    <Grid Margin="{StaticResource StandardMarginAll}"
+          RowDefinitions="*, Auto">
+
+        <local:FilteredContentTree Grid.Row="0"
+                                   Root="{Binding RootContentDirectory, Mode=OneTime}"
+                                   SelectedItem="{Binding SelectedContentNode}"
+                                   Margin="{StaticResource StandardMarginAll}" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="1"
+                    Margin="{StaticResource StandardMarginVertical}">
+            <Button Content="OK"
+                    Command="{Binding OkCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</local:BaseDialog>

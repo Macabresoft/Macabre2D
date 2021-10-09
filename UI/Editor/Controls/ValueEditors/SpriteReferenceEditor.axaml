@@ -1,14 +1,13 @@
-<valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
-                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                                 x:TypeArguments="framework:SpriteReference"
-                                 x:Class="Macabresoft.Macabre2D.UI.Common.SpriteReferenceEditor">
-    <valueEditors:ValueEditorControl.Resources>
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           x:TypeArguments="framework:SpriteReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteReferenceEditor">
+    <common:ValueEditorControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
-    </valueEditors:ValueEditorControl.Resources>
+    </common:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto"
           RowDefinitions="Auto, Auto, Auto"
           DataContext="{Binding $parent[local:SpriteReferenceEditor]}">
@@ -61,7 +60,7 @@
                 Classes="Icon"
                 Command="{Binding SelectSpriteCommand}"
                 ToolTip.Tip="Search for a sprite">
-            <local:Icon Content="{StaticResource ImageSearchIcon}" />
+            <common:Icon Content="{StaticResource ImageSearchIcon}" />
         </Button>
         <Button Grid.Column="4"
                 Grid.Row="1"
@@ -69,7 +68,7 @@
                 Classes="Icon"
                 Command="{Binding ClearSpriteCommand}"
                 ToolTip.Tip="Clear the sprite">
-            <local:Icon Content="{StaticResource EraserIcon}" />
+            <common:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
-</valueEditors:ValueEditorControl>
+</common:ValueEditorControl>

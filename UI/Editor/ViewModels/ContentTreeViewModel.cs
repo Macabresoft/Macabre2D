@@ -14,7 +14,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// A view model for the content tree.
     /// </summary>
     public class ContentTreeBaseViewModel : BaseViewModel {
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
@@ -37,7 +37,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public ContentTreeBaseViewModel(
             IContentService contentService,
-            IDialogService dialogService,
+            ICommonDialogService dialogService,
             IFileSystemService fileSystem,
             ISaveService saveService,
             ISceneService sceneService) {

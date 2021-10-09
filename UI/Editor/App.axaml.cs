@@ -1,9 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
-    using System;
     using Avalonia;
+    using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
-    using Avalonia.Platform;
     using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
@@ -11,14 +10,9 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// The main <see cref="Application" />.
     /// </summary>
     public class App : Application {
-
-
-
-
         /// <inheritdoc />
         public override void Initialize() {
             var container = new UnityContainer()
-                .RegisterMappers()
                 .RegisterServices()
                 .RegisterLibraryServices()
                 .RegisterLibraryTypes()

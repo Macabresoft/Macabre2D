@@ -17,7 +17,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// A view model for the scene view.
     /// </summary>
     public sealed class SceneTreeBaseViewModel : BaseViewModel {
-        private readonly IDialogService _dialogService;
+        private readonly ICommonDialogService _dialogService;
         private readonly ISceneService _sceneService;
         private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
@@ -39,7 +39,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public SceneTreeBaseViewModel(
-            IDialogService dialogService,
+            ICommonDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
             ISceneService sceneService,

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.UI.Editor {
+namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;

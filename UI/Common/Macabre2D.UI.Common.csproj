@@ -39,5 +39,13 @@
         <DependentUpon>TypeSelectionDialog.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Controls\ValueEditors\Framework\AssetGuidEditor.axaml.cs">
+        <DependentUpon>AssetGuidEditor.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Dialogs\ContentSelectionDialog.axaml.cs">
+        <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

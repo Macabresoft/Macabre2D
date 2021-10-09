@@ -8,7 +8,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.Text.RegularExpressions;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common.Mappers;
     using ReactiveUI;
     using Unity;
 
@@ -49,18 +48,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private const string DefaultCategoryNameForInfo = "Info";
         private readonly IAssemblyService _assemblyService;
         private readonly IUnityContainer _container;
-        private readonly IValueEditorTypeMapper _typeMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueControlService" /> class.
         /// </summary>
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="container">The unity container.</param>
-        /// <param name="typeMapper">The value editor type mapper.</param>
-        public ValueControlService(IAssemblyService assemblyService, IUnityContainer container, IValueEditorTypeMapper typeMapper) {
+        public ValueControlService(IAssemblyService assemblyService, IUnityContainer container) {
             this._assemblyService = assemblyService;
             this._container = container;
-            this._typeMapper = typeMapper;
         }
 
         /// <inheritdoc />
@@ -124,26 +120,22 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
             else if (memberType.IsEnum) {
                 if (memberType.GetCustomAttribute<FlagsAttribute>() != null) {
-                    if (this._typeMapper.FlagsEnumEditorType != null) {
-                        var editor = this.CreateValueEditorFromType(this._typeMapper.FlagsEnumEditorType, originalObject, value, memberType, member, propertyPath);
-                        if (editor != null) {
-                            result.Add(editor);
-                        }
+                    var editor = this.CreateValueEditorFromType(typeof(FlagsEnumEditor), originalObject, value, memberType, member, propertyPath);
+                    if (editor != null) {
+                        result.Add(editor);
                     }
                 }
-                else if (this._typeMapper.EnumEditorType != null) {
-                    var editor = this.CreateValueEditorFromType(this._typeMapper.EnumEditorType, originalObject, value, memberType, member, propertyPath);
+                else {
+                    var editor = this.CreateValueEditorFromType(typeof(EnumEditor), originalObject, value, memberType, member, propertyPath);
                     if (editor != null) {
                         result.Add(editor);
                     }
                 }
             }
-            else if (memberType == typeof(Guid)) {
-                if (memberType.GetCustomAttribute<AssetGuidAttribute>() != null && this._typeMapper.AssetReferenceType != null) {
-                    var editor = this.CreateValueEditorFromType(this._typeMapper.AssetReferenceType, originalObject, value, memberType, member, propertyPath);
-                    if (editor != null) {
-                        result.Add(editor);
-                    }
+            else if (memberType == typeof(Guid) && memberType.GetCustomAttribute<AssetGuidAttribute>() != null) {
+                var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), originalObject, value, memberType, member, propertyPath);
+                if (editor != null) {
+                    result.Add(editor);
                 }
             }
             else if (!memberType.IsValueType) {
