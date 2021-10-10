@@ -4,8 +4,7 @@
     /// </summary>
     public enum EditorTabs {
         Entities = 0,
-        Systems = 1,
-        Content = 2,
-        Project = 3
+        Content = 1,
+        Project = 2
     }
 }

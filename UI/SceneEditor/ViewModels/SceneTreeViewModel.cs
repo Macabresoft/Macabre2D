@@ -7,6 +7,7 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Avalonia.Controls;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
@@ -16,59 +17,76 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
     /// <summary>
     /// A view model for the scene view.
     /// </summary>
-    public sealed class SceneTreeBaseViewModel : BaseViewModel {
+    public sealed class SceneTreeViewModel : BaseViewModel {
         private readonly ICommonDialogService _dialogService;
-        private readonly ISceneService _sceneService;
-        private readonly ObservableCollection<IEntity> _treeRoot = new();
         private readonly IUndoService _undoService;
+        private object _selected;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeBaseViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public SceneTreeBaseViewModel() {
+        public SceneTreeViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SceneTreeBaseViewModel" /> class.
+        /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
         /// <param name="sceneService">The scene service.</param>
+        /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
-        public SceneTreeBaseViewModel(
+        public SceneTreeViewModel(
             ICommonDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
             ISceneService sceneService,
+            ISystemService systemService,
             IUndoService undoService) {
             this._dialogService = dialogService;
             this.EditorService = editorService;
             this.EntityService = entityService;
-            this._sceneService = sceneService;
+            this.SceneService = sceneService;
+            this.SystemService = systemService;
             this._undoService = undoService;
-            this.ResetRoot();
-            this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
 
             this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddEntity(x),
-                this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
+                this.WhenAnyValue(x => x.IsEntityContext));
 
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
                 this.RemoveEntity,
                 this.EntityService.WhenAny(x => x.Selected, y => y.Value != null && y.Value.Parent != y.Value));
 
-            this.RenameCommand = ReactiveCommand.Create<string>(
+            this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(
+                async x => await this.AddSystem(x),
+                this.WhenAny(x => x.IsEntityContext, x => !x.Value));
+
+            this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(
+                this.RemoveSystem,
+                this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
+
+            this.RenameEntityCommand = ReactiveCommand.Create<string>(
                 this.RenameEntity,
                 this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
+
+            this.RenameSystemCommand = ReactiveCommand.Create<string>(
+                this.RenameSystem,
+                this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
         }
 
         /// <summary>
         /// Gets a command to add an entity.
         /// </summary>
         public ICommand AddEntityCommand { get; }
+
+        /// <summary>
+        /// Gets a command to add a system.
+        /// </summary>
+        public ICommand AddSystemCommand { get; }
 
         /// <summary>
         /// Gets the editor service.
@@ -81,19 +99,85 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         public IEntityService EntityService { get; }
 
         /// <summary>
+        /// Gets a value indicating whether or not the selection is in an entity context.
+        /// </summary>
+        public bool IsEntityContext => this._selected is IEntity or TreeViewItem { Header: "Entities" };
+
+        /// <summary>
         /// Gets a command to remove an entity.
         /// </summary>
         public ICommand RemoveEntityCommand { get; }
 
         /// <summary>
-        /// Gets a command for renaming an entity.
+        /// Gets a command to remove a system.
         /// </summary>
-        public ICommand RenameCommand { get; }
+        public ICommand RemoveSystemCommand { get; }
 
         /// <summary>
-        /// Gets the root of the scene tree.
+        /// Gets a command for renaming an entity.
         /// </summary>
-        public IReadOnlyCollection<IEntity> Root => this._treeRoot;
+        public ICommand RenameEntityCommand { get; }
+
+        /// <summary>
+        /// Gets a command for renaming a system.
+        /// </summary>
+        public ICommand RenameSystemCommand { get; }
+
+        /// <summary>
+        /// Gets the scene service.
+        /// </summary>
+        public ISceneService SceneService { get; }
+
+        /// <summary>
+        /// Gets the system service.
+        /// </summary>
+        public ISystemService SystemService { get; }
+
+        /// <summary>
+        /// Gets or sets the selected object in the scene tree.
+        /// </summary>
+        public object Selected {
+            get => this._selected;
+            set {
+                this.RaiseAndSetIfChanged(ref this._selected, value);
+
+                switch (this._selected) {
+                    case IUpdateableSystem system:
+                        this.SystemService.Selected = system;
+                        this.EntityService.Selected = null;
+                        break;
+                    case IEntity entity:
+                        this.EntityService.Selected = entity;
+                        this.SystemService.Selected = null;
+                        break;
+                    case TreeViewItem treeViewItem when treeViewItem.Header as string == this.SceneService.CurrentScene?.Name:
+                        this.EntityService.Selected = this.SceneService.CurrentScene;
+                        this.SystemService.Selected = null;
+                        break;
+                    default:
+                        this.EntityService.Selected = null;
+                        this.SystemService.Selected = null;
+                        break;
+                }
+
+                this.RaisePropertyChanged(nameof(this.Editors));
+                this.RaisePropertyChanged(nameof(this.IsEntityContext));
+            }
+        }
+
+        /// <summary>
+        /// Gets the editors.
+        /// </summary>
+        private IReadOnlyCollection<ValueControlCollection> Editors {
+            get {
+                return this._selected switch {
+                    IEntity => this.EntityService.Editors,
+                    IUpdateableSystem => this.SystemService.Editors,
+                    TreeViewItem treeViewItem => treeViewItem.Header as string == this.SceneService.CurrentScene.Name ? this.EntityService.Editors : null,
+                    _ => null
+                };
+            }
+        }
 
         /// <summary>
         /// Moves the source entity to be a child of the target entity.
@@ -118,19 +202,42 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                     child.Name = type.Name;
                 }
 
-                var parent = this.EntityService.Selected;
+                var parent = this.EntityService.Selected ?? this.SceneService.CurrentScene;
 
-                this._undoService.Do(() => {
-                    Dispatcher.UIThread.Post(() => {
-                        parent.AddChild(child);
-                        this.EntityService.Selected = child;
+                if (parent != null) {
+                    this._undoService.Do(() => {
+                        Dispatcher.UIThread.Post(() => {
+                            parent.AddChild(child);
+                            this.Selected = child;
+                        });
+                    }, () => {
+                        Dispatcher.UIThread.Post(() => {
+                            parent.RemoveChild(child);
+                            this.Selected = parent;
+                        });
                     });
-                }, () => {
-                    Dispatcher.UIThread.Post(() => {
-                        parent.RemoveChild(child);
-                        this.EntityService.Selected = parent;
+                }
+            }
+        }
+
+        private async Task AddSystem(Type type) {
+            if (this.SceneService.CurrentScene is IScene scene) {
+                type ??= await this._dialogService.OpenTypeSelectionDialog(this.SystemService.AvailableTypes);
+
+                if (type != null && Activator.CreateInstance(type) is IUpdateableSystem system) {
+                    var originallySelected = this.SystemService.Selected;
+                    this._undoService.Do(() => {
+                        Dispatcher.UIThread.Post(() => {
+                            scene.AddSystem(system);
+                            this.Selected = system;
+                        });
+                    }, () => {
+                        Dispatcher.UIThread.Post(() => {
+                            scene.RemoveSystem(system);
+                            this.Selected = originallySelected;
+                        });
                     });
-                });
+                }
             }
         }
 
@@ -141,19 +248,37 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                    !targetEntity.IsDescendentOf(sourceEntity);
         }
 
-        private void RemoveEntity(IEntity entity) {
-            var parent = entity.Parent;
-            this._undoService.Do(() => {
-                Dispatcher.UIThread.Post(() => {
-                    parent.RemoveChild(entity);
-                    this.EntityService.Selected = null;
+        private void RemoveEntity(object selected) {
+            if (selected is IEntity entity) {
+                var parent = entity.Parent;
+                this._undoService.Do(() => {
+                    Dispatcher.UIThread.Post(() => {
+                        parent.RemoveChild(entity);
+                        this.Selected = null;
+                    });
+                }, () => {
+                    Dispatcher.UIThread.Post(() => {
+                        parent.AddChild(entity);
+                        this.Selected = entity;
+                    });
                 });
-            }, () => {
-                Dispatcher.UIThread.Post(() => {
-                    parent.AddChild(entity);
-                    this.EntityService.Selected = entity;
+            }
+        }
+
+        private void RemoveSystem(object selected) {
+            if (selected is IUpdateableSystem system && this.SceneService.CurrentScene is IScene scene) {
+                this._undoService.Do(() => {
+                    Dispatcher.UIThread.Post(() => {
+                        scene.RemoveSystem(system);
+                        this.Selected = null;
+                    });
+                }, () => {
+                    Dispatcher.UIThread.Post(() => {
+                        scene.AddSystem(system);
+                        this.Selected = system;
+                    });
                 });
-            });
+            }
         }
 
         private void RenameEntity(string updatedName) {
@@ -164,17 +289,12 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
             }
         }
 
-        private void ResetRoot() {
-            this._treeRoot.Clear();
-
-            if (!Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
-                this._treeRoot.Add(this._sceneService.CurrentScene);
-            }
-        }
-
-        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ISceneService.CurrentScene)) {
-                this.ResetRoot();
+        private void RenameSystem(string updatedName) {
+            if (this.SystemService.Selected is IUpdateableSystem system && system.Name != updatedName) {
+                var originalName = system.Name;
+                this._undoService.Do(
+                    () => { Dispatcher.UIThread.Post(() => { system.Name = updatedName; }); },
+                    () => { Dispatcher.UIThread.Post(() => { system.Name = originalName; }); });
             }
         }
     }
