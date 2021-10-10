@@ -14,7 +14,7 @@
             <Grid RowDefinitions="Auto, *, 0">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
-                            IsVisible="{Binding IsEntityContext}">
+                            IsVisible="{Binding SelectionService.IsEntityContext}">
                     <Button Command="{Binding AddEntityCommand}"
                             Classes="Icon"
                             ToolTip.Tip="Add an entity as a child of the selected entity">
@@ -31,7 +31,7 @@
                         <common:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveEntityCommand}"
-                            CommandParameter="{Binding Selected}"
+                            CommandParameter="{Binding SelectionService.ImpliedSelected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected entity and all of its children from the scene">
                         <common:Icon Content="{StaticResource RemoveIcon}" />
@@ -40,7 +40,7 @@
                 
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
-                            IsVisible="{Binding !IsEntityContext}">
+                            IsVisible="{Binding !SelectionService.IsEntityContext}">
                     <Button Command="{Binding AddSystemCommand}"
                             Classes="Icon"
                             ToolTip.Tip="Add a system to the scene">
@@ -57,7 +57,7 @@
                         <common:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveSystemCommand}"
-                            CommandParameter="{Binding Selected}"
+                            CommandParameter="{Binding SelectionService.ImpliedSelected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected system from the scene">
                         <common:Icon Content="{StaticResource RemoveIcon}" />
@@ -66,14 +66,14 @@
 
                 <TreeView Grid.Row="1"
                           Name="_treeView"
-                          SelectedItem="{Binding Selected, Mode=TwoWay}">
+                          SelectedItem="{Binding SelectionService.Selected, Mode=TwoWay}">
                     <TreeView.Styles>
                         <Style Selector="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True" />
                         </Style>
                     </TreeView.Styles>
                     <TreeViewItem Header="{Binding SceneService.CurrentScene.Name}">
-                        <TreeViewItem Header="Systems"
+                        <TreeViewItem Header="{x:Static local:SceneSelectionService.SystemsHeader}"
                                       Items="{Binding SceneService.CurrentScene.Systems}">
                             <TreeViewItem.DataTemplates>
                                 <TreeDataTemplate DataType="framework:IUpdateableSystem">
@@ -100,7 +100,7 @@
                             </TreeViewItem.DataTemplates>
                             </TreeViewItem>
 
-                            <TreeViewItem Header="Entities"
+                            <TreeViewItem Header="{x:Static local:SceneSelectionService.EntitiesHeader}"
                                           Items="{Binding SceneService.CurrentScene.Children}">
                             <TreeViewItem.DataTemplates>
                                 <TreeDataTemplate DataType="framework:IEntity"
@@ -156,7 +156,7 @@
                 Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
             <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                            Collections="{Binding Editors}" />
+                                            Collections="{Binding SelectionService.Editors}" />
 
         </Border>
     </Grid>

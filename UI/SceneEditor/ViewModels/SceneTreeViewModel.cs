@@ -1,13 +1,9 @@
 namespace Macabresoft.Macabre2D.UI.SceneEditor {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.Reflection;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Avalonia.Controls;
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
@@ -35,6 +31,7 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
+        /// <param name="selectionService">The selection service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
@@ -43,19 +40,21 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
             ICommonDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
+            ISceneSelectionService selectionService,
             ISceneService sceneService,
             ISystemService systemService,
             IUndoService undoService) {
             this._dialogService = dialogService;
             this.EditorService = editorService;
             this.EntityService = entityService;
+            this.SelectionService = selectionService;
             this.SceneService = sceneService;
             this.SystemService = systemService;
             this._undoService = undoService;
 
             this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddEntity(x),
-                this.WhenAnyValue(x => x.IsEntityContext));
+                this.SelectionService.WhenAnyValue(x => x.IsEntityContext));
 
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
                 this.RemoveEntity,
@@ -63,7 +62,7 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
 
             this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddSystem(x),
-                this.WhenAny(x => x.IsEntityContext, x => !x.Value));
+                this.SelectionService.WhenAny(x => x.IsEntityContext, x => !x.Value));
 
             this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(
                 this.RemoveSystem,
@@ -99,11 +98,6 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         public IEntityService EntityService { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the selection is in an entity context.
-        /// </summary>
-        public bool IsEntityContext => this._selected is IEntity or TreeViewItem { Header: "Entities" };
-
-        /// <summary>
         /// Gets a command to remove an entity.
         /// </summary>
         public ICommand RemoveEntityCommand { get; }
@@ -129,55 +123,14 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         public ISceneService SceneService { get; }
 
         /// <summary>
+        /// Gets the selection service.
+        /// </summary>
+        public ISceneSelectionService SelectionService { get; }
+
+        /// <summary>
         /// Gets the system service.
         /// </summary>
         public ISystemService SystemService { get; }
-
-        /// <summary>
-        /// Gets or sets the selected object in the scene tree.
-        /// </summary>
-        public object Selected {
-            get => this._selected;
-            set {
-                this.RaiseAndSetIfChanged(ref this._selected, value);
-
-                switch (this._selected) {
-                    case IUpdateableSystem system:
-                        this.SystemService.Selected = system;
-                        this.EntityService.Selected = null;
-                        break;
-                    case IEntity entity:
-                        this.EntityService.Selected = entity;
-                        this.SystemService.Selected = null;
-                        break;
-                    case TreeViewItem treeViewItem when treeViewItem.Header as string == this.SceneService.CurrentScene?.Name:
-                        this.EntityService.Selected = this.SceneService.CurrentScene;
-                        this.SystemService.Selected = null;
-                        break;
-                    default:
-                        this.EntityService.Selected = null;
-                        this.SystemService.Selected = null;
-                        break;
-                }
-
-                this.RaisePropertyChanged(nameof(this.Editors));
-                this.RaisePropertyChanged(nameof(this.IsEntityContext));
-            }
-        }
-
-        /// <summary>
-        /// Gets the editors.
-        /// </summary>
-        private IReadOnlyCollection<ValueControlCollection> Editors {
-            get {
-                return this._selected switch {
-                    IEntity => this.EntityService.Editors,
-                    IUpdateableSystem => this.SystemService.Editors,
-                    TreeViewItem treeViewItem => treeViewItem.Header as string == this.SceneService.CurrentScene.Name ? this.EntityService.Editors : null,
-                    _ => null
-                };
-            }
-        }
 
         /// <summary>
         /// Moves the source entity to be a child of the target entity.
@@ -208,12 +161,12 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                     this._undoService.Do(() => {
                         Dispatcher.UIThread.Post(() => {
                             parent.AddChild(child);
-                            this.Selected = child;
+                            this.SelectionService.Selected = child;
                         });
                     }, () => {
                         Dispatcher.UIThread.Post(() => {
                             parent.RemoveChild(child);
-                            this.Selected = parent;
+                            this.SelectionService.Selected = parent;
                         });
                     });
                 }
@@ -229,12 +182,12 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                     this._undoService.Do(() => {
                         Dispatcher.UIThread.Post(() => {
                             scene.AddSystem(system);
-                            this.Selected = system;
+                            this.SelectionService.Selected = system;
                         });
                     }, () => {
                         Dispatcher.UIThread.Post(() => {
                             scene.RemoveSystem(system);
-                            this.Selected = originallySelected;
+                            this.SelectionService.Selected = originallySelected;
                         });
                     });
                 }
@@ -254,12 +207,12 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         parent.RemoveChild(entity);
-                        this.Selected = null;
+                        this.SelectionService.Selected = null;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         parent.AddChild(entity);
-                        this.Selected = entity;
+                        this.SelectionService.Selected = entity;
                     });
                 });
             }
@@ -270,12 +223,12 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         scene.RemoveSystem(system);
-                        this.Selected = null;
+                        this.SelectionService.Selected = null;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         scene.AddSystem(system);
-                        this.Selected = system;
+                        this.SelectionService.Selected = system;
                     });
                 });
             }
