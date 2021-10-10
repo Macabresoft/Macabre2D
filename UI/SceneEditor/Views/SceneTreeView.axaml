@@ -10,7 +10,7 @@
     <Grid RowDefinitions="0.4*, 0, 0.6*">
         <Border Grid.Row="0"
                 Classes="Card"
-                Margin="{StaticResource StandardMarginLeftTopBottom}">
+                Margin="{DynamicResource StandardMarginLeftTopBottom}">
             <Grid RowDefinitions="Auto, *, 0">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
@@ -28,13 +28,13 @@
                             </ContextMenu>
                         </Button.ContextMenu>
 
-                        <common:Icon Content="{StaticResource AddIcon}" />
+                        <common:Icon Content="{DynamicResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveEntityCommand}"
                             CommandParameter="{Binding SelectionService.ImpliedSelected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                        <common:Icon Content="{StaticResource RemoveIcon}" />
+                        <common:Icon Content="{DynamicResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
                 
@@ -54,13 +54,13 @@
                             </ContextMenu>
                         </Button.ContextMenu>
 
-                        <common:Icon Content="{StaticResource AddIcon}" />
+                        <common:Icon Content="{DynamicResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveSystemCommand}"
                             CommandParameter="{Binding SelectionService.ImpliedSelected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected system from the scene">
-                        <common:Icon Content="{StaticResource RemoveIcon}" />
+                        <common:Icon Content="{DynamicResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
 
@@ -72,13 +72,27 @@
                             <Setter Property="IsExpanded" Value="True" />
                         </Style>
                     </TreeView.Styles>
-                    <TreeViewItem Header="{Binding SceneService.CurrentScene.Name}">
-                        <TreeViewItem Header="{x:Static local:SceneSelectionService.SystemsHeader}"
+                    <TreeViewItem Name="{Binding SceneService.CurrentScene.Name}">
+                        <TreeViewItem.Header>
+                            <common:EditableSelectableItem IsEditable="False"
+                                                           HorizontalAlignment="Stretch"
+                                                           Icon="{DynamicResource SceneIcon}"
+                                                           IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                           Text="{Binding $parent[TreeViewItem].Name}" />
+                        </TreeViewItem.Header>
+                        <TreeViewItem Name="{x:Static local:SceneSelectionService.SystemsHeaderText}"
                                       Items="{Binding SceneService.CurrentScene.Systems}">
+                            <TreeViewItem.Header>
+                                <common:EditableSelectableItem IsEditable="False"
+                                                               HorizontalAlignment="Stretch"
+                                                               Icon="{DynamicResource SystemIcon}"
+                                                               IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                               Text="{Binding $parent[TreeViewItem].Name}" />
+                            </TreeViewItem.Header>
+                            
                             <TreeViewItem.DataTemplates>
                                 <TreeDataTemplate DataType="framework:IUpdateableSystem">
                                     <common:EditableSelectableItem IsEditable="True"
-                                                                   HorizontalAlignment="Stretch"
                                                                    TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameSystemCommand}"
                                                                    Text="{Binding Path=Name, Mode=TwoWay}">
                                         <common:EditableSelectableItem.ContextMenu>
@@ -100,9 +114,15 @@
                             </TreeViewItem.DataTemplates>
                             </TreeViewItem>
 
-                            <TreeViewItem Header="{x:Static local:SceneSelectionService.EntitiesHeader}"
+                            <TreeViewItem Name="{x:Static local:SceneSelectionService.EntitiesHeaderText}"
                                           Items="{Binding SceneService.CurrentScene.Children}">
-                            <TreeViewItem.DataTemplates>
+                                <TreeViewItem.Header>
+                                    <common:EditableSelectableItem IsEditable="False"
+                                                                   Icon="{DynamicResource EntityIcon}"
+                                                                   IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                                   Text="{Binding $parent[TreeViewItem].Name}" />
+                                </TreeViewItem.Header>
+                                <TreeViewItem.DataTemplates>
                                 <TreeDataTemplate DataType="framework:IEntity"
                                                   ItemsSource="{Binding Children}">
                                     <common:EditableSelectableItem IsEditable="True"
@@ -154,8 +174,8 @@
 
         <Border Grid.Row="2"
                 Classes="Card"
-                Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                Margin="{DynamicResource StandardMarginLeftTopBottom}">
+            <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
                                             Collections="{Binding SelectionService.Editors}" />
 
         </Border>

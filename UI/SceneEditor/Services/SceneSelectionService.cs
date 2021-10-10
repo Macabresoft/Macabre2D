@@ -37,12 +37,12 @@
         /// <summary>
         /// The entities header.
         /// </summary>
-        public const string EntitiesHeader = "Entities";
+        public const string EntitiesHeaderText = "Entities";
 
         /// <summary>
         /// The systems header.
         /// </summary>
-        public const string SystemsHeader = "Systems";
+        public const string SystemsHeaderText = "Systems";
 
         private readonly IEntityService _entityService;
         private readonly ISceneService _sceneService;
@@ -69,7 +69,7 @@
                 return this._selected switch {
                     IEntity => this._entityService.Editors,
                     IUpdateableSystem => this._systemService.Editors,
-                    TreeViewItem treeViewItem => treeViewItem.Header as string == this._sceneService.CurrentScene.Name ? this._entityService.Editors : null,
+                    TreeViewItem treeViewItem => treeViewItem.Name == this._sceneService.CurrentScene.Name ? this._entityService.Editors : null,
                     _ => null
                 };
             }
@@ -108,7 +108,7 @@
                         this.IsEntityContext = true;
                         break;
                     case TreeViewItem treeViewItem:
-                        if (treeViewItem.Header as string == EntitiesHeader) {
+                        if (treeViewItem.Name == EntitiesHeaderText) {
                             this.IsEntityContext = true;
                         }
 
