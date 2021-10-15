@@ -8,6 +8,9 @@
     </Design.DataContext>
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <common:IsTypeConverter x:Key="IsTypeConverter" InvertResult="False" />
+        <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
+
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, 0, 0.6*">
@@ -45,11 +48,10 @@
                                     Background="Transparent"
                                     DragDrop.AllowDrop="True">
                                 <common:EditableSelectableItem VerticalAlignment="Center"
-                                                               Icon="{StaticResource DirectoryIcon}"
+                                                               Icon="{StaticResource ProjectIcon}"
                                                                IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                                IsEditable="False"
-                                                               IsFileName="True"
-                                                               Text="{Binding Name}">
+                                                               Text="Project">
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Open Directory"
@@ -183,7 +185,13 @@
             <Grid>
                 <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                 Collections="{Binding ContentService.Editors}"
-                                                IsBusy="{Binding ContentService.IsBusy}" />
+                                                IsBusy="{Binding ContentService.IsBusy}"
+                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"/>
+                
+                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                                                Collections="{Binding ProjectService.Editors}"
+                                                IsBusy="{Binding ProjectService.IsBusy}"
+                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"/>
             </Grid>
         </Border>
     </Grid>

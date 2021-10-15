@@ -141,8 +141,6 @@
                             Initialized="TabControl_OnInitialized"
                             HorizontalAlignment="Center"
                             HorizontalContentAlignment="Center">
-                    <TabItem Header="Project"
-                             Tag="{x:Static models:EditorTabs.Project}" />
                     <TabItem Header="Content"
                              Tag="{x:Static models:EditorTabs.Content}" />
                     <TabItem Header="Entities"
@@ -159,11 +157,6 @@
                 <Panel
                     IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}">
                     <local:ContentTreeView />
-                </Panel>
-
-                <Panel
-                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Project}}">
-                    <local:ProjectView />
                 </Panel>
             </Grid>
         </Grid>

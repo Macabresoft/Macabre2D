@@ -32,6 +32,7 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="fileSystem">The file system.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         [InjectionConstructor]
@@ -39,11 +40,13 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
             IContentService contentService,
             ICommonDialogService dialogService,
             IFileSystemService fileSystem,
+            IProjectService projectService,
             ISaveService saveService,
             ISceneService sceneService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
+            this.ProjectService = projectService;
             this._saveService = saveService;
             this._sceneService = sceneService;
 
@@ -105,6 +108,11 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
         /// Gets a command to open the file explorer to the content's location.
         /// </summary>
         public ICommand OpenContentLocationCommand { get; }
+        
+        /// <summary>
+        /// Gets the project service.
+        /// </summary>
+        public IProjectService ProjectService { get; }
 
         /// <summary>
         /// Gets the remove content command.

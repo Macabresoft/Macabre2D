@@ -16,7 +16,6 @@ namespace Macabresoft.Macabre2D.UI.SceneEditor {
     public sealed class SceneTreeViewModel : BaseViewModel {
         private readonly ICommonDialogService _dialogService;
         private readonly IUndoService _undoService;
-        private object _selected;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
