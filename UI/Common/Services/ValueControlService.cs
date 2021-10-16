@@ -97,7 +97,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 var value = member.MemberInfo.GetValue(owner);
                 var memberType = member.MemberInfo.GetMemberReturnType();
 
-                var editors = this.CreateControlsForMember(originalObject, value, memberType, member, propertyPath);
+                var editors = this.CreateControlsForMember(owner, value, memberType, member, propertyPath);
                 result.AddRange(editors);
             }
 
@@ -105,7 +105,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private ICollection<IValueControl> CreateControlsForMember(
-            object originalObject,
+            object owner,
             object value,
             Type memberType,
             AttributeMemberInfo<DataMemberAttribute> member,
@@ -113,33 +113,33 @@ namespace Macabresoft.Macabre2D.UI.Common {
             var result = new List<IValueControl>();
 
             if (this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType)) is Type memberEditorType) {
-                var editor = this.CreateValueEditorFromType(memberEditorType, originalObject, value, memberType, member, propertyPath);
+                var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
                 if (editor != null) {
                     result.Add(editor);
                 }
             }
             else if (memberType.IsEnum) {
                 if (memberType.GetCustomAttribute<FlagsAttribute>() != null) {
-                    var editor = this.CreateValueEditorFromType(typeof(FlagsEnumEditor), originalObject, value, memberType, member, propertyPath);
+                    var editor = this.CreateValueEditorFromType(typeof(FlagsEnumEditor), owner, value, memberType, member, propertyPath);
                     if (editor != null) {
                         result.Add(editor);
                     }
                 }
                 else {
-                    var editor = this.CreateValueEditorFromType(typeof(EnumEditor), originalObject, value, memberType, member, propertyPath);
+                    var editor = this.CreateValueEditorFromType(typeof(EnumEditor), owner, value, memberType, member, propertyPath);
                     if (editor != null) {
                         result.Add(editor);
                     }
                 }
             }
             else if (memberType == typeof(Guid) && memberType.GetCustomAttribute<AssetGuidAttribute>() != null) {
-                var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), originalObject, value, memberType, member, propertyPath);
+                var editor = this.CreateValueEditorFromType(typeof(AssetGuidEditor), owner, value, memberType, member, propertyPath);
                 if (editor != null) {
                     result.Add(editor);
                 }
             }
             else if (!memberType.IsValueType) {
-                var editors = this.CreateControls(propertyPath, value, originalObject);
+                var editors = this.CreateControls(propertyPath, value, owner);
                 result.AddRange(editors);
             }
 
@@ -148,14 +148,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private IValueEditor CreateValueEditorFromType(
             Type editorType,
-            object originalObject,
+            object owner,
             object value,
             Type memberType,
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
             if (this._container.Resolve(editorType) is IValueEditor editor) {
                 var title = GetTitle(member);
-                editor.Initialize(value, memberType, propertyPath, title, originalObject);
+                editor.Initialize(value, memberType, this.GetPropertyName(propertyPath), title, owner);
                 editor.Category = DefaultCategoryName;
 
                 if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
@@ -180,7 +180,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             return !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
         }
 
-        private bool TryCreateValueInfo(object originalOwner, object value, out IValueControl info) {
+        private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
             info = null;
 
             if (value?.GetType() is Type ownerType) {
@@ -188,7 +188,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
                 if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && this._container.Resolve(controlType) is IValueControl control) {
                     info = control;
-                    control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalOwner);
+                    control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalObject);
 
                     if (Attribute.GetCustomAttribute(ownerType, typeof(DataContractAttribute), false) is DataContractAttribute dataContractAttribute && !string.IsNullOrEmpty(dataContractAttribute.Name)) {
                         control.Category = $"{dataContractAttribute.Name} {DefaultCategoryNameForInfo}";
@@ -200,6 +200,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
 
             return info != null;
+        }
+
+        private string GetPropertyName(string propertyPath) {
+            return !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
         }
     }
 }
