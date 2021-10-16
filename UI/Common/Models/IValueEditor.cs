@@ -20,6 +20,13 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="newValue">The new value.</param>
         void SetValue(object newValue);
+
+        /// <summary>
+        /// Sets the value.
+        /// </summary>
+        /// <param name="newValue">The new value.</param>
+        /// <param name="ignoreUpdates">A value indicating whether or not the control should ignore update notifications for this operation.</param>
+        void SetValue(object newValue, bool ignoreUpdates);
     }
 
     /// <summary>

@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.ComponentModel;
     using Avalonia;
     using Macabresoft.Core;
-    using Macabresoft.Macabre2D.UI.Common;
 
     public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
         public static readonly StyledProperty<bool> UpdateOnLostFocusProperty =
@@ -33,6 +32,17 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public void SetValue(object newValue) {
             if (newValue is T typedNewValue) {
                 this.Value = typedNewValue;
+            }
+        }
+
+        public void SetValue(object newValue, bool ignoreUpdates) {
+            var originalIgnoreUpdates = this.IgnoreUpdates;
+            try {
+                this.IgnoreUpdates = ignoreUpdates;
+                this.SetValue(newValue);
+            }
+            finally {
+                this.IgnoreUpdates = originalIgnoreUpdates;
             }
         }
 

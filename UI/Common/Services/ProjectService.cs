@@ -183,10 +183,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 if (originalValue != newValue) {
                     this._undoService.Do(() => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                        valueEditor.SetValue(newValue);
+                        valueEditor.SetValue(newValue, false);
                     }, () => {
                         valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                        valueEditor.SetValue(originalValue);
+                        valueEditor.SetValue(originalValue, false);
                     });
                 }
             }
