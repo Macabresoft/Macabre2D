@@ -48,7 +48,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
-            this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab);
+            this.ToggleTabCommand = ReactiveCommand.Create<EditorTabs>(this.ToggleTab);
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
@@ -123,8 +123,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             }
         }
 
-        private void ToggleTab() {
-            this.SelectedTab = this.SelectedTab == EditorTabs.Content ? EditorTabs.Entities : EditorTabs.Content;
+        private void ToggleTab(EditorTabs tab) {
+            this.SelectedTab = tab;
         }
 
         private async Task ViewLicenses() {
