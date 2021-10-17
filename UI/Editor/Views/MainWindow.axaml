@@ -6,6 +6,10 @@
         ExtendClientAreaToDecorationsHint="{x:Static common:WindowHelper.ShowNonNativeMenu}"
         WindowState="Maximized"
         Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
+    <Window.KeyBindings>
+        <KeyBinding Command="{Binding ToggleTabCommand}"
+                    Gesture="Ctrl + T" />
+    </Window.KeyBindings>
     <Design.DataContext>
         <local:MainWindowViewModel />
     </Design.DataContext>
@@ -41,13 +45,13 @@
                 <NativeMenuItem.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Project Editor"
-                                        Command="{Binding ToggleTabCommand}" 
+                                        Command="{Binding SelectTabCommand}"
                                         CommandParameter="{x:Static common:EditorTabs.Content}"
-                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}"/>
+                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
                         <NativeMenuItem Header="Scene Editor"
-                                        Command="{Binding ToggleTabCommand}" 
+                                        Command="{Binding SelectTabCommand}"
                                         CommandParameter="{x:Static common:EditorTabs.Entities}"
-                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}"/>
+                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -86,23 +90,18 @@
                    Height="24"
                    Margin="{StaticResource StandardMarginHorizontal}"
                    Source="avares://Macabre2D.UI.Common/Assets/icon.ico" />
-            
+
             <Button Grid.Column="1"
                     Classes="Icon"
                     Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                    Command="{Binding ToggleTabCommand}"
-                    CommandParameter="{x:Static common:EditorTabs.Content}"
-                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}">
-                <common:Icon Content="{StaticResource SceneIcon}" />
-            </Button>
-            
-            <Button Grid.Column="1"
-                    Classes="Icon"
-                    Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                    Command="{Binding ToggleTabCommand}"
-                    CommandParameter="{x:Static common:EditorTabs.Entities}"
-                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}">
-                <common:Icon Content="{StaticResource ProjectIcon}" />
+                    Command="{Binding ToggleTabCommand}">
+                <Panel>
+                    <common:Icon Content="{StaticResource SceneIcon}"
+                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+                    <common:Icon Content="{StaticResource ProjectIcon}"
+                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+
+                </Panel>
             </Button>
 
             <Menu Grid.Column="2"
@@ -136,19 +135,19 @@
                               InputGesture="Ctrl + Y"
                               HotKey="Ctrl + Y" />
                 </MenuItem>
-                
+
                 <MenuItem Header="_View">
                     <MenuItem Header="_Project Editor"
-                              Command="{Binding ToggleTabCommand}" 
+                              Command="{Binding SelectTabCommand}"
                               CommandParameter="{x:Static common:EditorTabs.Content}"
-                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}"/>
-                    
+                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+
                     <MenuItem Header="_Scene Editor"
-                              Command="{Binding ToggleTabCommand}" 
+                              Command="{Binding SelectTabCommand}"
                               CommandParameter="{x:Static common:EditorTabs.Entities}"
-                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}"/>
+                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
                 </MenuItem>
-                
+
                 <MenuItem Header="_Help">
                     <MenuItem Header="View _Source"
                               Command="{Binding ViewSourceCommand}" />
