@@ -1,0 +1,64 @@
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           x:TypeArguments="framework:AutoTileSetReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditor">
+    <common:ValueEditorControl.Resources>
+        <common:MonoGameColorToAvaloniaBrushConverter x:Key="ColorConverter" />
+    </common:ValueEditorControl.Resources>
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+          RowDefinitions="Auto, Auto, Auto"
+          DataContext="{Binding $parent[local:AutoTileSetEditor]}">
+        <Design.DataContext>
+            <local:AutoTileSetEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="0"
+                   Classes="ValueEditorLabel"
+                   Text="{Binding Title}" />
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                Name="_spriteBorder"
+                IsVisible="{Binding Bitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
+                Classes="Preview"
+                Background="{Binding TileMap.Color, Converter={StaticResource ColorConverter}}"
+                BorderBrush="{Binding $self.Background}">
+            <Image Source="{Binding Bitmap}" />
+        </Border>
+
+        <TextBlock Grid.Row="2"
+                   Grid.Column="0"
+                   Classes="Caption"
+                   HorizontalAlignment="Left"
+                   Width="{Binding #_spriteBorder.Bounds.Width}"
+                   Text="{Binding Bitmap.Size, StringFormat=(\{0\})}" />
+
+        <TextBox Grid.Column="1"
+                 Grid.Row="1"
+                 IsReadOnly="True"
+                 VerticalAlignment="Top"
+                 Text="{Binding PathText}"
+                 ToolTip.Tip="{Binding PathText}" />
+
+        <Button Grid.Column="2"
+                Grid.Row="1"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding SelectTileSetCommand}"
+                ToolTip.Tip="Search for a sprite">
+            <common:Icon Content="{StaticResource ImageSearchIcon}" />
+        </Button>
+        <Button Grid.Column="3"
+                Grid.Row="1"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear the tile set">
+            <common:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
+    </Grid>
+</common:ValueEditorControl>

@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
+             x:Class="Macabresoft.Macabre2D.UI.Editor.SceneEditorView">
+    <Design.DataContext>
+        <local:SceneEditorViewModel />
+    </Design.DataContext>
+    <UserControl.Resources>
+        <common:MonoGameColorToAvaloniaBrushConverter x:Key="MonoGameColorToAvaloniaBrushConverter" />
+    </UserControl.Resources>
+    <Border
+        Background="{Binding SceneService.CurrentScene.BackgroundColor, Converter={StaticResource MonoGameColorToAvaloniaBrushConverter}}">
+        <monoGameInterop:MonoGameControl HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch" />
+    </Border>
+</UserControl>

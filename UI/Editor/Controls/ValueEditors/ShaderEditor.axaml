@@ -1,0 +1,39 @@
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           x:TypeArguments="framework:ShaderReference"
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderEditor">
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+          DataContext="{Binding $parent[local:ShaderEditor]}">
+        <Design.DataContext>
+            <local:ShaderEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="ValueEditorLabel"
+                   Text="{Binding Title}" />
+
+        <TextBox Grid.Column="1"
+                 IsReadOnly="True"
+                 VerticalAlignment="Top"
+                 Text="{Binding PathText}"
+                 ToolTip.Tip="{Binding PathText}" />
+
+        <Button Grid.Column="2"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding SelectCommand}"
+                ToolTip.Tip="Search for a shader">
+            <common:Icon Content="{StaticResource DocumentSearchIcon}" />
+        </Button>
+        <Button Grid.Column="3"
+                VerticalAlignment="Top"
+                Classes="Icon"
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear the shader">
+            <common:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
+    </Grid>
+</common:ValueEditorControl>

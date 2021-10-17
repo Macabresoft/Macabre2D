@@ -1,0 +1,66 @@
+<common:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           x:TypeArguments="framework:AutoTileSetCollection"
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetCollectionEditor">
+    <Grid RowDefinitions="Auto, Auto"
+          DataContext="{Binding $parent[local:AutoTileSetCollectionEditor]}">
+        <Design.DataContext>
+            <local:AutoTileSetCollectionEditor />
+        </Design.DataContext>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Add a new tile set to the sprite sheet">
+                <common:Icon Content="{StaticResource AddIcon}" />
+            </Button>
+            <Button Command="{Binding RemoveCommand}"
+                    CommandParameter="{Binding SelectedTileSet}"
+                    Classes="Icon"
+                    ToolTip.Tip="Remove the selected tile set from the sprite sheet">
+                <common:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
+
+            <Button Command="{Binding EditCommand}"
+                    CommandParameter="{Binding SelectedTileSet}"
+                    Classes="Icon"
+                    ToolTip.Tip="Edit the selected tile set">
+                <common:Icon Content="{StaticResource EditIcon}" />
+            </Button>
+        </StackPanel>
+
+        <ListBox Grid.Row="1"
+                 Height="256"
+                 Items="{Binding Value}"
+                 SelectedItem="{Binding SelectedTileSet}"
+                 SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <common:EditableSelectableItem IsEditable="True"
+                                                   HorizontalAlignment="Stretch"
+                                                   TextCommittedCommand="{Binding $parent[local:AutoTileSetCollectionEditor].RenameCommand}"
+                                                   Text="{Binding Path=Name, Mode=TwoWay}">
+                        <common:EditableSelectableItem.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rename"
+                                          Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                                          ToolTip.Tip="Rename this tile set" />
+
+                                <Separator />
+
+                                <MenuItem Header="Remove"
+                                          Command="{Binding $parent[local:AutoTileSetCollectionEditor].RemoveCommand}"
+                                          CommandParameter="{Binding}"
+                                          ToolTip.Tip="Remove this tile set from the sprite sheet" />
+                            </ContextMenu>
+                        </common:EditableSelectableItem.ContextMenu>
+                    </common:EditableSelectableItem>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</common:ValueEditorControl>
