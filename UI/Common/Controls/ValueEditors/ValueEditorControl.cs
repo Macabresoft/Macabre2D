@@ -59,7 +59,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         protected override void OnValueChanged() {
             if (!this.IgnoreUpdates && this.Owner != null && !string.IsNullOrEmpty(this.ValuePropertyName)) {
                 var originalValue = this.Owner.GetPropertyValue(this.ValuePropertyName);
-                this.ValueChanged.SafeInvoke(this, new ValueChangedEventArgs<object>(originalValue, this.Value));
+                var eventArgs = new ValueChangedEventArgs<object>(originalValue, this.Value);
+                if (eventArgs.HasChanged) {
+                    this.ValueChanged.SafeInvoke(this, eventArgs);
+                }
             }
         }
 
@@ -69,7 +72,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         protected void SetEditorValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
-            this.RaiseValueChanged(this, new ValueChangedEventArgs<object>(originalValue, updatedValue));
+            var eventArgs = new ValueChangedEventArgs<object>(originalValue, updatedValue);
+
+            if (eventArgs.HasChanged) {
+                this.RaiseValueChanged(this, eventArgs);
+            }
         }
 
         private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -124,15 +124,13 @@
                 var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
                 var newValue = e.UpdatedValue;
 
-                if ((originalValue == null && newValue != null) || (originalValue != null && !originalValue.Equals(newValue))) {
-                    this._undoService.Do(() => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                        valueEditor.SetValue(newValue, true);
-                    }, () => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                        valueEditor.SetValue(originalValue, true);
-                    });
-                }
+                this._undoService.Do(() => {
+                    valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                    valueEditor.SetValue(newValue, true);
+                }, () => {
+                    valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                    valueEditor.SetValue(originalValue, true);
+                });
             }
         }
 

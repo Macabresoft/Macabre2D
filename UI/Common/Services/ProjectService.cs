@@ -180,15 +180,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
                 var newValue = e.UpdatedValue;
 
-                if (originalValue != newValue) {
-                    this._undoService.Do(() => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                        valueEditor.SetValue(newValue, false);
-                    }, () => {
-                        valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                        valueEditor.SetValue(originalValue, false);
-                    });
-                }
+                this._undoService.Do(() => {
+                    valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                    valueEditor.SetValue(newValue, false);
+                }, () => {
+                    valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                    valueEditor.SetValue(originalValue, false);
+                });
+                
             }
         }
 

@@ -189,7 +189,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="originalPath">The original path from before the change.</param>
         protected virtual void OnPathChanged(string originalPath) {
-            this.RaisePathChanged(this, new ValueChangedEventArgs<string>(originalPath, this.GetFullPath()));
+            var eventArgs = new ValueChangedEventArgs<string>(originalPath, this.GetFullPath());
+            if (eventArgs.HasChanged) {
+                this.RaisePathChanged(this, eventArgs);
+            }
         }
 
         /// <summary>

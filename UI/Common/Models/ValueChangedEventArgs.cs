@@ -25,5 +25,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// Gets the updated value after changes occurred.
         /// </summary>
         public T UpdatedValue { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the value has actually changed.
+        /// </summary>
+        public bool HasChanged => this.OriginalValue == null && this.UpdatedValue != null || this.OriginalValue != null && !this.OriginalValue.Equals(this.UpdatedValue);
     }
 }
