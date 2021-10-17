@@ -50,6 +50,10 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         public override void Render(DrawingContext context) {
+            if (!this.IsEffectivelyVisible) {
+                return;
+            }
+        
             base.Render(context);
 
             if (this._viewModel != null) {

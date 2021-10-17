@@ -5,9 +5,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
     public class SceneEditorView : UserControl {
         public SceneEditorView() {
-            this.DataContext = Resolver.Resolve<SceneEditorViewModel>();
+            this.ViewModel = Resolver.Resolve<SceneEditorViewModel>();
             this.InitializeComponent();
         }
+        
+        public SceneEditorViewModel ViewModel { get; }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

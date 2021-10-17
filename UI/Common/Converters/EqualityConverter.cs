@@ -9,7 +9,7 @@
     public class EqualityConverter : IValueConverter {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value != null && value.Equals(parameter);
+            return value == null && parameter != null || value != null && !value.Equals(parameter);
         }
 
         /// <inheritdoc />
