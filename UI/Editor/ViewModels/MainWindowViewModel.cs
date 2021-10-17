@@ -28,58 +28,30 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
-        /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
-        /// <param name="editorService">The editor service.</param>
-        /// <param name="entityService">The selection service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
-        /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
-            IContentService contentService,
             ILocalDialogService dialogService,
-            IEditorService editorService,
-            IEntityService entityService,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
-            ISystemService systemService,
             IUndoService undoService) : base(undoService) {
-            this.ContentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-            this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-            this.EntityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
-            this.SystemService = systemService ?? throw new ArgumentNullException(nameof(systemService));
 
             this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
-
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
-
+            this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab);
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
-
-        /// <summary>
-        /// Gets the content service.
-        /// </summary>
-        public IContentService ContentService { get; }
-
-        /// <summary>
-        /// Gets the editor service.
-        /// </summary>
-        public IEditorService EditorService { get; }
-
-        /// <summary>
-        /// Gets the selection service.
-        /// </summary>
-        public IEntityService EntityService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.
@@ -97,9 +69,9 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public ICommand SaveCommand { get; }
 
         /// <summary>
-        /// Gets the system service.
+        /// Gets the command to toggle the selected tab.
         /// </summary>
-        public ISystemService SystemService { get; }
+        public ICommand ToggleTabCommand { get; }
 
         /// <summary>
         /// Gets the command to view licenses.
@@ -151,6 +123,9 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             }
         }
 
+        private void ToggleTab() {
+            this.SelectedTab = this.SelectedTab == EditorTabs.Content ? EditorTabs.Entities : EditorTabs.Content;
+        }
 
         private async Task ViewLicenses() {
             await this._dialogService.OpenLicenseDialog();

@@ -78,5 +78,9 @@
           <DependentUpon>AutoTileSetEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\ProjectEditorView.axaml.cs">
+          <DependentUpon>ProjectEditorView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

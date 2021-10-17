@@ -1,7 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-        xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
         ExtendClientAreaToDecorationsHint="{x:Static common:WindowHelper.ShowNonNativeMenu}"
@@ -50,25 +49,17 @@
             </NativeMenuItem>
         </NativeMenu>
     </NativeMenu.Menu>
-    <Grid RowDefinitions="Auto, Auto, *">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.1*"
-                              MinWidth="380" />
-            <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.9*" />
-        </Grid.ColumnDefinitions>
-
+    <Grid RowDefinitions="Auto, *">
         <local:SceneEditorView Grid.Row="1"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Grid.ColumnSpan="3" />
+                               IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+
+        <local:ProjectEditorView Grid.Row="1"
+                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
 
         <Grid Grid.Row="0"
-              Grid.Column="0"
-              Grid.ColumnSpan="3"
-              ColumnDefinitions="Auto, Auto, *"
+              ColumnDefinitions="Auto, Auto, Auto, *"
               IsVisible="{x:Static common:WindowHelper.ShowNonNativeMenu}">
-            <Border Grid.ColumnSpan="3"
+            <Border Grid.ColumnSpan="4"
                     HorizontalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
@@ -81,8 +72,18 @@
                    Height="24"
                    Margin="{StaticResource StandardMarginHorizontal}"
                    Source="avares://Macabre2D.UI.Common/Assets/icon.ico" />
+            
+            <Button Grid.Column="1"
+                Command="{Binding ToggleTabCommand}">
+                <Panel>
+                    <common:Icon Content="{StaticResource SceneIcon}"
+                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}"/>
+                    <common:Icon Content="{StaticResource ProjectIcon}"
+                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}"/>
+                </Panel>
+            </Button>
 
-            <Menu Grid.Column="1"
+            <Menu Grid.Column="2"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center">
                 <MenuItem Header="_File">
@@ -122,52 +123,11 @@
                 </MenuItem>
             </Menu>
 
-            <TextBlock Grid.Column="2"
+            <TextBlock Grid.Column="3"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
                        Text="Macabre2D" />
         </Grid>
-
-        <Grid Grid.Row="1"
-              Grid.RowSpan="2"
-              Grid.Column="0"
-              RowDefinitions="Auto, *"
-              Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Border Grid.Row="0"
-                    Classes="Card"
-                    Margin="{StaticResource StandardMarginLeftTopBottom}">
-                <TabControl SelectionChanged="TabControl_OnSelectionChanged"
-                            Initialized="TabControl_OnInitialized"
-                            HorizontalAlignment="Center"
-                            HorizontalContentAlignment="Center">
-                    <TabItem Header="Content"
-                             Tag="{x:Static models:EditorTabs.Content}" />
-                    <TabItem Header="Entities"
-                             Tag="{x:Static models:EditorTabs.Entities}" />
-                </TabControl>
-            </Border>
-
-            <Grid Grid.Row="1">
-                <Panel
-                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Entities}}">
-                    <local:SceneTreeView />
-                </Panel>
-
-                <Panel
-                    IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static models:EditorTabs.Content}}">
-                    <local:ContentTreeView />
-                </Panel>
-            </Grid>
-        </Grid>
-
-        <local:GizmoSelectionView Grid.Row="1"
-                                  Grid.Column="2"
-                                  Margin="{StaticResource StandardMarginAll}" />
-
-        <GridSplitter Grid.Row="1"
-                      Grid.RowSpan="2"
-                      Grid.Column="1"
-                      Classes="CardSplitter" />
     </Grid>
 </Window>
