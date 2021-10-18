@@ -4,10 +4,11 @@
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
-    <Design.DataContext>
-        <local:SceneTreeViewModel />
-    </Design.DataContext>
-    <Grid RowDefinitions="0.4*, 0, 0.6*">
+    <Grid RowDefinitions="0.4*, 0, 0.6*"
+          DataContext="{Binding $parent[local:SceneTreeView].ViewModel}">
+        <Design.DataContext>
+            <local:SceneTreeViewModel />
+        </Design.DataContext>
         <Border Grid.Row="0"
                 Classes="Card"
                 Margin="{DynamicResource StandardMarginLeftTopBottom}">

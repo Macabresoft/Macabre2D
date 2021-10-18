@@ -8,7 +8,8 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Top">
+                VerticalAlignment="Top"
+                DataContext="{Binding $parent[local:GizmoSelectionView].ViewModel}">
         <Design.DataContext>
             <local:GizmoSelectionViewModel />
         </Design.DataContext>

@@ -27,7 +27,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private Guid _dragTarget;
 
         public SceneTreeView() {
-            this.DataContext = Resolver.Resolve<SceneTreeViewModel>();
+            this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
             this.AddEntityMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.EntityService.AvailableTypes, true);
@@ -38,7 +38,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         public IReadOnlyCollection<IControl> AddSystemMenuItems { get; }
 
-        public SceneTreeViewModel ViewModel => this.DataContext as SceneTreeViewModel;
+        public SceneTreeViewModel ViewModel { get; }
 
         private void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IEntity targetEntity } &&

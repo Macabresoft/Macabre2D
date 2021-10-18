@@ -3,9 +3,7 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ContentTreeView">
-    <Design.DataContext>
-        <local:ContentTreeBaseViewModel />
-    </Design.DataContext>
+
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
         <common:IsTypeConverter x:Key="IsTypeConverter" InvertResult="False" />
@@ -13,7 +11,11 @@
 
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
-    <Grid RowDefinitions="0.4*, 0, 0.6*">
+    <Grid RowDefinitions="0.4*, 0, 0.6*"
+          DataContext="{Binding $parent[local:ContentTreeView].ViewModel}">
+        <Design.DataContext>
+            <local:ContentTreeViewModel />
+        </Design.DataContext>
         <Border Grid.Row="0"
                 Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
@@ -55,22 +57,22 @@
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Open Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Open the directory in the file explorer" />
 
                                             <Separator />
 
                                             <MenuItem Header="Add Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddDirectoryCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
                                                       ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                             <MenuItem Header="Add Scene"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddSceneCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
                                                       ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                             <MenuItem Header="Import Content"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.ImportCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
                                                       ToolTip.Tip="Import a piece of content from elsewhere" />
                                         </ContextMenu>
                                     </common:EditableSelectableItem.ContextMenu>
@@ -91,7 +93,7 @@
                                                                IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                                IsEditable="True"
                                                                IsFileName="True"
-                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].BaseViewModel.RenameContentCommand}"
+                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                                Text="{Binding Name}">
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
@@ -100,28 +102,28 @@
                                                       ToolTip.Tip="Rename this directory" />
 
                                             <MenuItem Header="Open Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Open the directory in the file explorer" />
 
                                             <Separator />
 
                                             <MenuItem Header="Add Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddDirectoryCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.AddDirectoryCommand}"
                                                       ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                             <MenuItem Header="Add Scene"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.AddSceneCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.AddSceneCommand}"
                                                       ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                             <MenuItem Header="Import Content"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.ImportCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.ImportCommand}"
                                                       ToolTip.Tip="Import a piece of content from elsewhere" />
 
                                             <Separator />
 
                                             <MenuItem Header="Delete"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.RemoveContentCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Delete this directory from your computer" />
                                         </ContextMenu>
@@ -141,7 +143,7 @@
                                                                IconForeground="{StaticResource TextControlForeground}"
                                                                IsEditable="True"
                                                                IsFileName="True"
-                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].BaseViewModel.RenameContentCommand}"
+                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
                                                                Text="{Binding Name}">
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
@@ -151,19 +153,19 @@
 
 
                                             <MenuItem Header="Open"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Open the directory in the file explorer" />
 
                                             <MenuItem Header="Open Containing Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.OpenContentLocationCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Open the directory which contains this file in the file explorer" />
 
                                             <Separator />
 
                                             <MenuItem Header="Delete"
-                                                      Command="{Binding $parent[local:ContentTreeView].BaseViewModel.RemoveContentCommand}"
+                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
                                                       CommandParameter="{Binding}"
                                                       ToolTip.Tip="Delete this content from your computer" />
                                         </ContextMenu>
@@ -186,12 +188,12 @@
                 <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                 Collections="{Binding ContentService.Editors}"
                                                 IsBusy="{Binding ContentService.IsBusy}"
-                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"/>
-                
+                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
+
                 <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                 Collections="{Binding ProjectService.Editors}"
                                                 IsBusy="{Binding ProjectService.IsBusy}"
-                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"/>
+                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
             </Grid>
         </Border>
     </Grid>

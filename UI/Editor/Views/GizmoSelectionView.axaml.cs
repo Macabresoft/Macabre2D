@@ -5,9 +5,11 @@
 
     public class GizmoSelectionView : UserControl {
         public GizmoSelectionView() {
-            this.DataContext = Resolver.Resolve<GizmoSelectionViewModel>();
+            this.ViewModel = Resolver.Resolve<GizmoSelectionViewModel>();
             this.InitializeComponent();
         }
+        
+        public GizmoSelectionViewModel ViewModel { get; }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
