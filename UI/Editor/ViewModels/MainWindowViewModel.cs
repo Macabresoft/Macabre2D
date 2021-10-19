@@ -45,11 +45,13 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
-            this.ExitCommand = ReactiveCommand.Create<Window>(Exit);
+            this.ExitCommand = ReactiveCommand.Create<IWindow>(Exit);
+            this.MinimizeCommand = ReactiveCommand.Create<IWindow>(Minimize);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
             this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab);
             this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab);
+            this.ToggleWindowStateCommand = ReactiveCommand.Create<IWindow>(ToggleWindowState);
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
@@ -58,6 +60,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the command to exit the application.
         /// </summary>
         public ICommand ExitCommand { get; }
+
+        /// <summary>
+        /// Gets the command to minimize the window.
+        /// </summary>
+        public ICommand MinimizeCommand { get; }
 
         /// <summary>
         /// Gets the open scene command.
@@ -78,6 +85,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the command to toggle the selected tab.
         /// </summary>
         public ICommand ToggleTabCommand { get; }
+
+        /// <summary>
+        /// Gets the command to toggle window state between <see cref="WindowState.Normal" /> and
+        /// <see cref="WindowState.Minimized" />.
+        /// </summary>
+        public ICommand ToggleWindowStateCommand { get; }
 
         /// <summary>
         /// Gets the command to view licenses.
@@ -113,8 +126,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             return result;
         }
 
-        private static void Exit(Window window) {
+        private static void Exit(IWindow window) {
             window?.Close();
+        }
+
+        private static void Minimize(IWindow window) {
+            window.WindowState = WindowState.Minimized;
         }
 
         private async Task OpenScene() {
@@ -135,6 +152,10 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         private void ToggleTab() {
             this.SelectTab(this.SelectedTab == EditorTabs.Entities ? EditorTabs.Content : EditorTabs.Entities);
+        }
+
+        private static void ToggleWindowState(IWindow window) {
+            window.WindowState = window.WindowState is WindowState.Maximized or WindowState.FullScreen ? WindowState.Normal : WindowState.Maximized;
         }
 
         private async Task ViewLicenses() {

@@ -3,12 +3,15 @@
         xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
-        ExtendClientAreaToDecorationsHint="{x:Static common:WindowHelper.ShowNonNativeMenu}"
-        WindowState="Maximized"
-        Padding="{Binding $self.WindowState, Converter={StaticResource WindowStateToPaddingConverter}}">
+        ExtendClientAreaToDecorationsHint="False"
+        SystemDecorations="None"
+        WindowState="Maximized">
     <Window.KeyBindings>
         <KeyBinding Command="{Binding ToggleTabCommand}"
                     Gesture="Ctrl + T" />
+        <KeyBinding Command="{Binding ToggleWindowStateCommand}"
+                    CommandParameter="{Binding $self}"
+                    Gesture="Ctrl + M" />
     </Window.KeyBindings>
     <Design.DataContext>
         <local:MainWindowViewModel />
@@ -75,11 +78,14 @@
                                  IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
 
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, Auto, Auto, *"
+              ColumnDefinitions="Auto, Auto, Auto, *, Auto"
               IsVisible="{x:Static common:WindowHelper.ShowNonNativeMenu}">
-            <Border Grid.ColumnSpan="4"
+            <Border Grid.ColumnSpan="5"
                     HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
+                    DoubleTapped="TitleBar_OnDoubleTapped"
+                    Margin="0"
                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
                     Padding="{StaticResource StandardMarginAll}"
                     BoxShadow="{StaticResource DefaultBoxShadow}"
@@ -162,6 +168,39 @@
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
                        Text="Macabre2D" />
+            
+            <StackPanel Grid.Column="4"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Command="{Binding MinimizeCommand}"
+                        CommandParameter="{Binding $parent[local:MainWindow]}"
+                        Classes="Icon"
+                        Padding="0">
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontWeight="Bold">_</TextBlock>
+                </Button>
+                
+                <Button Command="{Binding ToggleWindowStateCommand}"
+                        CommandParameter="{Binding $parent[local:MainWindow]}"
+                        Classes="Icon">
+                    <Panel>
+                        <common:Icon IsVisible="{Binding $parent[local:MainWindow].ShowMaximize}"
+                                     Content="{StaticResource MaximizeIcon}"/>
+                        <common:Icon IsVisible="{Binding !$parent[local:MainWindow].ShowMaximize}"
+                                     Content="{StaticResource RestoreIcon}"/>
+                    </Panel>
+                </Button>
+                
+                <Button Command="{Binding ExitCommand}"
+                        CommandParameter="{Binding $parent[local:MainWindow]}"
+                        Classes="Icon"
+                        Padding="0">
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontWeight="Bold">X</TextBlock>
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
