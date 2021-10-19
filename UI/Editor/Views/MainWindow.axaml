@@ -89,7 +89,7 @@
                    Width="24"
                    Height="24"
                    Margin="{StaticResource StandardMarginHorizontal}"
-                   Source="avares://Macabre2D.UI.Common/Assets/icon.ico" />
+                   Source="avares://Macabre2D/Assets/icon.ico" />
 
             <Button Grid.Column="1"
                     Classes="Icon"

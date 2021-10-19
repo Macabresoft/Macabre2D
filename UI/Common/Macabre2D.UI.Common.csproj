@@ -5,9 +5,6 @@
         <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.8" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.8" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8" />
@@ -47,5 +44,35 @@
         <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
+      <UpToDateCheckInput Remove="Theme\Colors.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\AutoCompleteBox.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Border.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Button.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\ButtonSpinner.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\CheckBox.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\ComboBox.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\GridSplitter.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Image.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\ListBox.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\ListBoxItem.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Menu.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\MenuItem.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\NumericUpDown.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Slider.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\SpriteListBoxItem.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\TabItem.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\TextBlock.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\TextBox.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\ToggleButton.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\TreeView.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\TreeViewItem.axaml" />
+      <UpToDateCheckInput Remove="Theme\Controls\Window.axaml" />
+      <UpToDateCheckInput Remove="Theme\Font.axaml" />
+      <UpToDateCheckInput Remove="Theme\Icons.axaml" />
+      <UpToDateCheckInput Remove="Theme\Margins.axaml" />
+      <UpToDateCheckInput Remove="Theme\Theme.axaml" />
     </ItemGroup>
 </Project>
