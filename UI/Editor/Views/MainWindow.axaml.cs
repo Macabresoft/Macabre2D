@@ -13,26 +13,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             AvaloniaProperty.RegisterDirect<MainWindow, bool>(
                 nameof(ShowMaximize),
                 editor => editor.ShowMaximize);
-
-        private bool _shouldClose;
-
+        
         public bool ShowMaximize => this.WindowState is WindowState.Normal or WindowState.Minimized;
 
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
-
-        protected override async void OnClosing(CancelEventArgs e) {
-            if (!this._shouldClose && this.ViewModel is MainWindowViewModel viewModel) {
-                e.Cancel = true;
-
-                if (await viewModel.TryClose() != YesNoCancelResult.Cancel) {
-                    this._shouldClose = true;
-                    this.Close();
-                }
-            }
-
-            base.OnClosing(e);
-        }
-
+        
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
             base.OnPropertyChanged(change);
 

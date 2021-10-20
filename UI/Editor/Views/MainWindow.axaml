@@ -3,7 +3,7 @@
         xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
-        ExtendClientAreaToDecorationsHint="False"
+        Title="Macabre2D"
         SystemDecorations="None"
         WindowState="Maximized">
     <Window.KeyBindings>
@@ -19,57 +19,6 @@
     <Window.Resources>
         <common:EqualityConverter x:Key="EqualityConverter" />
     </Window.Resources>
-    <Window.Name>Macabre2D</Window.Name>
-    <NativeMenu.Menu>
-        <NativeMenu>
-            <NativeMenuItem Header="File">
-                <NativeMenuItem.Menu>
-                    <NativeMenu>
-                        <NativeMenuItem Header="Save"
-                                        Command="{Binding SaveCommand}" />
-                        <NativeMenuItem Header="Open Scene"
-                                        Command="{Binding OpenSceneCommand}" />
-                    </NativeMenu>
-                </NativeMenuItem.Menu>
-            </NativeMenuItem>
-            <NativeMenuItem Header="Edit">
-                <NativeMenuItem.Menu>
-                    <NativeMenu>
-                        <NativeMenuItem Header="Undo"
-                                        Command="{Binding UndoCommand}"
-                                        Gesture="Ctrl + Z" />
-                        <NativeMenuItem Header="Redo"
-                                        Command="{Binding RedoCommand}"
-                                        Gesture="Ctrl + Y" />
-                    </NativeMenu>
-                </NativeMenuItem.Menu>
-            </NativeMenuItem>
-            <NativeMenuItem>
-                <NativeMenuItem.Menu>
-                    <NativeMenu>
-                        <NativeMenuItem Header="Project Editor"
-                                        Command="{Binding SelectTabCommand}"
-                                        CommandParameter="{x:Static common:EditorTabs.Content}"
-                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
-                        <NativeMenuItem Header="Scene Editor"
-                                        Command="{Binding SelectTabCommand}"
-                                        CommandParameter="{x:Static common:EditorTabs.Entities}"
-                                        IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
-                    </NativeMenu>
-                </NativeMenuItem.Menu>
-            </NativeMenuItem>
-            <NativeMenuItem Header="Help">
-                <NativeMenuItem.Menu>
-                    <NativeMenu>
-                        <NativeMenuItem Header="View Source"
-                                        Command="{Binding ViewSourceCommand}" />
-                        <NativeMenuItem Header="View License"
-                                        Command="{Binding ViewLicensesCommand}" />
-                    </NativeMenu>
-                </NativeMenuItem.Menu>
-            </NativeMenuItem>
-        </NativeMenu>
-    </NativeMenu.Menu>
     <Grid RowDefinitions="Auto, *">
         <local:SceneEditorView Grid.Row="1"
                                IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />

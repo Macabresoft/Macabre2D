@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Controls;
+    using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
@@ -45,7 +46,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
-            this.ExitCommand = ReactiveCommand.Create<IWindow>(Exit);
+            this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
             this.MinimizeCommand = ReactiveCommand.Create<IWindow>(Minimize);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
@@ -126,8 +127,10 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             return result;
         }
 
-        private static void Exit(IWindow window) {
-            window?.Close();
+        private async Task Exit(IWindow window) {
+            if (window != null && await this.TryClose() != YesNoCancelResult.Cancel) {
+                Dispatcher.UIThread.Post(window.Close);
+            }
         }
 
         private static void Minimize(IWindow window) {

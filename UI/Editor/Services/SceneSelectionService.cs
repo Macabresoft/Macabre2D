@@ -69,7 +69,7 @@
                 return this._selected switch {
                     IEntity => this._entityService.Editors,
                     IUpdateableSystem => this._systemService.Editors,
-                    TreeViewItem treeViewItem => treeViewItem.Name == this._sceneService.CurrentScene.Name ? this._entityService.Editors : null,
+                    TreeViewItem treeViewItem => treeViewItem.Tag is string tag && tag == this._sceneService.CurrentScene.Name ? this._entityService.Editors : null,
                     _ => null
                 };
             }
@@ -108,7 +108,7 @@
                         this.IsEntityContext = true;
                         break;
                     case TreeViewItem treeViewItem:
-                        if (treeViewItem.Name == EntitiesHeaderText) {
+                        if (treeViewItem.Tag is EntitiesHeaderText) {
                             this.IsEntityContext = true;
                         }
 

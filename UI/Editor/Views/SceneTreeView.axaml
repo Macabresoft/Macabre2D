@@ -73,22 +73,22 @@
                             <Setter Property="IsExpanded" Value="True" />
                         </Style>
                     </TreeView.Styles>
-                    <TreeViewItem Name="{Binding SceneService.CurrentScene.Name}">
+                    <TreeViewItem Tag="{Binding SceneService.CurrentScene.Name}">
                         <TreeViewItem.Header>
                             <common:EditableSelectableItem IsEditable="False"
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{DynamicResource SceneIcon}"
                                                            IconForeground="{StaticResource SystemAccentColorLightBrush1}"
-                                                           Text="{Binding $parent[TreeViewItem].Name}" />
+                                                           Text="{Binding $parent[TreeViewItem].Tag}" />
                         </TreeViewItem.Header>
-                        <TreeViewItem Name="{x:Static local:SceneSelectionService.SystemsHeaderText}"
+                        <TreeViewItem Tag="{x:Static local:SceneSelectionService.SystemsHeaderText}"
                                       Items="{Binding SceneService.CurrentScene.Systems}">
                             <TreeViewItem.Header>
                                 <common:EditableSelectableItem IsEditable="False"
                                                                HorizontalAlignment="Stretch"
                                                                Icon="{DynamicResource SystemIcon}"
                                                                IconForeground="{StaticResource SystemAccentColorLightBrush1}"
-                                                               Text="{Binding $parent[TreeViewItem].Name}" />
+                                                               Text="{Binding $parent[TreeViewItem].Tag}" />
                             </TreeViewItem.Header>
                             
                             <TreeViewItem.DataTemplates>
