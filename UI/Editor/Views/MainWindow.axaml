@@ -124,15 +124,15 @@
                 <Button Command="{Binding MinimizeCommand}"
                         CommandParameter="{Binding $parent[local:MainWindow]}"
                         Classes="Icon"
-                        Padding="0">
-                    <TextBlock VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               FontWeight="Bold">_</TextBlock>
+                        Padding="0"
+                        ToolTip.Tip="Minimize the window">
+                    <common:Icon Content="{StaticResource MinimizeIcon}" />
                 </Button>
                 
                 <Button Command="{Binding ToggleWindowStateCommand}"
                         CommandParameter="{Binding $parent[local:MainWindow]}"
-                        Classes="Icon">
+                        Classes="Icon"
+                        ToolTip.Tip="Maximize/restore the window">
                     <Panel>
                         <common:Icon IsVisible="{Binding $parent[local:MainWindow].ShowMaximize}"
                                      Content="{StaticResource MaximizeIcon}"/>
@@ -144,10 +144,9 @@
                 <Button Command="{Binding ExitCommand}"
                         CommandParameter="{Binding $parent[local:MainWindow]}"
                         Classes="Icon"
-                        Padding="0">
-                    <TextBlock VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               FontWeight="Bold">X</TextBlock>
+                        Padding="0"
+                        ToolTip.Tip="Close the window">
+                    <common:Icon Content="{StaticResource CloseIcon}" />
                 </Button>
             </StackPanel>
         </Grid>
