@@ -17,7 +17,7 @@
                 defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly StyledProperty<ThumbnailSize> ThumbnailSizeProperty =
-            AvaloniaProperty.Register<ColorSlider, ThumbnailSize>(
+            AvaloniaProperty.Register<SpriteDisplayCollectionControl, ThumbnailSize>(
                 nameof(ThumbnailSize),
                 defaultBindingMode: BindingMode.OneWay);
 

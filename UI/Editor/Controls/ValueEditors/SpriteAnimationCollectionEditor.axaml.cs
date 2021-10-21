@@ -6,7 +6,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -37,8 +36,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 editor => editor.SelectedAnimation,
                 (editor, value) => editor.SelectedAnimation = value);
 
+        private readonly IContentService _contentService;
         private readonly ILocalDialogService _dialogService;
-
         private readonly IUndoService _undoService;
         private SpriteAnimation _selectedAnimation;
 
@@ -46,7 +45,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         [InjectionConstructor]
-        public SpriteAnimationCollectionEditor(ILocalDialogService dialogService, IUndoService undoService) {
+        public SpriteAnimationCollectionEditor(IContentService contentService, ILocalDialogService dialogService, IUndoService undoService) {
+            this._contentService = contentService;
             this._dialogService = dialogService;
             this._undoService = undoService;
 
@@ -85,7 +85,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         private async Task EditAnimation(SpriteAnimation animation) {
-            if (animation != null && this.Owner is ContentFile { Asset: SpriteSheet spriteSheet } file) {
+            if (animation != null && this.Owner is SpriteSheet spriteSheet && this._contentService.RootContentDirectory.TryFindNode(spriteSheet.ContentId, out var file)) {
                 await this._dialogService.OpenSpriteAnimationEditor(animation, spriteSheet, file);
             }
 

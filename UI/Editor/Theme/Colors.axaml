@@ -47,5 +47,10 @@
 
         <Color x:Key="SystemRevealListLowColor">#18E3DAC9</Color>
         <Color x:Key="SystemRevealListMediumColor">#30E3DAC9</Color>
+        
+        <SolidColorBrush x:Key="PurpleBrush" Color="{StaticResource SystemAccentColor}" />
+        <SolidColorBrush x:Key="RedBrush" Color="#822626" />
+        <SolidColorBrush x:Key="GreenBrush" Color="#477E39" />
+        <SolidColorBrush x:Key="YellowBrush" Color="#735D23" />
     </Style.Resources>
 </Style>

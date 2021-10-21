@@ -6,7 +6,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Threading;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -37,8 +36,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 editor => editor.SelectedTileSet,
                 (editor, value) => editor.SelectedTileSet = value);
 
+        private readonly IContentService _contentService;
         private readonly ILocalDialogService _dialogService;
-
         private readonly IUndoService _undoService;
         private AutoTileSet _selectedTileSet;
 
@@ -46,7 +45,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         [InjectionConstructor]
-        public AutoTileSetCollectionEditor(ILocalDialogService dialogService, IUndoService undoService) {
+        public AutoTileSetCollectionEditor(IContentService contentService, ILocalDialogService dialogService, IUndoService undoService) {
+            this._contentService = contentService;
             this._dialogService = dialogService;
             this._undoService = undoService;
 
@@ -85,7 +85,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         private async Task EditTileSet(AutoTileSet tileSet) {
-            if (tileSet != null && this.Owner is ContentFile { Asset: SpriteSheet spriteSheet } file) {
+            if (tileSet != null && this.Owner is SpriteSheet spriteSheet && this._contentService.RootContentDirectory.TryFindNode(spriteSheet.ContentId, out var file)) {
                 await this._dialogService.OpenAutoTileSetEditor(tileSet, spriteSheet, file);
             }
 

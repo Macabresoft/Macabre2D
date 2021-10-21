@@ -118,37 +118,12 @@
                        IsHitTestVisible="False"
                        Text="Macabre2D" />
             
-            <StackPanel Grid.Column="4"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Command="{Binding MinimizeCommand}"
-                        CommandParameter="{Binding $parent[local:MainWindow]}"
-                        Classes="Icon"
-                        Padding="0"
-                        ToolTip.Tip="Minimize the window">
-                    <common:Icon Content="{StaticResource MinimizeIcon}" />
-                </Button>
-                
-                <Button Command="{Binding ToggleWindowStateCommand}"
-                        CommandParameter="{Binding $parent[local:MainWindow]}"
-                        Classes="Icon"
-                        ToolTip.Tip="Maximize/restore the window">
-                    <Panel>
-                        <common:Icon IsVisible="{Binding $parent[local:MainWindow].ShowMaximize}"
-                                     Content="{StaticResource MaximizeIcon}"/>
-                        <common:Icon IsVisible="{Binding !$parent[local:MainWindow].ShowMaximize}"
-                                     Content="{StaticResource RestoreIcon}"/>
-                    </Panel>
-                </Button>
-                
-                <Button Command="{Binding ExitCommand}"
-                        CommandParameter="{Binding $parent[local:MainWindow]}"
-                        Classes="Icon"
-                        Padding="0"
-                        ToolTip.Tip="Close the window">
-                    <common:Icon Content="{StaticResource CloseIcon}" />
-                </Button>
-            </StackPanel>
+            <common:WindowButtons Grid.Column="4"
+                                  HorizontalAlignment="Right"
+                                  CloseCommand="{Binding ExitCommand}"
+                                  MinimizeCommand="{Binding MinimizeCommand}"
+                                  ToggleWindowStateCommand="{Binding ToggleWindowStateCommand}"
+                                  Window="{Binding $parent[local:MainWindow]}"/>
         </Grid>
     </Grid>
 </Window>
