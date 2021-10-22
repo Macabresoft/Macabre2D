@@ -9,7 +9,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         [InjectionConstructor]
         public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
             this.DataContext = viewModel;
-            viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
 
@@ -17,10 +16,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnCloseRequested(object sender, bool e) {
-            this.Close(e);
         }
     }
 }

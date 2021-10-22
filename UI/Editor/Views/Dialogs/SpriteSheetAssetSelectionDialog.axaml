@@ -83,10 +83,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteSheetAssetSelectionDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
+                    Command="{Binding $parent[local:SpriteSheetAssetSelectionDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteSheetAssetSelectionDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

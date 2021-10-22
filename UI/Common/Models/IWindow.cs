@@ -7,14 +7,19 @@
     /// </summary>
     public interface IWindow : INotifyPropertyChanged {
         /// <summary>
-        /// Gets or sets the state of the window.
-        /// </summary>
-        WindowState WindowState { get; set; }
-        
-        /// <summary>
         /// Gets a value indicating whether or not this can be resized.
         /// </summary>
         bool CanResize { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the minimize button should be shown.
+        /// </summary>
+        bool ShowMinimize { get; }
+
+        /// <summary>
+        /// Gets or sets the state of the window.
+        /// </summary>
+        WindowState WindowState { get; set; }
 
         /// <summary>
         /// Closes the window.

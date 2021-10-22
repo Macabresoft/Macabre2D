@@ -3,6 +3,7 @@
                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                    xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                    x:Class="Macabresoft.Macabre2D.UI.Editor.AutoTileSetEditorDialog"
+                   CloseCommand="{Binding CancelCommand}"
                    SizeToContent="Height"
                    Width="1024"
                    MinHeight="480"
@@ -328,10 +329,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:AutoTileSetEditorDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding $parent[local:AutoTileSetEditorDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

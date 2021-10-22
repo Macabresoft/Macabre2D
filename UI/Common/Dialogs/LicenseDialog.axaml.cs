@@ -8,14 +8,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
+    using Unity;
 
     public class LicenseDialog : BaseDialog {
         private readonly ObservableCollectionExtended<LicenseDefinition> _filteredLicenses = new();
 
+        [InjectionConstructor]
         public LicenseDialog() {
             this.CollapseCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(false));
             this.ExpandCommand = ReactiveCommand.Create(() => this.AdjustGroupBoxes(true));
-            this.OkCommand = ReactiveCommand.Create(() => this.Close(true));
             this.FilterLicenses(string.Empty);
             this.InitializeComponent();
         }
@@ -27,8 +28,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public IReadOnlyCollection<LicenseDefinition> FilteredLicenses => this._filteredLicenses;
 
         public IReadOnlyCollection<LicenseDefinition> Licenses => LicenseHelper.Definitions;
-
-        public ICommand OkCommand { get; }
 
         private void AdjustGroupBoxes(bool showContent) {
             foreach (var license in this.Licenses) {

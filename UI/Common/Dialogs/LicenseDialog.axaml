@@ -6,7 +6,7 @@
                   VectorIcon="{StaticResource LicenseIcon}"
                   Height="1024"
                   Width="768"
-                  SystemDecorations="Full">
+                  CanResize="False">
     <Grid Margin="{StaticResource StandardMarginAll}"
           RowDefinitions="Auto, *, Auto"
           DataContext="{Binding $parent[local:LicenseDialog]}">
@@ -58,7 +58,8 @@
 
         <Button Grid.Row="2"
                 Content="OK"
-                Command="{Binding OkCommand}"
+                Command="{Binding CloseCommand}"
+                CommandParameter="{Binding $parent[local:LicenseDialog]}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>

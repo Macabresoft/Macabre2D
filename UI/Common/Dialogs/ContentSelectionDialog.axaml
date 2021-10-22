@@ -26,10 +26,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:ContentSelectionDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
+                    Command="{Binding $parent[local:ContentSelectionDialog].CloseCommand}"
+                    CommandParameter="{Binding $parent[local:ContentSelectionDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

@@ -3,6 +3,7 @@
                    xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
                    x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditorDialog"
+                   CloseCommand="{Binding CancelCommand}"
                    Width="1024"
                    Height="768"
                    Title="Sprite Animation Editor"
@@ -201,10 +202,12 @@
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteAnimationEditorDialog]}"
                     HorizontalAlignment="Right"
                     IsDefault="True" />
             <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding $parent[local:SpriteAnimationEditorDialog]}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

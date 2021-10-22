@@ -6,6 +6,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Macabresoft.Macabre2D.UI.Common;
 
     public class MainWindow : Window, IWindow {
+        public bool ShowMinimize => true;
+
         public MainWindowViewModel ViewModel => this.DataContext as MainWindowViewModel;
 
         internal void InitializeComponent() {

@@ -10,7 +10,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public SpriteSelectionDialog(SpriteSelectionViewModel viewModel) {
             this.DataContext = viewModel;
-            viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
 
@@ -18,10 +17,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnCloseRequested(object sender, bool e) {
-            this.Close(e);
         }
     }
 }

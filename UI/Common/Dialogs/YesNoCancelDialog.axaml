@@ -2,6 +2,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.Common.YesNoCancelDialog"
+                  CloseCommand="{Binding $self.CancelCommand}"
                   Height="128"
                   Width="320"
                   CanResize="False"

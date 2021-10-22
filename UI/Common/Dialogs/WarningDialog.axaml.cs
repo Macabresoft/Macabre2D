@@ -1,19 +1,17 @@
 namespace Macabresoft.Macabre2D.UI.Common {
-    using System.Windows.Input;
     using Avalonia;
     using Avalonia.Markup.Xaml;
-    using ReactiveUI;
+    using Unity;
 
     public class WarningDialog : BaseDialog {
         public static readonly StyledProperty<string> WarningMessageProperty =
             AvaloniaProperty.Register<WarningDialog, string>(nameof(WarningMessage));
 
+
+        [InjectionConstructor]
         public WarningDialog() {
-            this.OkCommand = ReactiveCommand.Create(() => this.Close(true));
             this.InitializeComponent();
         }
-
-        public ICommand OkCommand { get; }
 
         public string WarningMessage {
             get => this.GetValue(WarningMessageProperty);

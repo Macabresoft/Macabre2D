@@ -51,6 +51,7 @@
             ContentFile file) : base(childUndoService) {
             this._childUndoService = childUndoService;
             this._parentUndoService = parentUndoService;
+            this.CancelCommand = ReactiveCommand.Create<IWindow>(this.Cancel);
             this.ClearSpriteCommand = ReactiveCommand.Create(
                 this.ClearSprite,
                 this.WhenAny(x => x.SelectedTile, x => x.Value != null));
@@ -75,6 +76,11 @@
         /// Gets the auto layout command.
         /// </summary>
         public ICommand AutoLayoutCommand { get; }
+
+        /// <summary>
+        /// Gets the cancel command.
+        /// </summary>
+        public ICommand CancelCommand { get; }
 
         /// <summary>
         /// Clears the selected sprite from the selected tile.
@@ -148,17 +154,16 @@
         private bool CanPerformAutoLayout { get; }
 
         /// <inheritdoc />
-        protected override void OnCancel() {
-            var command = this._childUndoService.GetChanges();
-            command?.Undo();
-            base.OnCancel();
-        }
-
-        /// <inheritdoc />
         protected override void OnOk() {
             var command = this._childUndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
             base.OnOk();
+        }
+
+        private void Cancel(IWindow window) {
+            var command = this._childUndoService.GetChanges();
+            command?.Undo();
+            window.Close(false);
         }
 
         private void ClearSprite() {

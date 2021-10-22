@@ -25,7 +25,8 @@
 
         <Button Grid.Row="1"
                 Content="OK"
-                Command="{Binding OkCommand}"
+                Command="{Binding CloseCommand}"
+                CommandParameter="{Binding}"
                 HorizontalAlignment="Right"
                 IsDefault="True" />
     </Grid>

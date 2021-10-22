@@ -13,7 +13,6 @@
         [InjectionConstructor]
         public SpriteAnimationEditorDialog(SpriteAnimationEditorViewModel viewModel) {
             this.DataContext = viewModel;
-            viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
 
@@ -29,10 +28,6 @@
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnCloseRequested(object sender, bool e) {
-            this.Close(e);
         }
 
         private void SpriteIndex_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {

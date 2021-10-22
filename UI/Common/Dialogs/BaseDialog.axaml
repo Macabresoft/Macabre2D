@@ -3,8 +3,9 @@
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.Common.BaseDialog"
         ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        ExtendClientAreaToDecorationsHint="{x:Static local:WindowHelper.ShowNonNativeMenu}">
+        ShowMinimize="False"
+        SystemDecorations="None"
+        WindowStartupLocation="CenterOwner">
     <Window.Template>
         <ControlTemplate>
             <Panel>
@@ -19,9 +20,10 @@
                     <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
                               Margin="{StaticResource StandardMarginAll}"
-                              ColumnDefinitions="Auto, Auto, *"
+                              ColumnDefinitions="Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
+
                             <local:Icon Grid.Column="0"
                                         IsVisible="{x:Static local:WindowHelper.ShowNonNativeMenu}"
                                         IsHitTestVisible="False"
@@ -31,8 +33,14 @@
                             <ContentPresenter Grid.Column="1"
                                               Content="{TemplateBinding Menu}" />
 
+                            <local:WindowButtons Grid.Column="3"
+                                                 CloseCommand="{TemplateBinding CloseCommand}"
+                                                 MinimizeCommand="{x:Static local:WindowHelper.MinimizeCommand}"
+                                                 ToggleWindowStateCommand="{x:Static local:WindowHelper.ToggleWindowStateCommand}"
+                                                 Window="{TemplateBinding}" />
+
                             <TextBlock Grid.Column="0"
-                                       Grid.ColumnSpan="3"
+                                       Grid.ColumnSpan="4"
                                        IsVisible="{x:Static local:WindowHelper.ShowNonNativeMenu}"
                                        IsHitTestVisible="False"
                                        Margin="{StaticResource StandardMarginAll}"

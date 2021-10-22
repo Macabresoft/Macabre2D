@@ -1,16 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
     public class TypeSelectionDialog : BaseDialog {
-        public TypeSelectionDialog() {
+        public TypeSelectionDialog() : base() {
         }
 
         [InjectionConstructor]
         public TypeSelectionDialog(TypeSelectionViewModel viewModel) {
             this.DataContext = viewModel;
-            viewModel.CloseRequested += this.OnCloseRequested;
             this.InitializeComponent();
         }
 
@@ -18,10 +16,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnCloseRequested(object sender, bool e) {
-            this.Close(e);
         }
     }
 }

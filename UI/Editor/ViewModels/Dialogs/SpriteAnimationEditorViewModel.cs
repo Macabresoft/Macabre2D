@@ -48,6 +48,7 @@
             this._animation = animation;
             this.MaxIndex = spriteSheet.MaxIndex;
 
+            this.CancelCommand = ReactiveCommand.Create<IWindow>(this.Cancel);
             var selectedNotNull = this.WhenAny(x => x.SelectedStep, x => x.Value != null);
             this.ClearSpriteCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.ClearSprite, selectedNotNull);
             this.AddCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep);
@@ -77,6 +78,11 @@
         /// Gets a command to add a new step.
         /// </summary>
         public ICommand AddCommand { get; }
+
+        /// <summary>
+        /// Gets the cancel command.
+        /// </summary>
+        public ICommand CancelCommand { get; }
 
         /// <summary>
         /// Clears the selected sprite from the selected step.
@@ -211,13 +217,6 @@
         }
 
         /// <inheritdoc />
-        protected override void OnCancel() {
-            var command = this._childUndoService.GetChanges();
-            command?.Undo();
-            base.OnCancel();
-        }
-
-        /// <inheritdoc />
         protected override void OnOk() {
             var command = this._childUndoService.GetChanges();
             this._parentUndoService.CommitExternalChanges(command);
@@ -244,6 +243,12 @@
                     this.SelectedStep = selectedStep;
                 }
             });
+        }
+
+        private void Cancel(IWindow window) {
+            var command = this._childUndoService.GetChanges();
+            command?.Undo();
+            window.Close(false);
         }
 
         private void ClearSprite(SpriteAnimationStep step) {
