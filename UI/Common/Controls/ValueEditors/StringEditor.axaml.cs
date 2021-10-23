@@ -20,7 +20,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             get => this._intermediaryValue;
             set {
                 if (!this.UpdateOnLostFocus) {
-                    this.SetEditorValue(this.Value, value);
+                    this.Value = value;
                 }
 
                 this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, value);
@@ -31,7 +31,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             base.OnValueChanged();
 
             if (this.HasValueChanged()) {
-                this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, this.Value);
+                this.IntermediaryValue = this.Value;
             }
         }
 
@@ -49,7 +49,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void ValueEditor_OnLostFocus(object sender, RoutedEventArgs e) {
             if (this.UpdateOnLostFocus && this.HasValueChanged()) {
-                this.SetEditorValue(this.Value, this.IntermediaryValue);
+                this.Value = this.IntermediaryValue;
             }
         }
     }

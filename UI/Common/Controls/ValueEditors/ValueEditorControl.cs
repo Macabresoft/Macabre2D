@@ -72,11 +72,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         protected void SetEditorValue(T originalValue, T updatedValue) {
             this.Value = updatedValue;
-            var eventArgs = new ValueChangedEventArgs<object>(originalValue, updatedValue);
-
-            if (eventArgs.HasChanged) {
-                this.RaiseValueChanged(this, eventArgs);
-            }
         }
 
         private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {

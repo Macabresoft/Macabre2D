@@ -47,7 +47,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             set {
                 if (value != null) {
                     this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value);
-                    Dispatcher.UIThread.Post(() => { this.SetEditorValue(this.Value, Activator.CreateInstance(value) as Collider); });
+                    Dispatcher.UIThread.Post(() => { this.Value = Activator.CreateInstance(value) as Collider; });
                 }
             }
         }
