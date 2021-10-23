@@ -36,7 +36,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                 return;
             }
 
-            if (this._focusElement.IsPointerOver && WindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+            if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
                 if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
                     this._focusElement.Focus();
                 }
@@ -60,7 +60,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                 return;
             }
 
-            if (this._focusElement.IsPointerOver && WindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+            if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
                 if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
                     this._focusElement.Focus();
                 }
@@ -84,7 +84,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
                 return;
             }
 
-            if (this._focusElement.IsPointerOver && WindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+            if (this._focusElement.IsPointerOver && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
                 if (KeyboardDevice.Instance.FocusedElement != this._focusElement) {
                     this._focusElement.Focus();
                 }

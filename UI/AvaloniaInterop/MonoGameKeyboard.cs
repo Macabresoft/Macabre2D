@@ -29,7 +29,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         /// </summary>
         /// <returns>The keyboard state.</returns>
         public KeyboardState GetState() {
-            if (this._focusElement.IsPointerOver && KeyboardDevice.Instance.FocusedElement != this._focusElement && WindowHelper.IsControlOnActiveWindow(this._focusElement)) {
+            if (this._focusElement.IsPointerOver && KeyboardDevice.Instance.FocusedElement != this._focusElement && ActiveWindowHelper.IsControlOnActiveWindow(this._focusElement)) {
                 // we assume the user wants keyboard input into the control when his mouse is over
                 // it in order for the events to register we must focus it
                 this._focusElement.Focus();

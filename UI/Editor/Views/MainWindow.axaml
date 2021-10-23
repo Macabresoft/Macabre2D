@@ -1,134 +1,101 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-        x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
-        Title="Macabre2D"
-        SystemDecorations="BorderOnly"
-        CanResize="True"
-        WindowState="Maximized">
-    <Window.KeyBindings>
-        <KeyBinding Command="{Binding ToggleTabCommand}"
-                    Gesture="Ctrl + T" />
-        <KeyBinding Command="{Binding ToggleWindowStateCommand}"
-                    CommandParameter="{Binding $self}"
-                    Gesture="Ctrl + M" />
-    </Window.KeyBindings>
+<common:BaseDialog xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                   x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
+                   CanResize="True"
+                   CloseCommand="{Binding ExitCommand}"
+                   Padding="0"
+                   Title="Macabre2D"
+                   ShowInTaskbar="True"
+                   SystemDecorations="BorderOnly"
+                   WindowState="Maximized">
     <Design.DataContext>
         <local:MainWindowViewModel />
     </Design.DataContext>
-    <Window.Resources>
+    <common:BaseDialog.KeyBindings>
+        <KeyBinding Command="{Binding ToggleTabCommand}"
+                    Gesture="Ctrl + T" />
+        <KeyBinding Command="{x:Static common:WindowHelper.ToggleWindowStateCommand}"
+                    CommandParameter="{Binding $self}"
+                    Gesture="Ctrl + M" />
+    </common:BaseDialog.KeyBindings>
+    <common:BaseDialog.Resources>
         <common:EqualityConverter x:Key="EqualityConverter" />
-    </Window.Resources>
-    <Grid RowDefinitions="Auto, *">
-        <local:SceneEditorView Grid.Row="1"
-                               IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+    </common:BaseDialog.Resources>
+    <common:BaseDialog.Menu>
+        <Menu Grid.Column="2"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save"
+                          Command="{Binding SaveCommand}"
+                          InputGesture="Ctrl + S"
+                          HotKey="Ctrl + S" />
 
-        <local:ProjectEditorView Grid.Row="1"
-                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+                <MenuItem Header="_Open Scene"
+                          Command="{Binding OpenSceneCommand}"
+                          InputGesture="Ctrl + O"
+                          HotKey="Ctrl + O" />
 
-        <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, Auto, Auto, *, Auto">
-            <Border Grid.Column="0"
-                    Grid.ColumnSpan="5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    PointerPressed="TitleBar_OnPointerPressed"
-                    DoubleTapped="TitleBar_OnDoubleTapped"
-                    Margin="0"
-                    Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
-                    Padding="{StaticResource StandardMarginAll}"
-                    BoxShadow="{StaticResource DefaultBoxShadow}"
-                    ZIndex="-1" />
+                <Separator />
 
-            
-            <Panel Grid.Column="0"
-                   Width="24"
-                   Height="24"
-                   Margin="{StaticResource StandardMarginHorizontal}">
-                <common:Icon IsHitTestVisible="False"
-                             Content="{StaticResource MacabresoftIcon}" />
+                <MenuItem Header="_Exit"
+                          InputGesture="Alt + F4"
+                          Command="{Binding ExitCommand}"
+                          CommandParameter="{Binding $parent[Window]}" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"
+                          Command="{Binding UndoCommand}"
+                          InputGesture="Ctrl + Z"
+                          HotKey="Ctrl + Z" />
+                <MenuItem Header="_Redo"
+                          Command="{Binding RedoCommand}"
+                          InputGesture="Ctrl + Y"
+                          HotKey="Ctrl + Y" />
+            </MenuItem>
+
+            <MenuItem Header="_View">
+                <MenuItem Header="_Project Editor"
+                          Command="{Binding SelectTabCommand}"
+                          CommandParameter="{x:Static common:EditorTabs.Content}"
+                          IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+
+                <MenuItem Header="_Scene Editor"
+                          Command="{Binding SelectTabCommand}"
+                          CommandParameter="{x:Static common:EditorTabs.Entities}"
+                          IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="View _Source"
+                          Command="{Binding ViewSourceCommand}" />
+
+                <MenuItem Header="View _Licenses"
+                          Command="{Binding ViewLicensesCommand}" />
+            </MenuItem>
+        </Menu>
+    </common:BaseDialog.Menu>
+    <common:BaseDialog.ContentLeftOfMenu>
+        <Button Grid.Column="1"
+                Classes="Icon"
+                Command="{Binding ToggleTabCommand}">
+            <Panel>
+                <common:Icon Content="{StaticResource SceneIcon}"
+                             Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                             IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+                <common:Icon Content="{StaticResource ProjectIcon}"
+                             Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                             IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+
             </Panel>
-
-            <Button Grid.Column="1"
-                    Classes="Icon"
-                    Command="{Binding ToggleTabCommand}">
-                <Panel>
-                    <common:Icon Content="{StaticResource SceneIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
-                    <common:Icon Content="{StaticResource ProjectIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                                 IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
-
-                </Panel>
-            </Button>
-
-            <Menu Grid.Column="2"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Save"
-                              Command="{Binding SaveCommand}"
-                              InputGesture="Ctrl + S"
-                              HotKey="Ctrl + S" />
-
-                    <MenuItem Header="_Open Scene"
-                              Command="{Binding OpenSceneCommand}"
-                              InputGesture="Ctrl + O"
-                              HotKey="Ctrl + O" />
-
-                    <Separator />
-
-                    <MenuItem Header="_Exit"
-                              InputGesture="Alt + F4"
-                              Command="{Binding ExitCommand}"
-                              CommandParameter="{Binding $parent[Window]}" />
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="_Undo"
-                              Command="{Binding UndoCommand}"
-                              InputGesture="Ctrl + Z"
-                              HotKey="Ctrl + Z" />
-                    <MenuItem Header="_Redo"
-                              Command="{Binding RedoCommand}"
-                              InputGesture="Ctrl + Y"
-                              HotKey="Ctrl + Y" />
-                </MenuItem>
-
-                <MenuItem Header="_View">
-                    <MenuItem Header="_Project Editor"
-                              Command="{Binding SelectTabCommand}"
-                              CommandParameter="{x:Static common:EditorTabs.Content}"
-                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
-
-                    <MenuItem Header="_Scene Editor"
-                              Command="{Binding SelectTabCommand}"
-                              CommandParameter="{x:Static common:EditorTabs.Entities}"
-                              IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
-                </MenuItem>
-
-                <MenuItem Header="_Help">
-                    <MenuItem Header="View _Source"
-                              Command="{Binding ViewSourceCommand}" />
-
-                    <MenuItem Header="View _Licenses"
-                              Command="{Binding ViewLicensesCommand}" />
-                </MenuItem>
-            </Menu>
-
-            <TextBlock Grid.Column="3"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       IsHitTestVisible="False"
-                       Text="Macabre2D" />
-            
-            <common:WindowButtons Grid.Column="4"
-                                  HorizontalAlignment="Right"
-                                  CloseCommand="{Binding ExitCommand}"
-                                  MinimizeCommand="{Binding MinimizeCommand}"
-                                  ToggleWindowStateCommand="{Binding ToggleWindowStateCommand}"
-                                  Window="{Binding $parent[local:MainWindow]}"/>
-        </Grid>
+        </Button>
+    </common:BaseDialog.ContentLeftOfMenu>
+    <Grid>
+        <local:SceneEditorView
+            IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+        <local:ProjectEditorView
+            IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
     </Grid>
-</Window>
+</common:BaseDialog>

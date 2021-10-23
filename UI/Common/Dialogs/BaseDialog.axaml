@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
         x:Class="Macabresoft.Macabre2D.UI.Common.BaseDialog"
+        Padding="{StaticResource StandardMarginAll}"
         ShowInTaskbar="False"
         ShowMinimize="False"
         SystemDecorations="None"
@@ -19,12 +20,12 @@
 
                     <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
-                              ColumnDefinitions="Auto, Auto, *, Auto"
+                              ColumnDefinitions="Auto, Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
                             
                             <Border Grid.Column="0"
-                                    Grid.ColumnSpan="4"
+                                    Grid.ColumnSpan="5"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     PointerPressed="TitleBar_OnPointerPressed"
@@ -46,19 +47,23 @@
                                             IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNull}}"
                                             Content="{StaticResource MacabresoftIcon}" />
                             </Panel>
-
+                            
                             <ContentPresenter Grid.Column="1"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding ContentLeftOfMenu}" />
+
+                            <ContentPresenter Grid.Column="2"
                                               VerticalAlignment="Center"
                                               Content="{TemplateBinding Menu}" />
 
-                            <local:WindowButtons Grid.Column="3"
+                            <local:WindowButtons Grid.Column="4"
                                                  CloseCommand="{TemplateBinding CloseCommand}"
                                                  MinimizeCommand="{x:Static local:WindowHelper.MinimizeCommand}"
                                                  ToggleWindowStateCommand="{x:Static local:WindowHelper.ToggleWindowStateCommand}"
                                                  Window="{TemplateBinding}" />
 
                             <TextBlock Grid.Column="0"
-                                       Grid.ColumnSpan="4"
+                                       Grid.ColumnSpan="5"
                                        IsHitTestVisible="False"
                                        Text="{TemplateBinding Title}"
                                        TextTrimming="CharacterEllipsis"
@@ -69,7 +74,7 @@
                         </Grid>
 
                         <ContentPresenter Grid.Row="1"
-                                          Margin="{StaticResource StandardMarginAll}"
+                                          Margin="{TemplateBinding Padding}"
                                           Content="{TemplateBinding Content}" />
                     </Grid>
                 </VisualLayerManager>

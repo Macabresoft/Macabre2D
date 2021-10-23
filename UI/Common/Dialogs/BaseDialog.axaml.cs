@@ -11,8 +11,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public static readonly StyledProperty<ICommand> CloseCommandProperty =
             AvaloniaProperty.Register<BaseDialog, ICommand>(nameof(CloseCommand), defaultBindingMode: BindingMode.OneWay, defaultValue: WindowHelper.CloseDialogCommand);
 
-        public static readonly StyledProperty<object> LeftOfMenuTitleBarContentProperty =
-            AvaloniaProperty.Register<BaseDialog, object>(nameof(LeftOfMenuTitleBarContent), defaultBindingMode: BindingMode.OneWay);
+        public static readonly StyledProperty<object> ContentLeftOfMenuProperty =
+            AvaloniaProperty.Register<BaseDialog, object>(nameof(ContentLeftOfMenu), defaultBindingMode: BindingMode.OneWay);
 
         public static readonly StyledProperty<Menu> MenuProperty =
             AvaloniaProperty.Register<BaseDialog, Menu>(nameof(Menu), defaultBindingMode: BindingMode.OneWay);
@@ -28,9 +28,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
             set => this.SetValue(CloseCommandProperty, value);
         }
 
-        public object LeftOfMenuTitleBarContent {
-            get => this.GetValue(LeftOfMenuTitleBarContentProperty);
-            set => this.SetValue(LeftOfMenuTitleBarContentProperty, value);
+        public object ContentLeftOfMenu {
+            get => this.GetValue(ContentLeftOfMenuProperty);
+            set => this.SetValue(ContentLeftOfMenuProperty, value);
         }
 
         public Menu Menu {

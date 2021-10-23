@@ -4,7 +4,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using Avalonia.Input;
     using Avalonia.VisualTree;
 
-    internal static class WindowHelper {
+    internal static class ActiveWindowHelper {
 
         public static bool IsControlOnActiveWindow(IInputElement element) {
             var result = false;
