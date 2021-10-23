@@ -16,24 +16,24 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <summary>
         /// No scaling will occur.
         /// </summary>
-        None = 0,
+        None = 1,
 
         /// <summary>
         /// The circle's radius will scale on the body's X scale value.
         /// </summary>
         [Display(Name = "X Axis")]
-        X = 1,
+        X = 2,
 
         /// <summary>
         /// The circle's radius will scale on the body's Y scale value.
         /// </summary>
         [Display(Name = "Y Axis")]
-        Y = 2,
+        Y = 3,
 
         /// <summary>
         /// The circle's radius will scale on an average of the body's X and Y scale values.
         /// </summary>
-        Average = 3
+        Average = 4
     }
 
     /// <summary>
