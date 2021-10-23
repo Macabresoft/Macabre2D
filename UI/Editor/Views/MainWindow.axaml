@@ -4,7 +4,8 @@
         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
         x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
         Title="Macabre2D"
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
+        CanResize="True"
         WindowState="Maximized">
     <Window.KeyBindings>
         <KeyBinding Command="{Binding ToggleTabCommand}"
@@ -28,7 +29,8 @@
 
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, Auto, Auto, *, Auto">
-            <Border Grid.ColumnSpan="5"
+            <Border Grid.Column="0"
+                    Grid.ColumnSpan="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     PointerPressed="TitleBar_OnPointerPressed"
@@ -39,20 +41,24 @@
                     BoxShadow="{StaticResource DefaultBoxShadow}"
                     ZIndex="-1" />
 
-            <Image Grid.Column="0"
+            
+            <Panel Grid.Column="0"
                    Width="24"
                    Height="24"
-                   Margin="{StaticResource StandardMarginHorizontal}"
-                   Source="avares://Macabre2D/Assets/icon.ico" />
+                   Margin="{StaticResource StandardMarginHorizontal}">
+                <common:Icon IsHitTestVisible="False"
+                             Content="{StaticResource MacabresoftIcon}" />
+            </Panel>
 
             <Button Grid.Column="1"
                     Classes="Icon"
-                    Foreground="{DynamicResource SystemAccentColorLightBrush1}"
                     Command="{Binding ToggleTabCommand}">
                 <Panel>
                     <common:Icon Content="{StaticResource SceneIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
                                  IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
                     <common:Icon Content="{StaticResource ProjectIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
                                  IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
 
                 </Panel>

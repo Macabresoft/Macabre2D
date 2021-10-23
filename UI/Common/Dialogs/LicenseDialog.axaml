@@ -3,7 +3,6 @@
                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                   x:Class="Macabresoft.Macabre2D.UI.Common.LicenseDialog"
                   Title="Licenses"
-                  VectorIcon="{StaticResource LicenseIcon}"
                   Height="1024"
                   Width="768"
                   CanResize="False">

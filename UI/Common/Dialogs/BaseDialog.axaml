@@ -19,17 +19,36 @@
 
                     <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
-                              Margin="{StaticResource StandardMarginAll}"
                               ColumnDefinitions="Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
+                            
+                            <Border Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    PointerPressed="TitleBar_OnPointerPressed"
+                                    DoubleTapped="TitleBar_OnDoubleTapped"
+                                    Margin="0"
+                                    Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
+                                    Padding="{StaticResource StandardMarginAll}"
+                                    BoxShadow="{StaticResource DefaultBoxShadow}"
+                                    ZIndex="-1" />
 
-                            <local:Icon Grid.Column="0"
-                                        IsHitTestVisible="False"
-                                        Content="{TemplateBinding VectorIcon}"
-                                        Margin="{StaticResource StandardMarginAll}" />
+                            <Panel Grid.Column="0"
+                                   Width="24"
+                                   Height="24"
+                                   Margin="{StaticResource StandardMarginHorizontal}">
+                                <local:Icon IsHitTestVisible="False"
+                                            IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Content="{TemplateBinding VectorIcon}" />
+                                <local:Icon IsHitTestVisible="False"
+                                            IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNull}}"
+                                            Content="{StaticResource MacabresoftIcon}" />
+                            </Panel>
 
                             <ContentPresenter Grid.Column="1"
+                                              VerticalAlignment="Center"
                                               Content="{TemplateBinding Menu}" />
 
                             <local:WindowButtons Grid.Column="3"
@@ -41,7 +60,6 @@
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="4"
                                        IsHitTestVisible="False"
-                                       Margin="{StaticResource StandardMarginAll}"
                                        Text="{TemplateBinding Title}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
