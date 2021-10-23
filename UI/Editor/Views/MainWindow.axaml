@@ -27,8 +27,7 @@
                                  IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
 
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, Auto, Auto, *, Auto"
-              IsVisible="{x:Static common:WindowHelper.ShowNonNativeMenu}">
+              ColumnDefinitions="Auto, Auto, Auto, *, Auto">
             <Border Grid.ColumnSpan="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

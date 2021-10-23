@@ -25,7 +25,6 @@
                               VerticalAlignment="Top">
 
                             <local:Icon Grid.Column="0"
-                                        IsVisible="{x:Static local:WindowHelper.ShowNonNativeMenu}"
                                         IsHitTestVisible="False"
                                         Content="{TemplateBinding VectorIcon}"
                                         Margin="{StaticResource StandardMarginAll}" />
@@ -41,7 +40,6 @@
 
                             <TextBlock Grid.Column="0"
                                        Grid.ColumnSpan="4"
-                                       IsVisible="{x:Static local:WindowHelper.ShowNonNativeMenu}"
                                        IsHitTestVisible="False"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Text="{TemplateBinding Title}"
