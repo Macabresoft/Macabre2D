@@ -62,7 +62,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         protected void ValueDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-            this.Value = this.GetCalculatedValue(this.ValueDisplay, this.Value);
+            var newValue = this.GetCalculatedValue(this.ValueDisplay, this.Value);
+            var changeEventArgs = new ValueChangedEventArgs<TNumeric>(this.Value, newValue);
+            if (changeEventArgs.HasChanged) {
+                this.Value = newValue;
+            }
         }
 
         private TNumeric GetCalculatedValue(string expression, TNumeric fallBack) {

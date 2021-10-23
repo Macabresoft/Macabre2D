@@ -77,7 +77,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void ClearEditors() {
             if (this._controlCollection != null) {
-                this._controlCollection.OwnedValueChanged -= this.ColliderControlValueChanged;
             }
 
             if (this._childEditors.Any()) {
@@ -86,10 +85,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 this._valueControlService.ReturnControls(this._controlCollection);
                 this._controlCollection = null;
             }
-        }
-
-        private void ColliderControlValueChanged(object sender, ValueChangedEventArgs<object> e) {
-            this.RaiseValueChanged(sender, e);
         }
 
         private void InitializeComponent() {
@@ -105,7 +100,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
                     this._controlCollection = this._valueControlService.CreateControl(value, string.Empty);
                     if (this._controlCollection != null) {
-                        this._controlCollection.OwnedValueChanged += this.ColliderControlValueChanged;
                         this._childEditors.Clear();
                         this._childEditors.AddRange(this._controlCollection.ValueControls);
                         this.Collection.AddControls(this._childEditors);

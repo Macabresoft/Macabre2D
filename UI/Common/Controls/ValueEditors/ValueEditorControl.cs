@@ -70,10 +70,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this.ValueChanged.SafeInvoke(sender, e);
         }
 
-        protected void SetEditorValue(T originalValue, T updatedValue) {
-            this.Value = updatedValue;
-        }
-
         private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == this.ValuePropertyName) {
                 try {
