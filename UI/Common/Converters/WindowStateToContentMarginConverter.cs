@@ -4,6 +4,7 @@
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data.Converters;
+    using Avalonia.Platform;
 
     /// <summary>
     /// Converts from a <see cref="WindowState" /> to a thickness that accounts for Windows's maximization behavior.
@@ -19,7 +20,11 @@
 
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value is WindowState.Maximized ? MaximizedThickness : EmptyThickness;
+            if (value is WindowState.Maximized && AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem == OperatingSystemType.WinNT) {
+                return MaximizedThickness;
+            }
+            
+            return EmptyThickness;
         }
 
         /// <inheritdoc />
