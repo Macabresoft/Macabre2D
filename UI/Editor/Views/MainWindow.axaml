@@ -8,7 +8,6 @@
                    Padding="0"
                    Title="Macabre2D"
                    ShowInTaskbar="True"
-                   SystemDecorations="BorderOnly"
                    WindowState="Maximized">
     <Design.DataContext>
         <local:MainWindowViewModel />

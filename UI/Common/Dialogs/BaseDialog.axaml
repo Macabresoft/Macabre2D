@@ -5,7 +5,8 @@
         Padding="{StaticResource StandardMarginAll}"
         ShowInTaskbar="False"
         ShowMinimize="False"
-        SystemDecorations="None"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
         WindowStartupLocation="CenterOwner">
     <Window.Template>
         <ControlTemplate>
@@ -18,7 +19,9 @@
                         <TitleBar />
                     </VisualLayerManager.ChromeOverlayLayer>
 
-                    <Grid RowDefinitions="Auto, *">
+                    <Grid RowDefinitions="Auto, *"
+                          Margin="{TemplateBinding WindowState, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
+                        
                         <Grid Grid.Row="0"
                               ColumnDefinitions="Auto, Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"

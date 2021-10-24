@@ -6,8 +6,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Media;
+    using Avalonia.Threading;
 
     public class BaseDialog : Window, IWindow {
+        /*public static readonly DirectProperty<BaseDialog, bool> IsMaximizedProperty =
+            AvaloniaProperty.RegisterDirect<BaseDialog, bool>(
+                nameof(IsMaximized),
+                editor => editor.IsMaximized,
+                (editor, value) => editor.IsMaximized = value);*/
+        
         public static readonly StyledProperty<ICommand> CloseCommandProperty =
             AvaloniaProperty.Register<BaseDialog, ICommand>(nameof(CloseCommand), defaultBindingMode: BindingMode.OneWay, defaultValue: WindowHelper.CloseDialogCommand);
 
@@ -23,6 +30,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public static readonly StyledProperty<StreamGeometry> VectorIconProperty =
             AvaloniaProperty.Register<BaseDialog, StreamGeometry>(nameof(VectorIcon), defaultBindingMode: BindingMode.OneWay);
 
+        /*public byte IsMaximized {
+            get => this._valueDisplay;
+            private set => this.SetAndRaise(ValueDisplayProperty, ref this._valueDisplay, value);
+        }*/
+        
         public ICommand CloseCommand {
             get => this.GetValue(CloseCommandProperty);
             set => this.SetValue(CloseCommandProperty, value);
@@ -55,6 +67,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
+            if (this.WindowState == WindowState.Maximized) {
+                Dispatcher.UIThread.Post(() => this.WindowState = WindowState.Normal);
+            }
+            
             this.BeginMoveDrag(e);
         }
     }
