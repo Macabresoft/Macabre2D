@@ -31,6 +31,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             AvaloniaProperty.Register<BaseDialog, StreamGeometry>(nameof(VectorIcon), defaultBindingMode: BindingMode.OneWay);
 
         private bool _applyContentMargin;
+        private bool _isDragging;
 
         public bool ApplyContentMargin {
             get => this._applyContentMargin;
@@ -86,15 +87,18 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-            if (this.WindowState == WindowState.Maximized) {
-                Dispatcher.UIThread.Post(() => this.ApplyContentMargin = false);
-            }
-            
-            this.BeginMoveDrag(e);
+                this._isDragging = true;
+                this.BeginMoveDrag(e);
         }
 
         private void TitleBar_OnPointerCaptureLost(object sender, PointerCaptureLostEventArgs e) {
-            this.ResetContentMargin();
+            if (this._isDragging) {
+                this.ApplyContentMargin = false;
+                this._isDragging = false;
+            }
+            else {
+                this.ResetContentMargin();
+            }
         }
     }
 }
