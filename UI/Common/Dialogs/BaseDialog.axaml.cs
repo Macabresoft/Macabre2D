@@ -1,4 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common {
+    using System.Runtime.CompilerServices;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
@@ -9,12 +10,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Threading;
 
     public class BaseDialog : Window, IWindow {
-        /*public static readonly DirectProperty<BaseDialog, bool> IsMaximizedProperty =
+        public static readonly DirectProperty<BaseDialog, bool> ApplyContentMarginProperty =
             AvaloniaProperty.RegisterDirect<BaseDialog, bool>(
-                nameof(IsMaximized),
-                editor => editor.IsMaximized,
-                (editor, value) => editor.IsMaximized = value);*/
-        
+                nameof(ApplyContentMargin),
+                editor => editor.ApplyContentMargin);
+
         public static readonly StyledProperty<ICommand> CloseCommandProperty =
             AvaloniaProperty.Register<BaseDialog, ICommand>(nameof(CloseCommand), defaultBindingMode: BindingMode.OneWay, defaultValue: WindowHelper.CloseDialogCommand);
 
@@ -30,11 +30,13 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public static readonly StyledProperty<StreamGeometry> VectorIconProperty =
             AvaloniaProperty.Register<BaseDialog, StreamGeometry>(nameof(VectorIcon), defaultBindingMode: BindingMode.OneWay);
 
-        /*public byte IsMaximized {
-            get => this._valueDisplay;
-            private set => this.SetAndRaise(ValueDisplayProperty, ref this._valueDisplay, value);
-        }*/
-        
+        private bool _applyContentMargin;
+
+        public bool ApplyContentMargin {
+            get => this._applyContentMargin;
+            private set => this.SetAndRaise(ApplyContentMarginProperty, ref this._applyContentMargin, value);
+        }
+
         public ICommand CloseCommand {
             get => this.GetValue(CloseCommandProperty);
             set => this.SetValue(CloseCommandProperty, value);
@@ -60,6 +62,23 @@ namespace Macabresoft.Macabre2D.UI.Common {
             set => this.SetValue(VectorIconProperty, value);
         }
 
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
+            base.OnAttachedToVisualTree(e);
+            this.ResetContentMargin();
+        }
+
+        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+            base.OnPropertyChanged(change);
+
+            if (change.Property.Name is nameof(this.WindowState)) {
+                this.ResetContentMargin();
+            }
+        }
+
+        private void ResetContentMargin() {
+            Dispatcher.UIThread.Post(() => this.ApplyContentMargin = this.WindowState == WindowState.Maximized);
+        }
+
         private void TitleBar_OnDoubleTapped(object sender, RoutedEventArgs e) {
             if (WindowHelper.ToggleWindowStateCommand.CanExecute(this)) {
                 WindowHelper.ToggleWindowStateCommand.Execute(this);
@@ -68,10 +87,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
             if (this.WindowState == WindowState.Maximized) {
-                Dispatcher.UIThread.Post(() => this.WindowState = WindowState.Normal);
+                Dispatcher.UIThread.Post(() => this.ApplyContentMargin = false);
             }
             
             this.BeginMoveDrag(e);
+        }
+
+        private void TitleBar_OnPointerCaptureLost(object sender, PointerCaptureLostEventArgs e) {
+            this.ResetContentMargin();
         }
     }
 }

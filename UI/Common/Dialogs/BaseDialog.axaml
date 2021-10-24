@@ -20,7 +20,7 @@
                     </VisualLayerManager.ChromeOverlayLayer>
 
                     <Grid RowDefinitions="Auto, *"
-                          Margin="{TemplateBinding WindowState, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
+                          Margin="{TemplateBinding ApplyContentMargin, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
                         
                         <Grid Grid.Row="0"
                               ColumnDefinitions="Auto, Auto, Auto, *, Auto"
@@ -32,6 +32,7 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     PointerPressed="TitleBar_OnPointerPressed"
+                                    PointerCaptureLost="TitleBar_OnPointerCaptureLost"
                                     DoubleTapped="TitleBar_OnDoubleTapped"
                                     Margin="0"
                                     Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"

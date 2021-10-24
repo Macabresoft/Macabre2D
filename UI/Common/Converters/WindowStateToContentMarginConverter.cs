@@ -20,7 +20,7 @@
 
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if (value is WindowState.Maximized && AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem == OperatingSystemType.WinNT) {
+            if (value is WindowState.Maximized or true && AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem == OperatingSystemType.WinNT) {
                 return MaximizedThickness;
             }
             
