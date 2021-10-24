@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.Common {
-    using System.Runtime.CompilerServices;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
@@ -68,10 +67,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this.ResetContentMargin();
         }
 
+        protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e) {
+            base.OnPointerCaptureLost(e);
+            this.ResetContentMargin();
+        }
+
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
             base.OnPropertyChanged(change);
 
-            if (change.Property.Name is nameof(this.WindowState)) {
+            if (change.Property.Name is nameof(this.WindowState) or nameof(this.ClientSize)) {
                 this.ResetContentMargin();
             }
         }
@@ -87,18 +91,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-                this._isDragging = true;
-                this.BeginMoveDrag(e);
-        }
-
-        private void TitleBar_OnPointerCaptureLost(object sender, PointerCaptureLostEventArgs e) {
-            if (this._isDragging) {
-                this.ApplyContentMargin = false;
-                this._isDragging = false;
-            }
-            else {
-                this.ResetContentMargin();
-            }
+            this.ApplyContentMargin = false;
+            this.BeginMoveDrag(e);
         }
     }
 }

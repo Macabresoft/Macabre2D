@@ -10,18 +10,10 @@
         WindowStartupLocation="CenterOwner">
     <Window.Template>
         <ControlTemplate>
-            <Panel>
-                <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
-                <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
-                <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+            <Border Background="{StaticResource SystemControlDisabledChromeDisabledHighBrush}">
                 <VisualLayerManager>
-                    <VisualLayerManager.ChromeOverlayLayer>
-                        <TitleBar />
-                    </VisualLayerManager.ChromeOverlayLayer>
-
                     <Grid RowDefinitions="Auto, *"
                           Margin="{TemplateBinding ApplyContentMargin, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
-                        
                         <Grid Grid.Row="0"
                               ColumnDefinitions="Auto, Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"
@@ -32,10 +24,9 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     PointerPressed="TitleBar_OnPointerPressed"
-                                    PointerCaptureLost="TitleBar_OnPointerCaptureLost"
                                     DoubleTapped="TitleBar_OnDoubleTapped"
                                     Margin="0"
-                                    Background="{DynamicResource SystemControlDisabledChromeDisabledHighBrush}"
+                                    Background="{StaticResource SystemControlDisabledChromeDisabledHighBrush}"
                                     Padding="{StaticResource StandardMarginAll}"
                                     BoxShadow="{StaticResource DefaultBoxShadow}"
                                     ZIndex="-1" />
@@ -82,7 +73,7 @@
                                           Content="{TemplateBinding Content}" />
                     </Grid>
                 </VisualLayerManager>
-            </Panel>
+            </Border>
         </ControlTemplate>
     </Window.Template>
 </Window>
