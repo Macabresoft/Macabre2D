@@ -27,8 +27,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
-            return assemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene)));
+        protected override IEnumerable<Type> GetAvailableTypes() {
+            return this.AssemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene)));
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Tests.UI.Common.Models.Content {
+namespace Macabresoft.Macabre2D.UI.Tests {
     using System;
     using System.Collections.Generic;
     using System.IO;

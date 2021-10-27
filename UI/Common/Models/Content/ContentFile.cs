@@ -65,4 +65,24 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this.HasChanges = true;
         }
     }
+
+    /// <summary>
+    /// A typed content file.
+    /// </summary>
+    /// <typeparam name="T">The type of asset associated with the content.</typeparam>
+    public class ContentFile<T> : ContentFile where T : class, IAsset {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentNode" /> class.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <param name="metadata">The metadata.</param>
+        public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(parent, metadata) {
+            this.TypedAsset = metadata.Asset as T ?? throw new ArgumentException("Typed content files must be initialized with an asset.");
+        }
+
+        /// <summary>
+        /// Gets the typed asset.
+        /// </summary>
+        public T TypedAsset { get; }
+    }
 }

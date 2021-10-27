@@ -44,7 +44,6 @@
     }
 
     public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T> where T : class {
-        private readonly IAssemblyService _assemblyService;
         private readonly ObservableCollectionExtended<Type> _availableTypes = new();
         private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
         private readonly object _editorsLock = new();
@@ -64,10 +63,15 @@
             IAssemblyService assemblyService,
             IUndoService undoService,
             IValueControlService valueControlService) {
-            this._assemblyService = assemblyService;
+            this.AssemblyService = assemblyService;
             this._undoService = undoService;
             this._valueControlService = valueControlService;
         }
+        
+        /// <summary>
+        /// Gets the assembly service.
+        /// </summary>
+        protected IAssemblyService AssemblyService { get; }
 
         /// <inheritdoc />
         public IReadOnlyCollection<Type> AvailableTypes => this._availableTypes;
@@ -100,16 +104,15 @@
 
         /// <inheritdoc />
         public void Initialize() {
-            var types = this.GetAvailableTypes(this._assemblyService);
+            var types = this.GetAvailableTypes();
             this._availableTypes.Reset(types.OrderBy(x => x.Name));
         }
 
         /// <summary>
         /// Gets the available types.
         /// </summary>
-        /// <param name="assemblyService">The assembly service.</param>
         /// <returns>The available types.</returns>
-        protected abstract IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService);
+        protected abstract IEnumerable<Type> GetAvailableTypes();
 
         /// <summary>
         /// Gets a value indicating whether or not editors should be loaded.

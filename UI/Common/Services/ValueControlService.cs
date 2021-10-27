@@ -112,7 +112,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             string propertyPath) {
             var result = new List<IValueControl>();
 
-            if (this._assemblyService.LoadFirstType(typeof(IValueEditor<>).MakeGenericType(memberType)) is Type memberEditorType) {
+            if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is Type memberEditorType) {
                 var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
                 if (editor != null) {
                     result.Add(editor);
@@ -176,6 +176,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
             return null;
         }
 
+        private string GetPropertyName(string propertyPath) {
+            return !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
+        }
+
         private static string GetTitle(AttributeMemberInfo<DataMemberAttribute> member) {
             return !string.IsNullOrEmpty(member.Attribute.Name) ? member.Attribute.Name : Regex.Replace(member.MemberInfo.Name, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
         }
@@ -184,7 +188,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             info = null;
 
             if (value?.GetType() is Type ownerType) {
-                var controlType = this._assemblyService.LoadFirstType(typeof(IValueInfo<>).MakeGenericType(ownerType));
+                var controlType = this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType);
 
                 if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && this._container.Resolve(controlType) is IValueControl control) {
                     info = control;
@@ -200,10 +204,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
 
             return info != null;
-        }
-
-        private string GetPropertyName(string propertyPath) {
-            return !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
         }
     }
 }

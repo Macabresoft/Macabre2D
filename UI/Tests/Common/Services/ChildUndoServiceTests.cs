@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Tests.UI.Common.Services {
+﻿namespace Macabresoft.Macabre2D.UI.Tests {
     using FluentAssertions;
     using FluentAssertions.Execution;
     using Macabresoft.Macabre2D.UI.Common;

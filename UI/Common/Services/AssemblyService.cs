@@ -6,6 +6,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.Reflection;
     using Macabresoft.Macabre2D.Framework;
     using Mono.Cecil;
+    using Unity;
 
     /// <summary>
     /// Interface for a service which loads types from assemblies.
@@ -21,9 +22,26 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <summary>
         /// Loads the first type of the specified type with the specified base type in the current application domain.
         /// </summary>
-        /// <param name="baseType"></param>
-        /// <returns></returns>
+        /// <param name="baseType">The base type.</param>
+        /// <remarks>This might not be super useful given <see cref="LoadFirstGenericType"/>.</remarks>
+        /// <returns>The type.</returns>
         Type LoadFirstType(Type baseType);
+
+        /// <summary>
+        /// Creates an object by type with the provided constructor parameters.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="constructorParameters">The constructor parameters.</param>
+        /// <returns>The constructed object.</returns>
+        object CreateObjectFromType(Type type, params object[] constructorParameters);
+
+        /// <summary>
+        /// Loads the first type of the specified type as a generic type given the type arguments.
+        /// </summary>
+        /// <param name="genericType">The base type.</param>
+        /// <param name="typeArguments">The type arguments for the generic type.</param>
+        /// <returns>The generic type with the specified type arguments, if it exists as a discrete class.</returns>
+        Type LoadFirstGenericType(Type genericType, params Type[] typeArguments);
 
         /// <summary>
         /// Loads all types that implement the specified base type in the current application domain.
@@ -37,7 +55,17 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// A service which loads types from assemblies.
     /// </summary>
     public sealed class AssemblyService : IAssemblyService {
+        private readonly IUnityContainer _container;
         private bool _hasLoaded;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssemblyService" /> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public AssemblyService(IUnityContainer container) {
+            this._container = container;
+        }
+        
 
         /// <inheritdoc />
         public void LoadAssemblies(string directory) {
@@ -84,6 +112,16 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
 
             return resultType;
+        }
+
+        /// <inheritdoc />
+        public object CreateObjectFromType(Type type, params object[] constructorParameters) {
+            return this._container.Resolve(type, new GenericParameterOverride(constructorParameters));
+        }
+
+        /// <inheritdoc />
+        public Type LoadFirstGenericType(Type genericType, params Type[] typeArguments) {
+            return this.LoadFirstType(genericType.MakeGenericType(typeArguments));
         }
 
         /// <inheritdoc />

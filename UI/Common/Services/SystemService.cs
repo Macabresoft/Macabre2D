@@ -26,8 +26,8 @@
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
-            return assemblyService.LoadTypes(typeof(IUpdateableSystem));
+        protected override IEnumerable<Type> GetAvailableTypes() {
+            return this.AssemblyService.LoadTypes(typeof(IUpdateableSystem));
         }
     }
 }

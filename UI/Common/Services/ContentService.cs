@@ -71,7 +71,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             foreach (var extension in AudioClip.ValidFileExtensions) {
                 FileExtensionToAssetType.Add(extension, typeof(AudioClip));
             }
-            
+
             FileExtensionToAssetType.Add(".fx", typeof(Shader));
         }
 
@@ -169,7 +169,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes(IAssemblyService assemblyService) {
+        protected override IEnumerable<Type> GetAvailableTypes() {
             return Enumerable.Empty<Type>();
         }
 
@@ -242,10 +242,20 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 if (Activator.CreateInstance(assetType) is IAsset asset) {
                     var metadata = new ContentMetadata(asset, splitPath, extension);
                     this.SaveMetadata(metadata);
-                    var contentFile = new ContentFile(parent, metadata);
+                    var contentFile = this.CreateContentFileObject(parent, metadata);
                     this._assetManager.RegisterMetadata(contentFile.Metadata);
                 }
             }
+        }
+
+        private ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
+            ContentFile contentFile = null;
+            var contentFileType = this.AssemblyService.LoadFirstGenericType(typeof(ContentFile<>), metadata.Asset.GetType());
+            if (contentFileType != null) {
+                contentFile = this.AssemblyService.CreateObjectFromType(contentFileType, parent, metadata) as ContentFile;
+            }
+
+            return contentFile ?? new ContentFile(parent, metadata);
         }
 
         private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
@@ -324,7 +334,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 if (parentDirectory != null) {
                     var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
                     if (this._fileSystem.DoesFileExist(contentFilePath)) {
-                        contentNode = new ContentFile(parentDirectory, metadata);
+                        contentNode = this.CreateContentFileObject(parentDirectory, metadata);
                     }
                 }
             }
