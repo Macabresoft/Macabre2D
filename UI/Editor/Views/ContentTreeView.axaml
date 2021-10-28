@@ -3,12 +3,10 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ContentTreeView">
-
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
         <common:IsTypeConverter x:Key="IsTypeConverter" InvertResult="False" />
         <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
-
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, 0, 0.6*"
@@ -33,12 +31,15 @@
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
                         <common:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
-
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
                           SelectedItem="{Binding ContentService.Selected, Mode=TwoWay}">
                     <TreeView.Styles>
+                        <Style Selector="common|EditableSelectableItem">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                        
                         <Style Selector="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True" />
                         </Style>
@@ -46,11 +47,8 @@
                     <TreeView.DataTemplates>
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
-                            <Border HorizontalAlignment="Stretch"
-                                    Background="Transparent"
-                                    DragDrop.AllowDrop="True">
-                                <common:EditableSelectableItem VerticalAlignment="Center"
-                                                               Icon="{StaticResource ProjectIcon}"
+                            <Border Classes="DragDrop">
+                                <common:EditableSelectableItem Icon="{StaticResource ProjectIcon}"
                                                                IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                                IsEditable="False"
                                                                Text="Project">
@@ -79,17 +77,14 @@
                                 </common:EditableSelectableItem>
                             </Border>
                         </TreeDataTemplate>
-
+                        
                         <TreeDataTemplate DataType="common:IContentDirectory"
                                           ItemsSource="{Binding Children}">
-                            <Border HorizontalAlignment="Stretch"
-                                    Background="Transparent"
+                            <Border Classes="DragDrop"
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
-                                    PointerMoved="Node_OnPointerMoved"
-                                    DragDrop.AllowDrop="True">
-                                <common:EditableSelectableItem VerticalAlignment="Center"
-                                                               Icon="{StaticResource DirectoryIcon}"
+                                    PointerMoved="Node_OnPointerMoved">
+                                <common:EditableSelectableItem Icon="{StaticResource DirectoryIcon}"
                                                                IconForeground="{StaticResource SystemAccentColorLightBrush1}"
                                                                IsEditable="True"
                                                                IsFileName="True"
@@ -132,14 +127,11 @@
                             </Border>
                         </TreeDataTemplate>
                         <TreeDataTemplate DataType="common:IContentNode">
-                            <Border HorizontalAlignment="Stretch"
-                                    Background="Transparent"
+                            <Border Classes="DragDrop"
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
-                                    PointerMoved="Node_OnPointerMoved"
-                                    DragDrop.AllowDrop="True">
-                                <common:EditableSelectableItem VerticalAlignment="Center"
-                                                               Icon="{Binding Converter={StaticResource AssetToIconConverter}}"
+                                    PointerMoved="Node_OnPointerMoved">
+                                <common:EditableSelectableItem Icon="{Binding Converter={StaticResource AssetToIconConverter}}"
                                                                IconForeground="{StaticResource TextControlForeground}"
                                                                IsEditable="True"
                                                                IsFileName="True"
