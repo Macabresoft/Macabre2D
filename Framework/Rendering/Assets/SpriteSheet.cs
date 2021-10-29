@@ -36,6 +36,11 @@ namespace Macabresoft.Macabre2D.Framework {
 
         private Point _spriteSize;
 
+        /// <summary>
+        /// Gets the auto tile sets.
+        /// </summary>
+        public INameableCollection AutoTileSets => this._autoTileSets;
+
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;
 
@@ -43,6 +48,11 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets the max index.
         /// </summary>
         public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
+
+        /// <summary>
+        /// Gets the sprite animations.
+        /// </summary>
+        public INameableCollection SpriteAnimations => this._spriteAnimations;
 
         /// <summary>
         /// Gets or sets the number of columns in this sprite sheet.
@@ -93,7 +103,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <param name="animation">The animation.</param>
         public void AddAnimation(SpriteAnimation animation) {
-            if (this._spriteAnimations.All(x => x.Id != animation.Id)) {
+            if (this._spriteAnimations.All<SpriteAnimation>(x => x.Id != animation.Id)) {
                 this._spriteAnimations.Add(animation);
             }
         }
