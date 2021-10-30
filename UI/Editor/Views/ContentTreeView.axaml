@@ -59,7 +59,7 @@
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                          SelectedItem="{Binding ContentService.Selected, Mode=TwoWay}">
+                          SelectedItem="{Binding Selected, Mode=TwoWay}">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
                             <Design.DataContext>
@@ -217,7 +217,7 @@
         <Border Grid.Row="2"
                 Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Grid>
+            <Grid IsVisible="{Binding ShowEditors}">
                 <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                 Collections="{Binding ContentService.Editors}"
                                                 IsBusy="{Binding ContentService.IsBusy}"
