@@ -15,7 +15,6 @@
                       Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
                       ToolTip.Tip="Rename this content" />
 
-
             <MenuItem Header="Open"
                       Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
                       CommandParameter="{Binding}"

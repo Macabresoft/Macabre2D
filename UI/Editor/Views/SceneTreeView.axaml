@@ -78,7 +78,7 @@
                             <common:EditableSelectableItem IsEditable="False"
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{DynamicResource SceneIcon}"
-                                                           IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                           IconForeground="{StaticResource YellowBrush}"
                                                            Text="{Binding $parent[TreeViewItem].Tag}" />
                         </TreeViewItem.Header>
                         <TreeViewItem Tag="{x:Static local:SceneSelectionService.SystemsHeaderText}"
@@ -87,7 +87,7 @@
                                 <common:EditableSelectableItem IsEditable="False"
                                                                HorizontalAlignment="Stretch"
                                                                Icon="{DynamicResource SystemIcon}"
-                                                               IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                               IconForeground="{StaticResource PurpleBrush}"
                                                                Text="{Binding $parent[TreeViewItem].Tag}" />
                             </TreeViewItem.Header>
                             
@@ -120,7 +120,7 @@
                                 <TreeViewItem.Header>
                                     <common:EditableSelectableItem IsEditable="False"
                                                                    Icon="{DynamicResource EntityIcon}"
-                                                                   IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                                                   IconForeground="{StaticResource PurpleBrush}"
                                                                    Text="{Binding $parent[TreeViewItem].Name}" />
                                 </TreeViewItem.Header>
                                 <TreeViewItem.DataTemplates>
