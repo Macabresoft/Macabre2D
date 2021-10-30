@@ -84,6 +84,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <param name="parent">The parent content directory.</param>
         public ContentDirectory(string name, IContentDirectory parent) : base(name, parent) {
         }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentDirectory" /> class.
+        /// </summary>
+        /// <remarks>
+        /// This exists purely for data context purposes in XAML.
+        /// </remarks>
+        public ContentDirectory() : base() {
+        }
 
         /// <inheritdoc />
         public IReadOnlyCollection<IContentNode> Children => this._children;

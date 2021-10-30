@@ -13,13 +13,22 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private bool _hasChanges;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentNode" /> class.
+        /// Initializes a new instance of the <see cref="ContentFile" /> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
         /// <param name="metadata">The metadata.</param>
         public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
             this.Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
             this.Asset.PropertyChanged += this.Asset_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentFile" /> class.
+        /// </summary>
+        /// <remarks>
+        /// This exists purely for data context purposes in XAML.
+        /// </remarks>
+        public ContentFile() : base() {
         }
 
         /// <summary>

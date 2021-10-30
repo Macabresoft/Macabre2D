@@ -8,6 +8,30 @@
         <common:IsTypeConverter x:Key="IsTypeConverter" InvertResult="False" />
         <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+
+        <ContextMenu x:Key="ContentNodeContextMenu">
+            <MenuItem Header="Rename"
+                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                      ToolTip.Tip="Rename this content" />
+
+
+            <MenuItem Header="Open"
+                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Open the content" />
+
+            <MenuItem Header="Open Containing Directory"
+                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Open the directory which contains this file in the file explorer" />
+
+            <Separator />
+
+            <MenuItem Header="Delete"
+                      Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Delete this content from your computer" />
+        </ContextMenu>
     </UserControl.Resources>
     <Grid RowDefinitions="0.4*, 0, 0.6*"
           DataContext="{Binding $parent[local:ContentTreeView].ViewModel}">
@@ -37,9 +61,32 @@
                           SelectedItem="{Binding ContentService.Selected, Mode=TwoWay}">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
+                            <Design.DataContext>
+                                <common:ContentFile />
+                            </Design.DataContext>
+
                             <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="IsEditable" Value="True" />
+                            <Setter Property="IsFileName" Value="True" />
+                            <Setter Property="TextCommittedCommand"
+                                    Value="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}" />
+                            <Setter Property="Text" Value="{Binding Name}" />
                         </Style>
-                        
+
+                        <Style Selector="common|EditableSelectableItem.File">
+                            <Design.DataContext>
+                                <common:ContentFile />
+                            </Design.DataContext>
+
+                            <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
+                            <Setter Property="IconForeground" Value="{StaticResource TextControlForeground}" />
+                            <Setter Property="ContextMenu" Value="{StaticResource ContentNodeContextMenu}" />
+                        </Style>
+
+                        <Style Selector="common|EditableSelectableItem.Directory">
+                            <Setter Property="IconForeground" Value="{StaticResource SystemAccentColorLightBrush1}" />
+                        </Style>
+
                         <Style Selector="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True" />
                         </Style>
@@ -48,9 +95,10 @@
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop">
-                                <common:EditableSelectableItem Icon="{StaticResource ProjectIcon}"
-                                                               IconForeground="{StaticResource SystemAccentColorLightBrush1}"
+                                <common:EditableSelectableItem Classes="Directory"
+                                                               Icon="{StaticResource ProjectIcon}"
                                                                IsEditable="False"
+                                                               IsFileName="False"
                                                                Text="Project">
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
@@ -77,19 +125,24 @@
                                 </common:EditableSelectableItem>
                             </Border>
                         </TreeDataTemplate>
-                        
+
+                        <TreeDataTemplate DataType="common:SpriteSheetContentFile">
+                            <Border Classes="DragDrop"
+                                    PointerPressed="Node_OnPointerPressed"
+                                    PointerReleased="Node_OnPointerReleased"
+                                    PointerMoved="Node_OnPointerMoved">
+                                <common:EditableSelectableItem Classes="File" />
+                            </Border>
+                        </TreeDataTemplate>
+
                         <TreeDataTemplate DataType="common:IContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop"
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
-                                <common:EditableSelectableItem Icon="{StaticResource DirectoryIcon}"
-                                                               IconForeground="{StaticResource SystemAccentColorLightBrush1}"
-                                                               IsEditable="True"
-                                                               IsFileName="True"
-                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                               Text="{Binding Name}">
+                                <common:EditableSelectableItem Classes="Directory"
+                                                               Icon="{StaticResource DirectoryIcon}">
                                     <common:EditableSelectableItem.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Rename"
@@ -126,43 +179,13 @@
                                 </common:EditableSelectableItem>
                             </Border>
                         </TreeDataTemplate>
+
                         <TreeDataTemplate DataType="common:IContentNode">
                             <Border Classes="DragDrop"
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
-                                <common:EditableSelectableItem Icon="{Binding Converter={StaticResource AssetToIconConverter}}"
-                                                               IconForeground="{StaticResource TextControlForeground}"
-                                                               IsEditable="True"
-                                                               IsFileName="True"
-                                                               TextCommittedCommand="{Binding $parent[local:ContentTreeView].ViewModel.RenameContentCommand}"
-                                                               Text="{Binding Name}">
-                                    <common:EditableSelectableItem.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Rename"
-                                                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
-                                                      ToolTip.Tip="Rename this content" />
-
-
-                                            <MenuItem Header="Open"
-                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Open the directory in the file explorer" />
-
-                                            <MenuItem Header="Open Containing Directory"
-                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.OpenContentLocationCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Open the directory which contains this file in the file explorer" />
-
-                                            <Separator />
-
-                                            <MenuItem Header="Delete"
-                                                      Command="{Binding $parent[local:ContentTreeView].ViewModel.RemoveContentCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Delete this content from your computer" />
-                                        </ContextMenu>
-                                    </common:EditableSelectableItem.ContextMenu>
-                                </common:EditableSelectableItem>
+                                <common:EditableSelectableItem Classes="File" />
                             </Border>
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>

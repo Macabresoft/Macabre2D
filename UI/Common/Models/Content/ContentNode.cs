@@ -86,6 +86,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this.ChangeParent(parent);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentNode" /> class.
+        /// </summary>
+        /// <remarks>
+        /// This exists purely for data context purposes in XAML.
+        /// </remarks>
+        protected ContentNode() {
+        }
+
         /// <inheritdoc />
         public abstract Guid Id { get; }
 
