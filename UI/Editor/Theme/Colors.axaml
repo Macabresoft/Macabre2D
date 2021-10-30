@@ -51,7 +51,8 @@
         <SolidColorBrush x:Key="PurpleBrush" Color="{StaticResource SystemAccentColor}" />
         <SolidColorBrush x:Key="RedBrush" Color="#822626" />
         <SolidColorBrush x:Key="GreenBrush" Color="#477E39" />
-        <SolidColorBrush x:Key="YellowBrush" Color="#735D23" />
+        <SolidColorBrush x:Key="YellowBrush" Color="{StaticResource SystemAccentColorLight1}" />
+        <SolidColorBrush x:Key="DarkYellowBrush" Color="#735D23" />
         <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource SystemBaseHighColor}" />
     </Style.Resources>
 </Style>

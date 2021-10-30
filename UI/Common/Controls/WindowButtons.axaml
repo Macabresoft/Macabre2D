@@ -20,7 +20,7 @@
                 ToolTip.Tip="Minimize the window">
             <Button.Styles>
                 <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                    <Setter Property="Background" Value="{StaticResource YellowBrush}" />
+                    <Setter Property="Background" Value="{StaticResource DarkYellowBrush}" />
                 </Style>
             </Button.Styles>
             <local:Icon Content="{StaticResource MinimizeIcon}"

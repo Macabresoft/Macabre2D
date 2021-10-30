@@ -12,21 +12,23 @@
     public class AssetToIconConverter : IValueConverter {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            object result = null;
+            object result;
 
-            if (value is ContentFile { Asset: IAsset asset }) {
-                _ = asset switch {
+            _ = value switch {
+                ContentFile file => file.Asset switch {
                     SceneAsset => Application.Current.TryFindResource("SceneIcon", out result),
                     SpriteSheet => Application.Current.TryFindResource("SpriteSheetIcon", out result),
                     AudioClip => Application.Current.TryFindResource("AudioClipIcon", out result),
                     Shader => Application.Current.TryFindResource("ShaderIcon", out result),
                     _ => Application.Current.TryFindResource("FileIcon", out result)
-                };
-            }
-
-            if (result == null) {
-                Application.Current.TryFindResource("FileIcon", out result);
-            }
+                },
+                INameableCollection => value switch {
+                    AutoTileSetCollection => Application.Current.TryFindResource("AutoLayoutIcon", out result),
+                    SpriteAnimationCollection => Application.Current.TryFindResource("AnimationIcon", out result),
+                    _ => Application.Current.TryFindResource("UnknownIcon", out result)
+                },
+                _ => Application.Current.TryFindResource("UnknownIcon", out result)
+            };
 
             return result;
         }

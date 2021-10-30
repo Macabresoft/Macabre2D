@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ContentTreeView">
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
@@ -65,6 +66,8 @@
                                 <common:ContentFile />
                             </Design.DataContext>
 
+                            <Setter Property="IconForeground" Value="{StaticResource WhiteBrush}" />
+                            <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="IsEditable" Value="True" />
                             <Setter Property="IsFileName" Value="True" />
@@ -78,13 +81,11 @@
                                 <common:ContentFile />
                             </Design.DataContext>
 
-                            <Setter Property="Icon" Value="{Binding Converter={StaticResource AssetToIconConverter}}" />
-                            <Setter Property="IconForeground" Value="{StaticResource TextControlForeground}" />
                             <Setter Property="ContextMenu" Value="{StaticResource ContentNodeContextMenu}" />
                         </Style>
 
                         <Style Selector="common|EditableSelectableItem.Directory">
-                            <Setter Property="IconForeground" Value="{StaticResource SystemAccentColorLightBrush1}" />
+                            <Setter Property="IconForeground" Value="{StaticResource YellowBrush}" />
                         </Style>
 
                         <Style Selector="TreeViewItem">
@@ -126,7 +127,8 @@
                             </Border>
                         </TreeDataTemplate>
 
-                        <TreeDataTemplate DataType="common:SpriteSheetContentFile">
+                        <TreeDataTemplate DataType="common:SpriteSheetContentFile"
+                                          ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop"
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
@@ -186,6 +188,22 @@
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
                                 <common:EditableSelectableItem Classes="File" />
+                            </Border>
+                        </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:INameableCollection"
+                                          ItemsSource="{Binding}">
+                            <Border>
+                                <common:EditableSelectableItem IconForeground="{StaticResource YellowBrush}"
+                                                               IsFileName="False"
+                                                               IsEditable="False"/>
+                            </Border>
+                        </TreeDataTemplate>
+                        
+                        <TreeDataTemplate DataType="framework:INameable">
+                            <Border>
+                                <common:EditableSelectableItem IconForeground="{StaticResource PurpleBrush}"
+                                                               IsFileName="False" />
                             </Border>
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>

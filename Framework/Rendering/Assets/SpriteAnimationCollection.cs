@@ -11,6 +11,9 @@
     [Category("Animations")]
     public class SpriteAnimationCollection : ObservableCollectionExtended<SpriteAnimation>, INameableCollection {
         /// <inheritdoc />
+        public string Name => "Sprite Animations";
+
+        /// <inheritdoc />
         IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() {
             return this.Items.GetEnumerator();
         }
