@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:controls="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Styles.Resources>
 
@@ -287,7 +287,7 @@
         </StreamGeometry>
     </Styles.Resources>
 
-    <Style Selector="controls|Icon">
+    <Style Selector="common|Icon">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
         <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
@@ -298,7 +298,7 @@
         <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
     </Style>
 
-    <Style Selector="controls|Icon.Small">
+    <Style Selector="common|Icon.Small">
         <Setter Property="Width" Value="12" />
         <Setter Property="Height" Value="12" />
     </Style>
