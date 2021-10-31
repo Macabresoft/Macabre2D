@@ -7,7 +7,7 @@
         <common:GizmoKindToBoolConverter x:Key="GizmoKindToBoolConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
-                HorizontalAlignment="Right"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 DataContext="{Binding $parent[local:GizmoSelectionView].ViewModel}">
         <Design.DataContext>

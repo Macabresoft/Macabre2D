@@ -3,6 +3,7 @@
     <Style.Resources>
         <Thickness x:Key="StandardMarginAll">3</Thickness>
         <Thickness x:Key="StandardMarginLeftTopBottom">3,3,0,3</Thickness>
+        <Thickness x:Key="StandardMarginTopRightBottom">0,3,3,3</Thickness>
         <Thickness x:Key="StandardMarginHorizontal">3,0</Thickness>
         <Thickness x:Key="StandardMarginVertical">0,3</Thickness>
         <Thickness x:Key="StandardMarginRight">0,0,3,0</Thickness>

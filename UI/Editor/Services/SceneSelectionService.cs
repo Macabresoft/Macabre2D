@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using Avalonia.Controls;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
@@ -13,6 +14,11 @@
         /// Gets the editors.
         /// </summary>
         IReadOnlyCollection<ValueControlCollection> Editors { get; }
+        
+        /// <summary>
+        /// Gets a value indicating whether or not editors should be shown.
+        /// </summary>
+        bool ShowEditors { get; }
 
         /// <summary>
         /// Gets the implied selected object.
@@ -50,6 +56,7 @@
         private object _impliedSelected;
         private bool _isEntityContext;
         private object _selected;
+        private bool _showEditors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
@@ -76,6 +83,9 @@
         }
 
         /// <inheritdoc />
+        public bool ShowEditors => this._showEditors;
+
+        /// <inheritdoc />
         public object ImpliedSelected {
             get => this._impliedSelected;
             private set => this.RaiseAndSetIfChanged(ref this._impliedSelected, value);
@@ -94,6 +104,7 @@
                 this.RaiseAndSetIfChanged(ref this._selected, value);
                 this._entityService.Selected = null;
                 this._systemService.Selected = null;
+                this._showEditors = false;
                 this.IsEntityContext = false;
                 this.ImpliedSelected = null;
 
@@ -101,15 +112,22 @@
                     case IUpdateableSystem system:
                         this._systemService.Selected = system;
                         this.ImpliedSelected = this._selected;
+                        this._showEditors = true;
                         break;
                     case IEntity entity:
                         this._entityService.Selected = entity;
                         this.ImpliedSelected = this._selected;
                         this.IsEntityContext = true;
+                        this._showEditors = true;
                         break;
                     case TreeViewItem treeViewItem:
-                        if (treeViewItem.Tag is EntitiesHeaderText) {
-                            this.IsEntityContext = true;
+                        if (treeViewItem.Tag is string tag) {
+                            if (tag == EntitiesHeaderText) {
+                                this.IsEntityContext = true;
+                            }
+                            else if (tag == this._sceneService.CurrentScene.Name) {
+                                this._showEditors = true;
+                            }
                         }
 
                         this._entityService.Selected = this._sceneService.CurrentScene;
@@ -117,6 +135,7 @@
                         break;
                 }
 
+                this.RaisePropertyChanged(nameof(this.ShowEditors));
                 this.RaisePropertyChanged(nameof(this.Editors));
             }
         }
