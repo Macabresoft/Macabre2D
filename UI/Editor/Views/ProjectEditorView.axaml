@@ -1,22 +1,22 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
-    <Design.DataContext>
-        <local:SceneEditorViewModel />
-    </Design.DataContext>
-    <Grid>
+    <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.1*"
                               MinWidth="380" />
             <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.9*" />
+            <ColumnDefinition Width="0.8*" />
+            <ColumnDefinition Width="0" />
+            <ColumnDefinition Width="0.1*"
+                              MinWidth="380" />
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Background="{DynamicResource SystemAccentColor}">
-        </Border>
+                Grid.ColumnSpan="5"
+                Background="{DynamicResource SystemAccentColor}" />
 
         <Panel Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
@@ -25,5 +25,19 @@
 
         <GridSplitter Grid.Column="1"
                       Classes="CardSplitter" />
+
+        <GridSplitter Grid.Column="3"
+                      Classes="CardSplitter"
+                      IsVisible="{Binding SelectionService.ShowEditors}" />
+
+        <Panel Grid.Column="4"
+               Margin="{StaticResource StandardMarginTopRightBottom}">
+            <Border Classes="Card"
+                    IsVisible="{Binding SelectionService.ShowEditors}"
+                    Margin="{StaticResource StandardMarginTopRightBottom}">
+                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
+                                                Collections="{Binding SelectionService.Editors}" />
+            </Border>
+        </Panel>
     </Grid>
 </UserControl>

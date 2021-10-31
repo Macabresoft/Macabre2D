@@ -18,8 +18,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
-        private bool _showEditors;
-        private object _selected;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
@@ -37,6 +35,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
+        /// <param name="selectionService">The selection service.</param>
         [InjectionConstructor]
         public ContentTreeViewModel(
             IContentService contentService,
@@ -44,13 +43,15 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             IFileSystemService fileSystem,
             IProjectService projectService,
             ISaveService saveService,
-            ISceneService sceneService) {
+            ISceneService sceneService,
+            IProjectSelectionService selectionService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
             this.ProjectService = projectService;
             this._saveService = saveService;
             this._sceneService = sceneService;
+            this.SelectionService = selectionService;
 
             this.AddDirectoryCommand = ReactiveCommand.Create(
                 this.ContentService.AddDirectory,
@@ -90,6 +91,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the add scene command.
         /// </summary>
         public ICommand AddSceneCommand { get; }
+        
+        /// <summary>
+        /// Gets the selection service.
+        /// </summary>
+        public IProjectSelectionService SelectionService { get; }
 
         /// <summary>
         /// Gets the content service.
@@ -125,43 +131,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets a command for renaming content.
         /// </summary>
         public ICommand RenameContentCommand { get; }
-        
-
-
-        /// <summary>
-        /// Gets a value indicating whether or not editors should be shown from <see cref="IContentService"/>.
-        /// </summary>
-        public bool ShowEditors {
-            get => this._showEditors;
-            private set => this.RaiseAndSetIfChanged(ref this._showEditors, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the selected type.
-        /// </summary>
-        public object Selected {
-            get => this._selected;
-            set {
-                this.RaiseAndSetIfChanged(ref this._selected, value);
-                this.ContentService.Selected = null;
-
-                switch (this._selected) {
-                    case IContentNode content:
-                        this.ShowEditors = true;
-                        this.ContentService.Selected = content;
-                        break;
-                    case INameableCollection nameableCollection:
-                        this.ShowEditors = false;
-                        this.ContentService.Selected = null;
-                        break;
-                    default:
-                        this.ShowEditors = false;
-                        this.ContentService.Selected = null;
-                        // TODO: handle if a scene editable object is selected
-                        break;
-                }
-            }
-        }
 
         /// <summary>
         /// Moves the source content node to be a child of the target directory.

@@ -6,8 +6,6 @@
              x:Class="Macabresoft.Macabre2D.UI.Editor.ContentTreeView">
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <common:IsTypeConverter x:Key="IsTypeConverter" InvertResult="False" />
-        <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
 
         <ContextMenu x:Key="ContentNodeContextMenu">
@@ -33,13 +31,11 @@
                       ToolTip.Tip="Delete this content from your computer" />
         </ContextMenu>
     </UserControl.Resources>
-    <Grid RowDefinitions="0.4*, 0, 0.6*"
-          DataContext="{Binding $parent[local:ContentTreeView].ViewModel}">
+    <Grid DataContext="{Binding $parent[local:ContentTreeView].ViewModel}">
         <Design.DataContext>
             <local:ContentTreeViewModel />
         </Design.DataContext>
-        <Border Grid.Row="0"
-                Classes="Card"
+        <Border Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Grid RowDefinitions="Auto, *">
                 <StackPanel Grid.Row="0"
@@ -58,7 +54,7 @@
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                          SelectedItem="{Binding Selected, Mode=TwoWay}">
+                          SelectedItem="{Binding SelectionService.Selected, Mode=TwoWay}">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
                             <Design.DataContext>
@@ -207,25 +203,6 @@
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>
                 </TreeView>
-            </Grid>
-        </Border>
-
-        <GridSplitter Grid.Row="1"
-                      Classes="CardSplitter" />
-
-        <Border Grid.Row="2"
-                Classes="Card"
-                Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Grid IsVisible="{Binding ShowEditors}">
-                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                Collections="{Binding ContentService.Editors}"
-                                                IsBusy="{Binding ContentService.IsBusy}"
-                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
-
-                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                Collections="{Binding ProjectService.Editors}"
-                                                IsBusy="{Binding ProjectService.IsBusy}"
-                                                IsVisible="{Binding ContentService.Selected, Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
             </Grid>
         </Border>
     </Grid>
