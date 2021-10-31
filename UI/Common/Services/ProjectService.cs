@@ -18,14 +18,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
         GameProject CurrentProject { get; }
 
         /// <summary>
-        /// Gets the editors.
-        /// </summary>
-        IReadOnlyCollection<ValueControlCollection> Editors { get; }
-
-        /// <summary>
         /// Gets a value indicating whether or not this service is busy.
         /// </summary>
         bool IsBusy { get; }
+
+        /// <summary>
+        /// Gets the editors.
+        /// </summary>
+        IReadOnlyCollection<ValueControlCollection> GetEditors();
 
         /// <summary>
         /// Loads the project.
@@ -44,7 +44,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         private readonly IContentService _contentService;
-        private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
+        private readonly List<ValueControlCollection> _editors = new();
         private readonly IFileSystemService _fileSystem;
         private readonly IPathService _pathService;
         private readonly ISceneService _sceneService;
@@ -85,15 +85,29 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ValueControlCollection> Editors => this._editors;
-
-        /// <inheritdoc />
         public bool IsBusy => false;
 
         /// <inheritdoc />
         public GameProject CurrentProject {
             get => this._currentProject;
             private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<ValueControlCollection> GetEditors() {
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+            }
+
+            this._editors.Clear();
+            var editors = this._valueControlService.CreateControls(this.CurrentProject);
+            this._editors.AddRange(editors);
+
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+            }
+
+            return this._editors;
         }
 
         /// <inheritdoc />
@@ -118,17 +132,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 if (!this._sceneService.TryLoadScene(sceneId, out var sceneAsset) && sceneAsset != null) {
                     this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
                 }
-            }
-
-            foreach (var editorCollection in this._editors) {
-                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
-            }
-
-            var editors = this._valueControlService.CreateControls(this.CurrentProject);
-            this._editors.Reset(editors);
-
-            foreach (var editorCollection in this._editors) {
-                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
             }
 
             return this.CurrentProject;
@@ -187,7 +190,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                     valueEditor.SetValue(originalValue, false);
                 });
-                
             }
         }
 

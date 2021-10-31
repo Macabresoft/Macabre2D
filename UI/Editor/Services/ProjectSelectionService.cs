@@ -46,7 +46,7 @@
         public IReadOnlyCollection<ValueControlCollection> Editors {
             get {
                 return this._selected switch {
-                    RootContentDirectory => this._projectService.Editors,
+                    RootContentDirectory => this._projectService.GetEditors(),
                     IContentNode => this._contentService.Editors,
                     _ => null
                 };
@@ -57,8 +57,7 @@
         public object Selected {
             get => this._selected;
             set {
-                this.RaiseAndSetIfChanged(ref this._selected, value);
-                this._contentService.Selected = null;
+                this._selected = value;
                 this.ShowEditors = false;
 
                 switch (this._selected) {
@@ -69,10 +68,14 @@
                     case INameableCollection:
                         this._contentService.Selected = null;
                         break;
+                    default:
+                        this._contentService.Selected = null;
+                        break;
                 }
 
                 this.RaisePropertyChanged(nameof(this.ShowEditors));
                 this.RaisePropertyChanged(nameof(this.Editors));
+                this.RaisePropertyChanged(nameof(this.Selected));
             }
         }
 
