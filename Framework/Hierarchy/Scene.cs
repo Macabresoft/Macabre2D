@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
@@ -28,6 +27,11 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <value>The game.</value>
         IGame Game => BaseGame.Empty;
+
+        /// <summary>
+        /// Gets the named children.
+        /// </summary>
+        IReadOnlyCollection<INameableCollection> NamedChildren => Array.Empty<INameableCollection>();
 
         /// <summary>
         /// Gets the physics bodies.
@@ -155,6 +159,7 @@ namespace Macabresoft.Macabre2D.Framework {
             nameof(ICamera.RenderOrder));
 
         private readonly Dictionary<Type, object> _dependencies = new();
+        private readonly List<INameableCollection> _namedChildren = new();
         private readonly List<Action> _pendingActions = new();
 
         private readonly FilterSortCollection<IPhysicsBody> _physicsBodies = new(
@@ -170,7 +175,7 @@ namespace Macabresoft.Macabre2D.Framework {
             nameof(IRenderableEntity.RenderOrder));
 
         [DataMember]
-        private readonly ObservableCollection<IUpdateableSystem> _systems = new();
+        private readonly SystemCollection _systems = new();
 
         private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
             c => c.IsEnabled,
@@ -183,8 +188,21 @@ namespace Macabresoft.Macabre2D.Framework {
         private bool _isInitialized;
         private Version _version = new(0, 0, 0, 0);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Scene" /> class.
+        /// </summary>
+        public Scene() : base() {
+            this._namedChildren.Add(this._systems);
+            if (this.Children is INameableCollection nameableCollection) {
+                this._namedChildren.Add(nameableCollection);
+            }
+        }
+
         /// <inheritdoc />
         public IReadOnlyCollection<ICamera> Cameras => this._cameras;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
         /// <inheritdoc />
         public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;

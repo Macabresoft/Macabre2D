@@ -40,16 +40,6 @@
     /// The selection service for the scene tree.
     /// </summary>
     public class SceneSelectionService : ReactiveObject, ISceneSelectionService {
-        /// <summary>
-        /// The entities header.
-        /// </summary>
-        public const string EntitiesHeaderText = "Entities";
-
-        /// <summary>
-        /// The systems header.
-        /// </summary>
-        public const string SystemsHeaderText = "Systems";
-
         private readonly IEntityService _entityService;
         private readonly ISceneService _sceneService;
         private readonly ISystemService _systemService;
@@ -109,6 +99,11 @@
                 this.ImpliedSelected = null;
 
                 switch (this._selected) {
+                    case IScene scene:
+                        this._entityService.Selected = scene;
+                        this._showEditors = true;
+                        this.ImpliedSelected = this._selected;
+                        break;
                     case IUpdateableSystem system:
                         this._systemService.Selected = system;
                         this.ImpliedSelected = this._selected;
@@ -120,16 +115,13 @@
                         this.IsEntityContext = true;
                         this._showEditors = true;
                         break;
-                    case TreeViewItem treeViewItem:
-                        if (treeViewItem.Tag is string tag) {
-                            if (tag == EntitiesHeaderText) {
-                                this.IsEntityContext = true;
-                            }
-                            else if (tag == this._sceneService.CurrentScene.Name) {
-                                this._showEditors = true;
-                            }
-                        }
-
+                    case SystemCollection:
+                        this._showEditors = false;
+                        this._entityService.Selected = this._sceneService.CurrentScene;
+                        this.ImpliedSelected = this._sceneService.CurrentScene;
+                        break;
+                    case EntityCollection:
+                        this.IsEntityContext = true;
                         this._entityService.Selected = this._sceneService.CurrentScene;
                         this.ImpliedSelected = this._sceneService.CurrentScene;
                         break;

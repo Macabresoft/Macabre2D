@@ -122,7 +122,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public static readonly IEntity Empty = new EmptyEntity();
 
         [DataMember]
-        private readonly ObservableCollection<IEntity> _children = new();
+        private readonly EntityCollection _children = new();
 
         private Guid _id = Guid.NewGuid();
         private bool _isEnabled = true;
