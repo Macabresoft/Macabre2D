@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <common:MonoGameColorToAvaloniaBrushConverter x:Key="MonoGameColorToAvaloniaBrushConverter" />
     </UserControl.Resources>
-    <Grid RowDefinitions="Auto, *"
+    <Grid RowDefinitions="0.4*, 0, 0.6*"
           DataContext="{Binding $parent[local:SceneEditorView].ViewModel, Mode=OneTime}">
         <Design.DataContext>
             <local:SceneEditorViewModel />
@@ -16,54 +16,46 @@
             <ColumnDefinition Width="0.1*"
                               MinWidth="380" />
             <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.8*" />
-            <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.1*"
-                              MinWidth="380" />
+            <ColumnDefinition Width="0.9*" />
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0"
-                Grid.RowSpan="2"
+                Grid.RowSpan="3"
                 Grid.Column="0"
-                Grid.ColumnSpan="5"
+                Grid.ColumnSpan="3"
                 Background="{Binding SceneService.CurrentScene.BackgroundColor, Converter={StaticResource MonoGameColorToAvaloniaBrushConverter}}">
             <monoGameInterop:MonoGameControl HorizontalAlignment="Stretch"
                                              VerticalAlignment="Stretch" />
         </Border>
 
         <Panel Grid.Row="0"
-               Grid.RowSpan="2"
                Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <local:SceneTreeView />
         </Panel>
-
-        <local:GizmoSelectionView Grid.Row="0"
-                                  Grid.Column="2"
-                                  Margin="{StaticResource StandardMarginAll}" />
-
-        <GridSplitter Grid.Row="0"
-                      Grid.RowSpan="2"
-                      Grid.Column="1"
+        
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="0"
                       Classes="CardSplitter" />
-
-        <GridSplitter Grid.Row="0"
-                      Grid.RowSpan="2"
-                      Grid.Column="3"
-                      Classes="CardSplitter"
-                      IsVisible="{Binding SelectionService.ShowEditors}" />
-
-        <Panel Grid.Row="0"
-               Grid.RowSpan="2"
-               Grid.Column="4"
-               Margin="{StaticResource StandardMarginTopRightBottom}">
+        
+        <Panel Grid.Row="2"
+               Grid.Column="0"
+               Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
-                    Margin="{DynamicResource StandardMarginTopRightBottom}"
-                    IsVisible="{Binding SelectionService.ShowEditors}">
+                    Margin="{DynamicResource StandardMarginLeftTopBottom}">
                 <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
                                                 Collections="{Binding SelectionService.Editors}" />
 
             </Border>
         </Panel>
+        
+        <local:GizmoSelectionView Grid.Row="0"
+                                  Grid.Column="2"
+                                  Margin="{StaticResource StandardMarginAll}" />
+
+        <GridSplitter Grid.Row="0"
+                      Grid.RowSpan="3"
+                      Grid.Column="1"
+                      Classes="CardSplitter" />
     </Grid>
 </UserControl>

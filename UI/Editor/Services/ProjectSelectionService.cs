@@ -14,11 +14,6 @@
         IReadOnlyCollection<ValueControlCollection> Editors { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not editors should be shown.
-        /// </summary>
-        bool ShowEditors { get; }
-
-        /// <summary>
         /// Gets or sets the selected object in the project tree.
         /// </summary>
         object Selected { get; set; }
@@ -58,28 +53,16 @@
             get => this._selected;
             set {
                 this._selected = value;
-                this.ShowEditors = false;
 
-                switch (this._selected) {
-                    case IContentNode content:
-                        this.ShowEditors = true;
-                        this._contentService.Selected = content;
-                        break;
-                    case INameableCollection:
-                        this._contentService.Selected = null;
-                        break;
-                    default:
-                        this._contentService.Selected = null;
-                        break;
-                }
+                this._contentService.Selected = this._selected switch {
+                    IContentNode content => content,
+                    INameableCollection => null,
+                    _ => null
+                };
 
-                this.RaisePropertyChanged(nameof(this.ShowEditors));
                 this.RaisePropertyChanged(nameof(this.Editors));
                 this.RaisePropertyChanged(nameof(this.Selected));
             }
         }
-
-        /// <inheritdoc />
-        public bool ShowEditors { get; private set; }
     }
 }

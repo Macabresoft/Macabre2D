@@ -3,41 +3,44 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
-    <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
+    <Grid RowDefinitions="0.4*, 0, 0.6*"
+          DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.1*"
                               MinWidth="380" />
             <ColumnDefinition Width="0" />
             <ColumnDefinition Width="0.8*" />
-            <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.1*"
-                              MinWidth="380" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0"
-                Grid.ColumnSpan="5"
+        <Border Grid.Row="0"
+                Grid.RowSpan="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
                 Background="{DynamicResource SystemAccentColor}" />
 
-        <Panel Grid.Column="0"
+        <Panel Grid.Row="0"
+               Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <local:ContentTreeView />
         </Panel>
-
-        <GridSplitter Grid.Column="1"
+        
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="0"
                       Classes="CardSplitter" />
-
-        <GridSplitter Grid.Column="3"
-                      Classes="CardSplitter"
-                      IsVisible="{Binding SelectionService.ShowEditors}" />
-
-        <Panel Grid.Column="4"
-               Margin="{StaticResource StandardMarginTopRightBottom}">
+        
+        <Panel Grid.Row="2"
+               Grid.Column="0"
+               Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
-                    IsVisible="{Binding SelectionService.ShowEditors}"
-                    Margin="{StaticResource StandardMarginTopRightBottom}">
+                    Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                 Collections="{Binding SelectionService.Editors}" />
             </Border>
         </Panel>
+
+        <GridSplitter Grid.Row="0"
+                      Grid.RowSpan="3"
+                      Grid.Column="1"
+                      Classes="CardSplitter" />
     </Grid>
 </UserControl>
