@@ -33,8 +33,15 @@
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
-                <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
-                                                Collections="{Binding SelectionService.Editors}" />
+                <Panel>
+                    <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
+                                                    Collections="{Binding SelectionService.Editors}" />
+
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="Select a file or directory to view details"
+                               IsVisible="{Binding SelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
+                </Panel>
             </Border>
         </Panel>
 

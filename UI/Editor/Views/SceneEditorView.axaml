@@ -33,22 +33,32 @@
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <local:SceneTreeView />
         </Panel>
-        
+
         <GridSplitter Grid.Row="1"
                       Grid.Column="0"
                       Classes="CardSplitter" />
-        
+
         <Panel Grid.Row="2"
                Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
+                    Margin="{DynamicResource StandardMarginLeftTopBottom}" />
+
+            <Border Classes="Card"
                     Margin="{DynamicResource StandardMarginLeftTopBottom}">
-                <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
-                                                Collections="{Binding SelectionService.Editors}" />
+                <Panel>
+                    <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
+                                                    Collections="{Binding SelectionService.Editors}" />
+
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="Select an entity or system to view details"
+                               IsVisible="{Binding SelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
+                </Panel>
 
             </Border>
         </Panel>
-        
+
         <local:GizmoSelectionView Grid.Row="0"
                                   Grid.Column="2"
                                   Margin="{StaticResource StandardMarginAll}" />

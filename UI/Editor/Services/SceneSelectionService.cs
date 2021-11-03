@@ -59,7 +59,6 @@
                 return this._selected switch {
                     IEntity => this._entityService.Editors,
                     IUpdateableSystem => this._systemService.Editors,
-                    TreeViewItem treeViewItem => treeViewItem.Tag is string tag && tag == this._sceneService.CurrentScene.Name ? this._entityService.Editors : null,
                     _ => null
                 };
             }
@@ -76,7 +75,7 @@
             get => this._isEntityContext;
             private set => this.RaiseAndSetIfChanged(ref this._isEntityContext, value);
         }
-
+        
         /// <inheritdoc />
         public object Selected {
             get => this._selected;
@@ -85,7 +84,6 @@
                 this._entityService.Selected = null;
                 this._systemService.Selected = null;
                 this.IsEntityContext = false;
-                this.ImpliedSelected = null;
 
                 switch (this._selected) {
                     case IScene scene:
