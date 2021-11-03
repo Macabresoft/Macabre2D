@@ -3,7 +3,7 @@
                         xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                         x:Class="Macabresoft.Macabre2D.UI.Common.GroupBox">
     <HeaderedContentControl.Styles>
-        <Style Selector="local|Icon">
+        <Style Selector="Button.groupBoxButton local|Icon">
             <Setter Property="Width" Value="8" />
             <Setter Property="Height" Value="8" />
         </Style>
