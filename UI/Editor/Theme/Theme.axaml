@@ -5,7 +5,7 @@
     <StyleInclude Source="avares://Macabre2D/Theme/Colors.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Margins.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/BoxShadows.axaml" />
-    <StyleInclude Source="avares://Macabre2D/Theme/Icons.axaml" />
+    <StyleInclude Source="avares://Macabre2D/Theme/IconPaths.axaml" />
 
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/AutoCompleteBox.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/Border.axaml" />
@@ -14,6 +14,7 @@
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/CheckBox.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/ComboBox.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/GridSplitter.axaml" />
+    <StyleInclude Source="avares://Macabre2D/Theme/Controls/Icon.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/Image.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/ListBox.axaml" />
     <StyleInclude Source="avares://Macabre2D/Theme/Controls/ListBoxItem.axaml" />
