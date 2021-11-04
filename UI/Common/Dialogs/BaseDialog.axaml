@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterOwner">
     <Window.Template>
         <ControlTemplate>
-            <Border Background="{StaticResource SystemControlDisabledChromeDisabledHighBrush}">
+            <Border Background="{StaticResource SystemAltHighColor}">
                 <VisualLayerManager>
                     <Grid RowDefinitions="Auto, *"
                           Margin="{TemplateBinding ApplyContentMargin, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
