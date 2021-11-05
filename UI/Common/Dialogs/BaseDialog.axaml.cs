@@ -85,7 +85,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private void TitleBar_OnDoubleTapped(object sender, RoutedEventArgs e) {
-            if (WindowHelper.ToggleWindowStateCommand.CanExecute(this)) {
+            if (this.CanResize && WindowHelper.ToggleWindowStateCommand.CanExecute(this)) {
                 WindowHelper.ToggleWindowStateCommand.Execute(this);
             }
         }
