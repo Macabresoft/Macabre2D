@@ -12,8 +12,7 @@
         <ControlTemplate>
             <Border Background="{StaticResource SystemAltHighColor}">
                 <VisualLayerManager>
-                    <Grid RowDefinitions="Auto, *"
-                          Margin="{TemplateBinding ApplyContentMargin, Converter={x:Static local:WindowStateToContentMarginConverter.Instance}}">
+                    <Grid RowDefinitions="Auto, *">
                         <Grid Grid.Row="0"
                               ColumnDefinitions="Auto, Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"

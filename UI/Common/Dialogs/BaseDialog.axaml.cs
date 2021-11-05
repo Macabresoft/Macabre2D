@@ -6,14 +6,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Input;
     using Avalonia.Interactivity;
     using Avalonia.Media;
-    using Avalonia.Threading;
+    using Avalonia.Platform;
 
     public class BaseDialog : Window, IWindow {
-        public static readonly DirectProperty<BaseDialog, bool> ApplyContentMarginProperty =
-            AvaloniaProperty.RegisterDirect<BaseDialog, bool>(
-                nameof(ApplyContentMargin),
-                editor => editor.ApplyContentMargin);
-
         public static readonly StyledProperty<ICommand> CloseCommandProperty =
             AvaloniaProperty.Register<BaseDialog, ICommand>(nameof(CloseCommand), defaultBindingMode: BindingMode.OneWay, defaultValue: WindowHelper.CloseDialogCommand);
 
@@ -28,14 +23,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         public static readonly StyledProperty<StreamGeometry> VectorIconProperty =
             AvaloniaProperty.Register<BaseDialog, StreamGeometry>(nameof(VectorIcon), defaultBindingMode: BindingMode.OneWay);
-
-        private bool _applyContentMargin;
-        private bool _isDragging;
-
-        public bool ApplyContentMargin {
-            get => this._applyContentMargin;
-            private set => this.SetAndRaise(ApplyContentMarginProperty, ref this._applyContentMargin, value);
-        }
 
         public ICommand CloseCommand {
             get => this.GetValue(CloseCommandProperty);
@@ -64,34 +51,44 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
             base.OnAttachedToVisualTree(e);
-            this.ResetContentMargin();
+            this.ResetWindowChrome();
         }
 
         protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e) {
             base.OnPointerCaptureLost(e);
-            this.ResetContentMargin();
+            this.ResetWindowChrome();
         }
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
             base.OnPropertyChanged(change);
 
             if (change.Property.Name is nameof(this.WindowState) or nameof(this.ClientSize)) {
-                this.ResetContentMargin();
+                this.ResetWindowChrome();
             }
         }
 
-        private void ResetContentMargin() {
-            Dispatcher.UIThread.Post(() => this.ApplyContentMargin = this.WindowState == WindowState.Maximized);
+        private void ResetWindowChrome() {
+            if (this.WindowState is WindowState.Maximized or WindowState.FullScreen) {
+                this.SystemDecorations = SystemDecorations.BorderOnly;
+                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.Default;
+                this.ExtendClientAreaToDecorationsHint = false;
+            }
+            else {
+                this.SystemDecorations = SystemDecorations.None;
+                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
+                this.ExtendClientAreaToDecorationsHint = true;
+            }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void TitleBar_OnDoubleTapped(object sender, RoutedEventArgs e) {
             if (this.CanResize && WindowHelper.ToggleWindowStateCommand.CanExecute(this)) {
                 WindowHelper.ToggleWindowStateCommand.Execute(this);
             }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void TitleBar_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-            this.ApplyContentMargin = false;
             this.BeginMoveDrag(e);
         }
     }
