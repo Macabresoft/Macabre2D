@@ -10,9 +10,9 @@
         <AssemblyName>Macabre2D</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.8" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.8" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8" />
+        <PackageReference Include="Avalonia" Version="0.10.10" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
         <PackageReference Include="Macabresoft.Core" Version="1.0.9" />
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>

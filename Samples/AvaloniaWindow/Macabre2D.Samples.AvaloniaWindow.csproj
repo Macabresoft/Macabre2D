@@ -6,8 +6,8 @@
 		<LangVersion>9</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.8" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.8" />
+		<PackageReference Include="Avalonia" Version="0.10.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
 		<PackageReference Include="Macabresoft.Core" Version="1.0.9" />
 		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
