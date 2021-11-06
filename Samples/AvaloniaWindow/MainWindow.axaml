@@ -5,6 +5,7 @@
                    xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
                    x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
                    Padding="0"
+                   WindowState="Maximized"
                    Title="Avalonia Sample">
     <Design.DataContext>
         <local:MainWindow />
