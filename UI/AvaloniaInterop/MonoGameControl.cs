@@ -19,7 +19,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     /// <summary>
     /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
-    public sealed class MonoGameControl : Border, IDisposable {
+    public sealed class MonoGameControl : Control, IDisposable {
         private readonly Dictionary<StandardCursorType, Cursor> _cursorTypeToCursor = new() {
             { StandardCursorType.None, null }
         };
