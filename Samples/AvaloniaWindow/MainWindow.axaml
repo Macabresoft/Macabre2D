@@ -1,42 +1,76 @@
-<Window xmlns="https://github.com/avaloniaui"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-		Name="_window"
-        x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
-        Title="Macabresoft.Macabre2D.Samples.AvaloniaWindow"
-        Background="{StaticResource GreyBrush}">
-    <Grid ColumnDefinitions="2*, Auto, 8*">
-        <StackPanel Grid.Column="0"
-                    Orientation="Vertical"
-                    Margin="8">
-            <TextBlock Text="Display Text:"
-                       Foreground="{StaticResource WhiteBrush}"
-                       Margin="0,0,0,8" />
-            <TextBox Text="{Binding SkullViewModel.DisplayText, ElementName=_window, Mode=TwoWay}"
-                     Foreground="{StaticResource WhiteBrush}"
-                     BorderBrush="{StaticResource WhiteBrush}"
-                     Background="{StaticResource BlackBrush}"
-                     Margin="0,0,0,8" />
+<common:BaseDialog xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.Samples.AvaloniaWindow"
+                   xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
+                   x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
+                   Padding="0"
+                   Title="Avalonia Sample">
+    <Design.DataContext>
+        <local:MainWindow />
+    </Design.DataContext>
+    <common:BaseDialog.ContentLeftOfMenu>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch">
+            <Button Classes="Icon"
+                    Command="{Binding ToggleTabCommand}">
+                <Panel>
+                    <common:Icon Content="{StaticResource SmallThumbnailIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 IsVisible="{Binding ShowSkull}" />
+                    <common:Icon Content="{StaticResource LargeThumbnailIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 IsVisible="{Binding !ShowSkull}" />
+                </Panel>
+            </Button>
+
+            <TextBlock FontSize="8"
+                       IsVisible="{Binding ShowHint}"
+                       VerticalAlignment="Center"
+                       Text="(Click the button to the left to switch scenes)" />
         </StackPanel>
+    </common:BaseDialog.ContentLeftOfMenu>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"
+                              MinWidth="300" />
+            <ColumnDefinition Width="0" />
+            <ColumnDefinition Width="8*" />
+        </Grid.ColumnDefinitions>
+        
+        <Panel Grid.Column="0"
+               Grid.ColumnSpan="3"
+               IsVisible="{Binding !ShowSkull}">
+            <monoGame:MonoGameControl DataContext="{Binding SolidViewModel}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" />
+        </Panel>
+
+        <Panel Grid.Column="0"
+               Grid.ColumnSpan="3"
+               IsVisible="{Binding ShowSkull}">
+            <monoGame:MonoGameControl DataContext="{Binding SkullViewModel}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"/>
+        </Panel>
+
+        <Border Grid.Column="0"
+                Classes="Card"
+                Margin="{DynamicResource StandardMarginLeftTopBottom}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical"
+                        Margin="8">
+                <TextBlock Text="Display Text:"
+                           Margin="0,0,0,8" />
+                <TextBox Text="{Binding SkullViewModel.DisplayText}"
+                         Margin="0,0,0,8" />
+            </StackPanel>
+        </Border>
+
 
         <GridSplitter Grid.Column="1"
-                      ResizeDirection="Columns"
-                      VerticalAlignment="Stretch"
-                      Width="5"
-                      Foreground="{StaticResource WhiteBrush}"
-                      Background="{StaticResource WhiteBrush}" />
-
-        <TabControl Grid.Column="2">
-            <TabItem Header="Skull">
-                <monoGame:MonoGameControl DataContext="{Binding SkullViewModel, ElementName=_window, Mode=OneTime}"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch" />
-            </TabItem>
-            <TabItem Header="Solid">
-                <monoGame:MonoGameControl DataContext="{Binding SolidViewModel, ElementName=_window, Mode=OneTime}"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch" />
-            </TabItem>
-        </TabControl>
+                      Classes="CardSplitter" />
     </Grid>
-</Window>
+</common:BaseDialog>

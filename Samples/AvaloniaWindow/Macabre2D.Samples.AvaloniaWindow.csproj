@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
 		<ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
+		<ProjectReference Include="..\..\UI\Common\Macabre2D.UI.Common.csproj" />
 	</ItemGroup>
 	  <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

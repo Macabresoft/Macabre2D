@@ -1,0 +1,31 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <FluentTheme Mode="Dark" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Font.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Colors.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Margins.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/BoxShadows.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/IconPaths.axaml" />
+
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/AutoCompleteBox.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Border.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Button.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ButtonSpinner.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/CheckBox.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ComboBox.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/GridSplitter.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Icon.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Image.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ListBox.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ListBoxItem.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/NumericUpDown.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Slider.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/TabItem.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/TextBlock.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/TextBox.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/ToggleButton.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/TreeView.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/TreeViewItem.axaml" />
+    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/Window.axaml" />
+
+</Styles>

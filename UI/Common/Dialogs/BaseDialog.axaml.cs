@@ -82,7 +82,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         // ReSharper disable once UnusedParameter.Local
         private void TitleBar_OnDoubleTapped(object sender, RoutedEventArgs e) {
-            if (this.CanResize && WindowHelper.ToggleWindowStateCommand.CanExecute(this)) {
+            if (this.CanResize) {
                 WindowHelper.ToggleWindowStateCommand.Execute(this);
             }
         }

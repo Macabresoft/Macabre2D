@@ -2,12 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.App">
     <Application.Styles>
-        <FluentTheme Mode="Dark"/>
+        <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Theme.axaml" />
     </Application.Styles>
-
-    <Application.Resources>
-        <SolidColorBrush x:Key="BlackBrush">#FF1E0F0F</SolidColorBrush>
-        <SolidColorBrush x:Key="WhiteBrush">#FFE3DAC9</SolidColorBrush>
-        <SolidColorBrush x:Key="GreyBrush">#FF292528</SolidColorBrush>
-    </Application.Resources>
 </Application>

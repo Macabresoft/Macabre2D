@@ -16,6 +16,9 @@
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup>
       <Compile Update="Dialogs\BaseDialog.axaml.cs">
         <DependentUpon>BaseDialog.axaml</DependentUpon>
         <SubType>Code</SubType>

@@ -8,7 +8,6 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-
-        <StyleInclude Source="avares://Macabre2D/Theme/Theme.axaml" />
+        <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Theme.axaml" />
     </Application.Styles>
 </Application>
