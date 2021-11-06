@@ -101,8 +101,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
                 var viewPort = new Rect(this.Bounds.Size);
                 var source = new Rect(this._bitmap.Size);
-                var interpolationMode = RenderOptions.GetBitmapInterpolationMode(this);
-                context.DrawImage(this._bitmap, source, viewPort, interpolationMode);
+                context.DrawImage(this._bitmap, source, viewPort);
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
