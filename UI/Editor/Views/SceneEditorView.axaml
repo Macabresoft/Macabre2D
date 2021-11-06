@@ -4,9 +4,6 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneEditorView">
-    <UserControl.Resources>
-        <common:MonoGameColorToAvaloniaBrushConverter x:Key="MonoGameColorToAvaloniaBrushConverter" />
-    </UserControl.Resources>
     <Grid RowDefinitions="0.4*, 0, 0.6*"
           DataContext="{Binding $parent[local:SceneEditorView].ViewModel, Mode=OneTime}">
         <Design.DataContext>
@@ -19,14 +16,10 @@
             <ColumnDefinition Width="0.9*" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0"
-                Grid.RowSpan="3"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Background="{Binding SceneService.CurrentScene.BackgroundColor, Converter={StaticResource MonoGameColorToAvaloniaBrushConverter}}">
-            <monoGameInterop:MonoGameControl HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch" />
-        </Border>
+        <monoGameInterop:MonoGameControl Grid.Row="0"
+                                         Grid.RowSpan="3"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="3" />
 
         <Panel Grid.Row="0"
                Grid.Column="0"

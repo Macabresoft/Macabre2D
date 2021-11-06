@@ -30,7 +30,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// An implementation of <see cref="AvaloniaGame" /> used for editing a scene inside the
     /// Macabre2D editor.
     /// </summary>
-    public class SceneEditorGame : AvaloniaGame, ISceneEditor {
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public sealed class SceneEditorGame : AvaloniaGame, ISceneEditor {
         private readonly IEditorService _editorService;
         private readonly IEntityService _entityService;
         private readonly IList<IGizmo> _gizmos = new List<IGizmo>();
@@ -62,7 +63,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this._sceneService = sceneService;
             this._entityService = entityService;
             this._undoService = undoService;
-
             this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
         }
 
@@ -76,6 +76,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         protected override void Draw(GameTime gameTime) {
             if (this.GraphicsDevice != null) {
                 if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
+                    this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
                     this.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                     this.Scene.Render(this.FrameTime, this.InputState);
                 }

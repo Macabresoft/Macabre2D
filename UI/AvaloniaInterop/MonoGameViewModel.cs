@@ -177,7 +177,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             this.GraphicsDevice.Reset(this._presentationParameters);
         }
 
-        /// <inheritdoc
+        /// <inheritdoc />
         public virtual void OnActivated(object sender, EventArgs args) {
         }
 

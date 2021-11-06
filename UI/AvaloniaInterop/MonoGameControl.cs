@@ -13,6 +13,8 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using Avalonia.Platform;
     using Avalonia.Threading;
     using Avalonia.VisualTree;
+    using Macabresoft.Macabre2D.Framework;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop.Extensions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
@@ -28,7 +30,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         private readonly Stopwatch _stopwatch = new();
         private WriteableBitmap _bitmap;
         private bool _isDisposed;
-        private bool _isFirstLoad = true;
         private bool _isInitialized;
         private bool _isResizeProcessing;
         private MonoGameKeyboard _keyboard;
@@ -50,58 +51,34 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         public override void Render(DrawingContext context) {
-            if (!this.IsEffectivelyVisible) {
-                return;
-            }
-        
-            base.Render(context);
-
-            if (this._viewModel != null) {
-                if (this._isFirstLoad) {
-                    if (this.GetVisualRoot() is Window window) {
-                        this._viewModel.RunFrame();
-                        this._viewModel.Initialize(window, this.Bounds.Size, this._mouse, this._keyboard);
-                        this._isFirstLoad = false;
-                    }
-                }
+            if (this.IsEffectivelyVisible && this._viewModel != null) {
+                base.Render(context);
 
                 if (this._viewModel.Scene != this._viewModel.Game.Scene) {
                     this._viewModel.ResetScene();
                 }
-            }
 
-            this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
-            this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
-            this._stopwatch.Restart();
+                this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
+                this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
+                this._stopwatch.Restart();
 
-            if (this.ShouldPerformResize()) {
-                this._bitmap = new WriteableBitmap(
-                    new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
-                    new Vector(96d, 96d),
-                    PixelFormat.Rgba8888,
-                    AlphaFormat.Opaque);
+                if (this.CanBeginDraw()) {
+                    using (var bitmapLock = this._bitmap.Lock()) {
+                        this._viewModel.RunFrame();
 
-                this.SetViewport();
+                        var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
+                        this._viewModel.GraphicsDevice.GetBackBufferData(data);
+                        Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
+                    }
 
-                this._isResizeProcessing = true;
-                Dispatcher.UIThread.Post(() => {
-                    this._viewModel?.OnSizeChanged(this._bitmap.Size);
-                    this._isResizeProcessing = false;
-                }, DispatcherPriority.ContextIdle);
-            }
-
-            if (this.CanBeginDraw()) {
-                using (var bitmapLock = this._bitmap.Lock()) {
-                    this._viewModel.RunFrame();
-
-                    var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                    this._viewModel.GraphicsDevice.GetBackBufferData(data);
-                    Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
+                    context.DrawImage(this._bitmap, new Rect(this._bitmap.Size), new Rect(this.Bounds.Size));
                 }
-
-                var viewPort = new Rect(this.Bounds.Size);
-                var source = new Rect(this._bitmap.Size);
-                context.DrawImage(this._bitmap, source, viewPort);
+                else if (this._viewModel.Scene is IScene scene) {
+                    context.DrawRectangle(scene.BackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
+                }
+                else if (this._viewModel.Game?.Project.Settings is IGameSettings settings) {
+                    context.DrawRectangle(settings.FallbackBackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
+                }
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
@@ -125,6 +102,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
             if (this._viewModel != null) {
                 this._viewModel.PropertyChanged += this.ViewModel_PropertyChanged;
+                this.InitializeViewModel();
                 Dispatcher.UIThread.InvokeAsync(this.InvalidateVisual, DispatcherPriority.Background);
             }
         }
@@ -140,6 +118,16 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             this._viewModel?.OnDeactivated(this, EventArgs.Empty);
             base.OnLostFocus(e);
         }
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
+            base.OnPropertyChanged(change);
+
+            if (change.Property.Name == nameof(this.Bounds)) {
+                this.HandleResize();
+            }
+        }
+
 
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
@@ -158,21 +146,11 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         }
 
         private bool HandleDeviceReset() {
-            if (this._viewModel?.GraphicsDevice == null) {
+            if (this._viewModel?.GraphicsDevice == null || this._viewModel.GraphicsDevice.GraphicsDeviceStatus == GraphicsDeviceStatus.Lost) {
                 return false;
             }
 
-            var deviceNeedsReset = false;
-            switch (this._viewModel.GraphicsDevice.GraphicsDeviceStatus) {
-                case GraphicsDeviceStatus.Lost:
-                    return false;
-
-                case GraphicsDeviceStatus.NotReset:
-                    deviceNeedsReset = true;
-                    break;
-            }
-
-            if (deviceNeedsReset ||
+            if (this._viewModel.GraphicsDevice.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset ||
                 this._viewModel.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
                 this._viewModel.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
                 this._viewModel.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
@@ -180,6 +158,39 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             }
 
             return true;
+        }
+
+        private void HandleResize() {
+            if (this.ShouldPerformResize()) {
+                this._isResizeProcessing = true;
+                this._bitmap?.Dispose();
+
+                this._bitmap = new WriteableBitmap(
+                    new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
+                    new Vector(96d, 96d),
+                    PixelFormat.Rgba8888,
+                    AlphaFormat.Opaque);
+
+                this.SetViewport();
+
+                Dispatcher.UIThread.Post(() => {
+                    this._viewModel?.OnSizeChanged(this._bitmap.Size);
+                    this._isResizeProcessing = false;
+                }, DispatcherPriority.ContextIdle);
+            }
+        }
+
+        private void InitializeViewModel(Window window) {
+            if (this._viewModel != null) {
+                this._viewModel.RunFrame();
+                this._viewModel.Initialize(window, this.Bounds.Size, this._mouse, this._keyboard);
+            }
+        }
+
+        private void InitializeViewModel() {
+            if (this.GetVisualRoot() is Window window) {
+                this.InitializeViewModel(window);
+            }
         }
 
         private void SetViewport() {
@@ -209,8 +220,10 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
             if (this.GetVisualRoot() is Window window) {
                 window.Closing += (_, _) => this._viewModel?.OnExiting(this, EventArgs.Empty);
+                this.InitializeViewModel(window);
             }
 
+            this.HandleResize();
             this._stopwatch.Start();
             this._isInitialized = true;
         }
