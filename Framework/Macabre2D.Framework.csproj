@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<Authors>Brett Story</Authors>
 		<Company>Macabresoft</Company>
 		<Copyright>Copyright © 2016 - 2020</Copyright>
@@ -16,7 +16,7 @@
 		<AssemblyVersion>0.4.3.0</AssemblyVersion>
 		<FileVersion>0.4.3.0</FileVersion>
 		<Nullable>enable</Nullable>
-		<LangVersion>9</LangVersion>
+		<LangVersion>default</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>

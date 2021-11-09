@@ -3,7 +3,7 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
-    <Grid RowDefinitions="0.4*, 0, 0.6*"
+    <Grid RowDefinitions="0.6*, 0, 0.4*"
           DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.1*"
