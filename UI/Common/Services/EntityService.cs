@@ -8,6 +8,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// An interface for a service which handles the selection and loading of entities and their editors.
     /// </summary>
     public interface IEntityService : ISelectionService<IEntity> {
+        /// <summary>
+        /// Gets the available entity types.
+        /// </summary>
+        IReadOnlyCollection<Type> AvailableTypes { get; }
     }
 
     /// <summary>
@@ -24,11 +28,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
             IAssemblyService assemblyService,
             IUndoService undoService,
             IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
+            this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene))).ToList();
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes() {
-            return this.AssemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene)));
-        }
+        public IReadOnlyCollection<Type> AvailableTypes { get; }
     }
 }

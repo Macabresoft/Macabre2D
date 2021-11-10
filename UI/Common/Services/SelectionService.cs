@@ -12,25 +12,9 @@
     /// </summary>
     public interface ISelectionService : INotifyPropertyChanged {
         /// <summary>
-        /// Gets the available entity types.
-        /// </summary>
-        IReadOnlyCollection<Type> AvailableTypes { get; }
-
-        /// <summary>
         /// Gets the editors.
         /// </summary>
         IReadOnlyCollection<ValueControlCollection> Editors { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether or not the value editor service is busy.
-        /// </summary>
-        bool IsBusy { get; }
-
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        /// <returns>A task.</returns>
-        void Initialize();
     }
 
     /// <summary>
@@ -44,13 +28,11 @@
     }
 
     public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T> where T : class {
-        private readonly ObservableCollectionExtended<Type> _availableTypes = new();
         private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
         private readonly object _editorsLock = new();
 
         private readonly IUndoService _undoService;
         private readonly IValueControlService _valueControlService;
-        private bool _isBusy;
         private T _selected;
 
         /// <summary>
@@ -68,14 +50,6 @@
             this._valueControlService = valueControlService;
         }
         
-        /// <summary>
-        /// Gets the assembly service.
-        /// </summary>
-        protected IAssemblyService AssemblyService { get; }
-
-        /// <inheritdoc />
-        public IReadOnlyCollection<Type> AvailableTypes => this._availableTypes;
-
         /// <inheritdoc />
         public IReadOnlyCollection<ValueControlCollection> Editors {
             get {
@@ -83,12 +57,6 @@
                     return this._editors;
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public bool IsBusy {
-            get => this._isBusy;
-            private set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
         }
 
         /// <inheritdoc />
@@ -102,17 +70,10 @@
             }
         }
 
-        /// <inheritdoc />
-        public void Initialize() {
-            var types = this.GetAvailableTypes();
-            this._availableTypes.Reset(types.OrderBy(x => x.Name));
-        }
-
         /// <summary>
-        /// Gets the available types.
+        /// Gets the assembly service.
         /// </summary>
-        /// <returns>The available types.</returns>
-        protected abstract IEnumerable<Type> GetAvailableTypes();
+        protected IAssemblyService AssemblyService { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not editors should be loaded.
@@ -140,24 +101,17 @@
         private void ResetEditors() {
             if (this.ShouldLoadEditors()) {
                 lock (this._editorsLock) {
-                    try {
-                        Dispatcher.UIThread.Post(() => this.IsBusy = true);
+                    var editorCollections = this._valueControlService.CreateControls(this.Selected).ToList();
 
-                        var editorCollections = this._valueControlService.CreateControls(this.Selected).ToList();
-
-                        foreach (var editorCollection in this._editors) {
-                            editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
-                        }
-
-                        foreach (var editorCollection in editorCollections) {
-                            editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-                        }
-
-                        Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
+                    foreach (var editorCollection in this._editors) {
+                        editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
                     }
-                    finally {
-                        Dispatcher.UIThread.Post(() => this.IsBusy = false);
+
+                    foreach (var editorCollection in editorCollections) {
+                        editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
                     }
+
+                    Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
                 }
             }
             else {

@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
+    using System;
     using System.Collections.Generic;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
@@ -7,16 +8,7 @@
     /// <summary>
     /// Interface for the selection service for the scene tree.
     /// </summary>
-    public interface IProjectSelectionService {
-        /// <summary>
-        /// Gets the editors.
-        /// </summary>
-        IReadOnlyCollection<ValueControlCollection> Editors { get; }
-
-        /// <summary>
-        /// Gets or sets the selected object in the project tree.
-        /// </summary>
-        object Selected { get; set; }
+    public interface IProjectSelectionService : ISelectionService<object> {
     }
 
     /// <summary>

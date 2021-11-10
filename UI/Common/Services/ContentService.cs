@@ -169,11 +169,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes() {
-            return Enumerable.Empty<Type>();
-        }
-
-        /// <inheritdoc />
         protected override bool ShouldLoadEditors() {
             return this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
         }

@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -179,7 +178,7 @@ namespace Macabresoft.Macabre2D.Framework {
             var entity = new T {
                 Name = typeof(T).Name
             };
-            
+
             this._children.Add(entity);
             this.OnAddChild(entity);
             return entity;

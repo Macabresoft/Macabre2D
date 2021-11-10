@@ -34,11 +34,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 var projectService = Resolver.Resolve<IProjectService>();
                 projectService.LoadProject();
 
-                Resolver.Resolve<IContentService>().Initialize();
-                Resolver.Resolve<IEntityService>().Initialize();
-                Resolver.Resolve<ISystemService>().Initialize();
-
-
                 mainWindow.InitializeComponent();
                 desktop.MainWindow = mainWindow;
             }

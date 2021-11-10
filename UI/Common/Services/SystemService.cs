@@ -1,12 +1,17 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
     /// An interface for a service which handles a scene's systems.
     /// </summary>
     public interface ISystemService : ISelectionService<IUpdateableSystem> {
+        /// <summary>
+        /// Gets the available entity types.
+        /// </summary>
+        IReadOnlyCollection<Type> AvailableTypes { get; }
     }
 
     /// <summary>
@@ -23,11 +28,10 @@
             IAssemblyService assemblyService,
             IUndoService undoService,
             IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
+            this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IUpdateableSystem)).ToList();
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> GetAvailableTypes() {
-            return this.AssemblyService.LoadTypes(typeof(IUpdateableSystem));
-        }
+        public IReadOnlyCollection<Type> AvailableTypes { get; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Collections.Generic;
-    using Avalonia.Controls;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
@@ -8,12 +7,7 @@
     /// <summary>
     /// Interface for the selection service for the scene tree.
     /// </summary>
-    public interface ISceneSelectionService {
-        /// <summary>
-        /// Gets the editors.
-        /// </summary>
-        IReadOnlyCollection<ValueControlCollection> Editors { get; }
-
+    public interface ISceneSelectionService : ISelectionService<object> {
         /// <summary>
         /// Gets the implied selected object.
         /// </summary>
@@ -23,11 +17,6 @@
         /// Gets a value indicating whether or not the state of the program is in an entity context.
         /// </summary>
         bool IsEntityContext { get; }
-
-        /// <summary>
-        /// Gets or sets the selected object in the scene tree.
-        /// </summary>
-        object Selected { get; set; }
     }
 
     /// <summary>
@@ -75,7 +64,7 @@
             get => this._isEntityContext;
             private set => this.RaiseAndSetIfChanged(ref this._isEntityContext, value);
         }
-        
+
         /// <inheritdoc />
         public object Selected {
             get => this._selected;
