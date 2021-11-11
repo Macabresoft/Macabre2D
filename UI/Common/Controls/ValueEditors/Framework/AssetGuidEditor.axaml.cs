@@ -35,6 +35,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private string _pathText;
 
         public AssetGuidEditor() : this(
+            null,
             Resolver.Resolve<IAssetManager>(),
             Resolver.Resolve<ICommonDialogService>(),
             Resolver.Resolve<IUndoService>()) {
@@ -42,9 +43,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         [InjectionConstructor]
         public AssetGuidEditor(
+            ValueControlDependencies dependencies,
             IAssetManager assetManager,
             ICommonDialogService dialogService,
-            IUndoService undoService) {
+            IUndoService undoService) : base(dependencies) {
             this._assetManager = assetManager;
             this._dialogService = dialogService;
             this._undoService = undoService;
@@ -53,6 +55,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 this.Clear,
                 this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
             this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
+
+            if (dependencies?.Owner?.GetType() is Type ownerType) {
+                var members = ownerType.GetMember(dependencies.ValuePropertyName);
+                if (members.FirstOrDefault() is MemberInfo info && info.GetCustomAttribute<AssetGuidAttribute>() is AssetGuidAttribute attribute) {
+                    this._assetType = attribute.AssetType;
+                }
+            }
+            
+            this.ResetPath();
             this.InitializeComponent();
         }
 
@@ -66,17 +77,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public string PathText {
             get => this._pathText;
             private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            if (owner?.GetType() is Type ownerType) {
-                var members = ownerType.GetMember(valuePropertyName);
-                if (members.FirstOrDefault() is MemberInfo info && info.GetCustomAttribute<AssetGuidAttribute>() is AssetGuidAttribute attribute) {
-                    this._assetType = attribute.AssetType;
-                }
-            }
-
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
         }
 
         protected override void OnValueChanged() {
@@ -104,7 +104,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private void ResetPath() {
             this.PathText = null;
 
-            if (this.Value != Guid.Empty &&
+            if (this._assetManager != null &&
+                this.Value != Guid.Empty &&
                 this.Value != Guid.Empty &&
                 this._assetManager.TryGetMetadata(this.Value, out var metadata) &&
                 metadata != null) {

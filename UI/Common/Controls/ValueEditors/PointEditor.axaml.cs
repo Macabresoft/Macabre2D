@@ -4,6 +4,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
+    using Unity;
     using Point = Microsoft.Xna.Framework.Point;
 
     public class PointEditor : ValueEditorControl<Point> {
@@ -34,7 +35,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private int _xValue;
         private int _yValue;
 
-        public PointEditor() {
+        public PointEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public PointEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

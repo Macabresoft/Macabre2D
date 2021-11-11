@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Microsoft.Xna.Framework;
+    using Unity;
 
     public class ColorEditor : ValueEditorControl<Color> {
         public static readonly DirectProperty<ColorEditor, byte> AlphaValueProperty =
@@ -37,7 +38,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private byte _redValue;
 
-        public ColorEditor() {
+        public ColorEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public ColorEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

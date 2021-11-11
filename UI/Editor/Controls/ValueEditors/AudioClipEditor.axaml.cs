@@ -7,7 +7,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -35,6 +34,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private string _pathText;
 
         public AudioClipEditor() : this(
+            null,
             Resolver.Resolve<IAssetManager>(),
             Resolver.Resolve<ILocalDialogService>(),
             Resolver.Resolve<IUndoService>()) {
@@ -42,14 +42,16 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         [InjectionConstructor]
         public AudioClipEditor(
+            ValueControlDependencies dependencies,
             IAssetManager assetManager,
             ILocalDialogService dialogService,
-            IUndoService undoService) {
+            IUndoService undoService) : base(dependencies) {
             this._assetManager = assetManager;
             this._dialogService = dialogService;
             this._undoService = undoService;
 
             this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
+            this.ResetPath();
             this.InitializeComponent();
         }
 
@@ -103,7 +105,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private void ResetPath() {
             this.PathText = null;
 
-            if (this.Value?.Asset != null &&
+            if (this._assetManager != null &&
+                this.Value?.Asset != null &&
                 this.Value.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
                 metadata != null) {

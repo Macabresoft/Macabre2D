@@ -6,12 +6,10 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
-    using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -58,6 +56,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private SpriteDisplayModel _sprite;
 
         public SpriteReferenceEditor() : this(
+            null,
             Resolver.Resolve<IAssetManager>(),
             Resolver.Resolve<ILocalDialogService>(),
             Resolver.Resolve<IFileSystemService>(),
@@ -67,11 +66,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         [InjectionConstructor]
         public SpriteReferenceEditor(
+            ValueControlDependencies dependencies,
             IAssetManager assetManager,
             ILocalDialogService dialogService,
             IFileSystemService fileSystem,
             IPathService pathService,
-            IUndoService undoService) {
+            IUndoService undoService) : base(dependencies) {
             this._assetManager = assetManager;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
@@ -79,6 +79,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._undoService = undoService;
 
             this.SelectSpriteCommand = ReactiveCommand.CreateFromTask(this.SelectSprite);
+            this.ResetBitmap();
             this.InitializeComponent();
         }
 
@@ -104,11 +105,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public SpriteDisplayModel Sprite {
             get => this._sprite;
             private set => this.SetAndRaise(SpriteProperty, ref this._sprite, value);
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-            this.RaisePropertyChanged(RenderEntityProperty, null, new BindingValue<BaseSpriteEntity>(this.RenderEntity));
         }
 
         protected override void OnValueChanged() {
@@ -165,7 +161,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this.Sprite = null;
             this.MaxIndex = 0;
 
-            if (this.Value is SpriteReference { Asset: { } } reference &&
+            if (this._assetManager != null &&
+                this.Value is SpriteReference { Asset: { } } reference &&
                 reference.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(reference.ContentId, out var metadata) && metadata != null) {
                 this.MaxIndex = reference.Asset.MaxIndex;

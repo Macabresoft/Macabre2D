@@ -14,20 +14,23 @@ namespace Macabresoft.Macabre2D.UI.Common {
             get => this.GetValue(UpdateOnLostFocusProperty);
             set => this.SetValue(UpdateOnLostFocusProperty, value);
         }
+        
+        protected ValueEditorControl() {
+        }
+
+        protected ValueEditorControl(ValueControlDependencies dependencies) : base(dependencies) {
+            if (dependencies != null) {
+                this.ValuePropertyName = dependencies.ValuePropertyName;
+
+                if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
+                    notifyPropertyChanged.PropertyChanged += this.Owner_PropertyChanged;
+                }
+            }
+        }
 
         public string ValuePropertyName { get; private set; }
 
         protected bool IgnoreUpdates { get; set; }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-
-            this.ValuePropertyName = valuePropertyName;
-
-            if (this.Owner is INotifyPropertyChanged notifyPropertyChanged) {
-                notifyPropertyChanged.PropertyChanged += this.Owner_PropertyChanged;
-            }
-        }
 
         public void SetValue(object newValue) {
             if (newValue is T typedNewValue) {

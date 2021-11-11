@@ -45,7 +45,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         [InjectionConstructor]
-        public AutoTileSetCollectionEditor(IContentService contentService, ILocalDialogService dialogService, IUndoService undoService) {
+        public AutoTileSetCollectionEditor(
+            ValueControlDependencies dependencies,
+            IContentService contentService,
+            ILocalDialogService dialogService,
+            IUndoService undoService) : base(dependencies) {
             this._contentService = contentService;
             this._dialogService = dialogService;
             this._undoService = undoService;

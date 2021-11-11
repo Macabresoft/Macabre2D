@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
     using Microsoft.Xna.Framework;
+    using Unity;
 
     public class Vector2Editor : ValueEditorControl<Vector2> {
         public static readonly StyledProperty<float> XMaximumProperty =
@@ -34,7 +35,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private float _xValue;
         private float _yValue;
 
-        public Vector2Editor() {
+        public Vector2Editor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public Vector2Editor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

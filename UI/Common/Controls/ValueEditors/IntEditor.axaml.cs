@@ -1,9 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class IntEditor : BaseNumericEditor<int> {
-        public IntEditor() {
+        public IntEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public IntEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

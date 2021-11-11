@@ -5,12 +5,10 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
-    using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media.Imaging;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor;
     using ReactiveUI;
     using Unity;
 
@@ -51,6 +49,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private string _pathText;
 
         public SpriteAnimationEditor() : this(
+            null,
             Resolver.Resolve<IAssetManager>(),
             Resolver.Resolve<ILocalDialogService>(),
             Resolver.Resolve<IFileSystemService>(),
@@ -60,11 +59,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         [InjectionConstructor]
         public SpriteAnimationEditor(
+            ValueControlDependencies dependencies,
             IAssetManager assetManager,
             ILocalDialogService dialogService,
             IFileSystemService fileSystem,
             IPathService pathService,
-            IUndoService undoService) {
+            IUndoService undoService) : base(dependencies) {
             this._assetManager = assetManager;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
@@ -72,6 +72,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._undoService = undoService;
 
             this.SelectAnimationCommand = ReactiveCommand.CreateFromTask(this.SelectAnimation);
+            this.ResetBitmap();
             this.InitializeComponent();
         }
 
@@ -92,11 +93,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public string PathText {
             get => this._pathText;
             private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-            this.RaisePropertyChanged(AnimationProperty, null, new BindingValue<SpriteAnimation>(this.Animation));
         }
 
         protected override void OnValueChanged() {
@@ -142,7 +138,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this.PathText = null;
             this.Bitmap = null;
 
-            if (this.Value?.PackagedAsset != null &&
+            if (this._assetManager != null &&
+                this.Value?.PackagedAsset != null &&
                 this.Value.ContentId != Guid.Empty &&
                 this._assetManager.TryGetMetadata(this.Value.ContentId, out var metadata) &&
                 metadata != null) {

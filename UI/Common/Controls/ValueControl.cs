@@ -1,9 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Data;
-    using Macabresoft.Macabre2D.UI.Common;
 
     public class ValueControl<T> : UserControl, IValueInfo<T> {
         public static readonly DirectProperty<ValueControl<T>, ValueControlCollection> CollectionProperty =
@@ -24,8 +22,21 @@
         public static readonly StyledProperty<string> CategoryProperty =
             AvaloniaProperty.Register<ValueControl<T>, string>(nameof(Category));
 
-
         private ValueControlCollection _collection;
+
+        protected ValueControl() {
+        }
+        
+        protected ValueControl(ValueControlDependencies dependencies) {
+            if (dependencies != null) {
+                if (dependencies.Value is T typedValue) {
+                    this.Value = typedValue;
+                }
+
+                this.Owner = dependencies.Owner;
+                this.Title = dependencies.Title;
+            }
+        }
 
         public string Category {
             get => this.GetValue(CategoryProperty);
@@ -50,15 +61,6 @@
         public T Value {
             get => this.GetValue(ValueProperty);
             set => this.SetValue(ValueProperty, value);
-        }
-
-        public virtual void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            if (value is T typedValue) {
-                this.Value = typedValue;
-            }
-
-            this.Owner = owner;
-            this.Title = title;
         }
 
         protected virtual void OnValueChanged() {

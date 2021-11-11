@@ -1,8 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia;
-    using Avalonia.Data;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class EnumEditor : ValueEditorControl<object> {
         public static readonly DirectProperty<EnumEditor, Type> EnumTypeProperty =
@@ -10,17 +10,17 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 nameof(EnumType),
                 editor => editor.EnumType);
 
-        public EnumEditor() {
+        public EnumEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public EnumEditor(ValueControlDependencies dependencies) : base(dependencies) {
+            this.EnumType = dependencies?.ValueType;
             this.InitializeComponent();
         }
 
-        public Type EnumType { get; private set; }
+        public Type EnumType { get; }
 
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            this.EnumType = valueType;
-            this.RaisePropertyChanged(EnumTypeProperty, Optional<Type>.Empty, this.EnumType);
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-        }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

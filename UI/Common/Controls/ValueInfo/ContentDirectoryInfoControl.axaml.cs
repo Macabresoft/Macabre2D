@@ -1,9 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
     using System.IO;
     using Avalonia;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common;
+    using Unity;
 
     public class ContentDirectoryInfoControl : ValueControl<ContentDirectory> {
         public static readonly DirectProperty<ContentDirectoryInfoControl, DirectoryInfo> DirectoryInfoProperty =
@@ -11,24 +10,19 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 nameof(DirectoryInfo),
                 control => control.DirectoryInfo);
 
-        private DirectoryInfo _directoryInfo;
+        public ContentDirectoryInfoControl() : base() {
+        }
 
-        public ContentDirectoryInfoControl() {
+        [InjectionConstructor]
+        public ContentDirectoryInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
+            if (this.Owner is ContentDirectory directory) {
+                this.DirectoryInfo = new DirectoryInfo(directory.GetFullPath());
+            }
+
             this.InitializeComponent();
         }
 
-        public DirectoryInfo DirectoryInfo {
-            get => this._directoryInfo;
-            private set => this.SetAndRaise(DirectoryInfoProperty, ref this._directoryInfo, value);
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-
-            if (owner is ContentDirectory directory) {
-                this.DirectoryInfo = new DirectoryInfo(directory.GetFullPath());
-            }
-        }
+        public DirectoryInfo DirectoryInfo { get; }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

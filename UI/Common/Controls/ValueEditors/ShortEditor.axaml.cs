@@ -1,9 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class ShortEditor : BaseNumericEditor<short> {
-        public ShortEditor() {
+        public ShortEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public ShortEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

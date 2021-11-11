@@ -1,9 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class ByteEditor : BaseNumericEditor<byte> {
-        public ByteEditor() {
+        public ByteEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public ByteEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

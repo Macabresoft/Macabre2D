@@ -5,10 +5,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.Linq;
     using Avalonia.Controls;
     using Avalonia.Layout;
+    using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
     using Avalonia.Media;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 
@@ -17,17 +17,18 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new();
         private readonly IUndoService _undoService;
 
-        public CollisionMapEditor() : this(Resolver.Resolve<IUndoService>()) {
+        public CollisionMapEditor() : this(null, Resolver.Resolve<IUndoService>()) {
         }
 
         [InjectionConstructor]
-        public CollisionMapEditor(IUndoService undoService) {
+        public CollisionMapEditor(ValueControlDependencies dependencies, IUndoService undoService) : base(dependencies) {
             this._undoService = undoService;
             this.InitializeComponent();
         }
 
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
+        protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e) {
+            base.OnAttachedToLogicalTree(e);
+
             this.CreateMap();
         }
 

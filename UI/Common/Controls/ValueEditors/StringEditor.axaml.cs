@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia;
     using Avalonia.Interactivity;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class StringEditor : ValueEditorControl<string> {
         public static readonly DirectProperty<StringEditor, string> IntermediaryValueProperty =
@@ -12,7 +13,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private string _intermediaryValue;
 
-        public StringEditor() {
+        public StringEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public StringEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

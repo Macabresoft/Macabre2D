@@ -7,7 +7,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
     public class ColliderEditor : ValueEditorControl<Collider> {
@@ -22,7 +21,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 editor => editor.SelectedType,
                 (editor, value) => editor.SelectedType = value);
 
-        private readonly IAssemblyService _assemblyService;
         private readonly HashSet<IValueControl> _childEditors = new();
         private readonly ObservableCollectionExtended<Type> _derivedTypes = new();
         private readonly IValueControlService _valueControlService;
@@ -30,13 +28,21 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private ValueControlCollection _controlCollection;
         private Type _selectedType;
 
-        public ColliderEditor() : this(Resolver.Resolve<IAssemblyService>(), Resolver.Resolve<IValueControlService>()) {
+        public ColliderEditor() : this(null, Resolver.Resolve<IAssemblyService>(), Resolver.Resolve<IValueControlService>()) {
         }
 
         [InjectionConstructor]
-        public ColliderEditor(IAssemblyService assemblyService, IValueControlService valueControlService) {
-            this._assemblyService = assemblyService;
+        public ColliderEditor(
+            ValueControlDependencies dependencies,
+            IAssemblyService assemblyService,
+            IValueControlService valueControlService) : base(dependencies) {
             this._valueControlService = valueControlService;
+
+            var types = assemblyService.LoadTypes(typeof(Collider));
+            this._derivedTypes.Reset(types);
+            this._derivedTypes.Remove(typeof(PolygonCollider));
+            this.ResetColliderEditors();
+
             this.InitializeComponent();
         }
 
@@ -50,16 +56,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     Dispatcher.UIThread.Post(() => { this.Value = Activator.CreateInstance(value) as Collider; });
                 }
             }
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            var types = this._assemblyService.LoadTypes(typeof(Collider));
-            this._derivedTypes.Reset(types);
-            this._derivedTypes.Remove(typeof(PolygonCollider));
-
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-
-            this.ResetColliderEditors();
         }
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {

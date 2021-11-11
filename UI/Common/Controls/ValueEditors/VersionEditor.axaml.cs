@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia.LogicalTree;
     using Avalonia.Markup.Xaml;
     using Avalonia.Threading;
+    using Unity;
 
     public class VersionEditor : ValueEditorControl<Version> {
         public static readonly DirectProperty<VersionEditor, int> BuildValueProperty =
@@ -36,7 +37,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private int _minorValue;
         private int _revisionValue;
 
-        public VersionEditor() {
+        public VersionEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public VersionEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

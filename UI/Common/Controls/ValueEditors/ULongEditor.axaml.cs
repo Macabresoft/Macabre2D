@@ -1,9 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class ULongEditor : BaseNumericEditor<ulong> {
-        public ULongEditor() {
+        public ULongEditor() : this(null) {
+        }
+
+        [InjectionConstructor]
+        public ULongEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 

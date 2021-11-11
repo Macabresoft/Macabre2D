@@ -117,7 +117,7 @@ namespace Macabresoft.Macabre2D.Framework {
     public class Entity : Transformable, IEntity {
         /// <summary>
         /// The default empty <see cref="IEntity" /> that is present before initialization.
-        /// </summary>
+        /// </summary>43E
         public static readonly IEntity Empty = new EmptyEntity();
 
         [DataMember]

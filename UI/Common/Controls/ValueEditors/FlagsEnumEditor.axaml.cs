@@ -3,9 +3,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Controls;
-    using Avalonia.Data;
     using Avalonia.Markup.Xaml;
     using ReactiveUI;
+    using Unity;
 
     public class FlagsEnumEditor : ValueEditorControl<object> {
         public static readonly StyledProperty<Type> EnumTypeProperty =
@@ -16,24 +16,19 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 nameof(EnumType),
                 editor => editor.ToggleValueCommand);
 
+        public FlagsEnumEditor() : this(null) {
+        }
 
-        public FlagsEnumEditor() {
+        [InjectionConstructor]
+        public FlagsEnumEditor(ValueControlDependencies dependencies) : base(dependencies) {
+            this.EnumType = dependencies?.ValueType;
             this.ToggleValueCommand = ReactiveCommand.Create<object>(this.ToggleValue);
             this.InitializeComponent();
         }
 
+        public Type EnumType { get; }
+
         public ICommand ToggleValueCommand { get; }
-
-        public Type EnumType {
-            get => this.GetValue(EnumTypeProperty);
-            set => this.SetValue(EnumTypeProperty, value);
-        }
-
-        public override void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner) {
-            this.EnumType = valueType;
-            this.RaisePropertyChanged(EnumTypeProperty, Optional<Type>.Empty, this.EnumType);
-            base.Initialize(value, valueType, valuePropertyName, title, owner);
-        }
 
         private void InitializeComponent() {
             AvaloniaXamlLoader.Load(this);

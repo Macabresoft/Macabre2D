@@ -25,6 +25,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private readonly DataTable _calculator = new();
         private string _valueDisplay;
 
+        protected BaseNumericEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        }
+
         public string ValueDisplay {
             get => this._valueDisplay;
             set => this.SetAndRaise(ValueDisplayProperty, ref this._valueDisplay, value);

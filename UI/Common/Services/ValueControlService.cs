@@ -10,6 +10,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
     using Unity;
+    using Unity.Resolution;
 
     /// <summary>
     /// An interface for a service which produces value editor controls given an object that contains a
@@ -153,9 +154,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
             Type memberType,
             AttributeMemberInfo<DataMemberAttribute> member,
             string propertyPath) {
-            if (this._container.Resolve(editorType) is IValueEditor editor) {
-                var title = GetTitle(member);
-                editor.Initialize(value, memberType, this.GetPropertyName(propertyPath), title, owner);
+            var dependencies = new ValueControlDependencies(value, memberType, GetPropertyName(propertyPath), GetTitle(member), owner);
+            if (this._container.Resolve(editorType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueEditor editor) {
                 editor.Category = DefaultCategoryName;
 
                 if (member.MemberInfo.GetCustomAttribute(typeof(CategoryAttribute), false) is CategoryAttribute memberCategory) {
@@ -176,7 +176,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             return null;
         }
 
-        private string GetPropertyName(string propertyPath) {
+        private static string GetPropertyName(string propertyPath) {
             return !string.IsNullOrWhiteSpace(propertyPath) ? propertyPath.Split('.').Last() : propertyPath;
         }
 
@@ -187,12 +187,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
             info = null;
 
-            if (value?.GetType() is Type ownerType) {
-                var controlType = this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType);
+            if (value?.GetType() is Type ownerType && this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType) is Type controlType && !controlType.IsAssignableTo(typeof(IValueEditor))) {
+                var dependencies = new ValueControlDependencies(value, ownerType, null, DefaultCategoryNameForInfo, originalObject);
 
-                if (controlType != null && !controlType.IsAssignableTo(typeof(IValueEditor)) && this._container.Resolve(controlType) is IValueControl control) {
+                if (this._container.Resolve(controlType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueControl control) {
                     info = control;
-                    control.Initialize(value, ownerType, null, DefaultCategoryNameForInfo, originalObject);
 
                     if (Attribute.GetCustomAttribute(ownerType, typeof(DataContractAttribute), false) is DataContractAttribute dataContractAttribute && !string.IsNullOrEmpty(dataContractAttribute.Name)) {
                         control.Category = $"{dataContractAttribute.Name} {DefaultCategoryNameForInfo}";

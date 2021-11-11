@@ -25,15 +25,5 @@
         /// Gets or sets the title.
         /// </summary>
         string Title { get; set; }
-
-        /// <summary>
-        /// Initializes the value editor.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="valueType"></param>
-        /// <param name="valuePropertyName">The name of the value's property/field on the owner object.</param>
-        /// <param name="title">The title of this control.</param>
-        /// <param name="owner">The owner.</param>
-        void Initialize(object value, Type valueType, string valuePropertyName, string title, object owner);
     }
 }

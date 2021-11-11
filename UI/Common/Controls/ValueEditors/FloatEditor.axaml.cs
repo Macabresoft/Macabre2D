@@ -1,9 +1,16 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using Avalonia.Markup.Xaml;
+    using Unity;
 
     public class FloatEditor : BaseNumericEditor<float> {
-        public FloatEditor() {
+
+        public FloatEditor() : this(null) {
+            
+        }
+        
+        [InjectionConstructor]
+        public FloatEditor(ValueControlDependencies dependencies) : base(dependencies) {
             this.InitializeComponent();
         }
 
