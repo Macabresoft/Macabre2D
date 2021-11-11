@@ -15,7 +15,7 @@
             <ListBox Items="{Binding Collection.Sprites}"
                      SelectedItem="{Binding SelectedSprite}">
                 <ListBox.Styles>
-                    <StyleInclude Source="avares://Macabre2D/Theme/Controls/SpriteListBoxItem.axaml" />
+                    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/SpriteListBoxItem.axaml" />
                 </ListBox.Styles>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
