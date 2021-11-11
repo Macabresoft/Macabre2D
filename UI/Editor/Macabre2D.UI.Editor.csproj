@@ -3,7 +3,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>Macabresoft.Macabre2D.UI.Editor</RootNamespace>
-        <LangVersion>default</LangVersion>
+        <LangVersion>10</LangVersion>
         <PackageId>Macabre2D.UI.Editor</PackageId>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <OutputPath>..\..\bin\$(Configuration)</OutputPath>
