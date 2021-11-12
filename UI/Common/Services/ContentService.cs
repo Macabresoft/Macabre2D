@@ -340,7 +340,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
                 var current = Path.Combine(this._pathService.MetadataDirectoryPath, fileName);
                 var moveTo = Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName);
-                this._fileSystem.MoveFile(current, moveTo);
+
+                if (!this._fileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath)) {
+                    this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
+                }
+
+                if (this._fileSystem.DoesFileExist(current)) {
+                    this._fileSystem.MoveFile(current, moveTo);
+                }
             }
             else {
                 this._assetManager.RegisterMetadata(metadata);

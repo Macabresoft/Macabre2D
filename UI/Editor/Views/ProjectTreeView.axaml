@@ -65,7 +65,8 @@
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Import a piece of content from elsewhere" />
 
-            <Separator IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
+            <Separator
+                IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
 
             <MenuItem Header="Delete"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
@@ -87,6 +88,24 @@
                             CommandParameter="{Binding SelectionService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Add content as a child of the selected node">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add Directory"
+                                          Command="{Binding AddDirectoryCommand}"
+                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          ToolTip.Tip="Adds a directory as the child of the current node" />
+
+                                <MenuItem Header="Add Scene"
+                                          Command="{Binding AddSceneCommand}"
+                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          ToolTip.Tip="Adds a scene as the child of the current node" />
+
+                                <MenuItem Header="Import Content"
+                                          Command="{Binding ImportCommand}"
+                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          ToolTip.Tip="Import a piece of content from elsewhere" />
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <common:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
