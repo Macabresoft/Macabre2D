@@ -7,9 +7,15 @@
     /// Takes a value and a parameter. If these two things are equal, returns true.
     /// </summary>
     public class EqualityConverter : IValueConverter {
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the result should be inverted.
+        /// </summary>
+        public bool InvertResult { get; set; }
+
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value == null && parameter != null || value != null && !value.Equals(parameter);
+            var result = !(value == null && parameter != null || value != null && !value.Equals(parameter));
+            return this.InvertResult ? !result : result;
         }
 
         /// <inheritdoc />

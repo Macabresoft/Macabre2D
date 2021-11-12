@@ -28,6 +28,6 @@
         /// Gets or sets the last tab selected.
         /// </summary>
         [DataMember]
-        public EditorTabs LastTabSelected { get; set; } = EditorTabs.Entities;
+        public EditorTabs LastTabSelected { get; set; } = EditorTabs.Scene;
     }
 }

@@ -53,6 +53,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         GizmoKind SelectedGizmo { get; set; }
 
         /// <summary>
+        /// Gets or sets the selected tab.
+        /// </summary>
+        EditorTabs SelectedTab { get; set; }
+
+        /// <summary>
         /// Gets or sets the selection color.
         /// </summary>
         Color SelectionColor { get; set; }
@@ -138,6 +143,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
             get => this._settingsService.Settings.LastGizmoSelected;
             set {
                 this._settingsService.Settings.LastGizmoSelected = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        /// <inheritdoc />
+        public EditorTabs SelectedTab {
+            get => this._settingsService.Settings.LastTabSelected;
+            set {
+                this._settingsService.Settings.LastTabSelected = value;
                 this.RaisePropertyChanged();
             }
         }

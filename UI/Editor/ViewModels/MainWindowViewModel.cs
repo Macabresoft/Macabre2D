@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Avalonia.Controls;
     using Avalonia.Threading;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
@@ -30,6 +29,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
@@ -37,11 +37,13 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public MainWindowViewModel(
             ILocalDialogService dialogService,
+            IEditorService editorService,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
             IUndoService undoService) : base(undoService) {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
@@ -54,6 +56,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }
+
+        /// <summary>
+        /// Gets the editor service.
+        /// </summary>
+        public IEditorService EditorService { get; }
 
         /// <summary>
         /// Gets the command to exit the application.
@@ -90,16 +97,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// </summary>
         public ICommand ViewSourceCommand { get; }
 
-        /// <summary>
-        /// Gets or sets the selected tab.
-        /// </summary>
-        public EditorTabs SelectedTab {
-            get => this._settingsService.Settings.LastTabSelected;
-            set {
-                this._settingsService.Settings.LastTabSelected = value;
-                this.RaisePropertyChanged();
-            }
-        }
 
         /// <summary>
         /// Gets a value indicating whether or not the window should close.
@@ -133,11 +130,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         private void SelectTab(EditorTabs tab) {
-            this.SelectedTab = tab;
+            this.EditorService.SelectedTab = tab;
         }
 
         private void ToggleTab() {
-            this.SelectTab(this.SelectedTab == EditorTabs.Entities ? EditorTabs.Content : EditorTabs.Entities);
+            this.SelectTab(this.EditorService.SelectedTab == EditorTabs.Scene ? EditorTabs.Project : EditorTabs.Scene);
         }
 
         private async Task ViewLicenses() {

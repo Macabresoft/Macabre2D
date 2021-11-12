@@ -18,6 +18,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
+        private readonly IEditorService _editorService;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
@@ -31,6 +32,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
+        /// <param name="editorService">The editor service.</param>
         /// <param name="fileSystem">The file system.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
@@ -39,12 +41,14 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public ProjectTreeViewModel(
             IContentService contentService,
             ICommonDialogService dialogService,
+            IEditorService editorService,
             IFileSystemService fileSystem,
             ISaveService saveService,
             ISceneService sceneService,
             IProjectSelectionService selectionService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
+            this._editorService = editorService;
             this._fileSystem = fileSystem;
             this._saveService = saveService;
             this._sceneService = sceneService;
@@ -153,8 +157,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         private async Task OpenSelectedContent(IContentNode node) {
-            if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel) {
-                this._sceneService.TryLoadScene(node.Id, out _);
+            if (CanOpenContent(node) && await this._saveService.RequestSave() != YesNoCancelResult.Cancel && this._sceneService.TryLoadScene(node.Id, out _)) {
+                this._editorService.SelectedTab = EditorTabs.Scene;
             }
         }
 

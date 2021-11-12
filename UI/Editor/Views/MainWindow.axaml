@@ -58,13 +58,13 @@
             <MenuItem Header="_View">
                 <MenuItem Header="_Project Editor"
                           Command="{Binding SelectTabCommand}"
-                          CommandParameter="{x:Static common:EditorTabs.Content}"
-                          IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+                          CommandParameter="{x:Static common:EditorTabs.Project}"
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
 
                 <MenuItem Header="_Scene Editor"
                           Command="{Binding SelectTabCommand}"
-                          CommandParameter="{x:Static common:EditorTabs.Entities}"
-                          IsEnabled="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+                          CommandParameter="{x:Static common:EditorTabs.Scene}"
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
             </MenuItem>
 
             <MenuItem Header="_Help">
@@ -83,18 +83,18 @@
             <Panel>
                 <common:Icon Content="{StaticResource SceneIcon}"
                              Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                             IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+                             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
                 <common:Icon Content="{StaticResource ProjectIcon}"
                              Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                             IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+                             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
 
             </Panel>
         </Button>
     </common:BaseDialog.ContentLeftOfMenu>
     <Grid>
         <local:SceneEditorView
-            IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Entities}}" />
+            IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
         <local:ProjectEditorView
-            IsVisible="{Binding SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Content}}" />
+            IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
     </Grid>
 </common:BaseDialog>

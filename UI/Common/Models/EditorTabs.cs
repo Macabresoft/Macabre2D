@@ -3,7 +3,7 @@
     /// Tabs for the editor.
     /// </summary>
     public enum EditorTabs {
-        Entities = 0,
-        Content = 1
+        Scene = 0,
+        Project = 1
     }
 }
