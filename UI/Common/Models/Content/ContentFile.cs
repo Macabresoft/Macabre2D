@@ -17,9 +17,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="parent">The parent.</param>
         /// <param name="metadata">The metadata.</param>
-        public ContentFile(IContentDirectory parent, ContentMetadata metadata) : base(metadata?.GetFileName() ?? string.Empty, parent) {
+        public ContentFile(IContentDirectory parent, ContentMetadata metadata) {
             this.Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
             this.Asset.PropertyChanged += this.Asset_PropertyChanged;
+            this.Initialize(metadata.GetFileName(), parent);
         }
 
         /// <summary>
@@ -36,10 +37,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         [DataMember]
         [Category(nameof(Asset))]
-        public IAsset Asset => this.Metadata.Asset;
+        public IAsset Asset => this.Metadata?.Asset;
 
         /// <inheritdoc />
-        public override Guid Id => this.Metadata.ContentId;
+        public override Guid Id => this.Metadata?.ContentId ?? Guid.Empty;
 
         /// <summary>
         /// The metadata.

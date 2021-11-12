@@ -7,20 +7,20 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Macabresoft.Macabre2D.UI.Common;
 
     public class ProjectTreeView : UserControl {
-        public static readonly DirectProperty<ProjectTreeView, ContentTreeViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<ProjectTreeView, ContentTreeViewModel>(
+        public static readonly DirectProperty<ProjectTreeView, ProjectTreeViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<ProjectTreeView, ProjectTreeViewModel>(
                 nameof(ViewModel),
                 editor => editor.ViewModel);
 
         private Guid _dragTarget;
 
         public ProjectTreeView() {
-            this.ViewModel = Resolver.Resolve<ContentTreeViewModel>();
+            this.ViewModel = Resolver.Resolve<ProjectTreeViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
         }
 
-        public ContentTreeViewModel ViewModel { get; }
+        public ProjectTreeViewModel ViewModel { get; }
 
         private async void Drop(object sender, DragEventArgs e) {
             if (e.Source is IControl { DataContext: IContentDirectory targetDirectory } &&

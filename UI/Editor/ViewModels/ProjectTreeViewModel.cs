@@ -13,57 +13,47 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// <summary>
     /// A view model for the content tree.
     /// </summary>
-    public class ContentTreeViewModel : BaseViewModel {
+    public class ProjectTreeViewModel : BaseViewModel {
         private readonly ICommonDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
         /// </summary>
         /// <remarks>This constructor only exists for design time XAML.</remarks>
-        public ContentTreeViewModel() {
+        public ProjectTreeViewModel() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentTreeViewModel" /> class.
+        /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
         /// </summary>
         /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="fileSystem">The file system.</param>
-        /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="selectionService">The selection service.</param>
         [InjectionConstructor]
-        public ContentTreeViewModel(
+        public ProjectTreeViewModel(
             IContentService contentService,
             ICommonDialogService dialogService,
             IFileSystemService fileSystem,
-            IProjectService projectService,
             ISaveService saveService,
             ISceneService sceneService,
             IProjectSelectionService selectionService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._fileSystem = fileSystem;
-            this.ProjectService = projectService;
             this._saveService = saveService;
             this._sceneService = sceneService;
             this.SelectionService = selectionService;
 
-            this.AddDirectoryCommand = ReactiveCommand.Create(
-                this.ContentService.AddDirectory,
-                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
+            this.AddDirectoryCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddDirectory);
+            this.AddSceneCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddScene);
 
-            this.AddSceneCommand = ReactiveCommand.Create(
-                this.ContentService.AddScene,
-                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
-
-            this.ImportCommand = ReactiveCommand.Create(
-                this.Import,
-                this.ContentService.WhenAny(x => x.Selected, y => y.Value is IContentDirectory));
+            this.ImportCommand = ReactiveCommand.Create<IContentDirectory>(this.Import);
 
             this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
                 this.OpenSelectedContent,
@@ -118,11 +108,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public ICommand OpenContentLocationCommand { get; }
         
         /// <summary>
-        /// Gets the project service.
-        /// </summary>
-        public IProjectService ProjectService { get; }
-
-        /// <summary>
         /// Gets the remove content command.
         /// </summary>
         public ICommand RemoveContentCommand { get; }
@@ -157,7 +142,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             return node is ContentFile { Asset: SceneAsset };
         }
 
-        private void Import() {
+        private void Import(IContentDirectory parent) {
         }
 
         private void OpenContentLocation(IContentNode node) {

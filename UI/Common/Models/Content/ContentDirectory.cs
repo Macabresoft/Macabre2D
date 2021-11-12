@@ -82,16 +82,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="parent">The parent content directory.</param>
-        public ContentDirectory(string name, IContentDirectory parent) : base(name, parent) {
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContentDirectory" /> class.
-        /// </summary>
-        /// <remarks>
-        /// This exists purely for data context purposes in XAML.
-        /// </remarks>
-        public ContentDirectory() : base() {
+        public ContentDirectory(string name, IContentDirectory parent) {
+            this.Initialize(name, parent);
         }
 
         /// <inheritdoc />

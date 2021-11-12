@@ -9,6 +9,10 @@
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
 
         <ContextMenu x:Key="ContentNodeContextMenu">
+            <Design.DataContext>
+                <common:ContentFile />
+            </Design.DataContext>
+
             <MenuItem Header="Rename"
                       Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
                       ToolTip.Tip="Rename this content" />
@@ -33,7 +37,7 @@
     </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectTreeView].ViewModel}">
         <Design.DataContext>
-            <local:ContentTreeViewModel />
+            <local:ProjectTreeViewModel />
         </Design.DataContext>
         <Border Classes="Card"
                 Margin="{StaticResource StandardMarginLeftTopBottom}">
@@ -107,14 +111,17 @@
 
                                             <MenuItem Header="Add Directory"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                             <MenuItem Header="Add Scene"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                             <MenuItem Header="Import Content"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Import a piece of content from elsewhere" />
                                         </ContextMenu>
                                     </common:EditableSelectableItem.ContextMenu>
@@ -155,14 +162,17 @@
 
                                             <MenuItem Header="Add Directory"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                             <MenuItem Header="Add Scene"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                             <MenuItem Header="Import Content"
                                                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
+                                                      CommandParameter="{Binding}"
                                                       ToolTip.Tip="Import a piece of content from elsewhere" />
 
                                             <Separator />
@@ -185,16 +195,16 @@
                                 <common:EditableSelectableItem Classes="File" />
                             </Border>
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="framework:INameableCollection"
                                           ItemsSource="{Binding}">
                             <Border>
                                 <common:EditableSelectableItem IconForeground="{StaticResource YellowBrush}"
                                                                IsFileName="False"
-                                                               IsEditable="False"/>
+                                                               IsEditable="False" />
                             </Border>
                         </TreeDataTemplate>
-                        
+
                         <TreeDataTemplate DataType="framework:INameable">
                             <Border>
                                 <common:EditableSelectableItem IconForeground="{StaticResource PurpleBrush}"

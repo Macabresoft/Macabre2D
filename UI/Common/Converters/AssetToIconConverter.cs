@@ -15,7 +15,7 @@
             object result;
 
             _ = value switch {
-                ContentFile file => file.Asset switch {
+                ContentFile { Asset: IAsset asset } => asset switch {
                     SceneAsset => Application.Current.TryFindResource("SceneIcon", out result),
                     SpriteSheet => Application.Current.TryFindResource("SpriteSheetIcon", out result),
                     AudioClip => Application.Current.TryFindResource("AudioClipIcon", out result),

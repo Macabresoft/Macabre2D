@@ -77,11 +77,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public event EventHandler<ValueChangedEventArgs<string>> PathChanged;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentNode" /> class.
+        /// Initializes this instance.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="parent">The parent.</param>
-        protected ContentNode(string name, IContentDirectory parent) {
+        protected void Initialize(string name, IContentDirectory parent) {
             this._name = name;
             this.ChangeParent(parent);
         }

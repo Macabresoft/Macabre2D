@@ -19,12 +19,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <summary>
         /// Adds a directory as a child to selected directory.
         /// </summary>
-        void AddDirectory();
+        /// <param name="parent">The parent.</param>
+        void AddDirectory(IContentDirectory parent);
 
         /// <summary>
         /// Adds a scene to the selected directory.
         /// </summary>
-        void AddScene();
+        /// <param name="parent">The parent.</param>
+        void AddScene(IContentDirectory parent);
 
         /// <summary>
         /// Moves the content to a new folder.
@@ -109,15 +111,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
         /// <inheritdoc />
-        public void AddDirectory() {
-            if (this.Selected is IContentDirectory parent) {
+        public void AddDirectory(IContentDirectory parent) {
+            if (parent != null) {
                 this.CreateDirectory("New Directory", parent);
             }
         }
 
         /// <inheritdoc />
-        public void AddScene() {
-            if (this.Selected is IContentDirectory parent) {
+        public void AddScene(IContentDirectory parent) {
+            if (parent != null) {
                 var name = this.CreateSafeName("New Scene", parent);
                 var scene = new Scene {
                     Name = name
