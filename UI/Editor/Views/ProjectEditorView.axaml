@@ -21,7 +21,7 @@
         <Panel Grid.Row="0"
                Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <local:ContentTreeView />
+            <local:ProjectTreeView />
         </Panel>
         
         <GridSplitter Grid.Row="1"

@@ -6,15 +6,15 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.UI.Common;
 
-    public class ContentTreeView : UserControl {
-        public static readonly DirectProperty<ContentTreeView, ContentTreeViewModel> ViewModelProperty =
-            AvaloniaProperty.RegisterDirect<ContentTreeView, ContentTreeViewModel>(
+    public class ProjectTreeView : UserControl {
+        public static readonly DirectProperty<ProjectTreeView, ContentTreeViewModel> ViewModelProperty =
+            AvaloniaProperty.RegisterDirect<ProjectTreeView, ContentTreeViewModel>(
                 nameof(ViewModel),
                 editor => editor.ViewModel);
 
         private Guid _dragTarget;
 
-        public ContentTreeView() {
+        public ProjectTreeView() {
             this.ViewModel = Resolver.Resolve<ContentTreeViewModel>();
             this.InitializeComponent();
             this.AddHandler(DragDrop.DropEvent, this.Drop);
