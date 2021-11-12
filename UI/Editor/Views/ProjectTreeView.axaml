@@ -6,6 +6,8 @@
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <common:IsTypeConverter x:Key="IsTypeConverter" />
+        <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
         <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
 
         <ContextMenu x:Key="ContentNodeContextMenu">
@@ -34,6 +36,43 @@
                       CommandParameter="{Binding}"
                       ToolTip.Tip="Delete this content from your computer" />
         </ContextMenu>
+
+        <ContextMenu x:Key="ContentDirectoryContextMenu">
+            <MenuItem Header="Rename"
+                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                      IsVisible="{Binding Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type framework:INameable}}"
+                      ToolTip.Tip="Rename this directory" />
+
+            <MenuItem Header="Open Directory"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenContentLocationCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Open the directory in the file explorer" />
+
+            <Separator />
+
+            <MenuItem Header="Add Directory"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Adds a directory as the child of the current node" />
+
+            <MenuItem Header="Add Scene"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Adds a scene as the child of the current node" />
+
+            <MenuItem Header="Import Content"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="Import a piece of content from elsewhere" />
+
+            <Separator IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
+
+            <MenuItem Header="Delete"
+                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
+                      CommandParameter="{Binding}"
+                      IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"
+                      ToolTip.Tip="Delete this directory from your computer" />
+        </ContextMenu>
     </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectTreeView].ViewModel}">
         <Design.DataContext>
@@ -45,6 +84,7 @@
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
                     <Button Command="{Binding AddDirectoryCommand, Mode=OneWay}"
+                            CommandParameter="{Binding SelectionService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Add content as a child of the selected node">
                         <common:Icon Content="{StaticResource AddIcon}" />
@@ -85,6 +125,7 @@
 
                         <Style Selector="common|EditableSelectableItem.Directory">
                             <Setter Property="IconForeground" Value="{StaticResource YellowBrush}" />
+                            <Setter Property="ContextMenu" Value="{StaticResource ContentDirectoryContextMenu}" />
                         </Style>
 
                         <Style Selector="TreeViewItem">
@@ -99,33 +140,7 @@
                                                                Icon="{StaticResource ProjectIcon}"
                                                                IsEditable="False"
                                                                IsFileName="False"
-                                                               Text="Project">
-                                    <common:EditableSelectableItem.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Open Directory"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenContentLocationCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Open the directory in the file explorer" />
-
-                                            <Separator />
-
-                                            <MenuItem Header="Add Directory"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Adds a directory as the child of the current node" />
-
-                                            <MenuItem Header="Add Scene"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Adds a scene as the child of the current node" />
-
-                                            <MenuItem Header="Import Content"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Import a piece of content from elsewhere" />
-                                        </ContextMenu>
-                                    </common:EditableSelectableItem.ContextMenu>
-                                </common:EditableSelectableItem>
+                                                               Text="Project" />
                             </Border>
                         </TreeDataTemplate>
 
@@ -146,44 +161,7 @@
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
                                 <common:EditableSelectableItem Classes="Directory"
-                                                               Icon="{StaticResource DirectoryIcon}">
-                                    <common:EditableSelectableItem.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Rename"
-                                                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
-                                                      ToolTip.Tip="Rename this directory" />
-
-                                            <MenuItem Header="Open Directory"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenContentLocationCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Open the directory in the file explorer" />
-
-                                            <Separator />
-
-                                            <MenuItem Header="Add Directory"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddDirectoryCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Adds a directory as the child of the current node" />
-
-                                            <MenuItem Header="Add Scene"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.AddSceneCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Adds a scene as the child of the current node" />
-
-                                            <MenuItem Header="Import Content"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.ImportCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Import a piece of content from elsewhere" />
-
-                                            <Separator />
-
-                                            <MenuItem Header="Delete"
-                                                      Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
-                                                      CommandParameter="{Binding}"
-                                                      ToolTip.Tip="Delete this directory from your computer" />
-                                        </ContextMenu>
-                                    </common:EditableSelectableItem.ContextMenu>
-                                </common:EditableSelectableItem>
+                                                               Icon="{StaticResource DirectoryIcon}" />
                             </Border>
                         </TreeDataTemplate>
 
