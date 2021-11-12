@@ -129,7 +129,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             else {
                 this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
                 var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
-                if (!this._sceneService.TryLoadScene(sceneId, out var sceneAsset) && sceneAsset != null) {
+                if (!this._sceneService.TryLoadScene(sceneId, out _)) {
                     this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
                 }
             }
