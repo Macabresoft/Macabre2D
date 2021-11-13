@@ -11,6 +11,13 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <remarks>Exists purely for unit testing purposes, which feels wrong, but I don't care.</remarks>
     public interface IFileSystemService {
         /// <summary>
+        /// Copies the file from its original path to the new path.
+        /// </summary>
+        /// <param name="originalPath">The original path.</param>
+        /// <param name="newPath">The new path.</param>
+        void CopyFile(string originalPath, string newPath);
+
+        /// <summary>
         /// Creates the directory structure for the given path.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -111,6 +118,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// A service which wraps basic file system operations.
     /// </summary>
     public class FileSystemService : IFileSystemService {
+        /// <inheritdoc />
+        public void CopyFile(string originalPath, string newPath) {
+            File.Copy(originalPath, newPath);
+        }
+
         /// <inheritdoc />
         public void CreateDirectory(string path) {
             Directory.CreateDirectory(path);

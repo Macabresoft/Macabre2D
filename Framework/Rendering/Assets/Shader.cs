@@ -8,6 +8,10 @@ namespace Macabresoft.Macabre2D.Framework {
     /// A shader that wraps around <see cref="Effect" />.
     /// </summary>
     public sealed class Shader : Asset<Effect> {
+        /// <summary>
+        /// The file extension for <see cref="Shader"/>.
+        /// </summary>
+        public const string FileExtension = ".fx";
         
         /// <inheritdoc />
         public override bool IncludeFileExtensionInContentPath => false;

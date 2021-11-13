@@ -49,6 +49,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
                 Substitute.For<IAssemblyService>(),
                 this.AssetManager,
                 Substitute.For<IBuildService>(),
+                Substitute.For<ICommonDialogService>(),
                 this.FileSystem,
                 Substitute.For<ILoggingService>(),
                 this._pathService,

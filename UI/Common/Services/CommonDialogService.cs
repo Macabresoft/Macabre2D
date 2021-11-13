@@ -1,8 +1,10 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Avalonia.Controls;
+    using Macabresoft.Macabre2D.Framework;
     using Unity.Resolution;
 
     /// <summary>
@@ -35,6 +37,13 @@ namespace Macabresoft.Macabre2D.UI.Common {
         Task<Type> OpenTypeSelectionDialog(IEnumerable<Type> types);
 
         /// <summary>
+        /// Shows a dialog to select a file.
+        /// </summary>
+        /// <param name="title">The title of the window.</param>
+        /// <returns>The path of the selected file.</returns>
+        Task<string> ShowSingleFileSelectionDialog(string title);
+
+        /// <summary>
         /// Shows a warning dialog.
         /// </summary>
         /// <param name="title">The title.</param>
@@ -56,6 +65,29 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// A common dialog service.
     /// </summary>
     public abstract class CommonDialogService : ICommonDialogService {
+        private readonly List<FileDialogFilter> _fileFilters = new() {
+            new FileDialogFilter {
+                Name = "All",
+                Extensions = new List<string> { "*" }
+            },
+            new FileDialogFilter {
+                Name = @"Audio",
+                Extensions = AudioClip.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
+            },
+            new FileDialogFilter {
+                Name = "Images",
+                Extensions = SpriteSheet.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
+            },
+            new FileDialogFilter {
+                Name = "Scenes",
+                Extensions = new List<string> { SceneAsset.FileExtension.TrimStart('.') }
+            },
+            new FileDialogFilter {
+                Name = "Shaders",
+                Extensions = new List<string> { Shader.FileExtension.TrimStart('.') }
+            }
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CommonDialogService" /> class.
         /// </summary>
@@ -99,6 +131,17 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
 
             return selectedType;
+        }
+
+        /// <inheritdoc />
+        public async Task<string> ShowSingleFileSelectionDialog(string title) {
+            var dialog = new OpenFileDialog {
+                AllowMultiple = false,
+                Filters = this._fileFilters
+            };
+
+            var result = await dialog.ShowAsync(this.MainWindow);
+            return result?.FirstOrDefault();
         }
 
         /// <inheritdoc />

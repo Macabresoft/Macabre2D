@@ -4,6 +4,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
@@ -27,6 +28,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="parent">The parent.</param>
         void AddScene(IContentDirectory parent);
+
+        /// <summary>
+        /// Imports content
+        /// </summary>
+        /// <param name="parent"></param>
+        Task ImportContent(IContentDirectory parent);
 
         /// <summary>
         /// Moves the content to a new folder.
@@ -53,6 +60,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
         private readonly IAssetManager _assetManager;
         private readonly IBuildService _buildService;
+        private readonly ICommonDialogService _dialogService;
         private readonly IFileSystemService _fileSystem;
         private readonly ILoggingService _loggingService;
         private readonly IPathService _pathService;
@@ -74,7 +82,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 FileExtensionToAssetType.Add(extension, typeof(AudioClip));
             }
 
-            FileExtensionToAssetType.Add(".fx", typeof(Shader));
+            FileExtensionToAssetType.Add(Shader.FileExtension, typeof(Shader));
         }
 
         /// <summary>
@@ -83,6 +91,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <param name="assemblyService">The assembly service.</param>
         /// <param name="assetManager">The asset manager.</param>
         /// <param name="buildService">The build service.</param>
+        /// <param name="dialogService">The dialog service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="loggingService">The logging service.</param>
         /// <param name="pathService">The path service.</param>
@@ -93,6 +102,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             IAssemblyService assemblyService,
             IAssetManager assetManager,
             IBuildService buildService,
+            ICommonDialogService dialogService,
             IFileSystemService fileSystem,
             ILoggingService loggingService,
             IPathService pathService,
@@ -101,6 +111,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
             this._assetManager = assetManager;
             this._buildService = buildService;
+            this._dialogService = dialogService;
             this._fileSystem = fileSystem;
             this._loggingService = loggingService;
             this._pathService = pathService;
@@ -129,6 +140,25 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 var fullPath = Path.Combine(parent.GetFullPath(), fileName);
                 this._serializer.Serialize(scene, fullPath);
                 this.CreateContentFile(parent, fileName);
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task ImportContent(IContentDirectory parent) {
+            if (parent != null) {
+                var filePath = await this._dialogService.ShowSingleFileSelectionDialog("Import an Asset");
+
+                if (!string.IsNullOrEmpty(filePath)) {
+                    var parentDirectoryPath = parent.GetFullPath();
+                    var fileName = $"{this.CreateSafeName(Path.GetFileNameWithoutExtension(filePath), parent)}{Path.GetExtension(filePath)}";
+                    var newFilePath = Path.Combine(parentDirectoryPath, fileName);
+
+                    await Task.Run(() => {
+                        this._fileSystem.CopyFile(filePath, newFilePath);
+                    });
+                    
+                    this.CreateContentFile(parent, fileName);
+                }
             }
         }
 

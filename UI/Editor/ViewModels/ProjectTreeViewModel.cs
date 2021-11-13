@@ -56,8 +56,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
             this.AddDirectoryCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddDirectory);
             this.AddSceneCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddScene);
-
-            this.ImportCommand = ReactiveCommand.Create<IContentDirectory>(this.Import);
+            this.ImportCommand = ReactiveCommand.CreateFromTask<IContentDirectory>(this.ContentService.ImportContent);
 
             this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
                 this.OpenSelectedContent,
