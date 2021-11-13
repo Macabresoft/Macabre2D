@@ -27,11 +27,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 editor => editor.SelectCommand);
 
         private readonly IAssetManager _assetManager;
+        private readonly Type _assetType;
         private readonly ICommonDialogService _dialogService;
         private readonly IUndoService _undoService;
-        private Type _assetType;
 
-        private ICommand _clearCommand;
         private string _pathText;
 
         public AssetGuidEditor() : this(
@@ -62,17 +61,14 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     this._assetType = attribute.AssetType;
                 }
             }
-            
+
             this.ResetPath();
             this.InitializeComponent();
         }
 
-        public ICommand SelectCommand { get; }
+        public ICommand ClearCommand { get; }
 
-        public ICommand ClearCommand {
-            get => this._clearCommand;
-            private set => this.SetAndRaise(ClearCommandProperty, ref this._clearCommand, value);
-        }
+        public ICommand SelectCommand { get; }
 
         public string PathText {
             get => this._pathText;
