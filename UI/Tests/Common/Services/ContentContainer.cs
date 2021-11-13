@@ -185,7 +185,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
             foreach (var metadata in this.MetadataToArchive) {
                 var metadataFilePath = Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
                 this._metadataFilePaths.Add(metadataFilePath);
-
+                this.FileSystem.DoesFileExist(metadataFilePath).Returns(true);
                 this.Serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
                 this.RegisterContent(metadata, false);
             }

@@ -83,16 +83,24 @@ namespace Macabresoft.Macabre2D.UI.Tests {
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var settingsService = Substitute.For<IEditorSettingsService>();
             settingsService.Settings.Returns(new EditorSettings());
+            var sceneService = Substitute.For<ISceneService>();
+            var sceneAsset = new SceneAsset();
+            sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
+                .Returns(x => {
+                    x[1] = sceneAsset;
+                    return true;
+                });
 
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
-                Substitute.For<ISceneService>(),
+                sceneService,
                 serializer,
                 settingsService,
                 Substitute.For<IUndoService>(),
                 Substitute.For<IValueControlService>());
+
 
             var loadedProject = projectService.LoadProject();
 
@@ -138,12 +146,19 @@ namespace Macabresoft.Macabre2D.UI.Tests {
             serializer.Deserialize<GameProject>(pathService.ProjectFilePath).Returns(project);
             var settingsService = Substitute.For<IEditorSettingsService>();
             settingsService.Settings.Returns(new EditorSettings());
+            var sceneService = Substitute.For<ISceneService>();
+            var sceneAsset = new SceneAsset();
+            sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
+                .Returns(x => {
+                    x[1] = sceneAsset;
+                    return true;
+                });
 
             var projectService = new ProjectService(
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
-                Substitute.For<ISceneService>(),
+                sceneService,
                 serializer,
                 settingsService,
                 Substitute.For<IUndoService>(),

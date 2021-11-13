@@ -8,6 +8,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
+    using Observable = System.Reactive.Linq.Observable;
 
     /// <summary>
     /// The view model for the main window.
@@ -48,11 +49,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
+            var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentScene, x => x.Value != null);
             this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
-            this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab);
-            this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab);
+            this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab, tabCommandCanExecute);
+            this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab, tabCommandCanExecute);
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
         }

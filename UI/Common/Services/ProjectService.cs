@@ -28,9 +28,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         IReadOnlyCollection<ValueControlCollection> GetEditors();
 
         /// <summary>
-        /// Loads the project.
+        /// Tries to load the project.
         /// </summary>
-        /// <returns>The loaded project.</returns>
+        /// <returns>
+        /// The loaded project.
+        /// </returns>
         GameProject LoadProject();
 
         /// <summary>
@@ -130,7 +132,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 this.CurrentProject = this._serializer.Deserialize<GameProject>(this._pathService.ProjectFilePath);
                 var sceneId = this._settingsService.Settings.LastSceneOpened != Guid.Empty ? this._settingsService.Settings.LastSceneOpened : this.CurrentProject.StartupSceneContentId;
                 if (!this._sceneService.TryLoadScene(sceneId, out _)) {
-                    this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+                    var scenes = this._contentService.RootContentDirectory.GetAllContentFiles().Where(x => x.Asset is SceneAsset).ToList();
+                    if (!scenes.Any()) {
+                        this.CurrentProject.StartupSceneContentId = this.CreateInitialScene();
+                        this.SaveProjectFile(this.CurrentProject, this._pathService.ProjectFilePath);
+                    }
                 }
             }
 

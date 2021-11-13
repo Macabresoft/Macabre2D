@@ -30,9 +30,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
                 // TODO: show a splash screen while all this is happening
                 Resolver.Resolve<IEditorSettingsService>().Initialize();
-
-                var projectService = Resolver.Resolve<IProjectService>();
-                projectService.LoadProject();
+                Resolver.Resolve<IProjectService>().LoadProject();
+                
+                if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
+                    Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
+                }
 
                 mainWindow.InitializeComponent();
                 desktop.MainWindow = mainWindow;
