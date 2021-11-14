@@ -33,12 +33,10 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             IEditorService editorService,
             IEntityService entityService,
             IAvaloniaGame sceneEditor,
-            ISceneService sceneService,
-            ISceneSelectionService selectionService) : base(sceneEditor) {
+            ISceneService sceneService) : base(sceneEditor) {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-            this.SelectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
 
             this.EditorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
             this.EditorService.FocusRequested += this.EntityService_FocusRequested;
@@ -59,11 +57,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the scene service.
         /// </summary>
         public ISceneService SceneService { get; }
-        
-        /// <summary>
-        /// Gets the scene selection service.
-        /// </summary>
-        public ISceneSelectionService SelectionService { get; }
 
         private void EditorService_CenterCameraRequested(object sender, EventArgs e) {
             this.SceneEditor.Camera.LocalPosition = Vector2.Zero;

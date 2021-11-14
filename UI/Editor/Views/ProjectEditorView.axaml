@@ -35,12 +35,12 @@
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
                     <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
-                                                    Collections="{Binding SelectionService.Editors}" />
+                                                    Collections="{Binding ProjectService.Editors}" />
 
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Text="Select a file or directory to view details"
-                               IsVisible="{Binding SelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
+                               IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
                 </Panel>
             </Border>
         </Panel>

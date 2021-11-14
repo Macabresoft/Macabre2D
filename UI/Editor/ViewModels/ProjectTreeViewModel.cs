@@ -15,11 +15,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// </summary>
     public class ProjectTreeViewModel : BaseViewModel {
         private readonly ICommonDialogService _dialogService;
+        private readonly IEditorService _editorService;
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
-        private readonly IEditorService _editorService;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
         /// </summary>
@@ -34,25 +34,25 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="fileSystem">The file system.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
         [InjectionConstructor]
         public ProjectTreeViewModel(
             IContentService contentService,
             ICommonDialogService dialogService,
             IEditorService editorService,
             IFileSystemService fileSystem,
+            IProjectService projectService,
             ISaveService saveService,
-            ISceneService sceneService,
-            IProjectSelectionService selectionService) {
+            ISceneService sceneService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._editorService = editorService;
             this._fileSystem = fileSystem;
+            this.ProjectService = projectService;
             this._saveService = saveService;
             this._sceneService = sceneService;
-            this.SelectionService = selectionService;
 
             this.AddDirectoryCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddDirectory);
             this.AddSceneCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddScene);
@@ -84,11 +84,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the add scene command.
         /// </summary>
         public ICommand AddSceneCommand { get; }
-        
-        /// <summary>
-        /// Gets the selection service.
-        /// </summary>
-        public IProjectSelectionService SelectionService { get; }
 
         /// <summary>
         /// Gets the content service.
@@ -109,7 +104,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets a command to open the file explorer to the content's location.
         /// </summary>
         public ICommand OpenContentLocationCommand { get; }
-        
+
+        /// <summary>
+        /// Gets the project service.
+        /// </summary>
+        public IProjectService ProjectService { get; }
+
         /// <summary>
         /// Gets the remove content command.
         /// </summary>
@@ -143,9 +143,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         private static bool CanOpenContent(IContentNode node) {
             return node is ContentFile { Asset: SceneAsset };
-        }
-
-        private void Import(IContentDirectory parent) {
         }
 
         private void OpenContentLocation(IContentNode node) {

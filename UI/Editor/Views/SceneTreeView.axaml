@@ -16,7 +16,7 @@
         <Grid RowDefinitions="Auto, *, 0">
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
-                        IsVisible="{Binding SelectionService.IsEntityContext}">
+                        IsVisible="{Binding SceneService.IsEntityContext}">
                 <Button Command="{Binding AddEntityCommand}"
                         Classes="Icon"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
@@ -33,7 +33,7 @@
                     <common:Icon Content="{DynamicResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveEntityCommand}"
-                        CommandParameter="{Binding SelectionService.ImpliedSelected}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected entity and all of its children from the scene">
                     <common:Icon Content="{DynamicResource RemoveIcon}" />
@@ -42,7 +42,7 @@
 
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
-                        IsVisible="{Binding !SelectionService.IsEntityContext}">
+                        IsVisible="{Binding !SceneService.IsEntityContext}">
                 <Button Command="{Binding AddSystemCommand}"
                         Classes="Icon"
                         ToolTip.Tip="Add a system to the scene">
@@ -59,7 +59,7 @@
                     <common:Icon Content="{DynamicResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveSystemCommand}"
-                        CommandParameter="{Binding SelectionService.ImpliedSelected}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected system from the scene">
                     <common:Icon Content="{DynamicResource RemoveIcon}" />
@@ -69,7 +69,7 @@
             <TreeView Grid.Row="1"
                       Name="_treeView"
                       Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                      SelectedItem="{Binding SelectionService.Selected, Mode=TwoWay}">
+                      SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}">
                 <TreeView.Styles>
                     <Style Selector="TreeViewItem">
                         <Setter Property="IsExpanded" Value="True" />

@@ -9,14 +9,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectEditorViewModel" /> class.
         /// </summary>
-        /// <param name="selectionService">The selection service.</param>
-        public ProjectEditorViewModel(IProjectSelectionService selectionService) : base() {
-            this.SelectionService = selectionService;
+        /// <param name="projectService">The project service.</param>
+        public ProjectEditorViewModel(IProjectService projectService) : base() {
+            this.ProjectService = projectService;
         }
         
         /// <summary>
         /// Gets the selection service.
         /// </summary>
-        public IProjectSelectionService SelectionService { get; }
+        public IProjectService ProjectService { get; }
     }
 }

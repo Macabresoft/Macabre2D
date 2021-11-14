@@ -1,17 +1,32 @@
 namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using Avalonia.Controls;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
 
     /// <summary>
+    /// Selection types for content.
+    /// </summary>
+    public enum ProjectSelectionType {
+        None,
+        File,
+        Directory,
+        Asset
+    }
+
+    /// <summary>
     /// Interface for a service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
-    public interface IProjectService : INotifyPropertyChanged {
+    public interface IProjectService : ISelectionService<object> {
+        /// <summary>
+        /// Gets the asset editor.
+        /// </summary>
+        IControl AssetEditor { get; }
+
         /// <summary>
         /// Gets the currently loaded project.
         /// </summary>
@@ -23,9 +38,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
         bool IsBusy { get; }
 
         /// <summary>
-        /// Gets the editors.
+        /// Gets the selection type.
         /// </summary>
-        IReadOnlyCollection<ValueControlCollection> GetEditors();
+        ProjectSelectionType SelectionType { get; }
 
         /// <summary>
         /// Tries to load the project.
@@ -45,6 +60,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// A service which loads, saves, and exposes a <see cref="GameProject" />.
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
+        private const string DefaultSceneName = "Default";
         private readonly IContentService _contentService;
         private readonly List<ValueControlCollection> _editors = new();
         private readonly IFileSystemService _fileSystem;
@@ -54,7 +70,10 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private readonly IEditorSettingsService _settingsService;
         private readonly IUndoService _undoService;
         private readonly IValueControlService _valueControlService;
+        private IControl _assetEditor;
         private GameProject _currentProject;
+        private object _selected;
+        private ProjectSelectionType _selectionType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
@@ -86,8 +105,26 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this._valueControlService = valueControlService;
         }
 
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<ValueControlCollection> Editors {
+            get {
+                return this._selected switch {
+                    RootContentDirectory => this.GetEditors(),
+                    IContentNode => this._contentService.Editors,
+                    _ => null
+                };
+            }
+        }
+
         /// <inheritdoc />
         public bool IsBusy => false;
+
+        /// <inheritdoc />
+        public IControl AssetEditor {
+            get => this._assetEditor;
+            private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
+        }
 
         /// <inheritdoc />
         public GameProject CurrentProject {
@@ -96,20 +133,34 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<ValueControlCollection> GetEditors() {
-            foreach (var editorCollection in this._editors) {
-                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+        public object Selected {
+            get => this._selected;
+            set {
+                this.RaiseAndSetIfChanged(ref this._selected, value);
+
+                if (this._selected is IContentNode node) {
+                    this._contentService.Selected = node;
+                }
+                else {
+                    this._contentService.Selected = null;
+                }
+
+                this.SelectionType = this._selected switch {
+                    IContentDirectory => ProjectSelectionType.Directory,
+                    IContentNode => ProjectSelectionType.File,
+                    SpriteSheetAsset => ProjectSelectionType.Asset,
+                    _ => ProjectSelectionType.None
+                };
+
+                this.ResetAssetEditor();
+                this.RaisePropertyChanged(nameof(this.Editors));
             }
+        }
 
-            this._editors.Clear();
-            var editors = this._valueControlService.CreateControls(this.CurrentProject);
-            this._editors.AddRange(editors);
-
-            foreach (var editorCollection in this._editors) {
-                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-            }
-
-            return this._editors;
+        /// <inheritdoc />
+        public ProjectSelectionType SelectionType {
+            get => this._selectionType;
+            private set => this.RaiseAndSetIfChanged(ref this._selectionType, value);
         }
 
         /// <inheritdoc />
@@ -149,21 +200,20 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private Guid CreateInitialScene() {
-            var sceneName = "Default";
             var parent = this._contentService.RootContentDirectory;
             var contentDirectoryPath = parent.GetFullPath();
             if (!this._fileSystem.DoesDirectoryExist(contentDirectoryPath)) {
                 throw new DirectoryNotFoundException();
             }
 
-            var filePath = Path.Combine(contentDirectoryPath, $"{sceneName}{SceneAsset.FileExtension}");
+            var filePath = Path.Combine(contentDirectoryPath, $"{DefaultSceneName}{SceneAsset.FileExtension}");
             if (this._fileSystem.DoesFileExist(filePath)) {
                 throw new NotSupportedException("Whoa you already have a scene, this is a bug, so sorry!");
             }
 
             var scene = new Scene {
                 BackgroundColor = DefinedColors.MacabresoftPurple,
-                Name = sceneName
+                Name = DefaultSceneName
             };
 
             scene.AddSystem<UpdateSystem>();
@@ -173,7 +223,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             var sceneAsset = new SceneAsset();
 
             sceneAsset.LoadContent(scene);
-            var contentPath = Path.Combine(parent.GetContentPath(), sceneName);
+            var contentPath = Path.Combine(parent.GetContentPath(), DefaultSceneName);
             var metadata = new ContentMetadata(
                 sceneAsset,
                 contentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList(),
@@ -196,6 +246,30 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                     valueEditor.SetValue(originalValue, false);
                 });
+            }
+        }
+
+        private IReadOnlyCollection<ValueControlCollection> GetEditors() {
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+            }
+
+            this._editors.Clear();
+            var editors = this._valueControlService.CreateControls(this.CurrentProject);
+            this._editors.AddRange(editors);
+
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+            }
+
+            return this._editors;
+        }
+
+        private void ResetAssetEditor() {
+            if (this.SelectionType == ProjectSelectionType.Asset) {
+            }
+            else {
+                this.AssetEditor = null;
             }
         }
 

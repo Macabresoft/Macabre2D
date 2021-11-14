@@ -30,7 +30,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="entityService">The selection service.</param>
-        /// <param name="selectionService">The selection service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="systemService">The system service.</param>
         /// <param name="undoService">The undo service.</param>
@@ -39,21 +38,19 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             ICommonDialogService dialogService,
             IEditorService editorService,
             IEntityService entityService,
-            ISceneSelectionService selectionService,
             ISceneService sceneService,
             ISystemService systemService,
             IUndoService undoService) {
             this._dialogService = dialogService;
             this.EditorService = editorService;
             this.EntityService = entityService;
-            this.SelectionService = selectionService;
             this.SceneService = sceneService;
             this.SystemService = systemService;
             this._undoService = undoService;
 
             this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddEntity(x),
-                this.SelectionService.WhenAnyValue(x => x.IsEntityContext));
+                this.SceneService.WhenAnyValue(x => x.IsEntityContext));
 
             this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
                 this.RemoveEntity,
@@ -61,7 +58,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
             this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(
                 async x => await this.AddSystem(x),
-                this.SelectionService.WhenAny(x => x.IsEntityContext, x => !x.Value));
+                this.SceneService.WhenAny(x => x.IsEntityContext, x => !x.Value));
 
             this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(
                 this.RemoveSystem,
@@ -122,11 +119,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public ISceneService SceneService { get; }
 
         /// <summary>
-        /// Gets the selection service.
-        /// </summary>
-        public ISceneSelectionService SelectionService { get; }
-
-        /// <summary>
         /// Gets the system service.
         /// </summary>
         public ISystemService SystemService { get; }
@@ -160,12 +152,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                     this._undoService.Do(() => {
                         Dispatcher.UIThread.Post(() => {
                             parent.AddChild(child);
-                            this.SelectionService.Selected = child;
+                            this.SceneService.Selected = child;
                         });
                     }, () => {
                         Dispatcher.UIThread.Post(() => {
                             parent.RemoveChild(child);
-                            this.SelectionService.Selected = parent;
+                            this.SceneService.Selected = parent;
                         });
                     });
                 }
@@ -181,12 +173,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                     this._undoService.Do(() => {
                         Dispatcher.UIThread.Post(() => {
                             scene.AddSystem(system);
-                            this.SelectionService.Selected = system;
+                            this.SceneService.Selected = system;
                         });
                     }, () => {
                         Dispatcher.UIThread.Post(() => {
                             scene.RemoveSystem(system);
-                            this.SelectionService.Selected = originallySelected;
+                            this.SceneService.Selected = originallySelected;
                         });
                     });
                 }
@@ -206,12 +198,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         parent.RemoveChild(entity);
-                        this.SelectionService.Selected = null;
+                        this.SceneService.Selected = null;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         parent.AddChild(entity);
-                        this.SelectionService.Selected = entity;
+                        this.SceneService.Selected = entity;
                     });
                 });
             }
@@ -222,12 +214,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         scene.RemoveSystem(system);
-                        this.SelectionService.Selected = null;
+                        this.SceneService.Selected = null;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
                         scene.AddSystem(system);
-                        this.SelectionService.Selected = system;
+                        this.SceneService.Selected = system;
                     });
                 });
             }

@@ -41,12 +41,12 @@
                     Margin="{DynamicResource StandardMarginLeftTopBottom}">
                 <Panel>
                     <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
-                                                    Collections="{Binding SelectionService.Editors}" />
+                                                    Collections="{Binding SceneService.Editors}" />
 
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Text="Select an entity or system to view details"
-                               IsVisible="{Binding SelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
+                               IsVisible="{Binding SceneService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
                 </Panel>
 
             </Border>

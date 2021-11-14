@@ -85,24 +85,24 @@
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
                     <Button Command="{Binding AddDirectoryCommand, Mode=OneWay}"
-                            CommandParameter="{Binding SelectionService.Selected}"
+                            CommandParameter="{Binding ProjectService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Add content as a child of the selected node">
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Add Directory"
                                           Command="{Binding AddDirectoryCommand}"
-                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          CommandParameter="{Binding ProjectService.Selected}"
                                           ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                 <MenuItem Header="Add Scene"
                                           Command="{Binding AddSceneCommand}"
-                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          CommandParameter="{Binding ProjectService.Selected}"
                                           ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                 <MenuItem Header="Import Content"
                                           Command="{Binding ImportCommand}"
-                                          CommandParameter="{Binding SelectionService.Selected}"
+                                          CommandParameter="{Binding ProjectService.Selected}"
                                           ToolTip.Tip="Import a piece of content from elsewhere" />
                             </ContextMenu>
                         </Button.ContextMenu>
@@ -117,7 +117,7 @@
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                          SelectedItem="{Binding SelectionService.Selected, Mode=TwoWay}">
+                          SelectedItem="{Binding ProjectService.Selected, Mode=TwoWay}">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
                             <Design.DataContext>

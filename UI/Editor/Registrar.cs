@@ -13,10 +13,9 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterServices(this IUnityContainer container) {
-            return container.RegisterType<ILocalDialogService, LocalDialogService>(new SingletonLifetimeManager())
-                .RegisterType<ICommonDialogService, ILocalDialogService>()
-                .RegisterType<IProjectSelectionService, ProjectSelectionService>(new SingletonLifetimeManager())
-                .RegisterType<ISceneSelectionService, SceneSelectionService>(new SingletonLifetimeManager());
+            return container
+                .RegisterType<ILocalDialogService, LocalDialogService>(new SingletonLifetimeManager())
+                .RegisterType<ICommonDialogService, ILocalDialogService>();
         }
     }
 }
