@@ -14,15 +14,16 @@ namespace Macabresoft.Macabre2D.UI.Tests {
 
         public IPathService TestPathService { get; } = new PathService(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
 
+        public void CopyFile(string originalPath, string newPath) {
+        }
+
         public void CreateDirectory(string path) {
         }
 
         public void DeleteDirectory(string path) {
-            // TODO: maybe implement this for tests
         }
 
         public void DeleteFile(string path) {
-            // TODO: maybe implement this for tests
         }
 
         public bool DoesDirectoryExist(string path) {
