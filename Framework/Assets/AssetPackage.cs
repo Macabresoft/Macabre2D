@@ -34,6 +34,12 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember]
         private readonly ObservableCollectionExtended<IIdentifiable> _packagedObjects = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssetPackage{TContent}" /> class.
+        /// </summary>
+        protected AssetPackage() : base() {
+        }
+
         /// <inheritdoc />
         public bool TryGetPackaged<TPackaged>(Guid id, out TPackaged? packaged) where TPackaged : class, IIdentifiable {
             packaged = this.GetPackages().FirstOrDefault(x => x.Id == id) as TPackaged;

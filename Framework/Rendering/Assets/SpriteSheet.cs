@@ -37,6 +37,14 @@ namespace Macabresoft.Macabre2D.Framework {
         private Point _spriteSize;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SpriteSheet" /> class.
+        /// </summary>
+        public SpriteSheet() {
+            this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
+            this._autoTileSets.PropertyChanged += this.RaisePropertyChanged;
+        }
+
+        /// <summary>
         /// Gets the auto tile sets.
         /// </summary>
         public INameableCollection AutoTileSets => this._autoTileSets;
