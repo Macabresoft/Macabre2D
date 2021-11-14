@@ -3,6 +3,10 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
+    <UserControl.Resources>
+        <common:EqualityConverter x:Key="IsEqualConverter" />
+        <common:EqualityConverter x:Key="NotEqualConverter" InvertResult="True" />
+    </UserControl.Resources>
     <Grid RowDefinitions="0.6*, 0, 0.4*"
           DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
         <Grid.ColumnDefinitions>
@@ -23,14 +27,22 @@
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <local:ProjectTreeView />
         </Panel>
-        
+
         <GridSplitter Grid.Row="1"
                       Grid.Column="0"
-                      Classes="CardSplitter" />
-        
+                      Classes="CardSplitter"
+                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource NotEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="3"
+                      Classes="CardSplitter"
+                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+
         <Panel Grid.Row="2"
                Grid.Column="0"
-               Margin="{StaticResource StandardMarginLeftTopBottom}">
+               Margin="{StaticResource StandardMarginLeftTopBottom}"
+               IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource NotEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
@@ -40,14 +52,25 @@
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Text="Select a file or directory to view details"
-                               IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}"/>
+                               IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
                 </Panel>
             </Border>
         </Panel>
-
+        
         <GridSplitter Grid.Row="0"
                       Grid.RowSpan="3"
                       Grid.Column="1"
                       Classes="CardSplitter" />
+
+        <Panel Grid.Row="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="3"
+               Margin="{StaticResource StandardMarginAll}">
+            <Border Classes="Card"
+                    Margin="{StaticResource StandardMarginAll}"
+                    IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
+                <ContentControl Content="{Binding ProjectService.AssetEditor}" />
+            </Border>
+        </Panel>
     </Grid>
 </UserControl>
