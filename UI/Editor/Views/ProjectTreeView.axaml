@@ -119,7 +119,7 @@
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
                           SelectedItem="{Binding ProjectService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
                             <Design.DataContext>
