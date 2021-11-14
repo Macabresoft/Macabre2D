@@ -18,6 +18,8 @@
         <TextBlock Grid.Column="1"
                    Text="{Binding $parent[local:EditableSelectableItem].Text}"
                    IsVisible="{Binding !#_editableTextBox.IsVisible}"
+                   TextWrapping="NoWrap"
+                   TextTrimming="CharacterEllipsis"
                    HorizontalAlignment="Stretch"
                    Background="Transparent"
                    DoubleTapped="Item_OnDoubleTapped" />

@@ -3,7 +3,7 @@
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Common.ValueCollectionsControl">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Visible">
+                  VerticalScrollBarVisibility="Hidden">
         <Grid DataContext="{Binding $parent[local:ValueCollectionsControl]}">
             <Design.DataContext>
                 <local:ValueCollectionsControl />

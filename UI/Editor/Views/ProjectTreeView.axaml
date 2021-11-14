@@ -117,7 +117,9 @@
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                          SelectedItem="{Binding ProjectService.Selected, Mode=TwoWay}">
+                          SelectedItem="{Binding ProjectService.Selected, Mode=TwoWay}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <TreeView.Styles>
                         <Style Selector="common|EditableSelectableItem">
                             <Design.DataContext>
