@@ -24,13 +24,6 @@
                     ToolTip.Tip="Remove the selected tile set from the sprite sheet">
                 <common:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
-
-            <Button Command="{Binding EditCommand}"
-                    CommandParameter="{Binding SelectedTileSet}"
-                    Classes="Icon"
-                    ToolTip.Tip="Edit the selected tile set">
-                <common:Icon Content="{StaticResource EditIcon}" />
-            </Button>
         </StackPanel>
 
         <ListBox Grid.Row="1"

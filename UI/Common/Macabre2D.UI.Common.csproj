@@ -79,4 +79,7 @@
       <UpToDateCheckInput Remove="Theme\Margins.axaml" />
       <UpToDateCheckInput Remove="Theme\Theme.axaml" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Views" />
+    </ItemGroup>
 </Project>

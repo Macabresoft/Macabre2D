@@ -48,7 +48,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public ContentMetadata Metadata { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not this content has changes.
+        /// Gets or sets a value indicating whether or not this content has changes.
         /// </summary>
         public bool HasChanges {
             get => this._hasChanges;

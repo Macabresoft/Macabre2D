@@ -7,6 +7,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
+    using Unity.Resolution;
 
     /// <summary>
     /// Selection types for content.
@@ -267,6 +268,25 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void ResetAssetEditor() {
             if (this.SelectionType == ProjectSelectionType.Asset) {
+                if (this.Selected is SpriteSheetAsset spriteSheetAsset) {
+                    var contentFile = this._contentService.RootContentDirectory.GetAllContentFiles()
+                        .FirstOrDefault(x => x.Asset is SpriteSheet contentSpriteSheet && contentSpriteSheet.TryGetPackaged<SpriteSheetAsset>(spriteSheetAsset.Id, out _));
+
+                    if (contentFile?.Asset is SpriteSheet spriteSheet) {
+                        if (spriteSheetAsset is AutoTileSet tileSet) {
+                            this.AssetEditor = Resolver.Resolve<AutoTileSetEditorView>(
+                                new ParameterOverride(typeof(AutoTileSet), tileSet),
+                                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                                new ParameterOverride(typeof(ContentFile), contentFile));
+                        }
+                        else if (spriteSheetAsset is SpriteAnimation animation) {
+                            
+                        }
+                    }
+                }
+                else {
+                    this.AssetEditor = null;
+                }
             }
             else {
                 this.AssetEditor = null;

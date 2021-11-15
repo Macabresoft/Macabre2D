@@ -87,10 +87,6 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="ViewModels\Content" />
-      <Folder Include="Views\Content" />
-    </ItemGroup>
-    <ItemGroup>
       <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
       <UpToDateCheckInput Remove="Theme\Colors.axaml" />
       <UpToDateCheckInput Remove="Theme\Controls\AutoCompleteBox.axaml" />

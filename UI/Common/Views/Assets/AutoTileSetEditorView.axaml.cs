@@ -1,14 +1,14 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
+    using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
-    public class AutoTileSetEditorDialog : BaseDialog {
-        public AutoTileSetEditorDialog() {
+    public class AutoTileSetEditorView : UserControl {
+        public AutoTileSetEditorView() {
         }
 
         [InjectionConstructor]
-        public AutoTileSetEditorDialog(AutoTileSetEditorViewModel viewModel) {
+        public AutoTileSetEditorView(AutoTileSetEditorViewModel viewModel) {
             this.DataContext = viewModel;
             this.InitializeComponent();
         }

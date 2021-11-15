@@ -30,6 +30,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public void SetSprite(byte spriteIndex, byte tileIndex) {
             if (tileIndex < this.Size) {
                 this._tileIndexToSpriteIndex[tileIndex] = spriteIndex;
+                this.RaisePropertyChanged(nameof(AutoTileSet));
             }
         }
 
@@ -58,6 +59,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <param name="tileIndex">The tile index.</param>
         public void UnsetSprite(byte tileIndex) {
             this._tileIndexToSpriteIndex.Remove(tileIndex);
+            this.RaisePropertyChanged(nameof(AutoTileSet));
         }
     }
 }

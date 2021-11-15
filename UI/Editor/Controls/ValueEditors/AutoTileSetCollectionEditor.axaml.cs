@@ -1,5 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
-    using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia;
     using Avalonia.Markup.Xaml;
@@ -14,11 +13,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             AvaloniaProperty.RegisterDirect<AutoTileSetCollectionEditor, ICommand>(
                 nameof(AddCommand),
                 editor => editor.AddCommand);
-
-        public static readonly DirectProperty<AutoTileSetCollectionEditor, ICommand> EditCommandProperty =
-            AvaloniaProperty.RegisterDirect<AutoTileSetCollectionEditor, ICommand>(
-                nameof(EditCommand),
-                editor => editor.EditCommand);
 
         public static readonly DirectProperty<AutoTileSetCollectionEditor, ICommand> RemoveCommandProperty =
             AvaloniaProperty.RegisterDirect<AutoTileSetCollectionEditor, ICommand>(
@@ -36,8 +30,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 editor => editor.SelectedTileSet,
                 (editor, value) => editor.SelectedTileSet = value);
 
-        private readonly IContentService _contentService;
-        private readonly ILocalDialogService _dialogService;
         private readonly IUndoService _undoService;
         private AutoTileSet _selectedTileSet;
 
@@ -47,16 +39,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public AutoTileSetCollectionEditor(
             ValueControlDependencies dependencies,
-            IContentService contentService,
-            ILocalDialogService dialogService,
             IUndoService undoService) : base(dependencies) {
-            this._contentService = contentService;
-            this._dialogService = dialogService;
             this._undoService = undoService;
 
             var canExecute = this.WhenAny(x => x.SelectedTileSet, y => y.Value != null);
             this.AddCommand = ReactiveCommand.Create(this.AddTileSet);
-            this.EditCommand = ReactiveCommand.CreateFromTask<AutoTileSet>(async x => await this.EditTileSet(x), canExecute);
             this.RemoveCommand = ReactiveCommand.Create<AutoTileSet>(this.RemoveTileSet, canExecute);
             this.RenameCommand = ReactiveCommand.Create<string>(this.RenameTileSet, canExecute);
 
@@ -64,8 +51,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         public ICommand AddCommand { get; }
-
-        public ICommand EditCommand { get; }
 
         public ICommand RemoveCommand { get; }
 
@@ -86,14 +71,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                     () => { Dispatcher.UIThread.Post(() => { collection.Add(tileSet); }); },
                     () => { Dispatcher.UIThread.Post(() => { collection.Remove(tileSet); }); });
             }
-        }
-
-        private async Task EditTileSet(AutoTileSet tileSet) {
-            if (tileSet != null && this.Owner is SpriteSheet spriteSheet && this._contentService.RootContentDirectory.TryFindNode(spriteSheet.ContentId, out var file)) {
-                await this._dialogService.OpenAutoTileSetEditor(tileSet, spriteSheet, file);
-            }
-
-            await Task.CompletedTask;
         }
 
         private void InitializeComponent() {
