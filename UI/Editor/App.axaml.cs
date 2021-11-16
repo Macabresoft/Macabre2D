@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
+    using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
@@ -25,6 +26,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <inheritdoc />
         public override void OnFrameworkInitializationCompleted() {
             if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+                BaseGame.IsDesignMode = true;
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);
 

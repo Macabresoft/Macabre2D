@@ -48,6 +48,10 @@
         <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Assets\SpriteAnimationEditorView.axaml.cs">
+        <DependentUpon>SpriteAnimationEditorDialog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
     <ItemGroup>
       <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />

@@ -77,8 +77,10 @@
         }
 
         private void Initialize() {
-            this.HandleAdd(this.Items);
-            this.CollectionChanged += this.OnCollectionChanged;
+            if (BaseGame.IsDesignMode) {
+                this.HandleAdd(this.Items);
+                this.CollectionChanged += this.OnCollectionChanged;
+            }
         }
 
         private void OnAdd(TNameable asset) {
@@ -100,6 +102,8 @@
                     this.HandleAdd(e.NewItems);
                     break;
             }
+            
+            this.RaiseItemsChanged();
         }
 
         private void OnRemove(TNameable asset) {

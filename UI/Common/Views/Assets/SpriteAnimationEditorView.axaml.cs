@@ -1,17 +1,16 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Markup.Xaml;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
     using Unity;
 
-    public class SpriteAnimationEditorDialog : BaseDialog {
-        public SpriteAnimationEditorDialog() {
+    public class SpriteAnimationEditorView : UserControl {
+        public SpriteAnimationEditorView() {
         }
 
         [InjectionConstructor]
-        public SpriteAnimationEditorDialog(SpriteAnimationEditorViewModel viewModel) {
+        public SpriteAnimationEditorView(SpriteAnimationEditorViewModel viewModel) {
             this.DataContext = viewModel;
             this.InitializeComponent();
         }
@@ -32,7 +31,7 @@
 
         private void SpriteIndex_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
             // IsActive gets set to true after all the bindings are first set, so this ignores initial settings.
-            if (this.IsActive && this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
+            if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
                 var oldValue = (byte?)e.OldValue;
                 var newValue = (byte?)e.NewValue;
                 viewModel.CommitSpriteIndex(step, oldValue, newValue);

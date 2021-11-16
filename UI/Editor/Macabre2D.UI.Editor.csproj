@@ -49,10 +49,6 @@
             <DependentUpon>SpriteSheetAssetSelectionDialog.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\Dialogs\SpriteAnimationEditorDialog.axaml.cs">
-            <DependentUpon>SpriteAnimationEditorDialog.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\ShaderEditor.axaml.cs">
           <DependentUpon>ShaderEditor.axaml</DependentUpon>
           <SubType>Code</SubType>

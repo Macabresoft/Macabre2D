@@ -91,9 +91,9 @@ namespace Macabresoft.Macabre2D.Framework {
         public InputState InputState { get; protected set; }
 
         /// <summary>
-        /// Gets a value which indicates whether or not the game is running in design mode.
+        /// Gets or sets a value which indicates whether or not the game is running in design mode.
         /// </summary>
-        public static bool IsDesignMode { get; protected set; }
+        public static bool IsDesignMode { get; set; }
 
         /// <inheritdoc />
         public IGameProject Project {

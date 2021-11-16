@@ -1,41 +1,19 @@
-﻿<common:BaseDialog xmlns="https://github.com/avaloniaui"
-                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                   x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditorDialog"
-                   CloseCommand="{Binding CancelCommand}"
-                   Width="1024"
-                   Height="768"
-                   Title="Sprite Animation Editor"
-                   VectorIcon="{StaticResource SpriteSheetIcon}">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             x:Class="Macabresoft.Macabre2D.UI.Common.SpriteAnimationEditorView">
     <Design.DataContext>
         <local:SpriteAnimationEditorViewModel />
     </Design.DataContext>
-    <common:BaseDialog.Resources>
-        <common:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
-    </common:BaseDialog.Resources>
-    <Grid RowDefinitions="Auto, *, Auto"
+    <UserControl.Resources>
+        <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto, *"
           ColumnDefinitions=".35*, Auto, .65*"
           Margin="{StaticResource StandardMarginAll}">
         <StackPanel Grid.Row="0"
                     Grid.Column="0"
                     Orientation="Horizontal">
-            <Button Classes="Icon"
-                    Command="{Binding UndoCommand}"
-                    HotKey="Ctrl + Z"
-                    ToolTip.Tip="Undo">
-                <common:Icon Content="{StaticResource UndoIcon}" />
-            </Button>
-
-            <Button Classes="Icon"
-                    Command="{Binding RedoCommand}"
-                    HotKey="Ctrl + Y"
-                    ToolTip.Tip="Redo">
-                <common:Icon Content="{StaticResource RedoIcon}" />
-            </Button>
-
-            <Border Classes="VerticalSeparator" />
-
             <Button Command="{Binding AddCommand}"
                     CommandParameter="{x:Null}"
                     Classes="Icon"
@@ -52,14 +30,14 @@
                                   ToolTip.Tip="Insert a step after the selected step" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                <common:Icon Content="{StaticResource AddIcon}" />
+                <local:Icon Content="{StaticResource AddIcon}" />
             </Button>
 
             <Button Command="{Binding RemoveCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the step from the animation">
-                <common:Icon Content="{StaticResource RemoveIcon}" />
+                <local:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -68,7 +46,7 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Clear the selected step's sprite assignment"
                     Classes="Icon">
-                <common:Icon Content="{StaticResource EraserIcon}" />
+                <local:Icon Content="{StaticResource EraserIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -77,35 +55,35 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the beginning of the animation"
                     Classes="Icon">
-                <common:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
+                <local:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveUpCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step up one spot in the list"
                     Classes="Icon">
-                <common:Icon Content="{StaticResource ChevronUpIcon}" />
+                <local:Icon Content="{StaticResource ChevronUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveDownCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step down one spot in the list"
                     Classes="Icon">
-                <common:Icon Content="{StaticResource ChevronDownIcon}" />
+                <local:Icon Content="{StaticResource ChevronDownIcon}" />
             </Button>
 
             <Button Command="{Binding MoveToEndCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the end of the animation"
                     Classes="Icon">
-                <common:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
+                <local:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
             </Button>
         </StackPanel>
 
-        <common:ThumbnailSizeToggle Grid.Row="0"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    SelectedSize="{Binding ThumbnailSize}" />
+        <local:ThumbnailSizeToggle Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   SelectedSize="{Binding ThumbnailSize}" />
 
         <ListBox Grid.Row="1"
                  Grid.Column="0"
@@ -124,16 +102,16 @@
                         <Border Grid.Column="0"
                                 Classes="Preview"
                                 VerticalAlignment="Center"
-                                Width="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
-                                Height="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}"
-                                MaxWidth="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Width}"
-                                MaxHeight="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.StepSize.Height}">
+                                Width="{Binding $parent[local:SpriteAnimationEditorView].ViewModel.StepSize.Width}"
+                                Height="{Binding $parent[local:SpriteAnimationEditorView].ViewModel.StepSize.Height}"
+                                MaxWidth="{Binding $parent[local:SpriteAnimationEditorView].ViewModel.StepSize.Width}"
+                                MaxHeight="{Binding $parent[local:SpriteAnimationEditorView].ViewModel.StepSize.Height}">
                             <Image>
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource SpriteIndexToBitmapConverter}">
                                         <Binding Path="SpriteIndex" />
                                         <Binding
-                                            RelativeSource="{RelativeSource AncestorType=local:SpriteAnimationEditorDialog}"
+                                            RelativeSource="{RelativeSource AncestorType=local:SpriteAnimationEditorView}"
                                             Path="ViewModel.SpriteCollection" />
                                     </MultiBinding>
                                 </Image.Source>
@@ -169,7 +147,7 @@
                                            Grid.Column="1"
                                            ValueChanged="SpriteIndex_OnValueChanged"
                                            Value="{Binding SpriteIndex, Mode=OneWay}"
-                                           Maximum="{Binding $parent[local:SpriteAnimationEditorDialog].ViewModel.MaxIndex}"
+                                           Maximum="{Binding $parent[local:SpriteAnimationEditorView].ViewModel.MaxIndex}"
                                            Minimum="0"
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Left"
@@ -189,26 +167,9 @@
                       Grid.Column="2"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
-            <common:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
-                                                   SelectedSprite="{Binding SelectedSprite}"
-                                                   ThumbnailSize="{Binding ThumbnailSize}" />
+            <local:SpriteDisplayCollectionControl Collection="{Binding SpriteCollection}"
+                                                  SelectedSprite="{Binding SelectedSprite}"
+                                                  ThumbnailSize="{Binding ThumbnailSize}" />
         </ScrollViewer>
-
-        <StackPanel Grid.Row="2"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="{StaticResource StandardMarginVertical}">
-            <Button Content="OK"
-                    Command="{Binding OkCommand}"
-                    CommandParameter="{Binding $parent[local:SpriteAnimationEditorDialog]}"
-                    HorizontalAlignment="Right"
-                    IsDefault="True" />
-            <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
-                    CommandParameter="{Binding $parent[local:SpriteAnimationEditorDialog]}"
-                    IsCancel="True" />
-        </StackPanel>
     </Grid>
-</common:BaseDialog>
+</UserControl>

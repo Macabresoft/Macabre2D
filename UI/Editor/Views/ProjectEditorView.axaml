@@ -5,15 +5,22 @@
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
     <UserControl.Resources>
         <common:EqualityConverter x:Key="IsEqualConverter" />
-        <common:EqualityConverter x:Key="NotEqualConverter" InvertResult="True" />
     </UserControl.Resources>
-    <Grid RowDefinitions="0.6*, 0, 0.4*"
-          DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
+    <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.6*"
+                           MinHeight="128" />
+            <RowDefinition Height="0" />
+            <RowDefinition Height="0.4*"
+                           MinHeight="128" />
+
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.1*"
                               MinWidth="380" />
             <ColumnDefinition Width="0" />
-            <ColumnDefinition Width="0.8*" />
+            <ColumnDefinition Width="0.8*"
+                              MinWidth="128" />
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0"
@@ -30,19 +37,11 @@
 
         <GridSplitter Grid.Row="1"
                       Grid.Column="0"
-                      Classes="CardSplitter"
-                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource NotEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
-
-        <GridSplitter Grid.Row="1"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="3"
-                      Classes="CardSplitter"
-                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+                      Classes="CardSplitter" />
 
         <Panel Grid.Row="2"
                Grid.Column="0"
-               Margin="{StaticResource StandardMarginLeftTopBottom}"
-               IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource NotEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
+               Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
@@ -56,15 +55,19 @@
                 </Panel>
             </Border>
         </Panel>
-        
+
         <GridSplitter Grid.Row="0"
                       Grid.RowSpan="3"
                       Grid.Column="1"
                       Classes="CardSplitter" />
 
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="2"
+                      Classes="CardSplitter"
+                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+
         <Panel Grid.Row="2"
-               Grid.Column="0"
-               Grid.ColumnSpan="3"
+               Grid.Column="2"
                Margin="{StaticResource StandardMarginAll}">
             <Border Classes="Card"
                     Margin="{StaticResource StandardMarginAll}"

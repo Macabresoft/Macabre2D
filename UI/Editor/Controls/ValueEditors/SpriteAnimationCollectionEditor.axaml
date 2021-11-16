@@ -24,13 +24,6 @@
                     ToolTip.Tip="Remove the selected animation from the sprite sheet">
                 <common:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
-
-            <Button Command="{Binding EditCommand}"
-                    CommandParameter="{Binding SelectedAnimation}"
-                    Classes="Icon"
-                    ToolTip.Tip="Edit the selected animation">
-                <common:Icon Content="{StaticResource EditIcon}" />
-            </Button>
         </StackPanel>
 
         <ListBox Grid.Row="1"

@@ -1,5 +1,9 @@
 namespace Macabresoft.Macabre2D.Framework {
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.Serialization;
     using Macabresoft.Core;
 
@@ -19,13 +23,16 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
         /// </summary>
         public SpriteAnimation() {
+            if (BaseGame.IsDesignMode) {
+                this._steps.CollectionChanged += this.Steps_CollectionChanged;
+            }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimation" /> class.
         /// </summary>
         /// <param name="steps">The steps.</param>
-        public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps) {
+        public SpriteAnimation(IEnumerable<SpriteAnimationStep> steps) : this() {
             this._steps.AddRange(steps);
         }
 
@@ -85,6 +92,55 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <returns>A value indicating whether or not the step was removed.</returns>
         public bool RemoveStep(SpriteAnimationStep step) {
             return this._steps.Remove(step);
+        }
+
+        private void HandleAdd(IEnumerable? newItems) {
+            if (newItems != null) {
+                foreach (var asset in newItems.OfType<SpriteAnimationStep>()) {
+                    this.OnAdd(asset);
+                }
+            }
+        }
+
+        private void HandleRemove(IEnumerable? oldItems) {
+            if (oldItems != null) {
+                foreach (var asset in oldItems.OfType<SpriteAnimationStep>()) {
+                    this.OnRemove(asset);
+                }
+            }
+        }
+
+        private void OnAdd(SpriteAnimationStep step) {
+            if (step is INotifyPropertyChanged notifier) {
+                notifier.PropertyChanged += this.Step_PropertyChanged;
+            }
+        }
+
+        private void OnRemove(SpriteAnimationStep asset) {
+            if (asset is INotifyPropertyChanged notifier) {
+                notifier.PropertyChanged -= this.Step_PropertyChanged;
+            }
+        }
+
+        private void Step_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            this.RaisePropertyChanged(nameof(this.Steps));
+        }
+
+        private void Steps_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+            switch (e.Action) {
+                case NotifyCollectionChangedAction.Add:
+                    this.HandleAdd(e.NewItems);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    this.HandleRemove(e.OldItems);
+                    break;
+                case NotifyCollectionChangedAction.Replace or NotifyCollectionChangedAction.Reset:
+                    this.HandleRemove(e.OldItems);
+                    this.HandleAdd(e.NewItems);
+                    break;
+            }
+
+            this.RaisePropertyChanged(nameof(this.Steps));
         }
     }
 }

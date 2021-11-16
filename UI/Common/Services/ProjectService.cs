@@ -7,6 +7,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using ReactiveUI;
+    using Unity;
     using Unity.Resolution;
 
     /// <summary>
@@ -62,6 +63,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// </summary>
     public sealed class ProjectService : ReactiveObject, IProjectService {
         private const string DefaultSceneName = "Default";
+        private readonly IUnityContainer _container;
         private readonly IContentService _contentService;
         private readonly List<ValueControlCollection> _editors = new();
         private readonly IFileSystemService _fileSystem;
@@ -79,6 +81,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService" /> class.
         /// </summary>
+        /// <param name="container">The unity container.</param>
         /// <param name="contentService">The content service.</param>
         /// <param name="fileSystem">The file system service.</param>
         /// <param name="pathService">The path service.</param>
@@ -88,6 +91,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <param name="undoService">The undo service.</param>
         /// <param name="valueControlService">The value control service.</param>
         public ProjectService(
+            IUnityContainer container,
             IContentService contentService,
             IFileSystemService fileSystem,
             IPathService pathService,
@@ -96,6 +100,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
             IEditorSettingsService settingsService,
             IUndoService undoService,
             IValueControlService valueControlService) {
+            this._container = container;
             this._contentService = contentService;
             this._fileSystem = fileSystem;
             this._pathService = pathService;
@@ -273,15 +278,17 @@ namespace Macabresoft.Macabre2D.UI.Common {
                         .FirstOrDefault(x => x.Asset is SpriteSheet contentSpriteSheet && contentSpriteSheet.TryGetPackaged<SpriteSheetAsset>(spriteSheetAsset.Id, out _));
 
                     if (contentFile?.Asset is SpriteSheet spriteSheet) {
-                        if (spriteSheetAsset is AutoTileSet tileSet) {
-                            this.AssetEditor = Resolver.Resolve<AutoTileSetEditorView>(
+                        this.AssetEditor = spriteSheetAsset switch {
+                            AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
                                 new ParameterOverride(typeof(AutoTileSet), tileSet),
                                 new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                                new ParameterOverride(typeof(ContentFile), contentFile));
-                        }
-                        else if (spriteSheetAsset is SpriteAnimation animation) {
-                            
-                        }
+                                new ParameterOverride(typeof(ContentFile), contentFile)),
+                            SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
+                                new ParameterOverride(typeof(SpriteAnimation), animation),
+                                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                                new ParameterOverride(typeof(ContentFile), contentFile)),
+                            _ => null
+                        };
                     }
                 }
                 else {

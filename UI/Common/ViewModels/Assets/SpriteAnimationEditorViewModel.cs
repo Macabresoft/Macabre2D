@@ -1,22 +1,20 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor {
+﻿namespace Macabresoft.Macabre2D.UI.Common {
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
     using Avalonia;
     using DynamicData;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
 
     /// <summary>
     /// A view model for editing sprite animations.
     /// </summary>
-    public class SpriteAnimationEditorViewModel : BaseDialogViewModel {
+    public class SpriteAnimationEditorViewModel : BaseViewModel {
         private const double MaxStepSize = 64;
         private readonly SpriteAnimation _animation;
-        private readonly IChildUndoService _childUndoService;
-        private readonly IUndoService _parentUndoService;
+        private readonly IUndoService _undoService;
         private bool _isSettingSpriteIndexToNull;
         private SpriteDisplayModel _selectedSprite;
         private SpriteAnimationStep _selectedStep;
@@ -31,24 +29,20 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SpriteAnimationEditorViewModel" /> class.
         /// </summary>
-        /// <param name="childUndoService">The child undo service.</param>
-        /// <param name="parentUndoService">The parent undo service.</param>
+        /// <param name="undoService">The parent undo service.</param>
         /// <param name="animation">The animation being edited.</param>
         /// <param name="spriteSheet">The sprite sheet.</param>
         /// <param name="file">The content file.</param>
         [InjectionConstructor]
         public SpriteAnimationEditorViewModel(
-            IChildUndoService childUndoService,
-            IUndoService parentUndoService,
+            IUndoService undoService,
             SpriteAnimation animation,
             SpriteSheet spriteSheet,
-            ContentFile file) : base(childUndoService) {
-            this._childUndoService = childUndoService;
-            this._parentUndoService = parentUndoService;
+            ContentFile file) : base() {
+            this._undoService = undoService;
             this._animation = animation;
             this.MaxIndex = spriteSheet.MaxIndex;
 
-            this.CancelCommand = ReactiveCommand.Create<IWindow>(this.Cancel);
             var selectedNotNull = this.WhenAny(x => x.SelectedStep, x => x.Value != null);
             this.ClearSpriteCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.ClearSprite, selectedNotNull);
             this.AddCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.AddStep);
@@ -67,22 +61,15 @@
             this.MoveDownCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveDown, notAtEnd);
             this.MoveToEndCommand = ReactiveCommand.Create<SpriteAnimationStep>(this.MoveToEnd, notAtEnd);
 
-
             this.SpriteCollection = new SpriteDisplayCollection(spriteSheet, file);
             this.SelectedStep = this.Steps.FirstOrDefault();
             this.StepSize = this.GetStepSize();
-            this.IsOkEnabled = true;
         }
 
         /// <summary>
         /// Gets a command to add a new step.
         /// </summary>
         public ICommand AddCommand { get; }
-
-        /// <summary>
-        /// Gets the cancel command.
-        /// </summary>
-        public ICommand CancelCommand { get; }
 
         /// <summary>
         /// Clears the selected sprite from the selected step.
@@ -147,7 +134,7 @@
             set {
                 if (this._selectedStep is SpriteAnimationStep selectedStep) {
                     var previousSprite = this._selectedSprite;
-                    this.UndoService.Do(() => {
+                    this._undoService.Do(() => {
                         try {
                             this._isSettingSpriteIndexToNull = value == null;
                             this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
@@ -200,7 +187,7 @@
         /// <param name="newValue">The new value.</param>
         public void CommitFrames(SpriteAnimationStep step, int oldValue, int newValue) {
             if (step != null && step.Frames != newValue && oldValue != newValue) {
-                this._childUndoService.Do(() => { step.Frames = newValue; }, () => { step.Frames = oldValue; });
+                this._undoService.Do(() => { step.Frames = newValue; }, () => { step.Frames = oldValue; });
             }
         }
 
@@ -212,15 +199,8 @@
         /// <param name="newValue">The new value.</param>
         public void CommitSpriteIndex(SpriteAnimationStep step, byte? oldValue, byte? newValue) {
             if (step != null && !this._isSettingSpriteIndexToNull && step.SpriteIndex != newValue && oldValue != newValue) {
-                this._childUndoService.Do(() => { step.SpriteIndex = newValue; }, () => { step.SpriteIndex = oldValue; });
+                this._undoService.Do(() => { step.SpriteIndex = newValue; }, () => { step.SpriteIndex = oldValue; });
             }
-        }
-
-        /// <inheritdoc />
-        protected override void OnOk() {
-            var command = this._childUndoService.GetChanges();
-            this._parentUndoService.CommitExternalChanges(command);
-            base.OnOk();
         }
 
         private void AddStep(SpriteAnimationStep selectedStep) {
@@ -231,7 +211,7 @@
             }
 
             SpriteAnimationStep step = null;
-            this._childUndoService.Do(() => {
+            this._undoService.Do(() => {
                 step = this._animation.AddStep(index);
                 this.SelectedStep = step;
             }, () => {
@@ -243,12 +223,6 @@
                     this.SelectedStep = selectedStep;
                 }
             });
-        }
-
-        private void Cancel(IWindow window) {
-            var command = this._childUndoService.GetChanges();
-            command?.Undo();
-            window.Close(false);
         }
 
         private void ClearSprite(SpriteAnimationStep step) {
@@ -288,7 +262,7 @@
             if (!this.IsStepAtEnd(step)) {
                 var originalIndex = this._animation.Steps.IndexOf(step);
                 var newIndex = originalIndex + 1;
-                this._childUndoService.Do(() => {
+                this._undoService.Do(() => {
                     this._animation.RemoveStep(step);
                     this._animation.AddStep(step, newIndex);
                     this.SelectedStep = step;
@@ -303,7 +277,7 @@
         private void MoveToEnd(SpriteAnimationStep step) {
             if (!this.IsStepAtEnd(step)) {
                 var originalIndex = this._animation.Steps.IndexOf(step);
-                this._childUndoService.Do(() => {
+                this._undoService.Do(() => {
                     this._animation.RemoveStep(step);
                     this._animation.AddStep(step);
                     this.SelectedStep = step;
@@ -318,7 +292,7 @@
         private void MoveToStart(SpriteAnimationStep step) {
             if (!this.IsStepAtStart(step)) {
                 var originalIndex = this._animation.Steps.IndexOf(step);
-                this._childUndoService.Do(() => {
+                this._undoService.Do(() => {
                     this._animation.RemoveStep(step);
                     this._animation.AddStep(step, 0);
                     this.SelectedStep = step;
@@ -334,7 +308,7 @@
             if (!this.IsStepAtStart(step)) {
                 var originalIndex = this._animation.Steps.IndexOf(step);
                 var newIndex = originalIndex - 1;
-                this._childUndoService.Do(() => {
+                this._undoService.Do(() => {
                     this._animation.RemoveStep(step);
                     this._animation.AddStep(step, newIndex);
                     this.SelectedStep = step;
@@ -349,7 +323,7 @@
         private void RemoveStep(SpriteAnimationStep selectedStep) {
             if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
                 var index = this._animation.Steps.IndexOf(selectedStep);
-                this._childUndoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => {
+                this._undoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => {
                     this._animation.AddStep(selectedStep, index);
                     this.SelectedStep = selectedStep;
                 });

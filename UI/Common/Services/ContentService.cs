@@ -153,10 +153,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     var fileName = $"{this.CreateSafeName(Path.GetFileNameWithoutExtension(filePath), parent)}{Path.GetExtension(filePath)}";
                     var newFilePath = Path.Combine(parentDirectoryPath, fileName);
 
-                    await Task.Run(() => {
-                        this._fileSystem.CopyFile(filePath, newFilePath);
-                    });
-                    
+                    await Task.Run(() => { this._fileSystem.CopyFile(filePath, newFilePath); });
+
                     this.CreateContentFile(parent, fileName);
                 }
             }

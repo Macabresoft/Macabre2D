@@ -15,11 +15,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 nameof(AddCommand),
                 editor => editor.AddCommand);
 
-        public static readonly DirectProperty<SpriteAnimationCollectionEditor, ICommand> EditCommandProperty =
-            AvaloniaProperty.RegisterDirect<SpriteAnimationCollectionEditor, ICommand>(
-                nameof(EditCommand),
-                editor => editor.EditCommand);
-
         public static readonly DirectProperty<SpriteAnimationCollectionEditor, ICommand> RemoveCommandProperty =
             AvaloniaProperty.RegisterDirect<SpriteAnimationCollectionEditor, ICommand>(
                 nameof(RemoveCommand),
@@ -56,7 +51,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
             var canExecute = this.WhenAny(x => x.SelectedAnimation, y => y.Value != null);
             this.AddCommand = ReactiveCommand.Create(this.AddAnimation);
-            this.EditCommand = ReactiveCommand.CreateFromTask<SpriteAnimation>(async x => await this.EditAnimation(x), canExecute);
             this.RemoveCommand = ReactiveCommand.Create<SpriteAnimation>(this.RemoveAnimation, canExecute);
             this.RenameCommand = ReactiveCommand.Create<string>(this.RenameAnimation, canExecute);
 
@@ -64,9 +58,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         public ICommand AddCommand { get; }
-
-        public ICommand EditCommand { get; }
-
+        
         public ICommand RemoveCommand { get; }
 
         public ICommand RenameCommand { get; }
@@ -86,14 +78,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                     () => { Dispatcher.UIThread.Post(() => { collection.Add(animation); }); },
                     () => { Dispatcher.UIThread.Post(() => { collection.Remove(animation); }); });
             }
-        }
-
-        private async Task EditAnimation(SpriteAnimation animation) {
-            if (animation != null && this.Owner is SpriteSheet spriteSheet && this._contentService.RootContentDirectory.TryFindNode(spriteSheet.ContentId, out var file)) {
-                await this._dialogService.OpenSpriteAnimationEditor(animation, spriteSheet, file);
-            }
-
-            await Task.CompletedTask;
         }
 
         private void InitializeComponent() {

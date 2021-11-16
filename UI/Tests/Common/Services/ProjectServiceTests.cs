@@ -7,6 +7,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
     using Macabresoft.Macabre2D.UI.Common;
     using NSubstitute;
     using NUnit.Framework;
+    using Unity;
 
     [TestFixture]
     public class ProjectServiceTests {
@@ -54,6 +55,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
                 });
 
             var projectService = new ProjectService(
+                Substitute.For<IUnityContainer>(),
                 contentService,
                 fileSystem,
                 pathService,
@@ -92,6 +94,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
                 });
 
             var projectService = new ProjectService(
+                Substitute.For<IUnityContainer>(),
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
@@ -120,6 +123,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
             var serializer = Substitute.For<ISerializer>();
 
             var projectService = new ProjectService(
+                Substitute.For<IUnityContainer>(),
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,
@@ -155,6 +159,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
                 });
 
             var projectService = new ProjectService(
+                Substitute.For<IUnityContainer>(),
                 Substitute.For<IContentService>(),
                 fileSystem,
                 pathService,

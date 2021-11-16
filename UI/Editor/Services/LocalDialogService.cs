@@ -11,15 +11,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// </summary>
     public interface ILocalDialogService : ICommonDialogService {
         /// <summary>
-        /// Opens the animation editor.
-        /// </summary>
-        /// <param name="animation">The animation to edit.</param>
-        /// <param name="spriteSheet">The sprite sheet which owns the animation.</param>
-        /// <param name="file">The content file representing the sprite sheet.</param>
-        /// <returns>A value indicating whether or not the user pressed ok.</returns>
-        Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file);
-
-        /// <summary>
         /// Opens a dialog that allows the user to pick a sprite.
         /// </summary>
         /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
@@ -41,15 +32,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// </summary>
         /// <param name="mainWindow">The main window.</param>
         public LocalDialogService(MainWindow mainWindow) : base(mainWindow) {
-        }
-
-        /// <inheritdoc />
-        public async Task<bool> OpenSpriteAnimationEditor(SpriteAnimation animation, SpriteSheet spriteSheet, ContentFile file) {
-            var window = Resolver.Resolve<SpriteAnimationEditorDialog>(
-                new ParameterOverride(typeof(SpriteAnimation), animation),
-                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                new ParameterOverride(typeof(ContentFile), file));
-            return await window.ShowDialog<bool>(this.MainWindow);
         }
 
         /// <inheritdoc />
