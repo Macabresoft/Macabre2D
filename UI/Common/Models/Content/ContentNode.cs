@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// Interface for a node in the content tree.
     /// </summary>
-    public interface IContentNode {
+    public interface IContentNode : INameable {
         /// <summary>
         /// Occurs when the path to this file has changed.
         /// </summary>
@@ -24,11 +24,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// Gets the parent.
         /// </summary>
         IContentDirectory Parent { get; }
-
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the name without an extension.
@@ -84,15 +79,6 @@ namespace Macabresoft.Macabre2D.UI.Common {
         protected void Initialize(string name, IContentDirectory parent) {
             this._name = name;
             this.ChangeParent(parent);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContentNode" /> class.
-        /// </summary>
-        /// <remarks>
-        /// This exists purely for data context purposes in XAML.
-        /// </remarks>
-        protected ContentNode() {
         }
 
         /// <inheritdoc />

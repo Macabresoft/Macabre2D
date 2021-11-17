@@ -19,6 +19,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         private readonly IFileSystemService _fileSystem;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
+        private readonly IUndoService _undoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
@@ -37,6 +38,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
+        /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public ProjectTreeViewModel(
             IContentService contentService,
@@ -45,7 +47,8 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             IFileSystemService fileSystem,
             IProjectService projectService,
             ISaveService saveService,
-            ISceneService sceneService) {
+            ISceneService sceneService,
+            IUndoService undoService) {
             this.ContentService = contentService;
             this._dialogService = dialogService;
             this._editorService = editorService;
@@ -53,6 +56,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this.ProjectService = projectService;
             this._saveService = saveService;
             this._sceneService = sceneService;
+            this._undoService = undoService;
 
             this.AddDirectoryCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddDirectory);
             this.AddSceneCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddScene);
@@ -70,9 +74,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 this.RemoveContent,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value is { } and not RootContentDirectory));
 
-            this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(
-                async x => await this.RenameContent(x),
-                this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
+            this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
         }
 
         /// <summary>
@@ -182,25 +184,43 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         }
 
         private async Task RenameContent(string updatedName) {
-            if (this.ContentService.Selected is IContentNode node and not RootContentDirectory && node.Name != updatedName) {
-                var typeName = node is IContentDirectory ? "Directory" : "File";
-                if (this._fileSystem.IsValidFileOrDirectoryName(updatedName)) {
-                    await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
-                }
-                else {
-                    if (node.Parent is IContentDirectory parent) {
-                        var parentPath = parent.GetFullPath();
-                        var updatedPath = Path.Combine(parentPath, updatedName);
+            switch (this.ProjectService.Selected) {
+                case RootContentDirectory:
+                    return;
+                case IContentNode node when node.Name != updatedName:
+                    var typeName = node is IContentDirectory ? "Directory" : "File";
+                    if (this._fileSystem.IsValidFileOrDirectoryName(updatedName)) {
+                        await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
+                    }
+                    else {
+                        if (node.Parent is IContentDirectory parent) {
+                            var parentPath = parent.GetFullPath();
+                            var updatedPath = Path.Combine(parentPath, updatedName);
 
-                        if (File.Exists(updatedPath) || Directory.Exists(updatedPath)) {
-                            await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"A {typeName.ToLower()} named '{updatedName}' already exists.");
-                        }
-                        else {
-                            node.Name = updatedName;
-                            this.ContentService.Selected = node;
+                            if (File.Exists(updatedPath) || Directory.Exists(updatedPath)) {
+                                await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"A {typeName.ToLower()} named '{updatedName}' already exists.");
+                            }
+                            else {
+                                var originalNodeName = node.Name;
+                                this._undoService.Do(() => {
+                                    node.Name = updatedName;
+                                }, () => {
+                                    node.Name = originalNodeName;
+                                });
+                                node.Name = updatedName;
+                            }
                         }
                     }
-                }
+
+                    break;
+                case INameable nameable when nameable.Name != updatedName:
+                    var originalName = nameable.Name;
+                    this._undoService.Do(() => {
+                        nameable.Name = updatedName;
+                    }, () => {
+                        nameable.Name = originalName;
+                    });
+                    break;
             }
         }
     }
