@@ -58,9 +58,14 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._sceneService = sceneService;
             this._undoService = undoService;
 
-            this.AddDirectoryCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddDirectory);
-            this.AddSceneCommand = ReactiveCommand.Create<IContentDirectory>(this.ContentService.AddScene);
-            this.ImportCommand = ReactiveCommand.CreateFromTask<IContentDirectory>(this.ContentService.ImportContent);
+            this.AddCommand = ReactiveCommand.Create<object>(
+                this.AddNode,
+                this.ProjectService.WhenAny(x => x.Selected, x => CanAddNode(x.Value)));
+
+            var whenIsContentDirectory = this.ProjectService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory);
+            this.AddDirectoryCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddDirectory(x as IContentDirectory), whenIsContentDirectory);
+            this.AddSceneCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddScene(x as IContentDirectory), whenIsContentDirectory);
+            this.ImportCommand = ReactiveCommand.CreateFromTask<object>(x => this.ContentService.ImportContent(x as IContentDirectory), whenIsContentDirectory);
 
             this.OpenCommand = ReactiveCommand.CreateFromTask<IContentNode>(
                 this.OpenSelectedContent,
@@ -76,6 +81,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
             this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
         }
+
+        /// <summary>
+        /// Gets the add command.
+        /// </summary>
+        public ICommand AddCommand { get; }
 
         /// <summary>
         /// Gets the add directory command.
@@ -143,6 +153,36 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             }
         }
 
+        private void AddNode(object parent) {
+            switch (parent) {
+                case IContentDirectory directory:
+                    this.ContentService.AddDirectory(directory);
+                    break;
+                case AutoTileSetCollection tileSets:
+                    var tileSet = new AutoTileSet {
+                        Name = AutoTileSet.DefaultName
+                    };
+
+                    this._undoService.Do(
+                        () => { tileSets.Add(tileSet); },
+                        () => { tileSets.Remove(tileSet); });
+                    break;
+                case SpriteAnimationCollection animations:
+                    var animation = new SpriteAnimation {
+                        Name = SpriteAnimation.DefaultName
+                    };
+
+                    this._undoService.Do(
+                        () => { animations.Add(animation); },
+                        () => { animations.Remove(animation); });
+                    break;
+            }
+        }
+
+        private static bool CanAddNode(object parent) {
+            return parent is IContentDirectory or AutoTileSetCollection or SpriteAnimationCollection;
+        }
+
         private static bool CanOpenContent(IContentNode node) {
             return node is ContentFile { Asset: SceneAsset };
         }
@@ -202,11 +242,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                             }
                             else {
                                 var originalNodeName = node.Name;
-                                this._undoService.Do(() => {
-                                    node.Name = updatedName;
-                                }, () => {
-                                    node.Name = originalNodeName;
-                                });
+                                this._undoService.Do(() => { node.Name = updatedName; }, () => { node.Name = originalNodeName; });
                                 node.Name = updatedName;
                             }
                         }
@@ -215,11 +251,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                     break;
                 case INameable nameable when nameable.Name != updatedName:
                     var originalName = nameable.Name;
-                    this._undoService.Do(() => {
-                        nameable.Name = updatedName;
-                    }, () => {
-                        nameable.Name = originalName;
-                    });
+                    this._undoService.Do(() => { nameable.Name = updatedName; }, () => { nameable.Name = originalName; });
                     break;
             }
         }

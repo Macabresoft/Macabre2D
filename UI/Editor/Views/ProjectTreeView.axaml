@@ -84,12 +84,17 @@
             <Grid RowDefinitions="Auto, *">
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
-                    <Button Command="{Binding AddDirectoryCommand, Mode=OneWay}"
+                    <Button Command="{Binding AddCommand, Mode=OneWay}"
                             CommandParameter="{Binding ProjectService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Add content as a child of the selected node">
                         <Button.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Add (Context Sensitive)"
+                                          Command="{Binding AddDirectoryCommand}"
+                                          CommandParameter="{Binding ProjectService.Selected}"
+                                          ToolTip.Tip="Adds either a directory node or an asset collection child" />
+                                
                                 <MenuItem Header="Add Directory"
                                           Command="{Binding AddDirectoryCommand}"
                                           CommandParameter="{Binding ProjectService.Selected}"
@@ -109,7 +114,7 @@
                         <common:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
-                            CommandParameter="{Binding ContentService.Selected}"
+                            CommandParameter="{Binding ProjectService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
                         <common:Icon Content="{StaticResource RemoveIcon}" />
