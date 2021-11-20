@@ -32,7 +32,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <summary>
-        /// Gets the packaged asset identifier.
+        /// Gets or sets the packaged asset identifier.
         /// </summary>
         [DataMember]
         public Guid PackagedAssetId {

@@ -187,7 +187,7 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+            if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(SpriteSheet.SpriteSize)) {
                 this.ResetBoundingArea();
             }
         }

@@ -27,7 +27,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         [InjectionConstructor]
         public SceneEditorViewModel(
             IEditorService editorService,
-            IAvaloniaGame sceneEditor,
+            ISceneEditor sceneEditor,
             ISceneService sceneService) : base(sceneEditor) {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));

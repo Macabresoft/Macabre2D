@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using System;
     using System.ComponentModel;
+    using System.Runtime.CompilerServices;
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -118,6 +119,14 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             if (this.Mouse != null && this.Keyboard != null) {
                 this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
             }
+        }
+
+        /// <summary>
+        /// Raises a property changed notification.
+        /// </summary>
+        /// <param name="propertyName">The property name</param>
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = "") {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

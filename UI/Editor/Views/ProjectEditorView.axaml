@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
     <UserControl.Resources>
         <common:EqualityConverter x:Key="IsEqualConverter" />
@@ -23,11 +24,10 @@
                               MinWidth="128" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0"
-                Grid.RowSpan="3"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Background="{DynamicResource SystemAccentColor}" />
+        <monoGameInterop:MonoGameControl Grid.Row="0"
+                                         Grid.RowSpan="3"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="3" />
 
         <Panel Grid.Row="0"
                Grid.Column="0"

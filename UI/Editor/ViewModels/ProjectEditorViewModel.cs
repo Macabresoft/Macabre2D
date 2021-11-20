@@ -1,16 +1,19 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common;
 
     /// <summary>
     /// View model for project editing.
     /// </summary>
-    public class ProjectEditorViewModel : BaseViewModel {
-        
+    public class ProjectEditorViewModel : MonoGameViewModel {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectEditorViewModel" /> class.
         /// </summary>
+        /// <param name="projectEditor">The project editor.</param>
         /// <param name="projectService">The project service.</param>
-        public ProjectEditorViewModel(IProjectService projectService) : base() {
+        public ProjectEditorViewModel(
+            IProjectEditorGame projectEditor,
+            IProjectService projectService) : base(projectEditor) {
             this.ProjectService = projectService;
         }
         
