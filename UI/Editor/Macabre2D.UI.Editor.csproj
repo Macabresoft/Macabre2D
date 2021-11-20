@@ -13,7 +13,7 @@
         <PackageReference Include="Avalonia" Version="0.10.10" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
-        <PackageReference Include="Macabresoft.Core" Version="1.0.9" />
+        <PackageReference Include="Macabresoft.Core" Version="1.0.10" />
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>
     <ItemGroup>
@@ -53,10 +53,6 @@
           <DependentUpon>ShaderEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Controls\ValueEditors\SpriteAnimationCollectionEditor.axaml.cs">
-          <DependentUpon>SpriteAnimationCollectionEditor.axaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Controls\ValueEditors\SpriteAnimationEditor.axaml.cs">
           <DependentUpon>SpriteAnimationEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
@@ -67,10 +63,6 @@
         </Compile>
         <Compile Update="Controls\ValueEditors\AudioClipEditor.axaml.cs">
           <DependentUpon>AudioClipEditor.axaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Controls\ValueEditors\AutoTileSetCollectionEditor.axaml.cs">
-          <DependentUpon>AutoTileSetCollectionEditor.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
         <Compile Update="Controls\ValueEditors\AutoTileSetEditor.axaml.cs">

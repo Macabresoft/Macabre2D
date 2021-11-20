@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Avalonia.Threading;
+    using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
@@ -231,27 +232,13 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                         case AutoTileSet tileSet when spriteSheet.AutoTileSets is AutoTileSetCollection tileSets:
                             var tileSetIndex = tileSets.IndexOf(tileSet);
                             this._undoService.Do(() => tileSets.Remove(tileSet),
-                                () => {
-                                    if (tileSetIndex >= tileSets.Count || tileSetIndex < 0) {
-                                        tileSets.Add(tileSet);
-                                    }
-                                    else {
-                                        tileSets.Insert(tileSetIndex, tileSet);
-                                    }
-                                });
+                                () => tileSets.InsertOrAdd(tileSetIndex, tileSet));
 
                             break;
                         case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is SpriteAnimationCollection spriteAnimations:
                             var spriteAnimationIndex = spriteAnimations.IndexOf(spriteAnimation);
                             this._undoService.Do(() => spriteAnimations.Remove(spriteAnimation),
-                                () => {
-                                    if (spriteAnimationIndex >= spriteAnimations.Count || spriteAnimationIndex < 0) {
-                                        spriteAnimations.Add(spriteAnimation);
-                                    }
-                                    else {
-                                        spriteAnimations.Insert(spriteAnimationIndex, spriteAnimation);
-                                    }
-                                });
+                                () => spriteAnimations.InsertOrAdd(spriteAnimationIndex, spriteAnimation));
                             break;
                     }
 
