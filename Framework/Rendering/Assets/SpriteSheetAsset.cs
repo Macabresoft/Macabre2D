@@ -19,5 +19,10 @@ namespace Macabresoft.Macabre2D.Framework {
             get => this._name;
             set => this.Set(ref this._name, value);
         }
+        
+        /// <summary>
+        /// Gets the sprite sheet.
+        /// </summary>
+        public SpriteSheet? SpriteSheet { get; internal set; }
     }
 }

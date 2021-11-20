@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -40,8 +41,10 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Initializes a new instance of the <see cref="SpriteSheet" /> class.
         /// </summary>
         public SpriteSheet() {
-            this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
+            this._autoTileSets.CollectionChanged += this.SpriteSheetAsset_CollectionChanged;
             this._autoTileSets.PropertyChanged += this.RaisePropertyChanged;
+            this._spriteAnimations.CollectionChanged += this.SpriteSheetAsset_CollectionChanged;
+            this._spriteAnimations.PropertyChanged += this.RaisePropertyChanged;
         }
 
         /// <summary>
@@ -330,6 +333,14 @@ namespace Macabresoft.Macabre2D.Framework {
         private void ResetRowHeight() {
             if (this.Content != null && this._rows > 0) {
                 this.SpriteSize = new Point(this.SpriteSize.X, GetRowHeight(this.Content.Height, this._rows));
+            }
+        }
+
+        private void SpriteSheetAsset_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+            if (e.NewItems != null) {
+                foreach (var newItem in e.NewItems.OfType<SpriteSheetAsset>()) {
+                    newItem.SpriteSheet = this;
+                }
             }
         }
     }

@@ -273,23 +273,19 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         private void ResetAssetEditor() {
             if (this.SelectionType == ProjectSelectionType.Asset) {
-                if (this.Selected is SpriteSheetAsset spriteSheetAsset) {
-                    var contentFile = this._contentService.RootContentDirectory.GetAllContentFiles()
-                        .FirstOrDefault(x => x.Asset is SpriteSheet contentSpriteSheet && contentSpriteSheet.TryGetPackaged<SpriteSheetAsset>(spriteSheetAsset.Id, out _));
-
-                    if (contentFile?.Asset is SpriteSheet spriteSheet) {
-                        this.AssetEditor = spriteSheetAsset switch {
-                            AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
-                                new ParameterOverride(typeof(AutoTileSet), tileSet),
-                                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                                new ParameterOverride(typeof(ContentFile), contentFile)),
-                            SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
-                                new ParameterOverride(typeof(SpriteAnimation), animation),
-                                new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                                new ParameterOverride(typeof(ContentFile), contentFile)),
-                            _ => null
-                        };
-                    }
+                if (this.Selected is SpriteSheetAsset { SpriteSheet: SpriteSheet spriteSheet } spriteSheetAsset &&
+                    this._contentService.RootContentDirectory.TryFindNode(spriteSheetAsset.SpriteSheet.ContentId, out var contentFile)) {
+                    this.AssetEditor = spriteSheetAsset switch {
+                        AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
+                            new ParameterOverride(typeof(AutoTileSet), tileSet),
+                            new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                            new ParameterOverride(typeof(ContentFile), contentFile)),
+                        SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
+                            new ParameterOverride(typeof(SpriteAnimation), animation),
+                            new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                            new ParameterOverride(typeof(ContentFile), contentFile)),
+                        _ => null
+                    };
                 }
                 else {
                     this.AssetEditor = null;
