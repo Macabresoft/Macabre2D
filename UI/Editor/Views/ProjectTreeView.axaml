@@ -17,7 +17,7 @@
 
             <MenuItem Header="Rename"
                       Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
-                      ToolTip.Tip="Rename this content" />
+                      ToolTip.Tip="Rename the content" />
 
             <MenuItem Header="Open"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenCommand}"
@@ -27,21 +27,21 @@
             <MenuItem Header="Open Containing Directory"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenContentLocationCommand}"
                       CommandParameter="{Binding}"
-                      ToolTip.Tip="Open the directory which contains this file in the file explorer" />
+                      ToolTip.Tip="Open the directory which contains the selected file" />
 
             <Separator />
 
             <MenuItem Header="Delete"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
                       CommandParameter="{Binding}"
-                      ToolTip.Tip="Delete this content from your computer" />
+                      ToolTip.Tip="Delete the content" />
         </ContextMenu>
 
         <ContextMenu x:Key="ContentDirectoryContextMenu">
             <MenuItem Header="Rename"
                       Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
                       IsVisible="{Binding Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type framework:INameable}}"
-                      ToolTip.Tip="Rename this directory" />
+                      ToolTip.Tip="Rename the directory" />
 
             <MenuItem Header="Open Directory"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.OpenContentLocationCommand}"
@@ -72,7 +72,7 @@
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
                       CommandParameter="{Binding}"
                       IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"
-                      ToolTip.Tip="Delete this directory from your computer" />
+                      ToolTip.Tip="Delete the directory" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectTreeView].ViewModel}">

@@ -64,16 +64,18 @@ namespace Macabresoft.Macabre2D.Samples.Content {
             spriteAnimator.RenderOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
 
-            var spriteAnimation = new SpriteAnimation();
-            for (byte i = 0; i < 4; i++) {
-                var step = spriteAnimation.AddStep();
-                step.SpriteIndex = i;
-                step.Frames = 2;
+            if (this._colorfulSquares.SpriteAnimations is SpriteAnimationCollection spriteAnimations) {
+                var spriteAnimation = new SpriteAnimation();
+                for (byte i = 0; i < 4; i++) {
+                    var step = spriteAnimation.AddStep();
+                    step.SpriteIndex = i;
+                    step.Frames = 2;
+                }
+                
+                spriteAnimations.Add(spriteAnimation);
+                spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
+                spriteAnimator.AnimationReference.Initialize(this._colorfulSquares);
             }
-
-            this._colorfulSquares.AddAnimation(spriteAnimation);
-            spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
-            spriteAnimator.AnimationReference.Initialize(this._colorfulSquares);
 
             var spriteRenderer3 = scene.AddChild<SpriteRenderer>();
             spriteRenderer3.RenderOrder = -200;

@@ -75,9 +75,9 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 this.OpenContentLocation,
                 this.ContentService.WhenAny(x => x.Selected, y => y.Value != null));
 
-            this.RemoveContentCommand = ReactiveCommand.Create<IContentNode>(
+            this.RemoveContentCommand = ReactiveCommand.Create<object>(
                 this.RemoveContent,
-                this.ContentService.WhenAny(x => x.Selected, y => y.Value is { } and not RootContentDirectory));
+                this.ProjectService.WhenAny(x => x.Selected, y => this.CanRemoveContent(y.Value)));
 
             this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
         }
@@ -187,6 +187,12 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             return node is ContentFile { Asset: SceneAsset };
         }
 
+        private bool CanRemoveContent(object node) {
+            return node is not RootContentDirectory &&
+                   node is not INameableCollection &&
+                   !(node is ContentFile { Asset: SceneAsset asset } && asset.ContentId == this._sceneService.CurrentSceneMetadata.ContentId);
+        }
+
         private void OpenContentLocation(IContentNode node) {
             var directory = node as IContentDirectory ?? node?.Parent;
             if (directory != null) {
@@ -200,7 +206,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             }
         }
 
-        private void RemoveContent(IContentNode node) {
+        private void RemoveContent(object node) {
             var openSceneMetadataId = this._sceneService.CurrentSceneMetadata?.ContentId ?? Guid.Empty;
             switch (node) {
                 case RootContentDirectory:
@@ -209,16 +215,46 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 case IContentDirectory directory when directory.ContainsMetadata(openSceneMetadataId):
                     this._dialogService.ShowWarningDialog("Cannot Delete", "This directory cannot be deleted, because the open scene is a descendent.");
                     break;
-                case IContentDirectory:
-                    this._fileSystem.DeleteDirectory(node.GetFullPath());
-                    node.Parent?.RemoveChild(node);
+                case IContentDirectory directory:
+                    this._fileSystem.DeleteDirectory(directory.GetFullPath());
+                    directory.Parent?.RemoveChild(directory);
                     break;
                 case ContentFile { Metadata: { } } file when file.Metadata.ContentId == openSceneMetadataId:
                     this._dialogService.ShowWarningDialog("Cannot Delete", "The currently opened scene cannot be deleted.");
                     break;
-                default:
-                    this._fileSystem.DeleteFile(node.GetFullPath());
-                    node.Parent?.RemoveChild(node);
+                case IContentNode contentNode:
+                    this._fileSystem.DeleteFile(contentNode.GetFullPath());
+                    contentNode.Parent?.RemoveChild(contentNode);
+                    break;
+                case SpriteSheetAsset { SpriteSheet: SpriteSheet spriteSheet } spriteSheetAsset:
+                    switch (spriteSheetAsset) {
+                        case AutoTileSet tileSet when spriteSheet.AutoTileSets is AutoTileSetCollection tileSets:
+                            var tileSetIndex = tileSets.IndexOf(tileSet);
+                            this._undoService.Do(() => tileSets.Remove(tileSet),
+                                () => {
+                                    if (tileSetIndex >= tileSets.Count || tileSetIndex < 0) {
+                                        tileSets.Add(tileSet);
+                                    }
+                                    else {
+                                        tileSets.Insert(tileSetIndex, tileSet);
+                                    }
+                                });
+
+                            break;
+                        case SpriteAnimation spriteAnimation when spriteSheet.SpriteAnimations is SpriteAnimationCollection spriteAnimations:
+                            var spriteAnimationIndex = spriteAnimations.IndexOf(spriteAnimation);
+                            this._undoService.Do(() => spriteAnimations.Remove(spriteAnimation),
+                                () => {
+                                    if (spriteAnimationIndex >= spriteAnimations.Count || spriteAnimationIndex < 0) {
+                                        spriteAnimations.Add(spriteAnimation);
+                                    }
+                                    else {
+                                        spriteAnimations.Insert(spriteAnimationIndex, spriteAnimation);
+                                    }
+                                });
+                            break;
+                    }
+
                     break;
             }
         }

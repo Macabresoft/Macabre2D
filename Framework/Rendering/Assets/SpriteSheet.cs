@@ -110,16 +110,6 @@ namespace Macabresoft.Macabre2D.Framework {
         }
 
         /// <summary>
-        /// Adds an animation.
-        /// </summary>
-        /// <param name="animation">The animation.</param>
-        public void AddAnimation(SpriteAnimation animation) {
-            if (this._spriteAnimations.All<SpriteAnimation>(x => x.Id != animation.Id)) {
-                this._spriteAnimations.Add(animation);
-            }
-        }
-
-        /// <summary>
         /// Draws the specified sprite.
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
