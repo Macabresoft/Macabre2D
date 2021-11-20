@@ -11,8 +11,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// the view.
     /// </summary>
     public sealed class SceneEditorViewModel : MonoGameViewModel {
-        private readonly IEntityService _entityService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
         /// </summary>
@@ -24,18 +22,14 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        /// <param name="entityService">The entity service.</param>
         /// <param name="sceneEditor">The scene editor.</param>
         /// <param name="sceneService">The scene service.</param>
-        /// <param name="selectionService">The selection service.</param>
         [InjectionConstructor]
         public SceneEditorViewModel(
             IEditorService editorService,
-            IEntityService entityService,
             IAvaloniaGame sceneEditor,
             ISceneService sceneService) : base(sceneEditor) {
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-            this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
 
             this.EditorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
