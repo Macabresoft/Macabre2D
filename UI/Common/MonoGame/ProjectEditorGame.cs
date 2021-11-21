@@ -13,24 +13,14 @@
     /// An extension of <see cref="IAvaloniaGame" /> for previewing assets.
     /// </summary>
     public interface IProjectEditorGame : IAvaloniaGame {
-        /// <summary>
-        /// Gets or sets the overall bounds of the scene.
-        /// </summary>
-        Size OverallBounds { get; set; }
-
-        /// <summary>
-        /// Gets or sets the viewable bounds.
-        /// </summary>
-        Size ViewableBounds { get; set; }
     }
 
     /// <summary>
     /// An extension of <see cref="AvaloniaGame" /> for previewing assets.
     /// </summary>
     public class ProjectEditorGame : AvaloniaGame, IProjectEditorGame {
+        private const float ViewHeightRequired = 10f;
         private readonly IProjectService _projectService;
-        private Size _overallBounds;
-        private Size _viewableBounds;
         private bool _isInitialized;
         private ICamera _camera;
         private AutoTileMap _tileMap;
@@ -50,21 +40,10 @@
             this.Content.RootDirectory = Path.GetRelativePath(pathService.EditorBinDirectoryPath, pathService.EditorContentDirectoryPath);
         }
 
-        /// <inheritdoc />
-        public Size OverallBounds {
-            get => this._overallBounds;
-            set {
-                this._overallBounds = value;
-                this.SquashViewableBounds(this.ViewableBounds);
-                this.RaisePropertyChanged();
-            }
-        }
-
-        /// <inheritdoc />
-        public Size ViewableBounds {
-            get => this._viewableBounds;
-            set => this.SquashViewableBounds(value);
-        }
+        /// <summary>
+        /// Gets the background color.
+        /// </summary>
+        public Color BackgroundColor => DefinedColors.MacabresoftPurple;
 
         /// <inheritdoc />
         protected override void Initialize() {
@@ -82,12 +61,17 @@
 
         private IScene CreateScene() {
             var scene = new Scene{
-                BackgroundColor = DefinedColors.MacabresoftPurple
+                BackgroundColor = Color.Transparent
             };
             
             scene.AddSystem<RenderSystem>();
             scene.AddSystem<UpdateSystem>();
+            
             this._camera = scene.AddChild<Camera>();
+            this._camera.ViewHeight = ViewHeightRequired;
+            this._camera.OffsetSettings.OffsetType = PixelOffsetType.BottomLeft;
+            this._camera.LocalPosition = new Vector2(-0.5f);
+            
             this._tileMap = scene.AddChild<AutoTileMap>();
             this._tileMap.IsEnabled = false;
             this._tileMap.AddTile(new Point(2, 2));
@@ -186,13 +170,6 @@
         }
 
         private void ResetScene(SpriteSheet spriteSheet) {
-        }
-
-        private void SquashViewableBounds(Size requestedViewableSize) {
-            this._viewableBounds = new Size(
-                Math.Min(requestedViewableSize.Width, this.OverallBounds.Width),
-                Math.Min(requestedViewableSize.Height, this.OverallBounds.Height));
-            this.RaisePropertyChanged(nameof(this.ViewableBounds));
         }
     }
 }

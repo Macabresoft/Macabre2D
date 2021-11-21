@@ -34,10 +34,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <inheritdoc />
         public BoundingArea BoundingArea => this._boundingArea.Value;
 
-        /// <summary>
-        /// Gets the offset settings.
-        /// </summary>
-        /// <value>The offset settings.</value>
+        /// <inheritdoc />
         [DataMember(Name = "Offset Settings")]
         public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 

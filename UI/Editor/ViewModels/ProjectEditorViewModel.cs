@@ -1,4 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
+    using Avalonia;
     using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common;
 

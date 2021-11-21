@@ -12,6 +12,12 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </summary>
         /// <value>The layers to render.</value>
         Layers LayersToRender { get; }
+        
+        /// <summary>
+        /// Gets the offset settings.
+        /// </summary>
+        /// <value>The offset settings.</value>
+        OffsetSettings OffsetSettings { get; } 
 
         /// <summary>
         /// Gets the render order.
@@ -26,9 +32,9 @@ namespace Macabresoft.Macabre2D.Framework {
         SamplerState SamplerState { get; }
 
         /// <summary>
-        /// Gets the view height of the camera in world units (not screen pixels).
+        /// Gets or sets the view height of the camera in world units (not screen pixels).
         /// </summary>
-        float ViewHeight { get; }
+        float ViewHeight { get; set;  }
 
         /// <summary>
         /// Converts the point from screen space to world space.
