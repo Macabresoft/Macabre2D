@@ -40,21 +40,25 @@
             <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
         
-        <Panel Grid.Column="0"
+        <!--<Panel Grid.Column="0"
                Grid.ColumnSpan="3"
                IsVisible="{Binding !ShowSkull}">
             <monoGame:MonoGameControl DataContext="{Binding SolidViewModel}"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch" />
-        </Panel>
+        </Panel>-->
+        
+        <monoGame:MonoGameControl Grid.Column="0"
+                                  Grid.ColumnSpan="3"
+                                  Game="{Binding Game}" />
 
-        <Panel Grid.Column="0"
+        <!--<Panel Grid.Column="0"
                Grid.ColumnSpan="3"
                IsVisible="{Binding ShowSkull}">
             <monoGame:MonoGameControl DataContext="{Binding SkullViewModel}"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"/>
-        </Panel>
+        </Panel>-->
 
         <Border Grid.Column="0"
                 Classes="Card"

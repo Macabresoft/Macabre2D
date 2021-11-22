@@ -31,9 +31,17 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
         public MainWindow() {
             this.DataContext = this;
             this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab);
-            this.SkullViewModel = new SkullViewModel(new AvaloniaGame());
-            this.SolidViewModel = new SolidViewModel(this.SkullViewModel.Game);
+            this.Game = new AvaloniaGame();
+            this.Game.Project.Settings.PixelsPerUnit = 32;
+
+            this.SkullViewModel = new SkullViewModel(this.Game);
+            this.SolidViewModel = new SolidViewModel(this.Game);
+            this.ResetScene();
             this.InitializeComponent();
+        }
+
+        private void ResetScene() {
+            this.Game.LoadScene(this.ShowSkull ? this.SkullViewModel.Scene : this.SolidViewModel.Scene);
         }
 
         public SkullViewModel SkullViewModel { get; }
@@ -41,6 +49,8 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
         public SolidViewModel SolidViewModel { get; }
 
         public ICommand ToggleTabCommand { get; }
+        
+        public IAvaloniaGame Game { get; }
 
         public bool ShowHint {
             get => this._showHint;
@@ -62,6 +72,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             }
 
             this.ShowSkull = !this.ShowSkull;
+            this.ResetScene();
         }
     }
 }

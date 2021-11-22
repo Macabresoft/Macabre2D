@@ -1,30 +1,31 @@
 namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
-    using Avalonia;
-    using Avalonia.Controls;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
-    using Point = Microsoft.Xna.Framework.Point;
+    using Macabresoft.Macabre2D.UI.Common;
+    using Microsoft.Xna.Framework;
 
-    public sealed class SolidViewModel : MonoGameViewModel {
-        private Camera _camera;
+    public sealed class SolidViewModel : BaseViewModel {
+        private readonly ICamera _camera;
 
-        public SolidViewModel(IAvaloniaGame game) : base(game) {
-            this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        public SolidViewModel(IGame game) : base() {
+            game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+            this.Scene = this.CreateScene(out this._camera);
         }
 
-        public override void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            this.Game.LoadScene(new Scene());
-            this.Game.Scene.AddSystem<RenderSystem>();
-            this.Game.Scene.AddSystem<UpdateSystem>();
-            this.Game.Scene.BackgroundColor = DefinedColors.CosmicJam;
+        public IScene Scene { get; }
 
-            this._camera = this.Game.Scene.AddChild<Camera>();
-            this._camera.ViewHeight = 6f;
+        public IScene CreateScene(out ICamera camera) {
+            var scene = new Scene();
+            scene.AddSystem<RenderSystem>();
+            scene.AddSystem<UpdateSystem>();
+            scene.BackgroundColor = DefinedColors.CosmicJam;
 
-            base.Initialize(window, viewportSize, mouse, keyboard);
+            camera = scene.AddChild<Camera>();
+            camera.ViewHeight = 6f;
+            return scene;
         }
 
-        public void ResetCamera() {
+
+        private void ResetCamera() {
             if (this._camera != null) {
                 // This probably seems weird, but it resets the view height which causes the view
                 // matrix and bounding area to be reevaluated.

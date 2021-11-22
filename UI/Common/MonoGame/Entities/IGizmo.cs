@@ -4,7 +4,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// Interface for a gizmo.
     /// </summary>
-    public interface IGizmo {
+    public interface IGizmo : IEntity {
         /// <summary>
         /// Gets the kind of gizmo this is.
         /// </summary>

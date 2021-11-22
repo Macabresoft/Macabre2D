@@ -4,9 +4,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// A render system built explicitly for the <see cref="ISceneEditor" />.
+    /// A render system built explicitly for the <see cref="IEditorGame" />.
     /// </summary>
-    internal class EditorRenderSystem : UpdateableSystem {
+    public class EditorRenderSystem : UpdateableSystem {
         private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
         private readonly ISceneService _sceneService;
@@ -24,7 +24,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Scene.Game is ISceneEditor { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
+            if (this.Scene.Game is IEditorGame { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
+                spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
                 this._renderTree.Clear();
 
                 foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => x is EditorGrid)) {

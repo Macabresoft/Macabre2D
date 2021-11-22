@@ -1,22 +1,23 @@
 namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
-    using Avalonia;
-    using Avalonia.Controls;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.Framework;
     using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Entities;
+    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
+    using Macabresoft.Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using ReactiveUI;
-    using Point = Microsoft.Xna.Framework.Point;
 
-    public sealed class SkullViewModel : MonoGameViewModel {
+    public sealed class SkullViewModel : BaseViewModel {
         private Camera _camera;
         private string _displayText = @"github.com/Macabresoft/Macabresoft.Macabre2D";
         private TextRenderer _displayTextRenderer;
         private SpriteRenderer _skullRenderer;
 
-        public SkullViewModel(IAvaloniaGame game) : base(game) {
-            this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        public SkullViewModel(IAvaloniaGame game) : base() {
+            game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+            this.Scene = this.CreateScene(game);
         }
+
+        public IScene Scene { get; }
 
         public string DisplayText {
             get => this._displayText;
@@ -29,9 +30,7 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             }
         }
 
-        public override void Initialize(Window window, Size viewportSize, MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-            this.Game.Project.Settings.PixelsPerUnit = 32;
-
+        private IScene CreateScene(IAvaloniaGame game) {
             var scene = new Scene();
             scene.AddSystem<RenderSystem>();
             scene.AddSystem<UpdateSystem>();
@@ -70,24 +69,22 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
             frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
             frameRateDisplay.LocalScale = new Vector2(0.1f);
 
-            this.Game.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
-            this.Game.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
-            this.Game.LoadScene(scene);
-
-            base.Initialize(window, viewportSize, mouse, keyboard);
+            game.Assets.RegisterMetadata(new ContentMetadata(skull, new[] { "skull" }, ".png"));
+            game.Assets.RegisterMetadata(new ContentMetadata(leagueMono, new[] { "League Mono" }, ".spritefont"));
+            return scene;
         }
 
-        public void ResetCamera() {
+        private void Game_ViewportSizeChanged(object sender, Point e) {
+            this.ResetCamera();
+        }
+
+        private void ResetCamera() {
             if (this._camera != null) {
                 // This probably seems weird, but it resets the view height which causes the view
                 // matrix and bounding area to be reevaluated.
                 this._camera.ViewHeight += 1;
                 this._camera.ViewHeight -= 1;
             }
-        }
-
-        private void Game_ViewportSizeChanged(object sender, Point e) {
-            this.ResetCamera();
         }
     }
 }

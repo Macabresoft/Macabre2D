@@ -67,7 +67,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// Gets or sets the version of this scene.
         /// </summary>
         Version Version { get; set; }
-
+        
         /// <summary>
         /// Adds the system.
         /// </summary>

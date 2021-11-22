@@ -56,6 +56,13 @@ namespace Macabresoft.Macabre2D.Framework {
         void AddChild(IEntity entity);
 
         /// <summary>
+        /// Get all descendents of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <returns>Descendents of the specified type.</returns>
+        IEnumerable<T> GetDescendents<T>() where T : IEntity;
+
+        /// <summary>
         /// Gets the child of the specified type if it exists; otherwise, adds a new child.
         /// </summary>
         /// <typeparam name="T">The type of child to find.</typeparam>
@@ -117,7 +124,8 @@ namespace Macabresoft.Macabre2D.Framework {
     public class Entity : Transformable, IEntity {
         /// <summary>
         /// The default empty <see cref="IEntity" /> that is present before initialization.
-        /// </summary>43E
+        /// </summary>
+        /// 43E
         public static readonly IEntity Empty = new EmptyEntity();
 
         [DataMember]
@@ -196,6 +204,13 @@ namespace Macabresoft.Macabre2D.Framework {
                 this._children.Add(entity);
                 this.OnAddChild(entity);
             }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<T> GetDescendents<T>() where T : IEntity {
+            var descendents = new List<T>(this.Children.OfType<T>());
+            descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents<T>()));
+            return descendents;
         }
 
         /// <inheritdoc />
@@ -348,6 +363,11 @@ namespace Macabresoft.Macabre2D.Framework {
             /// <inheritdoc />
             public void AddChild(IEntity entity) {
                 throw new NotSupportedException("Initialization has not occured.");
+            }
+
+            /// <inheritdoc />
+            public IEnumerable<T> GetDescendents<T>() where T : IEntity {
+                return Enumerable.Empty<T>();
             }
 
             /// <inheritdoc />

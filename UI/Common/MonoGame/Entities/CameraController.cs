@@ -6,7 +6,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    internal sealed class CameraController : UpdateableEntity {
+    public sealed class CameraController : UpdateableEntity {
         private Camera _camera;
 
         public override void Initialize(IScene scene, IEntity entity) {

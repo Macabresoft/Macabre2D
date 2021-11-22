@@ -8,7 +8,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// A component which displays the currently selected <see cref="IEntity" />.
     /// </summary>
-    internal class SelectionDisplay : BaseDrawer {
+    public class SelectionDisplay : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly IEntityService _entityService;
 

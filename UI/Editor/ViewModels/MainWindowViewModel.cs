@@ -8,7 +8,6 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     using Macabresoft.Macabre2D.UI.Common;
     using ReactiveUI;
     using Unity;
-    using Observable = System.Reactive.Linq.Observable;
 
     /// <summary>
     /// The view model for the main window.
@@ -31,6 +30,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// </summary>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
+        /// <param name="game">The game.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
@@ -39,12 +39,14 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         public MainWindowViewModel(
             ILocalDialogService dialogService,
             IEditorService editorService,
+            IEditorGame game,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
             IUndoService undoService) : base(undoService) {
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+            this.Game = game ?? throw new ArgumentNullException(nameof(game));
             this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
@@ -68,6 +70,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the command to exit the application.
         /// </summary>
         public ICommand ExitCommand { get; }
+
+        /// <summary>
+        /// Gets the game.
+        /// </summary>
+        public IEditorGame Game { get; }
 
         /// <summary>
         /// Gets the open scene command.

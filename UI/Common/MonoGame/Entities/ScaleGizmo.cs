@@ -10,7 +10,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// A gizmo/component that allows the user to scale entities in the editor.
     /// </summary>
-    internal sealed class ScaleGizmo : BaseAxisGizmo {
+    public sealed class ScaleGizmo : BaseAxisGizmo {
         private readonly IUndoService _undoService;
         private Texture2D _squareSprite;
         private Vector2 _unmovedScale;

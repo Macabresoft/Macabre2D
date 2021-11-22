@@ -49,8 +49,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <param name="container">The container.</param>
         /// <returns>The container.</returns>
         public static IUnityContainer RegisterLibraryTypes(this IUnityContainer container) {
-            return container.RegisterType<IProjectEditorGame, ProjectEditorGame>(new PerResolveLifetimeManager())
-                .RegisterType<ISceneEditor, SceneEditorGame>(new PerResolveLifetimeManager());
+            return container.RegisterType<IEditorGame, EditorGameGame>(new SingletonLifetimeManager());
         }
     }
 }

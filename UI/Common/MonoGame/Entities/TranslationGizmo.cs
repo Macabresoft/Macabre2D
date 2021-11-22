@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// A gizmo/component that allows the user to translate entities in the editor.
     /// </summary>
-    internal sealed class TranslationGizmo : BaseAxisGizmo {
+    public sealed class TranslationGizmo : BaseAxisGizmo {
         private readonly IUndoService _undoService;
         private Texture2D _neutralAxisTriangleSprite;
         private Vector2 _unmovedPosition;

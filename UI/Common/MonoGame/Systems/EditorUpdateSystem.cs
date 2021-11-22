@@ -2,7 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Macabresoft.Macabre2D.Framework;
 
     /// <summary>
-    /// An update system built explicitly for the <see cref="ISceneEditor" />.
+    /// An update system built explicitly for the <see cref="IEditorGame" />.
     /// </summary>
     public class EditorUpdateSystem : UpdateSystem {
         private readonly IEntityService _entityService;
@@ -23,7 +23,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         /// <inheritdoc />
         public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this.Scene.Game is ISceneEditor sceneEditor) {
+            if (this.Scene.Game is IEditorGame sceneEditor) {
                 var performedActions = false;
 
                 if (this._entityService.Selected != null && sceneEditor.SelectedGizmo is IGizmo gizmo) {

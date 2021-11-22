@@ -1,13 +1,11 @@
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using Avalonia;
     using Avalonia.Controls;
-    using Avalonia.Input;
-    using Avalonia.Interactivity;
     using Avalonia.Media;
     using Avalonia.Media.Imaging;
     using Avalonia.Platform;
@@ -21,20 +19,38 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     /// <summary>
     /// A control that renders a MonoGame instance inside of Avalonia.
     /// </summary>
-    public sealed class MonoGameControl : Control, IDisposable {
-        private readonly Dictionary<StandardCursorType, Cursor> _cursorTypeToCursor = new() {
-            { StandardCursorType.None, null }
-        };
+    public sealed class MonoGameControl : Control {
+        /// <summary>
+        /// Avalonia property for <see cref="Game" />.
+        /// </summary>
+        public static readonly StyledProperty<IBrush> FallbackBackgroundProperty = AvaloniaProperty.Register<MonoGameControl, IBrush>(
+            nameof(FallbackBackground),
+            DefinedColors.MacabresoftPurple.ToAvaloniaBrush());
+
+        /// <summary>
+        /// Avalonia property for <see cref="Game" />.
+        /// </summary>
+        public static readonly StyledProperty<IAvaloniaGame> GameProperty = AvaloniaProperty.Register<MonoGameControl, IAvaloniaGame>(
+            nameof(Game),
+            notifying: OnGameChanging);
 
         private readonly GameTime _gameTime = new();
+
+        private readonly PresentationParameters _presentationParameters = new() {
+            BackBufferWidth = 1,
+            BackBufferHeight = 1,
+            BackBufferFormat = SurfaceFormat.Color,
+            DepthStencilFormat = DepthFormat.Depth24,
+            PresentationInterval = PresentInterval.Immediate,
+            IsFullScreen = false
+        };
+
         private readonly Stopwatch _stopwatch = new();
         private WriteableBitmap _bitmap;
-        private bool _isDisposed;
         private bool _isInitialized;
         private bool _isResizeProcessing;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
-        private IMonoGameViewModel _viewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoGameControl" /> class.
@@ -43,20 +59,26 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             this.Focusable = true;
         }
 
-        /// <inheritdoc />
-        public void Dispose() {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+        /// <summary>
+        /// Gets or sets the fallback background brush.
+        /// </summary>
+        public IBrush FallbackBackground {
+            get => this.GetValue(FallbackBackgroundProperty);
+            set => this.SetValue(FallbackBackgroundProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the game.
+        /// </summary>
+        public IAvaloniaGame Game {
+            get => this.GetValue(GameProperty);
+            set => this.SetValue(GameProperty, value);
         }
 
         /// <inheritdoc />
         public override void Render(DrawingContext context) {
-            if (this.IsEffectivelyVisible && this._viewModel != null) {
+            if (this.IsEffectivelyVisible && this.Game is IAvaloniaGame { GraphicsDevice: GraphicsDevice device } game) {
                 base.Render(context);
-
-                if (this._viewModel.Scene != this._viewModel.Game.Scene) {
-                    this._viewModel.ResetScene();
-                }
 
                 this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
                 this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
@@ -64,21 +86,21 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
                 if (this.CanBeginDraw()) {
                     using (var bitmapLock = this._bitmap.Lock()) {
-                        this._viewModel.RunFrame();
+                        this.RunFrame();
 
                         var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                        this._viewModel.GraphicsDevice.GetBackBufferData(data);
+                        device.GetBackBufferData(data);
                         Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
                     }
 
                     context.DrawImage(this._bitmap, new Rect(this._bitmap.Size), new Rect(this.Bounds.Size));
                 }
-                else if (this._viewModel.Scene is IScene scene) {
+                else if (game.Scene is IScene scene) {
                     context.DrawRectangle(scene.BackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
                 }
-                else if (this._viewModel.Game?.Project.Settings is IGameSettings settings) {
-                    context.DrawRectangle(settings.FallbackBackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
-                }
+            }
+            else {
+                context.DrawRectangle(this.FallbackBackground, null, this.Bounds);
             }
 
             Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
@@ -89,34 +111,11 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             base.OnAttachedToVisualTree(e);
             this.Start();
         }
-
-        /// <inheritdoc />
-        protected override void OnDataContextChanged(EventArgs e) {
-            base.OnDataContextChanged(e);
-
-            if (this._viewModel != null) {
-                this._viewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+        
+        private static void OnGameChanging(IAvaloniaObject control, bool isBeforeChange) {
+            if (!isBeforeChange && control is MonoGameControl { _isInitialized: true } monoGameControl) {
+                monoGameControl.Initialize();
             }
-
-            this._viewModel = this.DataContext as IMonoGameViewModel;
-
-            if (this._viewModel != null) {
-                this._viewModel.PropertyChanged += this.ViewModel_PropertyChanged;
-                this.InitializeViewModel();
-                Dispatcher.UIThread.InvokeAsync(this.InvalidateVisual, DispatcherPriority.Background);
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnGotFocus(GotFocusEventArgs e) {
-            this._viewModel?.OnActivated(this, EventArgs.Empty);
-            base.OnGotFocus(e);
-        }
-
-        /// <inheritdoc />
-        protected override void OnLostFocus(RoutedEventArgs e) {
-            this._viewModel?.OnDeactivated(this, EventArgs.Empty);
-            base.OnLostFocus(e);
         }
 
         /// <inheritdoc />
@@ -124,7 +123,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             base.OnPropertyChanged(change);
 
             if (change.Property.Name == nameof(this.Bounds)) {
-                this.HandleResize();
+                this.ResetDevice();
             }
         }
 
@@ -132,72 +131,79 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         private bool CanBeginDraw() {
             // If we have no graphics device, we must be running in the designer. Make sure the
             // graphics device is big enough, and is not lost.
-            return !this._isResizeProcessing && this._viewModel?.GraphicsDevice != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
-        }
-
-        private void Dispose(bool disposing) {
-            if (!this._isDisposed) {
-                if (disposing) {
-                    this._viewModel?.Dispose();
-                }
-
-                this._isDisposed = true;
-            }
+            return !this._isResizeProcessing && this.Game?.GraphicsDevice != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
         }
 
         private bool HandleDeviceReset() {
-            if (this._viewModel?.GraphicsDevice == null || this._viewModel.GraphicsDevice.GraphicsDeviceStatus == GraphicsDeviceStatus.Lost) {
+            if (this.Game?.GraphicsDevice is not GraphicsDevice device || device.GraphicsDeviceStatus == GraphicsDeviceStatus.Lost) {
                 return false;
             }
 
-            if (this._viewModel.GraphicsDevice.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset ||
-                this._viewModel.GraphicsDevice.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
-                this._viewModel.GraphicsDevice.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
-                this._viewModel.ResetDevice(this._bitmap.PixelSize.Width, this._bitmap.PixelSize.Height);
+            if (device.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset ||
+                device.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
+                device.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
+                this.ResetDevice();
                 return false;
             }
 
             return true;
         }
 
-        private void HandleResize() {
-            if (this.ShouldPerformResize()) {
-                this._isResizeProcessing = true;
-                this._bitmap?.Dispose();
-
-                this._bitmap = new WriteableBitmap(
-                    new PixelSize((int)Math.Ceiling(this.Bounds.Width), (int)Math.Ceiling(this.Bounds.Height)),
-                    new Vector(96d, 96d),
-                    PixelFormat.Rgba8888,
-                    AlphaFormat.Opaque);
-
-                this.SetViewport();
-
-                Dispatcher.UIThread.Post(() => {
-                    this._viewModel?.OnSizeChanged(this._bitmap.Size);
-                    this._isResizeProcessing = false;
-                }, DispatcherPriority.ContextIdle);
+        private void Initialize() {
+            if (this.Game != null && this.GetVisualRoot() is Window window) {
+                this.Game.Initialize(this._mouse, this._keyboard);
+                this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
+                this.ResetDevice();
+                this.Game.RunOneFrame();
             }
         }
 
-        private void InitializeViewModel(Window window) {
-            if (this._viewModel != null) {
-                this._viewModel.RunFrame();
-                this._viewModel.Initialize(window, this.Bounds.Size, this._mouse, this._keyboard);
+        private void ResetDevice() {
+            var newWidth = Math.Max(1, (int)Math.Ceiling(this.Bounds.Width));
+            var newHeight = Math.Max(1, (int)Math.Ceiling(this.Bounds.Height));
+
+            if (this.Game?.GraphicsDevice is GraphicsDevice device) {
+                this.Game.GraphicsDeviceManager.PreferredBackBufferWidth = newWidth;
+                this.Game.GraphicsDeviceManager.PreferredBackBufferHeight = newHeight;
+                device.Viewport = new Viewport(0, 0, newWidth, newHeight);
+                this._presentationParameters.BackBufferWidth = newWidth;
+                this._presentationParameters.BackBufferHeight = newHeight;
+                device.Reset(this._presentationParameters);
+                
+                if (this.ShouldPerformResize()) {
+                    try {
+                        this._isResizeProcessing = true;
+                        this._bitmap?.Dispose();
+
+                        this._bitmap = new WriteableBitmap(
+                            new PixelSize(device.PresentationParameters.BackBufferWidth, device.PresentationParameters.BackBufferHeight),
+                            new Vector(96d, 96d),
+                            PixelFormat.Rgba8888,
+                            AlphaFormat.Opaque);
+
+                        this.SetViewport();
+                    }
+                    finally {
+                        this._isResizeProcessing = false;
+                    }
+                }
             }
         }
 
-        private void InitializeViewModel() {
-            if (this.GetVisualRoot() is Window window) {
-                this.InitializeViewModel(window);
+        private void RunFrame() {
+            try {
+                this.Game.RunOneFrame();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
             }
         }
 
         private void SetViewport() {
-            if (this._viewModel.GraphicsDevice != null) {
-                var width = Math.Max(1, (int)this.Bounds.Width);
-                var height = Math.Max(1, (int)this.Bounds.Height);
-                this._viewModel.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
+            if (this.Game.GraphicsDevice is GraphicsDevice device) {
+                var width = Math.Max(1, device.PresentationParameters.BackBufferWidth);
+                var height = Math.Max(1, device.PresentationParameters.BackBufferHeight);
+                device.Viewport = new Viewport(0, 0, width, height);
             }
         }
 
@@ -205,9 +211,12 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             return !this._isResizeProcessing &&
                    this.Bounds.Width > 0 &&
                    this.Bounds.Height > 0 &&
+                   this.Game.GraphicsDevice is GraphicsDevice device &&
                    (this._bitmap == null ||
                     Math.Abs(this._bitmap.PixelSize.Width - Math.Ceiling(this.Bounds.Width)) > 0.01f ||
-                    Math.Abs(this._bitmap.PixelSize.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f);
+                    Math.Abs(this._bitmap.PixelSize.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f ||
+                    Math.Abs(device.Viewport.Width - Math.Ceiling(this.Bounds.Width)) > 0.01f ||
+                    Math.Abs(device.Viewport.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f);
         }
 
         private void Start() {
@@ -217,33 +226,9 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
             this._mouse = new MonoGameMouse(this);
             this._keyboard = new MonoGameKeyboard(this);
-
-            if (this.GetVisualRoot() is Window window) {
-                window.Closing += (_, _) => this._viewModel?.OnExiting(this, EventArgs.Empty);
-                this.InitializeViewModel(window);
-            }
-
-            this.HandleResize();
+            this.Initialize();
             this._stopwatch.Start();
             this._isInitialized = true;
-        }
-
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IMonoGameViewModel.CursorType)) {
-                if (!this._cursorTypeToCursor.TryGetValue(this._viewModel.CursorType, out var cursor)) {
-                    cursor = new Cursor(this._viewModel.CursorType);
-                    this._cursorTypeToCursor.Add(this._viewModel.CursorType, cursor);
-                }
-
-                this.Cursor = cursor;
-            }
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="MonoGameControl" /> class.
-        /// </summary>
-        ~MonoGameControl() {
-            this.Dispose(false);
         }
     }
 }

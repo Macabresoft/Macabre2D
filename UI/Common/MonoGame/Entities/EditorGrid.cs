@@ -9,7 +9,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// Draws a grid for the editor.
     /// </summary>
-    internal sealed class EditorGrid : BaseDrawer {
+    public sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly IEntityService _entityService;
         private readonly ISceneService _sceneService;

@@ -2,6 +2,7 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                    xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                   xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
                    x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
                    CanResize="True"
                    CloseCommand="{Binding ExitCommand}"
@@ -92,6 +93,8 @@
         </Button>
     </common:BaseDialog.ContentLeftOfMenu>
     <Grid>
+        <monoGameInterop:MonoGameControl Game="{Binding Game}" />
+
         <local:SceneEditorView
             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
         <local:ProjectEditorView

@@ -8,7 +8,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// <summary>
     /// A component which selects entities and components based on their bounding areas.
     /// </summary>
-    internal class SelectorGizmo : Entity, IGizmo {
+    public class SelectorGizmo : Entity, IGizmo {
         private readonly IEntityService _entityService;
         private readonly ISceneService _sceneService;
         private ICamera _camera;

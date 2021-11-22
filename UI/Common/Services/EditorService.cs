@@ -104,7 +104,9 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="entityService"></param>
         /// <param name="settingsService">The editor settings service.</param>
-        public EditorService(IEntityService entityService, IEditorSettingsService settingsService) : base() {
+        public EditorService(
+            IEntityService entityService,
+            IEditorSettingsService settingsService) : base() {
             this._entityService = entityService;
             this._settingsService = settingsService;
 
