@@ -5,6 +5,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using Avalonia.Input;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// A <see cref="IGame" /> that can run within Avalonia.
@@ -110,7 +111,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         protected override void LoadContent() {
-            base.LoadContent();
+            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Assets.Initialize(this.Content, new Serializer());
         }
 

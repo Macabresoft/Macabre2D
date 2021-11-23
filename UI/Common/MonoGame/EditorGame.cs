@@ -29,21 +29,21 @@ namespace Macabresoft.Macabre2D.UI.Common {
     /// An implementation of <see cref="AvaloniaGame" /> used inside the Macabre2D editor.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
-    public sealed class EditorGameGame : AvaloniaGame, IEditorGame {
+    public sealed class EditorGame : AvaloniaGame, IEditorGame {
         private readonly IEditorService _editorService;
         private readonly IProjectService _projectService;
         private readonly ISceneService _sceneService;
         private bool _isInitialized;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditorGameGame" /> class.
+        /// Initializes a new instance of the <see cref="EditorGame" /> class.
         /// </summary>
         /// <param name="assetManager">The asset manager.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="pathService">The path service.</param>
         /// <param name="projectService">The project service.</param>
         /// <param name="sceneService">The scene service.</param>
-        public EditorGameGame(
+        public EditorGame(
             IAssetManager assetManager,
             IEditorService editorService,
             IPathService pathService,

@@ -46,16 +46,13 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
             this._undoService = undoService ?? throw new ArgumentNullException(nameof(undoService));
 
+            this._scene = this.CreateScene();
+            this.TryLoadScene();
+
             this._editorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
             this._editorService.FocusRequested += this.EntityService_FocusRequested;
-
-            this._scene = this.CreateScene();
-
-            if (this._editorService.SelectedTab == EditorTabs.Scene) {
-                this._game.LoadScene(this._scene);
-            }
-
             this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
+            this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
         }
 
         /// <summary>
@@ -99,13 +96,25 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
         private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(IEditorService.SelectedTab) && this._editorService.SelectedTab == EditorTabs.Scene) {
-                this._game.LoadScene(this._scene);
+                this.TryLoadScene();
             }
         }
 
         private void EntityService_FocusRequested(object sender, IEntity e) {
             if (e != null) {
                 this._camera.LocalPosition = e.Transform.Position;
+            }
+        }
+
+        private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ISceneService.CurrentScene) && !Scene.IsNullOrEmpty(this.SceneService.CurrentScene)) {
+                this.SceneService.CurrentScene.Initialize(this._game, this._game.Assets);
+            }
+        }
+
+        private void TryLoadScene() {
+            if (this._editorService.SelectedTab == EditorTabs.Scene) {
+                this._game.LoadScene(this._scene);
             }
         }
     }
