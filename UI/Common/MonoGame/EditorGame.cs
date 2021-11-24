@@ -59,7 +59,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public ICamera Camera => this.Scene.TryGetChild<ICamera>(out var camera) ? camera : null;
 
         /// <inheritdoc />
-        public IGizmo SelectedGizmo => this.Scene.GetDescendents<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
+        public IGizmo SelectedGizmo { get; private set; }
 
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime) {
@@ -83,8 +83,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
                         this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
                     }
 
+                    this.ResetGizmo();
                     this._projectService.PropertyChanged += this.ProjectService_PropertyChanged;
                     this._sceneService.PropertyChanged += this.SceneService_PropertyChanged;
+                    this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
+                    this.PropertyChanged += this.Self_PropertyChanged;
                 }
                 finally {
                     this._isInitialized = true;
@@ -102,10 +105,20 @@ namespace Macabresoft.Macabre2D.UI.Common {
             this.Assets.Initialize(this.Content, new Serializer());
         }
 
+        private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(IEditorService.SelectedGizmo)) {
+                this.ResetGizmo();
+            }
+        }
+
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (this.IsInitialized && e.PropertyName == nameof(IProjectService.CurrentProject)) {
                 this.Project = this._projectService.CurrentProject;
             }
+        }
+
+        private void ResetGizmo() {
+            this.SelectedGizmo = this.Scene.GetDescendents<IGizmo>().FirstOrDefault(x => x.GizmoKind == this._editorService.SelectedGizmo);
         }
 
         private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -113,6 +126,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 e.PropertyName == nameof(ISceneService.CurrentScene) &&
                 !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene)) {
                 this._sceneService.CurrentScene.Initialize(this, this.CreateAssetManager());
+            }
+        }
+
+        private void Self_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(this.Scene)) {
+                this.ResetGizmo();
             }
         }
     }

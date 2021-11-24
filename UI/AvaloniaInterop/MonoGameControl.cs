@@ -1,8 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     using System;
-    using System.ComponentModel;
     using System.Diagnostics;
-    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using Avalonia;
     using Avalonia.Controls;
@@ -46,9 +44,8 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         };
 
         private readonly Stopwatch _stopwatch = new();
-        private WriteableBitmap _bitmap;
+        private WriteableBitmap _bitmap = new(new PixelSize(1, 1), Vector.One, PixelFormat.Rgba8888, AlphaFormat.Opaque);
         private bool _isInitialized;
-        private bool _isResizeProcessing;
         private MonoGameKeyboard _keyboard;
         private MonoGameMouse _mouse;
 
@@ -77,33 +74,39 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         public override void Render(DrawingContext context) {
-            if (this.IsEffectivelyVisible && this.Game is IAvaloniaGame { GraphicsDevice: GraphicsDevice device } game) {
-                base.Render(context);
-
+            if (this.CanDraw(out var game, out var device)) {
                 this._gameTime.ElapsedGameTime = this._stopwatch.Elapsed;
                 this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
                 this._stopwatch.Restart();
+                this.RunFrame();
 
-                if (this.CanBeginDraw()) {
-                    using (var bitmapLock = this._bitmap.Lock()) {
-                        this.RunFrame();
-
-                        var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
-                        device.GetBackBufferData(data);
-                        Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
-                    }
-
-                    context.DrawImage(this._bitmap, new Rect(this._bitmap.Size), new Rect(this.Bounds.Size));
+                using (var bitmapLock = this._bitmap.Lock()) {
+                    var data = new byte[bitmapLock.RowBytes * bitmapLock.Size.Height];
+                    device.GetBackBufferData(data);
+                    Marshal.Copy(data, 0, bitmapLock.Address, data.Length);
                 }
-                else if (game.Scene is IScene scene) {
+
+                if (!this.TryDrawBitmap(context) && game.Scene is IScene scene) {
                     context.DrawRectangle(scene.BackgroundColor.ToAvaloniaBrush(), null, new Rect(this.Bounds.Size));
                 }
             }
-            else {
+            else if (!this.TryDrawBitmap(context)) {
                 context.DrawRectangle(this.FallbackBackground, null, this.Bounds);
             }
+        }
 
-            Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
+        /// <inheritdoc />
+        protected override Size ArrangeOverride(Size finalSize) {
+            if (finalSize != this._bitmap.Size) {
+                this.ResetDevice();
+            }
+
+            return finalSize;
+        }
+
+        /// <inheritdoc />
+        protected override Size MeasureOverride(Size availableSize) {
+            return availableSize;
         }
 
         /// <inheritdoc />
@@ -111,82 +114,56 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             base.OnAttachedToVisualTree(e);
             this.Start();
         }
-        
+
+        private bool CanDraw(out IAvaloniaGame game, out GraphicsDevice device) {
+            game = this.Game;
+            device = this.Game?.GraphicsDevice;
+
+            return game != null && device != null &&
+                   this.Bounds.Width > 0 &&
+                   this.Bounds.Height > 0 &&
+                   this.HandleDeviceReset(device);
+        }
+
+        private bool HandleDeviceReset(GraphicsDevice device) {
+            if (device.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset) {
+                this.ResetDevice();
+            }
+
+            return device.GraphicsDeviceStatus == GraphicsDeviceStatus.Normal;
+        }
+
+        private void Initialize() {
+            if (this.Game is IAvaloniaGame game && this.GetVisualRoot() is Window window) {
+                game.Initialize(this._mouse, this._keyboard);
+                this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
+                this.ResetDevice();
+                this.RunFrame();
+            }
+        }
+
         private static void OnGameChanging(IAvaloniaObject control, bool isBeforeChange) {
             if (!isBeforeChange && control is MonoGameControl { _isInitialized: true } monoGameControl) {
                 monoGameControl.Initialize();
             }
         }
 
-        /// <inheritdoc />
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
-            base.OnPropertyChanged(change);
-
-            if (change.Property.Name == nameof(this.Bounds)) {
-                this.ResetDevice();
-            }
-        }
-
-
-        private bool CanBeginDraw() {
-            // If we have no graphics device, we must be running in the designer. Make sure the
-            // graphics device is big enough, and is not lost.
-            return !this._isResizeProcessing && this.Game?.GraphicsDevice != null && this.Bounds.Width > 0 && this.Bounds.Height > 0 && this.HandleDeviceReset();
-        }
-
-        private bool HandleDeviceReset() {
-            if (this.Game?.GraphicsDevice is not GraphicsDevice device || device.GraphicsDeviceStatus == GraphicsDeviceStatus.Lost) {
-                return false;
-            }
-
-            if (device.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset ||
-                device.PresentationParameters.BackBufferWidth != this._bitmap.PixelSize.Width ||
-                device.PresentationParameters.BackBufferHeight != this._bitmap.PixelSize.Height) {
-                this.ResetDevice();
-                return false;
-            }
-
-            return true;
-        }
-
-        private void Initialize() {
-            if (this.Game != null && this.GetVisualRoot() is Window window) {
-                this.Game.Initialize(this._mouse, this._keyboard);
-                this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
-                this.ResetDevice();
-                this.Game.RunOneFrame();
-            }
-        }
-
         private void ResetDevice() {
-            var newWidth = Math.Max(1, (int)Math.Ceiling(this.Bounds.Width));
-            var newHeight = Math.Max(1, (int)Math.Ceiling(this.Bounds.Height));
-
             if (this.Game?.GraphicsDevice is GraphicsDevice device) {
-                this.Game.GraphicsDeviceManager.PreferredBackBufferWidth = newWidth;
-                this.Game.GraphicsDeviceManager.PreferredBackBufferHeight = newHeight;
+                var newWidth = Math.Max(1, (int)Math.Ceiling(this.Bounds.Width));
+                var newHeight = Math.Max(1, (int)Math.Ceiling(this.Bounds.Height));
+                
                 device.Viewport = new Viewport(0, 0, newWidth, newHeight);
                 this._presentationParameters.BackBufferWidth = newWidth;
                 this._presentationParameters.BackBufferHeight = newHeight;
                 device.Reset(this._presentationParameters);
-                
-                if (this.ShouldPerformResize()) {
-                    try {
-                        this._isResizeProcessing = true;
-                        this._bitmap?.Dispose();
 
-                        this._bitmap = new WriteableBitmap(
-                            new PixelSize(device.PresentationParameters.BackBufferWidth, device.PresentationParameters.BackBufferHeight),
-                            new Vector(96d, 96d),
-                            PixelFormat.Rgba8888,
-                            AlphaFormat.Opaque);
-
-                        this.SetViewport();
-                    }
-                    finally {
-                        this._isResizeProcessing = false;
-                    }
-                }
+                this._bitmap?.Dispose();
+                this._bitmap = new WriteableBitmap(
+                    new PixelSize(device.Viewport.Width, device.Viewport.Height),
+                    new Vector(96d, 96d),
+                    PixelFormat.Rgba8888,
+                    AlphaFormat.Opaque);
             }
         }
 
@@ -197,26 +174,9 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             catch (Exception e) {
                 Console.WriteLine(e);
             }
-        }
-
-        private void SetViewport() {
-            if (this.Game.GraphicsDevice is GraphicsDevice device) {
-                var width = Math.Max(1, device.PresentationParameters.BackBufferWidth);
-                var height = Math.Max(1, device.PresentationParameters.BackBufferHeight);
-                device.Viewport = new Viewport(0, 0, width, height);
+            finally {
+                Dispatcher.UIThread.Post(this.InvalidateVisual, DispatcherPriority.Render);
             }
-        }
-
-        private bool ShouldPerformResize() {
-            return !this._isResizeProcessing &&
-                   this.Bounds.Width > 0 &&
-                   this.Bounds.Height > 0 &&
-                   this.Game.GraphicsDevice is GraphicsDevice device &&
-                   (this._bitmap == null ||
-                    Math.Abs(this._bitmap.PixelSize.Width - Math.Ceiling(this.Bounds.Width)) > 0.01f ||
-                    Math.Abs(this._bitmap.PixelSize.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f ||
-                    Math.Abs(device.Viewport.Width - Math.Ceiling(this.Bounds.Width)) > 0.01f ||
-                    Math.Abs(device.Viewport.Height - Math.Ceiling(this.Bounds.Height)) > 0.01f);
         }
 
         private void Start() {
@@ -229,6 +189,15 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             this.Initialize();
             this._stopwatch.Start();
             this._isInitialized = true;
+        }
+
+        private bool TryDrawBitmap(DrawingContext context) {
+            if (this._bitmap is { Size: { Width: > 1, Height: > 1 } }) {
+                context.DrawImage(this._bitmap, new Rect(this._bitmap.Size), this.Bounds);
+                return true;
+            }
+
+            return false;
         }
     }
 }
