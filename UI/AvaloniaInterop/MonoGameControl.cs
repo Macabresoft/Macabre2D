@@ -97,16 +97,12 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         protected override Size ArrangeOverride(Size finalSize) {
-            if (finalSize != this._bitmap.Size) {
-                this.ResetDevice();
+            finalSize = base.ArrangeOverride(finalSize);
+            if (finalSize != this._bitmap.Size && this.Game?.GraphicsDevice is GraphicsDevice device) {
+                this.ResetDevice(device, finalSize);
             }
 
             return finalSize;
-        }
-
-        /// <inheritdoc />
-        protected override Size MeasureOverride(Size availableSize) {
-            return availableSize;
         }
 
         /// <inheritdoc />
@@ -127,7 +123,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         private bool HandleDeviceReset(GraphicsDevice device) {
             if (device.GraphicsDeviceStatus == GraphicsDeviceStatus.NotReset) {
-                this.ResetDevice();
+                this.ResetDevice(device, this.Bounds.Size);
             }
 
             return device.GraphicsDeviceStatus == GraphicsDeviceStatus.Normal;
@@ -137,7 +133,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             if (this.Game is IAvaloniaGame game && this.GetVisualRoot() is Window window) {
                 game.Initialize(this._mouse, this._keyboard);
                 this._presentationParameters.DeviceWindowHandle = window.PlatformImpl.Handle.Handle;
-                this.ResetDevice();
+                this.ResetDevice(game.GraphicsDevice, this.Bounds.Size);
                 this.RunFrame();
             }
         }
@@ -148,23 +144,25 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             }
         }
 
-        private void ResetDevice() {
-            if (this.Game?.GraphicsDevice is GraphicsDevice device) {
-                var newWidth = Math.Max(1, (int)Math.Ceiling(this.Bounds.Width));
-                var newHeight = Math.Max(1, (int)Math.Ceiling(this.Bounds.Height));
-                
-                device.Viewport = new Viewport(0, 0, newWidth, newHeight);
-                this._presentationParameters.BackBufferWidth = newWidth;
-                this._presentationParameters.BackBufferHeight = newHeight;
-                device.Reset(this._presentationParameters);
-
-                this._bitmap?.Dispose();
-                this._bitmap = new WriteableBitmap(
-                    new PixelSize(device.Viewport.Width, device.Viewport.Height),
-                    new Vector(96d, 96d),
-                    PixelFormat.Rgba8888,
-                    AlphaFormat.Opaque);
+        private void ResetDevice(GraphicsDevice device, Size newSize) {
+            if (device == null) {
+                return;
             }
+            
+            var newWidth = Math.Max(1, (int)Math.Ceiling(newSize.Width));
+            var newHeight = Math.Max(1, (int)Math.Ceiling(newSize.Height));
+
+            device.Viewport = new Viewport(0, 0, newWidth, newHeight);
+            this._presentationParameters.BackBufferWidth = newWidth;
+            this._presentationParameters.BackBufferHeight = newHeight;
+            device.Reset(this._presentationParameters);
+
+            this._bitmap?.Dispose();
+            this._bitmap = new WriteableBitmap(
+                new PixelSize(device.Viewport.Width, device.Viewport.Height),
+                new Vector(96d, 96d),
+                PixelFormat.Rgba8888,
+                AlphaFormat.Opaque);
         }
 
         private void RunFrame() {
