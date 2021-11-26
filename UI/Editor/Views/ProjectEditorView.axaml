@@ -6,7 +6,8 @@
     <UserControl.Resources>
         <common:EqualityConverter x:Key="IsEqualConverter" />
     </UserControl.Resources>
-    <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}">
+    <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}"
+          PropertyChanged="OverallGrid_OnPropertyChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.6*"
                            MinHeight="128" />
@@ -22,6 +23,12 @@
             <ColumnDefinition Width="0.8*"
                               MinWidth="128" />
         </Grid.ColumnDefinitions>
+        
+        <Panel Grid.Row="0"
+               Grid.Column="2"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               PropertyChanged="ViewablePanel_OnPropertyChanged"/>
 
         <Panel Grid.Row="0"
                Grid.Column="0"

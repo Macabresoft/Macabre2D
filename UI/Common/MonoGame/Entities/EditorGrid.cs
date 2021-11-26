@@ -12,24 +12,21 @@ namespace Macabresoft.Macabre2D.UI.Common {
     public sealed class EditorGrid : BaseDrawer {
         private readonly IEditorService _editorService;
         private readonly IEntityService _entityService;
-        private readonly ISceneService _sceneService;
         private Camera _camera;
+        private Color _currentBackgroundColor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EditorGrid" /> class.
         /// </summary>
         /// <param name="editorService">The editor service.</param>
-        /// <param name="sceneService">The scene service.</param>
         /// <param name="entityService">The selection service.</param>
-        public EditorGrid(IEditorService editorService, ISceneService sceneService, IEntityService entityService) {
+        public EditorGrid(IEditorService editorService, IEntityService entityService) {
             this._editorService = editorService;
-            this._sceneService = sceneService;
             this._entityService = entityService;
         }
 
         /// <inheritdoc />
         public override BoundingArea BoundingArea => this._camera?.BoundingArea ?? BoundingArea.Empty;
-
 
         /// <inheritdoc />
         public override void Initialize(IScene scene, IEntity entity) {
@@ -54,9 +51,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
             if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
                 if (this._editorService.GridDivisions > 0 && this.ResolveGridContainer() is IGridContainer container) {
-                    if (!Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) && this.Color != this._sceneService.CurrentScene.BackgroundColor) {
-                        this.ResetColor();
-                    }
+                    this.ResetColor();
 
                     var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
                     this.DrawGrid(spriteBatch, viewBoundingArea, container.WorldTileSize, container.Transform.Position, lineThickness, 0.2f);
@@ -180,12 +175,15 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         private void ResetColor() {
-            this.Color = !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) ? this._sceneService.CurrentScene.BackgroundColor.GetContrastingBlackOrWhite() : this.Scene.BackgroundColor.GetContrastingBlackOrWhite();
+            if (!Framework.Scene.IsNullOrEmpty(this.Scene) && this._currentBackgroundColor != this.Scene.BackgroundColor) {
+                this.Color = this.Scene.BackgroundColor.GetContrastingBlackOrWhite();
+                this._currentBackgroundColor = this.Scene.BackgroundColor;
+            }
         }
 
         private IGridContainer ResolveGridContainer() {
-            var gridContainer = GridContainer.EmptyGridContainer;
-            if (this._entityService.Selected != null) {
+            IGridContainer gridContainer = null;
+            if (this._entityService?.Selected != null) {
                 if (this._entityService.Selected is IGridContainer container) {
                     gridContainer = container;
                 }
@@ -194,7 +192,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
                 }
             }
 
-            return gridContainer;
+            return gridContainer ?? this.Scene;
         }
     }
 }

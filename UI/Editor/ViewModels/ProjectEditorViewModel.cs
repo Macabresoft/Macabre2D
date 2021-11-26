@@ -1,23 +1,28 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor {
     using System;
     using System.ComponentModel;
+    using Avalonia;
     using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.AvaloniaInterop;
     using Macabresoft.Macabre2D.UI.Common;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Point = Microsoft.Xna.Framework.Point;
 
     /// <summary>
     /// View model for project editing.
     /// </summary>
     public class ProjectEditorViewModel : BaseViewModel {
         private const float ViewHeightRequired = 10f;
+        private static readonly Vector2 CameraAdjustment = new(-0.5f);
         private readonly IEditorService _editorService;
         private readonly IEditorGame _game;
         private readonly IScene _scene;
         private ICamera _camera;
+        private EditorGrid _grid;
+        private Rect _overallSceneArea;
         private SpriteAnimator _spriteAnimator;
         private AutoTileMap _tileMap;
+        private Rect _viewableSceneArea;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectEditorViewModel" /> class.
@@ -52,6 +57,22 @@
         /// </summary>
         public IProjectService ProjectService { get; }
 
+        /// <summary>
+        /// Gets or sets the overall area of the scene.
+        /// </summary>
+        public Rect OverallSceneArea {
+            get => this._overallSceneArea;
+            set => this.ResetSize(value, this.ViewableSceneArea);
+        }
+
+        /// <summary>
+        /// Gets or sets the viewable area of the scene.
+        /// </summary>
+        public Rect ViewableSceneArea {
+            get => this._viewableSceneArea;
+            set => this.ResetSize(this.OverallSceneArea, value);
+        }
+
         private IScene CreateScene() {
             var scene = new Scene {
                 BackgroundColor = this.BackgroundColor
@@ -61,9 +82,12 @@
             scene.AddSystem<UpdateSystem>();
 
             this._camera = scene.AddChild<Camera>();
-            this._camera.ViewHeight = ViewHeightRequired;
-            this._camera.OffsetSettings.OffsetType = PixelOffsetType.BottomLeft;
-            this._camera.LocalPosition = new Vector2(-0.5f);
+            this._camera.LocalPosition = CameraAdjustment;
+            this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
+
+            this._grid = new EditorGrid(this._editorService, null);
+            this._grid.IsEnabled = false;
+            this._camera.AddChild(this._grid);
 
             this._tileMap = scene.AddChild<AutoTileMap>();
             this._tileMap.IsEnabled = false;
@@ -139,6 +163,7 @@
             if (e.PropertyName == nameof(IProjectService.Selected)) {
                 this._tileMap.IsEnabled = false;
                 this._spriteAnimator.IsEnabled = false;
+                this._grid.IsEnabled = false;
                 switch (this.ProjectService.Selected) {
                     case AutoTileSet autoTileSet:
                         this.ResetScene(autoTileSet);
@@ -150,6 +175,8 @@
                         this.ResetScene(spriteSheet);
                         break;
                 }
+
+                this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
             }
         }
 
@@ -161,6 +188,7 @@
                 this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._tileMap.TileSetReference);
 
                 this._tileMap.IsEnabled = true;
+                this._grid.IsEnabled = true;
             }
         }
 
@@ -169,6 +197,27 @@
         }
 
         private void ResetScene(SpriteSheet spriteSheet) {
+        }
+
+        private void ResetSize(Rect overallSceneArea, Rect viewableSceneArea) {
+            this._overallSceneArea = overallSceneArea;
+            this._viewableSceneArea = viewableSceneArea;
+
+            if (this._camera != null) {
+                var overallHeight = (float)overallSceneArea.Height;
+                var overallWidth = (float)overallSceneArea.Width;
+                var viewableHeight = (float)Math.Min(overallHeight, viewableSceneArea.Height);
+                var viewableWidth = (float)Math.Min(overallWidth, viewableSceneArea.Width);
+
+                if (viewableHeight > 0f && viewableWidth > 0f && overallHeight > 0f && overallWidth > 0f) {
+                    var heightRatio = overallHeight / viewableHeight;
+                    this._camera.ViewHeight = heightRatio * ViewHeightRequired;
+                    this._camera.OffsetSettings.Offset = -1f * new Vector2(overallWidth - viewableWidth, overallHeight - viewableHeight);
+                }
+                else {
+                    this._camera.ViewHeight = ViewHeightRequired;
+                }
+            }
         }
     }
 }
