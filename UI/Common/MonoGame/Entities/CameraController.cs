@@ -7,7 +7,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using Microsoft.Xna.Framework.Input;
 
     public sealed class CameraController : UpdateableEntity {
+        private readonly IEditorService _editorService;
         private Camera _camera;
+
+        public CameraController(IEditorService editorService) {
+            this._editorService = editorService;
+        }
 
         public override void Initialize(IScene scene, IEntity entity) {
             base.Initialize(scene, entity);
@@ -43,12 +48,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
                         this._camera.LocalPosition += distance;
                     }
 
-                    if (game.CursorType == StandardCursorType.None) {
-                        game.CursorType = StandardCursorType.SizeAll;
+                    if (this._editorService.CursorType == StandardCursorType.None) {
+                        this._editorService.CursorType = StandardCursorType.SizeAll;
                     }
                 }
-                else if (game.CursorType == StandardCursorType.SizeAll) {
-                    game.CursorType = StandardCursorType.None;
+                else if (this._editorService.CursorType == StandardCursorType.SizeAll) {
+                    this._editorService.CursorType = StandardCursorType.None;
                 }
 
                 if (!keyboardState.IsModifierKeyDown()) {

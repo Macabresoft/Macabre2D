@@ -207,9 +207,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// </summary>
         /// <param name="cursorType">The cursor type.</param>
         protected void SetCursor(StandardCursorType cursorType) {
-            if (this.Scene.Game is IAvaloniaGame game) {
-                game.CursorType = cursorType;
-            }
+            this.EditorService.CursorType = cursorType;
         }
 
         /// <summary>

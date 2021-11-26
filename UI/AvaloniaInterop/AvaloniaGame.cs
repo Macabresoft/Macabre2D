@@ -20,13 +20,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
         /// Gets the graphics device manager for this game.
         /// </summary>
         public GraphicsDeviceManager GraphicsDeviceManager { get; }
-
-        /// <summary>
-        /// Gets the type of the cursor.
-        /// </summary>
-        /// <value>The type of the cursor.</value>
-        StandardCursorType CursorType { get; set; }
-
+        
         /// <summary>
         /// Initializes the specified mouse.
         /// </summary>
@@ -44,8 +38,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
     /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
     /// </summary>
     public class AvaloniaGame : BaseGame, IAvaloniaGame {
-        private StandardCursorType _cursorType = StandardCursorType.None;
-
         /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -70,21 +62,6 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
 
         /// <inheritdoc />
         public GraphicsDeviceManager GraphicsDeviceManager => this._graphics;
-
-        /// <summary>
-        /// Gets or sets the type of the cursor.
-        /// </summary>
-        /// <value>The type of the cursor.</value>
-        public StandardCursorType CursorType {
-            get => this._cursorType;
-
-            set {
-                if (value != this._cursorType) {
-                    this._cursorType = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CursorType)));
-                }
-            }
-        }
 
         /// <summary>
         /// Gets the keyboard.

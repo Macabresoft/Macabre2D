@@ -64,7 +64,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             var scene = new Scene();
             scene.AddSystem(new EditorRenderSystem(this.SceneService));
             this._camera = scene.AddChild<Camera>();
-            this._camera.AddChild<CameraController>();
+            this._camera.AddChild(new CameraController(this._editorService));
             this._camera.AddChild(new EditorGrid(this._editorService, this.SceneService, this._entityService));
             this._camera.AddChild(new SelectionDisplay(this._editorService, this._entityService));
             var selectorGizmo = new SelectorGizmo(this.SceneService, this._entityService);

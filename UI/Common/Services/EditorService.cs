@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
     using System;
     using System.ComponentModel;
     using System.Windows.Input;
+    using Avalonia.Input;
     using Macabresoft.Core;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
@@ -53,6 +54,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
         GizmoKind SelectedGizmo { get; set; }
 
         /// <summary>
+        /// Gets or sets the cursor type.
+        /// </summary>
+        StandardCursorType CursorType { get; set; }
+
+        /// <summary>
         /// Gets or sets the selected tab.
         /// </summary>
         EditorTabs SelectedTab { get; set; }
@@ -92,6 +98,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         private bool _showGrid = true;
         private Color _xAxisColor = DefinedColors.ZvukostiGreen;
         private Color _yAxisColor = DefinedColors.MacabresoftRed;
+        private StandardCursorType _standardCursorType = StandardCursorType.None;
 
         /// <inheritdoc />
         public event EventHandler CenterCameraRequested;
@@ -126,6 +133,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
         public Color ColliderColor {
             get => this._colliderColor;
             set => this.RaiseAndSetIfChanged(ref this._colliderColor, value);
+        }
+
+        /// <inheritdoc />
+        public StandardCursorType CursorType {
+            get => this._standardCursorType;
+            set => this.RaiseAndSetIfChanged(ref this._standardCursorType, value);
         }
 
         /// <inheritdoc />

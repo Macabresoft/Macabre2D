@@ -93,7 +93,8 @@
         </Button>
     </common:BaseDialog.ContentLeftOfMenu>
     <Grid>
-        <monoGameInterop:MonoGameControl Game="{Binding Game}" />
+        <monoGameInterop:MonoGameControl Game="{Binding Game}"
+                                         Cursor="{Binding EditorService.CursorType, Converter={x:Static common:CursorTypeToCursorConverter.Instance}}"/>
 
         <local:SceneEditorView
             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
