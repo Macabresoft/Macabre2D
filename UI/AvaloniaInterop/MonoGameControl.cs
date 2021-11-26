@@ -148,7 +148,7 @@ namespace Macabresoft.Macabre2D.UI.AvaloniaInterop {
             if (device == null) {
                 return;
             }
-            
+
             var newWidth = Math.Max(1, (int)Math.Ceiling(newSize.Width));
             var newHeight = Math.Max(1, (int)Math.Ceiling(newSize.Height));
 
