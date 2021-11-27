@@ -57,6 +57,21 @@ namespace Macabresoft.Macabre2D.Framework {
             this.ResolvePackagedAsset();
         }
 
+        /// <summary>
+        /// Resets this reference by clearing it out and initializing it with a new packaged asset.
+        /// </summary>
+        /// <param name="packagedAsset">The packaged asset.</param>
+        public void Reset(TPackagedAsset packagedAsset) {
+            if (packagedAsset.SpriteSheet is SpriteSheet spriteSheet) {
+                if (this.Asset == null || this.Asset.ContentId != spriteSheet.ContentId) {
+                    this.Clear();
+                }
+
+                this.PackagedAssetId = packagedAsset.Id;
+                this.Initialize(spriteSheet);
+            }
+        }
+
         private void ResolvePackagedAsset() {
             if (this.PackagedAssetId != Guid.Empty && this.Asset != null && this.Asset.TryGetPackaged<TPackagedAsset>(this.PackagedAssetId, out var packagedAsset)) {
                 this.PackagedAsset = packagedAsset;

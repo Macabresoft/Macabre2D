@@ -149,6 +149,7 @@
             this._tileMap.AddTile(new Point(8, 8));
 
             this._spriteAnimator = scene.AddChild<SpriteAnimator>();
+            this._spriteAnimator.FrameRate = 8;
             this._spriteAnimator.IsEnabled = false;
             return scene;
         }
@@ -181,19 +182,21 @@
         }
 
         private void ResetScene(AutoTileSet tileSet) {
-            if (tileSet.SpriteSheet is SpriteSheet spriteSheet) {
-                this._tileMap.TileSetReference.Clear();
-                this._tileMap.TileSetReference.PackagedAssetId = tileSet.Id;
-                this._tileMap.TileSetReference.Initialize(spriteSheet);
+            if (tileSet.SpriteSheet != null) {
+                this._tileMap.TileSetReference.Reset(tileSet);
                 this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._tileMap.TileSetReference);
-
                 this._tileMap.IsEnabled = true;
                 this._grid.IsEnabled = true;
             }
         }
 
         private void ResetScene(SpriteAnimation spriteAnimation) {
-            this._spriteAnimator.Play(spriteAnimation, true);
+            if (spriteAnimation.SpriteSheet != null) {
+                this._spriteAnimator.AnimationReference.Reset(spriteAnimation);
+                this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._spriteAnimator.AnimationReference);
+                this._spriteAnimator.Play(spriteAnimation, true);
+                this._spriteAnimator.IsEnabled = true;
+            }
         }
 
         private void ResetScene(SpriteSheet spriteSheet) {

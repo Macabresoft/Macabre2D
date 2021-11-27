@@ -118,6 +118,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public void Play() {
             this.IsEnabled = true;
             this._isPlaying = true;
+            this.RaisePropertyChanged(nameof(this.IsVisible));
         }
 
         /// <summary>
@@ -130,8 +131,9 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
         public void Play(SpriteAnimation animation, bool shouldLoop) {
             this.Stop(true);
+           
             this._queuedSpriteAnimations.Clear();
-            this._queuedSpriteAnimations.Enqueue(new QueueableSpriteAnimation(animation, shouldLoop));
+            this.Enqueue(animation, shouldLoop);
             this.Play();
         }
 
