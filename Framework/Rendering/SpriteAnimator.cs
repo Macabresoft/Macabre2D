@@ -29,12 +29,6 @@ namespace Macabresoft.Macabre2D.Framework {
         [DataMember(Order = 10, Name = "Animation")]
         public SpriteAnimationReference AnimationReference { get; } = new();
 
-        /// <summary>
-        /// Gets the current animation.
-        /// </summary>
-        /// <value>The current animation.</value>
-        public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
-
         /// <inheritdoc />
         public override byte? SpriteIndex => this._currentSpriteIndex;
 
@@ -68,7 +62,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// animation has been queued.
         /// </param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely) {
-            if (this.AnimationReference.Asset is SpriteSheet spriteSheet && spriteSheet.HasPackagedAsset(animation.Id)) {
+            if (animation.SpriteSheet != null) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely));
             }
         }
@@ -83,7 +77,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// </param>
         /// <param name="numberOfLoops">The number of loops.</param>
         public void Enqueue(SpriteAnimation animation, bool shouldLoopIndefinitely, ushort numberOfLoops) {
-            if (this.AnimationReference.Asset is SpriteSheet spriteSheet && spriteSheet.HasPackagedAsset(animation.Id)) {
+            if (animation.SpriteSheet != null) {
                 this.Enqueue(new QueueableSpriteAnimation(animation, shouldLoopIndefinitely, numberOfLoops));
             }
         }
@@ -118,7 +112,6 @@ namespace Macabresoft.Macabre2D.Framework {
         public void Play() {
             this.IsEnabled = true;
             this._isPlaying = true;
-            this.RaisePropertyChanged(nameof(this.IsVisible));
         }
 
         /// <summary>
@@ -201,13 +194,6 @@ namespace Macabresoft.Macabre2D.Framework {
                         }
                     }
                 }
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(this.IsVisible)) {
-                this.RaisePropertyChanged(nameof(this.IsEnabled));
             }
         }
 

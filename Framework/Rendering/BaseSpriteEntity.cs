@@ -22,7 +22,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
         /// </summary>
-        protected BaseSpriteEntity() {
+        protected BaseSpriteEntity() : base() {
             this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
             this._pixelTransform = new ResettableLazy<Transform>(this.CreatePixelTransform);
             this._rotatableTransform = new ResettableLazy<Transform>(this.CreateRotatableTransform);

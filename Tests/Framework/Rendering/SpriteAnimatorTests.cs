@@ -1,9 +1,11 @@
 namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using NSubstitute;
     using NUnit.Framework;
 
@@ -18,7 +20,17 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
                 });
             }
 
-            return new SpriteAnimation(steps);
+            var animation = new SpriteAnimation(steps);
+            animation.SpriteSheet = new SpriteSheet() {
+                Columns = 2,
+                Rows = 2
+            };
+            
+            if (animation.SpriteSheet.SpriteAnimations is SpriteAnimationCollection collection) {
+                collection.Add(animation);
+            }
+            
+            return animation;
         }
 
         private static SpriteAnimator CreateAnimator(byte frameRate) {
@@ -32,10 +44,13 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
         [Test]
         [Category("Unit Tests")]
         public static void SpriteAnimator_LoopingTest() {
-            byte numberOfSteps = 3;
-            var animation = CreateAnimation(numberOfSteps);
+            const byte NumberOfSteps = 3;
+            var animation = CreateAnimation(NumberOfSteps);
             var animator = CreateAnimator(1);
             var scene = Substitute.For<IScene>();
+            var assets = Substitute.For<IAssetManager>();
+            scene.Assets.Returns(assets);
+
             animator.Initialize(scene, new Entity());
 
             var gameTime = new GameTime {
@@ -48,7 +63,7 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
             animator.Update(frameTime, default);
             Assert.AreEqual(animation.Steps.ElementAt(0).SpriteIndex, animator.SpriteIndex);
 
-            for (byte i = 1; i < numberOfSteps; i++) {
+            for (byte i = 1; i < NumberOfSteps; i++) {
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(1d);
                 frameTime = new FrameTime(gameTime, 1f);
                 animator.Update(frameTime, default);
