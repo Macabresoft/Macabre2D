@@ -112,6 +112,7 @@ namespace Macabresoft.Macabre2D.Framework {
         public void Play() {
             this.IsEnabled = true;
             this._isPlaying = true;
+            this.Reset();
         }
 
         /// <summary>

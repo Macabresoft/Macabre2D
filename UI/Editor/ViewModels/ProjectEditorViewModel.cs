@@ -214,13 +214,17 @@
 
                 if (viewableHeight > 0f && viewableWidth > 0f && overallHeight > 0f && overallWidth > 0f) {
                     var heightRatio = overallHeight / viewableHeight;
-                    this._camera.ViewHeight = heightRatio * ViewHeightRequired;
+                    this._camera.ViewHeight = heightRatio * this.GetRequiredViewHeight();
                     this._camera.OffsetSettings.Offset = -1f * new Vector2(overallWidth - viewableWidth, overallHeight - viewableHeight);
                 }
                 else {
                     this._camera.ViewHeight = ViewHeightRequired;
                 }
             }
+        }
+
+        private float GetRequiredViewHeight() {
+            return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
         }
     }
 }
