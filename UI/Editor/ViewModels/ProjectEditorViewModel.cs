@@ -17,6 +17,7 @@
         private readonly IEditorService _editorService;
         private readonly IEditorGame _game;
         private readonly IScene _scene;
+        private Color _backgroundColor = DefinedColors.MacabresoftPurple;
         private ICamera _camera;
         private EditorGrid _grid;
         private Rect _overallSceneArea;
@@ -48,14 +49,25 @@
         }
 
         /// <summary>
-        /// Gets the background color.
-        /// </summary>
-        public Color BackgroundColor => DefinedColors.MacabresoftPurple;
-
-        /// <summary>
         /// Gets the selection service.
         /// </summary>
         public IProjectService ProjectService { get; }
+
+        /// <summary>
+        /// Gets the background color.
+        /// </summary>
+        public Color BackgroundColor {
+            get => this._backgroundColor;
+            set {
+                if (value != this._backgroundColor) {
+                    this._backgroundColor = value;
+
+                    if (!Scene.IsNullOrEmpty(this._scene)) {
+                        this._scene.BackgroundColor = this._backgroundColor;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the overall area of the scene.

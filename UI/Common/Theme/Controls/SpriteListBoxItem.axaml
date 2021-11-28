@@ -2,8 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="ListBoxItem">
         <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItemBackground}" />
-        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="MinHeight" Value="8" />
+        <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
     </Style>
 
     <!--  Selected State  -->

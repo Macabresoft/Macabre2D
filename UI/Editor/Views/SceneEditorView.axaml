@@ -48,6 +48,7 @@
 
         <local:GizmoSelectionView Grid.Row="0"
                                   Grid.Column="2"
+                                  HorizontalAlignment="Right"
                                   Margin="{StaticResource StandardMarginAll}" />
 
         <GridSplitter Grid.Row="0"

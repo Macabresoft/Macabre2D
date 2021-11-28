@@ -23,12 +23,26 @@
             <ColumnDefinition Width="0.8*"
                               MinWidth="128" />
         </Grid.ColumnDefinitions>
-        
+
         <Panel Grid.Row="0"
                Grid.Column="2"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"
-               PropertyChanged="ViewablePanel_OnPropertyChanged"/>
+               PropertyChanged="ViewablePanel_OnPropertyChanged" />
+
+        <Border Grid.Row="0"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Classes="Card"
+                Margin="{StaticResource DoubleMarginAll}">
+            <StackPanel Orientation="Horizontal"
+                        Margin="{StaticResource StandardMarginAll}">
+                <TextBlock Classes="ValueEditorLabel"
+                           Text="Background" />
+                <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
+            </StackPanel>
+        </Border>
 
         <Panel Grid.Row="0"
                Grid.Column="0"
@@ -40,22 +54,21 @@
                       Grid.Column="0"
                       Classes="CardSplitter" />
 
-        <Panel Grid.Row="2"
-               Grid.Column="0"
-               Margin="{StaticResource StandardMarginLeftTopBottom}">
-            <Border Classes="Card"
-                    Margin="{StaticResource StandardMarginLeftTopBottom}">
-                <Panel>
-                    <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
-                                                    Collections="{Binding ProjectService.Editors}" />
 
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Text="Select a file or directory to view details"
-                               IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
-                </Panel>
-            </Border>
-        </Panel>
+        <Border Grid.Row="2"
+                Grid.Column="0"
+                Classes="Card"
+                Margin="{StaticResource DoubleMarginLeftTopBottom}">
+            <Panel>
+                <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
+                                                Collections="{Binding ProjectService.Editors}" />
+
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="Select a file or directory to view details"
+                           IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
+            </Panel>
+        </Border>
 
         <GridSplitter Grid.Row="0"
                       Grid.RowSpan="3"
@@ -67,14 +80,12 @@
                       Classes="CardSplitter"
                       IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
 
-        <Panel Grid.Row="2"
-               Grid.Column="2"
-               Margin="{StaticResource StandardMarginAll}">
-            <Border Classes="Card"
-                    Margin="{StaticResource StandardMarginAll}"
-                    IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
-                <ContentControl Content="{Binding ProjectService.AssetEditor}" />
-            </Border>
-        </Panel>
+        <Border Grid.Row="2"
+                Grid.Column="2"
+                Classes="Card"
+                Margin="{StaticResource DoubleMarginAll}"
+                IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
+            <ContentControl Content="{Binding ProjectService.AssetEditor}" />
+        </Border>
     </Grid>
 </UserControl>
