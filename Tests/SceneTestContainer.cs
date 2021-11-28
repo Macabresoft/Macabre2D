@@ -22,7 +22,7 @@ namespace Macabresoft.Macabre2D.Tests {
             this.UpdateableEntity = this.RenderableEntity.AddChild<FrameRateEntity>();
             this.CameraEntity = this.UpdateableEntity.AddChild<Camera>();
             this.CameraEntity.Name = nameof(this.CameraEntity);
-            this.UpdateableAndRenderableEntity = this.Scene.AddChild<SpriteAnimator>();
+            this.UpdateableAndRenderableEntity = this.Scene.AddChild<QueueableSpriteAnimator>();
             this.UpdateableAndRenderableEntity.Name = nameof(this.UpdateableAndRenderableEntity);
 
             if (initializationMode == InitializationMode.After) {

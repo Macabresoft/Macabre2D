@@ -59,7 +59,7 @@ namespace Macabresoft.Macabre2D.Samples.Content {
                 Columns = 2
             };
 
-            var spriteAnimator = scene.AddChild<SpriteAnimator>();
+            var spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
             spriteAnimator.FrameRate = 4;
             spriteAnimator.RenderOrder = -100;
             spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;

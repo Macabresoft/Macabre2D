@@ -1,11 +1,9 @@
 namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Macabresoft.Macabre2D.Framework;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using NSubstitute;
     using NUnit.Framework;
 
@@ -21,20 +19,20 @@ namespace Macabresoft.Macabre2D.Tests.Framework.Rendering {
             }
 
             var animation = new SpriteAnimation(steps);
-            animation.SpriteSheet = new SpriteSheet() {
+            animation.SpriteSheet = new SpriteSheet {
                 Columns = 2,
                 Rows = 2
             };
-            
+
             if (animation.SpriteSheet.SpriteAnimations is SpriteAnimationCollection collection) {
                 collection.Add(animation);
             }
-            
+
             return animation;
         }
 
-        private static SpriteAnimator CreateAnimator(byte frameRate) {
-            var animator = new SpriteAnimator {
+        private static QueueableSpriteAnimator CreateAnimator(byte frameRate) {
+            var animator = new QueueableSpriteAnimator {
                 FrameRate = frameRate
             };
 

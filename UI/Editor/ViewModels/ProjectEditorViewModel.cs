@@ -20,7 +20,7 @@
         private ICamera _camera;
         private EditorGrid _grid;
         private Rect _overallSceneArea;
-        private SpriteAnimator _spriteAnimator;
+        private LoopingSpriteAnimator _spriteAnimator;
         private AutoTileMap _tileMap;
         private Rect _viewableSceneArea;
 
@@ -148,7 +148,7 @@
             this._tileMap.AddTile(new Point(8, 7));
             this._tileMap.AddTile(new Point(8, 8));
 
-            this._spriteAnimator = scene.AddChild<SpriteAnimator>();
+            this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
             this._spriteAnimator.FrameRate = 8;
             this._spriteAnimator.IsEnabled = false;
             return scene;
@@ -158,6 +158,10 @@
             if (e.PropertyName == nameof(IEditorService.SelectedTab) && this._editorService.SelectedTab == EditorTabs.Project) {
                 this._game.LoadScene(this._scene);
             }
+        }
+
+        private float GetRequiredViewHeight() {
+            return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
         }
 
         private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -194,7 +198,7 @@
             if (spriteAnimation.SpriteSheet != null) {
                 this._spriteAnimator.AnimationReference.Reset(spriteAnimation);
                 this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._spriteAnimator.AnimationReference);
-                this._spriteAnimator.Play(spriteAnimation, true);
+                this._spriteAnimator.Play();
                 this._spriteAnimator.IsEnabled = true;
             }
         }
@@ -221,10 +225,6 @@
                     this._camera.ViewHeight = ViewHeightRequired;
                 }
             }
-        }
-
-        private float GetRequiredViewHeight() {
-            return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
         }
     }
 }
