@@ -14,10 +14,10 @@
     public class ProjectEditorViewModel : BaseViewModel {
         private const float ViewHeightRequired = 10f;
         private static readonly Vector2 CameraAdjustment = new(-0.5f);
+        private readonly IEditorSettingsService _settingsService;
         private readonly IEditorService _editorService;
         private readonly IEditorGame _game;
         private readonly IScene _scene;
-        private Color _backgroundColor = DefinedColors.MacabresoftPurple;
         private ICamera _camera;
         private EditorGrid _grid;
         private Rect _overallSceneArea;
@@ -31,13 +31,17 @@
         /// <param name="editorService">The editor service.</param>
         /// <param name="game">The game.</param>
         /// <param name="projectService">The project service.</param>
+        /// <param name="settingsService">The settings service.</param>
         public ProjectEditorViewModel(
             IEditorService editorService,
             IEditorGame game,
-            IProjectService projectService) : base() {
+            IProjectService projectService,
+            IEditorSettingsService settingsService) : base() {
             this._editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this._game = game ?? throw new ArgumentNullException(nameof(game));
             this.ProjectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+            this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            
             this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
             this._scene = this.CreateScene();
 
@@ -57,13 +61,13 @@
         /// Gets the background color.
         /// </summary>
         public Color BackgroundColor {
-            get => this._backgroundColor;
+            get => this._settingsService.Settings.BackgroundColor;
             set {
-                if (value != this._backgroundColor) {
-                    this._backgroundColor = value;
+                if (value != this.BackgroundColor) {
+                    this._settingsService.Settings.BackgroundColor = value;
 
                     if (!Scene.IsNullOrEmpty(this._scene)) {
-                        this._scene.BackgroundColor = this._backgroundColor;
+                        this._scene.BackgroundColor = this.BackgroundColor;
                     }
                 }
             }
