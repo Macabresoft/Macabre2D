@@ -1,0 +1,27 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+        x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SplashScreen"
+        WindowStartupLocation="CenterScreen"
+        Title="Macabre2D"
+        CanResize="False"
+        SystemDecorations="None"
+        SizeToContent="WidthAndHeight"
+        Background="{StaticResource PurpleBrush}"
+        Padding="{StaticResource DoubleMarginAll}">
+    <Grid Margin="{StaticResource DoubleMarginAll}"
+          ColumnDefinitions="Auto, Auto">
+        <common:Icon Grid.Column="0"
+                     Content="{StaticResource MacabresoftIcon}"
+                     Margin="{StaticResource DoubleMarginAll}"
+                     Width="64"
+                     Height="64" />
+
+        <TextBlock Grid.Column="1"
+                   Text="Macabre2D"
+                   Foreground="{StaticResource YellowBrush}"
+                   FontSize="64"
+                   VerticalAlignment="Center"
+                   Margin="{StaticResource DoubleMarginAll}" />
+    </Grid>
+</Window>
