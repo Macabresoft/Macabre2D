@@ -183,8 +183,12 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     this.ResolveContentFile(metadata);
                 }
 
-                this.ResolveNewContentFiles(this._rootContentDirectory);
-                this.BuildContentForProject();
+                // TODO: This might cause problems? Might need some sort of change detection for content.
+                // TODO: Maybe mark a bool that content is outdated and then revert said bool any time content is built?
+                if (this.ResolveNewContentFiles(this._rootContentDirectory)) {
+                    this.BuildContentForProject();
+                }
+                
                 this.RaisePropertyChanged(nameof(this.RootContentDirectory));
             }
         }
@@ -256,7 +260,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
         }
 
-        private void CreateContentFile(IContentDirectory parent, string fileName) {
+        private bool CreateContentFile(IContentDirectory parent, string fileName) {
+            var result = false;
             var extension = Path.GetExtension(fileName);
 
             if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
@@ -269,8 +274,11 @@ namespace Macabresoft.Macabre2D.UI.Common {
                     this.SaveMetadata(metadata);
                     var contentFile = this.CreateContentFileObject(parent, metadata);
                     this._assetManager.RegisterMetadata(contentFile.Metadata);
+                    result = true;
                 }
             }
+
+            return result;
         }
 
         private ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
@@ -382,22 +390,22 @@ namespace Macabresoft.Macabre2D.UI.Common {
             }
         }
 
-        private void ResolveNewContentFiles(IContentDirectory currentDirectory) {
+        private bool ResolveNewContentFiles(IContentDirectory currentDirectory) {
+            var result = false;
             var currentPath = currentDirectory.GetFullPath();
             var files = this._fileSystem.GetFiles(currentPath);
             var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
 
-            foreach (var file in files) {
-                var fileName = Path.GetFileName(file);
-                if (currentContentFiles.All(x => x.Name != Path.GetFileName(file))) {
-                    this.CreateContentFile(currentDirectory, fileName);
-                }
+            foreach (var file in files.Select(Path.GetFileName).Where(fileName => currentContentFiles.All(x => x.Name != fileName))) {
+                result = this.CreateContentFile(currentDirectory, file) || result;
             }
 
             var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
             foreach (var child in currentContentDirectories) {
-                this.ResolveNewContentFiles(child);
+                result = this.ResolveNewContentFiles(child) || result;
             }
+
+            return result;
         }
 
         private void SaveMetadata(ContentMetadata metadata) {
