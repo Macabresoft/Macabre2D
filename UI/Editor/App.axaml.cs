@@ -1,7 +1,4 @@
 namespace Macabresoft.Macabre2D.UI.Editor {
-    using System;
-    using System.Diagnostics;
-    using System.Threading;
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
@@ -36,17 +33,15 @@ namespace Macabresoft.Macabre2D.UI.Editor {
                 var mainWindow = new MainWindow();
                 Resolver.Container.RegisterInstance(mainWindow);
 
-                // TODO: show a splash screen while all this is happening
                 Resolver.Resolve<IEditorSettingsService>().Initialize();
                 Resolver.Resolve<IProjectService>().LoadProject();
-                
+
                 if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
                     Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
                 }
 
                 mainWindow.InitializeComponent();
                 desktop.MainWindow = mainWindow;
-                Thread.Sleep(10000);
                 splashScreen.Close();
             }
 

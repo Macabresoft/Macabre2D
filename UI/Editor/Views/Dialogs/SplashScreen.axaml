@@ -10,17 +10,17 @@
         Background="{StaticResource PurpleBrush}"
         Padding="{StaticResource DoubleMarginAll}">
     <Grid Margin="{StaticResource DoubleMarginAll}"
-          ColumnDefinitions="Auto, Auto">
-        <common:Icon Grid.Column="0"
+          RowDefinitions="Auto, Auto">
+        <common:Icon Grid.Row="0"
                      Content="{StaticResource MacabresoftIcon}"
                      Margin="{StaticResource DoubleMarginAll}"
                      Width="64"
                      Height="64" />
 
-        <TextBlock Grid.Column="1"
+        <TextBlock Grid.Row="1"
                    Text="Macabre2D"
                    Foreground="{StaticResource YellowBrush}"
-                   FontSize="64"
+                   FontSize="16"
                    VerticalAlignment="Center"
                    Margin="{StaticResource DoubleMarginAll}" />
     </Grid>
