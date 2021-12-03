@@ -6,22 +6,17 @@
         Title="Macabre2D"
         CanResize="False"
         SystemDecorations="None"
-        SizeToContent="WidthAndHeight"
-        Background="{StaticResource PurpleBrush}"
-        Padding="{StaticResource DoubleMarginAll}">
-    <Grid Margin="{StaticResource DoubleMarginAll}"
-          RowDefinitions="Auto, Auto">
-        <common:Icon Grid.Row="0"
+        Width="192"
+        Height="192"
+        Background="{StaticResource PurpleBrush}">
+    <Panel VerticalAlignment="Center"
+           HorizontalAlignment="Center"
+           PointerPressed="OnPointerPressed">
+        <common:Icon VerticalAlignment="Center"
+                     HorizontalAlignment="Center"
                      Content="{StaticResource MacabresoftIcon}"
                      Margin="{StaticResource DoubleMarginAll}"
-                     Width="64"
-                     Height="64" />
-
-        <TextBlock Grid.Row="1"
-                   Text="Macabre2D"
-                   Foreground="{StaticResource YellowBrush}"
-                   FontSize="16"
-                   VerticalAlignment="Center"
-                   Margin="{StaticResource DoubleMarginAll}" />
-    </Grid>
+                     Width="128"
+                     Height="128" />
+    </Panel>
 </Window>

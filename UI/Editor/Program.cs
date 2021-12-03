@@ -17,8 +17,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         // yet and stuff might break.
         [STAThread]
         public static void Main(string[] args) {
-            BuildAvaloniaApp()
-                .StartWithClassicDesktopLifetime(args);
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
     }
 }

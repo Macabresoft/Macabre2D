@@ -11,6 +11,7 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// The main <see cref="Application" />.
     /// </summary>
     public class App : Application {
+        
         /// <inheritdoc />
         public override void Initialize() {
             var container = new UnityContainer()
