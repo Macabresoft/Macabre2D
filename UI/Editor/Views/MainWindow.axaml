@@ -56,7 +56,7 @@
                           InputGesture="Ctrl + Y"
                           HotKey="Ctrl + Y" />
             </MenuItem>
-            
+
             <MenuItem Header="_Project">
                 <MenuItem Header="_Rebuild Content"
                           Command="{Binding RebuildContentCommand}" />
@@ -103,11 +103,11 @@
                                          Cursor="{Binding EditorService.CursorType, Converter={x:Static common:CursorTypeToCursorConverter.Instance}}"
                                          IsVisible="{Binding !IsBusy}" />
 
-        <local:SceneEditorView
-            IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
-        <local:ProjectEditorView
-            IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
-        
+        <local:SceneEditorView IsEnabled="{Binding !IsBusy}"
+                               IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+        <local:ProjectEditorView IsEnabled="{Binding !IsBusy}"
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+
         <common:BusyIndicator IsVisible="{Binding IsBusy}" />
     </Grid>
 </common:BaseDialog>
