@@ -75,7 +75,7 @@ namespace Macabresoft.Macabre2D.UI.Tests {
         public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
         public void RunRefreshContentTest() {
-            this.Instance.RefreshContent();
+            this.Instance.RefreshContent(false);
 
             using (new AssertionScope()) {
                 this.AssertExistingMetadata();

@@ -13,10 +13,13 @@ namespace Macabresoft.Macabre2D.UI.Editor {
     /// The view model for the main window.
     /// </summary>
     public class MainWindowViewModel : UndoBaseViewModel {
+        private readonly IContentService _contentService;
         private readonly ILocalDialogService _dialogService;
+        private readonly IProjectService _projectService;
         private readonly ISaveService _saveService;
         private readonly ISceneService _sceneService;
         private readonly IEditorSettingsService _settingsService;
+        private bool _isBusy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
@@ -28,25 +31,31 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
         /// </summary>
+        /// <param name="contentService">The content service.</param>
         /// <param name="dialogService">The dialog service.</param>
         /// <param name="editorService">The editor service.</param>
         /// <param name="game">The game.</param>
+        /// <param name="projectService">The project service.</param>
         /// <param name="saveService">The save service.</param>
         /// <param name="sceneService">The scene service.</param>
         /// <param name="settingsService">The editor settings service.</param>
         /// <param name="undoService">The undo service.</param>
         [InjectionConstructor]
         public MainWindowViewModel(
+            IContentService contentService,
             ILocalDialogService dialogService,
             IEditorService editorService,
             IEditorGame game,
+            IProjectService projectService,
             ISaveService saveService,
             ISceneService sceneService,
             IEditorSettingsService settingsService,
             IUndoService undoService) : base(undoService) {
+            this._contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
             this.Game = game ?? throw new ArgumentNullException(nameof(game));
+            this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
             this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
             this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
             this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
@@ -54,11 +63,21 @@ namespace Macabresoft.Macabre2D.UI.Editor {
             var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentScene, x => x.Value != null);
             this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
             this.OpenSceneCommand = ReactiveCommand.CreateFromTask(this.OpenScene);
+            this.RebuildContentCommand = ReactiveCommand.CreateFromTask(this.RebuildContent);
             this.SaveCommand = ReactiveCommand.Create(this._saveService.Save, this._saveService.WhenAnyValue(x => x.HasChanges));
             this.SelectTabCommand = ReactiveCommand.Create<EditorTabs>(this.SelectTab, tabCommandCanExecute);
             this.ToggleTabCommand = ReactiveCommand.Create(this.ToggleTab, tabCommandCanExecute);
             this.ViewLicensesCommand = ReactiveCommand.CreateFromTask(this.ViewLicenses);
             this.ViewSourceCommand = ReactiveCommand.Create(ViewSource);
+        }
+
+
+        /// <summary>
+        /// Gets a value indicating whether or not this is busy.
+        /// </summary>
+        public bool IsBusy {
+            get => this._isBusy;
+            set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
         }
 
         /// <summary>
@@ -80,6 +99,11 @@ namespace Macabresoft.Macabre2D.UI.Editor {
         /// Gets the open scene command.
         /// </summary>
         public ICommand OpenSceneCommand { get; }
+
+        /// <summary>
+        /// Gets the command to rebuild content.
+        /// </summary>
+        public ICommand RebuildContentCommand { get; }
 
         /// <summary>
         /// Gets the command to save the current scene.
@@ -134,6 +158,27 @@ namespace Macabresoft.Macabre2D.UI.Editor {
 
                 if (result != null && !this._sceneService.TryLoadScene(result.Id, out _)) {
                     await this._dialogService.ShowWarningDialog("Error", "The scene could not be loaded");
+                }
+            }
+        }
+
+        private async Task RebuildContent() {
+            var result = await this._saveService.RequestSave();
+            if (result != YesNoCancelResult.Cancel) {
+                try {
+                    this.IsBusy = true;
+
+                    var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
+                    this._projectService.Selected = null;
+
+                    await Task.Run(() => this._contentService.RefreshContent(true));
+
+                    if (sceneContentId != null) {
+                        this._sceneService.TryLoadScene(sceneContentId.Value, out _);
+                    }
+                }
+                finally {
+                    this.IsBusy = false;
                 }
             }
         }

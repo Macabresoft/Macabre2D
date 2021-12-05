@@ -175,6 +175,7 @@ namespace Macabresoft.Macabre2D.Framework {
         /// <inheritdoc />
         public void Unload() {
             this._contentManager?.Unload();
+            this._loadedMetadata.Clear();
         }
 
         private TAsset? GetAsset<TAsset>(Guid contentId) where TAsset : class, IAsset {

@@ -45,8 +45,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
         /// <summary>
         /// Refreshes the content.
         /// </summary>
-        void RefreshContent();
-
+        void RefreshContent(bool forceRebuild);
+        
         /// <summary>
         /// Saves content with changes.
         /// </summary>
@@ -166,7 +166,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
         }
 
         /// <inheritdoc />
-        public void RefreshContent() {
+        public void RefreshContent(bool forceRebuild) {
             if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
                 this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);
                 this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
@@ -185,7 +185,8 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
                 // TODO: This might cause problems? Might need some sort of change detection for content.
                 // TODO: Maybe mark a bool that content is outdated and then revert said bool any time content is built?
-                if (this.ResolveNewContentFiles(this._rootContentDirectory)) {
+                if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild) {
+                    this._assetManager.Unload();
                     this.BuildContentForProject();
                 }
                 

@@ -25,6 +25,7 @@
     </common:BaseDialog.Resources>
     <common:BaseDialog.Menu>
         <Menu Grid.Column="2"
+              IsEnabled="{Binding !IsBusy}"
               HorizontalAlignment="Left"
               VerticalAlignment="Center">
             <MenuItem Header="_File">
@@ -55,6 +56,11 @@
                           InputGesture="Ctrl + Y"
                           HotKey="Ctrl + Y" />
             </MenuItem>
+            
+            <MenuItem Header="_Project">
+                <MenuItem Header="_Rebuild Content"
+                          Command="{Binding RebuildContentCommand}" />
+            </MenuItem>
 
             <MenuItem Header="_View">
                 <MenuItem Header="_Project Editor"
@@ -80,7 +86,8 @@
     <common:BaseDialog.ContentLeftOfMenu>
         <Button Grid.Column="1"
                 Classes="Icon"
-                Command="{Binding ToggleTabCommand}">
+                Command="{Binding ToggleTabCommand}"
+                IsEnabled="{Binding !IsBusy}">
             <Panel>
                 <common:Icon Content="{StaticResource SceneIcon}"
                              Foreground="{DynamicResource SystemAccentColorLightBrush1}"
@@ -93,11 +100,14 @@
     </common:BaseDialog.ContentLeftOfMenu>
     <Grid>
         <monoGameInterop:MonoGameControl Game="{Binding Game}"
-                                         Cursor="{Binding EditorService.CursorType, Converter={x:Static common:CursorTypeToCursorConverter.Instance}}"/>
+                                         Cursor="{Binding EditorService.CursorType, Converter={x:Static common:CursorTypeToCursorConverter.Instance}}"
+                                         IsVisible="{Binding !IsBusy}" />
 
         <local:SceneEditorView
             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
         <local:ProjectEditorView
             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+        
+        <common:BusyIndicator IsVisible="{Binding IsBusy}" />
     </Grid>
 </common:BaseDialog>

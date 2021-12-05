@@ -171,7 +171,7 @@ namespace Macabresoft.Macabre2D.UI.Common {
 
         /// <inheritdoc />
         public GameProject LoadProject() {
-            this._contentService.RefreshContent();
+            this._contentService.RefreshContent(false);
 
             var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
             if (!projectExists) {
