@@ -1,23 +1,23 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class DoubleEditor : BaseNumericEditor<double> {
-        public DoubleEditor() : this(null) {
-        }
+using System;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public DoubleEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class DoubleEditor : BaseNumericEditor<double> {
+    public DoubleEditor() : this(null) {
+    }
 
-        protected override double ConvertValue(object calculatedValue) {
-            return Convert.ToDouble(calculatedValue);
-        }
+    [InjectionConstructor]
+    public DoubleEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    protected override double ConvertValue(object calculatedValue) {
+        return Convert.ToDouble(calculatedValue);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

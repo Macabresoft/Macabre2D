@@ -1,13 +1,11 @@
-namespace Macabresoft.Macabre2D.Samples.Content {
+namespace Macabresoft.Macabre2D.Samples.Content;
 
-    using System;
+using System;
 
-    public static class Program {
-
-        [STAThread]
-        private static void Main() {
-            using var game = new ContentGame();
-            game.Run();
-        }
+public static class Program {
+    [STAThread]
+    private static void Main() {
+        using var game = new ContentGame();
+        game.Run();
     }
 }

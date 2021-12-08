@@ -1,44 +1,42 @@
-namespace Macabresoft.Macabre2D.Samples.Physics {
+namespace Macabresoft.Macabre2D.Samples.Physics;
 
-    using Macabresoft.Macabre2D.Framework;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
+using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
-    public sealed class VelocityChanger : UpdateableEntity {
+public sealed class VelocityChanger : UpdateableEntity {
+    public const float Speed = 0.5f;
 
-        public const float Speed = 0.5f;
 
+    private IDynamicPhysicsBody _body;
 
-        private IDynamicPhysicsBody _body;
+    public override void Initialize(IScene scene, IEntity entity) {
+        base.Initialize(scene, entity);
 
-        public override void Initialize(IScene scene, IEntity entity) {
-            base.Initialize(scene, entity);
+        if (this.TryGetParentEntity<IDynamicPhysicsBody>(out var body) && body != null) {
+            this._body = body;
+        }
+    }
 
-            if (this.TryGetParentEntity<IDynamicPhysicsBody>(out var body) && body != null) {
-                this._body = body;
-            }
+    public override void Update(FrameTime frameTime, InputState inputState) {
+        if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
+            this._body.Velocity += new Vector2(0f, Speed);
         }
 
-        public override void Update(FrameTime frameTime, InputState inputState) {
-            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.W)) {
-                this._body.Velocity += new Vector2(0f, Speed);
-            }
+        if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
+            this._body.Velocity += new Vector2(0f, -Speed);
+        }
 
-            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.S)) {
-                this._body.Velocity += new Vector2(0f, -Speed);
-            }
+        if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
+            this._body.Velocity += new Vector2(-Speed, 0f);
+        }
 
-            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.A)) {
-                this._body.Velocity += new Vector2(-Speed, 0f);
-            }
+        if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
+            this._body.Velocity += new Vector2(Speed, 0f);
+        }
 
-            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.D)) {
-                this._body.Velocity += new Vector2(Speed, 0f);
-            }
-
-            if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
-                this._body.Velocity = Vector2.Zero;
-            }
+        if (inputState.CurrentKeyboardState.IsKeyDown(Keys.Space)) {
+            this._body.Velocity = Vector2.Zero;
         }
     }
 }

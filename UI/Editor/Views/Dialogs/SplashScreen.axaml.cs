@@ -1,19 +1,19 @@
-﻿namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs {
-    using Avalonia.Controls;
-    using Avalonia.Input;
-    using Avalonia.Markup.Xaml;
+﻿namespace Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
 
-    public class SplashScreen : Window {
-        public SplashScreen() {
-            this.InitializeComponent();
-        }
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Markup.Xaml;
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+public class SplashScreen : Window {
+    public SplashScreen() {
+        this.InitializeComponent();
+    }
 
-        private void OnPointerPressed(object sender, PointerPressedEventArgs e) {
-            this.BeginMoveDrag(e);
-        }
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    private void OnPointerPressed(object sender, PointerPressedEventArgs e) {
+        this.BeginMoveDrag(e);
     }
 }

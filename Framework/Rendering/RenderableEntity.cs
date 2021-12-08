@@ -1,67 +1,67 @@
-namespace Macabresoft.Macabre2D.Framework {
-    using System.ComponentModel;
-    using System.Runtime.Serialization;
+namespace Macabresoft.Macabre2D.Framework;
+
+using System.ComponentModel;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Interface for an entity which can be rendered.
+/// </summary>
+public interface IRenderableEntity : IBoundable, IEntity {
+    /// <summary>
+    /// Gets a value indicating whether this instance is visible.
+    /// </summary>
+    /// <value><c>true</c> if this instance is visible; otherwise, <c>false</c>.</value>
+    bool IsVisible { get; }
 
     /// <summary>
-    /// Interface for an entity which can be rendered.
+    /// Gets the render order.
     /// </summary>
-    public interface IRenderableEntity : IBoundable, IEntity {
-        /// <summary>
-        /// Gets a value indicating whether this instance is visible.
-        /// </summary>
-        /// <value><c>true</c> if this instance is visible; otherwise, <c>false</c>.</value>
-        bool IsVisible { get; }
+    /// <value>The render order.</value>
+    int RenderOrder => 0;
 
-        /// <summary>
-        /// Gets the render order.
-        /// </summary>
-        /// <value>The render order.</value>
-        int RenderOrder => 0;
+    /// <summary>
+    /// Renders this instance.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="viewBoundingArea">The view bounding area.</param>
+    void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
+}
 
-        /// <summary>
-        /// Renders this instance.
-        /// </summary>
-        /// <param name="frameTime">The frame time.</param>
-        /// <param name="viewBoundingArea">The view bounding area.</param>
-        void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
+/// <summary>
+/// A <see cref="IEntity" /> which has a default implementation of
+/// <see cref="IRenderableEntity" />.
+/// </summary>
+[Category(CommonCategories.Rendering)]
+public abstract class RenderableEntity : Entity, IRenderableEntity {
+    private bool _isVisible = true;
+    private int _renderOrder;
+
+    /// <inheritdoc />
+    public abstract BoundingArea BoundingArea { get; }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public bool IsVisible {
+        get => this._isVisible && this.IsEnabled;
+        set => this.Set(ref this._isVisible, value, this.IsEnabled);
     }
 
-    /// <summary>
-    /// A <see cref="IEntity" /> which has a default implementation of
-    /// <see cref="IRenderableEntity" />.
-    /// </summary>
+    /// <inheritdoc />
+    [DataMember]
     [Category(CommonCategories.Rendering)]
-    public abstract class RenderableEntity : Entity, IRenderableEntity {
-        private bool _isVisible = true;
-        private int _renderOrder;
+    public int RenderOrder {
+        get => this._renderOrder;
+        set => this.Set(ref this._renderOrder, value);
+    }
 
-        /// <inheritdoc />
-        public abstract BoundingArea BoundingArea { get; }
+    /// <inheritdoc />
+    public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
 
-        /// <inheritdoc />
-        [DataMember]
-        [Category(CommonCategories.Rendering)]
-        public bool IsVisible {
-            get => this._isVisible && this.IsEnabled;
-            set => this.Set(ref this._isVisible, value, this.IsEnabled);
-        }
-
-        /// <inheritdoc />
-        [DataMember]
-        [Category(CommonCategories.Rendering)]
-        public int RenderOrder {
-            get => this._renderOrder;
-            set => this.Set(ref this._renderOrder, value);
-        }
-
-        /// <inheritdoc />
-        public abstract void Render(FrameTime frameTime, BoundingArea viewBoundingArea);
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(IEnableable.IsEnabled) && this._isVisible) {
-                this.RaisePropertyChanged(nameof(this.IsVisible));
-            }
+    /// <inheritdoc />
+    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(IEnableable.IsEnabled) && this._isVisible) {
+            this.RaisePropertyChanged(nameof(this.IsVisible));
         }
     }
 }

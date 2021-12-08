@@ -1,26 +1,26 @@
-namespace Macabresoft.Macabre2D.Samples.Content {
-    using Macabresoft.Macabre2D.Framework;
-    using Microsoft.Xna.Framework;
+namespace Macabresoft.Macabre2D.Samples.Content;
 
-    public class Scaler : UpdateableEntity {
-        private float _currentSign = 1f;
+using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
 
-        private SpriteRenderer _spriteRenderer;
+public class Scaler : UpdateableEntity {
+    private float _currentSign = 1f;
 
-        public override void Initialize(IScene scene, IEntity entity) {
-            base.Initialize(scene, entity);
-            this.TryGetParentEntity(out this._spriteRenderer);
-        }
+    private SpriteRenderer _spriteRenderer;
 
-        public override void Update(FrameTime frameTime, InputState inputState) {
-            if (this._spriteRenderer != null) {
-                if (this._spriteRenderer.LocalScale.X > 2f && this._currentSign > 0 || this._spriteRenderer.LocalScale.X < -2f && this._currentSign < 0) {
-                    this._currentSign *= -1f;
-                }
+    public override void Initialize(IScene scene, IEntity entity) {
+        base.Initialize(scene, entity);
+        this.TryGetParentEntity(out this._spriteRenderer);
+    }
 
-                this._spriteRenderer.LocalScale += Vector2.One * (float)frameTime.MillisecondsPassed * 0.001f * this._currentSign;
-                this._spriteRenderer.Rotation += (float)frameTime.MillisecondsPassed * 0.003f;
+    public override void Update(FrameTime frameTime, InputState inputState) {
+        if (this._spriteRenderer != null) {
+            if (this._spriteRenderer.LocalScale.X > 2f && this._currentSign > 0 || this._spriteRenderer.LocalScale.X < -2f && this._currentSign < 0) {
+                this._currentSign *= -1f;
             }
+
+            this._spriteRenderer.LocalScale += Vector2.One * (float)frameTime.MillisecondsPassed * 0.001f * this._currentSign;
+            this._spriteRenderer.Rotation += (float)frameTime.MillisecondsPassed * 0.003f;
         }
     }
 }

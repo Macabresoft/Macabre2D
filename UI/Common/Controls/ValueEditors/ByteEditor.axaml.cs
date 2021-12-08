@@ -1,23 +1,23 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class ByteEditor : BaseNumericEditor<byte> {
-        public ByteEditor() : this(null) {
-        }
+using System;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public ByteEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class ByteEditor : BaseNumericEditor<byte> {
+    public ByteEditor() : this(null) {
+    }
 
-        protected override byte ConvertValue(object calculatedValue) {
-            return Convert.ToByte(calculatedValue);
-        }
+    [InjectionConstructor]
+    public ByteEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    protected override byte ConvertValue(object calculatedValue) {
+        return Convert.ToByte(calculatedValue);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

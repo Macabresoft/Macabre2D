@@ -1,114 +1,114 @@
-namespace Macabresoft.Macabre2D.Tests.Framework {
-    using System;
-    using System.Runtime.Serialization;
-    using System.Threading;
-    using FluentAssertions;
-    using FluentAssertions.Execution;
-    using Macabresoft.Macabre2D.Framework;
-    using NUnit.Framework;
+namespace Macabresoft.Macabre2D.Tests.Framework;
 
-    [TestFixture]
-    public static class WindowsSaveDataManagerTests {
-        private const string ProjectName = "Macabre2DTestProject";
-        private const string SaveDataFileName = "Test.m2dsave";
+using System;
+using System.Runtime.Serialization;
+using System.Threading;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Macabresoft.Macabre2D.Framework;
+using NUnit.Framework;
 
-        [Test]
-        [Category("Integration Tests")]
-        public static void WindowsSaveDataManager_DeleteTest() {
-            var saveDataManager = new WindowsSaveDataManager();
-            saveDataManager.Save(SaveDataFileName, ProjectName, new TestSaveData());
+[TestFixture]
+public static class WindowsSaveDataManagerTests {
+    private const string ProjectName = "Macabre2DTestProject";
+    private const string SaveDataFileName = "Test.m2dsave";
 
-            var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
-
-            using (new AssertionScope()) {
-                found.Should().BeTrue();
-                loadedData.Should().NotBeNull();
-                saveDataManager.Delete(SaveDataFileName, ProjectName);
-
-                found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out loadedData);
-                found.Should().BeFalse();
-                loadedData.Should().BeNull();
-            }
+    [DataContract]
+    private sealed class TestSaveData : VersionedData {
+        public TestSaveData() : base() {
+            var rand = new Random();
+            this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);
         }
 
-        [Test]
-        [Category("Integration Tests")]
-        public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
-            var saveDataManager = new WindowsSaveDataManager();
+        [DataMember]
+        public Guid Id { get; private set; } = Guid.NewGuid();
+
+        [DataMember]
+        public int RandomNumber { get; private set; }
+    }
+
+    [Test]
+    [Category("Integration Tests")]
+    public static void WindowsSaveDataManager_DeleteTest() {
+        var saveDataManager = new WindowsSaveDataManager();
+        saveDataManager.Save(SaveDataFileName, ProjectName, new TestSaveData());
+
+        var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+
+        using (new AssertionScope()) {
+            found.Should().BeTrue();
+            loadedData.Should().NotBeNull();
             saveDataManager.Delete(SaveDataFileName, ProjectName);
 
-            var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+            found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out loadedData);
+            found.Should().BeFalse();
+            loadedData.Should().BeNull();
+        }
+    }
 
+    [Test]
+    [Category("Integration Tests")]
+    public static void WindowsSaveDataManager_LoadEmptyData_ThrowsExceptionTest() {
+        var saveDataManager = new WindowsSaveDataManager();
+        saveDataManager.Delete(SaveDataFileName, ProjectName);
+
+        var found = saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+
+        using (new AssertionScope()) {
+            found.Should().BeFalse();
+            loadedData.Should().BeNull();
+        }
+    }
+
+    [Test]
+    [Category("Integration Tests")]
+    public static void WindowsSaveDataManager_OverwriteSaveTest() {
+        var saveDataManager = new WindowsSaveDataManager();
+
+        var saveData1 = new TestSaveData();
+        saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
+
+        saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData1);
+        if (loadedData1 != null) {
             using (new AssertionScope()) {
-                found.Should().BeFalse();
-                loadedData.Should().BeNull();
+                loadedData1.Id.Should().Be(saveData1.Id);
+                loadedData1.RandomNumber.Should().Be(saveData1.RandomNumber);
+
+                Thread.Sleep(100);
+
+                var saveData2 = new TestSaveData();
+                saveDataManager.Save(SaveDataFileName, ProjectName, saveData2);
+
+                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData2);
+                loadedData2?.Id.Should().Be(saveData2.Id);
+                loadedData2?.RandomNumber.Should().Be(saveData2.RandomNumber);
             }
         }
-
-        [Test]
-        [Category("Integration Tests")]
-        public static void WindowsSaveDataManager_OverwriteSaveTest() {
-            var saveDataManager = new WindowsSaveDataManager();
-
-            var saveData1 = new TestSaveData();
-            saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
-
-            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData1);
-            if (loadedData1 != null) {
-                using (new AssertionScope()) {
-                    loadedData1.Id.Should().Be(saveData1.Id);
-                    loadedData1.RandomNumber.Should().Be(saveData1.RandomNumber);
-
-                    Thread.Sleep(100);
-
-                    var saveData2 = new TestSaveData();
-                    saveDataManager.Save(SaveDataFileName, ProjectName, saveData2);
-
-                    saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData2);
-                    loadedData2?.Id.Should().Be(saveData2.Id);
-                    loadedData2?.RandomNumber.Should().Be(saveData2.RandomNumber);
-                }
-            }
-            else {
-                throw new NullReferenceException(nameof(loadedData1));
-            }
-
-            saveDataManager.Delete(SaveDataFileName, ProjectName);
+        else {
+            throw new NullReferenceException(nameof(loadedData1));
         }
 
-        [Test]
-        [Category("Integration Tests")]
-        public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
-            var saveDataManager = new WindowsSaveDataManager();
+        saveDataManager.Delete(SaveDataFileName, ProjectName);
+    }
 
-            var saveData1 = new TestSaveData();
-            saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
+    [Test]
+    [Category("Integration Tests")]
+    public static void WindowsSaveDataManager_SuccessfulSaveAndLoadTest() {
+        var saveDataManager = new WindowsSaveDataManager();
 
-            using (new AssertionScope()) {
-                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
-                loadedData?.Id.Should().Be(saveData1.Id);
-                loadedData?.RandomNumber.Should().Be(saveData1.RandomNumber);
+        var saveData1 = new TestSaveData();
+        saveDataManager.Save(SaveDataFileName, ProjectName, saveData1);
 
-                saveDataManager.TryLoad(SaveDataFileName, ProjectName, out VersionedData versionedLoadedData);
-                loadedData?.TypeName.Should().Be(versionedLoadedData?.TypeName);
-                typeof(VersionedData).IsAssignableFrom(loadedData?.GetType()).Should().BeTrue();
-            }
+        using (new AssertionScope()) {
+            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out TestSaveData loadedData);
+            loadedData?.Id.Should().Be(saveData1.Id);
+            loadedData?.RandomNumber.Should().Be(saveData1.RandomNumber);
 
-            saveDataManager.Delete(SaveDataFileName, ProjectName);
+            saveDataManager.TryLoad(SaveDataFileName, ProjectName, out VersionedData versionedLoadedData);
+            loadedData?.TypeName.Should().Be(versionedLoadedData?.TypeName);
+            typeof(VersionedData).IsAssignableFrom(loadedData?.GetType()).Should().BeTrue();
         }
 
-        [DataContract]
-        private sealed class TestSaveData : VersionedData {
-            public TestSaveData() : base() {
-                var rand = new Random();
-                this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);
-            }
-
-            [DataMember]
-            public Guid Id { get; private set; } = Guid.NewGuid();
-
-            [DataMember]
-            public int RandomNumber { get; private set; }
-        }
+        saveDataManager.Delete(SaveDataFileName, ProjectName);
     }
 }

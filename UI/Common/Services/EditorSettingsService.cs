@@ -1,71 +1,71 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common {
-    using System.IO;
-    using Macabresoft.Macabre2D.Framework;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
+
+using System.IO;
+using Macabresoft.Macabre2D.Framework;
+
+/// <summary>
+/// Interface for a service which handles editor settings and saved values
+/// </summary>
+public interface IEditorSettingsService {
+    /// <summary>
+    /// Gets the settings.
+    /// </summary>
+    EditorSettings Settings { get; }
 
     /// <summary>
-    /// Interface for a service which handles editor settings and saved values
+    /// Initializes the settings.
     /// </summary>
-    public interface IEditorSettingsService {
-        /// <summary>
-        /// Gets the settings.
-        /// </summary>
-        EditorSettings Settings { get; }
+    void Initialize();
 
-        /// <summary>
-        /// Initializes the settings.
-        /// </summary>
-        void Initialize();
+    /// <summary>
+    /// Saves the settings.
+    /// </summary>
+    void Save();
+}
 
-        /// <summary>
-        /// Saves the settings.
-        /// </summary>
-        void Save();
+/// <summary>
+/// A service which handles editor settings and saved values.
+/// </summary>
+public sealed class EditorSettingsService : IEditorSettingsService {
+    private readonly IFileSystemService _fileSystem;
+    private readonly IPathService _pathService;
+    private readonly ISerializer _serializer;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EditorSettingsService" /> class.
+    /// </summary>
+    /// <param name="fileSystem">The file system service.</param>
+    /// <param name="pathService">The path service.</param>
+    /// <param name="serializer">The serializer.</param>
+    public EditorSettingsService(
+        IFileSystemService fileSystem,
+        IPathService pathService,
+        ISerializer serializer) {
+        this._fileSystem = fileSystem;
+        this._pathService = pathService;
+        this._serializer = serializer;
     }
 
-    /// <summary>
-    /// A service which handles editor settings and saved values.
-    /// </summary>
-    public sealed class EditorSettingsService : IEditorSettingsService {
-        private readonly IFileSystemService _fileSystem;
-        private readonly IPathService _pathService;
-        private readonly ISerializer _serializer;
+    /// <inheritdoc />
+    public EditorSettings Settings { get; private set; } = new();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EditorSettingsService" /> class.
-        /// </summary>
-        /// <param name="fileSystem">The file system service.</param>
-        /// <param name="pathService">The path service.</param>
-        /// <param name="serializer">The serializer.</param>
-        public EditorSettingsService(
-            IFileSystemService fileSystem,
-            IPathService pathService,
-            ISerializer serializer) {
-            this._fileSystem = fileSystem;
-            this._pathService = pathService;
-            this._serializer = serializer;
+    /// <inheritdoc />
+    public void Initialize() {
+        var filePath = this.GetSettingsFilePath();
+        if (this._fileSystem.DoesFileExist(filePath)) {
+            this.Settings = this._serializer.Deserialize<EditorSettings>(filePath) ?? new EditorSettings();
         }
+    }
 
-        /// <inheritdoc />
-        public EditorSettings Settings { get; private set; } = new();
-
-        /// <inheritdoc />
-        public void Initialize() {
+    /// <inheritdoc />
+    public void Save() {
+        if (this.Settings != null) {
             var filePath = this.GetSettingsFilePath();
-            if (this._fileSystem.DoesFileExist(filePath)) {
-                this.Settings = this._serializer.Deserialize<EditorSettings>(filePath) ?? new EditorSettings();
-            }
+            this._serializer.Serialize(this.Settings, filePath);
         }
+    }
 
-        /// <inheritdoc />
-        public void Save() {
-            if (this.Settings != null) {
-                var filePath = this.GetSettingsFilePath();
-                this._serializer.Serialize(this.Settings, filePath);
-            }
-        }
-
-        private string GetSettingsFilePath() {
-            return Path.Combine(this._pathService.EditorBinDirectoryPath, EditorSettings.FileName);
-        }
+    private string GetSettingsFilePath() {
+        return Path.Combine(this._pathService.EditorBinDirectoryPath, EditorSettings.FileName);
     }
 }

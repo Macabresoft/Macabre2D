@@ -1,13 +1,11 @@
-namespace Macabresoft.Macabre2D.Samples.Physics {
+namespace Macabresoft.Macabre2D.Samples.Physics;
 
-    using System;
+using System;
 
-    public static class Program {
-
-        [STAThread]
-        private static void Main() {
-            using var game = new PhysicsGame();
-            game.Run();
-        }
+public static class Program {
+    [STAThread]
+    private static void Main() {
+        using var game = new PhysicsGame();
+        game.Run();
     }
 }

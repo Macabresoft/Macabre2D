@@ -1,123 +1,123 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-    using Avalonia;
-    using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Framework;
-    using ReactiveUI;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class AssetGuidEditor : ValueEditorControl<Guid> {
-        public static readonly DirectProperty<AssetGuidEditor, ICommand> ClearCommandProperty =
-            AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
-                nameof(ClearCommand),
-                editor => editor.ClearCommand);
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using Macabresoft.Macabre2D.Framework;
+using ReactiveUI;
+using Unity;
 
-        public static readonly DirectProperty<AssetGuidEditor, string> PathTextProperty =
-            AvaloniaProperty.RegisterDirect<AssetGuidEditor, string>(
-                nameof(PathText),
-                editor => editor.PathText);
+public class AssetGuidEditor : ValueEditorControl<Guid> {
+    public static readonly DirectProperty<AssetGuidEditor, ICommand> ClearCommandProperty =
+        AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
+            nameof(ClearCommand),
+            editor => editor.ClearCommand);
 
-        public static readonly DirectProperty<AssetGuidEditor, ICommand> SelectCommandProperty =
-            AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
-                nameof(SelectCommand),
-                editor => editor.SelectCommand);
+    public static readonly DirectProperty<AssetGuidEditor, string> PathTextProperty =
+        AvaloniaProperty.RegisterDirect<AssetGuidEditor, string>(
+            nameof(PathText),
+            editor => editor.PathText);
 
-        private readonly IAssetManager _assetManager;
-        private readonly Type _assetType;
-        private readonly ICommonDialogService _dialogService;
-        private readonly IUndoService _undoService;
+    public static readonly DirectProperty<AssetGuidEditor, ICommand> SelectCommandProperty =
+        AvaloniaProperty.RegisterDirect<AssetGuidEditor, ICommand>(
+            nameof(SelectCommand),
+            editor => editor.SelectCommand);
 
-        private string _pathText;
+    private readonly IAssetManager _assetManager;
+    private readonly Type _assetType;
+    private readonly ICommonDialogService _dialogService;
+    private readonly IUndoService _undoService;
 
-        public AssetGuidEditor() : this(
-            null,
-            Resolver.Resolve<IAssetManager>(),
-            Resolver.Resolve<ICommonDialogService>(),
-            Resolver.Resolve<IUndoService>()) {
+    private string _pathText;
+
+    public AssetGuidEditor() : this(
+        null,
+        Resolver.Resolve<IAssetManager>(),
+        Resolver.Resolve<ICommonDialogService>(),
+        Resolver.Resolve<IUndoService>()) {
+    }
+
+    [InjectionConstructor]
+    public AssetGuidEditor(
+        ValueControlDependencies dependencies,
+        IAssetManager assetManager,
+        ICommonDialogService dialogService,
+        IUndoService undoService) : base(dependencies) {
+        this._assetManager = assetManager;
+        this._dialogService = dialogService;
+        this._undoService = undoService;
+
+        this.ClearCommand = ReactiveCommand.Create(
+            this.Clear,
+            this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
+        this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
+
+        if (dependencies?.Owner?.GetType() is Type ownerType) {
+            var members = ownerType.GetMember(dependencies.ValuePropertyName);
+            if (members.FirstOrDefault() is MemberInfo info && info.GetCustomAttribute<AssetGuidAttribute>() is AssetGuidAttribute attribute) {
+                this._assetType = attribute.AssetType;
+            }
         }
 
-        [InjectionConstructor]
-        public AssetGuidEditor(
-            ValueControlDependencies dependencies,
-            IAssetManager assetManager,
-            ICommonDialogService dialogService,
-            IUndoService undoService) : base(dependencies) {
-            this._assetManager = assetManager;
-            this._dialogService = dialogService;
-            this._undoService = undoService;
+        this.ResetPath();
+        this.InitializeComponent();
+    }
 
-            this.ClearCommand = ReactiveCommand.Create(
-                this.Clear,
-                this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
-            this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
+    public ICommand ClearCommand { get; }
 
-            if (dependencies?.Owner?.GetType() is Type ownerType) {
-                var members = ownerType.GetMember(dependencies.ValuePropertyName);
-                if (members.FirstOrDefault() is MemberInfo info && info.GetCustomAttribute<AssetGuidAttribute>() is AssetGuidAttribute attribute) {
-                    this._assetType = attribute.AssetType;
-                }
-            }
+    public ICommand SelectCommand { get; }
 
+    public string PathText {
+        get => this._pathText;
+        private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
+    }
+
+    protected override void OnValueChanged() {
+        base.OnValueChanged();
+
+        if (this.Value != Guid.Empty) {
             this.ResetPath();
-            this.InitializeComponent();
         }
+    }
 
-        public ICommand ClearCommand { get; }
+    private void Clear() {
+        var originalValue = this.Value;
 
-        public ICommand SelectCommand { get; }
-
-        public string PathText {
-            get => this._pathText;
-            private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
+        if (originalValue != Guid.Empty) {
+            this._undoService.Do(
+                () => this.Value = Guid.Empty,
+                () => { this.Value = originalValue; });
         }
+    }
 
-        protected override void OnValueChanged() {
-            base.OnValueChanged();
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
+    }
 
-            if (this.Value != Guid.Empty) {
-                this.ResetPath();
-            }
+    private void ResetPath() {
+        this.PathText = null;
+
+        if (this._assetManager != null &&
+            this.Value != Guid.Empty &&
+            this.Value != Guid.Empty &&
+            this._assetManager.TryGetMetadata(this.Value, out var metadata) &&
+            metadata != null) {
+            this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
         }
+    }
 
-        private void Clear() {
-            var originalValue = this.Value;
-
-            if (originalValue != Guid.Empty) {
-                this._undoService.Do(
-                    () => this.Value = Guid.Empty,
-                    () => { this.Value = originalValue; });
-            }
-        }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        private void ResetPath() {
-            this.PathText = null;
-
-            if (this._assetManager != null &&
-                this.Value != Guid.Empty &&
-                this.Value != Guid.Empty &&
-                this._assetManager.TryGetMetadata(this.Value, out var metadata) &&
-                metadata != null) {
-                this.PathText = $"{metadata.GetContentPath()}{metadata.ContentFileExtension}";
-            }
-        }
-
-        private async Task Select() {
-            var contentNode = await this._dialogService.OpenAssetSelectionDialog(this._assetType, false);
-            if (contentNode is ContentFile { Metadata: ContentMetadata metadata }) {
-                var originalId = this.Value;
-                var contentId = metadata.ContentId;
-                this._undoService.Do(
-                    () => { this.Value = contentId; },
-                    () => { this.Value = originalId; });
-            }
+    private async Task Select() {
+        var contentNode = await this._dialogService.OpenAssetSelectionDialog(this._assetType, false);
+        if (contentNode is ContentFile { Metadata: ContentMetadata metadata }) {
+            var originalId = this.Value;
+            var contentId = metadata.ContentId;
+            this._undoService.Do(
+                () => { this.Value = contentId; },
+                () => { this.Value = originalId; });
         }
     }
 }

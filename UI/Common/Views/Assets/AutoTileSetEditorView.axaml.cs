@@ -1,20 +1,20 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common {
-    using Avalonia.Controls;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class AutoTileSetEditorView : UserControl {
-        public AutoTileSetEditorView() {
-        }
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public AutoTileSetEditorView(AutoTileSetEditorViewModel viewModel) {
-            this.DataContext = viewModel;
-            this.InitializeComponent();
-        }
+public class AutoTileSetEditorView : UserControl {
+    public AutoTileSetEditorView() {
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    [InjectionConstructor]
+    public AutoTileSetEditorView(AutoTileSetEditorViewModel viewModel) {
+        this.DataContext = viewModel;
+        this.InitializeComponent();
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

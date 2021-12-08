@@ -1,17 +1,15 @@
-namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework;
 
-    using System.ComponentModel;
+using System.ComponentModel;
 
+/// <summary>
+/// Interface for an updateable object in the game loop.
+/// </summary>
+public interface IUpdateableGameObject : INotifyPropertyChanged, IEnableable {
     /// <summary>
-    /// Interface for an updateable object in the game loop.
+    /// Updates this instance.
     /// </summary>
-    public interface IUpdateableGameObject : INotifyPropertyChanged, IEnableable {
-
-        /// <summary>
-        /// Updates this instance.
-        /// </summary>
-        /// <param name="frameTime">The frame time.</param>
-        /// <param name="inputState">State of the input.</param>
-        void Update(FrameTime frameTime, InputState inputState);
-    }
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">State of the input.</param>
+    void Update(FrameTime frameTime, InputState inputState);
 }

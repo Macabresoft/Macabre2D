@@ -1,6 +1,6 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using ReactiveUI;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class BaseViewModel : ReactiveObject {
-    }
+using ReactiveUI;
+
+public class BaseViewModel : ReactiveObject {
 }

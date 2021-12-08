@@ -1,43 +1,37 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia;
-    using Avalonia.Markup.Xaml;
-    using Avalonia.Media.Imaging;
-    using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using Macabresoft.Macabre2D.Framework;
+using Unity;
 
+public class SpriteSheetInfoControl : ValueControl<SpriteSheet> {
+    public static readonly DirectProperty<SpriteSheetInfoControl, SpriteDisplayCollection> SpriteCollectionProperty =
+        AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, SpriteDisplayCollection>(
+            nameof(SpriteCollection),
+            control => control.SpriteCollection);
 
-        public static readonly DirectProperty<SpriteSheetInfoControl, SpriteDisplayCollection> SpriteCollectionProperty =
-            AvaloniaProperty.RegisterDirect<SpriteSheetInfoControl, SpriteDisplayCollection>(
-                nameof(SpriteCollection),
-                control => control.SpriteCollection);
+    public SpriteSheetInfoControl() : base() {
+    }
 
-        public SpriteSheetInfoControl() : base() {
-            
-        }
-        
-        [InjectionConstructor]
-        public SpriteSheetInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
-            if (this.Owner is ContentFile file) {
-                this.SpriteCollection = new SpriteDisplayCollection(this.Value, file);
-            }
-            
-            this.InitializeComponent();
+    [InjectionConstructor]
+    public SpriteSheetInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
+        if (this.Owner is ContentFile file) {
+            this.SpriteCollection = new SpriteDisplayCollection(this.Value, file);
         }
 
-        public SpriteDisplayCollection SpriteCollection { get; }
+        this.InitializeComponent();
+    }
 
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
-            base.OnDetachedFromVisualTree(e);
+    public SpriteDisplayCollection SpriteCollection { get; }
 
-            this.SpriteCollection?.Dispose();
-        }
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
+        base.OnDetachedFromVisualTree(e);
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+        this.SpriteCollection?.Dispose();
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,18 +1,18 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class BoolEditor : ValueEditorControl<bool> {
-        public BoolEditor() : this(null) {
-        }
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public BoolEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class BoolEditor : ValueEditorControl<bool> {
+    public BoolEditor() : this(null) {
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    [InjectionConstructor]
+    public BoolEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

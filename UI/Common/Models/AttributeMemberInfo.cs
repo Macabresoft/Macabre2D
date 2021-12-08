@@ -1,15 +1,15 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using System.Reflection;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public sealed class AttributeMemberInfo<T> where T : Attribute {
-        public AttributeMemberInfo(MemberInfo memberInfo, T attribute) {
-            this.MemberInfo = memberInfo;
-            this.Attribute = attribute;
-        }
+using System;
+using System.Reflection;
 
-        public T Attribute { get; }
-
-        public MemberInfo MemberInfo { get; }
+public sealed class AttributeMemberInfo<T> where T : Attribute {
+    public AttributeMemberInfo(MemberInfo memberInfo, T attribute) {
+        this.MemberInfo = memberInfo;
+        this.Attribute = attribute;
     }
+
+    public T Attribute { get; }
+
+    public MemberInfo MemberInfo { get; }
 }

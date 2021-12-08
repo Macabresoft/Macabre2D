@@ -13,15 +13,15 @@
     <Style Selector="Button:pointerover common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPointerOver}" />
     </Style>
-  
+
     <Style Selector="Button:pressed common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPressed}" />
     </Style>
-    
+
     <Style Selector="Button:disabled common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundDisabled}" />
     </Style>
-    
+
     <Style Selector="Button.accent common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
     </Style>
@@ -33,7 +33,7 @@
     <Style Selector="Button.accent:pressed common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundPressed}" />
     </Style>
-    
+
     <Style Selector="Button.accent:disabled common|Icon">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundDisabled}" />
     </Style>

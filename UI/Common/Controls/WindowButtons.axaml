@@ -35,7 +35,7 @@
             <local:Icon Content="{StaticResource MinimizeIcon}"
                         Classes="Small" />
         </Button>
-                
+
         <Button Command="{Binding ToggleWindowStateCommand}"
                 CommandParameter="{Binding Window}"
                 IsVisible="{Binding Window.CanResize}"
@@ -48,13 +48,14 @@
             <Panel>
                 <local:Icon IsVisible="{Binding Window.WindowState, Converter={StaticResource ShowMaximizeConverter}}"
                             Content="{StaticResource MaximizeIcon}"
-                            Classes="Small"/>
-                <local:Icon  IsVisible="{Binding Window.WindowState, Converter={StaticResource ShowMaximizeConverter}, ConverterParameter={StaticResource TrueValue}}"
-                             Content="{StaticResource RestoreIcon}"
-                             Classes="Small"/>
+                            Classes="Small" />
+                <local:Icon
+                    IsVisible="{Binding Window.WindowState, Converter={StaticResource ShowMaximizeConverter}, ConverterParameter={StaticResource TrueValue}}"
+                    Content="{StaticResource RestoreIcon}"
+                    Classes="Small" />
             </Panel>
         </Button>
-                
+
         <Button Command="{Binding CloseCommand}"
                 CommandParameter="{Binding Window}"
                 ToolTip.Tip="Close the window">
@@ -64,7 +65,7 @@
                 </Style>
             </Button.Styles>
             <local:Icon Content="{StaticResource CloseIcon}"
-                        Classes="Small"/>
+                        Classes="Small" />
         </Button>
     </StackPanel>
 </UserControl>

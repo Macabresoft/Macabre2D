@@ -1,25 +1,25 @@
-namespace Macabresoft.Macabre2D.UI.Editor {
-    using System;
-    using Avalonia.Controls;
-    using Avalonia.Controls.Templates;
-    using Macabresoft.Macabre2D.UI.Common;
+namespace Macabresoft.Macabre2D.UI.Editor;
 
-    public class ViewLocator : IDataTemplate {
-        public bool SupportsRecycling => false;
+using System;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Macabresoft.Macabre2D.UI.Common;
 
-        public IControl Build(object data) {
-            var name = data.GetType().FullName.Replace("ViewModel", "View");
-            var type = Type.GetType(name);
+public class ViewLocator : IDataTemplate {
+    public bool SupportsRecycling => false;
 
-            if (type != null) {
-                return (Control)Activator.CreateInstance(type);
-            }
+    public IControl Build(object data) {
+        var name = data.GetType().FullName.Replace("ViewModel", "View");
+        var type = Type.GetType(name);
 
-            return new TextBlock { Text = "Not Found: " + name };
+        if (type != null) {
+            return (Control)Activator.CreateInstance(type);
         }
 
-        public bool Match(object data) {
-            return data is BaseViewModel;
-        }
+        return new TextBlock { Text = "Not Found: " + name };
+    }
+
+    public bool Match(object data) {
+        return data is BaseViewModel;
     }
 }

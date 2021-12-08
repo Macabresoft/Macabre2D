@@ -1,52 +1,51 @@
-namespace Macabresoft.Macabre2D.UI.Editor {
-    using Avalonia;
-    using Avalonia.Controls.ApplicationLifetimes;
-    using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
-    using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Editor;
 
-    /// <summary>
-    /// The main <see cref="Application" />.
-    /// </summary>
-    public class App : Application {
-        
-        /// <inheritdoc />
-        public override void Initialize() {
-            var container = new UnityContainer()
-                .RegisterServices()
-                .RegisterLibraryServices()
-                .RegisterLibraryTypes()
-                .RegisterFrameworkTypes();
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.UI.Common;
+using Macabresoft.Macabre2D.UI.Editor.Views.Dialogs;
+using Unity;
 
-            Resolver.Container = container;
+/// <summary>
+/// The main <see cref="Application" />.
+/// </summary>
+public class App : Application {
+    /// <inheritdoc />
+    public override void Initialize() {
+        var container = new UnityContainer()
+            .RegisterServices()
+            .RegisterLibraryServices()
+            .RegisterLibraryTypes()
+            .RegisterFrameworkTypes();
 
-            AvaloniaXamlLoader.Load(this);
-        }
+        Resolver.Container = container;
 
-        /// <inheritdoc />
-        public override void OnFrameworkInitializationCompleted() {
-            if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-                var splashScreen = new SplashScreen();
-                splashScreen.Show();
-                BaseGame.IsDesignMode = true;
-                var mainWindow = new MainWindow();
-                Resolver.Container.RegisterInstance(mainWindow);
+        AvaloniaXamlLoader.Load(this);
+    }
 
-                Resolver.Resolve<IEditorSettingsService>().Initialize();
-                Resolver.Resolve<IProjectService>().LoadProject();
+    /// <inheritdoc />
+    public override void OnFrameworkInitializationCompleted() {
+        if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+            var splashScreen = new SplashScreen();
+            splashScreen.Show();
+            BaseGame.IsDesignMode = true;
+            var mainWindow = new MainWindow();
+            Resolver.Container.RegisterInstance(mainWindow);
 
-                if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
-                    Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
-                }
+            Resolver.Resolve<IEditorSettingsService>().Initialize();
+            Resolver.Resolve<IProjectService>().LoadProject();
 
-                mainWindow.InitializeComponent();
-                desktop.MainWindow = mainWindow;
-                splashScreen.Close();
+            if (Resolver.Resolve<ISceneService>().CurrentScene == null) {
+                Resolver.Resolve<IEditorService>().SelectedTab = EditorTabs.Project;
             }
 
-            base.OnFrameworkInitializationCompleted();
+            mainWindow.InitializeComponent();
+            desktop.MainWindow = mainWindow;
+            splashScreen.Close();
         }
+
+        base.OnFrameworkInitializationCompleted();
     }
 }

@@ -1,29 +1,29 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class EnumEditor : ValueEditorControl<object> {
-        public static readonly DirectProperty<EnumEditor, Type> EnumTypeProperty =
-            AvaloniaProperty.RegisterDirect<EnumEditor, Type>(
-                nameof(EnumType),
-                editor => editor.EnumType);
+using System;
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        public EnumEditor() : this(null) {
-        }
+public class EnumEditor : ValueEditorControl<object> {
+    public static readonly DirectProperty<EnumEditor, Type> EnumTypeProperty =
+        AvaloniaProperty.RegisterDirect<EnumEditor, Type>(
+            nameof(EnumType),
+            editor => editor.EnumType);
 
-        [InjectionConstructor]
-        public EnumEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.EnumType = dependencies?.ValueType;
-            this.InitializeComponent();
-        }
+    public EnumEditor() : this(null) {
+    }
 
-        public Type EnumType { get; }
+    [InjectionConstructor]
+    public EnumEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.EnumType = dependencies?.ValueType;
+        this.InitializeComponent();
+    }
+
+    public Type EnumType { get; }
 
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

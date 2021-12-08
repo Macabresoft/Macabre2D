@@ -1,14 +1,14 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
-    using System.ComponentModel;
-    using System.Runtime.Serialization;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
-    /// <summary>
-    /// An observable collection of <see cref="AutoTileSet" />.
-    /// </summary>
-    [DataContract]
-    [Category("Auto Tile Sets")]
-    public class AutoTileSetCollection : NameableCollection<AutoTileSet> {
-        /// <inheritdoc />
-        public override string Name => "Auto Tile Sets";
-    }
+using System.ComponentModel;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// An observable collection of <see cref="AutoTileSet" />.
+/// </summary>
+[DataContract]
+[Category("Auto Tile Sets")]
+public class AutoTileSetCollection : NameableCollection<AutoTileSet> {
+    /// <inheritdoc />
+    public override string Name => "Auto Tile Sets";
 }

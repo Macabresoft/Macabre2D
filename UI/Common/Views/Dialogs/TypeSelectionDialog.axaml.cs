@@ -1,21 +1,21 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class TypeSelectionDialog : BaseDialog {
-        public TypeSelectionDialog() : base() {
-        }
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public TypeSelectionDialog(TypeSelectionViewModel viewModel) {
-            this.DataContext = viewModel;
-            this.InitializeComponent();
-        }
+public class TypeSelectionDialog : BaseDialog {
+    public TypeSelectionDialog() : base() {
+    }
 
-        public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
+    [InjectionConstructor]
+    public TypeSelectionDialog(TypeSelectionViewModel viewModel) {
+        this.DataContext = viewModel;
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

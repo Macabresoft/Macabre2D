@@ -1,36 +1,36 @@
-﻿namespace Macabresoft.Macabre2D.UI.Tests {
-    using FluentAssertions;
-    using FluentAssertions.Execution;
-    using Macabresoft.Macabre2D.UI.Common;
-    using NUnit.Framework;
+﻿namespace Macabresoft.Macabre2D.UI.Tests;
 
-    [TestFixture]
-    public sealed class ChildUndoServiceTests {
-        [Test]
-        [Category("Unit Tests")]
-        public void GetChanges_Should_GetAllChanges() {
-            var childUndoService = new ChildUndoService();
-            var max = 10;
-            var count = 0;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Macabresoft.Macabre2D.UI.Common;
+using NUnit.Framework;
 
-            for (var i = 0; i < max; i++) {
-                childUndoService.Do(
-                    () => count++,
-                    () => count--);
-            }
+[TestFixture]
+public sealed class ChildUndoServiceTests {
+    [Test]
+    [Category("Unit Tests")]
+    public void GetChanges_Should_GetAllChanges() {
+        var childUndoService = new ChildUndoService();
+        var max = 10;
+        var count = 0;
 
-            var changes = childUndoService.GetChanges();
+        for (var i = 0; i < max; i++) {
+            childUndoService.Do(
+                () => count++,
+                () => count--);
+        }
 
-            using (new AssertionScope()) {
-                childUndoService.CanUndo.Should().BeTrue();
-                count.Should().Be(max);
+        var changes = childUndoService.GetChanges();
 
-                changes.Undo();
-                count.Should().Be(0);
+        using (new AssertionScope()) {
+            childUndoService.CanUndo.Should().BeTrue();
+            count.Should().Be(max);
 
-                changes.Do();
-                count.Should().Be(max);
-            }
+            changes.Undo();
+            count.Should().Be(0);
+
+            changes.Do();
+            count.Should().Be(max);
         }
     }
 }

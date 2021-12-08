@@ -1,44 +1,44 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System.Windows.Input;
-    using Avalonia;
-    using Avalonia.Markup.Xaml;
-    using ReactiveUI;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class YesNoCancelDialog : BaseDialog {
-        public static readonly StyledProperty<bool> AllowCancelProperty =
-            AvaloniaProperty.Register<YesNoCancelDialog, bool>(nameof(AllowCancel), true);
+using System.Windows.Input;
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using ReactiveUI;
+using Unity;
 
-        public static readonly StyledProperty<string> QuestionProperty =
-            AvaloniaProperty.Register<YesNoCancelDialog, string>(nameof(Question));
+public class YesNoCancelDialog : BaseDialog {
+    public static readonly StyledProperty<bool> AllowCancelProperty =
+        AvaloniaProperty.Register<YesNoCancelDialog, bool>(nameof(AllowCancel), true);
 
-        [InjectionConstructor]
-        public YesNoCancelDialog() {
-            this.CancelCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.Cancel));
-            this.NoCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.No));
-            this.YesCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.Yes));
+    public static readonly StyledProperty<string> QuestionProperty =
+        AvaloniaProperty.Register<YesNoCancelDialog, string>(nameof(Question));
 
-            this.InitializeComponent();
-        }
+    [InjectionConstructor]
+    public YesNoCancelDialog() {
+        this.CancelCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.Cancel));
+        this.NoCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.No));
+        this.YesCommand = ReactiveCommand.Create<IWindow>(x => this.Close(YesNoCancelResult.Yes));
 
-        public ICommand CancelCommand { get; }
+        this.InitializeComponent();
+    }
 
-        public ICommand NoCommand { get; }
+    public ICommand CancelCommand { get; }
 
-        public ICommand YesCommand { get; }
+    public ICommand NoCommand { get; }
 
-        public bool AllowCancel {
-            get => this.GetValue(AllowCancelProperty);
-            set => this.SetValue(AllowCancelProperty, value);
-        }
+    public ICommand YesCommand { get; }
 
-        public string Question {
-            get => this.GetValue(QuestionProperty);
-            set => this.SetValue(QuestionProperty, value);
-        }
+    public bool AllowCancel {
+        get => this.GetValue(AllowCancelProperty);
+        set => this.SetValue(AllowCancelProperty, value);
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    public string Question {
+        get => this.GetValue(QuestionProperty);
+        set => this.SetValue(QuestionProperty, value);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

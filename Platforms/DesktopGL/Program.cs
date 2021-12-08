@@ -1,12 +1,12 @@
-namespace Macabresoft.Macabre2D.Platforms.DesktopGL {
-    using System;
-    using Macabresoft.Macabre2D.Framework;
+namespace Macabresoft.Macabre2D.Platforms.DesktopGL;
 
-    public static class Program {
-        [STAThread]
-        private static void Main() {
-            using var game = new BaseGame();
-            game.Run();
-        }
+using System;
+using Macabresoft.Macabre2D.Framework;
+
+public static class Program {
+    [STAThread]
+    private static void Main() {
+        using var game = new BaseGame();
+        game.Run();
     }
 }

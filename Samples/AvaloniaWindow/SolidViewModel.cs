@@ -1,41 +1,41 @@
-namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow {
-    using Macabresoft.Macabre2D.Framework;
-    using Macabresoft.Macabre2D.UI.Common;
-    using Microsoft.Xna.Framework;
+namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow;
 
-    public sealed class SolidViewModel : BaseViewModel {
-        private readonly ICamera _camera;
+using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.UI.Common;
+using Microsoft.Xna.Framework;
 
-        public SolidViewModel(IGame game) : base() {
-            game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
-            this.Scene = this.CreateScene(out this._camera);
-        }
+public sealed class SolidViewModel : BaseViewModel {
+    private readonly ICamera _camera;
 
-        public IScene Scene { get; }
+    public SolidViewModel(IGame game) : base() {
+        game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        this.Scene = this.CreateScene(out this._camera);
+    }
 
-        public IScene CreateScene(out ICamera camera) {
-            var scene = new Scene();
-            scene.AddSystem<RenderSystem>();
-            scene.AddSystem<UpdateSystem>();
-            scene.BackgroundColor = DefinedColors.CosmicJam;
+    public IScene Scene { get; }
 
-            camera = scene.AddChild<Camera>();
-            camera.ViewHeight = 6f;
-            return scene;
-        }
+    public IScene CreateScene(out ICamera camera) {
+        var scene = new Scene();
+        scene.AddSystem<RenderSystem>();
+        scene.AddSystem<UpdateSystem>();
+        scene.BackgroundColor = DefinedColors.CosmicJam;
+
+        camera = scene.AddChild<Camera>();
+        camera.ViewHeight = 6f;
+        return scene;
+    }
+
+    private void Game_ViewportSizeChanged(object sender, Point e) {
+        this.ResetCamera();
+    }
 
 
-        private void ResetCamera() {
-            if (this._camera != null) {
-                // This probably seems weird, but it resets the view height which causes the view
-                // matrix and bounding area to be reevaluated.
-                this._camera.ViewHeight += 1;
-                this._camera.ViewHeight -= 1;
-            }
-        }
-
-        private void Game_ViewportSizeChanged(object sender, Point e) {
-            this.ResetCamera();
+    private void ResetCamera() {
+        if (this._camera != null) {
+            // This probably seems weird, but it resets the view height which causes the view
+            // matrix and bounding area to be reevaluated.
+            this._camera.ViewHeight += 1;
+            this._camera.ViewHeight -= 1;
         }
     }
 }

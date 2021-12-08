@@ -1,25 +1,23 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class FloatEditor : BaseNumericEditor<float> {
+using System;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        public FloatEditor() : this(null) {
-            
-        }
-        
-        [InjectionConstructor]
-        public FloatEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class FloatEditor : BaseNumericEditor<float> {
+    public FloatEditor() : this(null) {
+    }
 
-        protected override float ConvertValue(object calculatedValue) {
-            return Convert.ToSingle(calculatedValue);
-        }
+    [InjectionConstructor]
+    public FloatEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    protected override float ConvertValue(object calculatedValue) {
+        return Convert.ToSingle(calculatedValue);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

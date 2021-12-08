@@ -1,21 +1,21 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class ContentSelectionDialog : BaseDialog {
-        public ContentSelectionDialog() {
-        }
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
-            this.DataContext = viewModel;
-            this.InitializeComponent();
-        }
+public class ContentSelectionDialog : BaseDialog {
+    public ContentSelectionDialog() {
+    }
 
-        public ContentSelectionViewModel ViewModel => this.DataContext as ContentSelectionViewModel;
+    [InjectionConstructor]
+    public ContentSelectionDialog(ContentSelectionViewModel viewModel) {
+        this.DataContext = viewModel;
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    public ContentSelectionViewModel ViewModel => this.DataContext as ContentSelectionViewModel;
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,31 +1,31 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System.IO;
-    using Avalonia;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class ContentDirectoryInfoControl : ValueControl<ContentDirectory> {
-        public static readonly DirectProperty<ContentDirectoryInfoControl, DirectoryInfo> DirectoryInfoProperty =
-            AvaloniaProperty.RegisterDirect<ContentDirectoryInfoControl, DirectoryInfo>(
-                nameof(DirectoryInfo),
-                control => control.DirectoryInfo);
+using System.IO;
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        public ContentDirectoryInfoControl() : base() {
+public class ContentDirectoryInfoControl : ValueControl<ContentDirectory> {
+    public static readonly DirectProperty<ContentDirectoryInfoControl, DirectoryInfo> DirectoryInfoProperty =
+        AvaloniaProperty.RegisterDirect<ContentDirectoryInfoControl, DirectoryInfo>(
+            nameof(DirectoryInfo),
+            control => control.DirectoryInfo);
+
+    public ContentDirectoryInfoControl() : base() {
+    }
+
+    [InjectionConstructor]
+    public ContentDirectoryInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
+        if (this.Owner is ContentDirectory directory) {
+            this.DirectoryInfo = new DirectoryInfo(directory.GetFullPath());
         }
 
-        [InjectionConstructor]
-        public ContentDirectoryInfoControl(ValueControlDependencies dependencies) : base(dependencies) {
-            if (this.Owner is ContentDirectory directory) {
-                this.DirectoryInfo = new DirectoryInfo(directory.GetFullPath());
-            }
+        this.InitializeComponent();
+    }
 
-            this.InitializeComponent();
-        }
+    public DirectoryInfo DirectoryInfo { get; }
 
-        public DirectoryInfo DirectoryInfo { get; }
-
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

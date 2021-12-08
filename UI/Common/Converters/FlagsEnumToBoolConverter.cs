@@ -1,26 +1,26 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using Avalonia;
-    using Avalonia.Data.Converters;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class FlagsEnumToBoolConverter : IMultiValueConverter {
-        public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
-            object result = 0;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Avalonia;
+using Avalonia.Data.Converters;
 
-            if (values.Count == 2) {
-                var value0 = values[0];
-                var value1 = values[1];
+public class FlagsEnumToBoolConverter : IMultiValueConverter {
+    public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture) {
+        object result = 0;
 
-                if (value0 != null && value1 != null && !(value0 is UnsetValueType) && !(value1 is UnsetValueType)) {
-                    var enumValue = values[0] == null ? 0 : System.Convert.ToInt32(values[0]);
-                    var toggledValue = values[1] == null ? 0 : System.Convert.ToInt32(values[1]);
-                    result = (enumValue & toggledValue) == toggledValue;
-                }
+        if (values.Count == 2) {
+            var value0 = values[0];
+            var value1 = values[1];
+
+            if (value0 != null && value1 != null && !(value0 is UnsetValueType) && !(value1 is UnsetValueType)) {
+                var enumValue = values[0] == null ? 0 : System.Convert.ToInt32(values[0]);
+                var toggledValue = values[1] == null ? 0 : System.Convert.ToInt32(values[1]);
+                result = (enumValue & toggledValue) == toggledValue;
             }
-
-            return result;
         }
+
+        return result;
     }
 }

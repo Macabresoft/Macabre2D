@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
 
-    <IsPackable>false</IsPackable>
+        <IsPackable>false</IsPackable>
 
-    <RootNamespace>Macabresoft.Macabre2D.Tests</RootNamespace>
+        <RootNamespace>Macabresoft.Macabre2D.Tests</RootNamespace>
 
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.2.0" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-    <PackageReference Include="NSubstitute" Version="4.2.2" />
-    <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="6.2.0"/>
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641"/>
+        <PackageReference Include="NSubstitute" Version="4.2.2"/>
+        <PackageReference Include="nunit" Version="3.13.2"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj"/>
+    </ItemGroup>
 </Project>

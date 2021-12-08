@@ -1,92 +1,92 @@
-namespace Macabresoft.Macabre2D.Framework {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using Microsoft.Xna.Framework;
+namespace Macabresoft.Macabre2D.Framework;
+
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Microsoft.Xna.Framework;
+
+/// <summary>
+/// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
+/// </summary>
+/// <seealso cref="FixedTimeStepSystem" />
+[Category(CommonCategories.Physics)]
+public class SimplePhysicsSystem : FixedTimeStepSystem {
+    /// <summary>
+    /// Gets the collider tree.
+    /// </summary>
+    /// <value>The collider tree.</value>
+    protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene) {
+        base.Initialize(scene);
+        this.InsertColliders();
+    }
 
     /// <summary>
-    /// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
+    /// Performs a raycast across colliders in the scene, returning all collisions in its path.
     /// </summary>
-    /// <seealso cref="FixedTimeStepSystem" />
-    [Category(CommonCategories.Physics)]
-    public class SimplePhysicsSystem : FixedTimeStepSystem {
-        /// <summary>
-        /// Gets the collider tree.
-        /// </summary>
-        /// <value>The collider tree.</value>
-        protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    /// <param name="start">The start.</param>
+    /// <param name="direction">The direction.</param>
+    /// <param name="distance">The distance.</param>
+    /// <param name="layers">The layers.</param>
+    /// <returns>Any hits that occurred during the raycast.</returns>
+    public List<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
+        var ray = new LineSegment(start, direction, distance);
+        var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
+        var hits = new List<RaycastHit>();
 
-        /// <inheritdoc />
-        public override void Initialize(IScene scene) {
-            base.Initialize(scene);
-            this.InsertColliders();
+        foreach (var collider in potentialColliders.Where(x => (x.Layers & layers) != Layers.None)) {
+            if (collider.IsHitBy(ray, out var hit)) {
+                hits.Add(hit);
+            }
         }
 
-        /// <summary>
-        /// Performs a raycast across colliders in the scene, returning all collisions in its path.
-        /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="direction">The direction.</param>
-        /// <param name="distance">The distance.</param>
-        /// <param name="layers">The layers.</param>
-        /// <returns>Any hits that occurred during the raycast.</returns>
-        public List<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
-            var ray = new LineSegment(start, direction, distance);
-            var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
-            var hits = new List<RaycastHit>();
+        return hits;
+    }
 
-            foreach (var collider in potentialColliders.Where(x => (x.Layers & layers) != Layers.None)) {
-                if (collider.IsHitBy(ray, out var hit)) {
-                    hits.Add(hit);
-                }
-            }
+    /// <summary>
+    /// Performs a raycast across colliders in the scene, but stops after the first collision.
+    /// Performs a raycast across colliders in the scene.
+    /// </summary>
+    /// <param name="start">The start.</param>
+    /// <param name="direction">The direction.</param>
+    /// <param name="distance">The distance.</param>
+    /// <param name="layers">The layers.</param>
+    /// <param name="hit">The hit.</param>
+    /// <returns>A value indicating whether or not anything was hit.</returns>
+    public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
+        var hits = this.RaycastAll(start, direction, distance, layers);
 
-            return hits;
+        if (hits.Count == 0) {
+            hit = RaycastHit.Empty;
+            return false;
         }
 
-        /// <summary>
-        /// Performs a raycast across colliders in the scene, but stops after the first collision.
-        /// Performs a raycast across colliders in the scene.
-        /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="direction">The direction.</param>
-        /// <param name="distance">The distance.</param>
-        /// <param name="layers">The layers.</param>
-        /// <param name="hit">The hit.</param>
-        /// <returns>A value indicating whether or not anything was hit.</returns>
-        public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
-            var hits = this.RaycastAll(start, direction, distance, layers);
+        hit = hits[0];
+        var shortestDistance = Vector2.Distance(start, hit.ContactPoint);
 
-            if (hits.Count == 0) {
-                hit = RaycastHit.Empty;
-                return false;
+        for (var i = 1; i < hits.Count; i++) {
+            var newHit = hits[i];
+            var currentDistance = Vector2.Distance(start, newHit.ContactPoint);
+            if (currentDistance < shortestDistance) {
+                hit = newHit;
+                shortestDistance = currentDistance;
             }
-
-            hit = hits[0];
-            var shortestDistance = Vector2.Distance(start, hit.ContactPoint);
-
-            for (var i = 1; i < hits.Count; i++) {
-                var newHit = hits[i];
-                var currentDistance = Vector2.Distance(start, newHit.ContactPoint);
-                if (currentDistance < shortestDistance) {
-                    hit = newHit;
-                    shortestDistance = currentDistance;
-                }
-            }
-
-            return true;
         }
 
-        /// <inheritdoc />
-        protected override void FixedUpdate(FrameTime frameTime, InputState inputState) {
-            this.InsertColliders();
-        }
+        return true;
+    }
 
-        private void InsertColliders() {
-            this.ColliderTree.Clear();
-            foreach (var body in this.Scene.PhysicsBodies) {
-                this.ColliderTree.InsertMany(body.GetColliders());
-            }
+    /// <inheritdoc />
+    protected override void FixedUpdate(FrameTime frameTime, InputState inputState) {
+        this.InsertColliders();
+    }
+
+    private void InsertColliders() {
+        this.ColliderTree.Clear();
+        foreach (var body in this.Scene.PhysicsBodies) {
+            this.ColliderTree.InsertMany(body.GetColliders());
         }
     }
 }

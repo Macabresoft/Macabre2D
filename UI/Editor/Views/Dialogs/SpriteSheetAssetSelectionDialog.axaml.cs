@@ -1,20 +1,20 @@
-namespace Macabresoft.Macabre2D.UI.Editor {
-    using Avalonia.Markup.Xaml;
-    using Macabresoft.Macabre2D.UI.Common;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Editor;
 
-    public class SpriteSheetAssetSelectionDialog : BaseDialog {
-        public SpriteSheetAssetSelectionDialog() {
-        }
+using Avalonia.Markup.Xaml;
+using Macabresoft.Macabre2D.UI.Common;
+using Unity;
 
-        [InjectionConstructor]
-        public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) {
-            this.DataContext = viewModel;
-            this.InitializeComponent();
-        }
+public class SpriteSheetAssetSelectionDialog : BaseDialog {
+    public SpriteSheetAssetSelectionDialog() {
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    [InjectionConstructor]
+    public SpriteSheetAssetSelectionDialog(BaseDialogViewModel viewModel) {
+        this.DataContext = viewModel;
+        this.InitializeComponent();
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,14 +1,14 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using Avalonia.Controls;
-    using Avalonia.Markup.Xaml;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class Icon : ContentControl {
-        public Icon() {
-            this.InitializeComponent();
-        }
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+public class Icon : ContentControl {
+    public Icon() {
+        this.InitializeComponent();
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,418 +1,418 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Macabresoft.Macabre2D.Framework;
-    using ReactiveUI;
+namespace Macabresoft.Macabre2D.UI.Common;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Macabresoft.Macabre2D.Framework;
+using ReactiveUI;
+
+/// <summary>
+/// An interface for a service which loads, imports, deletes, and moves content.
+/// </summary>
+public interface IContentService : ISelectionService<IContentNode> {
+    /// <summary>
+    /// Gets the root content directory.
+    /// </summary>
+    IContentDirectory RootContentDirectory { get; }
 
     /// <summary>
-    /// An interface for a service which loads, imports, deletes, and moves content.
+    /// Adds a directory as a child to selected directory.
     /// </summary>
-    public interface IContentService : ISelectionService<IContentNode> {
-        /// <summary>
-        /// Gets the root content directory.
-        /// </summary>
-        IContentDirectory RootContentDirectory { get; }
+    /// <param name="parent">The parent.</param>
+    void AddDirectory(IContentDirectory parent);
 
-        /// <summary>
-        /// Adds a directory as a child to selected directory.
-        /// </summary>
-        /// <param name="parent">The parent.</param>
-        void AddDirectory(IContentDirectory parent);
+    /// <summary>
+    /// Adds a scene to the selected directory.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    void AddScene(IContentDirectory parent);
 
-        /// <summary>
-        /// Adds a scene to the selected directory.
-        /// </summary>
-        /// <param name="parent">The parent.</param>
-        void AddScene(IContentDirectory parent);
+    /// <summary>
+    /// Imports content
+    /// </summary>
+    /// <param name="parent"></param>
+    Task ImportContent(IContentDirectory parent);
 
-        /// <summary>
-        /// Imports content
-        /// </summary>
-        /// <param name="parent"></param>
-        Task ImportContent(IContentDirectory parent);
+    /// <summary>
+    /// Moves the content to a new folder.
+    /// </summary>
+    /// <param name="contentToMove">The content to move.</param>
+    /// <param name="newParent">The new parent.</param>
+    void MoveContent(IContentNode contentToMove, IContentDirectory newParent);
 
-        /// <summary>
-        /// Moves the content to a new folder.
-        /// </summary>
-        /// <param name="contentToMove">The content to move.</param>
-        /// <param name="newParent">The new parent.</param>
-        void MoveContent(IContentNode contentToMove, IContentDirectory newParent);
+    /// <summary>
+    /// Refreshes the content.
+    /// </summary>
+    void RefreshContent(bool forceRebuild);
 
-        /// <summary>
-        /// Refreshes the content.
-        /// </summary>
-        void RefreshContent(bool forceRebuild);
-        
-        /// <summary>
-        /// Saves content with changes.
-        /// </summary>
-        void Save();
+    /// <summary>
+    /// Saves content with changes.
+    /// </summary>
+    void Save();
+}
+
+/// <summary>
+/// A service which loads, imports, deletes, and moves content.
+/// </summary>
+public sealed class ContentService : SelectionService<IContentNode>, IContentService {
+    private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
+    private readonly IAssetManager _assetManager;
+    private readonly IBuildService _buildService;
+    private readonly ICommonDialogService _dialogService;
+    private readonly IFileSystemService _fileSystem;
+    private readonly ILoggingService _loggingService;
+    private readonly IPathService _pathService;
+    private readonly ISerializer _serializer;
+
+    private RootContentDirectory _rootContentDirectory;
+
+    /// <summary>
+    /// Static constructor for <see cref="ContentService" />.
+    /// </summary>
+    static ContentService() {
+        FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
+
+        foreach (var extension in SpriteSheet.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
+        }
+
+        foreach (var extension in AudioClip.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(AudioClip));
+        }
+
+        FileExtensionToAssetType.Add(Shader.FileExtension, typeof(Shader));
     }
 
     /// <summary>
-    /// A service which loads, imports, deletes, and moves content.
+    /// Initializes a new instance of the <see cref="ContentService" /> class.
     /// </summary>
-    public sealed class ContentService : SelectionService<IContentNode>, IContentService {
-        private static readonly IDictionary<string, Type> FileExtensionToAssetType = new Dictionary<string, Type>();
-        private readonly IAssetManager _assetManager;
-        private readonly IBuildService _buildService;
-        private readonly ICommonDialogService _dialogService;
-        private readonly IFileSystemService _fileSystem;
-        private readonly ILoggingService _loggingService;
-        private readonly IPathService _pathService;
-        private readonly ISerializer _serializer;
+    /// <param name="assemblyService">The assembly service.</param>
+    /// <param name="assetManager">The asset manager.</param>
+    /// <param name="buildService">The build service.</param>
+    /// <param name="dialogService">The dialog service.</param>
+    /// <param name="fileSystem">The file system service.</param>
+    /// <param name="loggingService">The logging service.</param>
+    /// <param name="pathService">The path service.</param>
+    /// <param name="serializer">The serializer.</param>
+    /// <param name="undoService">The undo service.</param>
+    /// <param name="valueControlService">The value editor service.</param>
+    public ContentService(
+        IAssemblyService assemblyService,
+        IAssetManager assetManager,
+        IBuildService buildService,
+        ICommonDialogService dialogService,
+        IFileSystemService fileSystem,
+        ILoggingService loggingService,
+        IPathService pathService,
+        ISerializer serializer,
+        IUndoService undoService,
+        IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
+        this._assetManager = assetManager;
+        this._buildService = buildService;
+        this._dialogService = dialogService;
+        this._fileSystem = fileSystem;
+        this._loggingService = loggingService;
+        this._pathService = pathService;
+        this._serializer = serializer;
+    }
 
-        private RootContentDirectory _rootContentDirectory;
+    /// <inheritdoc />
+    public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
-        /// <summary>
-        /// Static constructor for <see cref="ContentService" />.
-        /// </summary>
-        static ContentService() {
-            FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
-
-            foreach (var extension in SpriteSheet.ValidFileExtensions) {
-                FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
-            }
-
-            foreach (var extension in AudioClip.ValidFileExtensions) {
-                FileExtensionToAssetType.Add(extension, typeof(AudioClip));
-            }
-
-            FileExtensionToAssetType.Add(Shader.FileExtension, typeof(Shader));
+    /// <inheritdoc />
+    public void AddDirectory(IContentDirectory parent) {
+        if (parent != null) {
+            this.CreateDirectory("New Directory", parent);
         }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContentService" /> class.
-        /// </summary>
-        /// <param name="assemblyService">The assembly service.</param>
-        /// <param name="assetManager">The asset manager.</param>
-        /// <param name="buildService">The build service.</param>
-        /// <param name="dialogService">The dialog service.</param>
-        /// <param name="fileSystem">The file system service.</param>
-        /// <param name="loggingService">The logging service.</param>
-        /// <param name="pathService">The path service.</param>
-        /// <param name="serializer">The serializer.</param>
-        /// <param name="undoService">The undo service.</param>
-        /// <param name="valueControlService">The value editor service.</param>
-        public ContentService(
-            IAssemblyService assemblyService,
-            IAssetManager assetManager,
-            IBuildService buildService,
-            ICommonDialogService dialogService,
-            IFileSystemService fileSystem,
-            ILoggingService loggingService,
-            IPathService pathService,
-            ISerializer serializer,
-            IUndoService undoService,
-            IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
-            this._assetManager = assetManager;
-            this._buildService = buildService;
-            this._dialogService = dialogService;
-            this._fileSystem = fileSystem;
-            this._loggingService = loggingService;
-            this._pathService = pathService;
-            this._serializer = serializer;
+    /// <inheritdoc />
+    public void AddScene(IContentDirectory parent) {
+        if (parent != null) {
+            var name = this.CreateSafeName("New Scene", parent);
+            var scene = new Scene {
+                Name = name
+            };
+
+            var fileName = $"{name}{SceneAsset.FileExtension}";
+            var fullPath = Path.Combine(parent.GetFullPath(), fileName);
+            this._serializer.Serialize(scene, fullPath);
+            this.CreateContentFile(parent, fileName);
         }
+    }
 
-        /// <inheritdoc />
-        public IContentDirectory RootContentDirectory => this._rootContentDirectory;
+    /// <inheritdoc />
+    public async Task ImportContent(IContentDirectory parent) {
+        if (parent != null) {
+            var filePath = await this._dialogService.ShowSingleFileSelectionDialog("Import an Asset");
 
-        /// <inheritdoc />
-        public void AddDirectory(IContentDirectory parent) {
-            if (parent != null) {
-                this.CreateDirectory("New Directory", parent);
-            }
-        }
+            if (!string.IsNullOrEmpty(filePath)) {
+                var parentDirectoryPath = parent.GetFullPath();
+                var fileName = $"{this.CreateSafeName(Path.GetFileNameWithoutExtension(filePath), parent)}{Path.GetExtension(filePath)}";
+                var newFilePath = Path.Combine(parentDirectoryPath, fileName);
 
-        /// <inheritdoc />
-        public void AddScene(IContentDirectory parent) {
-            if (parent != null) {
-                var name = this.CreateSafeName("New Scene", parent);
-                var scene = new Scene {
-                    Name = name
-                };
+                await Task.Run(() => { this._fileSystem.CopyFile(filePath, newFilePath); });
 
-                var fileName = $"{name}{SceneAsset.FileExtension}";
-                var fullPath = Path.Combine(parent.GetFullPath(), fileName);
-                this._serializer.Serialize(scene, fullPath);
                 this.CreateContentFile(parent, fileName);
             }
         }
+    }
 
-        /// <inheritdoc />
-        public async Task ImportContent(IContentDirectory parent) {
-            if (parent != null) {
-                var filePath = await this._dialogService.ShowSingleFileSelectionDialog("Import an Asset");
+    /// <inheritdoc />
+    public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
+        contentToMove.ChangeParent(newParent);
+    }
 
-                if (!string.IsNullOrEmpty(filePath)) {
-                    var parentDirectoryPath = parent.GetFullPath();
-                    var fileName = $"{this.CreateSafeName(Path.GetFileNameWithoutExtension(filePath), parent)}{Path.GetExtension(filePath)}";
-                    var newFilePath = Path.Combine(parentDirectoryPath, fileName);
+    /// <inheritdoc />
+    public void RefreshContent(bool forceRebuild) {
+        if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
+            this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);
+            this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
+            this._fileSystem.CreateDirectory(this._pathService.EditorContentDirectoryPath);
 
-                    await Task.Run(() => { this._fileSystem.CopyFile(filePath, newFilePath); });
+            if (this._rootContentDirectory != null) {
+                this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
+            }
 
-                    this.CreateContentFile(parent, fileName);
-                }
+            this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
+            this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
+
+            foreach (var metadata in this.GetMetadata()) {
+                this.ResolveContentFile(metadata);
+            }
+
+            // TODO: This might cause problems? Might need some sort of change detection for content.
+            // TODO: Maybe mark a bool that content is outdated and then revert said bool any time content is built?
+            if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild) {
+                this._assetManager.Unload();
+                this.BuildContentForProject();
+            }
+
+            this.RaisePropertyChanged(nameof(this.RootContentDirectory));
+        }
+    }
+
+    /// <inheritdoc />
+    public void Save() {
+        var files = this.RootContentDirectory.GetAllContentFiles().Where(x => x.HasChanges);
+        foreach (var file in files) {
+            this.SaveMetadata(file.Metadata);
+            file.HasChanges = false;
+        }
+    }
+
+    /// <inheritdoc />
+    protected override bool ShouldLoadEditors() {
+        return this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
+    }
+
+    private void BuildContentForProject() {
+        var platform = "DesktopGL";
+        var mgcbStringBuilder = new StringBuilder();
+        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{platform}.mgcb");
+        var buildArgs = new BuildContentArguments(
+            mgcbFilePath,
+            platform,
+            true);
+
+        var outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
+
+        mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
+        mgcbStringBuilder.AppendLine();
+
+        foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
+            mgcbStringBuilder.AppendLine(argument);
+        }
+
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
+        mgcbStringBuilder.AppendLine();
+
+        mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine();
+
+        var contentFiles = this.RootContentDirectory.GetAllContentFiles();
+        foreach (var contentFile in contentFiles) {
+            mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
+            mgcbStringBuilder.AppendLine();
+        }
+
+        var mgcbText = mgcbStringBuilder.ToString();
+        this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+        this._buildService.BuildContent(buildArgs, outputDirectoryPath);
+    }
+
+    private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
+        switch (sender) {
+            case IContentDirectory:
+                this._fileSystem.MoveDirectory(e.OriginalValue, e.UpdatedValue);
+                break;
+            case ContentFile contentFile:
+                this._fileSystem.MoveFile(e.OriginalValue, e.UpdatedValue);
+                this.SaveMetadata(contentFile.Metadata);
+                break;
+        }
+    }
+
+    private bool CreateContentFile(IContentDirectory parent, string fileName) {
+        var result = false;
+        var extension = Path.GetExtension(fileName);
+
+        if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
+            var parentPath = parent.GetContentPath();
+            var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
+            splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
+
+            if (Activator.CreateInstance(assetType) is IAsset asset) {
+                var metadata = new ContentMetadata(asset, splitPath, extension);
+                this.SaveMetadata(metadata);
+                var contentFile = this.CreateContentFileObject(parent, metadata);
+                this._assetManager.RegisterMetadata(contentFile.Metadata);
+                result = true;
             }
         }
 
-        /// <inheritdoc />
-        public void MoveContent(IContentNode contentToMove, IContentDirectory newParent) {
-            contentToMove.ChangeParent(newParent);
+        return result;
+    }
+
+    private ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
+        ContentFile contentFile = null;
+        var contentFileType = this.AssemblyService.LoadFirstGenericType(typeof(ContentFile<>), metadata.Asset.GetType());
+        if (contentFileType != null) {
+            contentFile = this.AssemblyService.CreateObjectFromType(contentFileType, parent, metadata) as ContentFile;
         }
 
-        /// <inheritdoc />
-        public void RefreshContent(bool forceRebuild) {
-            if (!string.IsNullOrWhiteSpace(this._pathService.PlatformsDirectoryPath)) {
-                this._fileSystem.CreateDirectory(this._pathService.PlatformsDirectoryPath);
-                this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
-                this._fileSystem.CreateDirectory(this._pathService.EditorContentDirectoryPath);
+        return contentFile ?? new ContentFile(parent, metadata);
+    }
 
-                if (this._rootContentDirectory != null) {
-                    this._rootContentDirectory.PathChanged -= this.ContentNode_PathChanged;
-                }
+    private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
+        var name = baseName;
+        var parentPath = parent.GetFullPath();
+        var fullPath = Path.Combine(parentPath, name);
+        var currentCount = 0;
 
-                this._rootContentDirectory = new RootContentDirectory(this._fileSystem, this._pathService);
-                this._rootContentDirectory.PathChanged += this.ContentNode_PathChanged;
-
-                foreach (var metadata in this.GetMetadata()) {
-                    this.ResolveContentFile(metadata);
-                }
-
-                // TODO: This might cause problems? Might need some sort of change detection for content.
-                // TODO: Maybe mark a bool that content is outdated and then revert said bool any time content is built?
-                if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild) {
-                    this._assetManager.Unload();
-                    this.BuildContentForProject();
-                }
-                
-                this.RaisePropertyChanged(nameof(this.RootContentDirectory));
+        while (this._fileSystem.DoesDirectoryExist(fullPath)) {
+            currentCount++;
+            if (currentCount >= 100) {
+                throw new NotSupportedException("What the hell are you even doing with 100 directories named the same????");
             }
+
+            name = $"{baseName} ({currentCount})";
+            fullPath = Path.Combine(parentPath, name);
         }
 
-        /// <inheritdoc />
-        public void Save() {
-            var files = this.RootContentDirectory.GetAllContentFiles().Where(x => x.HasChanges);
+        this._fileSystem.CreateDirectory(fullPath);
+        return new ContentDirectory(name, parent);
+    }
+
+    private string CreateSafeName(string baseName, IContentNode parent) {
+        var name = baseName;
+        var parentPath = parent.GetFullPath();
+        var currentCount = 0;
+        var files = this._fileSystem.GetFiles(parentPath).ToList();
+
+        while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
+            currentCount++;
+            if (currentCount >= 100) {
+                throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
+            }
+
+            name = $"{baseName} ({currentCount})";
+        }
+
+        return name;
+    }
+
+    private IEnumerable<ContentMetadata> GetMetadata() {
+        var metadata = new List<ContentMetadata>();
+        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
+            var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
             foreach (var file in files) {
-                this.SaveMetadata(file.Metadata);
-                file.HasChanges = false;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool ShouldLoadEditors() {
-            return this.Selected != this.RootContentDirectory && base.ShouldLoadEditors();
-        }
-
-        private void BuildContentForProject() {
-            var platform = "DesktopGL";
-            var mgcbStringBuilder = new StringBuilder();
-            var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{platform}.mgcb");
-            var buildArgs = new BuildContentArguments(
-                mgcbFilePath,
-                platform,
-                true);
-
-            var outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
-
-            mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
-            mgcbStringBuilder.AppendLine();
-
-            foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
-                mgcbStringBuilder.AppendLine(argument);
-            }
-
-            mgcbStringBuilder.AppendLine();
-            mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
-            mgcbStringBuilder.AppendLine();
-            mgcbStringBuilder.AppendLine();
-            mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
-            mgcbStringBuilder.AppendLine();
-
-            mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
-            mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
-            mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
-            mgcbStringBuilder.AppendLine();
-
-            var contentFiles = this.RootContentDirectory.GetAllContentFiles();
-            foreach (var contentFile in contentFiles) {
-                mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
-                mgcbStringBuilder.AppendLine();
-            }
-
-            var mgcbText = mgcbStringBuilder.ToString();
-            this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
-            this._buildService.BuildContent(buildArgs, outputDirectoryPath);
-        }
-
-        private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
-            switch (sender) {
-                case IContentDirectory:
-                    this._fileSystem.MoveDirectory(e.OriginalValue, e.UpdatedValue);
-                    break;
-                case ContentFile contentFile:
-                    this._fileSystem.MoveFile(e.OriginalValue, e.UpdatedValue);
-                    this.SaveMetadata(contentFile.Metadata);
-                    break;
-            }
-        }
-
-        private bool CreateContentFile(IContentDirectory parent, string fileName) {
-            var result = false;
-            var extension = Path.GetExtension(fileName);
-
-            if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
-                var parentPath = parent.GetContentPath();
-                var splitPath = parentPath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).ToList();
-                splitPath.Add(Path.GetFileNameWithoutExtension(fileName));
-
-                if (Activator.CreateInstance(assetType) is IAsset asset) {
-                    var metadata = new ContentMetadata(asset, splitPath, extension);
-                    this.SaveMetadata(metadata);
-                    var contentFile = this.CreateContentFileObject(parent, metadata);
-                    this._assetManager.RegisterMetadata(contentFile.Metadata);
-                    result = true;
+                try {
+                    var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
+                    metadata.Add(contentMetadata);
                 }
-            }
-
-            return result;
-        }
-
-        private ContentFile CreateContentFileObject(IContentDirectory parent, ContentMetadata metadata) {
-            ContentFile contentFile = null;
-            var contentFileType = this.AssemblyService.LoadFirstGenericType(typeof(ContentFile<>), metadata.Asset.GetType());
-            if (contentFileType != null) {
-                contentFile = this.AssemblyService.CreateObjectFromType(contentFileType, parent, metadata) as ContentFile;
-            }
-
-            return contentFile ?? new ContentFile(parent, metadata);
-        }
-
-        private IContentDirectory CreateDirectory(string baseName, IContentDirectory parent) {
-            var name = baseName;
-            var parentPath = parent.GetFullPath();
-            var fullPath = Path.Combine(parentPath, name);
-            var currentCount = 0;
-
-            while (this._fileSystem.DoesDirectoryExist(fullPath)) {
-                currentCount++;
-                if (currentCount >= 100) {
-                    throw new NotSupportedException("What the hell are you even doing with 100 directories named the same????");
-                }
-
-                name = $"{baseName} ({currentCount})";
-                fullPath = Path.Combine(parentPath, name);
-            }
-
-            this._fileSystem.CreateDirectory(fullPath);
-            return new ContentDirectory(name, parent);
-        }
-
-        private string CreateSafeName(string baseName, IContentNode parent) {
-            var name = baseName;
-            var parentPath = parent.GetFullPath();
-            var currentCount = 0;
-            var files = this._fileSystem.GetFiles(parentPath).ToList();
-
-            while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
-                currentCount++;
-                if (currentCount >= 100) {
-                    throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
-                }
-
-                name = $"{baseName} ({currentCount})";
-            }
-
-            return name;
-        }
-
-        private IEnumerable<ContentMetadata> GetMetadata() {
-            var metadata = new List<ContentMetadata>();
-            if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
-                var files = this._fileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern);
-                foreach (var file in files) {
-                    try {
-                        var contentMetadata = this._serializer.Deserialize<ContentMetadata>(file);
-                        metadata.Add(contentMetadata);
-                    }
-                    catch (Exception e) {
-                        var fileName = Path.GetFileName(file);
-                        var message = $"Archiving metadata '{fileName}' due to an exception";
-                        this._loggingService.LogException(message, e);
-                        this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
-                        this._fileSystem.MoveFile(file, Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName));
-                    }
-                }
-            }
-
-            return metadata;
-        }
-
-
-        private void ResolveContentFile(ContentMetadata metadata) {
-            ContentFile contentNode = null;
-            var splitPath = metadata.SplitContentPath;
-            if (splitPath.Any()) {
-                IContentDirectory parentDirectory;
-                if (splitPath.Count == this._rootContentDirectory.GetDepth() + 1) {
-                    parentDirectory = this._rootContentDirectory;
-                }
-                else {
-                    parentDirectory = this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
-                }
-
-                if (parentDirectory != null) {
-                    var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
-                    if (this._fileSystem.DoesFileExist(contentFilePath)) {
-                        contentNode = this.CreateContentFileObject(parentDirectory, metadata);
-                    }
-                }
-            }
-
-            if (contentNode == null) {
-                var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
-                var current = Path.Combine(this._pathService.MetadataDirectoryPath, fileName);
-                var moveTo = Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName);
-
-                if (!this._fileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath)) {
+                catch (Exception e) {
+                    var fileName = Path.GetFileName(file);
+                    var message = $"Archiving metadata '{fileName}' due to an exception";
+                    this._loggingService.LogException(message, e);
                     this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
+                    this._fileSystem.MoveFile(file, Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName));
                 }
+            }
+        }
 
-                if (this._fileSystem.DoesFileExist(current)) {
-                    this._fileSystem.MoveFile(current, moveTo);
-                }
+        return metadata;
+    }
+
+
+    private void ResolveContentFile(ContentMetadata metadata) {
+        ContentFile contentNode = null;
+        var splitPath = metadata.SplitContentPath;
+        if (splitPath.Any()) {
+            IContentDirectory parentDirectory;
+            if (splitPath.Count == this._rootContentDirectory.GetDepth() + 1) {
+                parentDirectory = this._rootContentDirectory;
             }
             else {
-                this._assetManager.RegisterMetadata(metadata);
+                parentDirectory = this._rootContentDirectory.TryFindNode(splitPath.Take(splitPath.Count - 1).ToArray()) as IContentDirectory;
+            }
+
+            if (parentDirectory != null) {
+                var contentFilePath = Path.Combine(parentDirectory.GetFullPath(), metadata.GetFileName());
+                if (this._fileSystem.DoesFileExist(contentFilePath)) {
+                    contentNode = this.CreateContentFileObject(parentDirectory, metadata);
+                }
             }
         }
 
-        private bool ResolveNewContentFiles(IContentDirectory currentDirectory) {
-            var result = false;
-            var currentPath = currentDirectory.GetFullPath();
-            var files = this._fileSystem.GetFiles(currentPath);
-            var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
+        if (contentNode == null) {
+            var fileName = $"{metadata.ContentId}{ContentMetadata.FileExtension}";
+            var current = Path.Combine(this._pathService.MetadataDirectoryPath, fileName);
+            var moveTo = Path.Combine(this._pathService.MetadataArchiveDirectoryPath, fileName);
 
-            foreach (var file in files.Select(Path.GetFileName).Where(fileName => currentContentFiles.All(x => x.Name != fileName))) {
-                result = this.CreateContentFile(currentDirectory, file) || result;
+            if (!this._fileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath)) {
+                this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
             }
 
-            var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
-            foreach (var child in currentContentDirectories) {
-                result = this.ResolveNewContentFiles(child) || result;
+            if (this._fileSystem.DoesFileExist(current)) {
+                this._fileSystem.MoveFile(current, moveTo);
             }
+        }
+        else {
+            this._assetManager.RegisterMetadata(metadata);
+        }
+    }
 
-            return result;
+    private bool ResolveNewContentFiles(IContentDirectory currentDirectory) {
+        var result = false;
+        var currentPath = currentDirectory.GetFullPath();
+        var files = this._fileSystem.GetFiles(currentPath);
+        var currentContentFiles = currentDirectory.Children.OfType<ContentFile>().ToList();
+
+        foreach (var file in files.Select(Path.GetFileName).Where(fileName => currentContentFiles.All(x => x.Name != fileName))) {
+            result = this.CreateContentFile(currentDirectory, file) || result;
         }
 
-        private void SaveMetadata(ContentMetadata metadata) {
-            if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
-                this._serializer.Serialize(metadata, Path.Combine(this._pathService.MetadataDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
-            }
+        var currentContentDirectories = currentDirectory.Children.OfType<IContentDirectory>();
+        foreach (var child in currentContentDirectories) {
+            result = this.ResolveNewContentFiles(child) || result;
+        }
+
+        return result;
+    }
+
+    private void SaveMetadata(ContentMetadata metadata) {
+        if (this._fileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath)) {
+            this._serializer.Serialize(metadata, Path.Combine(this._pathService.MetadataDirectoryPath, $"{metadata.ContentId}{ContentMetadata.FileExtension}"));
         }
     }
 }

@@ -1,23 +1,23 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class LongEditor : BaseNumericEditor<long> {
-        public LongEditor() : this(null) {
-        }
+using System;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public LongEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class LongEditor : BaseNumericEditor<long> {
+    public LongEditor() : this(null) {
+    }
 
-        protected override long ConvertValue(object calculatedValue) {
-            return Convert.ToInt64(calculatedValue);
-        }
+    [InjectionConstructor]
+    public LongEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    protected override long ConvertValue(object calculatedValue) {
+        return Convert.ToInt64(calculatedValue);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

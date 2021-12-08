@@ -94,7 +94,7 @@
                                           Command="{Binding AddDirectoryCommand}"
                                           CommandParameter="{Binding ProjectService.Selected}"
                                           ToolTip.Tip="Adds either a directory node or an asset collection child" />
-                                
+
                                 <MenuItem Header="Add Directory"
                                           Command="{Binding AddDirectoryCommand}"
                                           CommandParameter="{Binding ProjectService.Selected}"

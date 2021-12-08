@@ -1,23 +1,23 @@
-namespace Macabresoft.Macabre2D.UI.Common {
-    using System;
-    using Avalonia.Markup.Xaml;
-    using Unity;
+namespace Macabresoft.Macabre2D.UI.Common;
 
-    public class ShortEditor : BaseNumericEditor<short> {
-        public ShortEditor() : this(null) {
-        }
+using System;
+using Avalonia.Markup.Xaml;
+using Unity;
 
-        [InjectionConstructor]
-        public ShortEditor(ValueControlDependencies dependencies) : base(dependencies) {
-            this.InitializeComponent();
-        }
+public class ShortEditor : BaseNumericEditor<short> {
+    public ShortEditor() : this(null) {
+    }
 
-        protected override short ConvertValue(object calculatedValue) {
-            return Convert.ToInt16(calculatedValue);
-        }
+    [InjectionConstructor]
+    public ShortEditor(ValueControlDependencies dependencies) : base(dependencies) {
+        this.InitializeComponent();
+    }
 
-        private void InitializeComponent() {
-            AvaloniaXamlLoader.Load(this);
-        }
+    protected override short ConvertValue(object calculatedValue) {
+        return Convert.ToInt16(calculatedValue);
+    }
+
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
     }
 }

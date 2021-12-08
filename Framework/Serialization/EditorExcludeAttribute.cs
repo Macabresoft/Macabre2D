@@ -1,9 +1,9 @@
-﻿namespace Macabresoft.Macabre2D.Framework {
-    using System;
+﻿namespace Macabresoft.Macabre2D.Framework;
 
-    /// <summary>
-    /// An attribute that will be excluded from the editor.
-    /// </summary>
-    public class EditorExcludeAttribute : Attribute {
-    }
+using System;
+
+/// <summary>
+/// An attribute that will be excluded from the editor.
+/// </summary>
+public class EditorExcludeAttribute : Attribute {
 }

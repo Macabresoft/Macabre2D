@@ -17,7 +17,7 @@
                               ColumnDefinitions="Auto, Auto, Auto, *, Auto"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Top">
-                            
+
                             <Border Grid.Column="0"
                                     Grid.ColumnSpan="5"
                                     HorizontalAlignment="Stretch"
@@ -41,7 +41,7 @@
                                             IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNull}}"
                                             Content="{StaticResource MacabresoftIcon}" />
                             </Panel>
-                            
+
                             <ContentPresenter Grid.Column="1"
                                               VerticalAlignment="Center"
                                               Content="{TemplateBinding ContentLeftOfMenu}" />

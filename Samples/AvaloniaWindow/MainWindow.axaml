@@ -39,7 +39,7 @@
             <ColumnDefinition Width="0" />
             <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
-        
+
         <monoGame:MonoGameControl Grid.Column="0"
                                   Grid.ColumnSpan="3"
                                   Game="{Binding Game}" />

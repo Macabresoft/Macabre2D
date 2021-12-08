@@ -1,16 +1,14 @@
-namespace Macabresoft.Macabre2D.Framework {
+namespace Macabresoft.Macabre2D.Framework;
 
-    using System;
+using System;
 
+/// <summary>
+/// Interface for things that can be identified with a <see cref="Guid" />.
+/// </summary>
+public interface IIdentifiable {
     /// <summary>
-    /// Interface for things that can be identified with a <see cref="Guid" />.
+    /// Gets the identifier.
     /// </summary>
-    public interface IIdentifiable {
-
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        Guid Id { get; set; }
-    }
+    /// <value>The identifier.</value>
+    Guid Id { get; set; }
 }
