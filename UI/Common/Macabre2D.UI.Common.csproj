@@ -9,13 +9,13 @@
         <PackageReference Include="Avalonia" Version="0.10.10" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.0" />
         <PackageReference Include="Mono.Cecil" Version="0.11.4" />
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\Macabresoft.AvaloniaEx\Macabresoft.AvaloniaEx.csproj" />
     </ItemGroup>
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
