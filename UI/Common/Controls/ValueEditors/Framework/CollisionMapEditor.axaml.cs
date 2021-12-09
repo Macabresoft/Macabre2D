@@ -9,6 +9,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;

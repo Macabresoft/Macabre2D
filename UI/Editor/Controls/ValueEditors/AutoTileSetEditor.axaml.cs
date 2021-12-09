@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;

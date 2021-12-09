@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
@@ -114,7 +115,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
         string propertyPath) {
         var result = new List<IValueControl>();
 
-        if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is Type memberEditorType) {
+        if (this._assemblyService.LoadFirstGenericType(typeof(IValueEditor<>), memberType) is { } memberEditorType) {
             var editor = this.CreateValueEditorFromType(memberEditorType, owner, value, memberType, member, propertyPath);
             if (editor != null) {
                 result.Add(editor);
@@ -188,7 +189,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
         info = null;
 
-        if (value?.GetType() is Type ownerType && this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType) is Type controlType && !controlType.IsAssignableTo(typeof(IValueEditor))) {
+        if (value?.GetType() is { } ownerType && this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType) is Type controlType && !controlType.IsAssignableTo(typeof(IValueEditor))) {
             var dependencies = new ValueControlDependencies(value, ownerType, null, DefaultCategoryNameForInfo, originalObject);
 
             if (this._container.Resolve(controlType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueControl control) {

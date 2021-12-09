@@ -1,0 +1,16 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Macabresoft.AvaloniaEx.BusyIndicator">
+    <Grid ColumnDefinitions="*, *, *">
+        <Border Grid.Column="0"
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="{StaticResource WhiteBrush}"
+                Opacity="0.2" />
+
+        <ProgressBar Grid.Column="1"
+                     IsIndeterminate="True"
+                     VerticalAlignment="Center" />
+    </Grid>
+</UserControl>

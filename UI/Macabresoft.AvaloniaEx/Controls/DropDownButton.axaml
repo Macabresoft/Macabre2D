@@ -1,0 +1,24 @@
+<ContentControl xmlns="https://github.com/avaloniaui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                x:Class="Macabresoft.AvaloniaEx.DropDownButton">
+    <ContentControl.Template>
+        <ControlTemplate>
+            <Button>
+                <StackPanel Orientation="Horizontal">
+
+                    <ContentPresenter Content="{TemplateBinding Content}" />
+
+                    <GridSplitter VerticalAlignment="Stretch"
+                                  IsEnabled="False" />
+                    <Menu>
+                        <MenuItem>
+                            <MenuItem Header="One" />
+                            <MenuItem Header="Two" />
+                            <MenuItem Header="Three" />
+                        </MenuItem>
+                    </Menu>
+                </StackPanel>
+            </Button>
+        </ControlTemplate>
+    </ContentControl.Template>
+</ContentControl>

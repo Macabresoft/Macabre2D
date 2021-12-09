@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;

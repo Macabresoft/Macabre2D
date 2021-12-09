@@ -11,7 +11,7 @@
             <local:UShortEditor />
         </Design.DataContext>
         <TextBlock Grid.Column="0"
-                   Classes="ValueEditorLabel"
+                   Classes="Label"
                    Text="{Binding Title}" />
 
         <TextBox Grid.Column="1"

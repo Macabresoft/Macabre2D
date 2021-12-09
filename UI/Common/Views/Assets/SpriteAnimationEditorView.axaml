@@ -1,6 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabresoft.Macabre2D.UI.Common.SpriteAnimationEditorView">
     <Design.DataContext>
         <local:SpriteAnimationEditorViewModel />
@@ -30,14 +31,14 @@
                                   ToolTip.Tip="Insert a step after the selected step" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                <local:Icon Content="{StaticResource AddIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
             </Button>
 
             <Button Command="{Binding RemoveCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     Classes="Icon"
                     ToolTip.Tip="Remove the step from the animation">
-                <local:Icon Content="{StaticResource RemoveIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -46,7 +47,7 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Clear the selected step's sprite assignment"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource EraserIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
             </Button>
 
             <Border Classes="VerticalSeparator" />
@@ -55,28 +56,28 @@
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the beginning of the animation"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource ChevronDoubleUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveUpCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step up one spot in the list"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronUpIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource ChevronUpIcon}" />
             </Button>
 
             <Button Command="{Binding MoveDownCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step down one spot in the list"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDownIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
             </Button>
 
             <Button Command="{Binding MoveToEndCommand}"
                     CommandParameter="{Binding SelectedStep}"
                     ToolTip.Tip="Move the selected step to the end of the animation"
                     Classes="Icon">
-                <local:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
+                <avaloniaEx:Icon Content="{StaticResource ChevronDoubleDownIcon}" />
             </Button>
         </StackPanel>
 
@@ -124,7 +125,7 @@
                               VerticalAlignment="Top">
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
-                                       Classes="ValueEditorLabel"
+                                       Classes="Label"
                                        Text="Frames" />
 
                             <NumericUpDown Grid.Row="0"
@@ -139,7 +140,7 @@
 
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
-                                       Classes="ValueEditorLabel"
+                                       Classes="Label"
                                        Text="Sprite Index"
                                        IsVisible="{Binding SpriteIndex, Converter={x:Static ObjectConverters.IsNotNull}}" />
 

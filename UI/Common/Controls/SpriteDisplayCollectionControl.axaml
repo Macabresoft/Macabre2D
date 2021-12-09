@@ -1,17 +1,17 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabresoft.Macabre2D.UI.Common.SpriteDisplayCollectionControl">
     <UserControl.Resources>
-        <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
+        <local:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </UserControl.Resources>
     <Panel DataContext="{Binding $parent[local:SpriteDisplayCollectionControl]}">
         <Design.DataContext>
             <local:SpriteDisplayCollectionControl />
         </Design.DataContext>
-        <local:GroupBox Header="{Binding  Collection.Name}"
-                        Margin="{StaticResource StandardMarginBottom}">
+        <avaloniaEx:GroupBox Header="{Binding  Collection.Name}"
+                             Margin="{StaticResource StandardMarginBottom}">
             <ListBox Items="{Binding Collection.Sprites}"
                      SelectedItem="{Binding SelectedSprite}">
                 <ListBox.Styles>
@@ -40,6 +40,6 @@
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
-        </local:GroupBox>
+        </avaloniaEx:GroupBox>
     </Panel>
 </UserControl>

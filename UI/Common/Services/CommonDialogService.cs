@@ -5,13 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
+using Unity;
 using Unity.Resolution;
 
 /// <summary>
 /// An interface for a common dialog service.
 /// </summary>
-public interface ICommonDialogService {
+public interface ICommonDialogService : IBaseDialogService {
     /// <summary>
     /// Opens a dialog that allows the user to pick a <see cref="IContentNode" /> whose asset inherits from the specified base
     /// type.
@@ -43,29 +45,12 @@ public interface ICommonDialogService {
     /// <param name="title">The title of the window.</param>
     /// <returns>The path of the selected file.</returns>
     Task<string> ShowSingleFileSelectionDialog(string title);
-
-    /// <summary>
-    /// Shows a warning dialog.
-    /// </summary>
-    /// <param name="title">The title.</param>
-    /// <param name="message">The message.</param>
-    /// <returns>A task.</returns>
-    Task ShowWarningDialog(string title, string message);
-
-    /// <summary>
-    /// Shows a dialog with a yes and a no button.
-    /// </summary>
-    /// <param name="title">The title.</param>
-    /// <param name="message">The message, usually a yes or no question.</param>
-    /// <param name="allowCancel">A value indicating whether or not to allow cancellation.</param>
-    /// <returns><c>true</c> if the user selected yes; otherwise <c>false</c>.</returns>
-    Task<YesNoCancelResult> ShowYesNoDialog(string title, string message, bool allowCancel);
 }
 
 /// <summary>
 /// A common dialog service.
 /// </summary>
-public abstract class CommonDialogService : ICommonDialogService {
+public abstract class CommonDialogService : BaseDialogService, ICommonDialogService {
     private readonly List<FileDialogFilter> _fileFilters = new() {
         new FileDialogFilter {
             Name = "All",
@@ -92,15 +77,10 @@ public abstract class CommonDialogService : ICommonDialogService {
     /// <summary>
     /// Initializes a new instance of the <see cref="CommonDialogService" /> class.
     /// </summary>
+    /// <param name="container">The container.</param>
     /// <param name="mainWindow">The main window.</param>
-    protected CommonDialogService(Window mainWindow) {
-        this.MainWindow = mainWindow;
+    protected CommonDialogService(IUnityContainer container, Window mainWindow) : base(container, mainWindow) {
     }
-
-    /// <summary>
-    /// Gets the main window.
-    /// </summary>
-    protected Window MainWindow { get; }
 
     /// <inheritdoc />
     public async Task<IContentNode> OpenAssetSelectionDialog(Type baseAssetType, bool allowDirectorySelection) {
@@ -143,23 +123,5 @@ public abstract class CommonDialogService : ICommonDialogService {
 
         var result = await dialog.ShowAsync(this.MainWindow);
         return result?.FirstOrDefault();
-    }
-
-    /// <inheritdoc />
-    public async Task ShowWarningDialog(string title, string message) {
-        var window = Resolver.Resolve<WarningDialog>();
-        window.Title = title;
-        window.WarningMessage = message;
-        await window.ShowDialog(this.MainWindow);
-    }
-
-    /// <inheritdoc />
-    public async Task<YesNoCancelResult> ShowYesNoDialog(string title, string message, bool allowCancel) {
-        var window = Resolver.Resolve<YesNoCancelDialog>();
-        window.Title = title;
-        window.Question = message;
-
-        var result = await window.ShowDialog<YesNoCancelResult>(this.MainWindow);
-        return result;
     }
 }

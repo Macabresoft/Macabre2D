@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia.Input;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,7 +39,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
-        if (this.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
+        if (this.Scene.Game.GraphicsDevice is { } graphicsDevice) {
             this._xAxisArrowSprite = PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, GizmoPointSize);
             this._yAxisArrowSprite = PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, GizmoPointSize);
             this._neutralAxisTriangleSprite = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, new Point(GizmoPointSize));
@@ -47,7 +48,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
             var settings = this.Scene.Game.Project.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
@@ -130,7 +131,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
             }
         }
         else if (this.CurrentAxis != GizmoAxis.None) {
-            if (this.EntityService.Selected is IEntity entity) {
+            if (this.EntityService.Selected is { } entity) {
                 if (inputState.IsButtonHeld(MouseButton.Left)) {
                     var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
                     var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);

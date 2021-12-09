@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Mono.Cecil;
 using Unity;

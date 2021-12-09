@@ -1,11 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabresoft.Macabre2D.UI.Common.FilteredContentTree">
     <UserControl.Resources>
-        <common:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+        <local:AssetToIconConverter x:Key="AssetToIconConverter" />
+        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <TreeView BorderThickness="0"
               Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
@@ -16,20 +16,20 @@
             </Style>
         </TreeView.Styles>
         <TreeView.DataTemplates>
-            <TreeDataTemplate DataType="common:FilteredContentWrapper"
+            <TreeDataTemplate DataType="local:FilteredContentWrapper"
                               ItemsSource="{Binding Children}">
                 <Grid ColumnDefinitions="Auto, *">
-                    <local:Icon Grid.Column="0"
-                                Content="{StaticResource DirectoryIcon}"
-                                IsVisible="{Binding IsDirectory}"
-                                Margin="{StaticResource StandardMarginRight}"
-                                Foreground="{StaticResource SystemAccentColorLightBrush1}" />
+                    <avaloniaEx:Icon Grid.Column="0"
+                                     Content="{StaticResource DirectoryIcon}"
+                                     IsVisible="{Binding IsDirectory}"
+                                     Margin="{StaticResource StandardMarginRight}"
+                                     Foreground="{StaticResource SystemAccentColorLightBrush1}" />
 
-                    <local:Icon Grid.Column="0"
-                                Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
-                                IsVisible="{Binding !IsDirectory}"
-                                Margin="{StaticResource StandardMarginRight}"
-                                Foreground="{StaticResource TextControlForeground}" />
+                    <avaloniaEx:Icon Grid.Column="0"
+                                     Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"
+                                     IsVisible="{Binding !IsDirectory}"
+                                     Margin="{StaticResource StandardMarginRight}"
+                                     Foreground="{StaticResource TextControlForeground}" />
 
                     <TextBlock Grid.Column="1"
                                Text="{Binding Node.Name}"

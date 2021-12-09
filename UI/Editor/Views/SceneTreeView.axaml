@@ -1,11 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <UserControl.Resources>
-        <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
             Classes="Card"
@@ -30,13 +30,13 @@
                         </ContextMenu>
                     </Button.ContextMenu>
 
-                    <common:Icon Content="{DynamicResource AddIcon}" />
+                    <avaloniaEx:Icon Content="{DynamicResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveEntityCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                    <common:Icon Content="{DynamicResource RemoveIcon}" />
+                    <avaloniaEx:Icon Content="{DynamicResource RemoveIcon}" />
                 </Button>
             </StackPanel>
 
@@ -56,13 +56,13 @@
                         </ContextMenu>
                     </Button.ContextMenu>
 
-                    <common:Icon Content="{DynamicResource AddIcon}" />
+                    <avaloniaEx:Icon Content="{DynamicResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveSystemCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected system from the scene">
-                    <common:Icon Content="{DynamicResource RemoveIcon}" />
+                    <avaloniaEx:Icon Content="{DynamicResource RemoveIcon}" />
                 </Button>
             </StackPanel>
 
@@ -79,7 +79,7 @@
                 <TreeView.DataTemplates>
                     <TreeDataTemplate DataType="framework:IScene"
                                       ItemsSource="{Binding NamedChildren}">
-                        <common:EditableSelectableItem IsEditable="False"
+                        <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
                                                        Icon="{DynamicResource SceneIcon}"
                                                        IconForeground="{StaticResource YellowBrush}"
@@ -88,7 +88,7 @@
 
                     <TreeDataTemplate DataType="framework:SystemCollection"
                                       ItemsSource="{Binding}">
-                        <common:EditableSelectableItem IsEditable="False"
+                        <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
                                                        Icon="{DynamicResource SystemIcon}"
                                                        IconForeground="{StaticResource PurpleBrush}"
@@ -97,7 +97,7 @@
 
                     <TreeDataTemplate DataType="framework:EntityCollection"
                                       ItemsSource="{Binding}">
-                        <common:EditableSelectableItem IsEditable="False"
+                        <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
                                                        Icon="{DynamicResource EntityIcon}"
                                                        IconForeground="{StaticResource PurpleBrush}"
@@ -105,13 +105,13 @@
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:IUpdateableSystem">
-                        <common:EditableSelectableItem IsEditable="True"
+                        <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                        TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameSystemCommand}"
                                                        Text="{Binding Path=Name, Mode=TwoWay}">
-                            <common:EditableSelectableItem.ContextMenu>
+                            <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
-                                              Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                                              Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this system" />
 
                                     <Separator />
@@ -121,24 +121,24 @@
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this system from the scene" />
                                 </ContextMenu>
-                            </common:EditableSelectableItem.ContextMenu>
-                        </common:EditableSelectableItem>
+                            </avaloniaEx:EditableSelectableItem.ContextMenu>
+                        </avaloniaEx:EditableSelectableItem>
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
-                        <common:EditableSelectableItem IsEditable="True"
+                        <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                        TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameEntityCommand}"
                                                        Text="{Binding Path=Name, Mode=TwoWay}"
                                                        PointerPressed="Entity_OnPointerPressed"
                                                        PointerReleased="Entity_OnPointerReleased"
                                                        PointerMoved="Entity_OnPointerMoved"
                                                        DragDrop.AllowDrop="True">
-                            <common:EditableSelectableItem.ContextMenu>
+                            <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
 
                                     <MenuItem Header="Rename"
-                                              Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                                              Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                                               ToolTip.Tip="Rename this entity" />
 
                                     <MenuItem Header="Focus"
@@ -161,8 +161,8 @@
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
                                 </ContextMenu>
-                            </common:EditableSelectableItem.ContextMenu>
-                        </common:EditableSelectableItem>
+                            </avaloniaEx:EditableSelectableItem.ContextMenu>
+                        </avaloniaEx:EditableSelectableItem>
                     </TreeDataTemplate>
                 </TreeView.DataTemplates>
             </TreeView>

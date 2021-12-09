@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 

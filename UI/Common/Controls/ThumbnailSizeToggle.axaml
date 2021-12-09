@@ -1,11 +1,10 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-             xmlns:models="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              x:Class="Macabresoft.Macabre2D.UI.Common.ThumbnailSizeToggle">
     <UserControl.Resources>
-        <common:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
+        <local:ThumbnailSizeToBoolConverter x:Key="ThumbnailSizeToBoolConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 DataContext="{Binding $parent[local:ThumbnailSizeToggle]}">
@@ -14,47 +13,47 @@
         </Design.DataContext>
 
         <ToggleButton Command="{Binding SelectSizeCommand}"
-                      CommandParameter="{x:Static models:ThumbnailSize.Small}"
+                      CommandParameter="{x:Static local:ThumbnailSize.Small}"
                       Classes="Icon"
                       ToolTip.Tip="Small thumbnails">
             <ToggleButton.IsChecked>
                 <Binding Path="SelectedSize"
                          Converter="{StaticResource ThumbnailSizeToBoolConverter}"
-                         ConverterParameter="{x:Static models:ThumbnailSize.Small}"
+                         ConverterParameter="{x:Static local:ThumbnailSize.Small}"
                          Mode="OneWay"
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <local:Icon Content="{StaticResource SmallThumbnailIcon}" />
+            <avaloniaEx:Icon Content="{StaticResource SmallThumbnailIcon}" />
         </ToggleButton>
         <ToggleButton Command="{Binding SelectSizeCommand}"
-                      CommandParameter="{x:Static models:ThumbnailSize.Medium}"
+                      CommandParameter="{x:Static local:ThumbnailSize.Medium}"
                       Classes="Icon"
                       ToolTip.Tip="Medium thumbnails">
             <ToggleButton.IsChecked>
                 <Binding Path="SelectedSize"
                          Converter="{StaticResource ThumbnailSizeToBoolConverter}"
-                         ConverterParameter="{x:Static models:ThumbnailSize.Medium}"
+                         ConverterParameter="{x:Static local:ThumbnailSize.Medium}"
                          Mode="OneWay"
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <local:Icon Content="{StaticResource MediumThumbnailIcon}" />
+            <avaloniaEx:Icon Content="{StaticResource MediumThumbnailIcon}" />
         </ToggleButton>
         <ToggleButton Command="{Binding SelectSizeCommand}"
-                      CommandParameter="{x:Static models:ThumbnailSize.Large}"
+                      CommandParameter="{x:Static local:ThumbnailSize.Large}"
                       Classes="Icon"
                       Margin="{StaticResource StandardMarginLeft}"
                       ToolTip.Tip="Large thumbnails">
             <ToggleButton.IsChecked>
                 <Binding Path="SelectedSize"
                          Converter="{StaticResource ThumbnailSizeToBoolConverter}"
-                         ConverterParameter="{x:Static models:ThumbnailSize.Large}"
+                         ConverterParameter="{x:Static local:ThumbnailSize.Large}"
                          Mode="OneWay"
                          TargetNullValue="False" />
             </ToggleButton.IsChecked>
 
-            <local:Icon Content="{StaticResource LargeThumbnailIcon}" />
+            <avaloniaEx:Icon Content="{StaticResource LargeThumbnailIcon}" />
         </ToggleButton>
     </StackPanel>
 </UserControl>

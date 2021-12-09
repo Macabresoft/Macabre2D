@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System.Diagnostics;
 using System.IO;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 
 /// <summary>

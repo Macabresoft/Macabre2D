@@ -1,14 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <common:IsTypeConverter x:Key="IsTypeConverter" />
-        <common:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
-        <common:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
+        <avaloniaEx:IsTypeConverter x:Key="IsTypeConverter" />
+        <avaloniaEx:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
+        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
 
         <ContextMenu x:Key="ContentNodeContextMenu">
             <Design.DataContext>
@@ -16,7 +17,7 @@
             </Design.DataContext>
 
             <MenuItem Header="Rename"
-                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                      Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                       ToolTip.Tip="Rename the content" />
 
             <MenuItem Header="Open"
@@ -39,7 +40,7 @@
 
         <ContextMenu x:Key="ContentDirectoryContextMenu">
             <MenuItem Header="Rename"
-                      Command="{Binding $parent[common:EditableSelectableItem].EditCommand}"
+                      Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
                       IsVisible="{Binding Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type framework:INameable}}"
                       ToolTip.Tip="Rename the directory" />
 
@@ -111,13 +112,13 @@
                                           ToolTip.Tip="Import a piece of content from elsewhere" />
                             </ContextMenu>
                         </Button.ContextMenu>
-                        <common:Icon Content="{StaticResource AddIcon}" />
+                        <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
                             CommandParameter="{Binding ProjectService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
-                        <common:Icon Content="{StaticResource RemoveIcon}" />
+                        <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                     </Button>
                 </StackPanel>
                 <TreeView Grid.Row="1"
@@ -126,7 +127,7 @@
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <TreeView.Styles>
-                        <Style Selector="common|EditableSelectableItem">
+                        <Style Selector="avaloniaEx|EditableSelectableItem">
                             <Design.DataContext>
                                 <common:ContentFile />
                             </Design.DataContext>
@@ -141,7 +142,7 @@
                             <Setter Property="Text" Value="{Binding Name}" />
                         </Style>
 
-                        <Style Selector="common|EditableSelectableItem.File">
+                        <Style Selector="avaloniaEx|EditableSelectableItem.File">
                             <Design.DataContext>
                                 <common:ContentFile />
                             </Design.DataContext>
@@ -149,7 +150,7 @@
                             <Setter Property="ContextMenu" Value="{StaticResource ContentNodeContextMenu}" />
                         </Style>
 
-                        <Style Selector="common|EditableSelectableItem.Directory">
+                        <Style Selector="avaloniaEx|EditableSelectableItem.Directory">
                             <Setter Property="IconForeground" Value="{StaticResource YellowBrush}" />
                             <Setter Property="ContextMenu" Value="{StaticResource ContentDirectoryContextMenu}" />
                         </Style>
@@ -162,11 +163,11 @@
                         <TreeDataTemplate DataType="common:RootContentDirectory"
                                           ItemsSource="{Binding Children}">
                             <Border Classes="DragDrop">
-                                <common:EditableSelectableItem Classes="Directory"
-                                                               Icon="{StaticResource ProjectIcon}"
-                                                               IsEditable="False"
-                                                               IsFileName="False"
-                                                               Text="Project" />
+                                <avaloniaEx:EditableSelectableItem Classes="Directory"
+                                                                   Icon="{StaticResource ProjectIcon}"
+                                                                   IsEditable="False"
+                                                                   IsFileName="False"
+                                                                   Text="Project" />
                             </Border>
                         </TreeDataTemplate>
 
@@ -176,7 +177,7 @@
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
-                                <common:EditableSelectableItem Classes="File" />
+                                <avaloniaEx:EditableSelectableItem Classes="File" />
                             </Border>
                         </TreeDataTemplate>
 
@@ -186,8 +187,8 @@
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
-                                <common:EditableSelectableItem Classes="Directory"
-                                                               Icon="{StaticResource DirectoryIcon}" />
+                                <avaloniaEx:EditableSelectableItem Classes="Directory"
+                                                                   Icon="{StaticResource DirectoryIcon}" />
                             </Border>
                         </TreeDataTemplate>
 
@@ -196,23 +197,23 @@
                                     PointerPressed="Node_OnPointerPressed"
                                     PointerReleased="Node_OnPointerReleased"
                                     PointerMoved="Node_OnPointerMoved">
-                                <common:EditableSelectableItem Classes="File" />
+                                <avaloniaEx:EditableSelectableItem Classes="File" />
                             </Border>
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="framework:INameableCollection"
                                           ItemsSource="{Binding}">
                             <Border>
-                                <common:EditableSelectableItem IconForeground="{StaticResource YellowBrush}"
-                                                               IsFileName="False"
-                                                               IsEditable="False" />
+                                <avaloniaEx:EditableSelectableItem IconForeground="{StaticResource YellowBrush}"
+                                                                   IsFileName="False"
+                                                                   IsEditable="False" />
                             </Border>
                         </TreeDataTemplate>
 
                         <TreeDataTemplate DataType="framework:INameable">
                             <Border>
-                                <common:EditableSelectableItem IconForeground="{StaticResource PurpleBrush}"
-                                                               IsFileName="False" />
+                                <avaloniaEx:EditableSelectableItem IconForeground="{StaticResource PurpleBrush}"
+                                                                   IsFileName="False" />
                             </Border>
                         </TreeDataTemplate>
                     </TreeView.DataTemplates>

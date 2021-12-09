@@ -3,7 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Macabresoft.Macabre2D.UI.Common;
+using Macabresoft.AvaloniaEx;
 
 public class ViewLocator : IDataTemplate {
     public bool SupportsRecycling => false;

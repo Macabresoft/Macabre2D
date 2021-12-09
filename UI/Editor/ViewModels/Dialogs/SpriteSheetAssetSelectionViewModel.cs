@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System.Collections.Generic;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;

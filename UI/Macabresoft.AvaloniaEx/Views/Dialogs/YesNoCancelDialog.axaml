@@ -1,0 +1,46 @@
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+                  x:Class="Macabresoft.AvaloniaEx.YesNoCancelDialog"
+                  CloseCommand="{Binding $self.CancelCommand}"
+                  Height="128"
+                  Width="320"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  ExtendClientAreaToDecorationsHint="True"
+                  SystemDecorations="None"
+                  VectorIcon="{StaticResource WarningIcon}">
+    <Grid RowDefinitions="*, Auto"
+          Margin="{StaticResource StandardMarginAll}"
+          DataContext="{Binding $parent[local:YesNoCancelDialog]}">
+        <Design.DataContext>
+            <local:YesNoCancelDialog />
+        </Design.DataContext>
+
+        <TextBlock Grid.Row="0"
+                   Text="{Binding Question}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center" />
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Content="Yes"
+                    Command="{Binding YesCommand}"
+                    HorizontalAlignment="Right"
+                    IsDefault="True" />
+
+            <Button Content="No"
+                    Command="{Binding NoCommand}"
+                    HorizontalAlignment="Right" />
+
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    HorizontalAlignment="Right"
+                    IsVisible="{Binding AllowCancel}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</local:BaseDialog>

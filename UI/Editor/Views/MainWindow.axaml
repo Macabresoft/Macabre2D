@@ -1,29 +1,30 @@
-<common:BaseDialog xmlns="https://github.com/avaloniaui"
-                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                   xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-                   x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
-                   CanResize="True"
-                   CloseCommand="{Binding ExitCommand}"
-                   Padding="0"
-                   Title="Macabre2D"
-                   ShowInTaskbar="True"
-                   WindowState="Maximized">
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                       xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
+                       x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
+                       CanResize="True"
+                       CloseCommand="{Binding ExitCommand}"
+                       Padding="0"
+                       Title="Macabre2D"
+                       ShowInTaskbar="True"
+                       WindowState="Maximized">
     <Design.DataContext>
         <local:MainWindowViewModel />
     </Design.DataContext>
-    <common:BaseDialog.KeyBindings>
+    <avaloniaEx:BaseDialog.KeyBindings>
         <KeyBinding Command="{Binding ToggleTabCommand}"
                     Gesture="Ctrl + T" />
-        <KeyBinding Command="{x:Static common:WindowHelper.ToggleWindowStateCommand}"
+        <KeyBinding Command="{x:Static avaloniaEx:WindowHelper.ToggleWindowStateCommand}"
                     CommandParameter="{Binding $self}"
                     Gesture="Ctrl + M" />
-    </common:BaseDialog.KeyBindings>
-    <common:BaseDialog.Resources>
-        <common:EqualityConverter x:Key="EqualityConverter" />
-    </common:BaseDialog.Resources>
-    <common:BaseDialog.Menu>
+    </avaloniaEx:BaseDialog.KeyBindings>
+    <avaloniaEx:BaseDialog.Resources>
+        <avaloniaEx:EqualityConverter x:Key="EqualityConverter" />
+    </avaloniaEx:BaseDialog.Resources>
+    <avaloniaEx:BaseDialog.Menu>
         <Menu Grid.Column="2"
               IsEnabled="{Binding !IsBusy}"
               HorizontalAlignment="Left"
@@ -82,25 +83,25 @@
                           Command="{Binding ViewLicensesCommand}" />
             </MenuItem>
         </Menu>
-    </common:BaseDialog.Menu>
-    <common:BaseDialog.ContentLeftOfMenu>
+    </avaloniaEx:BaseDialog.Menu>
+    <avaloniaEx:BaseDialog.ContentLeftOfMenu>
         <Button Grid.Column="1"
                 Classes="Icon"
                 Command="{Binding ToggleTabCommand}"
                 IsEnabled="{Binding !IsBusy}">
             <Panel>
-                <common:Icon Content="{StaticResource SceneIcon}"
-                             Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
-                <common:Icon Content="{StaticResource ProjectIcon}"
-                             Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                             IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+                <avaloniaEx:Icon Content="{StaticResource SceneIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+                <avaloniaEx:Icon Content="{StaticResource ProjectIcon}"
+                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
             </Panel>
         </Button>
-    </common:BaseDialog.ContentLeftOfMenu>
+    </avaloniaEx:BaseDialog.ContentLeftOfMenu>
     <Grid>
         <monoGameInterop:MonoGameControl Game="{Binding Game}"
-                                         Cursor="{Binding EditorService.CursorType, Converter={x:Static common:CursorTypeToCursorConverter.Instance}}"
+                                         Cursor="{Binding EditorService.CursorType, Converter={x:Static avaloniaEx:CursorTypeToCursorConverter.Instance}}"
                                          IsVisible="{Binding !IsBusy}" />
 
         <local:SceneEditorView IsEnabled="{Binding !IsBusy}"
@@ -108,6 +109,6 @@
         <local:ProjectEditorView IsEnabled="{Binding !IsBusy}"
                                  IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
 
-        <common:BusyIndicator IsVisible="{Binding IsBusy}" />
+        <avaloniaEx:BusyIndicator IsVisible="{Binding IsBusy}" />
     </Grid>
-</common:BaseDialog>
+</avaloniaEx:BaseDialog>

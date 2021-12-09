@@ -2,6 +2,7 @@
 
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 using NSubstitute;
 using NUnit.Framework;

@@ -1,0 +1,33 @@
+<local:BaseDialog xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+                  x:Class="Macabresoft.AvaloniaEx.WarningDialog"
+                  Height="128"
+                  Width="320"
+                  CanResize="False"
+                  ShowInTaskbar="False"
+                  WindowStartupLocation="CenterOwner"
+                  ExtendClientAreaToDecorationsHint="True"
+                  SystemDecorations="None"
+                  VectorIcon="{StaticResource WarningIcon}">
+    <Grid Margin="{StaticResource StandardMarginAll}"
+          RowDefinitions="*, Auto"
+          DataContext="{Binding $parent[local:WarningDialog]}">
+        <Design.DataContext>
+            <local:WarningDialog />
+        </Design.DataContext>
+
+        <TextBlock Grid.Row="0"
+                   Text="{Binding WarningMessage}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center" />
+
+        <Button Grid.Row="1"
+                Content="OK"
+                Command="{Binding CloseCommand}"
+                CommandParameter="{Binding}"
+                HorizontalAlignment="Right"
+                IsDefault="True" />
+    </Grid>
+</local:BaseDialog>

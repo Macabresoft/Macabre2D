@@ -1,0 +1,31 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <FluentTheme Mode="Dark" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Font.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Colors.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Margins.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/BoxShadows.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/IconPaths.axaml" />
+
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/AutoCompleteBox.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Border.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Button.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/ButtonSpinner.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/CheckBox.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/ComboBox.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/GridSplitter.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Icon.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Image.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/ListBox.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/ListBoxItem.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/NumericUpDown.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Slider.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/TabItem.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/TextBlock.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/TextBox.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/ToggleButton.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/TreeView.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/TreeViewItem.axaml" />
+    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Controls/Window.axaml" />
+
+</Styles>

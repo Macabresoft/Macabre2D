@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <RootNamespace>Macabresoft.AvaloniaEx</RootNamespace>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.10.10" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+        <PackageReference Include="Macabresoft.Core" Version="1.0.10" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+        <PackageReference Include="Unity" Version="5.11.10" />
+    </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Dialogs\BaseDialog.axaml.cs">
+            <DependentUpon>BaseDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Dialogs\YesNoCancelDialog.axaml.cs">
+            <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Dialogs\WarningDialog.axaml.cs">
+            <DependentUpon>WarningDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Dialogs\LicenseDialog.axaml.cs">
+            <DependentUpon>LicenseDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Dialogs\TypeSelectionDialog.axaml.cs">
+            <DependentUpon>TypeSelectionDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Dialogs\ContentSelectionDialog.axaml.cs">
+            <DependentUpon>ContentSelectionDialog.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
+        <UpToDateCheckInput Remove="Theme\Colors.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\AutoCompleteBox.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Border.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Button.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\ButtonSpinner.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\CheckBox.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\ComboBox.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\GridSplitter.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Image.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\ListBox.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\ListBoxItem.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Menu.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\MenuItem.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\NumericUpDown.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Slider.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\SpriteListBoxItem.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\TabItem.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\TextBlock.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\TextBox.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\ToggleButton.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\TreeView.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\TreeViewItem.axaml" />
+        <UpToDateCheckInput Remove="Theme\Controls\Window.axaml" />
+        <UpToDateCheckInput Remove="Theme\Font.axaml" />
+        <UpToDateCheckInput Remove="Theme\Icons.axaml" />
+        <UpToDateCheckInput Remove="Theme\Margins.axaml" />
+        <UpToDateCheckInput Remove="Theme\Theme.axaml" />
+        <UpToDateCheckInput Remove="Controls\ValueInfo\ContentDirectoryInfoControl.axaml" />
+        <UpToDateCheckInput Remove="Controls\ValueInfo\ContentFileInfoControl.axaml" />
+        <UpToDateCheckInput Remove="Controls\ValueInfo\SpriteSheetInfoControl.axaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Views" />
+    </ItemGroup>
+</Project>

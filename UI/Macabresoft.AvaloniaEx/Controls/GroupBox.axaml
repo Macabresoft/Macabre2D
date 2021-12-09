@@ -1,0 +1,57 @@
+<HeaderedContentControl xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+                        x:Class="Macabresoft.AvaloniaEx.GroupBox">
+    <HeaderedContentControl.Styles>
+        <Style Selector="Button.groupBoxButton local|Icon">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Height" Value="8" />
+        </Style>
+
+        <Style Selector="Button.groupBoxButton">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Margin" Value="{StaticResource StandardMarginVertical}" />
+            <Setter Property="Padding" Value="{StaticResource StandardMarginHorizontal}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="Button.groupBoxButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeBorderMidBrush}" />
+        </Style>
+    </HeaderedContentControl.Styles>
+    <HeaderedContentControl.Template>
+        <ControlTemplate>
+            <Grid RowDefinitions="Auto, *">
+                <Button Grid.Row="0"
+                        HorizontalAlignment="Stretch"
+                        Classes="groupBoxButton"
+                        Command="{TemplateBinding ToggleContentCommand}">
+                    <Grid ColumnDefinitions="Auto, 3, *"
+                          Margin="{StaticResource StandardMarginAll}">
+                        <local:Icon Grid.Column="0"
+                                    IsVisible="{TemplateBinding HideContent}"
+                                    Content="{StaticResource CaretRightIcon}" />
+
+                        <local:Icon Grid.Column="0"
+                                    IsVisible="{TemplateBinding ShowContent}"
+                                    Content="{StaticResource CaretDownIcon}" />
+
+                        <TextBlock Grid.Column="2"
+                                   ToolTip.Tip="{TemplateBinding Header}"
+                                   Text="{TemplateBinding Header}"
+                                   TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                </Button>
+
+                <Border Grid.Row="1"
+                        Padding="{StaticResource StandardMarginHorizontal}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      IsVisible="{TemplateBinding ShowContent}" />
+                </Border>
+
+            </Grid>
+        </ControlTemplate>
+    </HeaderedContentControl.Template>
+</HeaderedContentControl>

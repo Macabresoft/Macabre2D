@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>

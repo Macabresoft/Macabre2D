@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
+using Unity;
 using Unity.Resolution;
 
 /// <summary>
@@ -31,8 +32,9 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
     /// <summary>
     /// Initializes a new instance of the <see cref="LocalDialogService" /> class.
     /// </summary>
+    /// <param name="container">The container.</param>
     /// <param name="mainWindow">The main window.</param>
-    public LocalDialogService(MainWindow mainWindow) : base(mainWindow) {
+    public LocalDialogService(IUnityContainer container, MainWindow mainWindow) : base(container, mainWindow) {
     }
 
     /// <inheritdoc />

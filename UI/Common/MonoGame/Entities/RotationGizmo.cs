@@ -2,6 +2,7 @@
 
 using System;
 using Avalonia.Input;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,0 +1,40 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Macabresoft.AvaloniaEx">
+    <Style Selector="Button">
+        <Setter Property="Margin" Value="{StaticResource StandardMarginAll}" />
+    </Style>
+
+    <Style Selector="Button.Icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+    </Style>
+
+    <Style Selector="Button:pointerover local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPointerOver}" />
+    </Style>
+
+    <Style Selector="Button:pressed local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPressed}" />
+    </Style>
+
+    <Style Selector="Button:disabled local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundDisabled}" />
+    </Style>
+
+    <Style Selector="Button.accent local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
+    </Style>
+
+    <Style Selector="Button.accent:pointerover local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundPointerOver}" />
+    </Style>
+
+    <Style Selector="Button.accent:pressed local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundPressed}" />
+    </Style>
+
+    <Style Selector="Button.accent:disabled local|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForegroundDisabled}" />
+    </Style>
+</Styles>

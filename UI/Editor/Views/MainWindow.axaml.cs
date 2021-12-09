@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using Avalonia.Markup.Xaml;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 
 public class MainWindow : BaseDialog {

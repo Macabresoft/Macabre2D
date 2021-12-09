@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Markup.Xaml;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 using Unity;
@@ -56,9 +57,9 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
             this.WhenAny(x => x.Value, y => y.Value != Guid.Empty));
         this.SelectCommand = ReactiveCommand.CreateFromTask(this.Select);
 
-        if (dependencies?.Owner?.GetType() is Type ownerType) {
+        if (dependencies?.Owner?.GetType() is { } ownerType) {
             var members = ownerType.GetMember(dependencies.ValuePropertyName);
-            if (members.FirstOrDefault() is MemberInfo info && info.GetCustomAttribute<AssetGuidAttribute>() is AssetGuidAttribute attribute) {
+            if (members.FirstOrDefault() is { } info && info.GetCustomAttribute<AssetGuidAttribute>() is { } attribute) {
                 this._assetType = attribute.AssetType;
             }
         }
@@ -112,7 +113,7 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
 
     private async Task Select() {
         var contentNode = await this._dialogService.OpenAssetSelectionDialog(this._assetType, false);
-        if (contentNode is ContentFile { Metadata: ContentMetadata metadata }) {
+        if (contentNode is ContentFile { Metadata: { } metadata }) {
             var originalId = this.Value;
             var contentId = metadata.ContentId;
             this._undoService.Do(

@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+             x:Class="Macabresoft.AvaloniaEx.ColorSlider">
+    <Slider Value="{Binding $parent[local:ColorSlider].ValueDisplay}"
+            Minimum="0"
+            Maximum="255"
+            Padding="0"
+            Margin="{StaticResource StandardMarginHorizontal}"
+            TickFrequency="1"
+            IsSnapToTickEnabled="True" />
+</UserControl>

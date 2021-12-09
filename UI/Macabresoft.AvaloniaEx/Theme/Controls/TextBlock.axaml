@@ -1,0 +1,58 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <local:InverseIsStringNullOrEmptyConverter x:Key="InverseIsStringNullOrEmptyConverter" />
+    </Styles.Resources>
+    <Style Selector="TextBlock">
+        <Setter Property="Margin"
+                Value="{DynamicResource StandardMarginAll}" />
+    </Style>
+
+    <Style Selector="TextBlock.Label">
+        <Setter Property="FontWeight"
+                Value="Bold" />
+        <Setter Property="IsVisible"
+                Value="{Binding Text, RelativeSource={RelativeSource Self}, Converter={StaticResource InverseIsStringNullOrEmptyConverter}}" />
+        <Setter Property="TextTrimming"
+                Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Left" />
+        <Setter Property="Width"
+                Value="96" />
+        <Setter Property="ToolTip.Tip"
+                Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+    </Style>
+
+    <Style Selector="TextBlock.SmallLabel">
+        <Setter Property="Margin"
+                Value="{StaticResource StandardMarginRight}" />
+        <Setter Property="TextTrimming"
+                Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Right" />
+        <Setter Property="FontSize"
+                Value="12" />
+        <Setter Property="MaxWidth"
+                Value="64" />
+    </Style>
+
+    <Style Selector="TextBlock.Caption">
+        <Setter Property="FontStyle"
+                Value="Italic" />
+        <Setter Property="FontSize"
+                Value="8" />
+        <Setter Property="TextTrimming"
+                Value="CharacterEllipsis" />
+        <Setter Property="TextAlignment"
+                Value="Center" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="ToolTip.Tip"
+                Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+    </Style>
+</Styles>

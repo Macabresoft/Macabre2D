@@ -1,10 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
     <UserControl.Resources>
-        <common:EqualityConverter x:Key="IsEqualConverter" />
+        <avaloniaEx:EqualityConverter x:Key="IsEqualConverter" />
     </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}"
           PropertyChanged="OverallGrid_OnPropertyChanged">
@@ -38,7 +39,7 @@
                 Margin="{StaticResource DoubleMarginAll}">
             <StackPanel Orientation="Horizontal"
                         Margin="{StaticResource StandardMarginAll}">
-                <TextBlock Classes="ValueEditorLabel"
+                <TextBlock Classes="Label"
                            Text="Background" />
                 <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
             </StackPanel>

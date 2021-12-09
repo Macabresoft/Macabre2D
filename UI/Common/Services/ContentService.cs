@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
 

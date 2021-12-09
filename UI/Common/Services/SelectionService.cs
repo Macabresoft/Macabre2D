@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Avalonia.Threading;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using ReactiveUI;
 

@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+        x:Class="Macabresoft.AvaloniaEx.BaseDialog"
+        Padding="{StaticResource StandardMarginAll}"
+        ShowInTaskbar="False"
+        ShowMinimize="False"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterOwner">
+    <Window.Template>
+        <ControlTemplate>
+            <Border Background="{StaticResource SystemAltHighColor}">
+                <VisualLayerManager>
+                    <Grid RowDefinitions="Auto, *">
+                        <Grid Grid.Row="0"
+                              ColumnDefinitions="Auto, Auto, Auto, *, Auto"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Top">
+
+                            <Border Grid.Column="0"
+                                    Grid.ColumnSpan="5"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    PointerPressed="TitleBar_OnPointerPressed"
+                                    DoubleTapped="TitleBar_OnDoubleTapped"
+                                    Margin="0"
+                                    Background="{StaticResource SystemControlDisabledChromeDisabledHighBrush}"
+                                    Padding="{StaticResource StandardMarginAll}"
+                                    BoxShadow="{StaticResource DefaultBoxShadow}"
+                                    ZIndex="-1" />
+
+                            <Panel Grid.Column="0"
+                                   Width="24"
+                                   Height="24"
+                                   Margin="{StaticResource StandardMarginHorizontal}">
+                                <local:Icon IsHitTestVisible="False"
+                                            IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Content="{TemplateBinding VectorIcon}" />
+                                <local:Icon IsHitTestVisible="False"
+                                            IsVisible="{TemplateBinding VectorIcon, Converter={x:Static ObjectConverters.IsNull}}"
+                                            Content="{StaticResource MacabresoftIcon}" />
+                            </Panel>
+
+                            <ContentPresenter Grid.Column="1"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding ContentLeftOfMenu}" />
+
+                            <ContentPresenter Grid.Column="2"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Menu}" />
+
+                            <local:WindowButtons Grid.Column="4"
+                                                 CloseCommand="{TemplateBinding CloseCommand}"
+                                                 MinimizeCommand="{x:Static local:WindowHelper.MinimizeCommand}"
+                                                 ToggleWindowStateCommand="{x:Static local:WindowHelper.ToggleWindowStateCommand}"
+                                                 Window="{TemplateBinding}" />
+
+                            <TextBlock Grid.Column="0"
+                                       Grid.ColumnSpan="5"
+                                       IsHitTestVisible="False"
+                                       Text="{TemplateBinding Title}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <ContentPresenter Grid.Row="1"
+                                          Margin="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}" />
+                    </Grid>
+                </VisualLayerManager>
+            </Border>
+        </ControlTemplate>
+    </Window.Template>
+</Window>

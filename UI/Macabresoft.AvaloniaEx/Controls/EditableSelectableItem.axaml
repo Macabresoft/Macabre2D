@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+             x:Class="Macabresoft.AvaloniaEx.EditableSelectableItem">
+    <UserControl.Resources>
+        <local:MultiBoolConverter x:Key="MultiBoolConverter"
+                                  RequireAllTrue="True" />
+    </UserControl.Resources>
+    <Grid ColumnDefinitions="Auto, *"
+          HorizontalAlignment="Stretch">
+        <local:Icon Grid.Column="0"
+                    Content="{Binding  $parent[local:EditableSelectableItem].Icon}"
+                    IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Margin="{StaticResource StandardMarginRight}"
+                    Foreground="{Binding $parent[local:EditableSelectableItem].IconForeground}" />
+
+        <TextBlock Grid.Column="1"
+                   Text="{Binding $parent[local:EditableSelectableItem].Text}"
+                   IsVisible="{Binding !#_editableTextBox.IsVisible}"
+                   TextWrapping="NoWrap"
+                   TextTrimming="CharacterEllipsis"
+                   HorizontalAlignment="Stretch"
+                   Background="Transparent"
+                   DoubleTapped="Item_OnDoubleTapped" />
+
+        <TextBox Grid.Column="1"
+                 x:Name="_editableTextBox"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 PropertyChanged="EditableTextBox_OnPropertyChanged"
+                 KeyDown="TextBox_OnKeyDown"
+                 LostFocus="TextBox_OnLostFocus">
+            <TextBox.IsVisible>
+                <MultiBinding Converter="{StaticResource MultiBoolConverter}">
+                    <Binding Path="$parent[ISelectable].IsSelected" />
+                    <Binding Path="$parent[local:EditableSelectableItem].IsEditing" />
+                </MultiBinding>
+            </TextBox.IsVisible>
+        </TextBox>
+    </Grid>
+</UserControl>

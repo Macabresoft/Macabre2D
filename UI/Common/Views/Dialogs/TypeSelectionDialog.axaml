@@ -1,13 +1,14 @@
-<local:BaseDialog xmlns="https://github.com/avaloniaui"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
-                  x:Class="Macabresoft.Macabre2D.UI.Common.TypeSelectionDialog"
-                  Height="480"
-                  Width="640"
-                  CanResize="False"
-                  ShowInTaskbar="False"
-                  WindowStartupLocation="CenterOwner"
-                  Title="Make a Selection">
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       x:Class="Macabresoft.Macabre2D.UI.Common.TypeSelectionDialog"
+                       Height="480"
+                       Width="640"
+                       CanResize="False"
+                       ShowInTaskbar="False"
+                       WindowStartupLocation="CenterOwner"
+                       Title="Make a Selection">
     <Window.Resources>
         <local:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </Window.Resources>
@@ -49,4 +50,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</local:BaseDialog>
+</avaloniaEx:BaseDialog>

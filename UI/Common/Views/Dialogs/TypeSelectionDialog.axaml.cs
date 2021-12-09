@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using Avalonia.Markup.Xaml;
+using Macabresoft.AvaloniaEx;
 using Unity;
 
 public class TypeSelectionDialog : BaseDialog {

@@ -1,8 +1,9 @@
 <common:ValueEditorControl xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                           xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                           xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            x:TypeArguments="framework:SpriteAnimationReference"
                            x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteAnimationEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
@@ -14,7 +15,7 @@
 
         <TextBlock Grid.Column="0"
                    Grid.Row="0"
-                   Classes="ValueEditorLabel"
+                   Classes="Label"
                    Text="{Binding Title}" />
 
         <Border Grid.Column="0"
@@ -45,7 +46,7 @@
                 Classes="Icon"
                 Command="{Binding SelectAnimationCommand}"
                 ToolTip.Tip="Search for a sprite">
-            <common:Icon Content="{StaticResource ImageSearchIcon}" />
+            <avaloniaEx:Icon Content="{StaticResource ImageSearchIcon}" />
         </Button>
         <Button Grid.Column="3"
                 Grid.Row="1"
@@ -53,7 +54,7 @@
                 Classes="Icon"
                 Command="{Binding ClearCommand}"
                 ToolTip.Tip="Clear the animation">
-            <common:Icon Content="{StaticResource EraserIcon}" />
+            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
 </common:ValueEditorControl>

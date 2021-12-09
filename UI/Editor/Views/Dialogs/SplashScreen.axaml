@@ -1,6 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
         x:Class="Macabresoft.Macabre2D.UI.Editor.Views.Dialogs.SplashScreen"
         WindowStartupLocation="CenterScreen"
         Title="Macabre2D"
@@ -12,7 +12,7 @@
     <Panel VerticalAlignment="Center"
            HorizontalAlignment="Center"
            PointerPressed="OnPointerPressed">
-        <common:Icon VerticalAlignment="Center"
+        <avaloniaEx:Icon VerticalAlignment="Center"
                      HorizontalAlignment="Center"
                      Content="{StaticResource MacabresoftIcon}"
                      Margin="{StaticResource DoubleMarginAll}"

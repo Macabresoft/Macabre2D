@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Macabresoft.AvaloniaEx"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="Macabresoft.AvaloniaEx.WindowButtons">
+    <UserControl.Resources>
+        <local:WindowStateToShowMaximizeConverter x:Key="ShowMaximizeConverter" />
+        <system:Boolean x:Key="TrueValue">True</system:Boolean>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="Button">
+            <Setter Property="Width" Value="{Binding $self.Bounds.Height}" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="{StaticResource StandardMarginAll}" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                DataContext="{Binding $parent[local:WindowButtons]}">
+        <Design.DataContext>
+            <local:WindowButtons />
+        </Design.DataContext>
+        <Button Command="{Binding MinimizeCommand}"
+                CommandParameter="{Binding Window}"
+                IsVisible="{Binding Window.CanResize}"
+                ToolTip.Tip="Minimize the window">
+            <Button.Styles>
+                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{StaticResource DarkYellowBrush}" />
+                </Style>
+            </Button.Styles>
+            <local:Icon Content="{StaticResource MinimizeIcon}"
+                        Classes="Small" />
+        </Button>
+
+        <Button Command="{Binding ToggleWindowStateCommand}"
+                CommandParameter="{Binding Window}"
+                IsVisible="{Binding Window.CanResize}"
+                ToolTip.Tip="Maximize/restore the window">
+            <Button.Styles>
+                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{StaticResource GreenBrush}" />
+                </Style>
+            </Button.Styles>
+            <Panel>
+                <local:Icon IsVisible="{Binding Window.WindowState, Converter={StaticResource ShowMaximizeConverter}}"
+                            Content="{StaticResource MaximizeIcon}"
+                            Classes="Small" />
+                <local:Icon
+                    IsVisible="{Binding Window.WindowState, Converter={StaticResource ShowMaximizeConverter}, ConverterParameter={StaticResource TrueValue}}"
+                    Content="{StaticResource RestoreIcon}"
+                    Classes="Small" />
+            </Panel>
+        </Button>
+
+        <Button Command="{Binding CloseCommand}"
+                CommandParameter="{Binding Window}"
+                ToolTip.Tip="Close the window">
+            <Button.Styles>
+                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{StaticResource RedBrush}" />
+                </Style>
+            </Button.Styles>
+            <local:Icon Content="{StaticResource CloseIcon}"
+                        Classes="Small" />
+        </Button>
+    </StackPanel>
+</UserControl>

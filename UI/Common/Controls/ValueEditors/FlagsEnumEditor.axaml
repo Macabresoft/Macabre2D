@@ -1,14 +1,14 @@
 <local:ValueEditorControl xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                          xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                           xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.UI.Common.FlagsEnumEditor">
     <local:ValueEditorControl.Resources>
-        <common:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
-        <common:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
-        <common:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
+        <avaloniaEx:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
+        <avaloniaEx:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
+        <local:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:FlagsEnumEditor]}">
@@ -17,7 +17,7 @@
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"
-                   Classes="ValueEditorLabel"
+                   Classes="Label"
                    Text="{Binding Title}" />
 
         <ComboBox Grid.Column="1"

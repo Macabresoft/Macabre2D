@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
 
 internal class TestFileSystemService : IFileSystemService {

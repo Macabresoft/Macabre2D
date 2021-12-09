@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows.Input;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;

@@ -1,0 +1,15 @@
+<ContentControl xmlns="https://github.com/avaloniaui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                x:Class="Macabresoft.AvaloniaEx.Icon">
+    <ContentControl.Template>
+        <ControlTemplate>
+            <Path MaxHeight="{TemplateBinding Height}"
+                  MaxWidth="{TemplateBinding Width}"
+                  Stretch="Uniform"
+                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                  Fill="{TemplateBinding Foreground}"
+                  Data="{TemplateBinding Content}" />
+        </ControlTemplate>
+    </ContentControl.Template>
+</ContentControl>

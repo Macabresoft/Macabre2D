@@ -1,19 +1,20 @@
-<common:BaseDialog xmlns="https://github.com/avaloniaui"
-                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                   xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
-                   x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetAssetSelectionDialog"
-                   Height="768"
-                   Width="1024"
-                   CanResize="False"
-                   ShowInTaskbar="False"
-                   WindowStartupLocation="CenterOwner"
-                   Title="Make a Selection"
-                   VectorIcon="{StaticResource SpriteSheetIcon}">
-    <common:BaseDialog.Resources>
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
+                       xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                       x:Class="Macabresoft.Macabre2D.UI.Editor.SpriteSheetAssetSelectionDialog"
+                       Height="768"
+                       Width="1024"
+                       CanResize="False"
+                       ShowInTaskbar="False"
+                       WindowStartupLocation="CenterOwner"
+                       Title="Make a Selection"
+                       VectorIcon="{StaticResource SpriteSheetIcon}">
+    <avaloniaEx:BaseDialog.Resources>
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
-    </common:BaseDialog.Resources>
+    </avaloniaEx:BaseDialog.Resources>
     <Design.DataContext>
         <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
     </Design.DataContext>
@@ -39,7 +40,7 @@
                 <ItemsControl Items="{Binding SpriteSheets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <common:GroupBox Header="{Binding Name}">
+                            <avaloniaEx:GroupBox Header="{Binding Name}">
                                 <Grid ColumnDefinitions="Auto, *"
                                       Margin="{StaticResource StandardMarginVertical}">
                                     <Image Source="{Binding Image}"
@@ -68,7 +69,7 @@
                                         </ListBox.ItemTemplate>
                                     </ListBox>
                                 </Grid>
-                            </common:GroupBox>
+                            </avaloniaEx:GroupBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -92,4 +93,4 @@
                     IsCancel="True" />
         </StackPanel>
     </Grid>
-</common:BaseDialog>
+</avaloniaEx:BaseDialog>

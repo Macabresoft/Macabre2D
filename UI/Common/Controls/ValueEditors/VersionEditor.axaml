@@ -11,7 +11,7 @@
             <local:VersionEditor />
         </Design.DataContext>
         <TextBlock Grid.Column="0"
-                   Classes="ValueEditorLabel"
+                   Classes="Label"
                    Text="{Binding Title}" />
 
         <local:IntEditor Grid.Column="1"

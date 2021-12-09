@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using Avalonia;
+using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;

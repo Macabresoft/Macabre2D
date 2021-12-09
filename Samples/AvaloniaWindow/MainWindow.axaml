@@ -1,28 +1,28 @@
-<common:BaseDialog xmlns="https://github.com/avaloniaui"
-                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
-                   xmlns:local="clr-namespace:Macabresoft.Macabre2D.Samples.AvaloniaWindow"
-                   xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
-                   x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
-                   Padding="0"
-                   WindowState="Maximized"
-                   Title="Avalonia Sample">
+<avaloniaEx:BaseDialog xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:local="clr-namespace:Macabresoft.Macabre2D.Samples.AvaloniaWindow"
+                       xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+                       xmlns:monoGame="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
+                       x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
+                       Padding="0"
+                       WindowState="Maximized"
+                       Title="Avalonia Sample">
     <Design.DataContext>
         <local:MainWindow />
     </Design.DataContext>
-    <common:BaseDialog.ContentLeftOfMenu>
+    <avaloniaEx:BaseDialog.ContentLeftOfMenu>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Stretch">
             <Button Classes="Icon"
                     Command="{Binding ToggleTabCommand}">
                 <Panel>
-                    <common:Icon Content="{StaticResource SmallThumbnailIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                                 IsVisible="{Binding ShowSkull}" />
-                    <common:Icon Content="{StaticResource LargeThumbnailIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
-                                 IsVisible="{Binding !ShowSkull}" />
+                    <avaloniaEx:Icon Content="{StaticResource SmallThumbnailIcon}"
+                                     Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                     IsVisible="{Binding ShowSkull}" />
+                    <avaloniaEx:Icon Content="{StaticResource LargeThumbnailIcon}"
+                                     Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                     IsVisible="{Binding !ShowSkull}" />
                 </Panel>
             </Button>
 
@@ -31,7 +31,7 @@
                        VerticalAlignment="Center"
                        Text="(Click the button to the left to switch scenes)" />
         </StackPanel>
-    </common:BaseDialog.ContentLeftOfMenu>
+    </avaloniaEx:BaseDialog.ContentLeftOfMenu>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"
@@ -62,4 +62,4 @@
         <GridSplitter Grid.Column="1"
                       Classes="CardSplitter" />
     </Grid>
-</common:BaseDialog>
+</avaloniaEx:BaseDialog>
