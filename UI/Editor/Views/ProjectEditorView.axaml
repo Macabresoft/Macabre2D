@@ -51,21 +51,35 @@
                     HorizontalAlignment="Stretch"
                     Margin="{StaticResource DoubleMarginAll}"
                     IsVisible="{Binding IsShowingAnimation}">
-                <StackPanel HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-                    <Button Classes="Icon"
+                <Grid Grid.ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto"
+                    HorizontalAlignment="Stretch"
+                      Margin="{StaticResource StandardMarginAll}">
+                    <TextBlock Grid.Column="0"
+                               Classes="Label"
+                               Text="Framerate" />
+                    
+                    <common:ByteEditor Grid.Column="1"
+                                       Value="{Binding SpriteAnimator.FrameRate}"
+                                       HorizontalAlignment="Left"/>
+                    
+                    <Button Grid.Column="3"
+                            Classes="Icon"
                             Command="{Binding PlayCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PlayIcon}" />
                     </Button>
-                    <Button Classes="Icon"
+                    
+                    <Button Grid.Column="4"
+                            Classes="Icon"
                             Command="{Binding PauseCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PauseIcon}" />
                     </Button>
-                    <Button Classes="Icon"
+                    
+                    <Button Grid.Column="5"
+                            Classes="Icon"
                             Command="{Binding StopCommand}">
                         <avaloniaEx:Icon Content="{StaticResource StopIcon}" />
                     </Button>
-                </StackPanel>
+                </Grid>
             </Border>
         </StackPanel>
 

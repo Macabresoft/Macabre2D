@@ -113,9 +113,14 @@ public class ProjectEditorViewModel : BaseViewModel {
     }
 
     /// <summary>
+    /// Gets the sprite animator.
+    /// </summary>
+    public BaseSpriteAnimator SpriteAnimator => this._spriteAnimator;
+
+    /// <summary>
     /// Gets a value indicating whether or not an animation is showing.
     /// </summary>
-    public bool IsShowingAnimation => this._spriteAnimator.IsEnabled;
+    public bool IsShowingAnimation => this.ProjectService.Selected is SpriteAnimation;
 
     private IScene CreateScene() {
         var scene = new Scene {

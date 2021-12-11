@@ -23,10 +23,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     [DataMember(Order = 11, Name = "Frame Rate")]
     public byte FrameRate {
         get => this._frameRate;
-
         set {
-            if (value > 0) {
-                this.Set(ref this._frameRate, value);
+            if (value > 0 && this.Set(ref this._frameRate, value)) {
+                this.ResetFrameRate();
             }
         }
     }
@@ -57,6 +56,10 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
+        this.ResetFrameRate();
+    }
+
+    private void ResetFrameRate() {
         this._millisecondsPerFrame = 1000u / this._frameRate;
     }
 
