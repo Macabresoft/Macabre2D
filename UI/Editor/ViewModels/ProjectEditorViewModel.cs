@@ -2,12 +2,14 @@
 
 using System;
 using System.ComponentModel;
+using System.Windows.Input;
 using Avalonia;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReactiveUI;
 using Point = Microsoft.Xna.Framework.Point;
 
 /// <summary>
@@ -46,6 +48,10 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
         this._scene = this.CreateScene();
+        
+        this.PlayCommand = ReactiveCommand.Create(this._spriteAnimator.Play, this._spriteAnimator.WhenAny(x => x.IsPlaying, x => !x.Value));
+        this.PauseCommand = ReactiveCommand.Create(this._spriteAnimator.Pause, this._spriteAnimator.WhenAnyValue(x => x.IsPlaying));
+        this.StopCommand = ReactiveCommand.Create(this._spriteAnimator.Stop, this._spriteAnimator.WhenAnyValue(x => x.IsEnabled));
 
         if (this._editorService.SelectedTab == EditorTabs.Project) {
             this._game.LoadScene(this._scene);
@@ -53,6 +59,21 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
     }
+    
+    /// <summary>
+    /// Gets the play command.
+    /// </summary>
+    public ICommand PlayCommand { get; }
+    
+    /// <summary>
+    /// Gets the pause command.
+    /// </summary>
+    public ICommand PauseCommand { get; }
+    
+    /// <summary>
+    /// Gets the stop command.
+    /// </summary>
+    public ICommand StopCommand { get; }
 
     /// <summary>
     /// Gets the selection service.
@@ -90,6 +111,11 @@ public class ProjectEditorViewModel : BaseViewModel {
         get => this._viewableSceneArea;
         set => this.ResetSize(this.OverallSceneArea, value);
     }
+
+    /// <summary>
+    /// Gets a value indicating whether or not an animation is showing.
+    /// </summary>
+    public bool IsShowingAnimation => this._spriteAnimator.IsEnabled;
 
     private IScene CreateScene() {
         var scene = new Scene {
@@ -200,6 +226,7 @@ public class ProjectEditorViewModel : BaseViewModel {
             }
 
             this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
+            this.RaisePropertyChanged(nameof(this.IsShowingAnimation));
         }
     }
 

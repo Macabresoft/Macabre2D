@@ -49,16 +49,20 @@
             
             <Border Classes="Card"
                     HorizontalAlignment="Stretch"
-                    Margin="{StaticResource DoubleMarginAll}">
+                    Margin="{StaticResource DoubleMarginAll}"
+                    IsVisible="{Binding IsShowingAnimation}">
                 <StackPanel HorizontalAlignment="Center"
                             Orientation="Horizontal">
-                    <Button>
+                    <Button Classes="Icon"
+                            Command="{Binding PlayCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PlayIcon}" />
                     </Button>
-                    <Button>
+                    <Button Classes="Icon"
+                            Command="{Binding PauseCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PauseIcon}" />
                     </Button>
-                    <Button>
+                    <Button Classes="Icon"
+                            Command="{Binding StopCommand}">
                         <avaloniaEx:Icon Content="{StaticResource StopIcon}" />
                     </Button>
                 </StackPanel>

@@ -8,6 +8,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
     private uint _millisecondsPassed;
     private uint _millisecondsPerFrame;
+    private bool _isPlaying;
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.CurrentSpriteIndex;
@@ -33,7 +34,10 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// <summary>
     /// Gets a value indicating whether or not this is playing.
     /// </summary>
-    public bool IsPlaying { get; protected set; }
+    public bool IsPlaying {
+        get => this._isPlaying;
+        private set => this.Set(ref this._isPlaying, value);
+    }
 
     /// <summary>
     /// Gets or sets the current frame index.
@@ -69,6 +73,12 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     public void Play() {
         this.IsEnabled = true;
         this.IsPlaying = true;
+
+        if (this.GetSpriteAnimation() is { } animation && animation.Steps.Count > this.CurrentStepIndex) {
+            var currentStep = animation.Steps.ElementAt((int)this.CurrentStepIndex);
+            this.CurrentSpriteIndex = currentStep.SpriteIndex;
+        }
+        
         this.Reset();
     }
 
@@ -77,13 +87,14 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// </summary>
     public virtual void Stop() {
         this.IsEnabled = false;
+        this.IsPlaying = false;
         this.ResetAnimation();
     }
 
     /// <inheritdoc />
     public virtual void Update(FrameTime frameTime, InputState inputState) {
-        if (this.IsPlaying && this.GetSpriteAnimation() is SpriteAnimation initialAnimation) {
-            if (this.HandleAnimationFinished(initialAnimation) is SpriteAnimation currentAnimation) {
+        if (this.IsPlaying && this.GetSpriteAnimation() is { } initialAnimation) {
+            if (this.HandleAnimationFinished(initialAnimation) is { } currentAnimation) {
                 this._millisecondsPassed += Convert.ToUInt32(frameTime.MillisecondsPassed);
 
                 if (this._millisecondsPassed >= this._millisecondsPerFrame) {
@@ -97,7 +108,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
                         this.CurrentFrameIndex = 0;
                         this.CurrentStepIndex++;
 
-                        if (this.HandleAnimationFinished(currentAnimation) is SpriteAnimation nextAnimation) {
+                        if (this.HandleAnimationFinished(currentAnimation) is { } nextAnimation) {
                             currentStep = nextAnimation.Steps.ElementAt((int)this.CurrentStepIndex);
                             this.CurrentSpriteIndex = currentStep.SpriteIndex;
                         }

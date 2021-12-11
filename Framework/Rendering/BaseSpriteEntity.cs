@@ -109,7 +109,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteIndex.HasValue && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteSheet is SpriteSheet spriteSheet) {
+        if (this.SpriteIndex.HasValue && this.Scene.Game.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             spriteSheet.Draw(
                 spriteBatch,
                 this.Scene.Game.Project.Settings.PixelsPerUnit,
@@ -144,7 +144,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
-        if (this.SpriteSheet is SpriteSheet spriteSheet) {
+        if (this.SpriteSheet is { } spriteSheet) {
             var inversePixelsPerUnit = this.Scene.Game.Project.Settings.InversePixelsPerUnit;
             var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
             var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
@@ -191,7 +191,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     private Vector2 CreateSize() {
         var result = Vector2.Zero;
-        if (this.SpriteSheet is SpriteSheet spriteSheet) {
+        if (this.SpriteSheet is { } spriteSheet) {
             return new Vector2(spriteSheet.SpriteSize.X, spriteSheet.SpriteSize.Y);
         }
 
