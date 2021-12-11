@@ -31,19 +31,39 @@
                VerticalAlignment="Stretch"
                PropertyChanged="ViewablePanel_OnPropertyChanged" />
 
-        <Border Grid.Row="0"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Classes="Card"
-                Margin="{StaticResource DoubleMarginAll}">
-            <StackPanel Orientation="Horizontal"
-                        Margin="{StaticResource StandardMarginAll}">
-                <TextBlock Classes="Label"
-                           Text="Background" />
-                <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
-            </StackPanel>
-        </Border>
+        <StackPanel Grid.Row="0"
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Orientation="Vertical">
+            <Border Classes="Card"
+                    HorizontalAlignment="Stretch"
+                    Margin="{StaticResource DoubleMarginAll}">
+                <StackPanel Orientation="Horizontal"
+                            Margin="{StaticResource StandardMarginAll}">
+                    <TextBlock Classes="Label"
+                               Text="Background" />
+                    <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
+                </StackPanel>
+            </Border>
+            
+            <Border Classes="Card"
+                    HorizontalAlignment="Stretch"
+                    Margin="{StaticResource DoubleMarginAll}">
+                <StackPanel HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Button>
+                        <avaloniaEx:Icon Content="{StaticResource PlayIcon}" />
+                    </Button>
+                    <Button>
+                        <avaloniaEx:Icon Content="{StaticResource PauseIcon}" />
+                    </Button>
+                    <Button>
+                        <avaloniaEx:Icon Content="{StaticResource StopIcon}" />
+                    </Button>
+                </StackPanel>
+            </Border>
+        </StackPanel>
 
         <Panel Grid.Row="0"
                Grid.Column="0"
