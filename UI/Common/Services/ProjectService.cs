@@ -37,11 +37,6 @@ public interface IProjectService : ISelectionService<object> {
     GameProject CurrentProject { get; }
 
     /// <summary>
-    /// Gets a value indicating whether or not this service is busy.
-    /// </summary>
-    bool IsBusy { get; }
-
-    /// <summary>
     /// Gets the selection type.
     /// </summary>
     ProjectSelectionType SelectionType { get; }
@@ -124,9 +119,6 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
             };
         }
     }
-
-    /// <inheritdoc />
-    public bool IsBusy => false;
 
     /// <inheritdoc />
     public IControl AssetEditor {
@@ -275,7 +267,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     private void ResetAssetEditor() {
         if (this.SelectionType == ProjectSelectionType.Asset) {
-            if (this.Selected is SpriteSheetAsset { SpriteSheet: SpriteSheet spriteSheet } spriteSheetAsset &&
+            if (this.Selected is SpriteSheetAsset { SpriteSheet: { } spriteSheet } spriteSheetAsset &&
                 this._contentService.RootContentDirectory.TryFindNode(spriteSheetAsset.SpriteSheet.ContentId, out var contentFile)) {
                 this.AssetEditor = spriteSheetAsset switch {
                     AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
