@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
-using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -15,9 +14,9 @@ using Unity;
 /// The view model for the main window.
 /// </summary>
 public class MainWindowViewModel : UndoBaseViewModel {
+    private readonly IAssetSelectionService _assetSelectionService;
     private readonly IContentService _contentService;
     private readonly ILocalDialogService _dialogService;
-    private readonly IProjectService _projectService;
     private readonly ISaveService _saveService;
     private readonly ISceneService _sceneService;
     private readonly IEditorSettingsService _settingsService;
@@ -33,34 +32,34 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel" /> class.
     /// </summary>
+    /// <param name="assetSelectionService">The asset selection service.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="game">The game.</param>
-    /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="settingsService">The editor settings service.</param>
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public MainWindowViewModel(
+        IAssetSelectionService assetSelectionService,
         IContentService contentService,
         ILocalDialogService dialogService,
         IEditorService editorService,
         IEditorGame game,
-        IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
         IEditorSettingsService settingsService,
         IUndoService undoService) : base(undoService) {
-        this._contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
-        this._dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-        this.EditorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-        this.Game = game ?? throw new ArgumentNullException(nameof(game));
-        this._projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-        this._saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
-        this._sceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-        this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        this._assetSelectionService = assetSelectionService;
+        this._contentService = contentService;
+        this._dialogService = dialogService;
+        this.EditorService = editorService;
+        this.Game = game;
+        this._saveService = saveService;
+        this._sceneService = sceneService;
+        this._settingsService = settingsService;
 
         var tabCommandCanExecute = this._sceneService.WhenAny(x => x.CurrentScene, x => x.Value != null);
         this.ExitCommand = ReactiveCommand.CreateFromTask<IWindow>(this.Exit);
@@ -132,20 +131,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
         set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
     }
 
-
-    /// <summary>
-    /// Gets a value indicating whether or not the window should close.
-    /// </summary>
-    /// <returns>A value indicating whether or not the window should close.</returns>
-    public async Task<YesNoCancelResult> TryClose() {
-        var result = await this._saveService.RequestSave();
-        if (result != YesNoCancelResult.Cancel) {
-            this._settingsService.Save();
-        }
-
-        return result;
-    }
-
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose() != YesNoCancelResult.Cancel) {
             Dispatcher.UIThread.Post(window.Close);
@@ -171,7 +156,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
                 this.IsBusy = true;
 
                 var sceneContentId = this._sceneService.CurrentSceneMetadata?.ContentId;
-                this._projectService.Selected = null;
+                this._assetSelectionService.Selected = null;
 
                 await Task.Run(() => this._contentService.RefreshContent(true));
 
@@ -191,6 +176,16 @@ public class MainWindowViewModel : UndoBaseViewModel {
 
     private void ToggleTab() {
         this.SelectTab(this.EditorService.SelectedTab == EditorTabs.Scene ? EditorTabs.Project : EditorTabs.Scene);
+    }
+
+
+    private async Task<YesNoCancelResult> TryClose() {
+        var result = await this._saveService.RequestSave();
+        if (result != YesNoCancelResult.Cancel) {
+            this._settingsService.Save();
+        }
+
+        return result;
     }
 
     private async Task ViewLicenses() {

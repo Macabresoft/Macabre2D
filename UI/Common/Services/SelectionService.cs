@@ -28,6 +28,10 @@ public interface ISelectionService<T> : ISelectionService where T : class {
     T Selected { get; set; }
 }
 
+/// <summary>
+/// A base selection service.
+/// </summary>
+/// <typeparam name="T">The type to be selected.</typeparam>
 public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T> where T : class {
     private readonly ObservableCollectionExtended<ValueControlCollection> _editors = new();
     private readonly object _editorsLock = new();

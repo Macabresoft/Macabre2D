@@ -51,7 +51,7 @@
                     HorizontalAlignment="Stretch"
                     Margin="{StaticResource DoubleMarginAll}"
                     IsVisible="{Binding IsShowingAnimation}">
-                <Grid Grid.ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto"
+                <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto"
                     HorizontalAlignment="Stretch"
                       Margin="{StaticResource StandardMarginAll}">
                     <TextBlock Grid.Column="0"
@@ -100,12 +100,12 @@
                 Margin="{StaticResource DoubleMarginLeftTopBottom}">
             <Panel>
                 <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
-                                                Collections="{Binding ProjectService.Editors}" />
+                                                Collections="{Binding AssetSelectionService.Editors}" />
 
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Text="Select a file or directory to view details"
-                           IsVisible="{Binding ProjectService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
+                           IsVisible="{Binding AssetSelectionService.Editors, Converter={x:Static ObjectConverters.IsNull}}" />
             </Panel>
         </Border>
 
@@ -117,14 +117,14 @@
         <GridSplitter Grid.Row="1"
                       Grid.Column="2"
                       Classes="CardSplitter"
-                      IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+                      IsVisible="{Binding AssetSelectionService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
 
         <Border Grid.Row="2"
                 Grid.Column="2"
                 Classes="Card"
                 Margin="{StaticResource DoubleMarginAll}"
-                IsVisible="{Binding ProjectService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
-            <ContentControl Content="{Binding ProjectService.AssetEditor}" />
+                IsVisible="{Binding AssetSelectionService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
+            <ContentControl Content="{Binding AssetSelectionService.AssetEditor}" />
         </Border>
     </Grid>
 </UserControl>

@@ -1,45 +1,21 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Avalonia.Controls;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using ReactiveUI;
-using Unity;
-using Unity.Resolution;
-
-/// <summary>
-/// Selection types for content.
-/// </summary>
-public enum ProjectSelectionType {
-    None,
-    File,
-    Directory,
-    Asset
-}
 
 /// <summary>
 /// Interface for a service which loads, saves, and exposes a <see cref="GameProject" />.
 /// </summary>
-public interface IProjectService : ISelectionService<object> {
-    /// <summary>
-    /// Gets the asset editor.
-    /// </summary>
-    IControl AssetEditor { get; }
-
+public interface IProjectService : INotifyPropertyChanged {
     /// <summary>
     /// Gets the currently loaded project.
     /// </summary>
     GameProject CurrentProject { get; }
-
-    /// <summary>
-    /// Gets the selection type.
-    /// </summary>
-    ProjectSelectionType SelectionType { get; }
 
     /// <summary>
     /// Tries to load the project.
@@ -60,107 +36,42 @@ public interface IProjectService : ISelectionService<object> {
 /// </summary>
 public sealed class ProjectService : ReactiveObject, IProjectService {
     private const string DefaultSceneName = "Default";
-    private readonly IUnityContainer _container;
     private readonly IContentService _contentService;
-    private readonly List<ValueControlCollection> _editors = new();
     private readonly IFileSystemService _fileSystem;
     private readonly IPathService _pathService;
     private readonly ISceneService _sceneService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
-    private readonly IUndoService _undoService;
-    private readonly IValueControlService _valueControlService;
-    private IControl _assetEditor;
     private GameProject _currentProject;
-    private object _selected;
-    private ProjectSelectionType _selectionType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectService" /> class.
     /// </summary>
-    /// <param name="container">The unity container.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="fileSystem">The file system service.</param>
     /// <param name="pathService">The path service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="serializer">The serializer.</param>
     /// <param name="settingsService">The editor settings service.</param>
-    /// <param name="undoService">The undo service.</param>
-    /// <param name="valueControlService">The value control service.</param>
     public ProjectService(
-        IUnityContainer container,
         IContentService contentService,
         IFileSystemService fileSystem,
         IPathService pathService,
         ISceneService sceneService,
         ISerializer serializer,
-        IEditorSettingsService settingsService,
-        IUndoService undoService,
-        IValueControlService valueControlService) {
-        this._container = container;
+        IEditorSettingsService settingsService) {
         this._contentService = contentService;
         this._fileSystem = fileSystem;
         this._pathService = pathService;
         this._sceneService = sceneService;
         this._serializer = serializer;
         this._settingsService = settingsService;
-        this._undoService = undoService;
-        this._valueControlService = valueControlService;
-    }
-
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<ValueControlCollection> Editors {
-        get {
-            return this._selected switch {
-                RootContentDirectory => this.GetEditors(),
-                IContentNode => this._contentService.Editors,
-                _ => null
-            };
-        }
-    }
-
-    /// <inheritdoc />
-    public IControl AssetEditor {
-        get => this._assetEditor;
-        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }
 
     /// <inheritdoc />
     public GameProject CurrentProject {
         get => this._currentProject;
         private set => this.RaiseAndSetIfChanged(ref this._currentProject, value);
-    }
-
-    /// <inheritdoc />
-    public object Selected {
-        get => this._selected;
-        set {
-            this.RaiseAndSetIfChanged(ref this._selected, value);
-
-            if (this._selected is IContentNode node) {
-                this._contentService.Selected = node;
-            }
-            else {
-                this._contentService.Selected = null;
-            }
-
-            this.SelectionType = this._selected switch {
-                IContentDirectory => ProjectSelectionType.Directory,
-                IContentNode => ProjectSelectionType.File,
-                SpriteSheetAsset => ProjectSelectionType.Asset,
-                _ => ProjectSelectionType.None
-            };
-
-            this.ResetAssetEditor();
-            this.RaisePropertyChanged(nameof(this.Editors));
-        }
-    }
-
-    /// <inheritdoc />
-    public ProjectSelectionType SelectionType {
-        get => this._selectionType;
-        private set => this.RaiseAndSetIfChanged(ref this._selectionType, value);
     }
 
     /// <inheritdoc />
@@ -232,62 +143,6 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         this._sceneService.SaveScene(metadata, scene);
         var content = new ContentFile(parent, metadata);
         return this._sceneService.TryLoadScene(content.Id, out var asset) ? asset.ContentId : Guid.Empty;
-    }
-
-    private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
-            var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
-            var newValue = e.UpdatedValue;
-
-            this._undoService.Do(() => {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                valueEditor.SetValue(newValue, false);
-            }, () => {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                valueEditor.SetValue(originalValue, false);
-            });
-        }
-    }
-
-    private IReadOnlyCollection<ValueControlCollection> GetEditors() {
-        foreach (var editorCollection in this._editors) {
-            editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
-        }
-
-        this._editors.Clear();
-        var editors = this._valueControlService.CreateControls(this.CurrentProject);
-        this._editors.AddRange(editors);
-
-        foreach (var editorCollection in this._editors) {
-            editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-        }
-
-        return this._editors;
-    }
-
-    private void ResetAssetEditor() {
-        if (this.SelectionType == ProjectSelectionType.Asset) {
-            if (this.Selected is SpriteSheetAsset { SpriteSheet: { } spriteSheet } spriteSheetAsset &&
-                this._contentService.RootContentDirectory.TryFindNode(spriteSheetAsset.SpriteSheet.ContentId, out var contentFile)) {
-                this.AssetEditor = spriteSheetAsset switch {
-                    AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
-                        new ParameterOverride(typeof(AutoTileSet), tileSet),
-                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                        new ParameterOverride(typeof(ContentFile), contentFile)),
-                    SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
-                        new ParameterOverride(typeof(SpriteAnimation), animation),
-                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
-                        new ParameterOverride(typeof(ContentFile), contentFile)),
-                    _ => null
-                };
-            }
-            else {
-                this.AssetEditor = null;
-            }
-        }
-        else {
-            this.AssetEditor = null;
-        }
     }
 
     private void SaveProjectFile(IGameProject project, string projectFilePath) {

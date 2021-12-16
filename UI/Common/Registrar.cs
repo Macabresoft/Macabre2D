@@ -26,6 +26,7 @@ public static class Registrar {
     /// <returns>The container.</returns>
     public static IUnityContainer RegisterLibraryServices(this IUnityContainer container) {
         return container.RegisterType<IAssemblyService, AssemblyService>(new SingletonLifetimeManager())
+            .RegisterType<IAssetSelectionService, AssetSelectionService>(new SingletonLifetimeManager())
             .RegisterType<IBuildService, BuildService>(new SingletonLifetimeManager())
             .RegisterType<IContentService, ContentService>(new SingletonLifetimeManager())
             .RegisterType<IEditorService, EditorService>(new SingletonLifetimeManager())

@@ -34,38 +34,38 @@ public class ProjectTreeViewModel : BaseViewModel {
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectTreeViewModel" /> class.
     /// </summary>
+    /// <param name="assetSelectionService">The asset selection service.</param>
     /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="fileSystem">The file system.</param>
-    /// <param name="projectService">The project service.</param>
     /// <param name="saveService">The save service.</param>
     /// <param name="sceneService">The scene service.</param>
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public ProjectTreeViewModel(
+        IAssetSelectionService assetSelectionService,
         IContentService contentService,
         ICommonDialogService dialogService,
         IEditorService editorService,
         IFileSystemService fileSystem,
-        IProjectService projectService,
         ISaveService saveService,
         ISceneService sceneService,
         IUndoService undoService) {
+        this.AssetSelectionService = assetSelectionService;
         this.ContentService = contentService;
         this._dialogService = dialogService;
         this._editorService = editorService;
         this._fileSystem = fileSystem;
-        this.ProjectService = projectService;
         this._saveService = saveService;
         this._sceneService = sceneService;
         this._undoService = undoService;
 
         this.AddCommand = ReactiveCommand.Create<object>(
             this.AddNode,
-            this.ProjectService.WhenAny(x => x.Selected, x => CanAddNode(x.Value)));
+            this.AssetSelectionService.WhenAny(x => x.Selected, x => CanAddNode(x.Value)));
 
-        var whenIsContentDirectory = this.ProjectService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory);
+        var whenIsContentDirectory = this.AssetSelectionService.WhenAny(x => x.Selected, x => x.Value is IContentDirectory);
         this.AddDirectoryCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddDirectory(x as IContentDirectory), whenIsContentDirectory);
         this.AddSceneCommand = ReactiveCommand.Create<object>(x => this.ContentService.AddScene(x as IContentDirectory), whenIsContentDirectory);
         this.ImportCommand = ReactiveCommand.CreateFromTask<object>(x => this.ContentService.ImportContent(x as IContentDirectory), whenIsContentDirectory);
@@ -80,7 +80,7 @@ public class ProjectTreeViewModel : BaseViewModel {
 
         this.RemoveContentCommand = ReactiveCommand.Create<object>(
             this.RemoveContent,
-            this.ProjectService.WhenAny(x => x.Selected, y => this.CanRemoveContent(y.Value)));
+            this.AssetSelectionService.WhenAny(x => x.Selected, y => this.CanRemoveContent(y.Value)));
 
         this.RenameContentCommand = ReactiveCommand.CreateFromTask<string>(async x => await this.RenameContent(x));
     }
@@ -101,6 +101,11 @@ public class ProjectTreeViewModel : BaseViewModel {
     public ICommand AddSceneCommand { get; }
 
     /// <summary>
+    /// Gets the asset selection service.
+    /// </summary>
+    public IAssetSelectionService AssetSelectionService { get; }
+
+    /// <summary>
     /// Gets the content service.
     /// </summary>
     public IContentService ContentService { get; }
@@ -119,11 +124,6 @@ public class ProjectTreeViewModel : BaseViewModel {
     /// Gets a command to open the file explorer to the content's location.
     /// </summary>
     public ICommand OpenContentLocationCommand { get; }
-
-    /// <summary>
-    /// Gets the project service.
-    /// </summary>
-    public IProjectService ProjectService { get; }
 
     /// <summary>
     /// Gets the remove content command.
@@ -229,7 +229,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                 this._fileSystem.DeleteFile(contentNode.GetFullPath());
                 contentNode.Parent?.RemoveChild(contentNode);
                 break;
-            case SpriteSheetAsset { SpriteSheet: SpriteSheet spriteSheet } spriteSheetAsset:
+            case SpriteSheetAsset { SpriteSheet: { } spriteSheet } spriteSheetAsset:
                 switch (spriteSheetAsset) {
                     case AutoTileSet tileSet when spriteSheet.AutoTileSets is AutoTileSetCollection tileSets:
                         var tileSetIndex = tileSets.IndexOf(tileSet);
@@ -249,7 +249,7 @@ public class ProjectTreeViewModel : BaseViewModel {
     }
 
     private async Task RenameContent(string updatedName) {
-        switch (this.ProjectService.Selected) {
+        switch (this.AssetSelectionService.Selected) {
             case RootContentDirectory:
                 return;
             case IContentNode node when node.Name != updatedName:
@@ -258,7 +258,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                     await this._dialogService.ShowWarningDialog($"Invalid {typeName} Name", $"'{updatedName}' contains invalid characters.");
                 }
                 else {
-                    if (node.Parent is IContentDirectory parent) {
+                    if (node.Parent is { } parent) {
                         var parentPath = parent.GetFullPath();
                         var updatedPath = Path.Combine(parentPath, updatedName);
 

@@ -86,36 +86,36 @@
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal">
                     <Button Command="{Binding AddCommand, Mode=OneWay}"
-                            CommandParameter="{Binding ProjectService.Selected}"
+                            CommandParameter="{Binding AssetSelectionService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Add content as a child of the selected node">
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Add (Context Sensitive)"
                                           Command="{Binding AddDirectoryCommand}"
-                                          CommandParameter="{Binding ProjectService.Selected}"
+                                          CommandParameter="{Binding AssetSelectionService.Selected}"
                                           ToolTip.Tip="Adds either a directory node or an asset collection child" />
 
                                 <MenuItem Header="Add Directory"
                                           Command="{Binding AddDirectoryCommand}"
-                                          CommandParameter="{Binding ProjectService.Selected}"
+                                          CommandParameter="{Binding AssetSelectionService.Selected}"
                                           ToolTip.Tip="Adds a directory as the child of the current node" />
 
                                 <MenuItem Header="Add Scene"
                                           Command="{Binding AddSceneCommand}"
-                                          CommandParameter="{Binding ProjectService.Selected}"
+                                          CommandParameter="{Binding AssetSelectionService.Selected}"
                                           ToolTip.Tip="Adds a scene as the child of the current node" />
 
                                 <MenuItem Header="Import Content"
                                           Command="{Binding ImportCommand}"
-                                          CommandParameter="{Binding ProjectService.Selected}"
+                                          CommandParameter="{Binding AssetSelectionService.Selected}"
                                           ToolTip.Tip="Import a piece of content from elsewhere" />
                             </ContextMenu>
                         </Button.ContextMenu>
                         <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                     </Button>
                     <Button Command="{Binding RemoveContentCommand, Mode=OneWay}"
-                            CommandParameter="{Binding ProjectService.Selected}"
+                            CommandParameter="{Binding AssetSelectionService.Selected}"
                             Classes="Icon"
                             ToolTip.Tip="Remove the selected content node and all of its children from your computer">
                         <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
@@ -123,7 +123,7 @@
                 </StackPanel>
                 <TreeView Grid.Row="1"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
-                          SelectedItem="{Binding ProjectService.Selected, Mode=TwoWay}"
+                          SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <TreeView.Styles>

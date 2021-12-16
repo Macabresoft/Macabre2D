@@ -9,7 +9,6 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using NSubstitute;
 using NUnit.Framework;
-using Unity;
 
 [TestFixture]
 public class ProjectServiceTests {
@@ -57,15 +56,12 @@ public class ProjectServiceTests {
             });
 
         var projectService = new ProjectService(
-            Substitute.For<IUnityContainer>(),
             contentService,
             fileSystem,
             pathService,
             sceneService,
             serializer,
-            Substitute.For<IEditorSettingsService>(),
-            Substitute.For<IUndoService>(),
-            Substitute.For<IValueControlService>());
+            Substitute.For<IEditorSettingsService>());
 
         var project = projectService.LoadProject();
 
@@ -96,15 +92,12 @@ public class ProjectServiceTests {
             });
 
         var projectService = new ProjectService(
-            Substitute.For<IUnityContainer>(),
             Substitute.For<IContentService>(),
             fileSystem,
             pathService,
             sceneService,
             serializer,
-            settingsService,
-            Substitute.For<IUndoService>(),
-            Substitute.For<IValueControlService>());
+            settingsService);
 
 
         var loadedProject = projectService.LoadProject();
@@ -125,15 +118,12 @@ public class ProjectServiceTests {
         var serializer = Substitute.For<ISerializer>();
 
         var projectService = new ProjectService(
-            Substitute.For<IUnityContainer>(),
             Substitute.For<IContentService>(),
             fileSystem,
             pathService,
             Substitute.For<ISceneService>(),
             serializer,
-            Substitute.For<IEditorSettingsService>(),
-            Substitute.For<IUndoService>(),
-            Substitute.For<IValueControlService>());
+            Substitute.For<IEditorSettingsService>());
 
         projectService.SaveProject();
 
@@ -161,15 +151,12 @@ public class ProjectServiceTests {
             });
 
         var projectService = new ProjectService(
-            Substitute.For<IUnityContainer>(),
             Substitute.For<IContentService>(),
             fileSystem,
             pathService,
             sceneService,
             serializer,
-            settingsService,
-            Substitute.For<IUndoService>(),
-            Substitute.For<IValueControlService>());
+            settingsService);
 
         projectService.LoadProject();
         projectService.SaveProject();

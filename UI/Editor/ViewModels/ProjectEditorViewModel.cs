@@ -32,21 +32,21 @@ public class ProjectEditorViewModel : BaseViewModel {
     /// <summary>
     /// Initializes a new instance of the <see cref="ProjectEditorViewModel" /> class.
     /// </summary>
+    /// <param name="assetSelectionService">The asset selection service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="game">The game.</param>
-    /// <param name="projectService">The project service.</param>
     /// <param name="settingsService">The settings service.</param>
     public ProjectEditorViewModel(
+        IAssetSelectionService assetSelectionService,
         IEditorService editorService,
         IEditorGame game,
-        IProjectService projectService,
         IEditorSettingsService settingsService) : base() {
-        this._editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-        this._game = game ?? throw new ArgumentNullException(nameof(game));
-        this.ProjectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-        this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        this.AssetSelectionService = assetSelectionService;
+        this._editorService = editorService;
+        this._game = game;
+        this._settingsService = settingsService;
 
-        this.ProjectService.PropertyChanged += this.ProjectService_PropertyChanged;
+        this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
         this._scene = this.CreateScene();
         
         this.PlayCommand = ReactiveCommand.Create(this._spriteAnimator.Play, this._spriteAnimator.WhenAny(x => x.IsPlaying, x => !x.Value));
@@ -59,6 +59,11 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
     }
+    
+    /// <summary>
+    /// Gets the asset selection service.
+    /// </summary>
+    public IAssetSelectionService AssetSelectionService { get; }
     
     /// <summary>
     /// Gets the play command.
@@ -74,11 +79,6 @@ public class ProjectEditorViewModel : BaseViewModel {
     /// Gets the stop command.
     /// </summary>
     public ICommand StopCommand { get; }
-
-    /// <summary>
-    /// Gets the selection service.
-    /// </summary>
-    public IProjectService ProjectService { get; }
 
     /// <summary>
     /// Gets the background color.
@@ -120,7 +120,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     /// <summary>
     /// Gets a value indicating whether or not an animation is showing.
     /// </summary>
-    public bool IsShowingAnimation => this.ProjectService.Selected is SpriteAnimation;
+    public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
 
     private IScene CreateScene() {
         var scene = new Scene {
@@ -213,12 +213,12 @@ public class ProjectEditorViewModel : BaseViewModel {
         return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
     }
 
-    private void ProjectService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(IProjectService.Selected)) {
+    private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(IAssetSelectionService.Selected)) {
             this._tileMap.IsEnabled = false;
             this._spriteAnimator.IsEnabled = false;
             this._grid.IsEnabled = false;
-            switch (this.ProjectService.Selected) {
+            switch (this.AssetSelectionService.Selected) {
                 case AutoTileSet autoTileSet:
                     this.ResetScene(autoTileSet);
                     break;
