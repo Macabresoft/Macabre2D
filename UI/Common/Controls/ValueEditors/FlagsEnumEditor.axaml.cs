@@ -9,8 +9,10 @@ using ReactiveUI;
 using Unity;
 
 public class FlagsEnumEditor : ValueEditorControl<object> {
-    public static readonly StyledProperty<Type> EnumTypeProperty =
-        AvaloniaProperty.Register<FlagsEnumEditor, Type>(nameof(EnumType));
+    public static readonly DirectProperty<FlagsEnumEditor, Type> EnumTypeProperty =
+        AvaloniaProperty.RegisterDirect<FlagsEnumEditor, Type>(
+            nameof(EnumType),
+            editor => editor.EnumType);
 
     public static readonly DirectProperty<FlagsEnumEditor, ICommand> ToggleValueCommandProperty =
         AvaloniaProperty.RegisterDirect<FlagsEnumEditor, ICommand>(

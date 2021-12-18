@@ -22,7 +22,6 @@ public class EnumEditor : ValueEditorControl<object> {
 
     public Type EnumType { get; }
 
-
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
     }
