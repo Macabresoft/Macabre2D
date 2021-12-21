@@ -14,13 +14,10 @@ using Unity;
 public class App : Application {
     /// <inheritdoc />
     public override void Initialize() {
-        var container = new UnityContainer()
-            .RegisterServices()
+        Resolver.Container.RegisterServices()
             .RegisterLibraryServices()
             .RegisterLibraryTypes()
             .RegisterFrameworkTypes();
-
-        Resolver.Container = container;
 
         AvaloniaXamlLoader.Load(this);
     }

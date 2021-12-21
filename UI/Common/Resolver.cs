@@ -8,23 +8,12 @@ using Unity.Resolution;
 /// A resolver to be used by views and controls to get registered objects.
 /// </summary>
 public static class Resolver {
-    private static IUnityContainer _container;
 
     /// <summary>
     /// Gets or sets the container.
     /// </summary>
     /// <value>The container.</value>
-    public static IUnityContainer Container {
-        get => _container;
-        set {
-            if (_container == null) {
-                _container = value;
-            }
-            else {
-                throw new NotSupportedException("Cannot instantiate the container twice.");
-            }
-        }
-    }
+    public static IUnityContainer Container { get; } = new UnityContainer();
 
     /// <summary>
     /// Resolve the requested type using the specified overrides.

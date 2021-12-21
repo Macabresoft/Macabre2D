@@ -6,18 +6,18 @@
         <LangVersion>default</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.10"/>
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.10"/>
-        <PackageReference Include="Macabresoft.Core" Version="1.0.10"/>
-        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641"/>
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641"/>
+        <PackageReference Include="Avalonia" Version="0.10.11" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.11" />
+        <PackageReference Include="Macabresoft.Core" Version="1.0.10" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj"/>
-        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj"/>
-        <ProjectReference Include="..\..\UI\Common\Macabre2D.UI.Common.csproj"/>
+        <ProjectReference Include="..\..\UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
+        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
+        <ProjectReference Include="..\..\UI\Common\Macabre2D.UI.Common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <MonoGameContentReference Include="Content\Content.mgcb"/>
+        <MonoGameContentReference Include="Content\Content.mgcb" />
     </ItemGroup>
 </Project>
