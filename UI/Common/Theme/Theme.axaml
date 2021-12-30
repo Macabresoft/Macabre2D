@@ -1,5 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StyleInclude Source="avares://Macabresoft.AvaloniaEx/Theme/Theme.axaml" />
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx">
+    <avaloniaEx:MacabreTheme Accent="Purple" />
     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/IconPaths.axaml" />
 </Styles>
