@@ -33,7 +33,8 @@ public sealed class SpriteRenderer : BaseSpriteEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
+        
+        this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
         this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
         this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
     }
