@@ -6,6 +6,7 @@
                        xmlns:monoGameInterop="clr-namespace:Macabresoft.Macabre2D.UI.AvaloniaInterop;assembly=Macabre2D.UI.AvaloniaInterop"
                        x:Class="Macabresoft.Macabre2D.UI.Editor.MainWindow"
                        CanResize="True"
+                       ShowMinimize="True"
                        CloseCommand="{Binding ExitCommand}"
                        Padding="0"
                        Title="Macabre2D"
