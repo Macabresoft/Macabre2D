@@ -3,7 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// An asset for prefabricated <see cref="IEntity"/>.
 /// </summary>
-public sealed class PrefabAsset : Asset<IEntity> {
+public sealed class PrefabAsset : Asset<Entity> {
     
     /// <summary>
     /// The file extension for a serialized <see cref="IEntity" /> as a prefab.

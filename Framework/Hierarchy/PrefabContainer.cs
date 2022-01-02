@@ -40,15 +40,19 @@ public sealed class PrefabContainer : Entity {
     private void Reset() {
         this.Scene.Assets.ResolveAsset<PrefabAsset, IEntity>(this.PrefabReference);
 
+        if (this._prefabChild != null) {
+            this.RemoveChild(this._prefabChild);
+        }
+
         if (this.PrefabReference.Asset?.Content is { } prefab) {
             if (BaseGame.IsDesignMode) {
                 this._prefabChild = prefab;
+                this._prefabChild.Initialize(this.Scene, this);
             }
             else if (prefab.TryClone(out var entity)) {
                 this._prefabChild = entity;
+                this.AddChild(this._prefabChild);
             }
-            
-            this._prefabChild?.Initialize(this.Scene, this);
         }
     }
 }

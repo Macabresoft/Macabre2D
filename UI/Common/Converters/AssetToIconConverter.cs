@@ -13,23 +13,26 @@ using Macabresoft.Macabre2D.Framework;
 public class AssetToIconConverter : IValueConverter {
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-        object result;
+        var result = AvaloniaProperty.UnsetValue;
 
-        _ = value switch {
-            ContentFile { Asset: IAsset asset } => asset switch {
-                SceneAsset => Application.Current.TryFindResource("SceneIcon", out result),
-                SpriteSheet => Application.Current.TryFindResource("SpriteSheetIcon", out result),
-                AudioClip => Application.Current.TryFindResource("AudioClipIcon", out result),
-                Shader => Application.Current.TryFindResource("ShaderIcon", out result),
-                _ => Application.Current.TryFindResource("FileIcon", out result)
-            },
-            INameableCollection => value switch {
-                AutoTileSetCollection => Application.Current.TryFindResource("AutoLayoutIcon", out result),
-                SpriteAnimationCollection => Application.Current.TryFindResource("AnimationIcon", out result),
-                _ => Application.Current.TryFindResource("UnknownIcon", out result)
-            },
-            _ => Application.Current.TryFindResource("UnknownIcon", out result)
-        };
+        if (Application.Current is { } application) {
+            _ = value switch {
+                ContentFile { Asset: { } asset } => asset switch {
+                    AudioClip => application.TryFindResource("AudioClipIcon", out result),
+                    PrefabAsset => application.TryFindResource("EntityIcon", out result),
+                    SceneAsset => application.TryFindResource("SceneIcon", out result),
+                    Shader => application.TryFindResource("ShaderIcon", out result),
+                    SpriteSheet => application.TryFindResource("SpriteSheetIcon", out result),
+                    _ => application.TryFindResource("FileIcon", out result)
+                },
+                INameableCollection => value switch {
+                    AutoTileSetCollection => application.TryFindResource("AutoLayoutIcon", out result),
+                    SpriteAnimationCollection => application.TryFindResource("AnimationIcon", out result),
+                    _ => application.TryFindResource("UnknownIcon", out result)
+                },
+                _ => application.TryFindResource("UnknownIcon", out result)
+            };
+        }
 
         return result;
     }

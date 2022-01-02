@@ -65,6 +65,10 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
             Extensions = SpriteSheet.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
         },
         new FileDialogFilter {
+            Name = "Prefabs",
+            Extensions =new List<string> { PrefabAsset.FileExtension.TrimStart('.') }
+        },
+        new FileDialogFilter {
             Name = "Scenes",
             Extensions = new List<string> { SceneAsset.FileExtension.TrimStart('.') }
         },
