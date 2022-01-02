@@ -92,10 +92,10 @@
                 IsEnabled="{Binding !IsBusy}">
             <Panel>
                 <avaloniaEx:Icon Content="{StaticResource SceneIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 Foreground="{DynamicResource YellowBrush}"
                                  IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
                 <avaloniaEx:Icon Content="{StaticResource ProjectIcon}"
-                                 Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                 Foreground="{DynamicResource YellowBrush}"
                                  IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
             </Panel>
         </Button>
