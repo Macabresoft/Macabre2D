@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 public class ContentGame : BaseGame {
     private SpriteSheet _colorfulSquares;
     private Font _font;
-    private AudioClip _lazer;
+    private AudioClip _laser;
     private PrefabAsset _prefabHelloWorld;
 
     private SpriteSheet _whiteSquare;
@@ -114,7 +114,7 @@ public class ContentGame : BaseGame {
         prefabContainer1.LocalScale = new Vector2(0.5f, 0.5f);
         prefabContainer1.LocalPosition -= new Vector2(5f, 5f);
         prefabContainer1.PrefabReference.Initialize(this._prefabHelloWorld);
-        
+
         var prefabContainer2 = scene.AddChild<PrefabContainer>();
         prefabContainer2.LocalScale = new Vector2(2f, 2f);
         prefabContainer2.LocalPosition = new Vector2(-6f, 3f);
@@ -128,15 +128,11 @@ public class ContentGame : BaseGame {
         frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
         frameRateDisplay.LocalScale = new Vector2(0.1f);
 
-        this._lazer = new AudioClip();
-
+        this._laser = new AudioClip();
         var audioPlayer = scene.AddChild<AudioPlayer>();
         audioPlayer.Volume = 0.5f;
-        audioPlayer.AudioClipReference.Initialize(this._lazer);
+        audioPlayer.AudioClipReference.Initialize(this._laser);
         audioPlayer.AddChild<VolumeController>();
-
-        //scene.Initialize(this, this._assets);
-
 
         var filePath = Path.GetTempFileName();
         Serializer.Instance.Serialize(scene, filePath);
@@ -153,12 +149,10 @@ public class ContentGame : BaseGame {
         assetManager.RegisterMetadata(new ContentMetadata(this._colorfulSquares, new[] { "ColorfulSquares" }, ".png"));
         assetManager.RegisterMetadata(new ContentMetadata(this._whiteSquare, new[] { "WhiteSquare" }, ".png"));
         assetManager.RegisterMetadata(new ContentMetadata(this._font, new[] { "League Mono" }, ".spritefont"));
-        assetManager.RegisterMetadata(new ContentMetadata(this._lazer, new[] { "laser" }, ".wav"));
+        assetManager.RegisterMetadata(new ContentMetadata(this._laser, new[] { "laser" }, ".wav"));
         assetManager.RegisterMetadata(new ContentMetadata(this._prefabHelloWorld, new[] { "PrefabHelloWorld" }, PrefabAsset.FileExtension));
-
-        
     }
-    
+
     private void PostLoadRenderingStuff() {
         var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
         var arrowSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
