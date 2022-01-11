@@ -50,8 +50,8 @@
 
         <Style Selector="ToggleButton.Tile:checked /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonForegroundChecked}" />
-            <Setter Property="TextBlock.Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleButtonForegroundChecked}" />
+            <Setter Property="TextBlock.Foreground" Value="{StaticResource ToggleButtonForegroundChecked}" />
         </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="Auto, *"

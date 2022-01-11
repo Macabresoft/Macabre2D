@@ -16,6 +16,7 @@ using Unity;
 /// A view model for the scene view.
 /// </summary>
 public sealed class SceneTreeViewModel : BaseViewModel {
+    private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
     private readonly IUndoService _undoService;
 
@@ -29,6 +30,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// <summary>
     /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
     /// </summary>
+    /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The selection service.</param>
@@ -37,12 +39,14 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public SceneTreeViewModel(
+        IContentService contentService,
         ICommonDialogService dialogService,
         IEditorService editorService,
         IEntityService entityService,
         ISceneService sceneService,
         ISystemService systemService,
         IUndoService undoService) {
+        this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
         this.EntityService = entityService;
@@ -50,29 +54,24 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SystemService = systemService;
         this._undoService = undoService;
 
+        var whenSystemNotNull = this.SystemService.WhenAny(x => x.Selected, y => y.Value != null);
+
         this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
             async x => await this.AddEntity(x),
             this.SceneService.WhenAnyValue(x => x.IsEntityContext));
-
+        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(
+            async x => await this.CreateFromPrefab(x),
+            this.SceneService.WhenAny(x => x.Selected, x => x.Value is IEntity and not IScene));
         this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
             this.RemoveEntity,
             this.EntityService.WhenAny(x => x.Selected, y => y.Value != null && y.Value.Parent != y.Value));
-
-        this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(
-            async x => await this.AddSystem(x),
+        this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x),
             this.SceneService.WhenAny(x => x.IsEntityContext, x => !x.Value));
-
-        this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(
-            this.RemoveSystem,
-            this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
-
+        this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem, whenSystemNotNull);
         this.RenameEntityCommand = ReactiveCommand.Create<string>(
             this.RenameEntity,
             this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
-
-        this.RenameSystemCommand = ReactiveCommand.Create<string>(
-            this.RenameSystem,
-            this.SystemService.WhenAny(x => x.Selected, y => y.Value != null));
+        this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem, whenSystemNotNull);
     }
 
     /// <summary>
@@ -84,6 +83,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets a command to add a system.
     /// </summary>
     public ICommand AddSystemCommand { get; }
+
+    /// <summary>
+    /// Gets a command to create a prefab.
+    /// </summary>
+    public ICommand CreatePrefabCommand { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -167,7 +171,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private async Task AddSystem(Type type) {
-        if (this.SceneService.CurrentScene is IScene scene) {
+        if (this.SceneService.CurrentScene is { } scene) {
             type ??= await this._dialogService.OpenTypeSelectionDialog(this.SystemService.AvailableTypes);
 
             if (type != null && Activator.CreateInstance(type) is IUpdateableSystem system) {
@@ -194,6 +198,10 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                !targetEntity.IsDescendentOf(sourceEntity);
     }
 
+    private async Task CreateFromPrefab(IEntity entity) {
+        await this._contentService.CreatePrefab(entity);
+    }
+
     private void RemoveEntity(object selected) {
         if (selected is IEntity entity) {
             var parent = entity.Parent;
@@ -212,7 +220,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void RemoveSystem(object selected) {
-        if (selected is IUpdateableSystem system && this.SceneService.CurrentScene is IScene scene) {
+        if (selected is IUpdateableSystem system && this.SceneService.CurrentScene is { } scene) {
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
                     scene.RemoveSystem(system);
@@ -228,7 +236,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void RenameEntity(string updatedName) {
-        if (this.EntityService.Selected is IEntity entity && entity.Name != updatedName) {
+        if (this.EntityService.Selected is { } entity && entity.Name != updatedName) {
             var originalName = entity.Name;
             this._undoService.Do(
                 () => { Dispatcher.UIThread.Post(() => { entity.Name = updatedName; }); }, () => { Dispatcher.UIThread.Post(() => { entity.Name = originalName; }); });
@@ -236,7 +244,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void RenameSystem(string updatedName) {
-        if (this.SystemService.Selected is IUpdateableSystem system && system.Name != updatedName) {
+        if (this.SystemService.Selected is { } system && system.Name != updatedName) {
             var originalName = system.Name;
             this._undoService.Do(
                 () => { Dispatcher.UIThread.Post(() => { system.Name = updatedName; }); },

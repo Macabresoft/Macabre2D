@@ -33,7 +33,7 @@ public class ContentSelectionViewModel : BaseDialogViewModel {
     public ContentSelectionViewModel(IContentService contentService, Type desiredAssetType, bool allowDirectorySelection) : this() {
         this._desiredAssetType = desiredAssetType;
         this._allowDirectorySelection = allowDirectorySelection;
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, desiredAssetType);
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, desiredAssetType, allowDirectorySelection);
     }
 
     /// <summary>

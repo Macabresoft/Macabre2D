@@ -23,7 +23,7 @@
                                      Content="{StaticResource DirectoryIcon}"
                                      IsVisible="{Binding IsDirectory}"
                                      Margin="{StaticResource StandardMarginRight}"
-                                     Foreground="{StaticResource SystemAccentColorLightBrush1}" />
+                                     Foreground="{StaticResource YellowBrush}" />
 
                     <avaloniaEx:Icon Grid.Column="0"
                                      Content="{Binding Node, Converter={StaticResource AssetToIconConverter}}"

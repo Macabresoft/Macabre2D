@@ -16,7 +16,8 @@ public class FilteredContentWrapper {
     /// </summary>
     /// <param name="node">The node.</param>
     /// <param name="assetType">The asset type to find.</param>
-    public FilteredContentWrapper(IContentNode node, Type assetType) {
+    /// <param name="allowDirectorySelection">A value indicating whether or not directories are valid objects to select.</param>
+    public FilteredContentWrapper(IContentNode node, Type assetType, bool allowDirectorySelection) {
         if (assetType == null) {
             throw new ArgumentNullException(nameof(assetType));
         }
@@ -26,8 +27,8 @@ public class FilteredContentWrapper {
         if (node is IContentDirectory directory) {
             var children = new List<FilteredContentWrapper>();
             foreach (var childDirectory in directory.Children.OfType<IContentDirectory>()) {
-                if (childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset))) {
-                    children.Add(new FilteredContentWrapper(childDirectory, assetType));
+                if (allowDirectorySelection || (childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset)))) {
+                    children.Add(new FilteredContentWrapper(childDirectory, assetType, allowDirectorySelection));
                 }
             }
 
@@ -35,7 +36,7 @@ public class FilteredContentWrapper {
                 directory.Children
                     .OfType<ContentFile>()
                     .Where(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset))
-                    .Select(x => new FilteredContentWrapper(x, assetType)));
+                    .Select(x => new FilteredContentWrapper(x, assetType, allowDirectorySelection)));
 
             this.Children = children;
         }

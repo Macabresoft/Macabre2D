@@ -30,7 +30,7 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet));
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
 

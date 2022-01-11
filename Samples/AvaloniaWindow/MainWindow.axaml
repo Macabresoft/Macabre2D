@@ -18,10 +18,10 @@
                     Command="{Binding ToggleTabCommand}">
                 <Panel>
                     <avaloniaEx:Icon Content="{StaticResource SmallThumbnailIcon}"
-                                     Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                     Foreground="{StaticResource YellowBrush}"
                                      IsVisible="{Binding ShowSkull}" />
                     <avaloniaEx:Icon Content="{StaticResource LargeThumbnailIcon}"
-                                     Foreground="{DynamicResource SystemAccentColorLightBrush1}"
+                                     Foreground="{StaticResource YellowBrush}"
                                      IsVisible="{Binding !ShowSkull}" />
                 </Panel>
             </Button>
@@ -46,7 +46,7 @@
 
         <Border Grid.Column="0"
                 Classes="Card"
-                Margin="{DynamicResource StandardMarginLeftTopBottom}"
+                Margin="{StaticResource StandardMarginLeftTopBottom}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top">
             <StackPanel Orientation="Vertical"

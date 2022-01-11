@@ -29,12 +29,12 @@
                Grid.Column="0"
                Margin="{StaticResource StandardMarginLeftTopBottom}">
             <Border Classes="Card"
-                    Margin="{DynamicResource StandardMarginLeftTopBottom}" />
+                    Margin="{StaticResource StandardMarginLeftTopBottom}" />
 
             <Border Classes="Card"
-                    Margin="{DynamicResource StandardMarginLeftTopBottom}">
+                    Margin="{StaticResource StandardMarginLeftTopBottom}">
                 <Panel>
-                    <common:ValueCollectionsControl Margin="{DynamicResource StandardMarginAll}"
+                    <common:ValueCollectionsControl Margin="{StaticResource StandardMarginAll}"
                                                     Collections="{Binding SceneService.Editors}" />
 
                     <TextBlock HorizontalAlignment="Center"

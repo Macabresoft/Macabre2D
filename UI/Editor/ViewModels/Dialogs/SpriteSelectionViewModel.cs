@@ -30,7 +30,7 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet));
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
 

@@ -9,7 +9,7 @@
     </UserControl.Resources>
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
             Classes="Card"
-            Margin="{DynamicResource StandardMarginLeftTopBottom}">
+            Margin="{StaticResource StandardMarginLeftTopBottom}">
         <Design.DataContext>
             <local:SceneTreeViewModel />
         </Design.DataContext>
@@ -30,13 +30,13 @@
                         </ContextMenu>
                     </Button.ContextMenu>
 
-                    <avaloniaEx:Icon Content="{DynamicResource AddIcon}" />
+                    <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveEntityCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                    <avaloniaEx:Icon Content="{DynamicResource RemoveIcon}" />
+                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
             </StackPanel>
 
@@ -56,13 +56,13 @@
                         </ContextMenu>
                     </Button.ContextMenu>
 
-                    <avaloniaEx:Icon Content="{DynamicResource AddIcon}" />
+                    <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
                 <Button Command="{Binding RemoveSystemCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected system from the scene">
-                    <avaloniaEx:Icon Content="{DynamicResource RemoveIcon}" />
+                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
             </StackPanel>
 
@@ -81,7 +81,7 @@
                                       ItemsSource="{Binding NamedChildren}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
-                                                       Icon="{DynamicResource SceneIcon}"
+                                                       Icon="{StaticResource SceneIcon}"
                                                        IconForeground="{StaticResource YellowBrush}"
                                                        Text="{Binding Name}" />
                     </TreeDataTemplate>
@@ -90,7 +90,7 @@
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
-                                                       Icon="{DynamicResource SystemIcon}"
+                                                       Icon="{StaticResource SystemIcon}"
                                                        IconForeground="{StaticResource PurpleBrush}"
                                                        Text="{Binding Name}" />
                     </TreeDataTemplate>
@@ -99,7 +99,7 @@
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                        HorizontalAlignment="Stretch"
-                                                       Icon="{DynamicResource EntityIcon}"
+                                                       Icon="{StaticResource EntityIcon}"
                                                        IconForeground="{StaticResource PurpleBrush}"
                                                        Text="{Binding Name}" />
                     </TreeDataTemplate>
@@ -145,6 +145,11 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
                                               ToolTip.Tip="Focus on this entity in the scene editor" />
 
+                                    <MenuItem Header="Create Prefab"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Create a prefab of the selected entity" />
+                                    
                                     <Separator />
 
                                     <MenuItem Header="Add"
@@ -160,6 +165,10 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveEntityCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
+                                    
+                                    <Separator />
+                                    
+
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>
                         </avaloniaEx:EditableSelectableItem>

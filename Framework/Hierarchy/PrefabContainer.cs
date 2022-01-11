@@ -20,7 +20,7 @@ public sealed class PrefabContainer : Entity {
     /// Gets a reference to the prefab this entity contains.
     /// </summary>
     [DataMember(Order = 0, Name = "Prefab")]
-    public AssetReference<PrefabAsset> PrefabReference { get; } = new();
+    public PrefabReference PrefabReference { get; } = new();
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -33,12 +33,12 @@ public sealed class PrefabContainer : Entity {
 
     private void PrefabReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.PrefabReference.ContentId)) {
-            this.Scene.Assets.ResolveAsset<PrefabAsset, IEntity>(this.PrefabReference);
+            this.Reset();
         }
     }
 
     private void Reset() {
-        this.Scene.Assets.ResolveAsset<PrefabAsset, IEntity>(this.PrefabReference);
+        this.Scene.Assets.ResolveAsset<PrefabAsset, Entity>(this.PrefabReference);
 
         if (this._prefabChild != null) {
             this.RemoveChild(this._prefabChild);

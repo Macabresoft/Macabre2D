@@ -23,13 +23,28 @@ public interface IContentService : ISelectionService<IContentNode> {
     /// Adds a directory as a child to selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
-    void AddDirectory(IContentDirectory parent);
+    IContentDirectory AddDirectory(IContentDirectory parent);
 
     /// <summary>
     /// Adds a scene to the selected directory.
     /// </summary>
     /// <param name="parent">The parent.</param>
     void AddScene(IContentDirectory parent);
+
+    /// <summary>
+    /// Creates a prefab from the given entity.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <returns>A task.</returns>
+    Task CreatePrefab(IEntity entity);
+
+    /// <summary>
+    /// Creates a safe name for the given directory.
+    /// </summary>
+    /// <param name="baseName">The base name.</param>
+    /// <param name="parent">The parent directory.</param>
+    /// <returns>A safe name for a unique file or directory name under the parent.</returns>
+    string CreateSafeName(string baseName, IContentDirectory parent);
 
     /// <summary>
     /// Imports content
@@ -125,10 +140,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     public IContentDirectory RootContentDirectory => this._rootContentDirectory;
 
     /// <inheritdoc />
-    public void AddDirectory(IContentDirectory parent) {
-        if (parent != null) {
-            this.CreateDirectory("New Directory", parent);
-        }
+    public IContentDirectory AddDirectory(IContentDirectory parent) {
+        return parent != null ? this.CreateDirectory("New Directory", parent) : null;
     }
 
     /// <inheritdoc />
@@ -144,6 +157,64 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this._serializer.Serialize(scene, fullPath);
             this.CreateContentFile(parent, fileName);
         }
+    }
+
+    /// <inheritdoc />
+    public async Task CreatePrefab(IEntity entity) {
+        if (entity?.TryClone(out var prefabChild) == true) {
+            var prefab = new Entity {
+                Name = !string.IsNullOrEmpty(prefabChild.Name) ? $"{prefabChild.Name} Prefab" : "Prefab"
+            };
+
+            prefab.AddChild(prefabChild);
+            
+            var result = await this._dialogService.OpenAssetSelectionDialog(typeof(PrefabAsset), true);
+            var parent = result as IContentDirectory ?? result.Parent;
+
+            if (parent != null) {
+                var fileName = result is IContentDirectory ? $"{this.CreateSafeName(prefab.Name, parent)}{PrefabAsset.FileExtension}" : result.Name;
+                var fullPath = Path.Combine(parent.GetFullPath(), fileName);
+                this._serializer.Serialize(prefab, fullPath);
+
+                var binPath = Path.Combine(this._pathService.EditorContentDirectoryPath, parent.GetContentPath());
+                this._fileSystem.CreateDirectory(binPath);
+                var binFilePath = Path.Combine(binPath, fileName);
+                this._fileSystem.DeleteFile(binFilePath);
+                this._fileSystem.CopyFile(fullPath, binFilePath);
+                
+                // TODO: need to copy metadata
+
+                switch (result) {
+                    case IContentDirectory: {
+                        this.CreateContentFile(parent, fileName);
+                        break;
+                    }
+                    case ContentFile { Asset: PrefabAsset asset } file:
+                        asset.LoadContent(prefab);
+                        this.SaveMetadata(file.Metadata);
+                        break;
+                }
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public string CreateSafeName(string baseName, IContentDirectory parent) {
+        var name = baseName;
+        var parentPath = parent.GetFullPath();
+        var currentCount = 0;
+        var files = this._fileSystem.GetFiles(parentPath).ToList();
+
+        while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
+            currentCount++;
+            if (currentCount >= 100) {
+                throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
+            }
+
+            name = $"{baseName} ({currentCount})";
+        }
+
+        return name;
     }
 
     /// <inheritdoc />
@@ -313,24 +384,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
         this._fileSystem.CreateDirectory(fullPath);
         return new ContentDirectory(name, parent);
-    }
-
-    private string CreateSafeName(string baseName, IContentNode parent) {
-        var name = baseName;
-        var parentPath = parent.GetFullPath();
-        var currentCount = 0;
-        var files = this._fileSystem.GetFiles(parentPath).ToList();
-
-        while (files.Any(x => string.Equals(Path.GetFileNameWithoutExtension(x), name, StringComparison.OrdinalIgnoreCase))) {
-            currentCount++;
-            if (currentCount >= 100) {
-                throw new NotSupportedException("What the hell are you even doing with 100 files named the same????");
-            }
-
-            name = $"{baseName} ({currentCount})";
-        }
-
-        return name;
     }
 
     private IEnumerable<ContentMetadata> GetMetadata() {
