@@ -11,6 +11,7 @@ public class ContentGame : BaseGame {
     private SpriteSheet _colorfulSquares;
     private Font _font;
     private AudioClip _lazer;
+    private PrefabAsset _prefabHelloWorld;
 
     private SpriteSheet _whiteSquare;
 
@@ -98,15 +99,26 @@ public class ContentGame : BaseGame {
         outwardSpinningDotBoundingArea.Color = Color.Red;
         outwardSpinningDotBoundingArea.LineThickness = 3f;
 
-        var textRenderer = scene.AddChild<TextRenderer>();
+        var textRenderer = new TextRenderer();
         textRenderer.Text = "Hello, World";
         textRenderer.FontReference.Initialize(this._font);
         textRenderer.Color = Color.DarkMagenta;
-        textRenderer.LocalScale = new Vector2(0.5f, 0.5f);
-        textRenderer.LocalPosition -= new Vector2(5f, 5f);
         var textRendererBoundingArea = textRenderer.AddChild<BoundingAreaDrawer>();
         textRendererBoundingArea.Color = Color.Red;
         textRendererBoundingArea.LineThickness = 3f;
+
+        this._prefabHelloWorld = new PrefabAsset();
+        this._prefabHelloWorld.LoadContent(textRenderer);
+
+        var prefabContainer1 = scene.AddChild<PrefabContainer>();
+        prefabContainer1.LocalScale = new Vector2(0.5f, 0.5f);
+        prefabContainer1.LocalPosition -= new Vector2(5f, 5f);
+        prefabContainer1.PrefabReference.Initialize(this._prefabHelloWorld);
+        
+        var prefabContainer2 = scene.AddChild<PrefabContainer>();
+        prefabContainer2.LocalScale = new Vector2(2f, 2f);
+        prefabContainer2.LocalPosition = new Vector2(-6f, 3f);
+        prefabContainer2.PrefabReference.Initialize(this._prefabHelloWorld);
 
         var secondCamera = scene.AddChild<Camera>();
         secondCamera.LayersToRender = Layers.Layer03;
@@ -142,8 +154,11 @@ public class ContentGame : BaseGame {
         assetManager.RegisterMetadata(new ContentMetadata(this._whiteSquare, new[] { "WhiteSquare" }, ".png"));
         assetManager.RegisterMetadata(new ContentMetadata(this._font, new[] { "League Mono" }, ".spritefont"));
         assetManager.RegisterMetadata(new ContentMetadata(this._lazer, new[] { "laser" }, ".wav"));
-    }
+        assetManager.RegisterMetadata(new ContentMetadata(this._prefabHelloWorld, new[] { "PrefabHelloWorld" }, PrefabAsset.FileExtension));
 
+        
+    }
+    
     private void PostLoadRenderingStuff() {
         var arrowSprite1 = PrimitiveDrawer.CreateUpwardsArrowSprite(this.GraphicsDevice, 32, Color.Goldenrod);
         var arrowSpriteRenderer1 = this.Scene.AddChild<Texture2DRenderer>();
