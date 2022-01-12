@@ -66,11 +66,29 @@ public class SelectorGizmo : Entity, IGizmo {
                     Dispatcher.UIThread.Post(() => this._entityService.Selected = null);
                 }
                 else {
+                    this.CheckForPrefab(selected, out selected);
                     Dispatcher.UIThread.Post(() => this._entityService.Selected = selected);
                 }
             }
 
             result = true;
+        }
+
+        return result;
+    }
+
+    private bool CheckForPrefab(IEntity selected, out IEntity finalSelected) {
+        finalSelected = selected;
+        var result = false;
+        var potential = selected;
+        
+        while (potential.Parent != Entity.Empty && potential.Parent != this._sceneService.CurrentScene) {
+            potential = potential.Parent;
+
+            if (potential is PrefabContainer container && !this.CheckForPrefab(potential, out finalSelected)) {
+                result = true;
+                break;
+            }
         }
 
         return result;
