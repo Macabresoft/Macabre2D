@@ -76,8 +76,9 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
 
     /// <inheritdoc />
     public GameProject LoadProject() {
-        this._contentService.RefreshContent(false);
-
+        this._contentService.RefreshContent(this._settingsService.Settings.ShouldRebuildContent);
+        this._settingsService.Settings.ShouldRebuildContent = false;
+        
         var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
         if (!projectExists) {
             this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);

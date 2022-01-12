@@ -159,7 +159,8 @@ public class MainWindowViewModel : UndoBaseViewModel {
                 this._assetSelectionService.Selected = null;
 
                 await Task.Run(() => this._contentService.RefreshContent(true));
-
+                this._settingsService.Settings.ShouldRebuildContent = false;
+                
                 if (sceneContentId != null) {
                     this._sceneService.TryLoadScene(sceneContentId.Value, out _);
                 }

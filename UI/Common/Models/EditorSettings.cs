@@ -38,4 +38,10 @@ public class EditorSettings {
     /// </summary>
     [DataMember]
     public EditorTabs LastTabSelected { get; set; } = EditorTabs.Scene;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not content should be rebuilt on next load.
+    /// </summary>
+    [DataMember]
+    public bool ShouldRebuildContent { get; set; }
 }
