@@ -82,6 +82,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     private readonly ILoggingService _loggingService;
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
+    private readonly IEditorSettingsService _settingsService;
 
     private RootContentDirectory _rootContentDirectory;
 
@@ -114,6 +115,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     /// <param name="loggingService">The logging service.</param>
     /// <param name="pathService">The path service.</param>
     /// <param name="serializer">The serializer.</param>
+    /// <param name="settingsService">The settings service.</param>
     /// <param name="undoService">The undo service.</param>
     /// <param name="valueControlService">The value editor service.</param>
     public ContentService(
@@ -125,6 +127,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         ILoggingService loggingService,
         IPathService pathService,
         ISerializer serializer,
+        IEditorSettingsService settingsService,
         IUndoService undoService,
         IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
         this._assetManager = assetManager;
@@ -134,6 +137,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         this._loggingService = loggingService;
         this._pathService = pathService;
         this._serializer = serializer;
+        this._settingsService = settingsService;
     }
 
     /// <inheritdoc />
@@ -155,7 +159,13 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             var fileName = $"{name}{SceneAsset.FileExtension}";
             var fullPath = Path.Combine(parent.GetFullPath(), fileName);
             this._serializer.Serialize(scene, fullPath);
-            this.CreateContentFile(parent, fileName);
+            this.CreateContentFile(parent, fileName, out var contentFile);
+            
+            if (contentFile != null) {
+                this.CopyToEditorBin(parent, contentFile);
+                this.CreateMGCBFile(out _);
+                this._settingsService.Settings.ShouldRebuildContent = true;
+            }
         }
     }
 
@@ -167,7 +177,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             };
 
             prefab.AddChild(prefabChild);
-            
+
             var result = await this._dialogService.OpenAssetSelectionDialog(typeof(PrefabAsset), true);
             var parent = result as IContentDirectory ?? result.Parent;
 
@@ -176,23 +186,23 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 var fullPath = Path.Combine(parent.GetFullPath(), fileName);
                 this._serializer.Serialize(prefab, fullPath);
 
-                var binPath = Path.Combine(this._pathService.EditorContentDirectoryPath, parent.GetContentPath());
-                this._fileSystem.CreateDirectory(binPath);
-                var binFilePath = Path.Combine(binPath, fileName);
-                this._fileSystem.DeleteFile(binFilePath);
-                this._fileSystem.CopyFile(fullPath, binFilePath);
-                
-                // TODO: need to copy metadata
-
+                ContentFile contentFile = null;
                 switch (result) {
                     case IContentDirectory: {
-                        this.CreateContentFile(parent, fileName);
+                        this.CreateContentFile(parent, fileName, out contentFile);
                         break;
                     }
                     case ContentFile { Asset: PrefabAsset asset } file:
                         asset.LoadContent(prefab);
                         this.SaveMetadata(file.Metadata);
+                        contentFile = file;
                         break;
+                }
+
+                if (contentFile != null) {
+                    this.CopyToEditorBin(parent, contentFile);
+                    this.CreateMGCBFile(out _);
+                    this._settingsService.Settings.ShouldRebuildContent = true;
                 }
             }
         }
@@ -283,15 +293,21 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     private void BuildContentForProject() {
-        var platform = "DesktopGL";
+        var buildArgs = this.CreateMGCBFile(out var outputDirectoryPath);
+        this._buildService.BuildContent(buildArgs, outputDirectoryPath);
+        this._settingsService.Settings.ShouldRebuildContent = false;
+    }
+
+    private BuildContentArguments CreateMGCBFile(out string outputDirectoryPath) {
+        const string Platform = "DesktopGL";
         var mgcbStringBuilder = new StringBuilder();
-        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{platform}.mgcb");
+        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{Platform}.mgcb");
         var buildArgs = new BuildContentArguments(
             mgcbFilePath,
-            platform,
+            Platform,
             true);
-
-        var outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
+        
+        outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
 
         mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
         mgcbStringBuilder.AppendLine();
@@ -320,7 +336,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
         var mgcbText = mgcbStringBuilder.ToString();
         this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
-        this._buildService.BuildContent(buildArgs, outputDirectoryPath);
+
+        return buildArgs;
     }
 
     private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
@@ -335,9 +352,34 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
     }
 
+
+    private void CopyToEditorBin(IContentNode parent, ContentFile file) {
+        var binPath = Path.Combine(this._pathService.EditorContentDirectoryPath, parent.GetContentPath());
+        this._fileSystem.CreateDirectory(binPath);
+        var binFilePath = Path.Combine(binPath, file.Name);
+        this._fileSystem.DeleteFile(binFilePath);
+        this._fileSystem.CopyFile(file.GetFullPath(), binFilePath);
+
+        if (file.Id != Guid.Empty) {
+            var metadataPath = this._pathService.GetMetadataFilePath(file.Id);
+            var binMetadataPath = this._pathService.GetEditorMetadataFilePath(file.Id);
+
+            if (this._fileSystem.DoesFileExist(metadataPath)) {
+                this._fileSystem.CreateDirectory(Path.GetDirectoryName(binMetadataPath));
+                this._fileSystem.DeleteFile(binMetadataPath);
+                this._fileSystem.CopyFile(metadataPath, binMetadataPath);
+            }
+        }
+    }
+
     private bool CreateContentFile(IContentDirectory parent, string fileName) {
+        return this.CreateContentFile(parent, fileName, out _);
+    }
+
+    private bool CreateContentFile(IContentDirectory parent, string fileName, out ContentFile contentFile) {
         var result = false;
         var extension = Path.GetExtension(fileName);
+        contentFile = null;
 
         if (FileExtensionToAssetType.TryGetValue(extension, out var assetType)) {
             var parentPath = parent.GetContentPath();
@@ -347,7 +389,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             if (Activator.CreateInstance(assetType) is IAsset asset) {
                 var metadata = new ContentMetadata(asset, splitPath, extension);
                 this.SaveMetadata(metadata);
-                var contentFile = this.CreateContentFileObject(parent, metadata);
+                contentFile = this.CreateContentFileObject(parent, metadata);
                 this._assetManager.RegisterMetadata(contentFile.Metadata);
                 result = true;
             }

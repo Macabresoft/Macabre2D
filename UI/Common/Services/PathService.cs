@@ -46,6 +46,13 @@ public interface IPathService {
     string ProjectFilePath { get; }
 
     /// <summary>
+    /// Gets the path to a metadata file within the editor's bin directory with the specified content identifier.
+    /// </summary>
+    /// <param name="contentId">The content identifier.</param>
+    /// <returns>The path to the metadata file.</returns>
+    string GetEditorMetadataFilePath(Guid contentId);
+
+    /// <summary>
     /// Gets the path to a metadata file with the specified content identifier.
     /// </summary>
     /// <param name="contentId">The content identifier.</param>
@@ -137,6 +144,12 @@ public class PathService : IPathService {
     /// <inheritdoc />
     public string ProjectFilePath { get; }
 
+    /// <inheritdoc />
+    public string GetEditorMetadataFilePath(Guid contentId) {
+        return Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
+    }
+
+    /// <inheritdoc />
     public string GetMetadataFilePath(Guid contentId) {
         return Path.Combine(this.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentId));
     }

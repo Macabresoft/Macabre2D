@@ -56,6 +56,7 @@ public class ContentContainer {
             Substitute.For<ILoggingService>(),
             this._pathService,
             this.Serializer,
+            Substitute.For<IEditorSettingsService>(),
             Substitute.For<IUndoService>(),
             Substitute.For<IValueControlService>());
     }
