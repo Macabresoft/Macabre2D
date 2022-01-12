@@ -53,25 +53,14 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService = sceneService;
         this.SystemService = systemService;
         this._undoService = undoService;
-
-        var whenSystemNotNull = this.SystemService.WhenAny(x => x.Selected, y => y.Value != null);
-
-        this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(
-            async x => await this.AddEntity(x),
-            this.SceneService.WhenAnyValue(x => x.IsEntityContext));
-        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(
-            async x => await this.CreateFromPrefab(x),
-            this.SceneService.WhenAny(x => x.Selected, x => x.Value is IEntity and not IScene));
-        this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(
-            this.RemoveEntity,
-            this.EntityService.WhenAny(x => x.Selected, y => y.Value != null && y.Value.Parent != y.Value));
-        this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x),
-            this.SceneService.WhenAny(x => x.IsEntityContext, x => !x.Value));
-        this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem, whenSystemNotNull);
-        this.RenameEntityCommand = ReactiveCommand.Create<string>(
-            this.RenameEntity,
-            this.EntityService.WhenAny(x => x.Selected, y => y.Value != null));
-        this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem, whenSystemNotNull);
+        
+        this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddEntity(x));
+        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
+        this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(this.RemoveEntity);
+        this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x));
+        this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem);
+        this.RenameEntityCommand = ReactiveCommand.Create<string>(this.RenameEntity);
+        this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem);
     }
 
     /// <summary>

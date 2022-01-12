@@ -160,7 +160,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             var fullPath = Path.Combine(parent.GetFullPath(), fileName);
             this._serializer.Serialize(scene, fullPath);
             this.CreateContentFile(parent, fileName, out var contentFile);
-            
+
             if (contentFile != null) {
                 this.CopyToEditorBin(parent, contentFile);
                 this.CreateMGCBFile(out _);
@@ -298,48 +298,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         this._settingsService.Settings.ShouldRebuildContent = false;
     }
 
-    private BuildContentArguments CreateMGCBFile(out string outputDirectoryPath) {
-        const string Platform = "DesktopGL";
-        var mgcbStringBuilder = new StringBuilder();
-        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{Platform}.mgcb");
-        var buildArgs = new BuildContentArguments(
-            mgcbFilePath,
-            Platform,
-            true);
-        
-        outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
-
-        mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
-        mgcbStringBuilder.AppendLine();
-
-        foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
-            mgcbStringBuilder.AppendLine(argument);
-        }
-
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine();
-        mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
-        mgcbStringBuilder.AppendLine();
-
-        mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
-        mgcbStringBuilder.AppendLine();
-
-        var contentFiles = this.RootContentDirectory.GetAllContentFiles();
-        foreach (var contentFile in contentFiles) {
-            mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
-            mgcbStringBuilder.AppendLine();
-        }
-
-        var mgcbText = mgcbStringBuilder.ToString();
-        this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
-
-        return buildArgs;
-    }
-
     private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {
         switch (sender) {
             case IContentDirectory:
@@ -426,6 +384,48 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
         this._fileSystem.CreateDirectory(fullPath);
         return new ContentDirectory(name, parent);
+    }
+
+    private BuildContentArguments CreateMGCBFile(out string outputDirectoryPath) {
+        const string Platform = "DesktopGL";
+        var mgcbStringBuilder = new StringBuilder();
+        var mgcbFilePath = Path.Combine(this._pathService.ContentDirectoryPath, $"Content.{Platform}.mgcb");
+        var buildArgs = new BuildContentArguments(
+            mgcbFilePath,
+            Platform,
+            true);
+
+        outputDirectoryPath = Path.GetRelativePath(this._pathService.ContentDirectoryPath, this._pathService.EditorContentDirectoryPath);
+
+        mgcbStringBuilder.AppendLine("#----------------------------- Global Properties ----------------------------#");
+        mgcbStringBuilder.AppendLine();
+
+        foreach (var argument in buildArgs.ToGlobalProperties(outputDirectoryPath)) {
+            mgcbStringBuilder.AppendLine(argument);
+        }
+
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine(@"#-------------------------------- References --------------------------------#");
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine();
+        mgcbStringBuilder.AppendLine(@"#---------------------------------- Content ---------------------------------#");
+        mgcbStringBuilder.AppendLine();
+
+        mgcbStringBuilder.AppendLine($"#begin {GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine($@"/copy:{GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine($"#end {GameProject.ProjectFileName}");
+        mgcbStringBuilder.AppendLine();
+
+        var contentFiles = this.RootContentDirectory.GetAllContentFiles();
+        foreach (var contentFile in contentFiles) {
+            mgcbStringBuilder.AppendLine(contentFile.Metadata.GetContentBuildCommands());
+            mgcbStringBuilder.AppendLine();
+        }
+
+        var mgcbText = mgcbStringBuilder.ToString();
+        this._fileSystem.WriteAllText(mgcbFilePath, mgcbText);
+
+        return buildArgs;
     }
 
     private IEnumerable<ContentMetadata> GetMetadata() {
