@@ -69,7 +69,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this._camera.AddChild(new CameraController(this._editorService));
         this._camera.AddChild(new EditorGrid(this._editorService, this._entityService));
         this._camera.AddChild(new SelectionDisplay(this._editorService, this._entityService));
-        var selectorGizmo = new SelectorGizmo(this.SceneService, this._entityService);
+        var selectorGizmo = new SelectorGizmo(this.SceneService);
         this._camera.AddChild(selectorGizmo);
 
         var translationGizmo = new TranslationGizmo(this._editorService, this.SceneService, this._entityService, this._undoService);

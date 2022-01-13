@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 /// A component which selects entities and components based on their bounding areas.
 /// </summary>
 public class SelectorGizmo : Entity, IGizmo {
-    private readonly IEntityService _entityService;
     private readonly ISceneService _sceneService;
     private ICamera _camera;
 
@@ -18,10 +17,8 @@ public class SelectorGizmo : Entity, IGizmo {
     /// Initializes a new instance of the <see cref="SelectorGizmo" /> class.
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
-    /// <param name="entityService">The selection service.</param>
-    public SelectorGizmo(ISceneService sceneService, IEntityService entityService) : base() {
+    public SelectorGizmo(ISceneService sceneService) : base() {
         this._sceneService = sceneService;
-        this._entityService = entityService;
     }
 
     /// <inheritdoc />
@@ -61,13 +58,13 @@ public class SelectorGizmo : Entity, IGizmo {
                 }
             }
 
-            if (this._entityService.Selected != selected) {
-                if (selected == null) {
-                    Dispatcher.UIThread.Post(() => this._entityService.Selected = null);
+            if (this._sceneService.Selected != selected) {
+                if (selected == null && this._sceneService.IsEntityContext) {
+                    Dispatcher.UIThread.Post(() => this._sceneService.Selected = null);
                 }
                 else {
                     this.CheckForPrefab(selected, out selected);
-                    Dispatcher.UIThread.Post(() => this._entityService.Selected = selected);
+                    Dispatcher.UIThread.Post(() => this._sceneService.Selected = selected);
                 }
             }
 
@@ -81,11 +78,11 @@ public class SelectorGizmo : Entity, IGizmo {
         finalSelected = selected;
         var result = false;
         var potential = selected;
-        
-        while (potential.Parent != Entity.Empty && potential.Parent != this._sceneService.CurrentScene) {
+
+        while (potential.Parent != Empty && potential.Parent != this._sceneService.CurrentScene) {
             potential = potential.Parent;
 
-            if (potential is PrefabContainer container && !this.CheckForPrefab(potential, out finalSelected)) {
+            if (potential is PrefabContainer && !this.CheckForPrefab(potential, out finalSelected)) {
                 result = true;
                 break;
             }
