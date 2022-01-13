@@ -8,6 +8,7 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <OutputPath>..\..\bin\$(Configuration)</OutputPath>
         <AssemblyName>Macabre2D</AssemblyName>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.11" />
@@ -108,5 +109,11 @@
         <UpToDateCheckInput Remove="Theme\IconPaths.axaml" />
         <UpToDateCheckInput Remove="Theme\Margins.axaml" />
         <UpToDateCheckInput Remove="Theme\Theme.axaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="icon.ico" />
+      <AvaloniaResource Include="icon.ico">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AvaloniaResource>
     </ItemGroup>
 </Project>
