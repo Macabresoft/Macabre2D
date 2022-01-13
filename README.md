@@ -1,3 +1,5 @@
+![Macabre2D Logo](icon.png "Macabre2D Logo")
+
 # Macabre2D (Macabresoft.Macabre2D)
 
 Common MonoGame functionality used across Macabresoft products. A framework built on top of another framework. Will eventually be a full-fledged editor/engine.
