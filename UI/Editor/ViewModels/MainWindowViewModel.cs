@@ -133,7 +133,7 @@ public class MainWindowViewModel : UndoBaseViewModel {
 
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose() != YesNoCancelResult.Cancel) {
-            Dispatcher.UIThread.Post(window.Close);
+            window.Close();
         }
     }
 
