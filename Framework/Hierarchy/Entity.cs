@@ -61,7 +61,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
     /// <returns>Descendents of the specified type.</returns>
-    IEnumerable<T> GetDescendents<T>() where T : IEntity;
+    IEnumerable<T> GetDescendents<T>();
 
     /// <summary>
     /// Gets the child of the specified type if it exists; otherwise, adds a new child.
@@ -208,7 +208,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetDescendents<T>() where T : IEntity {
+    public IEnumerable<T> GetDescendents<T>() {
         var descendents = new List<T>(this.Children.OfType<T>());
         descendents.AddRange(this.Children.SelectMany(x => x.GetDescendents<T>()));
         return descendents;
@@ -241,6 +241,17 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) {
         return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether or not the entity is null or empty.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="notNullEntity">The entity if it is not null without its nullability.</param>
+    /// <returns>A value indicating whether or not the entity is null or empty.</returns>
+    public static bool IsNullOrEmpty(IEntity? entity, out IEntity notNullEntity) {
+        notNullEntity = entity ?? Empty;
+        return notNullEntity == Empty && notNullEntity == Framework.Scene.Empty;
     }
 
     /// <inheritdoc />
@@ -367,7 +378,7 @@ public class Entity : Transformable, IEntity {
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetDescendents<T>() where T : IEntity {
+        public IEnumerable<T> GetDescendents<T>() {
             return Enumerable.Empty<T>();
         }
 

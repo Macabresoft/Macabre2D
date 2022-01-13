@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
