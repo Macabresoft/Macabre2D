@@ -285,6 +285,8 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             this.SaveMetadata(file.Metadata);
             file.HasChanges = false;
         }
+
+        this.RefreshMGCBFiles();
     }
 
     /// <inheritdoc />
@@ -448,6 +450,10 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         }
 
         return metadata;
+    }
+
+    private void RefreshMGCBFiles() {
+        this.CreateMGCBFile(out _);
     }
 
 
