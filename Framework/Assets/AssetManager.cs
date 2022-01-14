@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Interface to manage assets.
@@ -152,6 +153,9 @@ public sealed class AssetManager : IAssetManager {
                     loaded = this._serializer.Deserialize<T>(fileStream);
                 }
                 catch (FileNotFoundException) {
+                    // TODO: log this
+                }
+                catch (JsonSerializationException) {
                     // TODO: log this
                 }
             }

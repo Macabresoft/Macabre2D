@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 /// <summary>
 /// A single audio clip.
 /// </summary>
-public sealed class AudioClip : Asset<SoundEffect> {
+public sealed class AudioClipAsset : Asset<SoundEffect> {
     /// <summary>
     /// The valid file extensions for a <see cref="SoundEffectInstance" />.
     /// </summary>

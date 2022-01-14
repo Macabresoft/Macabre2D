@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
-/// Plays a <see cref="AudioClip" />.
+/// Plays a <see cref="AudioClipAsset" />.
 /// </summary>
 [Display(Name = "Audio Player")]
 public sealed class AudioPlayer : Entity {
@@ -96,7 +96,7 @@ public sealed class AudioPlayer : Entity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.Scene.Assets.ResolveAsset<AudioClip, SoundEffect>(this.AudioClipReference);
+        this.Scene.Assets.ResolveAsset<AudioClipAsset, SoundEffect>(this.AudioClipReference);
 
         if (this._shouldLoop && this.IsEnabled) {
             this.Play();
@@ -112,7 +112,7 @@ public sealed class AudioPlayer : Entity {
             currentInstance.Dispose();
         }
 
-        if (this.AudioClipReference.Asset is AudioClip audioClip) {
+        if (this.AudioClipReference.Asset is AudioClipAsset audioClip) {
             this._currentSoundEffectInstance = audioClip.GetSoundEffectInstance(this.Volume, this.Pan, this.Pitch);
 
             if (this._currentSoundEffectInstance != null) {

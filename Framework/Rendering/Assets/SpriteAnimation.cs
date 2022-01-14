@@ -11,7 +11,7 @@ using Macabresoft.Core;
 /// <summary>
 /// An animation that explicitly uses sprites.
 /// </summary>
-public sealed class SpriteAnimation : SpriteSheetAsset {
+public sealed class SpriteAnimation : SpriteSheetMember {
     /// <summary>
     /// The default name.
     /// </summary>

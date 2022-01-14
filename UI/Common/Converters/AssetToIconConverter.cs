@@ -18,11 +18,11 @@ public class AssetToIconConverter : IValueConverter {
         if (Application.Current is { } application) {
             _ = value switch {
                 ContentFile { Asset: { } asset } => asset switch {
-                    AudioClip => application.TryFindResource("AudioClipIcon", out result),
+                    AudioClipAsset => application.TryFindResource("AudioClipIcon", out result),
                     PrefabAsset => application.TryFindResource("EntityIcon", out result),
                     SceneAsset => application.TryFindResource("SceneIcon", out result),
-                    Shader => application.TryFindResource("ShaderIcon", out result),
-                    SpriteSheet => application.TryFindResource("SpriteSheetIcon", out result),
+                    ShaderAsset => application.TryFindResource("ShaderIcon", out result),
+                    SpriteSheetAsset => application.TryFindResource("SpriteSheetIcon", out result),
                     _ => application.TryFindResource("FileIcon", out result)
                 },
                 INameableCollection => value switch {

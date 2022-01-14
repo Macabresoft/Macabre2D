@@ -21,7 +21,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         byte spriteIndex,
         Transform transform,
         float rotation,
@@ -56,7 +56,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,
@@ -124,7 +124,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         byte spriteIndex,
         Vector2 position,
         Vector2 scale,
@@ -144,7 +144,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         byte spriteIndex,
         Transform transform,
         Color color) {
@@ -164,7 +164,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         byte spriteIndex,
         Transform transform,
         Color color,
@@ -187,7 +187,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        Font font,
+        FontAsset font,
         string text,
         Vector2 position,
         Vector2 scale,
@@ -221,7 +221,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        Font font,
+        FontAsset font,
         string text,
         Transform transform,
         Color color,
@@ -241,7 +241,7 @@ public static class SpriteBatchExtensions {
     public static void Draw(
         this SpriteBatch spriteBatch,
         ushort pixelsPerUnit,
-        Font font,
+        FontAsset font,
         string text,
         Transform transform,
         Color color) {

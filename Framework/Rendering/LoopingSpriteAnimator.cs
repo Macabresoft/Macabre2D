@@ -18,7 +18,7 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
     public SpriteAnimationReference AnimationReference { get; } = new();
 
     /// <inheritdoc />
-    public override SpriteSheet? SpriteSheet => this.AnimationReference?.Asset;
+    public override SpriteSheetAsset? SpriteSheet => this.AnimationReference?.Asset;
 
     /// <summary>
     /// Gets or sets a value indicating whether or not this should start playing by default.
@@ -31,7 +31,7 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.AnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.AnimationReference);
         this.ResetStep();
         this.TryStart();
     }

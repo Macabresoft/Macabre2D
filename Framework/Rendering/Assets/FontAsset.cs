@@ -17,7 +17,7 @@ public enum FontStyle {
 /// <summary>
 /// A font to be used by the <see cref="TextRenderer" />.
 /// </summary>
-public sealed class Font : Asset<SpriteFont> {
+public sealed class FontAsset : Asset<SpriteFont> {
     private bool _premultiplyAlpha = true;
     private float _size = 12;
     private float _spacing;

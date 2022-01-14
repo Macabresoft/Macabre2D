@@ -229,7 +229,7 @@ public class ProjectTreeViewModel : BaseViewModel {
                 this._fileSystem.DeleteFile(contentNode.GetFullPath());
                 contentNode.Parent?.RemoveChild(contentNode);
                 break;
-            case SpriteSheetAsset { SpriteSheet: { } spriteSheet } spriteSheetAsset:
+            case SpriteSheetMember { SpriteSheet: { } spriteSheet } spriteSheetAsset:
                 switch (spriteSheetAsset) {
                     case AutoTileSet tileSet when spriteSheet.AutoTileSets is AutoTileSetCollection tileSets:
                         var tileSetIndex = tileSets.IndexOf(tileSet);

@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A shader that wraps around <see cref="Effect" />.
 /// </summary>
-public sealed class Shader : Asset<Effect> {
+public sealed class ShaderAsset : Asset<Effect> {
     /// <summary>
-    /// The file extension for <see cref="Shader" />.
+    /// The file extension for <see cref="ShaderAsset" />.
     /// </summary>
     public const string FileExtension = ".fx";
 

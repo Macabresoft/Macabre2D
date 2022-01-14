@@ -239,8 +239,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
 
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
-        if (this.HasActiveTiles()) {
-            var grid = this.CurrentGrid;
+        if (this.HasActiveTiles() && this.CurrentGrid is { } grid and not EmptyGridContainer) {
             result = new BoundingArea(grid.GetTilePosition(this.MinimumTile), grid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
         }
         else {

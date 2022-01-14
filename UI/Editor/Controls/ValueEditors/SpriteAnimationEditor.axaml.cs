@@ -182,7 +182,7 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
     }
 
     private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex) or nameof(SpriteSheet.Rows) or nameof(SpriteSheet.Columns)) {
+        if (e.PropertyName is nameof(SpriteReference.ContentId) or nameof(SpriteReference.SpriteIndex) or nameof(SpriteSheetAsset.Rows) or nameof(SpriteSheetAsset.Columns)) {
             this.ResetBitmap();
         }
     }

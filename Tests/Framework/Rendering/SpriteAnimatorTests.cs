@@ -20,7 +20,7 @@ public static class SpriteAnimatorTests {
         }
 
         var animation = new SpriteAnimation(steps);
-        animation.SpriteSheet = new SpriteSheet {
+        animation.SpriteSheet = new SpriteSheetAsset {
             Columns = 2,
             Rows = 2
         };

@@ -18,14 +18,14 @@ public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollectio
     private readonly ContentFile _file;
 
     private readonly ObservableCollectionExtended<SpriteDisplayModel> _sprites = new();
-    private readonly SpriteSheet _spriteSheet;
+    private readonly SpriteSheetAsset _spriteSheet;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SpriteDisplayCollection" /> class.
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
+    public SpriteDisplayCollection(SpriteSheetAsset spriteSheet, ContentFile file) {
         this._spriteSheet = spriteSheet;
         this._file = file;
 
@@ -98,7 +98,7 @@ public class SpriteDisplayCollection : NotifyPropertyChanged, IReadOnlyCollectio
     }
 
     private void SpriteSheet_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(SpriteSheet.Columns) or nameof(SpriteSheet.Rows)) {
+        if (e.PropertyName is nameof(SpriteSheetAsset.Columns) or nameof(SpriteSheetAsset.Rows)) {
             this.ResetSprites();
         }
     }

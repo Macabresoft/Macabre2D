@@ -38,7 +38,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     /// Gets the font reference.
     /// </summary>
     [DataMember(Order = 0)]
-    public AssetReference<Font> FontReference { get; } = new();
+    public AssetReference<FontAsset> FontReference { get; } = new();
 
     /// <summary>
     /// Gets or sets the color.
@@ -115,14 +115,14 @@ public class TextRenderer : RenderableEntity, IRotatable {
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
 
-        this.Scene.Assets.ResolveAsset<Font, SpriteFont>(this.FontReference);
+        this.Scene.Assets.ResolveAsset<FontAsset, SpriteFont>(this.FontReference);
         this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderSettings.Initialize(this.CreateSize);
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is Font font && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is FontAsset font && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
             spriteBatch.Draw(
                 this.Scene.Game.Project.Settings.PixelsPerUnit,
                 font,

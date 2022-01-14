@@ -9,10 +9,10 @@ using Avalonia.Media.Imaging;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
-/// Display collection for a <see cref="SpriteSheetAsset" />.
+/// Display collection for a <see cref="SpriteSheetMember" />.
 /// </summary>
 /// <typeparam name="TAsset">The type of asset.</typeparam>
-public class SpriteSheetAssetDisplayCollection<TAsset> : NotifyPropertyChanged, IReadOnlyCollection<TAsset> where TAsset : SpriteSheetAsset {
+public class SpriteSheetAssetDisplayCollection<TAsset> : NotifyPropertyChanged, IReadOnlyCollection<TAsset> where TAsset : SpriteSheetMember {
     private readonly ContentFile _file;
 
     /// <summary>
@@ -20,7 +20,7 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : NotifyPropertyChanged, 
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteSheetAssetDisplayCollection(SpriteSheet spriteSheet, ContentFile file) {
+    public SpriteSheetAssetDisplayCollection(SpriteSheetAsset spriteSheet, ContentFile file) {
         this.SpriteSheet = spriteSheet;
         this._file = file;
         this.Assets = this.SpriteSheet.GetAssets<TAsset>();
@@ -57,7 +57,7 @@ public class SpriteSheetAssetDisplayCollection<TAsset> : NotifyPropertyChanged, 
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    public SpriteSheet SpriteSheet { get; }
+    public SpriteSheetAsset SpriteSheet { get; }
 
     /// <inheritdoc />
     public IEnumerator<TAsset> GetEnumerator() {

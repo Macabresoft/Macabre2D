@@ -8,12 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 [ExcludeFromCodeCoverage]
 public class ContentGame : BaseGame {
-    private SpriteSheet _colorfulSquares;
-    private Font _font;
-    private AudioClip _laser;
+    private SpriteSheetAsset _colorfulSquares;
+    private FontAsset _font;
+    private AudioClipAsset _laser;
     private PrefabAsset _prefabHelloWorld;
 
-    private SpriteSheet _whiteSquare;
+    private SpriteSheetAsset _whiteSquare;
 
     protected override void LoadContent() {
         this.Project.Settings.PixelsPerUnit = 64;
@@ -31,7 +31,7 @@ public class ContentGame : BaseGame {
         camera.AddChild<MovingDot>();
         camera.AddChild<MouseClickDebugger>();
 
-        this._whiteSquare = new SpriteSheet();
+        this._whiteSquare = new SpriteSheetAsset();
 
         var spriteRenderer = camera.AddChild<SpriteRenderer>();
         spriteRenderer.SpriteReference.Initialize(this._whiteSquare);
@@ -54,9 +54,9 @@ public class ContentGame : BaseGame {
             }
         }
 
-        this._font = new Font();
+        this._font = new FontAsset();
 
-        this._colorfulSquares = new SpriteSheet {
+        this._colorfulSquares = new SpriteSheetAsset {
             Rows = 2,
             Columns = 2
         };
@@ -128,7 +128,7 @@ public class ContentGame : BaseGame {
         frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
         frameRateDisplay.LocalScale = new Vector2(0.1f);
 
-        this._laser = new AudioClip();
+        this._laser = new AudioClipAsset();
         var audioPlayer = scene.AddChild<AudioPlayer>();
         audioPlayer.Volume = 0.5f;
         audioPlayer.AudioClipReference.Initialize(this._laser);

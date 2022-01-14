@@ -117,10 +117,10 @@ public class ShaderEditor : ValueEditorControl<ShaderReference> {
     }
 
     private async Task Select() {
-        var contentNode = await this._dialogService.OpenAssetSelectionDialog(typeof(Shader), false);
+        var contentNode = await this._dialogService.OpenAssetSelectionDialog(typeof(ShaderAsset), false);
         if (contentNode is ContentFile file) {
             var originalAsset = this.Value.Asset;
-            var newAsset = file.Asset as Shader;
+            var newAsset = file.Asset as ShaderAsset;
             this._undoService.Do(
                 () => {
                     if (newAsset != null) {

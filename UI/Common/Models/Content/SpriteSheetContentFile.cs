@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Macabresoft.Macabre2D.Framework;
 
 /// <summary>
-/// A <see cref="ContentFile" /> for <see cref="SpriteSheet" />.
+/// A <see cref="ContentFile" /> for <see cref="SpriteSheetAsset" />.
 /// </summary>
-public class SpriteSheetContentFile : ContentFile<SpriteSheet> {
+public class SpriteSheetContentFile : ContentFile<SpriteSheetAsset> {
     private readonly List<INameableCollection> _children = new();
 
     /// <summary>

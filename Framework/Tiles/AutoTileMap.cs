@@ -53,10 +53,11 @@ public sealed class AutoTileMap : RenderableTileMap {
         return this._activeTileToIndex.ContainsKey(tilePosition);
     }
 
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.TileSetReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.TileSetReference);
         this._previousWorldScale = this.Transform.Scale;
         this.ReevaluateIndexes();
         this.ResetSpriteScale();
@@ -64,7 +65,7 @@ public sealed class AutoTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.PackagedAsset is AutoTileSet tileSet && this.TileSetReference.Asset is SpriteSheet spriteSheet) {
+        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.TileSetReference.PackagedAsset is AutoTileSet tileSet && this.TileSetReference.Asset is SpriteSheetAsset spriteSheet) {
             foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTile);
                 if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex)) {
@@ -182,13 +183,13 @@ public sealed class AutoTileMap : RenderableTileMap {
     }
 
     private void ResetSpriteScale() {
-        if (this.TileSetReference.Asset is SpriteSheet spriteSheet) {
+        if (this.TileSetReference.Asset is SpriteSheetAsset spriteSheet) {
             this._spriteScale = this.GetTileScale(spriteSheet.SpriteSize);
         }
     }
 
     private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(SpriteSheet.SpriteSize)) {
+        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(SpriteSheetAsset.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

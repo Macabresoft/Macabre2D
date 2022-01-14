@@ -16,7 +16,7 @@
         <common:ThumbnailSizeToPixelSizeConverter x:Key="ThumbnailSizeConverter" />
     </avaloniaEx:BaseDialog.Resources>
     <Design.DataContext>
-        <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetAsset" />
+        <local:SpriteSheetAssetSelectionViewModel x:TypeArguments="framework:SpriteSheetMember" />
     </Design.DataContext>
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="0.4*, 0.6*"

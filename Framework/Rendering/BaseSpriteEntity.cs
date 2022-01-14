@@ -40,7 +40,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     /// <summary>
     /// Gets the sprite sheet.
     /// </summary>
-    public abstract SpriteSheet? SpriteSheet { get; }
+    public abstract SpriteSheetAsset? SpriteSheet { get; }
 
     /// <summary>
     /// Gets or sets the color.

@@ -225,7 +225,7 @@ public class ProjectEditorViewModel : BaseViewModel {
                 case SpriteAnimation spriteAnimation:
                     this.ResetScene(spriteAnimation);
                     break;
-                case SpriteSheet spriteSheet:
+                case SpriteSheetAsset spriteSheet:
                     this.ResetScene(spriteSheet);
                     break;
             }
@@ -238,7 +238,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(AutoTileSet tileSet) {
         if (tileSet.SpriteSheet != null) {
             this._tileMap.TileSetReference.Reset(tileSet);
-            this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._tileMap.TileSetReference);
+            this._scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this._tileMap.TileSetReference);
             this._tileMap.IsEnabled = true;
             this._grid.IsEnabled = true;
         }
@@ -247,13 +247,13 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(SpriteAnimation spriteAnimation) {
         if (spriteAnimation.SpriteSheet != null) {
             this._spriteAnimator.AnimationReference.Reset(spriteAnimation);
-            this._scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this._spriteAnimator.AnimationReference);
+            this._scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this._spriteAnimator.AnimationReference);
             this._spriteAnimator.Play();
             this._spriteAnimator.IsEnabled = true;
         }
     }
 
-    private void ResetScene(SpriteSheet spriteSheet) {
+    private void ResetScene(SpriteSheetAsset spriteSheet) {
     }
 
     private void ResetSize(Rect overallSceneArea, Rect viewableSceneArea) {

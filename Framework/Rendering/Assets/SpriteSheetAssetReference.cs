@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// An asset reference for an asset packaged inside of a <see cref="SpriteSheet" />.
+/// An asset reference for an asset packaged inside of a <see cref="SpriteSheetAsset" />.
 /// </summary>
 /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
-public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheet> where TPackagedAsset : SpriteSheetAsset {
+public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheetAsset> where TPackagedAsset : SpriteSheetMember {
     private TPackagedAsset? _packagedAsset;
     private Guid _packagedAssetId;
 
@@ -53,7 +53,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     }
 
     /// <inheritdoc />
-    public override void Initialize(SpriteSheet asset) {
+    public override void Initialize(SpriteSheetAsset asset) {
         base.Initialize(asset);
         this.ResolvePackagedAsset();
     }
@@ -63,7 +63,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     /// </summary>
     /// <param name="packagedAsset">The packaged asset.</param>
     public void Reset(TPackagedAsset packagedAsset) {
-        if (packagedAsset.SpriteSheet is SpriteSheet spriteSheet) {
+        if (packagedAsset.SpriteSheet is SpriteSheetAsset spriteSheet) {
             if (this.Asset == null || this.Asset.ContentId != spriteSheet.ContentId) {
                 this.Clear();
             }

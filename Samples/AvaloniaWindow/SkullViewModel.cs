@@ -38,7 +38,7 @@ public sealed class SkullViewModel : BaseViewModel {
         scene.AddSystem<UpdateSystem>();
         scene.BackgroundColor = DefinedColors.MacabresoftPurple;
 
-        var skull = new SpriteSheet();
+        var skull = new SpriteSheetAsset();
 
         this._skullRenderer = scene.AddChild<SpriteRenderer>();
         this._skullRenderer.LocalPosition += new Vector2(0f, 0.5f);
@@ -46,7 +46,7 @@ public sealed class SkullViewModel : BaseViewModel {
         this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
         this._skullRenderer.AddChild<SampleInputEntity>();
 
-        var leagueMono = new Font();
+        var leagueMono = new FontAsset();
 
         this._displayTextRenderer = scene.AddChild<TextRenderer>();
         this._displayTextRenderer.FontReference.Initialize(leagueMono);

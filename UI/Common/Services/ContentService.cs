@@ -93,15 +93,15 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
         FileExtensionToAssetType.Add(SceneAsset.FileExtension, typeof(SceneAsset));
         FileExtensionToAssetType.Add(PrefabAsset.FileExtension, typeof(PrefabAsset));
 
-        foreach (var extension in SpriteSheet.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(SpriteSheet));
+        foreach (var extension in SpriteSheetAsset.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(SpriteSheetAsset));
         }
 
-        foreach (var extension in AudioClip.ValidFileExtensions) {
-            FileExtensionToAssetType.Add(extension, typeof(AudioClip));
+        foreach (var extension in AudioClipAsset.ValidFileExtensions) {
+            FileExtensionToAssetType.Add(extension, typeof(AudioClipAsset));
         }
 
-        FileExtensionToAssetType.Add(Shader.FileExtension, typeof(Shader));
+        FileExtensionToAssetType.Add(ShaderAsset.FileExtension, typeof(ShaderAsset));
     }
 
     /// <summary>

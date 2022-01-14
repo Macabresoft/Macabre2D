@@ -102,7 +102,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             this.SelectionType = this._selected switch {
                 IContentDirectory => ProjectSelectionType.Directory,
                 IContentNode => ProjectSelectionType.File,
-                SpriteSheetAsset => ProjectSelectionType.Asset,
+                SpriteSheetMember => ProjectSelectionType.Asset,
                 _ => ProjectSelectionType.None
             };
 
@@ -119,16 +119,16 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     
     private void ResetAssetEditor() {
         if (this.SelectionType == ProjectSelectionType.Asset) {
-            if (this.Selected is SpriteSheetAsset { SpriteSheet: { } spriteSheet } spriteSheetAsset &&
+            if (this.Selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } spriteSheetAsset &&
                 this._contentService.RootContentDirectory.TryFindNode(spriteSheetAsset.SpriteSheet.ContentId, out var contentFile)) {
                 this.AssetEditor = spriteSheetAsset switch {
                     AutoTileSet tileSet => this._container.Resolve<AutoTileSetEditorView>(
                         new ParameterOverride(typeof(AutoTileSet), tileSet),
-                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                        new ParameterOverride(typeof(SpriteSheetAsset), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     SpriteAnimation animation => this._container.Resolve<SpriteAnimationEditorView>(
                         new ParameterOverride(typeof(SpriteAnimation), animation),
-                        new ParameterOverride(typeof(SpriteSheet), spriteSheet),
+                        new ParameterOverride(typeof(SpriteSheetAsset), spriteSheet),
                         new ParameterOverride(typeof(ContentFile), contentFile)),
                     _ => null
                 };

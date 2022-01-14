@@ -30,7 +30,7 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheetAsset), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
 
@@ -83,14 +83,14 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
             if (this.SelectedContentNode.Node is ContentDirectory directory) {
                 var spriteCollections = new List<SpriteDisplayCollection>();
                 foreach (var file in directory.GetAllContentFiles()) {
-                    if (file.Asset is SpriteSheet spriteSheet) {
+                    if (file.Asset is SpriteSheetAsset spriteSheet) {
                         spriteCollections.Add(new SpriteDisplayCollection(spriteSheet, file));
                     }
                 }
 
                 this._spriteSheets.Reset(spriteCollections);
             }
-            else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheet spriteSheet } file) {
+            else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheetAsset spriteSheet } file) {
                 var spriteCollection = new SpriteDisplayCollection(spriteSheet, file);
                 this._spriteSheets.Add(spriteCollection);
             }

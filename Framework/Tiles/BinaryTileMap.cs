@@ -56,13 +56,13 @@ public sealed class BinaryTileMap : RenderableTileMap {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
         this.ResetSpriteScale();
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheet spriteSheet && this._activeTiles.Any()) {
+        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheetAsset spriteSheet && this._activeTiles.Any()) {
             foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
                 spriteBatch.Draw(
                     this.Scene.Game.Project.Settings.PixelsPerUnit,
@@ -100,7 +100,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(IEntity.Transform)) {
-            if (this.SpriteReference.Asset is SpriteSheet spriteSheet) {
+            if (this.SpriteReference.Asset is SpriteSheetAsset spriteSheet) {
                 this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
             }
         }
@@ -123,13 +123,13 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     private void ResetSpriteScale() {
-        if (this.SpriteReference.Asset is SpriteSheet spriteSheet) {
+        if (this.SpriteReference.Asset is SpriteSheetAsset spriteSheet) {
             this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
         }
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(SpriteSheet.SpriteSize)) {
+        if (e.PropertyName == nameof(SpriteSheetAsset.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

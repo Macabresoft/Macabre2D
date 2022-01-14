@@ -11,6 +11,6 @@ public class SpriteAnimationDisplayCollection : SpriteSheetAssetDisplayCollectio
     /// </summary>
     /// <param name="spriteSheet">The sprite sheet.</param>
     /// <param name="file">The file.</param>
-    public SpriteAnimationDisplayCollection(SpriteSheet spriteSheet, ContentFile file) : base(spriteSheet, file) {
+    public SpriteAnimationDisplayCollection(SpriteSheetAsset spriteSheet, ContentFile file) : base(spriteSheet, file) {
     }
 }

@@ -58,11 +58,11 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         },
         new FileDialogFilter {
             Name = @"Audio",
-            Extensions = AudioClip.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
+            Extensions = AudioClipAsset.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
         },
         new FileDialogFilter {
             Name = "Images",
-            Extensions = SpriteSheet.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
+            Extensions = SpriteSheetAsset.ValidFileExtensions.Select(x => x.TrimStart('.')).ToList()
         },
         new FileDialogFilter {
             Name = "Prefabs",
@@ -74,7 +74,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         },
         new FileDialogFilter {
             Name = "Shaders",
-            Extensions = new List<string> { Shader.FileExtension.TrimStart('.') }
+            Extensions = new List<string> { ShaderAsset.FileExtension.TrimStart('.') }
         }
     };
 

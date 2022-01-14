@@ -11,7 +11,7 @@ using Unity;
 /// <summary>
 /// A view model for the sprite sheet asset selection dialog.
 /// </summary>
-public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetAsset {
+public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewModel where TAsset : SpriteSheetMember {
     private readonly ObservableCollectionExtended<SpriteSheetAssetDisplayCollection<TAsset>> _spriteSheets = new();
     private TAsset _selectedAsset;
     private FilteredContentWrapper _selectedContentNode;
@@ -30,7 +30,7 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     /// <param name="contentService">The content service.</param>
     [InjectionConstructor]
     public SpriteSheetAssetSelectionViewModel(IContentService contentService) : this() {
-        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheet), false);
+        this.RootContentDirectory = new FilteredContentWrapper(contentService.RootContentDirectory, typeof(SpriteSheetAsset), false);
         this.SelectedContentNode = this.RootContentDirectory;
     }
 
@@ -83,14 +83,14 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
             if (this.SelectedContentNode.Node is ContentDirectory directory) {
                 var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
                 foreach (var file in directory.GetAllContentFiles()) {
-                    if (file.Asset is SpriteSheet spriteSheet) {
+                    if (file.Asset is SpriteSheetAsset spriteSheet) {
                         spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
                     }
                 }
 
                 this._spriteSheets.Reset(spriteCollections);
             }
-            else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheet spriteSheet } file) {
+            else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheetAsset spriteSheet } file) {
                 var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
                 this._spriteSheets.Add(spriteCollection);
             }

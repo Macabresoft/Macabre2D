@@ -39,7 +39,7 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     public SpriteAnimationEditorViewModel(
         IUndoService undoService,
         SpriteAnimation animation,
-        SpriteSheet spriteSheet,
+        SpriteSheetAsset spriteSheet,
         ContentFile file) : base() {
         this._undoService = undoService;
         this._animation = animation;

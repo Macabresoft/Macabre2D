@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// A tile set which automatically provides the correct sprite given its relationship to surrounding tiles.
 /// </summary>
-public sealed class AutoTileSet : SpriteSheetAsset {
+public sealed class AutoTileSet : SpriteSheetMember {
     /// <summary>
     /// The default name.
     /// </summary>

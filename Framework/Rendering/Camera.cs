@@ -156,7 +156,7 @@ public sealed class Camera : Entity, ICamera {
         this.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
 
-        this.Scene.Assets.ResolveAsset<Shader, Effect>(this._shaderReference);
+        this.Scene.Assets.ResolveAsset<ShaderAsset, Effect>(this._shaderReference);
     }
 
     /// <inheritdoc />

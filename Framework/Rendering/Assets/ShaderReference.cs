@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework; 
 
 /// <summary>
-/// Asset reference for <see cref="Shader" />.
+/// Asset reference for <see cref="ShaderAsset" />.
 /// </summary>
-public class ShaderReference : AssetReference<Shader> {
+public class ShaderReference : AssetReference<ShaderAsset> {
 }

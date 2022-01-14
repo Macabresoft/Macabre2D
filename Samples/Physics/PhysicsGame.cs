@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 [ExcludeFromCodeCoverage]
 public class PhysicsGame : BaseGame {
-    private Font _font;
+    private FontAsset _font;
 
     protected override void Initialize() {
         this._graphics.PreferredBackBufferHeight = 1080;
@@ -28,7 +28,7 @@ public class PhysicsGame : BaseGame {
         physicsService.Gravity.Value = new Vector2(0f, -9f);
         physicsService.TimeStep = 1f / 60f;
 
-        this._font = new Font();
+        this._font = new FontAsset();
 
         var cameraEntity = scene.AddChild<Camera>();
         var frameRateDisplay = cameraEntity.AddChild<FrameRateDisplayEntity>();

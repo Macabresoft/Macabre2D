@@ -16,13 +16,13 @@ public interface ILocalDialogService : ICommonDialogService {
     /// Opens a dialog that allows the user to pick a sprite.
     /// </summary>
     /// <returns>A sprite sheet and the sprite index on the sprite sheet.</returns>
-    Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
+    Task<(SpriteSheetAsset SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog();
 
     /// <summary>
-    /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetAsset" />.
+    /// Opens a dialog that allows the user to pick an <see cref="SpriteSheetMember" />.
     /// </summary>
-    /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetAsset" />.</returns>
-    Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetAsset;
+    /// <returns>A sprite sheet and the packaged asset identifier of the selected <see cref="SpriteSheetMember" />.</returns>
+    Task<(SpriteSheetAsset SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember;
 }
 
 /// <summary>
@@ -38,7 +38,7 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
     }
 
     /// <inheritdoc />
-    public async Task<(SpriteSheet SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
+    public async Task<(SpriteSheetAsset SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
         var window = Resolver.Resolve<SpriteSelectionDialog>();
         if (await window.ShowDialog<bool>(this.MainWindow) && window.ViewModel.SelectedSprite is SpriteDisplayModel sprite) {
             return (sprite.SpriteSheet, sprite.Index);
@@ -48,14 +48,14 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
     }
 
     /// <inheritdoc />
-    public async Task<(SpriteSheet SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetAsset {
+    public async Task<(SpriteSheetAsset SpriteSheet, Guid PackagedAssetId)> OpenSpriteSheetAssetSelectionDialog<TAsset>() where TAsset : SpriteSheetMember {
         var window = Resolver.Resolve<SpriteSheetAssetSelectionDialog>(
             new ParameterOverride("viewModel",
                 Resolver.Resolve<SpriteSheetAssetSelectionViewModel<TAsset>>()));
 
         if (await window.ShowDialog<bool>(this.MainWindow) &&
             window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: TAsset tileSet } viewModel &&
-            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is SpriteSheet spriteSheet) {
+            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is SpriteSheetAsset spriteSheet) {
             return (spriteSheet, tileSet.Id);
         }
 

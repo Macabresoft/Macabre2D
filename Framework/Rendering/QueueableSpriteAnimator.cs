@@ -15,7 +15,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     private QueueableSpriteAnimation? _currentAnimation;
 
     /// <inheritdoc />
-    public override SpriteSheet? SpriteSheet => this._currentAnimation?.Animation?.SpriteSheet;
+    public override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation?.SpriteSheet;
 
     /// <summary>
     /// Enqueues the specified animation.

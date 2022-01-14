@@ -28,14 +28,14 @@ public sealed class SpriteRenderer : BaseSpriteEntity {
     public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
-    public override SpriteSheet? SpriteSheet => this.SpriteReference.Asset;
+    public override SpriteSheetAsset? SpriteSheet => this.SpriteReference.Asset;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         
         this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
-        this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
         this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
     }
 
@@ -44,7 +44,7 @@ public sealed class SpriteRenderer : BaseSpriteEntity {
             this.Reset();
         }
         else if (e.PropertyName == nameof(this.SpriteSheet.ContentId)) {
-            this.Scene.Assets.ResolveAsset<SpriteSheet, Texture2D>(this.SpriteReference);
+            this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
             this.Reset();
         }
     }
