@@ -1,7 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
+             xmlns:avalonia="clr-namespace:Avalonia;assembly=Avalonia.Base"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <UserControl.Resources>
@@ -21,12 +23,20 @@
                         Classes="Icon"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
                     <Button.ContextMenu>
-                        <ContextMenu Items="{Binding $parent[local:SceneTreeView].AddEntityMenuItems}">
-                            <ContextMenu.Styles>
-                                <Style Selector="MenuItem">
-                                    <Setter Property="Command" Value="{Binding $parent[Button].Command}" />
-                                </Style>
-                            </ContextMenu.Styles>
+                        <ContextMenu>
+                            <MenuItem Header="Find..."
+                                      Command="{Binding $parent[Button].Command}"
+                                      ToolTip.Tip="Open a window to find an entity to add as a child" />
+
+                            <Separator />
+
+                            <MenuItem Header="All Entities"
+                                      Classes="MenuItemParent"
+                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                <MenuItem.Styles>
+                                    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
+                                </MenuItem.Styles>
+                            </MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
 
@@ -80,34 +90,34 @@
                     <TreeDataTemplate DataType="framework:IScene"
                                       ItemsSource="{Binding NamedChildren}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                       HorizontalAlignment="Stretch"
-                                                       Icon="{StaticResource SceneIcon}"
-                                                       IconForeground="{StaticResource YellowBrush}"
-                                                       Text="{Binding Name}" />
+                                                           HorizontalAlignment="Stretch"
+                                                           Icon="{StaticResource SceneIcon}"
+                                                           IconForeground="{StaticResource YellowBrush}"
+                                                           Text="{Binding Name}" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:SystemCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                       HorizontalAlignment="Stretch"
-                                                       Icon="{StaticResource SystemIcon}"
-                                                       IconForeground="{StaticResource PurpleBrush}"
-                                                       Text="{Binding Name}" />
+                                                           HorizontalAlignment="Stretch"
+                                                           Icon="{StaticResource SystemIcon}"
+                                                           IconForeground="{StaticResource PurpleBrush}"
+                                                           Text="{Binding Name}" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:EntityCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
-                                                       HorizontalAlignment="Stretch"
-                                                       Icon="{StaticResource EntityIcon}"
-                                                       IconForeground="{StaticResource PurpleBrush}"
-                                                       Text="{Binding Name}" />
+                                                           HorizontalAlignment="Stretch"
+                                                           Icon="{StaticResource EntityIcon}"
+                                                           IconForeground="{StaticResource PurpleBrush}"
+                                                           Text="{Binding Name}" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:IUpdateableSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
-                                                       TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameSystemCommand}"
-                                                       Text="{Binding Path=Name, Mode=TwoWay}">
+                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameSystemCommand}"
+                                                           Text="{Binding Path=Name, Mode=TwoWay}">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
@@ -128,12 +138,12 @@
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
-                                                       TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameEntityCommand}"
-                                                       Text="{Binding Path=Name, Mode=TwoWay}"
-                                                       PointerPressed="Entity_OnPointerPressed"
-                                                       PointerReleased="Entity_OnPointerReleased"
-                                                       PointerMoved="Entity_OnPointerMoved"
-                                                       DragDrop.AllowDrop="True">
+                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameEntityCommand}"
+                                                           Text="{Binding Path=Name, Mode=TwoWay}"
+                                                           PointerPressed="Entity_OnPointerPressed"
+                                                           PointerReleased="Entity_OnPointerReleased"
+                                                           PointerMoved="Entity_OnPointerMoved"
+                                                           DragDrop.AllowDrop="True">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
 
@@ -149,25 +159,31 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Create a prefab of the selected entity" />
-                                    
+
                                     <Separator />
 
-                                    <MenuItem Header="Add"
-                                              Items="{Binding $parent[local:SceneTreeView].AddEntityMenuItems}">
-                                        <MenuItem.Styles>
-                                            <Style Selector="MenuItem">
-                                                <Setter Property="Command"
-                                                        Value="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityCommand}" />
-                                            </Style>
-                                        </MenuItem.Styles>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Find..."
+                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityCommand}"
+                                                  ToolTip.Tip="Open a window to find an entity to add as a child" />
+
+                                        <Separator />
+
+                                        <MenuItem Header="All Entities" 
+                                                  Classes="MenuItemParent"
+                                                  Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                            <MenuItem.Styles>
+                                                <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
+                                            </MenuItem.Styles>
+                                        </MenuItem>
                                     </MenuItem>
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveEntityCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
-                                    
+
                                     <Separator />
-                                    
+
 
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>

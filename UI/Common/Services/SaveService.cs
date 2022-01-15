@@ -41,7 +41,7 @@ public class SaveService : ReactiveObject, ISaveService {
     /// <summary>
     /// Initializes a new instance of the <see cref="SaveService" /> class.
     /// </summary>
-    /// <param name="contentService"></param>
+    /// <param name="contentService">The content service.</param>
     /// <param name="dialogService">The dialog service.</param>
     /// <param name="projectService">The project service.</param>
     /// <param name="sceneService">The scene service.</param>

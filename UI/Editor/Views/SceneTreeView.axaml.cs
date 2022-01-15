@@ -11,10 +11,6 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 
 public class SceneTreeView : UserControl {
-    public static readonly DirectProperty<SceneTreeView, IReadOnlyCollection<IControl>> AddEntityMenuItemsProperty =
-        AvaloniaProperty.RegisterDirect<SceneTreeView, IReadOnlyCollection<IControl>>(
-            nameof(AddEntityMenuItems),
-            editor => editor.AddEntityMenuItems);
 
     public static readonly DirectProperty<SceneTreeView, IReadOnlyCollection<IControl>> AddSystemMenuItemsProperty =
         AvaloniaProperty.RegisterDirect<SceneTreeView, IReadOnlyCollection<IControl>>(
@@ -32,12 +28,9 @@ public class SceneTreeView : UserControl {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.InitializeComponent();
         this.AddHandler(DragDrop.DropEvent, this.Drop);
-        this.AddEntityMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.EntityService.AvailableTypes, true);
         this.AddSystemMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.SystemService.AvailableTypes, true);
     }
-
-    public IReadOnlyCollection<IControl> AddEntityMenuItems { get; }
-
+    
     public IReadOnlyCollection<IControl> AddSystemMenuItems { get; }
 
     public SceneTreeViewModel ViewModel { get; }

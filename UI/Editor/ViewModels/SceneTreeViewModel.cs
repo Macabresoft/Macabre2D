@@ -1,6 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -61,7 +63,15 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem);
         this.RenameEntityCommand = ReactiveCommand.Create<string>(this.RenameEntity);
         this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem);
+
+        this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
+            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddEntityCommand, x)).ToList();
     }
+    
+    /// <summary>
+    /// Gets a collection of <see cref="MenuItemModel"/> for adding entities.
+    /// </summary>
+    public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
 
     /// <summary>
     /// Gets a command to add an entity.

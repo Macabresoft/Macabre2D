@@ -1,0 +1,14 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="MenuItem.MenuItemParent > MenuItem">
+        <Design.DataContext>
+            <local:MenuItemModel />
+        </Design.DataContext>
+
+        <Setter Property="Header" Value="{Binding Header}" />
+        <Setter Property="ToolTip.Tip" Value="{Binding ToolTip}" />
+        <Setter Property="Command" Value="{Binding Command}" />
+        <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
+    </Style>
+</Styles>
