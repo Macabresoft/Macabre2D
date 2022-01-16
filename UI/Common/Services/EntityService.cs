@@ -30,7 +30,10 @@ public sealed class EntityService : SelectionService<IEntity>, IEntityService {
         IAssemblyService assemblyService,
         IUndoService undoService,
         IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
-        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IEntity)).Where(x => !x.IsAssignableTo(typeof(IScene)) && x.Assembly != typeof(IGizmo).Assembly).ToList();
+        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IEntity)).Where(
+            x => !x.IsAssignableTo(typeof(IScene)) && 
+                 x.GetConstructor(Type.EmptyTypes) != null && 
+                 x.Assembly != typeof(IGizmo).Assembly).ToList();
     }
 
     /// <inheritdoc />
