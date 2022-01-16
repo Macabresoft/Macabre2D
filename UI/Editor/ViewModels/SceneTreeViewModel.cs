@@ -66,12 +66,19 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddEntityCommand, x)).ToList();
+        this.AddSystemModels = this.SystemService.AvailableTypes.OrderBy(x => x.Name)
+            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddSystemCommand, x)).ToList();
     }
     
     /// <summary>
     /// Gets a collection of <see cref="MenuItemModel"/> for adding entities.
     /// </summary>
     public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
+    
+    /// <summary>
+    /// Gets a collection of <see cref="MenuItemModel"/> for adding systems.
+    /// </summary>
+    public IReadOnlyCollection<MenuItemModel> AddSystemModels { get; }
 
     /// <summary>
     /// Gets a command to add an entity.

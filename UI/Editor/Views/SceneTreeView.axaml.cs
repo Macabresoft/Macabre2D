@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
-using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -11,12 +10,6 @@ using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 
 public class SceneTreeView : UserControl {
-
-    public static readonly DirectProperty<SceneTreeView, IReadOnlyCollection<IControl>> AddSystemMenuItemsProperty =
-        AvaloniaProperty.RegisterDirect<SceneTreeView, IReadOnlyCollection<IControl>>(
-            nameof(AddSystemMenuItems),
-            editor => editor.AddSystemMenuItems);
-
     public static readonly DirectProperty<SceneTreeView, SceneTreeViewModel> ViewModelProperty =
         AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeViewModel>(
             nameof(ViewModel),
@@ -28,10 +21,7 @@ public class SceneTreeView : UserControl {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.InitializeComponent();
         this.AddHandler(DragDrop.DropEvent, this.Drop);
-        this.AddSystemMenuItems = MenuItemHelper.CreateAddMenuItems(this.ViewModel.SystemService.AvailableTypes, true);
     }
-    
-    public IReadOnlyCollection<IControl> AddSystemMenuItems { get; }
 
     public SceneTreeViewModel ViewModel { get; }
 

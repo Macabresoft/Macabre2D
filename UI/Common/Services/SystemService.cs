@@ -31,6 +31,9 @@ public class SystemService : SelectionService<IUpdateableSystem>, ISystemService
         IUndoService undoService,
         IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
         this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IUpdateableSystem)).ToList();
+        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IUpdateableSystem)).Where(x =>
+            x.Assembly != typeof(IGizmo).Assembly &&
+            x.GetConstructor(Type.EmptyTypes) != null).ToList();
     }
 
     /// <inheritdoc />
