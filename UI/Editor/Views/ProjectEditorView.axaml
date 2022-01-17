@@ -4,9 +4,6 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectEditorView">
-    <UserControl.Resources>
-        <avaloniaEx:EqualityConverter x:Key="IsEqualConverter" />
-    </UserControl.Resources>
     <Grid DataContext="{Binding $parent[local:ProjectEditorView].ViewModel}"
           PropertyChanged="OverallGrid_OnPropertyChanged">
         <Grid.RowDefinitions>
@@ -117,13 +114,13 @@
         <GridSplitter Grid.Row="1"
                       Grid.Column="2"
                       Classes="CardSplitter"
-                      IsVisible="{Binding AssetSelectionService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
+                      IsVisible="{Binding AssetSelectionService.SelectionType, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}" />
 
         <Border Grid.Row="2"
                 Grid.Column="2"
                 Classes="Card"
                 Margin="{StaticResource DoubleMarginAll}"
-                IsVisible="{Binding AssetSelectionService.SelectionType, Converter={StaticResource IsEqualConverter}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
+                IsVisible="{Binding AssetSelectionService.SelectionType, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:ProjectSelectionType.Asset}}">
             <ContentControl Content="{Binding AssetSelectionService.AssetEditor}" />
         </Border>
     </Grid>

@@ -7,10 +7,6 @@
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <avaloniaEx:IsTypeConverter x:Key="IsTypeConverter" />
-        <avaloniaEx:IsTypeConverter x:Key="IsNotTypeConverter" InvertResult="True" />
-        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
-
         <ContextMenu x:Key="ContentNodeContextMenu">
             <Design.DataContext>
                 <common:ContentFile />
@@ -41,7 +37,7 @@
         <ContextMenu x:Key="ContentDirectoryContextMenu">
             <MenuItem Header="Rename"
                       Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
-                      IsVisible="{Binding Converter={StaticResource IsTypeConverter}, ConverterParameter={x:Type framework:INameable}}"
+                      IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:INameable}}"
                       ToolTip.Tip="Rename the directory" />
 
             <MenuItem Header="Open Directory"
@@ -67,12 +63,12 @@
                       ToolTip.Tip="Import a piece of content from elsewhere" />
 
             <Separator
-                IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}" />
+                IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type common:RootContentDirectory}}" />
 
             <MenuItem Header="Delete"
                       Command="{Binding $parent[local:ProjectTreeView].ViewModel.RemoveContentCommand}"
                       CommandParameter="{Binding}"
-                      IsVisible="{Binding Converter={StaticResource IsNotTypeConverter}, ConverterParameter={x:Type common:RootContentDirectory}}"
+                      IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type common:RootContentDirectory}}"
                       ToolTip.Tip="Delete the directory" />
         </ContextMenu>
     </UserControl.Resources>
@@ -122,7 +118,7 @@
                     </Button>
                 </StackPanel>
                 <TreeView Grid.Row="1"
-                          Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
+                          Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">

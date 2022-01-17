@@ -1,14 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
-             xmlns:avalonia="clr-namespace:Avalonia;assembly=Avalonia.Base"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
-    <UserControl.Resources>
-        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
-    </UserControl.Resources>
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
             Classes="Card"
             Margin="{StaticResource StandardMarginLeftTopBottom}">
@@ -86,7 +81,7 @@
 
             <TreeView Grid.Row="1"
                       Name="_treeView"
-                      Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
+                      Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}">
                 <TreeView.Styles>
                     <Style Selector="TreeViewItem">
@@ -177,7 +172,7 @@
 
                                         <Separator />
 
-                                        <MenuItem Header="All Entities" 
+                                        <MenuItem Header="All Entities"
                                                   Classes="MenuItemParent"
                                                   Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
                                             <MenuItem.Styles>

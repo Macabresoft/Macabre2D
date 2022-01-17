@@ -9,7 +9,6 @@
         <local:AutoTileSetEditorViewModel />
     </Design.DataContext>
     <UserControl.Resources>
-        <avaloniaEx:MultiEqualityConverter x:Key="MultiEqualityConverter" />
         <local:SpriteIndexToBitmapConverter x:Key="SpriteIndexToBitmapConverter" />
     </UserControl.Resources>
     <UserControl.Styles>
@@ -26,7 +25,7 @@
             <Setter Property="CommandParameter" Value="{Binding $self.Tag}" />
             <Setter Property="IsChecked">
                 <Setter.Value>
-                    <MultiBinding Converter="{StaticResource MultiEqualityConverter}">
+                    <MultiBinding Converter="{x:Static avaloniaEx:MultiEqualityConverter.Instance}">
                         <Binding Path="$self.Tag" />
                         <Binding Path="SelectedTile" />
                     </MultiBinding>

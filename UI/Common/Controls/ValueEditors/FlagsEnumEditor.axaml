@@ -6,8 +6,6 @@
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.UI.Common.FlagsEnumEditor">
     <local:ValueEditorControl.Resources>
-        <avaloniaEx:EnumTypeToValuesConverter x:Key="EnumTypeToValuesConverter" />
-        <avaloniaEx:FlagsEnumToBoolConverter x:Key="FlagsEnumToBoolConverter" />
         <local:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
     </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
@@ -22,7 +20,7 @@
 
         <ComboBox Grid.Column="1"
                   Classes="Flags"
-                  Items="{Binding EnumType, Converter={StaticResource EnumTypeToValuesConverter}}"
+                  Items="{Binding EnumType, Converter={x:Static avaloniaEx:EnumTypeToValuesConverter.Instance}}"
                   SelectionChanged="SelectingItemsControl_OnSelectionChanged"
                   PlaceholderText="{Binding Value, Converter={StaticResource ToDisplayNameConverter}}"
                   ToolTip.Tip="{Binding Value}">
@@ -40,7 +38,7 @@
                                   CommandParameter="{Binding}"
                                   ToolTip.Tip="{Binding}">
                             <CheckBox.IsChecked>
-                                <MultiBinding Converter="{StaticResource FlagsEnumToBoolConverter}">
+                                <MultiBinding Converter="{x:Static avaloniaEx:FlagsEnumToBoolConverter.Instance}">
                                     <Binding Path="$parent[local:FlagsEnumEditor].Value"
                                              Mode="TwoWay" />
                                     <Binding />

@@ -5,10 +5,9 @@
              x:Class="Macabresoft.Macabre2D.UI.Common.FilteredContentTree">
     <UserControl.Resources>
         <local:AssetToIconConverter x:Key="AssetToIconConverter" />
-        <avaloniaEx:ObjectToEnumerableConverter x:Key="ObjectToEnumerableConverter" />
     </UserControl.Resources>
     <TreeView BorderThickness="0"
-              Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={StaticResource ObjectToEnumerableConverter}}"
+              Items="{Binding  $parent[local:FilteredContentTree].Root, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
               SelectedItem="{Binding $parent[local:FilteredContentTree].SelectedItem, Mode=TwoWay}">
         <TreeView.Styles>
             <Style Selector="TreeViewItem">

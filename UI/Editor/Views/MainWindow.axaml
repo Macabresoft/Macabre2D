@@ -22,9 +22,6 @@
                     CommandParameter="{Binding $self}"
                     Gesture="Ctrl + M" />
     </avaloniaEx:BaseDialog.KeyBindings>
-    <avaloniaEx:BaseDialog.Resources>
-        <avaloniaEx:EqualityConverter x:Key="EqualityConverter" />
-    </avaloniaEx:BaseDialog.Resources>
     <avaloniaEx:BaseDialog.Menu>
         <Menu Grid.Column="2"
               IsEnabled="{Binding !IsBusy}"
@@ -68,12 +65,12 @@
                 <MenuItem Header="_Project Editor"
                           Command="{Binding SelectTabCommand}"
                           CommandParameter="{x:Static common:EditorTabs.Project}"
-                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
 
                 <MenuItem Header="_Scene Editor"
                           Command="{Binding SelectTabCommand}"
                           CommandParameter="{x:Static common:EditorTabs.Scene}"
-                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+                          IsEnabled="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
             </MenuItem>
 
             <MenuItem Header="_Help">
@@ -93,10 +90,10 @@
             <Panel>
                 <avaloniaEx:Icon Content="{StaticResource SceneIcon}"
                                  Foreground="{StaticResource YellowBrush}"
-                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
                 <avaloniaEx:Icon Content="{StaticResource ProjectIcon}"
                                  Foreground="{StaticResource YellowBrush}"
-                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
             </Panel>
         </Button>
     </avaloniaEx:BaseDialog.ContentLeftOfMenu>
@@ -106,9 +103,9 @@
                                          IsVisible="{Binding !IsBusy}" />
 
         <local:SceneEditorView IsEnabled="{Binding !IsBusy}"
-                               IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
+                               IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Scene}}" />
         <local:ProjectEditorView IsEnabled="{Binding !IsBusy}"
-                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={StaticResource EqualityConverter}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
+                                 IsVisible="{Binding EditorService.SelectedTab, Mode=OneWay, Converter={x:Static avaloniaEx:EqualityConverter.IsEqual}, ConverterParameter={x:Static common:EditorTabs.Project}}" />
 
         <avaloniaEx:BusyIndicator IsVisible="{Binding IsBusy}" />
     </Grid>
