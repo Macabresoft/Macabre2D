@@ -251,7 +251,7 @@ public class Entity : Transformable, IEntity {
     /// <returns>A value indicating whether or not the entity is null or empty.</returns>
     public static bool IsNullOrEmpty(IEntity? entity, out IEntity notNullEntity) {
         notNullEntity = entity ?? Empty;
-        return notNullEntity == Empty && notNullEntity == Framework.Scene.Empty;
+        return notNullEntity == Empty || notNullEntity == Framework.Scene.Empty;
     }
 
     /// <inheritdoc />

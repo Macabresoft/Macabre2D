@@ -57,17 +57,38 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this._undoService = undoService;
         
         this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddEntity(x));
-        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
         this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(this.RemoveEntity);
         this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x));
         this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem);
         this.RenameEntityCommand = ReactiveCommand.Create<string>(this.RenameEntity);
         this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem);
-
+        this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
+        this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
+        
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddEntityCommand, x)).ToList();
         this.AddSystemModels = this.SystemService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddSystemCommand, x)).ToList();
+    }
+
+    private void ConvertToInstance(IEntity entity) {
+        if (entity.Parent is { } parent && 
+            !Entity.IsNullOrEmpty(parent, out _) && 
+            entity is PrefabContainer container && 
+            container.PrefabReference.Asset?.Content is IEntity content && 
+            content.TryClone(out var clone)) {
+            clone.LocalPosition = entity.LocalPosition;
+            clone.LocalScale = entity.LocalScale;
+            
+            this._undoService.Do(() => {
+                parent.AddChild(clone);
+                parent.RemoveChild(entity);
+            }, () => {
+                parent.AddChild(entity);
+                parent.RemoveChild(clone);
+            });
+
+        }
     }
     
     /// <summary>
@@ -94,6 +115,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// Gets a command to create a prefab.
     /// </summary>
     public ICommand CreatePrefabCommand { get; }
+    
+    /// <summary>
+    /// Gets a command to convert a prefab into an instance.
+    /// </summary>
+    public ICommand ConvertToInstanceCommand { get; }
 
     /// <summary>
     /// Gets the editor service.

@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
@@ -161,7 +162,14 @@
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
                                               CommandParameter="{Binding}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected entity" />
+                                    
+                                    <MenuItem Header="Convert to Instance"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToInstanceCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
 
                                     <Separator />
 
@@ -184,10 +192,6 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveEntityCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
-
-                                    <Separator />
-
-
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>
                         </avaloniaEx:EditableSelectableItem>
