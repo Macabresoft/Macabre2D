@@ -14,6 +14,7 @@ public class TypeSelectionDialog : BaseDialog {
         this.InitializeComponent();
     }
 
+
     public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
 
     private void InitializeComponent() {

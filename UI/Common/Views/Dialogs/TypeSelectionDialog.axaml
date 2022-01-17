@@ -16,10 +16,17 @@
         <local:TypeSelectionViewModel />
     </Design.DataContext>
     <Grid Margin="{StaticResource StandardMarginAll}"
-          RowDefinitions="*, Auto">
-        <avaloniaEx:AlternatingListBox Grid.Row="0"
+          RowDefinitions="Auto, *, Auto">
+        <AutoCompleteBox Grid.Row="0"
+                         Text="{Binding FilterText}"
+                         Items="{Binding Types}"
+                         ValueMemberBinding="{Binding Name}"
+                         FilterMode="Contains"
+                         Watermark="Filter..." />
+        
+        <avaloniaEx:AlternatingListBox Grid.Row="1"
                                        Margin="{StaticResource StandardMarginAll}"
-                                       Items="{Binding Types, Mode=OneWay}"
+                                       Items="{Binding FilteredTypes, Mode=OneWay}"
                                        SelectedItem="{Binding SelectedType}"
                                        SelectionMode="Single"
                                        VirtualizationMode="None">
@@ -38,7 +45,7 @@
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="{StaticResource StandardMarginVertical}">
             <Button Content="OK"
                     Command="{Binding OkCommand}"
