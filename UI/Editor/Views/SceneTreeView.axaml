@@ -25,7 +25,7 @@
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Find..."
-                                      Command="{Binding $parent[Button].Command}"
+                                      Command="{Binding AddEntityCommand}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                             <Separator />
@@ -59,7 +59,7 @@
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Find..."
-                                      Command="{Binding $parent[Button].Command}"
+                                      Command="{Binding AddSystemCommand}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                             <Separator />
