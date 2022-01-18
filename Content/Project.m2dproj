@@ -1,0 +1,40 @@
+{
+  "$id": "12",
+  "Name": "Project",
+  "StartupSceneContentId": "cbf791ec-d90c-4110-9883-ab9ab21e4e8d",
+  "Settings": {
+    "$type": "Macabresoft.Macabre2D.Framework.GameSettings, Macabre2D.Framework",
+    "_customSettings": {
+      "$id": "13",
+      "$values": []
+    },
+    "DefaultGraphicsSettings": {
+      "DisplayMode": 2,
+      "Resolution": {
+        "$id": "14",
+        "X": 1920,
+        "Y": 1080
+      },
+      "TypeName": "GraphicsSettings",
+      "Version": "0.0"
+    },
+    "DefaultResolution": {
+      "$id": "15",
+      "X": 0,
+      "Y": 0
+    },
+    "ErrorSpritesColor": {
+      "R": 255,
+      "G": 105,
+      "B": 180,
+      "A": 255
+    },
+    "FallbackBackgroundColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "PixelsPerUnit": 32
+  }
+}

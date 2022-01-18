@@ -1,0 +1,66 @@
+{
+  "$id": "4",
+  "_systems": {
+    "$id": "5",
+    "$values": [
+      {
+        "$id": "6",
+        "$type": "Macabresoft.Macabre2D.Framework.UpdateSystem, Macabre2D.Framework",
+        "IsEnabled": true,
+        "Name": "UpdateSystem"
+      },
+      {
+        "$id": "7",
+        "$type": "Macabresoft.Macabre2D.Framework.RenderSystem, Macabre2D.Framework",
+        "IsEnabled": true,
+        "Name": "RenderSystem"
+      }
+    ]
+  },
+  "_children": {
+    "$id": "8",
+    "$values": [
+      {
+        "$id": "9",
+        "$type": "Macabresoft.Macabre2D.Framework.Camera, Macabre2D.Framework",
+        "Shader": {
+          "$id": "10",
+          "ContentId": "00000000-0000-0000-0000-000000000000"
+        },
+        "_children": {
+          "$id": "11",
+          "$values": []
+        },
+        "Offset Settings": {
+          "Offset Type": 3,
+          "Offset": "0, 0"
+        },
+        "Layers to Render": 65535,
+        "RenderOrder": 0,
+        "Sampler State": 5,
+        "Snap to Pixels": false,
+        "View Height": 10.0,
+        "Id": "1d03f789-da46-498e-9b6f-aafbad22bd84",
+        "IsEnabled": true,
+        "Layers": 1,
+        "Name": "Camera",
+        "Local Position": "0, 0",
+        "Local Scale": "1, 1"
+      }
+    ]
+  },
+  "BackgroundColor": {
+    "R": 99,
+    "G": 73,
+    "B": 96,
+    "A": 255
+  },
+  "Version": "0.0.0.0",
+  "Tile Size": "1, 1",
+  "Id": "df20934c-03b0-44d4-b170-98c7e57af511",
+  "IsEnabled": true,
+  "Layers": 1,
+  "Name": "Default",
+  "Local Position": "0, 0",
+  "Local Scale": "1, 1"
+}

@@ -1,0 +1,18 @@
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:..\bin\Debug\DesktopGL\Content
+/intermediateDir:obj
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:True
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Project.m2dproj
+/copy:Project.m2dproj
+#end Project.m2dproj
+
