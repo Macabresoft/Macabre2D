@@ -45,3 +45,22 @@
 
 
 
+#begin .metadata\42964d6c-9068-4d37-a5b5-46cd8ebc814d.m2dmeta
+/copy:.metadata\42964d6c-9068-4d37-a5b5-46cd8ebc814d.m2dmeta
+#end .metadata\42964d6c-9068-4d37-a5b5-46cd8ebc814d.m2dmeta
+
+#begin Sprites\Walls
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites\Walls.png
+#end Sprites\Walls
+
+
+

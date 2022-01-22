@@ -1,0 +1,105 @@
+{
+  "$id": "11",
+  "_splitContentPath": {
+    "$id": "12",
+    "$values": [
+      "Sprites",
+      "Walls"
+    ]
+  },
+  "Asset": {
+    "$id": "13",
+    "$type": "Macabresoft.Macabre2D.Framework.SpriteSheetAsset, Macabre2D.Framework",
+    "_autoTileSets": {
+      "$id": "14",
+      "$values": [
+        {
+          "$id": "15",
+          "_tileIndexToSpriteIndex": {
+            "$id": "16",
+            "$values": [
+              {
+                "Key": 0,
+                "Value": 15
+              },
+              {
+                "Key": 1,
+                "Value": 11
+              },
+              {
+                "Key": 2,
+                "Value": 14
+              },
+              {
+                "Key": 3,
+                "Value": 10
+              },
+              {
+                "Key": 4,
+                "Value": 12
+              },
+              {
+                "Key": 5,
+                "Value": 8
+              },
+              {
+                "Key": 6,
+                "Value": 13
+              },
+              {
+                "Key": 7,
+                "Value": 9
+              },
+              {
+                "Key": 8,
+                "Value": 3
+              },
+              {
+                "Key": 9,
+                "Value": 7
+              },
+              {
+                "Key": 10,
+                "Value": 2
+              },
+              {
+                "Key": 11,
+                "Value": 6
+              },
+              {
+                "Key": 12,
+                "Value": 0
+              },
+              {
+                "Key": 13,
+                "Value": 4
+              },
+              {
+                "Key": 14,
+                "Value": 1
+              },
+              {
+                "Key": 15,
+                "Value": 5
+              }
+            ]
+          },
+          "Id": "9c1b4b7c-789f-424f-b54d-ca959a04c841",
+          "Name": "Tile Set"
+        }
+      ]
+    },
+    "_spriteAnimations": {
+      "$id": "17",
+      "$values": []
+    },
+    "_packagedObjects": {
+      "$id": "18",
+      "$values": []
+    },
+    "Columns": 4,
+    "Rows": 4,
+    "ContentId": "42964d6c-9068-4d37-a5b5-46cd8ebc814d"
+  },
+  "ContentFileExtension": ".png"
+}
