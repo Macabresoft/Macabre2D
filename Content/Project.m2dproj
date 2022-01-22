@@ -1,17 +1,17 @@
 {
-  "$id": "12",
+  "$id": "18",
   "Name": "Project",
   "StartupSceneContentId": "cbf791ec-d90c-4110-9883-ab9ab21e4e8d",
   "Settings": {
     "$type": "Macabresoft.Macabre2D.Framework.GameSettings, Macabre2D.Framework",
     "_customSettings": {
-      "$id": "13",
+      "$id": "19",
       "$values": []
     },
     "DefaultGraphicsSettings": {
       "DisplayMode": 2,
       "Resolution": {
-        "$id": "14",
+        "$id": "20",
         "X": 1920,
         "Y": 1080
       },
@@ -19,7 +19,7 @@
       "Version": "0.0"
     },
     "DefaultResolution": {
-      "$id": "15",
+      "$id": "21",
       "X": 0,
       "Y": 0
     },

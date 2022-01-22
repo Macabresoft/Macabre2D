@@ -16,3 +16,32 @@
 /copy:Project.m2dproj
 #end Project.m2dproj
 
+#begin .metadata\a35b2b8f-3df3-4b0a-b8c8-a716e9111cd3.meta
+/copy:.metadata\a35b2b8f-3df3-4b0a-b8c8-a716e9111cd3.meta
+#end .metadata\a35b2b8f-3df3-4b0a-b8c8-a716e9111cd3.meta
+
+#begin Default.m2dscene
+/copy:Default.m2dscene
+#end Default.m2dscene
+
+
+
+#begin .metadata\9f797b21-5639-4592-a4bc-06f2e880abf4.meta
+/copy:.metadata\9f797b21-5639-4592-a4bc-06f2e880abf4.meta
+#end .metadata\9f797b21-5639-4592-a4bc-06f2e880abf4.meta
+
+#begin Sprites\Player
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites\Player.png
+#end Sprites\Player
+
+
+
