@@ -134,7 +134,7 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     public SpriteDisplayModel SelectedSprite {
         get => this._selectedSprite;
         set {
-            if (this._selectedStep is SpriteAnimationStep selectedStep) {
+            if (this._selectedStep is { } selectedStep) {
                 var previousSprite = this._selectedSprite;
                 this._undoService.Do(() => {
                     try {

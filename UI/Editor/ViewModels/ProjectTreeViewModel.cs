@@ -175,6 +175,8 @@ public class ProjectTreeViewModel : BaseViewModel {
                     Name = SpriteAnimation.DefaultName
                 };
 
+                animation.AddStep();
+
                 this._undoService.Do(
                     () => { animations.Add(animation); },
                     () => { animations.Remove(animation); });
