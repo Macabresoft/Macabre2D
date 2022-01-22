@@ -20,7 +20,6 @@ public static class LicenseHelper {
         new("Newtonsoft.Json", Licenses.Newtonsoft_Json),
         new("Fluent Assertions", Licenses.AvaloniaUI),
         new("Microsoft.NET.Test.Sdk", Licenses.Microsoft_NET_Test_Sdk),
-        new("Mono.Cecil", Licenses.Mono_Cecil),
         new("NSubstitute", Licenses.NSubstitute),
         new("NUnit", Licenses.NUnit),
         new("NUnit 3 Test Adapter", Licenses.NUnit3TestAdapter),

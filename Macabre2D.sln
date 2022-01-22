@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Common", "UI\Common\Macabre2D.UI.Common.csproj", "{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Gameplay", "Gameplay\Macabre2D.Gameplay.csproj", "{C37EAF44-76A7-43EC-BF33-E1188FDDA944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,14 @@ Global
 		{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE}.Release|x64.ActiveCfg = Release|Any CPU
 		{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE}.Release|x64.Build.0 = Release|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Debug|x64.Build.0 = Debug|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Release|x64.ActiveCfg = Release|Any CPU
+		{C37EAF44-76A7-43EC-BF33-E1188FDDA944}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

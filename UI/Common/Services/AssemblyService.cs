@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Macabre2D.Framework;
-using Mono.Cecil;
 using Unity;
 
 /// <summary>
@@ -21,13 +19,6 @@ public interface IAssemblyService {
     /// <param name="constructorParameters">The constructor parameters.</param>
     /// <returns>The constructed object.</returns>
     object CreateObjectFromType(Type type, params object[] constructorParameters);
-
-    /// <summary>
-    /// Loads assemblies from files in the specified directory.
-    /// </summary>
-    /// <param name="directory">The directory.</param>
-    /// <returns>A task.</returns>
-    void LoadAssemblies(string directory);
 
     /// <summary>
     /// Loads the first type of the specified type as a generic type given the type arguments.
@@ -57,8 +48,8 @@ public interface IAssemblyService {
 /// A service which loads types from assemblies.
 /// </summary>
 public sealed class AssemblyService : IAssemblyService {
+    private readonly IReadOnlyCollection<Assembly> _assemblies;
     private readonly IUnityContainer _container;
-    private bool _hasLoaded;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssemblyService" /> class.
@@ -66,35 +57,17 @@ public sealed class AssemblyService : IAssemblyService {
     /// <param name="container">The container.</param>
     public AssemblyService(IUnityContainer container) {
         this._container = container;
+        this._assemblies = new[] {
+            Assembly.Load("Macabre2D"),
+            Assembly.Load("Macabre2D.Framework"),
+            Assembly.Load("Macabre2D.Gameplay"),
+            Assembly.Load("Macabre2D.UI.Common")
+        };
     }
 
     /// <inheritdoc />
     public object CreateObjectFromType(Type type, params object[] constructorParameters) {
         return this._container.Resolve(type, new GenericParameterOverride(constructorParameters));
-    }
-
-
-    /// <inheritdoc />
-    public void LoadAssemblies(string directory) {
-        if (!this._hasLoaded && Directory.Exists(directory)) {
-            try {
-                var assemblyPaths = Directory.GetFiles(directory, "*.dll", SearchOption.AllDirectories);
-                foreach (var assemblyPath in assemblyPaths) {
-                    try {
-                        if (assemblyPath.HasObjectsOfType<IEntity>() || assemblyPath.HasObjectsOfType<IUpdateableSystem>()) {
-                            Assembly.LoadFile(assemblyPath);
-                        }
-                    }
-                    catch (FileLoadException) {
-                    }
-                    catch (BadImageFormatException) {
-                    }
-                }
-            }
-            finally {
-                this._hasLoaded = true;
-            }
-        }
     }
 
     /// <inheritdoc />
@@ -105,9 +78,9 @@ public sealed class AssemblyService : IAssemblyService {
     /// <inheritdoc />
     public Type LoadFirstType(Type baseType) {
         Type resultType = null;
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var filter = baseType.IsGenericTypeDefinition ? type => this.CheckIfTypeMatchGeneric(baseType, type) : new Func<Type, bool>(type => this.CheckIfTypeMatch(baseType, type));
-        foreach (var assembly in assemblies) {
+        var filter = baseType.IsGenericTypeDefinition ? type => CheckIfTypeMatchGeneric(baseType, type) : new Func<Type, bool>(type => CheckIfTypeMatch(baseType, type));
+
+        foreach (var assembly in this._assemblies) {
             try {
                 resultType = assembly.GetTypes().Where(filter).FirstOrDefault();
             }
@@ -129,10 +102,9 @@ public sealed class AssemblyService : IAssemblyService {
     /// <inheritdoc />
     public IEnumerable<Type> LoadTypes(Type baseType) {
         var types = new List<Type>();
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var filter = baseType.IsGenericTypeDefinition ? type => CheckIfTypeMatchGeneric(baseType, type) : new Func<Type, bool>(type => CheckIfTypeMatch(baseType, type));
 
-        var filter = baseType.IsGenericTypeDefinition ? type => this.CheckIfTypeMatchGeneric(baseType, type) : new Func<Type, bool>(type => this.CheckIfTypeMatch(baseType, type));
-        foreach (var assembly in assemblies) {
+        foreach (var assembly in this._assemblies) {
             try {
                 types.AddRange(assembly.GetTypes().Where(filter).ToList());
             }
@@ -147,25 +119,11 @@ public sealed class AssemblyService : IAssemblyService {
         return types;
     }
 
-    private bool CheckIfTypeMatch(Type baseType, Type testingType) {
+    private static bool CheckIfTypeMatch(Type baseType, Type testingType) {
         return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && baseType.IsAssignableFrom(testingType);
     }
 
-    private bool CheckIfTypeMatchGeneric(Type baseType, Type testingType) {
+    private static bool CheckIfTypeMatchGeneric(Type baseType, Type testingType) {
         return baseType != testingType && !testingType.IsAbstract && testingType.IsPublic && testingType.BaseType?.IsGenericType == true && testingType.BaseType.GetGenericTypeDefinition() == baseType;
-    }
-}
-
-internal static class AssemblyExtensions {
-    internal static bool HasObjectsOfType<T>(this string assemblyPath) {
-        var definition = AssemblyDefinition.ReadAssembly(assemblyPath);
-        var result = false;
-        var type = typeof(T);
-
-        if (definition != null) {
-            result = definition.MainModule.Types.Any(x => x.BaseType != null && x.BaseType.FullName == type.FullName && x.BaseType.Namespace == type.Namespace);
-        }
-
-        return result;
     }
 }
