@@ -1,0 +1,121 @@
+{
+  "$id": "33",
+  "_splitContentPath": {
+    "$id": "34",
+    "$values": [
+      "Sprites",
+      "Player"
+    ]
+  },
+  "Asset": {
+    "$id": "35",
+    "$type": "Macabresoft.Macabre2D.Framework.SpriteSheetAsset, Macabre2D.Framework",
+    "_autoTileSets": {
+      "$id": "36",
+      "$values": []
+    },
+    "_spriteAnimations": {
+      "$id": "37",
+      "$values": [
+        {
+          "$id": "38",
+          "_steps": {
+            "$id": "39",
+            "$values": [
+              {
+                "$id": "40",
+                "Frames": 1,
+                "SpriteIndex": 6
+              }
+            ]
+          },
+          "Id": "548a3984-9334-413a-b2a3-4d01a755242d",
+          "Name": "Idle"
+        },
+        {
+          "$id": "41",
+          "_steps": {
+            "$id": "42",
+            "$values": [
+              {
+                "$id": "43",
+                "Frames": 2,
+                "SpriteIndex": 0
+              },
+              {
+                "$id": "44",
+                "Frames": 1,
+                "SpriteIndex": 1
+              },
+              {
+                "$id": "45",
+                "Frames": 2,
+                "SpriteIndex": 2
+              },
+              {
+                "$id": "46",
+                "Frames": 1,
+                "SpriteIndex": 1
+              }
+            ]
+          },
+          "Id": "1b297ea0-d073-42d6-9241-c526afabb99d",
+          "Name": "Running"
+        },
+        {
+          "$id": "47",
+          "_steps": {
+            "$id": "48",
+            "$values": [
+              {
+                "$id": "49",
+                "Frames": 1,
+                "SpriteIndex": 3
+              }
+            ]
+          },
+          "Id": "bc8a1572-0aa4-4386-8689-81143e35b030",
+          "Name": "Sliding"
+        },
+        {
+          "$id": "50",
+          "_steps": {
+            "$id": "51",
+            "$values": [
+              {
+                "$id": "52",
+                "Frames": 1,
+                "SpriteIndex": 4
+              }
+            ]
+          },
+          "Id": "4213c491-e0e0-4b8d-a36d-4c31da258e75",
+          "Name": "Jumping"
+        },
+        {
+          "$id": "53",
+          "_steps": {
+            "$id": "54",
+            "$values": [
+              {
+                "$id": "55",
+                "Frames": 1,
+                "SpriteIndex": 5
+              }
+            ]
+          },
+          "Id": "78213c81-3827-4ab8-9f58-a604c47d9936",
+          "Name": "Falling"
+        }
+      ]
+    },
+    "_packagedObjects": {
+      "$id": "56",
+      "$values": []
+    },
+    "Columns": 4,
+    "Rows": 2,
+    "ContentId": "73042527-f2e0-4161-9b14-f1a9cdf81288"
+  },
+  "ContentFileExtension": ".png"
+}
