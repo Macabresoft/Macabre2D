@@ -20,7 +20,7 @@ public class ContentMetadata {
     /// <summary>
     /// The file extension for metadata.
     /// </summary>
-    public const string FileExtension = ".meta";
+    public const string FileExtension = ".m2dmeta";
 
     /// <summary>
     /// The directory name for the metadata.
