@@ -24,6 +24,11 @@ public interface IPathService {
     /// Gets the path to the editor's compiled content directory.
     /// </summary>
     string EditorContentDirectoryPath { get; }
+    
+    /// <summary>
+    /// Gets the path to the editor's compiled content metadata directory.
+    /// </summary>
+    string EditorMetadataDirectoryPath { get; }
 
     /// <summary>
     /// Gets the path to the metadata archive directory.
@@ -113,6 +118,7 @@ public class PathService : IPathService {
         this.PlatformsDirectoryPath = platformsDirectoryPath;
         this.ContentDirectoryPath = contentDirectoryPath;
         this.EditorContentDirectoryPath = Path.Combine(this.EditorBinDirectoryPath, DesktopGLName, ContentDirectoryName);
+        this.EditorMetadataDirectoryPath = Path.Combine(this.EditorContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.MetadataArchiveDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.ArchiveDirectoryName);
         this.MetadataDirectoryPath = Path.Combine(this.ContentDirectoryPath, ContentMetadata.MetadataDirectoryName);
         this.ProjectFilePath = Path.Combine(this.ContentDirectoryPath, GameProject.ProjectFileName);
@@ -131,6 +137,9 @@ public class PathService : IPathService {
 
     /// <inheritdoc />
     public string EditorContentDirectoryPath { get; }
+
+    /// <inheritdoc />
+    public string EditorMetadataDirectoryPath { get; }
 
     /// <inheritdoc />
     public string MetadataArchiveDirectoryPath { get; }

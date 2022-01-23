@@ -13,6 +13,11 @@ using Newtonsoft.Json;
 /// </summary>
 public interface IAssetManager : IDisposable {
     /// <summary>
+    /// Gets the loaded metadata.
+    /// </summary>
+    IReadOnlyCollection<ContentMetadata> LoadedMetadata { get; }
+
+    /// <summary>
     /// Initializes this instance.
     /// </summary>
     /// <param name="contentManager">The content manager.</param>
@@ -82,6 +87,9 @@ public sealed class AssetManager : IAssetManager {
     private ISerializer? _serializer;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ContentMetadata> LoadedMetadata => this._loadedMetadata;
+
+    /// <inheritdoc />
     public void Dispose() {
         this.Unload();
         this._loadedMetadata.Clear();
@@ -117,7 +125,7 @@ public sealed class AssetManager : IAssetManager {
     /// <inheritdoc />
     public bool TryGetMetadata(Guid contentId, out ContentMetadata? metadata) {
         if (contentId != Guid.Empty) {
-            if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId) is ContentMetadata cachedMetadata) {
+            if (this._loadedMetadata.FirstOrDefault(x => x.ContentId == contentId) is { } cachedMetadata) {
                 metadata = cachedMetadata;
             }
             else if (this.TryLoadContent(ContentMetadata.GetMetadataPath(contentId), out ContentMetadata? foundMetadata) && foundMetadata != null) {
@@ -218,42 +226,36 @@ public sealed class AssetManager : IAssetManager {
     }
 
     private sealed class EmptyAssetManager : IAssetManager {
-        /// <inheritdoc />
+        public IReadOnlyCollection<ContentMetadata> LoadedMetadata => Array.Empty<ContentMetadata>();
+
         public void Dispose() {
         }
 
-        /// <inheritdoc />
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
         }
 
-        /// <inheritdoc />
         public void RegisterMetadata(ContentMetadata metadata) {
         }
 
-        /// <inheritdoc />
         public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
             return false;
         }
 
-        /// <inheritdoc />
         public bool TryGetMetadata(Guid contentId, out ContentMetadata? metadata) {
             metadata = null;
             return false;
         }
 
-        /// <inheritdoc />
         public bool TryLoadContent<T>(string contentPath, out T? loaded) where T : class {
             loaded = null;
             return false;
         }
 
-        /// <inheritdoc />
         public bool TryLoadContent<T>(Guid id, out T? loaded) where T : class {
             loaded = null;
             return false;
         }
 
-        /// <inheritdoc />
         public void Unload() {
         }
     }

@@ -19,7 +19,6 @@ public class ContentContainer {
     private const string PlatformsPath = "Platforms";
 
     private readonly IList<string> _metadataFilePaths = new List<string>();
-    private readonly IPathService _pathService = new PathService(BinPath, PlatformsPath, PathService.ContentDirectoryName);
     private readonly IDictionary<string, HashSet<string>> _pathToDirectoryList = new Dictionary<string, HashSet<string>>();
     private readonly IDictionary<string, HashSet<string>> _pathToFileList = new Dictionary<string, HashSet<string>>();
 
@@ -31,12 +30,14 @@ public class ContentContainer {
         this.MetadataToArchive = metadataToArchive.ToArray();
         this.NewContentFiles = newContentFiles.ToArray();
 
-        this.FileSystem.DoesDirectoryExist(this._pathService.PlatformsDirectoryPath).Returns(true);
-        this.FileSystem.DoesDirectoryExist(this._pathService.ContentDirectoryPath).Returns(true);
-        this.FileSystem.DoesDirectoryExist(this._pathService.MetadataDirectoryPath).Returns(true);
-        this.FileSystem.DoesDirectoryExist(this._pathService.MetadataArchiveDirectoryPath).Returns(true);
+        this.AssetManager.LoadedMetadata.Returns(this.ExistingMetadata);
 
-        var projectFilePath = Path.Combine(this._pathService.ContentDirectoryPath, GameProject.ProjectFileName);
+        this.FileSystem.DoesDirectoryExist(this.PathService.PlatformsDirectoryPath).Returns(true);
+        this.FileSystem.DoesDirectoryExist(this.PathService.ContentDirectoryPath).Returns(true);
+        this.FileSystem.DoesDirectoryExist(this.PathService.MetadataDirectoryPath).Returns(true);
+        this.FileSystem.DoesDirectoryExist(this.PathService.MetadataArchiveDirectoryPath).Returns(true);
+
+        var projectFilePath = Path.Combine(this.PathService.ContentDirectoryPath, GameProject.ProjectFileName);
         this.FileSystem.DoesFileExist(projectFilePath).Returns(true);
 
         var project = new GameProject(this.GameSettings, GameProject.DefaultProjectName, Guid.Empty);
@@ -46,22 +47,25 @@ public class ContentContainer {
         this.SetupMetadataToArchive();
         this.SetupNewContentFiles();
 
-        this.FileSystem.GetFiles(this._pathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
+        this.FileSystem.GetFiles(this.PathService.MetadataDirectoryPath, ContentMetadata.MetadataSearchPattern).Returns(this._metadataFilePaths);
+
         this.Instance = new ContentService(
             Substitute.For<IAssemblyService>(),
             this.AssetManager,
-            Substitute.For<IBuildService>(),
+            this.BuildService,
             Substitute.For<ICommonDialogService>(),
             this.FileSystem,
             Substitute.For<ILoggingService>(),
-            this._pathService,
+            this.PathService,
             this.Serializer,
             Substitute.For<IEditorSettingsService>(),
             Substitute.For<IUndoService>(),
             Substitute.For<IValueControlService>());
     }
-
+    
     public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
+
+    public IBuildService BuildService { get; } = Substitute.For<IBuildService>();
 
     public IReadOnlyCollection<ContentMetadata> ExistingMetadata { get; }
 
@@ -74,6 +78,8 @@ public class ContentContainer {
     public IReadOnlyCollection<ContentMetadata> MetadataToArchive { get; }
 
     public IReadOnlyCollection<string> NewContentFiles { get; }
+
+    public IPathService PathService { get; } = new PathService(BinPath, PlatformsPath, Common.PathService.ContentDirectoryName);
 
     public ISerializer Serializer { get; } = Substitute.For<ISerializer>();
 
@@ -131,14 +137,14 @@ public class ContentContainer {
             contentFile.NameWithoutExtension.Should().Be(metadata.GetFileNameWithoutExtension());
             contentFile.Name.Should().Be(metadata.GetFileName());
             contentFile.GetContentPath().Should().Be(metadata.GetContentPath());
-            contentFile.GetFullPath().Should().Be(Path.Combine(this._pathService.ContentDirectoryPath, $"{metadata.GetContentPath()}{metadata.ContentFileExtension}"));
+            contentFile.GetFullPath().Should().Be(Path.Combine(this.PathService.ContentDirectoryPath, $"{metadata.GetContentPath()}{metadata.ContentFileExtension}"));
         }
     }
 
     private void AssertMetadataToArchive() {
         foreach (var metadata in this.MetadataToArchive) {
-            var current = Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
-            var moveTo = Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetArchivePath(metadata.ContentId));
+            var current = Path.Combine(this.PathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
+            var moveTo = Path.Combine(this.PathService.ContentDirectoryPath, ContentMetadata.GetArchivePath(metadata.ContentId));
             this.FileSystem.Received().MoveFile(current, moveTo);
             this.AssetManager.DidNotReceive().RegisterMetadata(metadata);
             this.Instance.RootContentDirectory.TryFindNode(metadata.SplitContentPath.ToArray(), out var node).Should().BeFalse();
@@ -155,14 +161,14 @@ public class ContentContainer {
 
             if (contentFile != null) {
                 this.AssetManager.Received().RegisterMetadata(contentFile.Metadata);
-                this.Serializer.Received().Serialize(contentFile.Metadata, Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentFile.Metadata.ContentId)));
+                this.Serializer.Received().Serialize(contentFile.Metadata, Path.Combine(this.PathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(contentFile.Metadata.ContentId)));
             }
         }
     }
 
     private void RegisterContent(ContentMetadata metadata, bool contentShouldExist) {
         var splitDirectoryPath = metadata.SplitContentPath.Take(metadata.SplitContentPath.Count - 1).ToList();
-        splitDirectoryPath.Insert(0, PathService.ContentDirectoryName);
+        splitDirectoryPath.Insert(0, Common.PathService.ContentDirectoryName);
         var fileName = metadata.GetFileName();
 
         if (contentShouldExist) {
@@ -177,7 +183,7 @@ public class ContentContainer {
 
     private void SetupExistingMetadata() {
         foreach (var metadata in this.ExistingMetadata) {
-            var metadataFilePath = Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
+            var metadataFilePath = Path.Combine(this.PathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
             this._metadataFilePaths.Add(metadataFilePath);
 
             this.Serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
@@ -187,7 +193,7 @@ public class ContentContainer {
 
     private void SetupMetadataToArchive() {
         foreach (var metadata in this.MetadataToArchive) {
-            var metadataFilePath = Path.Combine(this._pathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
+            var metadataFilePath = Path.Combine(this.PathService.ContentDirectoryPath, ContentMetadata.GetMetadataPath(metadata.ContentId));
             this._metadataFilePaths.Add(metadataFilePath);
             this.FileSystem.DoesFileExist(metadataFilePath).Returns(true);
             this.Serializer.Deserialize<ContentMetadata>(metadataFilePath).Returns(metadata);
@@ -200,9 +206,9 @@ public class ContentContainer {
             var splitPath = file.Split(Path.DirectorySeparatorChar);
             var fileName = splitPath.Last();
             var splitDirectoryPath = splitPath.Take(splitPath.Length - 1).ToList();
-            splitDirectoryPath.Insert(0, PathService.ContentDirectoryName);
+            splitDirectoryPath.Insert(0, Common.PathService.ContentDirectoryName);
             this.AddFileToDirectory(Path.Combine(splitDirectoryPath.ToArray()), fileName);
-            this.FileSystem.DoesFileExist(Path.Combine(this._pathService.ContentDirectoryPath, file)).Returns(true);
+            this.FileSystem.DoesFileExist(Path.Combine(this.PathService.ContentDirectoryPath, file)).Returns(true);
         }
     }
 }
