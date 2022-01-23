@@ -1,13 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-
         <IsPackable>false</IsPackable>
-
         <RootNamespace>Macabresoft.Macabre2D.Tests</RootNamespace>
-
-        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

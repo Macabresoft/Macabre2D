@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Macabresoft.Macabre2D.Gameplay</RootNamespace>
@@ -10,5 +9,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
-
 </Project>

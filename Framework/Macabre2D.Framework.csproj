@@ -1,22 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Authors>Brett Story</Authors>
-        <Company>Macabresoft</Company>
-        <Copyright>Copyright © 2016 - 2020</Copyright>
         <Description>A 2D game framework built on top of the MonoGame framework.</Description>
         <RepositoryUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageTags>MonoGame, Game, XNA</PackageTags>
-        <Version>0.4.3</Version>
-        <AssemblyVersion>0.4.3.0</AssemblyVersion>
-        <FileVersion>0.4.3.0</FileVersion>
         <Nullable>enable</Nullable>
-        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
