@@ -2,6 +2,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <RootNamespace>Macabresoft.Macabre2D.Samples.AvaloniaWindow</RootNamespace>
+        <ApplicationIcon>..\..\UI\Common\icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.11" />
@@ -17,5 +18,10 @@
     </ItemGroup>
     <ItemGroup>
         <MonoGameContentReference Include="Content\Content.mgcb" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="..\..\UI\Common\icon.ico">
+        <Link>icon.ico</Link>
+      </None>
     </ItemGroup>
 </Project>

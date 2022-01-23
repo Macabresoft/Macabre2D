@@ -6,6 +6,7 @@
                        x:Class="Macabresoft.Macabre2D.Samples.AvaloniaWindow.MainWindow"
                        Padding="0"
                        WindowState="Maximized"
+                       ShowInTaskbar="True"
                        Title="Avalonia Sample">
     <Design.DataContext>
         <local:MainWindow />
