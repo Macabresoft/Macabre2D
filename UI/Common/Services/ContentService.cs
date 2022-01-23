@@ -267,8 +267,6 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
                 this.ResolveContentFile(metadata);
             }
 
-            // TODO: This might cause problems? Might need some sort of change detection for content.
-            // TODO: Maybe mark a bool that content is outdated and then revert said bool any time content is built?
             if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild || this.CheckForMetadataChanges()) {
                 this._assetManager.Unload();
                 this.BuildContentForProject();
@@ -304,8 +302,9 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     private bool CheckForMetadataChanges() {
-        var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath);
-        return editorMetadataFiles.Count() != this._assetManager.LoadedMetadata.Count;
+        var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList();
+        return editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count || 
+               this._assetManager.LoadedMetadata.Any(metadata => !editorMetadataFiles.Contains(metadata.GetFileName()));
     }
 
     private void ContentNode_PathChanged(object sender, ValueChangedEventArgs<string> e) {

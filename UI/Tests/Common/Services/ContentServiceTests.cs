@@ -123,7 +123,7 @@ public class ContentServiceTests {
 
     [Test]
     [Category("Unit Tests")]
-    public void RefreshContent_Should_RebuildWhenMetadataDifferent() {
+    public void RefreshContent_Should_Rebuild_WhenMetadataCountsDoNotMatch() {
         var existing = new[] {
             new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
             new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
@@ -134,6 +134,28 @@ public class ContentServiceTests {
 
         var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
         container.FileSystem.GetFiles(container.PathService.EditorMetadataDirectoryPath).Returns(existing.Take(existing.Length - 1).Select(x => x.GetFileName()));
+        container.RunRefreshContentTest();
+
+        using (new AssertionScope()) {
+            container.BuildService.Received().BuildContent(Arg.Any<BuildContentArguments>(), Arg.Any<string>());
+        }
+    }
+    
+    [Test]
+    [Category("Unit Tests")]
+    public void RefreshContent_Should_Rebuild_WhenMetadataFilesDoNotMatch() {
+        var existing = new[] {
+            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder2, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheetAsset(), new[] { ContentContainer.Folder1, ContentContainer.Folder1A, Guid.NewGuid().ToString() }, ".jpg"),
+            new ContentMetadata(new SpriteSheetAsset(), new[] { Guid.NewGuid().ToString() }, ".jpg")
+        };
+
+        var container = new ContentContainer(existing, Enumerable.Empty<ContentMetadata>(), Enumerable.Empty<string>());
+        var editorMetadata = existing.Take(existing.Length - 1).Select(x => x.GetFileName()).ToList();
+        editorMetadata.Add($"{Guid.NewGuid().ToString()}{ContentMetadata.FileExtension}");
+        container.FileSystem.GetFiles(container.PathService.EditorMetadataDirectoryPath).Returns(editorMetadata);
         container.RunRefreshContentTest();
 
         using (new AssertionScope()) {
