@@ -12,7 +12,8 @@ public sealed class RootContentDirectory : ContentDirectory {
         ContentMetadata.ArchiveDirectoryName,
         ContentMetadata.MetadataDirectoryName,
         PathService.BinDirectoryName,
-        PathService.ObjDirectoryName
+        PathService.ObjDirectoryName,
+        ".git"
     };
 
     private readonly IPathService _pathService;
