@@ -302,8 +302,11 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     private bool CheckForMetadataChanges() {
-        var editorMetadataFiles = this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList();
-        return editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count || 
+        var editorMetadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath) ?
+            this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList() :
+            null;
+        return editorMetadataFiles == null ||
+            editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count || 
                this._assetManager.LoadedMetadata.Any(metadata => !editorMetadataFiles.Contains(metadata.GetFileName()));
     }
 
