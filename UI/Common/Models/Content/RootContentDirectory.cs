@@ -13,7 +13,8 @@ public sealed class RootContentDirectory : ContentDirectory {
         ContentMetadata.MetadataDirectoryName,
         PathService.BinDirectoryName,
         PathService.ObjDirectoryName,
-        ".git"
+        ".git",
+        ".ignore"
     };
 
     private readonly IPathService _pathService;
