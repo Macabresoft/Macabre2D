@@ -1,16 +1,14 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
 
 /// <summary>
 /// An interface to read common game settings.
 /// </summary>
-public interface IGameSettings {
+public interface IGameSettings : INotifyPropertyChanged {
     /// <summary>
     /// Gets the default graphics settings.
     /// </summary>
@@ -62,14 +60,6 @@ public interface IGameSettings {
     /// <param name="pixelViewHeight">Height of the pixel view.</param>
     /// <returns>A pixel agnostic ratio.</returns>
     float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight);
-
-    /// <summary>
-    /// Tries to get a custom setting.
-    /// </summary>
-    /// <param name="settingName">Name of the setting.</param>
-    /// <param name="settingValue">The setting value.</param>
-    /// <returns>A value indicating whether or not the custom setting was found.</returns>
-    bool TryGetCustomSetting(string settingName, out string? settingValue);
 }
 
 /// <summary>
@@ -77,16 +67,12 @@ public interface IGameSettings {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Settings)]
-public sealed class GameSettings : IGameSettings {
-    /// <summary>
-    /// The content file name for <see cref="GameSettings" />.
-    /// </summary>
-    public const string ContentFileName = "Settings";
-
-    [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-    private readonly Dictionary<string, string> _customSettings = new();
-
+public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
+    private Point _defaultResolution;
+    private Color _errorSpritesColor = Color.HotPink;
+    private Color _fallbackBackgroundColor = Color.Black;
     private ushort _pixelsPerUnit = 32;
+
 
     /// <inheritdoc />
     [DataMember]
@@ -94,17 +80,26 @@ public sealed class GameSettings : IGameSettings {
 
     /// <inheritdoc />
     [DataMember]
-    public Point DefaultResolution { get; set; }
+    public Point DefaultResolution {
+        get => this._defaultResolution;
+        set => this.Set(ref this._defaultResolution, value);
+    }
 
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.Fallback)]
-    public Color ErrorSpritesColor { get; set; } = Color.HotPink;
+    public Color ErrorSpritesColor {
+        get => this._errorSpritesColor;
+        set => this.Set(ref this._errorSpritesColor, value);
+    }
 
     /// <inheritdoc />
-    [DataMember]
+    [DataMember(Name = nameof(FallbackBackgroundColor))]
     [Category(CommonCategories.Fallback)]
-    public Color FallbackBackgroundColor { get; set; } = Color.Black;
+    public Color FallbackBackgroundColor {
+        get => this._fallbackBackgroundColor;
+        set => this.Set(ref this._fallbackBackgroundColor, value);
+    }
 
     /// <inheritdoc />
     public float InversePixelsPerUnit { get; private set; } = 1f / 32f;
@@ -119,27 +114,14 @@ public sealed class GameSettings : IGameSettings {
                 throw new ArgumentOutOfRangeException($"{nameof(this.PixelsPerUnit)} must be greater than 0!");
             }
 
-            this._pixelsPerUnit = value;
-            this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
+            if (this.Set(ref this._pixelsPerUnit, value)) {
+                this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
+            }
         }
-    }
-
-    /// <summary>
-    /// Adds the custom setting.
-    /// </summary>
-    /// <param name="settingName">Name of the setting.</param>
-    /// <param name="settingValue">The setting value.</param>
-    public void AddCustomSetting(string settingName, string settingValue) {
-        this._customSettings.Add(settingName, settingValue);
     }
 
     /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {
         return unitViewHeight * ((float)this.PixelsPerUnit / pixelViewHeight);
-    }
-
-    /// <inheritdoc />
-    public bool TryGetCustomSetting(string settingName, out string? settingValue) {
-        return this._customSettings.TryGetValue(settingName, out settingValue);
     }
 }

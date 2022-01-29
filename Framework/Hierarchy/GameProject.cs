@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// Interface for a single project in the engine.
 /// </summary>
-public interface IGameProject {
+public interface IGameProject : INotifyPropertyChanged {
     /// <summary>
     /// Gets the name for this project.
     /// </summary>
@@ -29,7 +29,7 @@ public interface IGameProject {
 /// </summary>
 [DataContract]
 [Category(CommonCategories.Miscellaneous)]
-public class GameProject : IGameProject {
+public class GameProject : NotifyPropertyChanged, IGameProject {
     /// <summary>
     /// The default project name.
     /// </summary>
@@ -45,6 +45,9 @@ public class GameProject : IGameProject {
     /// </summary>
     public const string ProjectFileName = DefaultProjectName + ProjectFileExtension;
 
+    private string _name;
+    private Guid _startupSceneContentId;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GameProject" /> class.
     /// </summary>
@@ -53,8 +56,8 @@ public class GameProject : IGameProject {
     /// <param name="startupSceneContentId">The identifier for the scene which should run on startup.</param>
     public GameProject(IGameSettings settings, string name, Guid startupSceneContentId) {
         this.Settings = settings;
-        this.Name = name;
-        this.StartupSceneContentId = startupSceneContentId;
+        this._name = name;
+        this._startupSceneContentId = startupSceneContentId;
     }
 
     /// <summary>
@@ -69,10 +72,16 @@ public class GameProject : IGameProject {
 
     /// <inheritdoc />
     [DataMember]
-    public string Name { get; set; }
+    public string Name {
+        get => this._name;
+        set => this.Set(ref this._name, value);
+    }
 
     /// <inheritdoc />
-    [DataMember]
+    [DataMember(Name = "Startup Scene")]
     [AssetGuid(typeof(SceneAsset))]
-    public Guid StartupSceneContentId { get; set; }
+    public Guid StartupSceneContentId {
+        get => this._startupSceneContentId;
+        set => this.Set(ref this._startupSceneContentId, value);
+    }
 }

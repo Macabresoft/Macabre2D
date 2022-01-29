@@ -80,7 +80,7 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         this._fileSystem.CreateDirectory(this._pathService.ContentDirectoryPath);
         this._fileSystem.CreateDirectory(this._pathService.MetadataArchiveDirectoryPath);
         this._fileSystem.CreateDirectory(this._pathService.MetadataDirectoryPath);
-        
+
         var projectExists = this._fileSystem.DoesFileExist(this._pathService.ProjectFilePath);
         if (!projectExists) {
             this._contentService.RefreshContent(true);

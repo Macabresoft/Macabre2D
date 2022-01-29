@@ -27,7 +27,7 @@ public interface IAssetSelectionService : ISelectionService<object> {
     /// Gets the asset editor.
     /// </summary>
     IControl AssetEditor { get; }
-    
+
     /// <summary>
     /// Gets the selection type.
     /// </summary>
@@ -38,15 +38,15 @@ public interface IAssetSelectionService : ISelectionService<object> {
 /// A service for handling assets and their editors.
 /// </summary>
 public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionService {
-    private readonly IContentService _contentService;
     private readonly IUnityContainer _container;
+    private readonly IContentService _contentService;
     private readonly List<ValueControlCollection> _editors = new();
     private readonly IProjectService _projectService;
+    private readonly IUndoService _undoService;
     private readonly IValueControlService _valueControlService;
     private IControl _assetEditor;
     private object _selected;
     private ProjectSelectionType _selectionType;
-    private readonly IUndoService _undoService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssetSelectionService" /> class.
@@ -73,19 +73,19 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     public IReadOnlyCollection<ValueControlCollection> Editors {
         get {
             return this._selected switch {
-                RootContentDirectory => this.GetEditors(),
+                RootContentDirectory => this._editors,
                 IContentNode => this._contentService.Editors,
                 _ => null
             };
         }
     }
-    
+
     /// <inheritdoc />
     public IControl AssetEditor {
         get => this._assetEditor;
         private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }
-    
+
     /// <inheritdoc />
     public object Selected {
         get => this._selected;
@@ -107,6 +107,7 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             };
 
             this.ResetAssetEditor();
+            this.ResetEditors();
             this.RaisePropertyChanged(nameof(this.Editors));
         }
     }
@@ -116,7 +117,22 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
         get => this._selectionType;
         private set => this.RaiseAndSetIfChanged(ref this._selectionType, value);
     }
-    
+
+    private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
+        if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
+            var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
+            var newValue = e.UpdatedValue;
+
+            this._undoService.Do(() => {
+                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
+                valueEditor.SetValue(newValue, false);
+            }, () => {
+                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
+                valueEditor.SetValue(originalValue, false);
+            });
+        }
+    }
+
     private void ResetAssetEditor() {
         if (this.SelectionType == ProjectSelectionType.Asset) {
             if (this.Selected is SpriteSheetMember { SpriteSheet: { } spriteSheet } spriteSheetAsset &&
@@ -141,35 +157,21 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             this.AssetEditor = null;
         }
     }
-    
-    private IReadOnlyCollection<ValueControlCollection> GetEditors() {
+
+    private void ResetEditors() {
         foreach (var editorCollection in this._editors) {
             editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
         }
 
         this._editors.Clear();
-        var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject);
-        this._editors.AddRange(editors);
 
-        foreach (var editorCollection in this._editors) {
-            editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
-        }
+        if (this._selected is RootContentDirectory) {
+            var editors = this._valueControlService.CreateControls(this._projectService.CurrentProject);
+            this._editors.AddRange(editors);
 
-        return this._editors;
-    }
-    
-    private void EditorCollection_OwnedValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        if (sender is IValueEditor { Owner: { } } valueEditor && !string.IsNullOrEmpty(valueEditor.ValuePropertyName)) {
-            var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
-            var newValue = e.UpdatedValue;
-
-            this._undoService.Do(() => {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
-                valueEditor.SetValue(newValue, false);
-            }, () => {
-                valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
-                valueEditor.SetValue(originalValue, false);
-            });
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
+            }
         }
     }
 }
