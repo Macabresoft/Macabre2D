@@ -20,13 +20,6 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
     private Vector2 _previousWorldScale;
     private Vector2 _spriteScale = Vector2.One;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BaseAutoTileMap" /> class.
-    /// </summary>
-    protected BaseAutoTileMap() : base() {
-        this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
-    }
-
     /// <inheritdoc />
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTileToIndex.Keys;
 
@@ -55,11 +48,15 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
+        this.TileSetReference.PropertyChanged -= this.TileSetReference_PropertyChanged;
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.TileSetReference);
+        this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
         this._previousWorldScale = this.Transform.Scale;
         this.ReevaluateIndexes();
         this.ResetSpriteScale();
     }
+
+
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
@@ -173,7 +170,7 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
     }
 
     private void TileSetReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(SpriteSheetAsset.SpriteSize)) {
+        if (e.PropertyName is nameof(AutoTileSetReference.Asset) or nameof(AutoTileSetReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
             this.ResetBoundingArea();
         }
     }

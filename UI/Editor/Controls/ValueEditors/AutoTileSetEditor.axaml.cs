@@ -158,8 +158,8 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
     }
 
     private async Task SelectTileSet() {
-        var (spriteSheet, tileSetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>();
-        if (spriteSheet != null) {
+        var (contentSpriteSheet, tileSetId) = await this._dialogService.OpenSpriteSheetAssetSelectionDialog<AutoTileSet>();
+        if (contentSpriteSheet != null && this._assetManager.TryGetMetadata(contentSpriteSheet.ContentId, out var metadata) && metadata?.Asset is SpriteSheetAsset spriteSheet) {
             var originalAsset = this.Value.Asset;
             var originalTileSetId = this.Value.PackagedAssetId;
             this._undoService.Do(

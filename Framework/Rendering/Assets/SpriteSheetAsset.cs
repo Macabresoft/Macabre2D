@@ -300,6 +300,7 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         this.Content = null;
     }
 
+    /// <inheritdoc />
     protected override IEnumerable<IIdentifiable> GetPackages() {
         var packages = new List<IIdentifiable>();
         packages.AddRange(this._autoTileSets);

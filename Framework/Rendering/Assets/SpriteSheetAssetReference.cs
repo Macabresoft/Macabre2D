@@ -63,7 +63,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     /// </summary>
     /// <param name="packagedAsset">The packaged asset.</param>
     public void Reset(TPackagedAsset packagedAsset) {
-        if (packagedAsset.SpriteSheet is SpriteSheetAsset spriteSheet) {
+        if (packagedAsset.SpriteSheet is { } spriteSheet) {
             if (this.Asset == null || this.Asset.ContentId != spriteSheet.ContentId) {
                 this.Clear();
             }
