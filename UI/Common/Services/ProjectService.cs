@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Gameplay;
 using ReactiveUI;
 
 /// <summary>
@@ -132,7 +131,6 @@ public sealed class ProjectService : ReactiveObject, IProjectService {
         scene.AddSystem<UpdateSystem>();
         scene.AddSystem<RenderSystem>();
         scene.AddChild<Camera>();
-        scene.AddChild<MyFirstEntity>();
 
         var sceneAsset = new SceneAsset();
 

@@ -32,6 +32,5 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\..\Gameplay\Macabre2D.Gameplay.csproj" />
     </ItemGroup>
 </Project>

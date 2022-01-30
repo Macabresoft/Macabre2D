@@ -3,7 +3,6 @@
 
 # Uncomment for forks of Macabre2D meant to be game projects and not the base engine.
 /Content/
-/Gameplay/
 
 # MonoGame
 *.mgstats

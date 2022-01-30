@@ -39,13 +39,8 @@ Your game's code must be directly integrated with Macabre2D, giving you full con
 
 * Fork Macabre2D
 * Optionally create a branch for your game
-* Remove the following lines from your `.gitignore` file:
-  * `/Content/`
-  * `/Gameplay/`
+* Decide how to handle content, doing doing one of the following
+  * Remove the line `/Content/` from your `.gitignore` file to include content in your main project
+  * Have a separate repository for content which operates as a git repository inside of the `/Content/` folder
 * Run the `Macabre2D.UI.Editor` project once to generate default content
 
-At this point, you can fill your `/Content/` folder with images, audio, fonts, and anything else your game engine will need to read from storage
-
-The `Macabre2D.Gameplay` project should be used as a container for all custom Entities and Systems your game may need. This keeps the core logic separate from your game's logic. This will make merging easier in the event that you fix a bug or add a new feature that you would like to contribute to the main Macabre2D project.
-
-I highly recommend all changes to `.gitignore`, `/Gameplay/`, and `/Content/` be kept separated into their own commits, as it makes merging contributions to Macabre2D easier. This is more of a recommendation than a requirement, though.
