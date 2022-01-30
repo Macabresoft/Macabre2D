@@ -2,11 +2,12 @@
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Xna.Framework;
+
 /// <summary>
-/// An entity which maps an <see cref="AutoTileSet" /> onto a grid.
+/// An entity which maps an <see cref="AutoTileSet" /> onto a grid, but only connects vertically.
 /// </summary>
-[Display(Name = "Auto Tile Map")]
-public sealed class AutoTileMap : BaseAutoTileMap {
+[Display(Name = "Vertical Tile Map")]
+public sealed class VerticalTileMap : BaseAutoTileMap {
     /// <inheritdoc />
     protected override byte GetIndex(Point tile) {
         var direction = CardinalDirections.None;
@@ -14,16 +15,8 @@ public sealed class AutoTileMap : BaseAutoTileMap {
             direction |= CardinalDirections.North;
         }
 
-        if (this.HasActiveTileAt(tile + new Point(1, 0))) {
-            direction |= CardinalDirections.East;
-        }
-
         if (this.HasActiveTileAt(tile - new Point(0, 1))) {
             direction |= CardinalDirections.South;
-        }
-
-        if (this.HasActiveTileAt(tile - new Point(1, 0))) {
-            direction |= CardinalDirections.West;
         }
 
         return (byte)direction;
