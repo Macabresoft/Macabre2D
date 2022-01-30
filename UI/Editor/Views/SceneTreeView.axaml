@@ -13,17 +13,20 @@
         </Design.DataContext>
         <Grid RowDefinitions="Auto, *, 0">
             <StackPanel Grid.Row="0"
-                        Orientation="Horizontal"
-                        IsVisible="{Binding SceneService.IsEntityContext}">
+                        Orientation="Horizontal">
                 <Button Command="{Binding AddEntityCommand}"
                         Classes="Icon"
                         ToolTip.Tip="Add an entity as a child of the selected entity">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Find..."
+                            <MenuItem Header="Find Entity..."
                                       Command="{Binding AddEntityCommand}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
+                            <MenuItem Header="Find System..."
+                                      Command="{Binding AddSystemCommand}"
+                                      ToolTip.Tip="Open a window to find an entity to add as a child" />
+                            
                             <Separator />
 
                             <MenuItem Header="All Entities"
@@ -33,33 +36,7 @@
                                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                 </MenuItem.Styles>
                             </MenuItem>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-
-                    <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
-                </Button>
-                <Button Command="{Binding RemoveEntityCommand}"
-                        CommandParameter="{Binding SceneService.ImpliedSelected}"
-                        Classes="Icon"
-                        ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
-                </Button>
-            </StackPanel>
-
-            <StackPanel Grid.Row="0"
-                        Orientation="Horizontal"
-                        IsVisible="{Binding !SceneService.IsEntityContext}">
-                <Button Command="{Binding AddSystemCommand}"
-                        Classes="Icon"
-                        ToolTip.Tip="Add a system to the scene">
-                    <Button.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Find..."
-                                      Command="{Binding AddSystemCommand}"
-                                      ToolTip.Tip="Open a window to find an entity to add as a child" />
-
-                            <Separator />
-
+                            
                             <MenuItem Header="All Systems"
                                       Classes="MenuItemParent"
                                       Items="{Binding $parent[local:SceneTreeView].ViewModel.AddSystemModels}">
@@ -72,14 +49,23 @@
 
                     <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
+                <Button Command="{Binding RemoveEntityCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        Classes="Icon"
+                        IsVisible="{Binding SceneService.IsEntityContext}"
+                        ToolTip.Tip="Remove the selected entity and all of its children from the scene">
+                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
+                
                 <Button Command="{Binding RemoveSystemCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
+                        IsVisible="{Binding !SceneService.IsEntityContext}"
                         ToolTip.Tip="Remove the selected system from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
             </StackPanel>
-
+            
             <TreeView Grid.Row="1"
                       Name="_treeView"
                       Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
