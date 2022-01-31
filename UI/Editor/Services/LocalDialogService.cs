@@ -29,19 +29,26 @@ public interface ILocalDialogService : ICommonDialogService {
 /// A dialog service.
 /// </summary>
 public sealed class LocalDialogService : CommonDialogService, ILocalDialogService {
+    private readonly IAssetManager _assetManager;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LocalDialogService" /> class.
     /// </summary>
     /// <param name="container">The container.</param>
+    /// <param name="assetManager">The asset manager.</param>
     /// <param name="mainWindow">The main window.</param>
-    public LocalDialogService(IUnityContainer container, MainWindow mainWindow) : base(container, mainWindow) {
+    public LocalDialogService(IUnityContainer container, IAssetManager assetManager, MainWindow mainWindow) : base(container, mainWindow) {
+        this._assetManager = assetManager;
     }
 
     /// <inheritdoc />
     public async Task<(SpriteSheetAsset SpriteSheet, byte SpriteIndex)> OpenSpriteSelectionDialog() {
         var window = Resolver.Resolve<SpriteSelectionDialog>();
-        if (await window.ShowDialog<bool>(this.MainWindow) && window.ViewModel.SelectedSprite is SpriteDisplayModel sprite) {
-            return (sprite.SpriteSheet, sprite.Index);
+        if (await window.ShowDialog<bool>(this.MainWindow) &&
+            window.ViewModel.SelectedSprite is { SpriteSheet: { } contentSpriteSheet } sprite &&
+            this._assetManager.TryGetMetadata(contentSpriteSheet.ContentId, out var metadata) &&
+            metadata?.Asset is SpriteSheetAsset spriteSheet) {
+            return (spriteSheet, sprite.Index);
         }
 
         return (null, 0);
@@ -54,8 +61,10 @@ public sealed class LocalDialogService : CommonDialogService, ILocalDialogServic
                 Resolver.Resolve<SpriteSheetAssetSelectionViewModel<TAsset>>()));
 
         if (await window.ShowDialog<bool>(this.MainWindow) &&
-            window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: TAsset tileSet } viewModel &&
-            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is SpriteSheetAsset spriteSheet) {
+            window.DataContext is SpriteSheetAssetSelectionViewModel<TAsset> { SelectedAsset: { } tileSet } viewModel &&
+            viewModel.SpriteSheets.Select(x => x.SpriteSheet).FirstOrDefault(x => x.GetAssets<TAsset>().Any(y => y.Id == tileSet.Id)) is { } contentSpriteSheet &&
+            this._assetManager.TryGetMetadata(contentSpriteSheet.ContentId, out var metadata) &&
+            metadata?.Asset is SpriteSheetAsset spriteSheet) {
             return (spriteSheet, tileSet.Id);
         }
 

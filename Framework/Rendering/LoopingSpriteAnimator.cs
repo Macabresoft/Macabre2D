@@ -31,9 +31,11 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
+        this.AnimationReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.AnimationReference);
         this.ResetStep();
         this.TryStart();
+        this.AnimationReference.PropertyChanged += this.AnimationReference_PropertyChanged;
     }
 
     /// <inheritdoc />
@@ -60,8 +62,14 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
         }
     }
 
+    private void AnimationReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName is nameof(SpriteAnimationReference.Asset) or nameof(SpriteAnimationReference.PackagedAsset) or nameof(SpriteSheetAsset.SpriteSize)) {
+            this.TryStart();
+        }
+    }
+
     private void ResetStep() {
-        if (this.AnimationReference.PackagedAsset is SpriteAnimation animation && animation.Steps.FirstOrDefault() is SpriteAnimationStep step) {
+        if (this.AnimationReference.PackagedAsset is { } animation && animation.Steps.FirstOrDefault() is { } step) {
             this.CurrentSpriteIndex = step.SpriteIndex;
             this.CurrentStepIndex = 0;
         }
