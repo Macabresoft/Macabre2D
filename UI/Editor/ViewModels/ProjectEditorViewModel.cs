@@ -48,7 +48,7 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this.AssetSelectionService.PropertyChanged += this.AssetSelectionService_PropertyChanged;
         this._scene = this.CreateScene();
-        
+
         this.PlayCommand = ReactiveCommand.Create(this._spriteAnimator.Play, this._spriteAnimator.WhenAny(x => x.IsPlaying, x => !x.Value));
         this.PauseCommand = ReactiveCommand.Create(this._spriteAnimator.Pause, this._spriteAnimator.WhenAnyValue(x => x.IsPlaying));
         this.StopCommand = ReactiveCommand.Create(this._spriteAnimator.Stop, this._spriteAnimator.WhenAnyValue(x => x.IsEnabled));
@@ -59,29 +59,46 @@ public class ProjectEditorViewModel : BaseViewModel {
 
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
     }
-    
+
     /// <summary>
     /// Gets the asset selection service.
     /// </summary>
     public IAssetSelectionService AssetSelectionService { get; }
-    
+
     /// <summary>
-    /// Gets the play command.
+    /// Gets a value indicating whether or not an animation is showing.
     /// </summary>
-    public ICommand PlayCommand { get; }
-    
+    public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
+
     /// <summary>
     /// Gets the pause command.
     /// </summary>
     public ICommand PauseCommand { get; }
-    
+
+    /// <summary>
+    /// Gets the play command.
+    /// </summary>
+    public ICommand PlayCommand { get; }
+
     /// <summary>
     /// Gets the stop command.
     /// </summary>
     public ICommand StopCommand { get; }
 
     /// <summary>
-    /// Gets the background color.
+    /// Gets or sets the animation preview framerate.
+    /// </summary>
+    public byte AnimationPreviewFramerate {
+        get => this._settingsService.Settings.AnimationPreviewFramerate;
+        set {
+            this._spriteAnimator.FrameRate = value;
+            this._settingsService.Settings.AnimationPreviewFramerate = this._spriteAnimator.FrameRate;
+            this.RaisePropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the background color.
     /// </summary>
     public Color BackgroundColor {
         get => this._settingsService.Settings.BackgroundColor;
@@ -112,15 +129,27 @@ public class ProjectEditorViewModel : BaseViewModel {
         set => this.ResetSize(this.OverallSceneArea, value);
     }
 
-    /// <summary>
-    /// Gets the sprite animator.
-    /// </summary>
-    public BaseSpriteAnimator SpriteAnimator => this._spriteAnimator;
+    private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(IAssetSelectionService.Selected)) {
+            this._tileMap.IsEnabled = false;
+            this._spriteAnimator.IsEnabled = false;
+            this._grid.IsEnabled = false;
+            switch (this.AssetSelectionService.Selected) {
+                case AutoTileSet autoTileSet:
+                    this.ResetScene(autoTileSet);
+                    break;
+                case SpriteAnimation spriteAnimation:
+                    this.ResetScene(spriteAnimation);
+                    break;
+                case SpriteSheetAsset spriteSheet:
+                    this.ResetScene(spriteSheet);
+                    break;
+            }
 
-    /// <summary>
-    /// Gets a value indicating whether or not an animation is showing.
-    /// </summary>
-    public bool IsShowingAnimation => this.AssetSelectionService.Selected is SpriteAnimation;
+            this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
+            this.RaisePropertyChanged(nameof(this.IsShowingAnimation));
+        }
+    }
 
     private IScene CreateScene() {
         var scene = new Scene {
@@ -198,8 +227,11 @@ public class ProjectEditorViewModel : BaseViewModel {
         this._tileMap.AddTile(new Point(8, 8));
 
         this._spriteAnimator = scene.AddChild<LoopingSpriteAnimator>();
-        this._spriteAnimator.FrameRate = 8;
         this._spriteAnimator.IsEnabled = false;
+
+        // This applies the framerate to the sprite animator and also insures the frame rate is valid.
+        this.AnimationPreviewFramerate = this._settingsService.Settings.AnimationPreviewFramerate;
+
         return scene;
     }
 
@@ -211,28 +243,6 @@ public class ProjectEditorViewModel : BaseViewModel {
 
     private float GetRequiredViewHeight() {
         return this._spriteAnimator.IsEnabled ? this._spriteAnimator.BoundingArea.Height + 1f : ViewHeightRequired;
-    }
-
-    private void AssetSelectionService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(IAssetSelectionService.Selected)) {
-            this._tileMap.IsEnabled = false;
-            this._spriteAnimator.IsEnabled = false;
-            this._grid.IsEnabled = false;
-            switch (this.AssetSelectionService.Selected) {
-                case AutoTileSet autoTileSet:
-                    this.ResetScene(autoTileSet);
-                    break;
-                case SpriteAnimation spriteAnimation:
-                    this.ResetScene(spriteAnimation);
-                    break;
-                case SpriteSheetAsset spriteSheet:
-                    this.ResetScene(spriteSheet);
-                    break;
-            }
-
-            this.ResetSize(this.OverallSceneArea, this.ViewableSceneArea);
-            this.RaisePropertyChanged(nameof(this.IsShowingAnimation));
-        }
     }
 
     private void ResetScene(AutoTileSet tileSet) {

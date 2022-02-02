@@ -43,34 +43,34 @@
                     <common:ColorPalette SelectedColor="{Binding BackgroundColor}" />
                 </StackPanel>
             </Border>
-            
+
             <Border Classes="Card"
                     HorizontalAlignment="Stretch"
                     Margin="{StaticResource DoubleMarginAll}"
                     IsVisible="{Binding IsShowingAnimation}">
                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto"
-                    HorizontalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
                       Margin="{StaticResource StandardMarginAll}">
                     <TextBlock Grid.Column="0"
                                Classes="Label"
                                Text="Framerate" />
-                    
+
                     <common:ByteEditor Grid.Column="1"
-                                       Value="{Binding SpriteAnimator.FrameRate}"
-                                       HorizontalAlignment="Left"/>
-                    
+                                       Value="{Binding AnimationPreviewFramerate}"
+                                       HorizontalAlignment="Left" />
+
                     <Button Grid.Column="3"
                             Classes="Icon"
                             Command="{Binding PlayCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PlayIcon}" />
                     </Button>
-                    
+
                     <Button Grid.Column="4"
                             Classes="Icon"
                             Command="{Binding PauseCommand}">
                         <avaloniaEx:Icon Content="{StaticResource PauseIcon}" />
                     </Button>
-                    
+
                     <Button Grid.Column="5"
                             Classes="Icon"
                             Command="{Binding StopCommand}">

@@ -16,6 +16,12 @@ public class EditorSettings {
     public const string FileName = "settings.m2deditor";
 
     /// <summary>
+    /// Gets or sets the animation preview framerate.
+    /// </summary>
+    [DataMember]
+    public byte AnimationPreviewFramerate { get; set; } = 8;
+
+    /// <summary>
     /// Gets or sets the background color.
     /// </summary>
     [DataMember]
