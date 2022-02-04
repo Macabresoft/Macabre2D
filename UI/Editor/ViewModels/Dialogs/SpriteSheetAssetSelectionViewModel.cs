@@ -80,19 +80,23 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         this._spriteSheets.Clear();
 
         if (this.SelectedContentNode != null) {
-            if (this.SelectedContentNode.Node is ContentDirectory directory) {
-                var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
-                foreach (var file in directory.GetAllContentFiles()) {
-                    if (file.Asset is SpriteSheetAsset spriteSheet) {
-                        spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
+            switch (this.SelectedContentNode.Node) {
+                case ContentDirectory directory: {
+                    var spriteCollections = new List<SpriteSheetAssetDisplayCollection<TAsset>>();
+                    foreach (var file in directory.GetAllContentFiles()) {
+                        if (file.Asset is SpriteSheetAsset spriteSheet) {
+                            spriteCollections.Add(new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file));
+                        }
                     }
-                }
 
-                this._spriteSheets.Reset(spriteCollections);
-            }
-            else if (this.SelectedContentNode.Node is ContentFile { Asset: SpriteSheetAsset spriteSheet } file) {
-                var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
-                this._spriteSheets.Add(spriteCollection);
+                    this._spriteSheets.Reset(spriteCollections);
+                    break;
+                }
+                case ContentFile { Asset: SpriteSheetAsset spriteSheet } file: {
+                    var spriteCollection = new SpriteSheetAssetDisplayCollection<TAsset>(spriteSheet, file);
+                    this._spriteSheets.Add(spriteCollection);
+                    break;
+                }
             }
         }
     }
