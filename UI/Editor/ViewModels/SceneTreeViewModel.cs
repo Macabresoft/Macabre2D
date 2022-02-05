@@ -55,51 +55,22 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService = sceneService;
         this.SystemService = systemService;
         this._undoService = undoService;
-        
+
         this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddEntity(x));
         this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(this.RemoveEntity);
         this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x));
         this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem);
         this.RenameEntityCommand = ReactiveCommand.Create<string>(this.RenameEntity);
         this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem);
+        this.CloneEntityCommand = ReactiveCommand.Create<IEntity>(this.CloneEntity);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
-        
+
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddEntityCommand, x)).ToList();
         this.AddSystemModels = this.SystemService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddSystemCommand, x)).ToList();
     }
-
-    private void ConvertToInstance(IEntity entity) {
-        if (entity.Parent is { } parent && 
-            !Entity.IsNullOrEmpty(parent, out _) && 
-            entity is PrefabContainer container && 
-            container.PrefabReference.Asset?.Content is IEntity content && 
-            content.TryClone(out var clone)) {
-            clone.LocalPosition = entity.LocalPosition;
-            clone.LocalScale = entity.LocalScale;
-            
-            this._undoService.Do(() => {
-                parent.AddChild(clone);
-                parent.RemoveChild(entity);
-            }, () => {
-                parent.AddChild(entity);
-                parent.RemoveChild(clone);
-            });
-
-        }
-    }
-    
-    /// <summary>
-    /// Gets a collection of <see cref="MenuItemModel"/> for adding entities.
-    /// </summary>
-    public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
-    
-    /// <summary>
-    /// Gets a collection of <see cref="MenuItemModel"/> for adding systems.
-    /// </summary>
-    public IReadOnlyCollection<MenuItemModel> AddSystemModels { get; }
 
     /// <summary>
     /// Gets a command to add an entity.
@@ -107,19 +78,34 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public ICommand AddEntityCommand { get; }
 
     /// <summary>
+    /// Gets a collection of <see cref="MenuItemModel" /> for adding entities.
+    /// </summary>
+    public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
+
+    /// <summary>
     /// Gets a command to add a system.
     /// </summary>
     public ICommand AddSystemCommand { get; }
 
     /// <summary>
-    /// Gets a command to create a prefab.
+    /// Gets a collection of <see cref="MenuItemModel" /> for adding systems.
     /// </summary>
-    public ICommand CreatePrefabCommand { get; }
-    
+    public IReadOnlyCollection<MenuItemModel> AddSystemModels { get; }
+
+    /// <summary>
+    /// Gets a command to clone an entity.
+    /// </summary>
+    public ICommand CloneEntityCommand { get; }
+
     /// <summary>
     /// Gets a command to convert a prefab into an instance.
     /// </summary>
     public ICommand ConvertToInstanceCommand { get; }
+
+    /// <summary>
+    /// Gets a command to create a prefab.
+    /// </summary>
+    public ICommand CreatePrefabCommand { get; }
 
     /// <summary>
     /// Gets the editor service.
@@ -228,6 +214,31 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                targetEntity != null &&
                sourceEntity != targetEntity &&
                !targetEntity.IsDescendentOf(sourceEntity);
+    }
+
+    private void CloneEntity(IEntity entity) {
+        if (entity is { Parent: { } parent } && entity.TryClone(out var clone)) {
+            this._undoService.Do(() => { parent.AddChild(clone); }, () => { parent.RemoveChild(clone); });
+        }
+    }
+
+    private void ConvertToInstance(IEntity entity) {
+        if (entity.Parent is { } parent &&
+            !Entity.IsNullOrEmpty(parent, out _) &&
+            entity is PrefabContainer container &&
+            container.PrefabReference.Asset?.Content is IEntity content &&
+            content.TryClone(out var clone)) {
+            clone.LocalPosition = entity.LocalPosition;
+            clone.LocalScale = entity.LocalScale;
+
+            this._undoService.Do(() => {
+                parent.AddChild(clone);
+                parent.RemoveChild(entity);
+            }, () => {
+                parent.AddChild(entity);
+                parent.RemoveChild(clone);
+            });
+        }
     }
 
     private async Task CreateFromPrefab(IEntity entity) {

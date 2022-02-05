@@ -145,6 +145,11 @@
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
                                               ToolTip.Tip="Focus on this entity in the scene editor" />
 
+                                    <MenuItem Header="Clone"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Clone this entity"/>
+                                    
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
                                               CommandParameter="{Binding}"
