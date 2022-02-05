@@ -105,7 +105,7 @@ public class RotationGizmo : BaseAxisGizmo {
         if (this.EntityService.Selected is IRotatable rotatable) {
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
 
-            if (inputState.IsButtonHeld(MouseButton.Left)) {
+            if (inputState.IsMouseButtonHeld(MouseButton.Left)) {
                 if (this.CurrentAxis != GizmoAxis.None) {
                     this.UpdateDrag(rotatable, mousePosition);
                     result = true;

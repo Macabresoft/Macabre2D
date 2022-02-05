@@ -88,7 +88,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
             this._editorService.SelectedGizmo = GizmoKind.Selector;
         }
 
-        scene.AddSystem(new EditorUpdateSystem(this._entityService, selectorGizmo));
+        scene.AddSystem(new EditorUpdateSystem(this._entityService, this.SceneService, selectorGizmo));
         return scene;
     }
 

@@ -96,7 +96,7 @@ public sealed class ScaleGizmo : BaseAxisGizmo {
         var result = base.Update(frameTime, inputState);
         var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
 
-        if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
+        if (inputState.IsMouseButtonNewlyPressed(MouseButton.Left)) {
             var axis = this.GetAxisUnderMouse(mousePosition);
             if (axis == GizmoAxis.X || axis == GizmoAxis.Y) {
                 result = true;
@@ -105,7 +105,7 @@ public sealed class ScaleGizmo : BaseAxisGizmo {
         }
         else if (this.CurrentAxis != GizmoAxis.None) {
             var entity = this.EntityService.Selected;
-            if (inputState.IsButtonHeld(MouseButton.Left)) {
+            if (inputState.IsMouseButtonHeld(MouseButton.Left)) {
                 var lineLength = this.GetAxisLength();
                 var newPosition = mousePosition;
                 // TODO: snap to grid

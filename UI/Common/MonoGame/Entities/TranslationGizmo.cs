@@ -123,7 +123,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
         var result = base.Update(frameTime, inputState);
         var mousePosition = this.Camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
 
-        if (inputState.IsButtonNewlyPressed(MouseButton.Left)) {
+        if (inputState.IsMouseButtonNewlyPressed(MouseButton.Left)) {
             var axis = this.GetAxisUnderMouse(mousePosition);
             if (axis != GizmoAxis.None) {
                 result = true;
@@ -132,7 +132,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
         }
         else if (this.CurrentAxis != GizmoAxis.None) {
             if (this.EntityService.Selected is { } entity) {
-                if (inputState.IsButtonHeld(MouseButton.Left)) {
+                if (inputState.IsMouseButtonHeld(MouseButton.Left)) {
                     var snapToAxis = inputState.CurrentKeyboardState.IsKeyDown(Keys.LeftControl) || inputState.CurrentKeyboardState.IsKeyDown(Keys.RightControl);
                     var newPosition = this.GetPositionAlongCurrentAxis(mousePosition, snapToAxis);
                     UpdatePosition(entity, newPosition);

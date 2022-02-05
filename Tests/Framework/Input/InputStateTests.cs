@@ -44,7 +44,7 @@ public sealed class InputStateTests {
         var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
         var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
 
-        var result = inputState.IsButtonHeld(button);
+        var result = inputState.IsMouseButtonHeld(button);
 
         result.Should().Be(expectedValue);
     }
@@ -77,7 +77,7 @@ public sealed class InputStateTests {
         var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
         var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
 
-        var result = inputState.IsButtonNewlyPressed(button);
+        var result = inputState.IsMouseButtonNewlyPressed(button);
 
         result.Should().Be(expectedValue);
     }
@@ -109,7 +109,7 @@ public sealed class InputStateTests {
         var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
         var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
 
-        var result = inputState.IsButtonNewlyReleased(button);
+        var result = inputState.IsMouseButtonNewlyReleased(button);
 
         result.Should().Be(expectedValue);
     }

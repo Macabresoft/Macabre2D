@@ -44,23 +44,23 @@ public class TileGizmo : Entity, IGizmo {
     public bool Update(FrameTime frameTime, InputState inputState) {
         if (this._camera != null && this._entityService.Selected is ITileableEntity tileable) {
             switch (this._currentButton) {
-                case null when inputState.IsButtonNewlyPressed(MouseButton.Left):
+                case null when inputState.IsMouseButtonNewlyPressed(MouseButton.Left):
                     this.AddTile(tileable, inputState);
                     break;
                 case null: {
-                    if (inputState.IsButtonNewlyPressed(MouseButton.Right)) {
+                    if (inputState.IsMouseButtonNewlyPressed(MouseButton.Right)) {
                         this.RemoveTile(tileable, inputState);
                     }
 
                     break;
                 }
-                case MouseButton.Left when inputState.IsButtonHeld(MouseButton.Left):
+                case MouseButton.Left when inputState.IsMouseButtonHeld(MouseButton.Left):
                     this.AddTile(tileable, inputState);
                     break;
                 case MouseButton.Left:
                     this.CommitAdd(tileable);
                     break;
-                case MouseButton.Right when inputState.IsButtonHeld(MouseButton.Right):
+                case MouseButton.Right when inputState.IsMouseButtonHeld(MouseButton.Right):
                     this.RemoveTile(tileable, inputState);
                     break;
                 case MouseButton.Right:

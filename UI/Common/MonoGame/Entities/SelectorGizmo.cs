@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using Avalonia.Threading;
 using Macabresoft.Macabre2D.Framework;
-using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// A component which selects entities and components based on their bounding areas.
@@ -38,11 +37,9 @@ public class SelectorGizmo : Entity, IGizmo {
         var result = false;
         if (this._camera != null &&
             !Framework.Scene.IsNullOrEmpty(this._sceneService.CurrentScene) &&
-            inputState.CurrentMouseState.LeftButton == ButtonState.Pressed &&
-            inputState.PreviousMouseState.LeftButton == ButtonState.Released) {
-            var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-
+            inputState.IsMouseButtonNewlyReleased(MouseButton.Left)) {
             IEntity selected = null;
+            var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
             var potentials = this._sceneService.CurrentScene.RenderableEntities.Where(x => x.BoundingArea.Contains(mousePosition));
 
             foreach (var potential in potentials) {

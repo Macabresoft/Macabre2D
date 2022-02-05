@@ -45,8 +45,17 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is newly pressed as of the current frame.</returns>
-    public bool IsButtonNewlyPressed(MouseButton button) {
-        return this.GetPreviousButtonState(button) == ButtonState.Released && this.GetCurrentButtonState(button) == ButtonState.Pressed;
+    public bool IsMouseButtonNewlyPressed(MouseButton button) {
+        return this.GetPreviousMouseButtonState(button) == ButtonState.Released && this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether not the key is newly pressed as of the current frame.
+    /// </summary>
+    /// <param name="key">The keyboard key.</param>
+    /// <returns>A value indicating whether not the key is newly pressed as of the current frame.</returns>
+    public bool IsKeyNewlyPressed(Keys key) {
+        return this.GetPreviousKeyState(key) == KeyState.Up && this.GetCurrentKeyState(key) == KeyState.Down;
     }
 
     /// <summary>
@@ -55,8 +64,18 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is being held.</returns>
-    public bool IsButtonHeld(MouseButton button) {
-        return this.GetCurrentButtonState(button) == ButtonState.Pressed;
+    public bool IsMouseButtonHeld(MouseButton button) {
+        return this.GetCurrentMouseButtonState(button) == ButtonState.Pressed;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether not the key is being held. This includes the first frame of being pressed and
+    /// all subsequent frames until the key is released.
+    /// </summary>
+    /// <param name="key">The keyboard key.</param>
+    /// <returns>A value indicating whether not the key is being held.</returns>
+    public bool IsKeyHeld(Keys key) {
+        return this.GetCurrentKeyState(key) == KeyState.Down;
     }
 
     /// <summary>
@@ -64,8 +83,17 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>A value indicating whether not the mouse button is newly released as of the current frame.</returns>
-    public bool IsButtonNewlyReleased(MouseButton button) {
-        return this.GetPreviousButtonState(button) == ButtonState.Pressed && this.GetCurrentButtonState(button) == ButtonState.Released;
+    public bool IsMouseButtonNewlyReleased(MouseButton button) {
+        return this.GetPreviousMouseButtonState(button) == ButtonState.Pressed && this.GetCurrentMouseButtonState(button) == ButtonState.Released;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether not the key is newly released as of the current frame.
+    /// </summary>
+    /// <param name="key">The keyboard key.</param>
+    /// <returns>A value indicating whether not the key is newly released as of the current frame.</returns>
+    public bool IsKeyNewlyReleased(Keys key) {
+        return this.GetPreviousKeyState(key) == KeyState.Down && this.GetCurrentKeyState(key) == KeyState.Up;
     }
 
     /// <summary>
@@ -73,8 +101,17 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>The mouse button's current state.</returns>
-    public ButtonState GetCurrentButtonState(MouseButton button) {
-        return this.GetButtonState(button, this.CurrentMouseState);
+    public ButtonState GetCurrentMouseButtonState(MouseButton button) {
+        return GetMouseButtonState(button, this.CurrentMouseState);
+    }
+
+    /// <summary>
+    /// Gets the key's current state.
+    /// </summary>
+    /// <param name="key">The keyboard key.</param>
+    /// <returns>The key's current state.</returns>
+    private KeyState GetCurrentKeyState(Keys key) {
+        return GetKeyState(key, this.CurrentKeyboardState);
     }
 
     /// <summary>
@@ -82,33 +119,40 @@ public struct InputState {
     /// </summary>
     /// <param name="button">The mouse button.</param>
     /// <returns>The mouse button's state in the previous frame.</returns>
-    public ButtonState GetPreviousButtonState(MouseButton button) {
-        return this.GetButtonState(button, this.PreviousMouseState);
+    public ButtonState GetPreviousMouseButtonState(MouseButton button) {
+        return GetMouseButtonState(button, this.PreviousMouseState);
     }
 
-    private ButtonState GetButtonState(MouseButton button, MouseState state) {
-        switch (button) {
-            case MouseButton.Left:
-                return state.LeftButton;
-            case MouseButton.Middle:
-                return state.MiddleButton;
-            case MouseButton.Right:
-                return state.RightButton;
-            case MouseButton.XButton1:
-                return state.XButton1;
-            case MouseButton.XButton2:
-                return state.XButton2;
-            default:
-                return ButtonState.Released;
-        }
+    /// <summary>
+    /// Gets the key's state in the previous frame.
+    /// </summary>
+    /// <param name="key">The keyboard key.</param>
+    /// <returns>The key's state in the previous frame.</returns>
+    public KeyState GetPreviousKeyState(Keys key) {
+        return GetKeyState(key, this.PreviousKeyboardState);
     }
 
-    /// <inheritdoc />
+    private static ButtonState GetMouseButtonState(MouseButton button, MouseState state) {
+        return button switch {
+            MouseButton.Left => state.LeftButton,
+            MouseButton.Middle => state.MiddleButton,
+            MouseButton.Right => state.RightButton,
+            MouseButton.XButton1 => state.XButton1,
+            MouseButton.XButton2 => state.XButton2,
+            _ => ButtonState.Released
+        };
+    }
+
+    private static KeyState GetKeyState(Keys key, KeyboardState state) {
+        return state.IsKeyDown(key) ? KeyState.Down : KeyState.Up;
+    }
+
+    /// <inheritdoc cref="object" />
     public static bool operator !=(InputState left, InputState right) {
         return !(left == right);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="object" />
     public static bool operator ==(InputState left, InputState right) {
         return left.Equals(right);
     }

@@ -1,12 +1,15 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
+using Avalonia.Threading;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// An update system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
 public class EditorUpdateSystem : UpdateSystem {
     private readonly IEntityService _entityService;
+    private readonly ISceneService _sceneService;
     private readonly IGizmo _selectorGizmo;
 
     /// <summary>
@@ -14,8 +17,9 @@ public class EditorUpdateSystem : UpdateSystem {
     /// </summary>
     /// <param name="entityService">The entity service.</param>
     /// <param name="selectorGizmo">The selector gizmo.</param>
-    public EditorUpdateSystem(IEntityService entityService, IGizmo selectorGizmo) {
+    public EditorUpdateSystem(IEntityService entityService, ISceneService sceneService, IGizmo selectorGizmo) {
         this._entityService = entityService;
+        this._sceneService = sceneService;
         this._selectorGizmo = selectorGizmo;
     }
 
@@ -26,8 +30,15 @@ public class EditorUpdateSystem : UpdateSystem {
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Scene.Game is IEditorGame sceneEditor) {
             var performedActions = false;
+            
+            if (inputState.IsKeyNewlyReleased(Keys.Escape)) {
+                if (this._sceneService.Selected is IEntity and not IScene) {
+                    Dispatcher.UIThread.Post(() => this._sceneService.Selected = null);
+                    performedActions = true;
+                }
+            }
 
-            if (this._entityService.Selected != null && sceneEditor.SelectedGizmo is IGizmo gizmo) {
+            if (!performedActions && this._entityService.Selected != null && sceneEditor.SelectedGizmo is { } gizmo) {
                 performedActions = gizmo.Update(frameTime, inputState);
             }
 
