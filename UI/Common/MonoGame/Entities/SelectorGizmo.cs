@@ -40,7 +40,9 @@ public class SelectorGizmo : Entity, IGizmo {
             inputState.IsMouseButtonNewlyReleased(MouseButton.Left)) {
             IEntity selected = null;
             var mousePosition = this._camera.ConvertPointFromScreenSpaceToWorldSpace(inputState.CurrentMouseState.Position);
-            var potentials = this._sceneService.CurrentScene.RenderableEntities.Where(x => x.BoundingArea.Contains(mousePosition));
+            var potentials = this._sceneService.CurrentScene.RenderableEntities
+                .Where(x => x.IsVisible && x.BoundingArea.Contains(mousePosition))
+                .OrderByDescending(x => x.RenderOrder);
 
             foreach (var potential in potentials) {
                 if (potential is ITileableEntity tileableEntity) {
