@@ -17,6 +17,50 @@ public sealed class InputStateTests {
         return new MouseState(0, 0, 0, left, middle, right, x1, x2);
     }
 
+    private static InputState GetKeyboardInputState(Keys keyHeldPreviously, Keys keyHeldCurrently) {
+        var previousKeyboardState = new KeyboardState(keyHeldPreviously);
+        var currentKeyboardState = new KeyboardState(keyHeldCurrently);
+        var previousInputState = new InputState(new MouseState(), previousKeyboardState, new InputState());
+        return new InputState(new MouseState(), currentKeyboardState, previousInputState);
+    }
+
+    private static InputState GetMouseInputState(MouseButton button, ButtonState previousState, ButtonState currentState) {
+        var previousMouseState = previousState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
+        var currentMouseState = currentState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
+        var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
+        return new InputState(currentMouseState, new KeyboardState(), previousInputState);
+    }
+
+    [Category("Unit Tests")]
+    [TestCase(Keys.Escape, Keys.Escape, Keys.Escape, true)]
+    [TestCase(Keys.Space, Keys.Escape, Keys.Space, true)]
+    [TestCase(Keys.A, Keys.A, Keys.Space, false)]
+    public static void InputState_IsKeyHeld_Test(Keys keyToCheck, Keys keyHeldPreviously, Keys keyHeldCurrently, bool expectedValue) {
+        var inputState = GetKeyboardInputState(keyHeldPreviously, keyHeldCurrently);
+        var result = inputState.IsKeyHeld(keyToCheck);
+        result.Should().Be(expectedValue);
+    }
+
+    [Category("Unit Tests")]
+    [TestCase(Keys.Escape, Keys.Escape, Keys.Escape, false)]
+    [TestCase(Keys.Space, Keys.Escape, Keys.Space, true)]
+    [TestCase(Keys.A, Keys.A, Keys.Space, false)]
+    public static void InputState_IsKeyNewlyPressed_Test(Keys keyToCheck, Keys keyHeldPreviously, Keys keyHeldCurrently, bool expectedValue) {
+        var inputState = GetKeyboardInputState(keyHeldPreviously, keyHeldCurrently);
+        var result = inputState.IsKeyNewlyPressed(keyToCheck);
+        result.Should().Be(expectedValue);
+    }
+
+    [Category("Unit Tests")]
+    [TestCase(Keys.Escape, Keys.Escape, Keys.Escape, false)]
+    [TestCase(Keys.Space, Keys.Escape, Keys.Space, false)]
+    [TestCase(Keys.A, Keys.A, Keys.Space, true)]
+    public static void InputState_IsKeyNewlyReleased_Test(Keys keyToCheck, Keys keyHeldPreviously, Keys keyHeldCurrently, bool expectedValue) {
+        var inputState = GetKeyboardInputState(keyHeldPreviously, keyHeldCurrently);
+        var result = inputState.IsKeyNewlyReleased(keyToCheck);
+        result.Should().Be(expectedValue);
+    }
+
     [Category("Unit Tests")]
     [TestCase(MouseButton.Left, ButtonState.Released, ButtonState.Pressed, true)]
     [TestCase(MouseButton.Left, ButtonState.Pressed, ButtonState.Pressed, true)]
@@ -38,14 +82,9 @@ public sealed class InputStateTests {
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Pressed, true)]
     [TestCase(MouseButton.XButton2, ButtonState.Released, ButtonState.Released, false)]
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Released, false)]
-    public static void InputState_IsButtonHeld_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
-        var previousMouseState = previousState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var currentMouseState = currentState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
-        var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
-
+    public static void InputState_IsMouseButtonHeld_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
+        var inputState = GetMouseInputState(button, previousState, currentState);
         var result = inputState.IsMouseButtonHeld(button);
-
         result.Should().Be(expectedValue);
     }
 
@@ -71,14 +110,9 @@ public sealed class InputStateTests {
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Pressed, false)]
     [TestCase(MouseButton.XButton2, ButtonState.Released, ButtonState.Released, false)]
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Released, false)]
-    public static void InputState_IsButtonNewlyPressed_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
-        var previousMouseState = previousState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var currentMouseState = currentState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
-        var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
-
+    public static void InputState_IsMouseButtonNewlyPressed_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
+        var inputState = GetMouseInputState(button, previousState, currentState);
         var result = inputState.IsMouseButtonNewlyPressed(button);
-
         result.Should().Be(expectedValue);
     }
 
@@ -103,14 +137,9 @@ public sealed class InputStateTests {
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Pressed, false)]
     [TestCase(MouseButton.XButton2, ButtonState.Released, ButtonState.Released, false)]
     [TestCase(MouseButton.XButton2, ButtonState.Pressed, ButtonState.Released, true)]
-    public static void InputState_IsButtonNewlyReleased_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
-        var previousMouseState = previousState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var currentMouseState = currentState == ButtonState.Pressed ? GetMouseState(button) : new MouseState();
-        var previousInputState = new InputState(previousMouseState, new KeyboardState(), new InputState());
-        var inputState = new InputState(currentMouseState, new KeyboardState(), previousInputState);
-
+    public static void InputState_IsMouseButtonNewlyReleased_Test(MouseButton button, ButtonState previousState, ButtonState currentState, bool expectedValue) {
+        var inputState = GetMouseInputState(button, previousState, currentState);
         var result = inputState.IsMouseButtonNewlyReleased(button);
-
         result.Should().Be(expectedValue);
     }
 }
