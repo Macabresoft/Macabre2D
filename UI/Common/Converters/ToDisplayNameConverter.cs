@@ -36,11 +36,8 @@ public class ToDisplayNameConverter : IValueConverter {
         var enumType = enumValue.GetType();
         if (enumType.GetCustomAttribute<FlagsAttribute>() != null) {
             var displayName = string.Empty;
-            foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(x => enumValue.HasFlag(x))) {
-                var valueDisplayName = value.GetEnumDisplayName();
-                if (!string.IsNullOrEmpty(valueDisplayName)) {
-                    displayName = string.IsNullOrEmpty(displayName) ? value.GetEnumDisplayName() : $"{displayName}, {value.GetEnumDisplayName()}";
-                }
+            foreach (var value in Enum.GetValues(enumType).OfType<Enum>().Where(enumValue.HasFlag).Select(x => x.GetEnumDisplayName()).Where(x => !string.IsNullOrEmpty(x))) {
+                displayName = string.IsNullOrEmpty(displayName) ? value : $"{displayName}, {value}";
             }
 
             return displayName;
