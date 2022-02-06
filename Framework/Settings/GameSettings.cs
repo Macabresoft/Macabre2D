@@ -12,28 +12,28 @@ public interface IGameSettings : INotifyPropertyChanged {
     /// <summary>
     /// Gets the default graphics settings.
     /// </summary>
-    /// <value>The default graphics settings.</value>
     GraphicsSettings DefaultGraphicsSettings { get; }
 
     /// <summary>
     /// Gets the default resolution.
     /// </summary>
-    /// <value>The default resolution.</value>
     Point DefaultResolution { get; }
 
     /// <summary>
     /// Gets the inverse of <see cref="PixelsPerUnit" />.
     /// </summary>
-    /// <value>
     /// <remarks>
     /// This will be calculated when <see cref="PixelsPerUnit" /> is set.
     /// Multiplication is a quicker operation than division, so if you find yourself dividing by
     /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
     /// produce the same value, but quicker.
     /// </remarks>
-    /// The inverse pixels per unit.
-    /// </value>
     float InversePixelsPerUnit { get; }
+
+    /// <summary>
+    /// Gets the layer settings.
+    /// </summary>
+    LayerSettings LayerSettings { get; }
 
     /// <summary>
     /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
@@ -43,13 +43,11 @@ public interface IGameSettings : INotifyPropertyChanged {
     /// <summary>
     /// Gets or sets the color of the game background when there is no scene opened.
     /// </summary>
-    /// <value>The fallback background color.</value>
     Color FallbackBackgroundColor { get; set; }
 
     /// <summary>
-    /// Gets or sets the pixels per unit. This value is the number of pixels per abritrary game units.
+    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
     /// </summary>
-    /// <value>The pixel density.</value>
     ushort PixelsPerUnit { get; set; }
 
     /// <summary>
@@ -77,6 +75,10 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
     /// <inheritdoc />
     [DataMember]
     public GraphicsSettings DefaultGraphicsSettings { get; } = new();
+
+    /// <inheritdoc />
+    [DataMember]
+    public LayerSettings LayerSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
