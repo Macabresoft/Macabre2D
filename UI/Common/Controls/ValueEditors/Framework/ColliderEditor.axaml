@@ -6,9 +6,6 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:Collider"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.ColliderEditor">
-    <valueEditors:ValueEditorControl.Resources>
-        <common:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
-    </valueEditors:ValueEditorControl.Resources>
     <Grid DataContext="{Binding $parent[local:ColliderEditor]}">
         <Design.DataContext>
             <local:ColliderEditor />
@@ -18,7 +15,7 @@
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Stretch"
-                               Text="{Binding Converter={StaticResource ToDisplayNameConverter}}"
+                               Text="{Binding Converter={x:Static common:ToDisplayNameConverter.Instance}}"
                                TextAlignment="Left"
                                ToolTip.Tip="{Binding}" />
                 </DataTemplate>

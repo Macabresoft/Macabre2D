@@ -15,7 +15,6 @@ using ReactiveUI;
 using Unity;
 
 public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
-    private readonly ToDisplayNameConverter _displayNameConverter = new();
     private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new();
     private readonly IUndoService _undoService;
 
@@ -61,7 +60,7 @@ public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
 
         foreach (var columnValue in columnValues) {
             var textControl = new TextBlock {
-                Text = this._displayNameConverter.Convert(columnValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
+                Text = ToDisplayNameConverter.Instance.Convert(columnValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
                 [ToolTip.TipProperty] = columnValue
             };
 
@@ -87,7 +86,7 @@ public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
             column = columnValues.Count + 1;
 
             var textControl = new TextBlock {
-                Text = this._displayNameConverter.Convert(rowValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
+                Text = ToDisplayNameConverter.Instance.Convert(rowValue, typeof(string), null, CultureInfo.CurrentCulture) as string,
                 [ToolTip.TipProperty] = rowValue,
                 [Grid.RowProperty] = row,
                 [Grid.ColumnProperty] = 0

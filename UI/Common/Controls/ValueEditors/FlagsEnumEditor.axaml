@@ -5,9 +5,6 @@
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.UI.Common.FlagsEnumEditor">
-    <local:ValueEditorControl.Resources>
-        <local:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
-    </local:ValueEditorControl.Resources>
     <Grid ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:FlagsEnumEditor]}">
         <Design.DataContext>
@@ -22,7 +19,7 @@
                   Classes="Flags"
                   Items="{Binding EnumType, Converter={x:Static avaloniaEx:EnumTypeToValuesConverter.Instance}}"
                   SelectionChanged="SelectingItemsControl_OnSelectionChanged"
-                  PlaceholderText="{Binding Value, Converter={StaticResource ToDisplayNameConverter}}"
+                  PlaceholderText="{Binding Value, Converter={x:Static local:ToDisplayNameConverter.Instance}}"
                   ToolTip.Tip="{Binding Value}">
             <ComboBox.Styles>
                 <Style Selector="ComboBoxItem">
@@ -33,7 +30,7 @@
                 <DataTemplate>
                     <Panel IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
                         <CheckBox HorizontalAlignment="Stretch"
-                                  Content="{Binding Converter={StaticResource ToDisplayNameConverter}}"
+                                  Content="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}}"
                                   Command="{Binding $parent[local:FlagsEnumEditor].ToggleValueCommand}"
                                   CommandParameter="{Binding}"
                                   ToolTip.Tip="{Binding}">

@@ -9,9 +9,6 @@
                        ShowInTaskbar="False"
                        WindowStartupLocation="CenterOwner"
                        Title="Make a Selection">
-    <Window.Resources>
-        <local:ToDisplayNameConverter x:Key="ToDisplayNameConverter" />
-    </Window.Resources>
     <Design.DataContext>
         <local:TypeSelectionViewModel />
     </Design.DataContext>
@@ -35,7 +32,7 @@
                     <StackPanel Orientation="Horizontal"
                                 Margin="{StaticResource StandardMarginAll}">
                         <TextBlock FontWeight="Bold"
-                                   Text="{Binding Converter={StaticResource ToDisplayNameConverter}, Mode=OneTime}" />
+                                   Text="{Binding Converter={x:Static local:ToDisplayNameConverter.Instance}, Mode=OneTime}" />
                         <TextBlock FontStyle="Italic"
                                    Text="{Binding FullName, StringFormat={}({0}), Mode=OneTime}" />
                     </StackPanel>

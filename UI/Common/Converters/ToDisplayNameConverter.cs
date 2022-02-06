@@ -17,6 +17,9 @@ public class ToDisplayNameConverter : IValueConverter {
     /// </summary>
     public static readonly ToDisplayNameConverter Instance = new();
 
+    private ToDisplayNameConverter() {
+    }
+
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
         return value switch {
