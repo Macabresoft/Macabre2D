@@ -74,10 +74,12 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
 
     /// <inheritdoc />
     [DataMember]
+    [Category(CommonCategories.DefaultGraphics)]
     public GraphicsSettings DefaultGraphicsSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]
+    [Category(CommonCategories.Layers)]
     public LayerSettings LayerSettings { get; } = new();
 
     /// <inheritdoc />

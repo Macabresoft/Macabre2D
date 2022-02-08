@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// Contains common categories for editable properties.
@@ -17,7 +17,7 @@ public static class CommonCategories {
     /// <summary>
     /// Category for default graphics.
     /// </summary>
-    public const string DefaultGraphics = "Default DefaultGraphics";
+    public const string DefaultGraphics = "Default Graphics";
 
     /// <summary>
     /// Fallback values.
@@ -28,6 +28,11 @@ public static class CommonCategories {
     /// Category for grids.
     /// </summary>
     public const string Grid = "Grid";
+
+    /// <summary>
+    /// Category for layers.
+    /// </summary>
+    public const string Layers = "Layers";
 
     /// <summary>
     /// Category for miscellaneous.

@@ -1,41 +1,18 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Interface for layer settings.
-/// </summary>
-public interface ILayerSettings {
-    /// <summary>
-    /// Gets a layer from its name.
-    /// </summary>
-    /// <param name="name">The name.</param>
-    /// <returns>The layer.</returns>
-    Layers GetLayer(string name);
-
-    /// <summary>
-    /// Gets the name of a layer.
-    /// </summary>
-    /// <param name="layer">The layer.</param>
-    /// <returns>The name of a layer.</returns>
-    string GetName(Layers layer);
-
-    /// <summary>
-    /// Sets the name of a layer if it is not a duplicate and the <see cref="layer" /> is a single layer and not multiple.
-    /// </summary>
-    /// <param name="layer">The layer.</param>
-    /// <param name="name">The name.</param>
-    /// <returns>A value indicating whether or not the name was successfully set.</returns>
-    bool SetName(Layers layer, string name);
-}
-
-/// <summary>
 /// Settings for layers.
 /// </summary>
-public class LayerSettings : ILayerSettings {
+[DataContract]
+[Category(CommonCategories.Layers)]
+public class LayerSettings {
     [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
     private readonly IDictionary<Layers, string> _layerToName;
 
@@ -68,17 +45,30 @@ public class LayerSettings : ILayerSettings {
         this._nameToLayer = this._layerToName.ToDictionary(x => x.Value, x => x.Key);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets a layer from its name.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The layer.</returns>
     public Layers GetLayer(string name) {
         return this._nameToLayer.TryGetValue(name, out var layer) ? layer : Layers.None;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the name of a layer.
+    /// </summary>
+    /// <param name="layer">The layer.</param>
+    /// <returns>The name of a layer.</returns>
     public string GetName(Layers layer) {
         return this._layerToName.TryGetValue(layer, out var name) ? name : layer.GetEnumDisplayName();
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Sets the name of a layer if it is not a duplicate and the <see cref="layer" /> is a single layer and not multiple.
+    /// </summary>
+    /// <param name="layer">The layer.</param>
+    /// <param name="name">The name.</param>
+    /// <returns>A value indicating whether or not the name was successfully set.</returns>
     public bool SetName(Layers layer, string name) {
         var result = false;
 
