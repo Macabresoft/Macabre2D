@@ -5,7 +5,7 @@
                           xmlns:system="clr-namespace:System;assembly=mscorlib"
                           x:TypeArguments="system:Object"
                           x:Class="Macabresoft.Macabre2D.UI.Common.FlagsEnumEditor">
-    <Grid ColumnDefinitions="Auto, *"
+    <Grid ColumnDefinitions="Auto, *, Auto, Auto"
           DataContext="{Binding $parent[local:FlagsEnumEditor]}">
         <Design.DataContext>
             <local:FlagsEnumEditor />
@@ -46,5 +46,15 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+
+        <Button Grid.Column="2"
+                Command="{Binding SelectAllCommand}">
+            <avaloniaEx:Icon Content="{StaticResource SelectAllIcon}" />
+        </Button>
+
+        <Button Grid.Column="3"
+                Command="{Binding ClearCommand}">
+            <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
+        </Button>
     </Grid>
 </local:ValueEditorControl>
