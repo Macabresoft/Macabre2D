@@ -16,13 +16,15 @@ using Unity;
 
 public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
     private readonly Dictionary<Layers, CheckBox> _layersToCheckBox = new();
+    private readonly IProjectService _projectService;
     private readonly IUndoService _undoService;
 
-    public CollisionMapEditor() : this(null, Resolver.Resolve<IUndoService>()) {
+    public CollisionMapEditor() : this(null, Resolver.Resolve<IProjectService>(), Resolver.Resolve<IUndoService>()) {
     }
 
     [InjectionConstructor]
-    public CollisionMapEditor(ValueControlDependencies dependencies, IUndoService undoService) : base(dependencies) {
+    public CollisionMapEditor(ValueControlDependencies dependencies, IProjectService projectService, IUndoService undoService) : base(dependencies) {
+        this._projectService = projectService;
         this._undoService = undoService;
         this.InitializeComponent();
     }
@@ -38,11 +40,13 @@ public class CollisionMapEditor : ValueEditorControl<CollisionMap> {
             return;
         }
 
+        var enabledLayers = this._projectService.CurrentProject?.Settings.LayerSettings.EnabledLayers ?? Layers.Default;
+
         var viewBox = this.LogicalChildren.OfType<Viewbox>().First();
         var grid = new Grid();
         viewBox.Child = grid;
 
-        var rowValues = Enum.GetValues<Layers>().ToList();
+        var rowValues = Enum.GetValues<Layers>().Where(x => (x & enabledLayers) != Layers.None).ToList();
         rowValues.Remove(Layers.Default);
         rowValues.Remove(Layers.None);
         var columnValues = rowValues.ToList();

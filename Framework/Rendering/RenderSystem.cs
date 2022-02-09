@@ -14,7 +14,8 @@ public class RenderSystem : UpdateableSystem {
     public override SystemLoop Loop => SystemLoop.Render;
 
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
+            var enabledLayers = this.Scene.Game.Project.Settings.LayerSettings.EnabledLayers;
             this._renderTree.Clear();
 
             foreach (var entity in this.Scene.RenderableEntities) {
@@ -25,7 +26,7 @@ public class RenderSystem : UpdateableSystem {
                 var potentialRenderables =
                     this._renderTree
                         .RetrievePotentialCollisions(camera.BoundingArea)
-                        .Where(x => (x.Layers & camera.LayersToRender) != Layers.None)
+                        .Where(x => (x.Layers & camera.LayersToRender & enabledLayers) != Layers.None)
                         .ToList();
 
                 if (potentialRenderables.Any()) {
