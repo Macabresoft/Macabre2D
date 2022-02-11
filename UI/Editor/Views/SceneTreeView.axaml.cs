@@ -26,9 +26,17 @@ public class SceneTreeView : UserControl {
     public SceneTreeViewModel ViewModel { get; }
 
     private void Drop(object sender, DragEventArgs e) {
-        if (e.Source is IControl { DataContext: IEntity targetEntity } &&
-            e.Data.Get(string.Empty) is IEntity sourceEntity) {
-            this.ViewModel.MoveEntity(sourceEntity, targetEntity);
+        if (e.Source is IControl control &&
+            e.Data.Get(string.Empty) is Guid sourceEntityId &&
+            this.ViewModel.EntityService.Selected?.Id == sourceEntityId) {
+            switch (control.DataContext) {
+                case IEntity targetEntity:
+                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, targetEntity);
+                    break;
+                case EntityCollection:
+                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene);
+                    break;
+            }
         }
 
         this._dragTarget = Guid.Empty;
@@ -36,7 +44,7 @@ public class SceneTreeView : UserControl {
 
     private async void Entity_OnPointerMoved(object sender, PointerEventArgs e) {
         if (this._dragTarget != Guid.Empty && sender is IControl { DataContext: IEntity entity } && entity.Id == this._dragTarget) {
-            var dragData = new GenericDataObject(entity, entity.Name);
+            var dragData = new GenericDataObject(entity.Id, entity.Name);
             await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
         }
     }

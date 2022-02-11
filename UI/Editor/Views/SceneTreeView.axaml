@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
@@ -26,7 +25,7 @@
                             <MenuItem Header="Find System..."
                                       Command="{Binding AddSystemCommand}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
-                            
+
                             <Separator />
 
                             <MenuItem Header="All Entities"
@@ -36,7 +35,7 @@
                                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                 </MenuItem.Styles>
                             </MenuItem>
-                            
+
                             <MenuItem Header="All Systems"
                                       Classes="MenuItemParent"
                                       Items="{Binding $parent[local:SceneTreeView].ViewModel.AddSystemModels}">
@@ -56,7 +55,7 @@
                         ToolTip.Tip="Remove the selected entity and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
-                
+
                 <Button Command="{Binding RemoveSystemCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
@@ -65,7 +64,7 @@
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
             </StackPanel>
-            
+
             <TreeView Grid.Row="1"
                       Name="_treeView"
                       Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
@@ -83,7 +82,8 @@
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource SceneIcon}"
                                                            IconForeground="{StaticResource YellowBrush}"
-                                                           Text="{Binding Name}" />
+                                                           Text="{Binding Name}"
+                                                           DragDrop.AllowDrop="True" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:SystemCollection"
@@ -101,7 +101,8 @@
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource EntityIcon}"
                                                            IconForeground="{StaticResource PurpleBrush}"
-                                                           Text="{Binding Name}" />
+                                                           Text="{Binding Name}"
+                                                           DragDrop.AllowDrop="True" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:IUpdateableSystem">
@@ -148,14 +149,14 @@
                                     <MenuItem Header="Clone"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Clone this entity"/>
-                                    
+                                              ToolTip.Tip="Clone this entity" />
+
                                     <MenuItem Header="Create Prefab"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Create a prefab of the selected entity" />
-                                    
+
                                     <MenuItem Header="Convert to Instance"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToInstanceCommand}"
                                               CommandParameter="{Binding}"
