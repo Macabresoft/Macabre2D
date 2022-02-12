@@ -24,21 +24,20 @@ public static class SimplePhysicsSystemTests {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
         var gameSettings = Substitute.For<IGameSettings>();
-        var raycastLayer = Layers.Layer12;
-
+        var layerSettings = new LayerSettings();
+        gameSettings.LayerSettings.Returns(layerSettings);
         project.Settings.Returns(gameSettings);
-
-        if (!layersCompatible) {
-            raycastLayer = Layers.Layer13;
-        }
-
+        var game = Substitute.For<IGame>();
+        game.Project.Returns(project);
+        
         var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
         var circleBody = scene.AddChild<SimplePhysicsBody>();
         circleBody.SetWorldPosition(Vector2.Zero);
         circleBody.Collider = new CircleCollider(1f);
         circleBody.Layers = Layers.Layer12;
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
-
+        scene.Initialize(game, Substitute.For<IAssetManager>());
+        
+        var raycastLayer = layersCompatible ? Layers.Layer12 : Layers.Layer13;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
         Assert.AreEqual(raycastHit, result);
     }
@@ -55,11 +54,13 @@ public static class SimplePhysicsSystemTests {
         bool raycastHit) {
         var scene = new Scene();
         var project = Substitute.For<IGameProject>();
-        var layerSettings = new CollisionMap();
+        var layerSettings = new LayerSettings();
         var gameSettings = Substitute.For<IGameSettings>();
-
+        gameSettings.LayerSettings.Returns(layerSettings);
         project.Settings.Returns(gameSettings);
-
+        var game = Substitute.For<IGame>();
+        game.Project.Returns(project);
+        
         var physicsSystem = scene.AddSystem<SimplePhysicsSystem>();
 
         var lineBody = scene.AddChild<SimplePhysicsBody>();
@@ -68,7 +69,7 @@ public static class SimplePhysicsSystemTests {
         lineBody.Layers = Layers.Default;
         lineBody.Initialize(scene, scene);
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        scene.Initialize(game, Substitute.For<IAssetManager>());
         physicsSystem.TimeStep = 1f;
         physicsSystem.Update(new FrameTime(new GameTime(new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 1)), 1), new InputState());
 

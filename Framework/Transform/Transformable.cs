@@ -90,6 +90,12 @@ public interface ITransformable {
     /// <param name="position">The position.</param>
     /// <param name="scale">The scale.</param>
     void SetWorldTransform(Vector2 position, Vector2 scale);
+
+    /// <summary>
+    /// Sets the world transform.
+    /// </summary>
+    /// <param name="transform">The transform.</param>
+    void SetWorldTransform(Transform transform);
 }
 
 /// <summary>
@@ -239,6 +245,11 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         this.RaisePropertyChanged(nameof(this.LocalScale));
     }
 
+    /// <inheritdoc />
+    public void SetWorldTransform(Transform transform) {
+        this.SetWorldTransform(transform.Position, transform.Scale);
+    }
+
     /// <summary>
     /// Gets the parent transformable.
     /// </summary>
@@ -321,6 +332,10 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
 
         /// <inheritdoc />
         public void SetWorldTransform(Vector2 position, Vector2 scale) {
+        }
+
+        /// <inheritdoc />
+        public void SetWorldTransform(Transform transform) {
         }
     }
 }
