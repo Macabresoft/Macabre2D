@@ -13,17 +13,19 @@
         <Grid RowDefinitions="Auto, *, 0">
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal">
-                <Button Command="{Binding AddEntityCommand}"
+                <Button Command="{Binding AddCommand}"
                         Classes="Icon"
-                        ToolTip.Tip="Add an entity as a child of the selected entity">
+                        ToolTip.Tip="Contextually add an entity or system depending on the currently selected object in the tree">
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Find Entity..."
-                                      Command="{Binding AddEntityCommand}"
+                                      Command="{Binding AddCommand}"
+                                      CommandParameter="{x:Type framework:IEntity}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                             <MenuItem Header="Find System..."
-                                      Command="{Binding AddSystemCommand}"
+                                      Command="{Binding AddCommand}"
+                                      CommandParameter="{x:Type framework:IUpdateableSystem}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                             <Separator />
@@ -48,19 +50,10 @@
 
                     <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
-                <Button Command="{Binding RemoveEntityCommand}"
+                <Button Command="{Binding RemoveCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
-                        IsVisible="{Binding SceneService.IsEntityContext}"
-                        ToolTip.Tip="Remove the selected entity and all of its children from the scene">
-                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
-                </Button>
-
-                <Button Command="{Binding RemoveSystemCommand}"
-                        CommandParameter="{Binding SceneService.ImpliedSelected}"
-                        Classes="Icon"
-                        IsVisible="{Binding !SceneService.IsEntityContext}"
-                        ToolTip.Tip="Remove the selected system from the scene">
+                        ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
             </StackPanel>
@@ -107,7 +100,7 @@
 
                     <TreeDataTemplate DataType="framework:IUpdateableSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
-                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameSystemCommand}"
+                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                            Text="{Binding Path=Name, Mode=TwoWay}">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
@@ -118,7 +111,7 @@
                                     <Separator />
 
                                     <MenuItem Header="Remove"
-                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveSystemCommand}"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this system from the scene" />
                                 </ContextMenu>
@@ -129,7 +122,7 @@
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
-                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameEntityCommand}"
+                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                            Text="{Binding Path=Name, Mode=TwoWay}"
                                                            PointerPressed="Entity_OnPointerPressed"
                                                            PointerReleased="Entity_OnPointerReleased"
@@ -167,7 +160,8 @@
 
                                     <MenuItem Header="Add">
                                         <MenuItem Header="Find..."
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityCommand}"
+                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
+                                                  CommandParameter="{x:Type framework:IEntity}"
                                                   ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                                         <Separator />
@@ -181,7 +175,7 @@
                                         </MenuItem>
                                     </MenuItem>
                                     <MenuItem Header="Remove"
-                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveEntityCommand}"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
                                               ToolTip.Tip="Remove this entity and all of its children from the scene" />
                                 </ContextMenu>

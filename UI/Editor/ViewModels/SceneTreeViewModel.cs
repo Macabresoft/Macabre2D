@@ -20,6 +20,7 @@ using Unity;
 public sealed class SceneTreeViewModel : BaseViewModel {
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly ISystemService _systemService;
     private readonly IUndoService _undoService;
 
     /// <summary>
@@ -53,39 +54,35 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.EditorService = editorService;
         this.EntityService = entityService;
         this.SceneService = sceneService;
-        this.SystemService = systemService;
+        this._systemService = systemService;
         this._undoService = undoService;
 
-        this.AddEntityCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddEntity(x));
-        this.RemoveEntityCommand = ReactiveCommand.Create<IEntity>(this.RemoveEntity);
-        this.AddSystemCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddSystem(x));
-        this.RemoveSystemCommand = ReactiveCommand.Create<IUpdateableSystem>(this.RemoveSystem);
-        this.RenameEntityCommand = ReactiveCommand.Create<string>(this.RenameEntity);
-        this.RenameSystemCommand = ReactiveCommand.Create<string>(this.RenameSystem);
+
+        this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x));
+        this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
+            x => x.ImpliedSelected,
+            x => x.Value is not IScene));
+
+        this.RenameCommand = ReactiveCommand.Create<string>(this.RenameChild);
         this.CloneEntityCommand = ReactiveCommand.Create<IEntity>(this.CloneEntity);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
         this.CreatePrefabCommand = ReactiveCommand.CreateFromTask<IEntity>(async x => await this.CreateFromPrefab(x));
 
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
-            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddEntityCommand, x)).ToList();
-        this.AddSystemModels = this.SystemService.AvailableTypes.OrderBy(x => x.Name)
-            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddSystemCommand, x)).ToList();
+            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
+        this.AddSystemModels = this._systemService.AvailableTypes.OrderBy(x => x.Name)
+            .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
     }
 
     /// <summary>
-    /// Gets a command to add an entity.
+    /// Gets a command to add a system or an entity.
     /// </summary>
-    public ICommand AddEntityCommand { get; }
+    public ICommand AddCommand { get; }
 
     /// <summary>
     /// Gets a collection of <see cref="MenuItemModel" /> for adding entities.
     /// </summary>
     public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
-
-    /// <summary>
-    /// Gets a command to add a system.
-    /// </summary>
-    public ICommand AddSystemCommand { get; }
 
     /// <summary>
     /// Gets a collection of <see cref="MenuItemModel" /> for adding systems.
@@ -118,34 +115,19 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public IEntityService EntityService { get; }
 
     /// <summary>
-    /// Gets a command to remove an entity.
+    /// Gets a command to remove a child.
     /// </summary>
-    public ICommand RemoveEntityCommand { get; }
+    public ICommand RemoveCommand { get; }
 
     /// <summary>
-    /// Gets a command to remove a system.
+    /// Gets a command for renaming an entity or system..
     /// </summary>
-    public ICommand RemoveSystemCommand { get; }
-
-    /// <summary>
-    /// Gets a command for renaming an entity.
-    /// </summary>
-    public ICommand RenameEntityCommand { get; }
-
-    /// <summary>
-    /// Gets a command for renaming a system.
-    /// </summary>
-    public ICommand RenameSystemCommand { get; }
+    public ICommand RenameCommand { get; }
 
     /// <summary>
     /// Gets the scene service.
     /// </summary>
     public ISceneService SceneService { get; }
-
-    /// <summary>
-    /// Gets the system service.
-    /// </summary>
-    public ISystemService SystemService { get; }
 
     /// <summary>
     /// Moves the source entity to be a child of the target entity.
@@ -159,8 +141,27 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
+    private async Task AddChild(Type type) {
+        if (type == null) {
+            if (this.SceneService.ImpliedSelected is IScene or IEntity) {
+                await this.AddEntity(null);
+            }
+            else if (this.SceneService.Selected is IUpdateableSystem or SystemCollection) {
+                await this.AddSystem(null);
+            }
+        }
+        else if (type.IsAssignableTo(typeof(IEntity))) {
+            await this.AddEntity(null);
+        }
+        else if (type.IsAssignableTo(typeof(IUpdateableSystem))) {
+            await this.AddSystem(null);
+        }
+    }
+
     private async Task AddEntity(Type type) {
-        type ??= await this._dialogService.OpenTypeSelectionDialog(this.EntityService.AvailableTypes);
+        if (type == null || type.IsInterface) {
+            type = await this._dialogService.OpenTypeSelectionDialog(this.EntityService.AvailableTypes);
+        }
 
         if (type != null && Activator.CreateInstance(type) is IEntity child) {
             if (type.GetCustomAttribute(typeof(DataContractAttribute)) is DataContractAttribute attribute) {
@@ -190,10 +191,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private async Task AddSystem(Type type) {
         if (this.SceneService.CurrentScene is { } scene) {
-            type ??= await this._dialogService.OpenTypeSelectionDialog(this.SystemService.AvailableTypes);
+            if (type == null || type.IsInterface) {
+                type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes);
+            }
 
             if (type != null && Activator.CreateInstance(type) is IUpdateableSystem system) {
-                var originallySelected = this.SystemService.Selected;
+                var originallySelected = this._systemService.Selected;
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
                         scene.AddSystem(system);
@@ -245,6 +248,17 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         await this._contentService.CreatePrefab(entity);
     }
 
+    private void RemoveChild(object child) {
+        switch (child) {
+            case IEntity entity and not IScene:
+                this.RemoveEntity(entity);
+                break;
+            case IUpdateableSystem system:
+                this.RemoveSystem(system);
+                break;
+        }
+    }
+
     private void RemoveEntity(object selected) {
         if (selected is IEntity entity) {
             var parent = entity.Parent;
@@ -278,20 +292,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
-    private void RenameEntity(string updatedName) {
-        if (this.EntityService.Selected is { } entity && entity.Name != updatedName) {
-            var originalName = entity.Name;
+    private void RenameChild(string updatedName) {
+        if (this.SceneService.ImpliedSelected is INameable nameable && nameable.Name != updatedName) {
+            var originalName = nameable.Name;
             this._undoService.Do(
-                () => { Dispatcher.UIThread.Post(() => { entity.Name = updatedName; }); }, () => { Dispatcher.UIThread.Post(() => { entity.Name = originalName; }); });
-        }
-    }
-
-    private void RenameSystem(string updatedName) {
-        if (this.SystemService.Selected is { } system && system.Name != updatedName) {
-            var originalName = system.Name;
-            this._undoService.Do(
-                () => { Dispatcher.UIThread.Post(() => { system.Name = updatedName; }); },
-                () => { Dispatcher.UIThread.Post(() => { system.Name = originalName; }); });
+                () => { Dispatcher.UIThread.Post(() => { nameable.Name = updatedName; }); },
+                () => { Dispatcher.UIThread.Post(() => { nameable.Name = originalName; }); });
         }
     }
 }
