@@ -3,11 +3,13 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
+using DynamicData;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
@@ -22,6 +24,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private readonly ICommonDialogService _dialogService;
     private readonly ISystemService _systemService;
     private readonly IUndoService _undoService;
+    private readonly ReactiveCommand<object, Unit> _moveUpCommand;
+    private readonly ReactiveCommand<object, Unit> _moveDownCommand;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SceneTreeViewModel" /> class.
@@ -57,12 +61,16 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this._systemService = systemService;
         this._undoService = undoService;
 
-
         this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x));
         this.RemoveCommand = ReactiveCommand.Create<object>(this.RemoveChild, this.SceneService.WhenAny(
             x => x.ImpliedSelected,
             x => x.Value is not IScene));
-
+        this._moveDownCommand = ReactiveCommand.Create<object>(this.MoveDown, this.SceneService.WhenAny(
+            x => x.ImpliedSelected,
+            x => this.CanMoveDown(x.Value)));
+        this._moveUpCommand = ReactiveCommand.Create<object>(this.MoveUp, this.SceneService.WhenAny(
+            x => x.ImpliedSelected,
+            x => this.CanMoveUp(x.Value)));
         this.RenameCommand = ReactiveCommand.Create<string>(this.RenameChild);
         this.CloneEntityCommand = ReactiveCommand.Create<IEntity>(this.CloneEntity);
         this.ConvertToInstanceCommand = ReactiveCommand.Create<IEntity>(this.ConvertToInstance);
@@ -115,6 +123,16 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public IEntityService EntityService { get; }
 
     /// <summary>
+    /// Gets a command to move a child down.
+    /// </summary>
+    public ICommand MoveDownCommand => this._moveDownCommand;
+
+    /// <summary>
+    /// Gets a command to move a child up.
+    /// </summary>
+    public ICommand MoveUpCommand => this._moveUpCommand;
+
+    /// <summary>
     /// Gets a command to remove a child.
     /// </summary>
     public ICommand RemoveCommand { get; }
@@ -137,7 +155,13 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public void MoveEntity(IEntity sourceEntity, IEntity targetEntity) {
         if (CanMoveEntity(sourceEntity, targetEntity)) {
             var originalParent = sourceEntity.Parent;
-            this._undoService.Do(() => { targetEntity.AddChild(sourceEntity); }, () => { originalParent.AddChild(sourceEntity); });
+            this._undoService.Do(() => {
+                targetEntity.AddChild(sourceEntity);
+                this.SceneService.RaiseSelectedChanged();
+            }, () => {
+                originalParent.AddChild(sourceEntity);
+                this.SceneService.RaiseSelectedChanged();
+            });
         }
     }
 
@@ -212,11 +236,27 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
+    private bool CanMoveDown(object selected) {
+        return selected switch {
+            IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
+            IUpdateableSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) < this.SceneService.CurrentScene.Systems.Count - 1,
+            _ => false
+        };
+    }
+
     private static bool CanMoveEntity(IEntity sourceEntity, IEntity targetEntity) {
         return sourceEntity != null &&
                targetEntity != null &&
                sourceEntity != targetEntity &&
                !targetEntity.IsDescendentOf(sourceEntity);
+    }
+
+    private bool CanMoveUp(object selected) {
+        return selected switch {
+            IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) != 0,
+            IUpdateableSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) != 0,
+            _ => false
+        };
     }
 
     private void CloneEntity(IEntity entity) {
@@ -246,6 +286,66 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private async Task CreateFromPrefab(IEntity entity) {
         await this._contentService.CreatePrefab(entity);
+    }
+
+    private void MoveDown(object selected) {
+        switch (selected) {
+            case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                var index = parent.Children.IndexOf(entity);
+                this._undoService.Do(() => {
+                    this.MoveEntity(entity, parent, index + 1);
+                }, () => {
+                    this.MoveEntity(entity, parent, index);
+                });
+                break;
+            }
+            case IUpdateableSystem system: {
+                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
+                this._undoService.Do(() => {
+                    this.MoveSystem(system, index + 1);
+                }, () => {
+                    this.MoveSystem(system, index);
+                });
+                break;
+            }
+        }
+        
+        
+    }
+
+    private void MoveUp(object selected) {
+        switch (selected) {
+            case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                var index = parent.Children.IndexOf(entity);
+                this._undoService.Do(() => {
+                    this.MoveEntity(entity, parent, index - 1);
+                }, () => {
+                    this.MoveEntity(entity, parent, index);
+                });
+                break;
+            }
+            case IUpdateableSystem system: {
+                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
+                this._undoService.Do(() => {
+                    this.MoveSystem(system, index - 1);
+                }, () => {
+                    this.MoveSystem(system, index);
+                });
+                break;
+            }
+        }
+    }
+
+    private void MoveEntity(IEntity entity, IEntity parent, int index) {
+        parent.RemoveChild(entity);
+        parent.InsertChild(index, entity);
+        this.SceneService.RaiseSelectedChanged();
+    }
+
+    private void MoveSystem(IUpdateableSystem system, int index) {
+        this.SceneService.CurrentScene.RemoveSystem(system);
+        this.SceneService.CurrentScene.InsertSystem(index, system);
+        this.SceneService.RaiseSelectedChanged();
     }
 
     private void RemoveChild(object child) {

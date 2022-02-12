@@ -92,6 +92,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     void Initialize(IGame game, IAssetManager assetManager);
 
     /// <summary>
+    /// Inserts a system at the specified index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    /// <param name="system">The system.</param>
+    void InsertSystem(int index, IUpdateableSystem system);
+
+    /// <summary>
     /// Invokes the specified action after the current update
     /// </summary>
     /// <param name="action">The action.</param>
@@ -150,8 +157,6 @@ public sealed class Scene : GridContainer, IScene {
     /// The default empty <see cref="IScene" /> that is present before initialization.
     /// </summary>
     public new static readonly IScene Empty = new EmptyScene();
-
-    private readonly HashSet<IEntity> _allEntitiesInScene = new();
 
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,
@@ -276,6 +281,15 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public void InsertSystem(int index, IUpdateableSystem system) {
+        this._systems.InsertOrAdd(index, system);
+
+        if (this._isInitialized) {
+            system.Initialize(this);
+        }
+    }
+
+    /// <inheritdoc />
     public void Invoke(Action action) {
         if (this._isBusy) {
             this._pendingActions.Add(action);
@@ -298,7 +312,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void RegisterEntity(IEntity entity) {
-        this._allEntitiesInScene.Add(entity);
         this._cameras.Add(entity);
         this._physicsBodies.Add(entity);
         this._renderableEntities.Add(entity);
@@ -360,7 +373,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public void UnregisterEntity(IEntity entity) {
-        this._allEntitiesInScene.Remove(entity);
         this._cameras.Remove(entity);
         this._physicsBodies.Remove(entity);
         this._renderableEntities.Remove(entity);
@@ -418,6 +430,10 @@ public sealed class Scene : GridContainer, IScene {
 
         /// <inheritdoc />
         public void Initialize(IGame gameLoop, IAssetManager assetManager) {
+        }
+
+        /// <inheritdoc />
+        public void InsertSystem(int index, IUpdateableSystem system) {
         }
 
         /// <inheritdoc />

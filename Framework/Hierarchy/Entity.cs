@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Macabresoft.Core;
 
 /// <summary>
 /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IScene" /> which
@@ -77,6 +78,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <param name="scene">The scene.</param>
     /// <param name="parent">The parent.</param>
     void Initialize(IScene scene, IEntity parent);
+
+    /// <summary>
+    /// Inserts the child at the provided index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    /// <param name="entity">The entity.</param>
+    void InsertChild(int index, IEntity entity);
 
     /// <summary>
     /// Determines whether this instance is a descendent of <paramref name="entity" />.
@@ -239,6 +247,15 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
+    public void InsertChild(int index, IEntity entity) {
+        if (this.CanAddChild(entity)) {
+            entity.Parent.RemoveChild(entity);
+            this._children.InsertOrAdd(index, entity);
+            this.OnAddChild(entity);
+        }
+    }
+
+    /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) {
         return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
     }
@@ -390,6 +407,11 @@ public class Entity : Transformable, IEntity {
         /// <inheritdoc />
         public void Initialize(IScene scene, IEntity parent) {
             throw new NotSupportedException("An empty entity cannot be initialized.");
+        }
+
+        /// <inheritdoc />
+        public void InsertChild(int index, IEntity entity) {
+            throw new NotSupportedException("Initialization has not occured.");
         }
 
         /// <inheritdoc />

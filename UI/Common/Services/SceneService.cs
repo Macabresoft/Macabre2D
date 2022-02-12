@@ -34,6 +34,11 @@ public interface ISceneService : ISelectionService<object> {
     bool IsEntityContext { get; }
 
     /// <summary>
+    /// Raises the property changed event for the selected object.
+    /// </summary>
+    void RaiseSelectedChanged();
+
+    /// <summary>
     /// Saves the current scene.
     /// </summary>
     void SaveScene();
@@ -163,6 +168,20 @@ public sealed class SceneService : ReactiveObject, ISceneService {
 
             this.RaisePropertyChanged(nameof(this.Editors));
         }
+    }
+
+    /// <inheritdoc />
+    public void RaiseSelectedChanged() {
+        var originalSelected = this._selected;
+        var originalImpliedSelected = this._impliedSelected;
+        this._selected = null;
+        this._impliedSelected = null;
+        this.RaisePropertyChanged(nameof(this.Selected));
+        this.RaisePropertyChanged(nameof(this.ImpliedSelected));
+        this._selected = originalSelected;
+        this._impliedSelected = originalImpliedSelected;
+        this.RaisePropertyChanged(nameof(this.Selected));
+        this.RaisePropertyChanged(nameof(this.ImpliedSelected));
     }
 
     /// <inheritdoc />

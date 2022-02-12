@@ -50,11 +50,26 @@
 
                     <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
+                
                 <Button Command="{Binding RemoveCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
+                
+                <Button Command="{Binding MoveUpCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        ToolTip.Tip="Move the selected child up one spot in the list"
+                        Classes="Icon">
+                    <avaloniaEx:Icon Content="{StaticResource ChevronUpIcon}" />
+                </Button>
+
+                <Button Command="{Binding MoveDownCommand}"
+                        CommandParameter="{Binding SceneService.ImpliedSelected}"
+                        ToolTip.Tip="Move the selected child down one spot in the list"
+                        Classes="Icon">
+                    <avaloniaEx:Icon Content="{StaticResource ChevronDownIcon}" />
                 </Button>
             </StackPanel>
 
