@@ -58,6 +58,20 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void AddChild(IEntity entity);
 
     /// <summary>
+    /// Finds the first child with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <returns>The child if it exists.</returns>
+    IEntity FindChild(Guid id);
+
+    /// <summary>
+    /// Finds the first child with the specified name.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The child if it exists.</returns>
+    IEntity FindChild(string name);
+
+    /// <summary>
     /// Get all descendents of the specified type.
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
@@ -213,6 +227,40 @@ public class Entity : Transformable, IEntity {
             this._children.Add(entity);
             this.OnAddChild(entity);
         }
+    }
+
+    /// <inheritdoc />
+    public IEntity FindChild(Guid id) {
+        var result = Empty;
+        foreach (var child in this.Children) {
+            if (child.Id == id) {
+                result = child;
+                break;
+            }
+
+            if (!IsNullOrEmpty(child.FindChild(id), out result)) {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public IEntity FindChild(string name) {
+        var result = Empty;
+        foreach (var child in this.Children) {
+            if (child.Name == name) {
+                result = child;
+                break;
+            }
+
+            if (!IsNullOrEmpty(child.FindChild(name), out result)) {
+                break;
+            }
+        }
+
+        return result;
     }
 
     /// <inheritdoc />
@@ -392,6 +440,15 @@ public class Entity : Transformable, IEntity {
         /// <inheritdoc />
         public void AddChild(IEntity entity) {
             throw new NotSupportedException("Initialization has not occured.");
+        }
+
+        /// <inheritdoc />
+        public IEntity FindChild(Guid id) {
+            return Empty;
+        }
+
+        public IEntity FindChild(string name) {
+            return Empty;
         }
 
         /// <inheritdoc />
