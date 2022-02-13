@@ -125,6 +125,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     public void Render(FrameTime frameTime, InputState inputState);
 
     /// <summary>
+    /// Reorders systems so the specified system is moved to the specified index.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    /// <param name="newIndex">The new index.</param>
+    void ReorderSystem(IUpdateableSystem system, int newIndex);
+
+    /// <summary>
     /// Resolves the dependency.
     /// </summary>
     /// <typeparam name="T">The type of the dependency.</typeparam>
@@ -344,6 +351,13 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public void ReorderSystem(IUpdateableSystem system, int newIndex) {
+        if (this._systems.Remove(system)) {
+            this._systems.InsertOrAdd(newIndex, system);
+        }
+    }
+
+    /// <inheritdoc />
     public T ResolveDependency<T>() where T : new() {
         if (this._dependencies.TryGetValue(typeof(T), out var dependency)) {
             return (T)dependency;
@@ -451,6 +465,10 @@ public sealed class Scene : GridContainer, IScene {
 
         /// <inheritdoc />
         public void Render(FrameTime frameTime, InputState inputState) {
+        }
+
+        /// <inheritdoc />
+        public void ReorderSystem(IUpdateableSystem system, int newIndex) {
         }
 
         /// <inheritdoc />

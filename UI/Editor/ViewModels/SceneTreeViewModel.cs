@@ -312,8 +312,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void MoveSystem(IUpdateableSystem system, int index) {
-        this.SceneService.CurrentScene.RemoveSystem(system);
-        this.SceneService.CurrentScene.InsertSystem(index, system);
+        this.SceneService.CurrentScene.ReorderSystem(system, index);
         this.SceneService.RaiseSelectedChanged();
     }
 
