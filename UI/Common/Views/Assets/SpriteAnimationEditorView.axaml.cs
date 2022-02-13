@@ -19,7 +19,7 @@ public class SpriteAnimationEditorView : UserControl {
     public SpriteAnimationEditorViewModel ViewModel => this.DataContext as SpriteAnimationEditorViewModel;
 
     private void Frames_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
-        if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
+        if (this.ViewModel is { } viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
             var oldValue = (int)e.OldValue;
             var newValue = (int)e.NewValue;
             viewModel.CommitFrames(step, oldValue, newValue);
@@ -32,7 +32,7 @@ public class SpriteAnimationEditorView : UserControl {
 
     private void SpriteIndex_OnValueChanged(object sender, NumericUpDownValueChangedEventArgs e) {
         // IsActive gets set to true after all the bindings are first set, so this ignores initial settings.
-        if (this.ViewModel is SpriteAnimationEditorViewModel viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
+        if (this.ViewModel is { } viewModel && sender is IDataContextProvider { DataContext: SpriteAnimationStep step }) {
             var oldValue = (byte?)e.OldValue;
             var newValue = (byte?)e.NewValue;
             viewModel.CommitSpriteIndex(step, oldValue, newValue);
