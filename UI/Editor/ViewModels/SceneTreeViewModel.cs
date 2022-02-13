@@ -307,8 +307,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void MoveEntity(IEntity entity, IEntity parent, int index) {
-        parent.RemoveChild(entity);
-        parent.InsertChild(index, entity);
+        parent.ReorderChild(entity, index);
         this.SceneService.RaiseSelectedChanged();
     }
 

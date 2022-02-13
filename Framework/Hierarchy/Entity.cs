@@ -121,6 +121,13 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void RemoveChild(IEntity entity);
 
     /// <summary>
+    /// Reorders the children so the specified entity is moved to the specified index.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="newIndex">The new index.</param>
+    void ReorderChild(IEntity entity, int newIndex);
+
+    /// <summary>
     /// Tries the get a child of the specific type. This is recursive.
     /// </summary>
     /// <typeparam name="T">The type of entity for which to search.</typeparam>
@@ -341,6 +348,13 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
+    public void ReorderChild(IEntity entity, int newIndex) {
+        if (this._children.Remove(entity)) {
+            this._children.InsertOrAdd(newIndex, entity);
+        }
+    }
+
+    /// <inheritdoc />
     public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
         entity = this.Children.OfType<T>().FirstOrDefault();
         return entity != null;
@@ -483,6 +497,10 @@ public class Entity : Transformable, IEntity {
 
         /// <inheritdoc />
         public void RemoveChild(IEntity entity) {
+        }
+
+        /// <inheritdoc />
+        public void ReorderChild(IEntity entity, int newIndex) {
         }
 
         /// <inheritdoc />

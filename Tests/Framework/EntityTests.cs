@@ -18,7 +18,6 @@ public static class EntityTests {
         test.AssertExistenceOfEntities(true);
     }
 
-
     [Test]
     [Category("Unit Tests")]
     public static void Entity_UnregistersChild_WhenRemovedFromSceneTree() {
@@ -129,6 +128,46 @@ public static class EntityTests {
 
         using (new AssertionScope()) {
             entity.FindChild(childToFind.Name).Should().Be(childToFind);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void ReorderChild_FirstChildPlusOne_ShouldWork() {
+        const int NumberOfChildren = 5;
+        var entity = new Entity();
+
+        for (var i = 0; i < NumberOfChildren; i++) {
+            entity.AddChild<Entity>();
+        }
+
+        var reordered = entity.Children.ElementAt(0);
+        entity.ReorderChild(reordered, 1);
+
+        using (new AssertionScope()) {
+            entity.Children.Count.Should().Be(NumberOfChildren);
+            entity.Children.ElementAt(1).Should().Be(reordered);
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void ReorderChild_LastChildMinusOne_ShouldWork() {
+        const int NumberOfChildren = 5;
+        const int OriginalIndex = NumberOfChildren - 1;
+        const int NewIndex = NumberOfChildren - 2;
+        var entity = new Entity();
+
+        for (var i = 0; i < NumberOfChildren; i++) {
+            entity.AddChild<Entity>();
+        }
+
+        var reordered = entity.Children.ElementAt(OriginalIndex);
+        entity.ReorderChild(reordered, NewIndex);
+
+        using (new AssertionScope()) {
+            entity.Children.Count.Should().Be(NumberOfChildren);
+            entity.Children.ElementAt(NewIndex).Should().Be(reordered);
         }
     }
 }
