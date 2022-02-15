@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
+             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
@@ -50,14 +51,14 @@
 
                     <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
                 </Button>
-                
+
                 <Button Command="{Binding RemoveCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         Classes="Icon"
                         ToolTip.Tip="Remove the selected child and all of its children from the scene">
                     <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
                 </Button>
-                
+
                 <Button Command="{Binding MoveUpCommand}"
                         CommandParameter="{Binding SceneService.ImpliedSelected}"
                         ToolTip.Tip="Move the selected child up one spot in the list"
@@ -79,9 +80,15 @@
                       SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}">
                 <TreeView.Styles>
                     <Style Selector="TreeViewItem">
+                        <Design.DataContext>
+                            <TreeViewItem />
+                        </Design.DataContext>
+
                         <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="DragDrop.AllowDrop" Value="{Binding Converter={x:Static common:SceneTreeAllowDropConverter.Instance}}" />
                     </Style>
                 </TreeView.Styles>
+
 
                 <TreeView.DataTemplates>
                     <TreeDataTemplate DataType="framework:IScene"
@@ -90,8 +97,7 @@
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource SceneIcon}"
                                                            IconForeground="{StaticResource YellowBrush}"
-                                                           Text="{Binding Name}"
-                                                           DragDrop.AllowDrop="True" />
+                                                           Text="{Binding Name}" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:SystemCollection"
@@ -109,8 +115,7 @@
                                                            HorizontalAlignment="Stretch"
                                                            Icon="{StaticResource EntityIcon}"
                                                            IconForeground="{StaticResource PurpleBrush}"
-                                                           Text="{Binding Name}"
-                                                           DragDrop.AllowDrop="True" />
+                                                           Text="{Binding Name}" />
                     </TreeDataTemplate>
 
                     <TreeDataTemplate DataType="framework:IUpdateableSystem">
@@ -141,8 +146,7 @@
                                                            Text="{Binding Path=Name, Mode=TwoWay}"
                                                            PointerPressed="Entity_OnPointerPressed"
                                                            PointerReleased="Entity_OnPointerReleased"
-                                                           PointerMoved="Entity_OnPointerMoved"
-                                                           DragDrop.AllowDrop="True">
+                                                           PointerMoved="Entity_OnPointerMoved">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
 

@@ -1,11 +1,14 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
+using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 
@@ -16,6 +19,7 @@ public class SceneTreeView : UserControl {
             editor => editor.ViewModel);
 
     private Guid _dragTarget;
+    private bool _isDragging;
 
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
@@ -43,7 +47,8 @@ public class SceneTreeView : UserControl {
     }
 
     private async void Entity_OnPointerMoved(object sender, PointerEventArgs e) {
-        if (this._dragTarget != Guid.Empty && sender is IControl { DataContext: IEntity entity } && entity.Id == this._dragTarget) {
+        if (!this._isDragging && this._dragTarget != Guid.Empty && sender is IControl { DataContext: IEntity entity } control && entity.Id == this._dragTarget) {
+            this._isDragging = true;
             var dragData = new GenericDataObject(entity.Id, entity.Name);
             await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
         }
@@ -57,6 +62,7 @@ public class SceneTreeView : UserControl {
 
     private void Entity_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
+            this._isDragging = false;
             this._dragTarget = Guid.Empty;
         }
     }
