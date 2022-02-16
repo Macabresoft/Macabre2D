@@ -1,14 +1,13 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
-using System.Diagnostics;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Macabresoft.AvaloniaEx;
-using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 
@@ -18,6 +17,8 @@ public class SceneTreeView : UserControl {
             nameof(ViewModel),
             editor => editor.ViewModel);
 
+    private TreeViewItem _currentDropTarget;
+
     private Guid _dragTarget;
     private bool _isDragging;
 
@@ -25,9 +26,17 @@ public class SceneTreeView : UserControl {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.InitializeComponent();
         this.AddHandler(DragDrop.DropEvent, this.Drop);
+        this.AddHandler(DragDrop.DragOverEvent, this.Drag);
     }
 
     public SceneTreeViewModel ViewModel { get; }
+
+    private void Drag(object sender, DragEventArgs e) {
+        if (e.Source is IControl { DataContext: { } } control) {
+            this.ResetDropTarget(control);
+            this.SetDropHighlight(e);
+        }
+    }
 
     private void Drop(object sender, DragEventArgs e) {
         if (e.Source is IControl control &&
@@ -43,7 +52,9 @@ public class SceneTreeView : UserControl {
             }
         }
 
+        this._isDragging = false;
         this._dragTarget = Guid.Empty;
+        this.ResetDropTarget(null);
     }
 
     private async void Entity_OnPointerMoved(object sender, PointerEventArgs e) {
@@ -64,10 +75,66 @@ public class SceneTreeView : UserControl {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
             this._isDragging = false;
             this._dragTarget = Guid.Empty;
+            this.ResetDropTarget(null);
         }
     }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void ResetDropTarget(IControl newTarget) {
+        var treeViewItem = newTarget?.FindAncestor<TreeViewItem>();
+        if (treeViewItem != this._currentDropTarget) {
+            if (this._currentDropTarget != null) {
+                var borders = this._currentDropTarget.GetVisualDescendants().OfType<Border>().ToList();
+                var topBorder = borders.FirstOrDefault(x => x.Name == "Top");
+                if (topBorder != null) {
+                    topBorder.IsVisible = false;
+                }
+
+                var middleBorder = borders.FirstOrDefault(x => x.Name == "Middle");
+                if (middleBorder != null) {
+                    middleBorder.IsVisible = false;
+                }
+
+                var bottomBorder = borders.FirstOrDefault(x => x.Name == "Bottom");
+                if (bottomBorder != null) {
+                    bottomBorder.IsVisible = false;
+                }
+            }
+
+            this._currentDropTarget = treeViewItem;
+        }
+    }
+
+    private void SetDropHighlight(DragEventArgs e) {
+        if (this._currentDropTarget != null) {
+            var (_, y) = e.GetPosition(this._currentDropTarget);
+            var (_, height) = this._currentDropTarget.Bounds.Size;
+            var margin = height * 0.1;
+            var borders = this._currentDropTarget.GetVisualDescendants().OfType<Border>().ToList();
+            var topBorder = borders.FirstOrDefault(x => x.Name == "Top");
+            var middleBorder = borders.FirstOrDefault(x => x.Name == "Middle");
+            var bottomBorder = borders.FirstOrDefault(x => x.Name == "Bottom");
+
+            if (topBorder != null && middleBorder != null && bottomBorder != null) {
+                if (y < margin) {
+                    topBorder.IsVisible = true;
+                    middleBorder.IsVisible = false;
+                    bottomBorder.IsVisible = false;
+                }
+                else if (y > height - margin) {
+                    topBorder.IsVisible = false;
+                    middleBorder.IsVisible = false;
+                    bottomBorder.IsVisible = true;
+                }
+                else {
+                    topBorder.IsVisible = false;
+                    middleBorder.IsVisible = true;
+                    bottomBorder.IsVisible = false;
+                }
+            }
+        }
     }
 }
