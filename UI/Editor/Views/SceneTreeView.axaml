@@ -77,7 +77,8 @@
             <TreeView Grid.Row="1"
                       Name="_treeView"
                       Items="{Binding SceneService.CurrentScene, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
-                      SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}">
+                      SelectedItem="{Binding SceneService.Selected, Mode=TwoWay}"
+                      LostFocus="TreeView_OnLostFocus">
                 <TreeView.Styles>
                     <Style Selector="TreeViewItem">
                         <Design.DataContext>
@@ -85,6 +86,8 @@
                         </Design.DataContext>
 
                         <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="BorderBrush" Value="{StaticResource TreeViewItemBackgroundPointerOver}" />
                         <Setter Property="DragDrop.AllowDrop" Value="{Binding Converter={x:Static common:SceneTreeAllowDropConverter.Instance}}" />
                     </Style>
                 </TreeView.Styles>
@@ -141,7 +144,8 @@
 
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
-                        <Panel>
+                        <Panel                                     VerticalAlignment="Stretch"
+                                                                   HorizontalAlignment="Stretch">
                             <Border IsVisible="False"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Stretch"
