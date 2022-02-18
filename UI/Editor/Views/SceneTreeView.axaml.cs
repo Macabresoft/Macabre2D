@@ -16,9 +16,10 @@ public class SceneTreeView : UserControl {
             nameof(ViewModel),
             editor => editor.ViewModel);
 
-    private static readonly Thickness BottomHighlightThickness = new(0D, 0D, 0D, 2D);
-    private static readonly Thickness EmptyHighlightThickness = new(0D);
-    private static readonly Thickness TopHighlightThickness = new(0D, 2D, 0D, 0D);
+    private static readonly Thickness InsertHighlightThickness = new(0D, 0D, 0D, 2D);
+    private static readonly Thickness InsertHighlightPadding = new(2D, 2D, 2D, 0D);
+    public static readonly Thickness EmptyThickness = new(0D);
+    public static readonly Thickness DefaultPadding = new(2D);
 
     private TreeViewItem _currentDropTarget;
     private Guid _draggedEntityId;
@@ -85,7 +86,8 @@ public class SceneTreeView : UserControl {
 
     private void ResetDropTarget(IControl newTarget, DragEventArgs e) {
         if (this._currentDropTarget != null) {
-            this._currentDropTarget.BorderThickness = EmptyHighlightThickness;
+            this._currentDropTarget.BorderThickness = EmptyThickness;
+            this._currentDropTarget.Padding = DefaultPadding;
         }
 
         this._currentDropTarget = newTarget?.FindAncestor<TreeViewItem>();
@@ -98,22 +100,18 @@ public class SceneTreeView : UserControl {
     }
 
     private void SetDropHighlight(DragEventArgs e) {
-        // TODO: always keep a border thickness of 1. Make it transparent when empty. Thats it.
         if (this._currentDropTarget != null && e != null) {
             var (_, y) = e.GetPosition(this._currentDropTarget);
             var (_, height) = this._currentDropTarget.Bounds.Size;
-            var margin = height * 0.2;
-            if (this._currentDropTarget.DataContext is EntityCollection or IScene) {
-                this._currentDropTarget.BorderThickness = EmptyHighlightThickness;
-            }
-            else if (y < margin) {
-                this._currentDropTarget.BorderThickness = TopHighlightThickness;
-            }
-            else if (y > height - margin) {
-                this._currentDropTarget.BorderThickness = BottomHighlightThickness;
+            var margin = height * 0.33;
+            
+            if (y > height - margin && this._currentDropTarget.DataContext is not EntityCollection and not IScene) {
+                this._currentDropTarget.BorderThickness = InsertHighlightThickness;
+                this._currentDropTarget.Padding = InsertHighlightPadding;
             }
             else {
-                this._currentDropTarget.BorderThickness = EmptyHighlightThickness;
+                this._currentDropTarget.BorderThickness = EmptyThickness;
+                this._currentDropTarget.Padding = DefaultPadding;
             }
         }
     }

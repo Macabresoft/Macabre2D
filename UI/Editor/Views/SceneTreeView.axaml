@@ -86,8 +86,9 @@
                         </Design.DataContext>
 
                         <Setter Property="IsExpanded" Value="True" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="BorderBrush" Value="{StaticResource TreeViewItemBackgroundPointerOver}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource WhiteBrush}" />
+                        <Setter Property="BorderThickness" Value="{x:Static local:SceneTreeView.EmptyThickness}" />
+                        <Setter Property="Padding" Value="{x:Static local:SceneTreeView.DefaultPadding}" />
                         <Setter Property="DragDrop.AllowDrop" Value="{Binding Converter={x:Static common:SceneTreeAllowDropConverter.Instance}}" />
                     </Style>
                 </TreeView.Styles>
