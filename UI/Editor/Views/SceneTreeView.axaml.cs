@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
@@ -19,9 +20,6 @@ public class SceneTreeView : UserControl {
         AvaloniaProperty.RegisterDirect<SceneTreeView, SceneTreeViewModel>(
             nameof(ViewModel),
             editor => editor.ViewModel);
-
-    private static readonly Thickness InsertAboveHighlightPadding = new(2D, 0D, 2D, 2D);
-    private static readonly Thickness InsertAboveHighlightThickness = new(0D, 2D, 0D, 0D);
 
     private static readonly Thickness InsertBelowHighlightPadding = new(2D, 2D, 2D, 0D);
     private static readonly Thickness InsertBelowHighlightThickness = new(0D, 0D, 0D, 2D);
@@ -39,6 +37,10 @@ public class SceneTreeView : UserControl {
 
     public SceneTreeViewModel ViewModel { get; }
 
+    private bool CanInsert(IControl target) {
+        return target is { DataContext: EntityCollection } || target is { DataContext: IEntity entity } && entity.Id != this._draggedEntityId;
+    }
+
     private void Drag(object sender, DragEventArgs e) {
         if (e.Source is IControl { DataContext: { } } control) {
             this.ResetDropTarget(control, e);
@@ -49,27 +51,31 @@ public class SceneTreeView : UserControl {
         if (e.Source is IControl control &&
             e.Data.Get(string.Empty) is Guid sourceEntityId &&
             this.ViewModel.EntityService.Selected?.Id == sourceEntityId) {
-            var insertKind = this.GetInsertKind(e);
-            if (insertKind == InsertKind.Child) {
-                if (control.DataContext is IEntity targetEntity) {
-                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, targetEntity);
-                }
-                else if (control.DataContext is EntityCollection) {
-                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene);
+            if (!this.IsInsert(e)) {
+                switch (control.DataContext) {
+                    case IEntity targetEntity:
+                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, targetEntity);
+                        break;
+                    case EntityCollection:
+                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene);
+                        break;
                 }
             }
-            else if (control.DataContext is IEntity entity && !Entity.IsNullOrEmpty(entity.Parent, out var parent)) {
-                var index = parent.Children.IndexOf(entity);
+            else {
+                switch (control.DataContext) {
+                    case IEntity entity when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                        var index = parent.Children.IndexOf(entity);
 
-                if (parent == this.ViewModel.EntityService.Selected.Parent && parent.Children.IndexOf(this.ViewModel.EntityService.Selected) < index) {
-                    index -= 1;
-                }
-                
-                if (insertKind == InsertKind.Above) {
-                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, parent, index);
-                }
-                else if (insertKind == InsertKind.Below) {
-                    this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, parent, index + 1);
+                        if (parent == this.ViewModel.EntityService.Selected.Parent && parent.Children.IndexOf(this.ViewModel.EntityService.Selected) < index) {
+                            index -= 1;
+                        }
+
+                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, parent, index + 1);
+                        break;
+                    }
+                    case EntityCollection:
+                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene, 0);
+                        break;
                 }
             }
         }
@@ -101,25 +107,29 @@ public class SceneTreeView : UserControl {
         }
     }
 
-    private InsertKind GetInsertKind(DragEventArgs e) {
-        var result = InsertKind.Child;
-        if (e != null && this._currentDropTarget is { DataContext: not EntityCollection and not IScene }) {
-            var (_, y) = e.GetPosition(this._currentDropTarget);
-            var (_, height) = this._currentDropTarget.Bounds.Size;
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    private bool IsInsert(DragEventArgs e) {
+        var result = false;
+
+        if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
+            IControl toCheck = null;
+
+            if (this._currentDropTarget.DataContext is EntityCollection) {
+                toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
+            }
+
+            toCheck ??= this._currentDropTarget;
+
+            var (_, y) = e.GetPosition(toCheck);
+            var (_, height) = toCheck.Bounds.Size;
             var margin = height * 0.33;
-            if (y < margin) {
-                result = InsertKind.Above;
-            }
-            else if (y > height - margin) {
-                result = InsertKind.Below;
-            }
+            result = y > height - margin;
         }
 
         return result;
-    }
-
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void ResetDropTarget(IControl newTarget, DragEventArgs e) {
@@ -129,32 +139,20 @@ public class SceneTreeView : UserControl {
             this._currentDropTarget = null;
         }
 
-        if (newTarget is { DataContext: IEntity entity } && entity.Id != this._draggedEntityId && newTarget.FindAncestor<TreeViewItem>() is var treeViewTarget) {
+        if (this.CanInsert(newTarget) && newTarget.FindAncestor<TreeViewItem>() is var treeViewTarget) {
             this._currentDropTarget = treeViewTarget;
             this.SetDropHighlight(e);
         }
     }
 
     private void SetDropHighlight(DragEventArgs e) {
-        var insertKind = this.GetInsertKind(e);
-        switch (insertKind) {
-            case InsertKind.Above:
-                this._currentDropTarget.BorderThickness = InsertAboveHighlightThickness;
-                this._currentDropTarget.Padding = InsertAboveHighlightPadding;
-                break;
-            case InsertKind.Below:
-                this._currentDropTarget.BorderThickness = InsertBelowHighlightThickness;
-                this._currentDropTarget.Padding = InsertBelowHighlightPadding;
-                break;
-            case InsertKind.Child:
-            default: {
-                if (this._currentDropTarget != null) {
-                    this._currentDropTarget.BorderThickness = EmptyThickness;
-                    this._currentDropTarget.Padding = DefaultPadding;
-                }
-
-                break;
-            }
+        if (this.IsInsert(e)) {
+            this._currentDropTarget.BorderThickness = InsertBelowHighlightThickness;
+            this._currentDropTarget.Padding = InsertBelowHighlightPadding;
+        }
+        else if (this._currentDropTarget != null) {
+            this._currentDropTarget.BorderThickness = EmptyThickness;
+            this._currentDropTarget.Padding = DefaultPadding;
         }
     }
 

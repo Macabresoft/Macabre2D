@@ -145,8 +145,8 @@
 
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
-                        <Panel                                     VerticalAlignment="Stretch"
-                                                                   HorizontalAlignment="Stretch">
+                        <Panel VerticalAlignment="Stretch"
+                               HorizontalAlignment="Stretch">
                             <Border IsVisible="False"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Stretch"
@@ -154,21 +154,21 @@
                                     BorderBrush="{StaticResource YellowBrush}"
                                     BorderThickness="0,3,0,0"
                                     Opacity="0.5"
-                                    Name="Top"/>
+                                    Name="Top" />
                             <Border IsVisible="False"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Stretch"
                                     BorderBrush="{StaticResource YellowBrush}"
                                     BorderThickness="3,0,0,0"
                                     Opacity="0.5"
-                                    Name="Middle"/>
+                                    Name="Middle" />
                             <Border IsVisible="False"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Stretch"
                                     BorderBrush="{StaticResource YellowBrush}"
                                     BorderThickness="0,0,0,3"
                                     Opacity="0.5"
-                                    Name="Bottom"/>
+                                    Name="Bottom" />
 
                             <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                                TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
