@@ -167,6 +167,41 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             });
         }
     }
+    
+    /// <summary>
+    /// Moves the source entity to be a child of the target entity.
+    /// </summary>
+    /// <param name="sourceEntity">The source entity.</param>
+    /// <param name="targetEntity">The target entity.</param>
+    /// <param name="index">The index at which to insert.</param>
+    public void MoveEntity(IEntity sourceEntity, IEntity targetEntity, int index) {
+        if (CanMoveEntity(sourceEntity, targetEntity)) {
+            var originalParent = sourceEntity.Parent;
+            var originalIndex = originalParent.Children.IndexOf(sourceEntity);
+            var transform = sourceEntity.Transform;
+            this._undoService.Do(() => {
+                if (originalParent != targetEntity) {
+                    targetEntity.InsertChild(index, sourceEntity);
+                }
+                else {
+                    this.MoveEntityByIndex(sourceEntity, targetEntity, index);
+                }
+                
+                sourceEntity.SetWorldTransform(transform);
+                this.SceneService.RaiseSelectedChanged();
+            }, () => {
+                if (originalParent != targetEntity) {
+                    originalParent.InsertChild(originalIndex, sourceEntity);
+                }
+                else {
+                    this.MoveEntityByIndex(sourceEntity, originalParent, originalIndex);
+                }
+
+                sourceEntity.SetWorldTransform(transform);
+                this.SceneService.RaiseSelectedChanged();
+            });
+        }
+    }
 
     private async Task AddChild(Type type) {
         if (type == null) {
@@ -295,7 +330,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         switch (selected) {
             case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
                 var index = parent.Children.IndexOf(entity);
-                this._undoService.Do(() => { this.MoveEntity(entity, parent, index + 1); }, () => { this.MoveEntity(entity, parent, index); });
+                this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index + 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
             case IUpdateableSystem system: {
@@ -306,7 +341,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
-    private void MoveEntity(IEntity entity, IEntity parent, int index) {
+    private void MoveEntityByIndex(IEntity entity, IEntity parent, int index) {
         parent.ReorderChild(entity, index);
         this.SceneService.RaiseSelectedChanged();
     }
@@ -320,7 +355,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         switch (selected) {
             case IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
                 var index = parent.Children.IndexOf(entity);
-                this._undoService.Do(() => { this.MoveEntity(entity, parent, index - 1); }, () => { this.MoveEntity(entity, parent, index); });
+                this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
             case IUpdateableSystem system: {
