@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System;
-using System.ComponentModel;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -42,18 +41,6 @@ public class BaseGame : Game, IGame {
         this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
         this.Content.RootDirectory = "Content";
     }
-
-    /// <summary>
-    /// Gets the components.
-    /// </summary>
-    /// <remarks>Macabre2D doesn't use this part of MonoGame. Ignore it.</remarks>
-    /// <value>The components.</value>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Obsolete("This is a function of MonoGame not used by MacabreGame.", true)]
-    public new GameComponentCollection Components => base.Components;
-
-    /// <inheritdoc />
-    public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <inheritdoc />
     public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
@@ -116,6 +103,11 @@ public class BaseGame : Game, IGame {
 
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
+
+    /// <summary>
+    /// Gets the graphics device manager.
+    /// </summary>
+    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Gets the frame time.
@@ -272,13 +264,21 @@ public class BaseGame : Game, IGame {
             this.GraphicsDeviceManager.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
             this.GraphicsDeviceManager.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
 
-            if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
-                this.Window.IsBorderless = false;
-                this.GraphicsDeviceManager.IsFullScreen = true;
-            }
-            else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
-                this.Window.IsBorderless = false;
-                this.GraphicsDeviceManager.IsFullScreen = false;
+            switch (this.GraphicsSettings.DisplayMode) {
+                case DisplayModes.Fullscreen:
+                    this.Window.IsBorderless = false;
+                    this.GraphicsDeviceManager.IsFullScreen = true;
+                    break;
+                case DisplayModes.Windowed:
+                    this.Window.IsBorderless = false;
+                    this.GraphicsDeviceManager.IsFullScreen = false;
+                    break;
+                case DisplayModes.Borderless:
+                    this.Window.IsBorderless = true;
+                    this.GraphicsDeviceManager.IsFullScreen = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -297,9 +297,6 @@ public class BaseGame : Game, IGame {
 
         /// <inheritdoc />
         public GraphicsDevice? GraphicsDevice => null;
-
-        /// <inheritdoc />
-        public GraphicsDeviceManager? GraphicsDeviceManager => null;
 
         /// <inheritdoc />
         public GraphicsSettings GraphicsSettings { get; } = new();
