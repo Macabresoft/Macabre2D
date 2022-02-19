@@ -160,8 +160,8 @@ public sealed class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities) {
-        spriteBatch.Begin(
+    public void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities) {
+        spriteBatch?.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,
             this.SamplerState,
@@ -174,7 +174,7 @@ public sealed class Camera : Entity, ICamera {
             entity.Render(frameTime, this.BoundingArea);
         }
 
-        spriteBatch.End();
+        spriteBatch?.End();
     }
 
     /// <summary>

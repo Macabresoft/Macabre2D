@@ -55,5 +55,5 @@ public interface ICamera : IEntity, IBoundable {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="entities">The entities to render.</param>
-    void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities);
+    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities);
 }

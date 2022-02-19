@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -12,8 +11,7 @@ using NUnit.Framework;
 public class RenderSystemTests {
     [Category("Unit Tests")]
     [Test]
-    public static void Update_ShouldNotUpdateDisabled() {
-        // TODO: need to be able to mock sprite batch
+    public static void Update_ShouldNotRenderDisabled() {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
@@ -22,7 +20,8 @@ public class RenderSystemTests {
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
 
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        var game = GameHelpers.CreateGameSubstitute();
+        scene.Initialize(game, Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i < NumberOfRenders; i++) {
@@ -34,8 +33,29 @@ public class RenderSystemTests {
 
     [Category("Unit Tests")]
     [Test]
-    public static void Update_ShouldUpdateAllEntities() {
-        // TODO: need to be able to mock sprite batch
+    public static void Update_ShouldNotRenderInvisible() {
+        const int NumberOfRenders = 100;
+        var scene = new Scene();
+        scene.AddChild<Camera>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
+        var disabled = scene.AddChild<TestRenderableEntity>();
+        disabled.IsVisible = false;
+        disabled.SleepAmountInMilliseconds = 0;
+
+        var game = GameHelpers.CreateGameSubstitute();
+        scene.Initialize(game, Substitute.For<IAssetManager>());
+
+        using (new AssertionScope()) {
+            for (var i = 0; i < NumberOfRenders; i++) {
+                renderSystem.Update(new FrameTime(), new InputState());
+                disabled.RenderCount.Should().Be(0);
+            }
+        }
+    }
+
+    [Category("Unit Tests")]
+    [Test]
+    public static void Update_ShouldRenderAllEntities() {
         const int NumberOfChildren = 10;
         const int NumberOfRenders = 100;
         var scene = new Scene();
@@ -49,8 +69,8 @@ public class RenderSystemTests {
             entities.Add(entity);
         }
 
-        var game = Substitute.For<IGame>();
-        scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
+        var game = GameHelpers.CreateGameSubstitute();
+        scene.Initialize(game, Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
             for (var i = 0; i < NumberOfRenders; i++) {
