@@ -32,6 +32,11 @@ public interface IGame {
     GraphicsDevice? GraphicsDevice { get; }
 
     /// <summary>
+    /// Gets the graphics device manager.
+    /// </summary>
+    public GraphicsDeviceManager? GraphicsDeviceManager { get; }
+
+    /// <summary>
     /// Gets the graphics settings.
     /// </summary>
     /// <value>The graphics settings.</value>

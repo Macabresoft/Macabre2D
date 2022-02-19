@@ -17,12 +17,6 @@ public class BaseGame : Game, IGame {
     /// </summary>
     public static readonly IGame Empty = new EmptyGame();
 
-    // ReSharper disable once InconsistentNaming
-    protected readonly GraphicsDeviceManager _graphics;
-
-    // ReSharper disable once InconsistentNaming
-    protected SpriteBatch? _spriteBatch;
-
     private double _gameSpeed = 1d;
     private GraphicsSettings _graphicsSettings = new();
     private IGameProject _project = new GameProject();
@@ -45,7 +39,7 @@ public class BaseGame : Game, IGame {
     /// Initializes a new instance of the <see cref="BaseGame" /> class.
     /// </summary>
     public BaseGame() : base() {
-        this._graphics = new GraphicsDeviceManager(this);
+        this.GraphicsDeviceManager = new GraphicsDeviceManager(this);
         this.Content.RootDirectory = "Content";
     }
 
@@ -59,10 +53,10 @@ public class BaseGame : Game, IGame {
     public new GameComponentCollection Components => base.Components;
 
     /// <inheritdoc />
-    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
+    public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <inheritdoc />
-    public SpriteBatch? SpriteBatch => this._spriteBatch;
+    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
 
     /// <inheritdoc />
     public Point ViewportSize => this._viewportSize;
@@ -72,7 +66,7 @@ public class BaseGame : Game, IGame {
         get => this._gameSpeed;
 
         set {
-            if (value >= 0f && this._gameSpeed != value) {
+            if (value >= 0f && Math.Abs(this._gameSpeed - value) > 0.001f) {
                 this._gameSpeed = value;
                 this.GameSpeedChanged.SafeInvoke(this, this._gameSpeed);
             }
@@ -119,6 +113,9 @@ public class BaseGame : Game, IGame {
             }
         }
     }
+
+    /// <inheritdoc />
+    public SpriteBatch? SpriteBatch { get; private set; }
 
     /// <summary>
     /// Gets the frame time.
@@ -212,7 +209,7 @@ public class BaseGame : Game, IGame {
             this.LoadScene(scene);
         }
 
-        this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        this.TryCreateSpriteBatch();
 
         if (!IsDesignMode) {
             assetManager.Dispose();
@@ -223,6 +220,13 @@ public class BaseGame : Game, IGame {
     /// Called just before a scene is initialized with its new asset manager.
     /// </summary>
     protected virtual void RegisterNewSceneMetadata(IAssetManager assetManager) {
+    }
+
+    /// <summary>
+    /// Creates the sprite batch if it doesn't already exist.
+    /// </summary>
+    protected void TryCreateSpriteBatch() {
+        this.SpriteBatch ??= new SpriteBatch(this.GraphicsDevice);
     }
 
     /// <inheritdoc />
@@ -259,26 +263,26 @@ public class BaseGame : Game, IGame {
 
     private void ApplyGraphicsSettings() {
         if (this.GraphicsSettings.DisplayMode == DisplayModes.Borderless) {
-            this._graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            this._graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             this.Window.IsBorderless = true;
-            this._graphics.IsFullScreen = false;
+            this.GraphicsDeviceManager.IsFullScreen = false;
         }
         else {
-            this._graphics.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
-            this._graphics.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
+            this.GraphicsDeviceManager.PreferredBackBufferWidth = this.GraphicsSettings.Resolution.X;
+            this.GraphicsDeviceManager.PreferredBackBufferHeight = this.GraphicsSettings.Resolution.Y;
 
             if (this.GraphicsSettings.DisplayMode == DisplayModes.Fullscreen) {
                 this.Window.IsBorderless = false;
-                this._graphics.IsFullScreen = true;
+                this.GraphicsDeviceManager.IsFullScreen = true;
             }
             else if (this.GraphicsSettings.DisplayMode == DisplayModes.Windowed) {
                 this.Window.IsBorderless = false;
-                this._graphics.IsFullScreen = false;
+                this.GraphicsDeviceManager.IsFullScreen = false;
             }
         }
 
-        this._graphics.ApplyChanges();
+        this.GraphicsDeviceManager.ApplyChanges();
     }
 
     private sealed class EmptyGame : IGame {
@@ -293,6 +297,9 @@ public class BaseGame : Game, IGame {
 
         /// <inheritdoc />
         public GraphicsDevice? GraphicsDevice => null;
+
+        /// <inheritdoc />
+        public GraphicsDeviceManager? GraphicsDeviceManager => null;
 
         /// <inheritdoc />
         public GraphicsSettings GraphicsSettings { get; } = new();

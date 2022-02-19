@@ -16,9 +16,9 @@ public class ContentGame : BaseGame {
     private SpriteSheetAsset _whiteSquare;
 
     protected override void LoadContent() {
+        this.TryCreateSpriteBatch();
         this.Project.Settings.PixelsPerUnit = 64;
 
-        this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
         var scene = new Scene();
 
         scene.AddSystem<UpdateSystem>();

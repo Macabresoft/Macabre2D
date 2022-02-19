@@ -4,22 +4,21 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 [ExcludeFromCodeCoverage]
 public class PhysicsGame : BaseGame {
     private FontAsset _font;
 
     protected override void Initialize() {
-        this._graphics.PreferredBackBufferHeight = 1080;
-        this._graphics.PreferredBackBufferWidth = 1920;
-        this._graphics.ApplyChanges();
+        this.GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+        this.GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
+        this.GraphicsDeviceManager.ApplyChanges();
         this.IsFixedTimeStep = false;
         base.Initialize();
     }
 
     protected override void LoadContent() {
-        this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        this.TryCreateSpriteBatch();
 
         var scene = new Scene();
         scene.AddSystem<UpdateSystem>();

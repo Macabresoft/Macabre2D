@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A <see cref="IGame" /> that can run within Avalonia.
@@ -15,11 +14,6 @@ public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
     /// Gets the asset manager.
     /// </summary>
     IAssetManager Assets { get; }
-
-    /// <summary>
-    /// Gets the graphics device manager for this game.
-    /// </summary>
-    public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Initializes the specified mouse.
@@ -38,6 +32,9 @@ public interface IAvaloniaGame : IGame, IDisposable, INotifyPropertyChanged {
 /// A minimal instance of <see cref="Game" /> that is run for Avalonia.
 /// </summary>
 public class AvaloniaGame : BaseGame, IAvaloniaGame {
+    private MonoGameKeyboard _keyboard;
+    private MonoGameMouse _mouse;
+
     /// <inheritdoc />
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -61,24 +58,9 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
     public IAssetManager Assets { get; }
 
     /// <inheritdoc />
-    public GraphicsDeviceManager GraphicsDeviceManager => this._graphics;
-
-    /// <summary>
-    /// Gets the keyboard.
-    /// </summary>
-    /// <value>The keyboard.</value>
-    public MonoGameKeyboard Keyboard { get; private set; }
-
-    /// <summary>
-    /// Gets the mouse.
-    /// </summary>
-    /// <value>The mouse.</value>
-    public MonoGameMouse Mouse { get; private set; }
-
-    /// <inheritdoc />
     public void Initialize(MonoGameMouse mouse, MonoGameKeyboard keyboard) {
-        this.Mouse = mouse;
-        this.Keyboard = keyboard;
+        this._mouse = mouse;
+        this._keyboard = keyboard;
     }
 
     /// <inheritdoc />
@@ -88,7 +70,7 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
 
     /// <inheritdoc />
     protected override void LoadContent() {
-        this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        this.TryCreateSpriteBatch();
         this.Assets.Initialize(this.Content, new Serializer());
     }
 
@@ -102,8 +84,8 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
 
     /// <inheritdoc />
     protected override void UpdateInputState() {
-        if (this.Mouse != null && this.Keyboard != null) {
-            this.InputState = new InputState(this.Mouse.State, this.Keyboard.GetState(), this.InputState);
+        if (this._mouse != null && this._keyboard != null) {
+            this.InputState = new InputState(this._mouse.State, this._keyboard.GetState(), this.InputState);
         }
     }
 }

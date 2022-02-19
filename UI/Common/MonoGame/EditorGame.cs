@@ -6,7 +6,6 @@ using System.Linq;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.AvaloniaInterop;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An extension of <see cref="IAvaloniaGame" /> that makes editing a Macabre2D
@@ -102,7 +101,7 @@ public sealed class EditorGame : AvaloniaGame, IEditorGame {
             this.Project = this._projectService.CurrentProject;
         }
 
-        this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        this.TryCreateSpriteBatch();
         this.Assets.Initialize(this.Content, new Serializer());
     }
 
