@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 /// The default rendering system, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : UpdateableSystem {
+public class RenderSystem : LoopSystem {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     /// <inheritdoc />
-    public override SystemLoop Loop => SystemLoop.Render;
+    public override SystemKind Kind => SystemKind.Render;
 
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Scene.Game.SpriteBatch is { } spriteBatch) {

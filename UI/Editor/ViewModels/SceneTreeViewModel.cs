@@ -208,14 +208,14 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             if (this.SceneService.ImpliedSelected is IScene or IEntity) {
                 await this.AddEntity(null);
             }
-            else if (this.SceneService.Selected is IUpdateableSystem or SystemCollection) {
+            else if (this.SceneService.Selected is ILoopSystem or SystemCollection) {
                 await this.AddSystem(null);
             }
         }
         else if (type.IsAssignableTo(typeof(IEntity))) {
             await this.AddEntity(null);
         }
-        else if (type.IsAssignableTo(typeof(IUpdateableSystem))) {
+        else if (type.IsAssignableTo(typeof(ILoopSystem))) {
             await this.AddSystem(null);
         }
     }
@@ -257,7 +257,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes);
             }
 
-            if (type != null && Activator.CreateInstance(type) is IUpdateableSystem system) {
+            if (type != null && Activator.CreateInstance(type) is ILoopSystem system) {
                 var originallySelected = this._systemService.Selected;
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
@@ -277,7 +277,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private bool CanMoveDown(object selected) {
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
-            IUpdateableSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) < this.SceneService.CurrentScene.Systems.Count - 1,
+            ILoopSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) < this.SceneService.CurrentScene.Systems.Count - 1,
             _ => false
         };
     }
@@ -292,7 +292,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private bool CanMoveUp(object selected) {
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) != 0,
-            IUpdateableSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) != 0,
+            ILoopSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) != 0,
             _ => false
         };
     }
@@ -333,7 +333,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index + 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IUpdateableSystem system: {
+            case ILoopSystem system: {
                 var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
                 this._undoService.Do(() => { this.MoveSystem(system, index + 1); }, () => { this.MoveSystem(system, index); });
                 break;
@@ -346,7 +346,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService.RaiseSelectedChanged();
     }
 
-    private void MoveSystem(IUpdateableSystem system, int index) {
+    private void MoveSystem(ILoopSystem system, int index) {
         this.SceneService.CurrentScene.ReorderSystem(system, index);
         this.SceneService.RaiseSelectedChanged();
     }
@@ -358,7 +358,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case IUpdateableSystem system: {
+            case ILoopSystem system: {
                 var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
                 this._undoService.Do(() => { this.MoveSystem(system, index - 1); }, () => { this.MoveSystem(system, index); });
                 break;
@@ -371,7 +371,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             case IEntity entity and not IScene:
                 this.RemoveEntity(entity);
                 break;
-            case IUpdateableSystem system:
+            case ILoopSystem system:
                 this.RemoveSystem(system);
                 break;
         }
@@ -395,7 +395,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     private void RemoveSystem(object selected) {
-        if (selected is IUpdateableSystem system && this.SceneService.CurrentScene is { } scene) {
+        if (selected is ILoopSystem system && this.SceneService.CurrentScene is { } scene) {
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
                     scene.RemoveSystem(system);

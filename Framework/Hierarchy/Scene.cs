@@ -8,7 +8,7 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for a combination of <see cref="IUpdateableSystem" /> and <see cref="IEntity" />
+/// Interface for a combination of <see cref="ILoopSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer {
@@ -50,7 +50,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// Gets the systems.
     /// </summary>
     /// <value>The systems.</value>
-    IReadOnlyCollection<IUpdateableSystem> Systems => Array.Empty<IUpdateableSystem>();
+    IReadOnlyCollection<ILoopSystem> Systems => Array.Empty<ILoopSystem>();
 
     /// <summary>
     /// Gets the updateable entities.
@@ -73,16 +73,16 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// Adds the system.
     /// </summary>
     /// <typeparam name="T">
-    /// A type that implements <see cref="IUpdateableSystem" /> and has an empty constructor.
+    /// A type that implements <see cref="ILoopSystem" /> and has an empty constructor.
     /// </typeparam>
     /// <returns>The added system.</returns>
-    T AddSystem<T>() where T : IUpdateableSystem, new();
+    T AddSystem<T>() where T : ILoopSystem, new();
 
     /// <summary>
     /// Adds the system.
     /// </summary>
     /// <param name="system">The system.</param>
-    void AddSystem(IUpdateableSystem system);
+    void AddSystem(ILoopSystem system);
 
     /// <summary>
     /// Initializes this instance.
@@ -96,7 +96,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// </summary>
     /// <param name="index">The index.</param>
     /// <param name="system">The system.</param>
-    void InsertSystem(int index, IUpdateableSystem system);
+    void InsertSystem(int index, ILoopSystem system);
 
     /// <summary>
     /// Invokes the specified action after the current update
@@ -115,7 +115,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// </summary>
     /// <param name="system">The system.</param>
     /// <returns>A value indicating whether or not the system was removed.</returns>
-    bool RemoveSystem(IUpdateableSystem system);
+    bool RemoveSystem(ILoopSystem system);
 
     /// <summary>
     /// Renders the scene.
@@ -129,7 +129,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// </summary>
     /// <param name="system">The system.</param>
     /// <param name="newIndex">The new index.</param>
-    void ReorderSystem(IUpdateableSystem system, int newIndex);
+    void ReorderSystem(ILoopSystem system, int newIndex);
 
     /// <summary>
     /// Resolves the dependency.
@@ -156,7 +156,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
 }
 
 /// <summary>
-/// A user-created combination of <see cref="IUpdateableSystem" /> and <see cref="IEntity" />
+/// A user-created combination of <see cref="ILoopSystem" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
@@ -224,7 +224,7 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IUpdateableSystem> Systems => this._systems;
+    public IReadOnlyCollection<ILoopSystem> Systems => this._systems;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
@@ -250,14 +250,14 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public T AddSystem<T>() where T : IUpdateableSystem, new() {
+    public T AddSystem<T>() where T : ILoopSystem, new() {
         var system = new T();
         this.AddSystem(system);
         return system;
     }
 
     /// <inheritdoc />
-    public void AddSystem(IUpdateableSystem system) {
+    public void AddSystem(ILoopSystem system) {
         this._systems.Add(system);
 
         if (this._isInitialized) {
@@ -288,7 +288,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void InsertSystem(int index, IUpdateableSystem system) {
+    public void InsertSystem(int index, ILoopSystem system) {
         this._systems.InsertOrAdd(index, system);
 
         if (this._isInitialized) {
@@ -326,7 +326,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveSystem(IUpdateableSystem system) {
+    public bool RemoveSystem(ILoopSystem system) {
         var result = false;
         if (this._systems.Contains(system)) {
             this.Invoke(() => this._systems.Remove(system));
@@ -341,7 +341,7 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
 
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Render)) {
+            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Kind == SystemKind.Render)) {
                 system.Update(frameTime, inputState);
             }
         }
@@ -351,7 +351,7 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void ReorderSystem(IUpdateableSystem system, int newIndex) {
+    public void ReorderSystem(ILoopSystem system, int newIndex) {
         if (this._systems.Remove(system)) {
             this._systems.InsertOrAdd(newIndex, system);
         }
@@ -400,7 +400,7 @@ public sealed class Scene : GridContainer, IScene {
 
             this.InvokePendingActions();
 
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Loop == SystemLoop.Update)) {
+            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Kind == SystemKind.Update)) {
                 system.Update(frameTime, inputState);
             }
         }
@@ -434,12 +434,12 @@ public sealed class Scene : GridContainer, IScene {
         public Version Version { get; set; } = new();
 
         /// <inheritdoc />
-        public T AddSystem<T>() where T : IUpdateableSystem, new() {
+        public T AddSystem<T>() where T : ILoopSystem, new() {
             return new T();
         }
 
         /// <inheritdoc />
-        public void AddSystem(IUpdateableSystem service) {
+        public void AddSystem(ILoopSystem service) {
         }
 
         /// <inheritdoc />
@@ -447,7 +447,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public void InsertSystem(int index, IUpdateableSystem system) {
+        public void InsertSystem(int index, ILoopSystem system) {
         }
 
         /// <inheritdoc />
@@ -459,7 +459,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public bool RemoveSystem(IUpdateableSystem service) {
+        public bool RemoveSystem(ILoopSystem service) {
             return false;
         }
 
@@ -468,7 +468,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public void ReorderSystem(IUpdateableSystem system, int newIndex) {
+        public void ReorderSystem(ILoopSystem system, int newIndex) {
         }
 
         /// <inheritdoc />

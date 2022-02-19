@@ -26,7 +26,7 @@
 
                             <MenuItem Header="Find System..."
                                       Command="{Binding AddCommand}"
-                                      CommandParameter="{x:Type framework:IUpdateableSystem}"
+                                      CommandParameter="{x:Type framework:ILoopSystem}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                             <Separator />
@@ -122,7 +122,7 @@
                                                            Text="{Binding Name}" />
                     </TreeDataTemplate>
 
-                    <TreeDataTemplate DataType="framework:IUpdateableSystem">
+                    <TreeDataTemplate DataType="framework:ILoopSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                            Text="{Binding Path=Name, Mode=TwoWay}">

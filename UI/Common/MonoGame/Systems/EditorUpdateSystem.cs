@@ -24,7 +24,7 @@ public class EditorUpdateSystem : UpdateSystem {
     }
 
     /// <inheritdoc />
-    public override SystemLoop Loop => SystemLoop.Update;
+    public override SystemKind Kind => SystemKind.Update;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

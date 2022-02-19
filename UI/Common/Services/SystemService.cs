@@ -9,7 +9,7 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// An interface for a service which handles a scene's systems.
 /// </summary>
-public interface ISystemService : ISelectionService<IUpdateableSystem> {
+public interface ISystemService : ISelectionService<ILoopSystem> {
     /// <summary>
     /// Gets the available entity types.
     /// </summary>
@@ -19,7 +19,7 @@ public interface ISystemService : ISelectionService<IUpdateableSystem> {
 /// <summary>
 /// A service which handles a scene's systems.
 /// </summary>
-public class SystemService : SelectionService<IUpdateableSystem>, ISystemService {
+public class SystemService : SelectionService<ILoopSystem>, ISystemService {
     /// <summary>
     /// Initializes a new instance of the <see cref="SystemService" /> class.
     /// </summary>
@@ -30,8 +30,8 @@ public class SystemService : SelectionService<IUpdateableSystem>, ISystemService
         IAssemblyService assemblyService,
         IUndoService undoService,
         IValueControlService valueControlService) : base(assemblyService, undoService, valueControlService) {
-        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IUpdateableSystem)).ToList();
-        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(IUpdateableSystem)).Where(x =>
+        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(ILoopSystem)).ToList();
+        this.AvailableTypes = this.AssemblyService.LoadTypes(typeof(ILoopSystem)).Where(x =>
             x.Assembly != typeof(IGizmo).Assembly &&
             x.GetConstructor(Type.EmptyTypes) != null).ToList();
     }

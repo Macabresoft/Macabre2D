@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 /// <summary>
-/// An explicit observable collection of <see cref="IUpdateableSystem" />.
+/// An explicit observable collection of <see cref="ILoopSystem" />.
 /// </summary>
-public class SystemCollection : ObservableCollection<IUpdateableSystem>, INameableCollection {
+public class SystemCollection : ObservableCollection<ILoopSystem>, INameableCollection {
     /// <inheritdoc />
     public string Name => "Systems";
 

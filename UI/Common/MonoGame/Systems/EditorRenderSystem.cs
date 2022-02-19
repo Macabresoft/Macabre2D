@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A render system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
-public class EditorRenderSystem : UpdateableSystem {
+public class EditorRenderSystem : LoopSystem {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;
@@ -21,7 +21,7 @@ public class EditorRenderSystem : UpdateableSystem {
     }
 
     /// <inheritdoc />
-    public override SystemLoop Loop => SystemLoop.Render;
+    public override SystemKind Kind => SystemKind.Render;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

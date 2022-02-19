@@ -105,7 +105,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get {
             return this._selected switch {
                 IEntity => this._entityService.Editors,
-                IUpdateableSystem => this._systemService.Editors,
+                ILoopSystem => this._systemService.Editors,
                 _ => null
             };
         }
@@ -146,7 +146,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this._entityService.Selected = scene;
                     this.ImpliedSelected = this._selected;
                     break;
-                case IUpdateableSystem system:
+                case ILoopSystem system:
                     this._systemService.Selected = system;
                     this.ImpliedSelected = this._selected;
                     break;
