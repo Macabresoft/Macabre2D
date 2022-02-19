@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Editor"
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
-             xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
@@ -89,10 +88,16 @@
                         <Setter Property="BorderBrush" Value="{StaticResource WhiteBrush}" />
                         <Setter Property="BorderThickness" Value="{x:Static local:SceneTreeView.EmptyThickness}" />
                         <Setter Property="Padding" Value="{x:Static local:SceneTreeView.DefaultPadding}" />
-                        <Setter Property="DragDrop.AllowDrop" Value="{Binding Converter={x:Static common:SceneTreeAllowDropConverter.Instance}}" />
+                        <Setter Property="DragDrop.AllowDrop">
+                            <Setter.Value>
+                                <MultiBinding Converter="{x:Static local:SceneTreeView.AllowDropConverter}">
+                                    <Binding Path="$parent[local:SceneTreeView].DraggedObject" />
+                                    <Binding />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </TreeView.Styles>
-
 
                 <TreeView.DataTemplates>
                     <TreeDataTemplate DataType="framework:IScene"
