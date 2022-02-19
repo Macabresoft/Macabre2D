@@ -4,27 +4,30 @@ using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class UpdateSystemTests {
+public class RenderSystemTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotUpdateDisabled() {
-        const int NumberOfUpdates = 100;
+        // TODO: need to be able to mock sprite batch
+        const int NumberOfRenders = 100;
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
-        var disabled = scene.AddChild<TestUpdateableEntity>();
+        scene.AddChild<Camera>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
+        var disabled = scene.AddChild<TestRenderableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
 
         scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
-            for (var i = 0; i < NumberOfUpdates; i++) {
-                updateSystem.Update(new FrameTime(), new InputState());
-                disabled.UpdateCount.Should().Be(0);
+            for (var i = 0; i < NumberOfRenders; i++) {
+                renderSystem.Update(new FrameTime(), new InputState());
+                disabled.RenderCount.Should().Be(0);
             }
         }
     }
@@ -32,27 +35,30 @@ public class UpdateSystemTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldUpdateAllEntities() {
+        // TODO: need to be able to mock sprite batch
         const int NumberOfChildren = 10;
-        const int NumberOfUpdates = 100;
+        const int NumberOfRenders = 100;
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
-        var entities = new List<TestUpdateableEntity>();
+        scene.AddChild<Camera>();
+        var renderSystem = scene.AddSystem<RenderSystem>();
+        var entities = new List<TestRenderableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            var entity = scene.AddChild<TestUpdateableEntity>();
+            var entity = scene.AddChild<TestRenderableEntity>();
             entity.SleepAmountInMilliseconds = 0;
             entities.Add(entity);
         }
 
+        var game = Substitute.For<IGame>();
         scene.Initialize(Substitute.For<IGame>(), Substitute.For<IAssetManager>());
 
         using (new AssertionScope()) {
-            for (var i = 0; i < NumberOfUpdates; i++) {
+            for (var i = 0; i < NumberOfRenders; i++) {
                 foreach (var entity in entities) {
-                    entity.UpdateCount.Should().Be(i);
+                    entity.RenderCount.Should().Be(i);
                 }
 
-                updateSystem.Update(new FrameTime(), new InputState());
+                renderSystem.Update(new FrameTime(), new InputState());
             }
         }
     }

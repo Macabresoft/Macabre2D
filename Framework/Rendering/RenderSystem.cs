@@ -14,8 +14,8 @@ public class RenderSystem : LoopSystem {
     public override SystemKind Kind => SystemKind.Render;
 
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
-            var enabledLayers = this.Scene.Game.Project.Settings.LayerSettings.EnabledLayers;
+        if (this.Scene.Game is { } game) {
+            var enabledLayers = game.Project.Settings.LayerSettings.EnabledLayers;
             this._renderTree.Clear();
 
             foreach (var entity in this.Scene.RenderableEntities) {
@@ -30,7 +30,7 @@ public class RenderSystem : LoopSystem {
                         .ToList();
 
                 if (potentialRenderables.Any()) {
-                    camera.Render(frameTime, spriteBatch, potentialRenderables);
+                    camera.Render(frameTime, game.SpriteBatch, potentialRenderables);
                 }
             }
         }

@@ -6,8 +6,13 @@ using Macabresoft.Macabre2D.Framework;
 internal class TestUpdateableEntity : UpdateableEntity {
     public int UpdateCount { get; private set; }
 
+    public int SleepAmountInMilliseconds { get; set; } = 10;
+
     public override void Update(FrameTime frameTime, InputState inputState) {
         this.UpdateCount++;
-        Thread.Sleep(10);
+        
+        if (SleepAmountInMilliseconds > 0) {
+            Thread.Sleep(SleepAmountInMilliseconds);
+        }
     }
 }
