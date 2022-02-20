@@ -11,6 +11,7 @@
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\Libraries\Platformer\Macabre2D.Libraries.Platformer.csproj" />
         <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
