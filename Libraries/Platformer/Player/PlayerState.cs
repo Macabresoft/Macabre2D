@@ -1,8 +1,10 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer.Player; 
 
-public enum PlayerAnimationKind {
+/// <summary>
+/// Describes a player's state.
+/// </summary>
+public enum PlayerState {
     Idle,
-    Walking,
     Running,
     Sliding,
     Jumping,
