@@ -14,4 +14,14 @@ public class SystemCollection : ObservableCollection<ILoopSystem>, INameableColl
     IEnumerator<INameable> IEnumerable<INameable>.GetEnumerator() {
         return this.Items.GetEnumerator();
     }
+
+    /// <summary>
+    /// Reorders the specified system.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    /// <param name="newIndex">The new index.</param>
+    public void Reorder(ILoopSystem system, int newIndex) {
+        var originalIndex = this.IndexOf(system);
+        this.MoveItem(originalIndex, newIndex);
+    }
 }

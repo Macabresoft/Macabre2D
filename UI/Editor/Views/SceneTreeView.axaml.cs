@@ -17,22 +17,21 @@ using Macabresoft.Macabre2D.UI.Common;
 
 public class SceneTreeView : UserControl {
     public static readonly Thickness DefaultPadding = new(2D);
-    public static readonly Thickness EmptyThickness = new(0D);
-    private static readonly Thickness InsertBelowHighlightPadding = new(2D, 2D, 2D, 0D);
-    private static readonly Thickness InsertBelowHighlightThickness = new(0D, 0D, 0D, 2D);
-    
-    public static readonly DirectProperty<SceneTreeView, object> DraggedObjectProperty =
-        AvaloniaProperty.RegisterDirect<SceneTreeView, object>(
+
+    public static readonly DirectProperty<SceneTreeView, INameable> DraggedObjectProperty =
+        AvaloniaProperty.RegisterDirect<SceneTreeView, INameable>(
             nameof(DraggedObject),
             control => control.DraggedObject,
             (control, value) => control.DraggedObject = value);
-    
+
+    public static readonly Thickness EmptyThickness = new(0D);
+    private static readonly Thickness InsertBelowHighlightPadding = new(2D, 2D, 2D, 0D);
+    private static readonly Thickness InsertBelowHighlightThickness = new(0D, 0D, 0D, 2D);
+
     private TreeViewItem _currentDropTarget;
-    private object _draggedObject;
+    private INameable _draggedObject;
     private bool _isDragging;
 
-    public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
-    
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
         this.InitializeComponent();
@@ -40,15 +39,18 @@ public class SceneTreeView : UserControl {
         this.AddHandler(DragDrop.DragOverEvent, this.Drag);
     }
 
+    public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
+
     public SceneTreeViewModel ViewModel { get; }
 
-    public object DraggedObject {
+    public INameable DraggedObject {
         get => this._draggedObject;
         set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
     }
 
     private bool CanInsert(IControl target) {
-        return target is { DataContext: EntityCollection } || target is { DataContext: IEntity entity } && entity != this.DraggedObject;
+        return target is { DataContext: IEntity or ILoopSystem or EntityCollection or SystemCollection } &&
+               target.DataContext != this.DraggedObject;
     }
 
     private void Drag(object sender, DragEventArgs e) {
@@ -58,33 +60,39 @@ public class SceneTreeView : UserControl {
     }
 
     private void Drop(object sender, DragEventArgs e) {
-        if (e.Source is IControl control &&
-            e.Data.Get(string.Empty) is Guid sourceEntityId &&
-            this.ViewModel.EntityService.Selected?.Id == sourceEntityId) {
+        if (e.Source is IControl control) {
             if (!this.IsInsert(e)) {
                 switch (control.DataContext) {
-                    case IEntity targetEntity:
+                    case IEntity targetEntity when this.DraggedObject is IEntity:
                         this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, targetEntity);
                         break;
-                    case EntityCollection:
+                    case EntityCollection when this.DraggedObject is IEntity:
                         this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene);
                         break;
                 }
             }
             else {
+                int index;
                 switch (control.DataContext) {
-                    case IEntity entity when !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
-                        var index = parent.Children.IndexOf(entity);
+                    case IEntity entity when this.DraggedObject is IEntity draggedEntity && !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
+                        index = parent.Children.IndexOf(entity);
 
-                        if (parent == this.ViewModel.EntityService.Selected.Parent && parent.Children.IndexOf(this.ViewModel.EntityService.Selected) < index) {
-                            index -= 1;
+                        if (entity.Parent != draggedEntity.Parent) {
+                            index++;
                         }
 
-                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, parent, index + 1);
+                        this.ViewModel.MoveEntity(draggedEntity, parent, index);
                         break;
                     }
-                    case EntityCollection:
-                        this.ViewModel.MoveEntity(this.ViewModel.EntityService.Selected, this.ViewModel.SceneService.CurrentScene, 0);
+                    case EntityCollection when this.DraggedObject is IEntity draggedEntity:
+                        this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentScene, 0);
+                        break;
+                    case ILoopSystem targetSystem when this.DraggedObject is ILoopSystem draggedSystem:
+                        index = this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(targetSystem);
+                        this.ViewModel.MoveSystem(draggedSystem, index);
+                        break;
+                    case SystemCollection when this.DraggedObject is ILoopSystem draggedSystem:
+                        this.ViewModel.MoveSystem(draggedSystem, 0);
                         break;
                 }
             }
@@ -93,28 +101,6 @@ public class SceneTreeView : UserControl {
         this._isDragging = false;
         this.DraggedObject = null;
         this.ResetDropTarget(null, null);
-    }
-
-    private async void Entity_OnPointerMoved(object sender, PointerEventArgs e) {
-        if (!this._isDragging && this.DraggedObject != null && sender is IControl { DataContext: IEntity entity } control && entity == this.DraggedObject) {
-            this._isDragging = true;
-            var dragData = new GenericDataObject(entity.Id, entity.Name);
-            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
-        }
-    }
-
-    private void Entity_OnPointerPressed(object sender, PointerPressedEventArgs e) {
-        if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed && sender is IControl { DataContext: IEntity entity }) {
-            this.DraggedObject = entity;
-        }
-    }
-
-    private void Entity_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
-        if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
-            this._isDragging = false;
-            this.DraggedObject = null;
-            this.ResetDropTarget(null, null);
-        }
     }
 
     private void InitializeComponent() {
@@ -127,7 +113,7 @@ public class SceneTreeView : UserControl {
         if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
             IControl toCheck = null;
 
-            if (this._currentDropTarget.DataContext is EntityCollection) {
+            if (this._currentDropTarget.DataContext is EntityCollection or SystemCollection) {
                 toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
             }
 
@@ -166,6 +152,31 @@ public class SceneTreeView : UserControl {
         }
     }
 
+    private async void TreeNode_OnPointerMoved(object sender, PointerEventArgs e) {
+        if (!this._isDragging && this.DraggedObject != null &&
+            sender is IControl { DataContext: ILoopSystem or IEntity and not IScene } control &&
+            control.DataContext == this.DraggedObject) {
+            this._isDragging = true;
+            var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
+            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+        }
+    }
+
+    private void TreeNode_OnPointerPressed(object sender, PointerPressedEventArgs e) {
+        if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
+            sender is IControl { DataContext: ILoopSystem or IEntity and not IScene } control) {
+            this.DraggedObject = control.DataContext as INameable;
+        }
+    }
+
+    private void TreeNode_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
+        if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
+            this._isDragging = false;
+            this.DraggedObject = null;
+            this.ResetDropTarget(null, null);
+        }
+    }
+
     private void TreeView_OnLostFocus(object sender, RoutedEventArgs e) {
         if (this._currentDropTarget != null) {
             this.ResetDropTarget(null, null);
@@ -177,10 +188,9 @@ public class SceneTreeView : UserControl {
             if (values.Count == 2) {
                 var draggedObject = values[0];
                 var dropTarget = values[1];
-
-                if (draggedObject is IEntity && dropTarget is IEntity or EntityCollection && dropTarget != draggedObject) {
-                    return true;
-                }
+                return dropTarget != draggedObject &&
+                       (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
+                        draggedObject is ILoopSystem && dropTarget is ILoopSystem or SystemCollection);
             }
 
             return false;

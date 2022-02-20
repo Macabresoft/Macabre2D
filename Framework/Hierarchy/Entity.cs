@@ -349,9 +349,8 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public void ReorderChild(IEntity entity, int newIndex) {
-        if (this._children.Remove(entity)) {
-            this._children.InsertOrAdd(newIndex, entity);
-        }
+        var originalIndex = this._children.IndexOf(entity);
+        this._children.Move(originalIndex, newIndex);
     }
 
     /// <inheritdoc />

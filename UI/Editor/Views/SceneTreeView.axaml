@@ -130,7 +130,10 @@
                     <TreeDataTemplate DataType="framework:ILoopSystem">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
-                                                           Text="{Binding Path=Name, Mode=TwoWay}">
+                                                           Text="{Binding Path=Name, Mode=TwoWay}"
+                                                           PointerPressed="TreeNode_OnPointerPressed"
+                                                           PointerReleased="TreeNode_OnPointerReleased"
+                                                           PointerMoved="TreeNode_OnPointerMoved">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
@@ -150,91 +153,65 @@
 
                     <TreeDataTemplate DataType="framework:IEntity"
                                       ItemsSource="{Binding Children}">
-                        <Panel VerticalAlignment="Stretch"
-                               HorizontalAlignment="Stretch">
-                            <Border IsVisible="False"
-                                    VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    Background="Transparent"
-                                    BorderBrush="{StaticResource YellowBrush}"
-                                    BorderThickness="0,3,0,0"
-                                    Opacity="0.5"
-                                    Name="Top" />
-                            <Border IsVisible="False"
-                                    VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    BorderBrush="{StaticResource YellowBrush}"
-                                    BorderThickness="3,0,0,0"
-                                    Opacity="0.5"
-                                    Name="Middle" />
-                            <Border IsVisible="False"
-                                    VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    BorderBrush="{StaticResource YellowBrush}"
-                                    BorderThickness="0,0,0,3"
-                                    Opacity="0.5"
-                                    Name="Bottom" />
+                        <avaloniaEx:EditableSelectableItem IsEditable="True"
+                                                           TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
+                                                           Text="{Binding Path=Name, Mode=TwoWay}"
+                                                           PointerPressed="TreeNode_OnPointerPressed"
+                                                           PointerReleased="TreeNode_OnPointerReleased"
+                                                           PointerMoved="TreeNode_OnPointerMoved">
+                            <avaloniaEx:EditableSelectableItem.ContextMenu>
+                                <ContextMenu>
 
-                            <avaloniaEx:EditableSelectableItem IsEditable="True"
-                                                               TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
-                                                               Text="{Binding Path=Name, Mode=TwoWay}"
-                                                               PointerPressed="Entity_OnPointerPressed"
-                                                               PointerReleased="Entity_OnPointerReleased"
-                                                               PointerMoved="Entity_OnPointerMoved">
-                                <avaloniaEx:EditableSelectableItem.ContextMenu>
-                                    <ContextMenu>
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
+                                              ToolTip.Tip="Rename this entity" />
 
-                                        <MenuItem Header="Rename"
-                                                  Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
-                                                  ToolTip.Tip="Rename this entity" />
+                                    <MenuItem Header="Focus"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
+                                              ToolTip.Tip="Focus on this entity in the scene editor" />
 
-                                        <MenuItem Header="Focus"
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
-                                                  ToolTip.Tip="Focus on this entity in the scene editor" />
+                                    <MenuItem Header="Clone"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Clone this entity" />
 
-                                        <MenuItem Header="Clone"
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  ToolTip.Tip="Clone this entity" />
+                                    <MenuItem Header="Create Prefab"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              ToolTip.Tip="Create a prefab of the selected entity" />
 
-                                        <MenuItem Header="Create Prefab"
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.CreatePrefabCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsNotType}, ConverterParameter={x:Type framework:PrefabContainer}}"
-                                                  ToolTip.Tip="Create a prefab of the selected entity" />
+                                    <MenuItem Header="Convert to Instance"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToInstanceCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
+                                              ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
 
-                                        <MenuItem Header="Convert to Instance"
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.ConvertToInstanceCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
-                                                  ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
+                                    <Separator />
+
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Find..."
+                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
+                                                  CommandParameter="{x:Type framework:IEntity}"
+                                                  ToolTip.Tip="Open a window to find an entity to add as a child" />
 
                                         <Separator />
 
-                                        <MenuItem Header="Add">
-                                            <MenuItem Header="Find..."
-                                                      Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
-                                                      CommandParameter="{x:Type framework:IEntity}"
-                                                      ToolTip.Tip="Open a window to find an entity to add as a child" />
-
-                                            <Separator />
-
-                                            <MenuItem Header="All Entities"
-                                                      Classes="MenuItemParent"
-                                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
-                                                <MenuItem.Styles>
-                                                    <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
-                                                </MenuItem.Styles>
-                                            </MenuItem>
+                                        <MenuItem Header="All Entities"
+                                                  Classes="MenuItemParent"
+                                                  Items="{Binding $parent[local:SceneTreeView].ViewModel.AddEntityModels}">
+                                            <MenuItem.Styles>
+                                                <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
+                                            </MenuItem.Styles>
                                         </MenuItem>
-                                        <MenuItem Header="Remove"
-                                                  Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  ToolTip.Tip="Remove this entity and all of its children from the scene" />
-                                    </ContextMenu>
-                                </avaloniaEx:EditableSelectableItem.ContextMenu>
-                            </avaloniaEx:EditableSelectableItem>
-                        </Panel>
+                                    </MenuItem>
+                                    <MenuItem Header="Remove"
+                                              Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
+                                              CommandParameter="{Binding}"
+                                              ToolTip.Tip="Remove this entity and all of its children from the scene" />
+                                </ContextMenu>
+                            </avaloniaEx:EditableSelectableItem.ContextMenu>
+                        </avaloniaEx:EditableSelectableItem>
                     </TreeDataTemplate>
                 </TreeView.DataTemplates>
             </TreeView>

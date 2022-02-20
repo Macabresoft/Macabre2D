@@ -167,6 +167,24 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             });
         }
     }
+
+    /// <summary>
+    /// Moves a system.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    /// <param name="newIndex">The new index.</param>
+    public void MoveSystem(ILoopSystem system, int newIndex) {
+        if (this.SceneService.CurrentScene.Systems is SystemCollection collection) {
+            var originalIndex = collection.IndexOf(system);
+            this._undoService.Do(() => {
+                collection.Move(originalIndex, newIndex);
+                this.SceneService.RaiseSelectedChanged();
+            }, () => {
+                collection.Move(newIndex, originalIndex);
+                this.SceneService.RaiseSelectedChanged();
+            });
+        }
+    }
     
     /// <summary>
     /// Moves the source entity to be a child of the target entity.
@@ -335,7 +353,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             }
             case ILoopSystem system: {
                 var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystem(system, index + 1); }, () => { this.MoveSystem(system, index); });
+                this._undoService.Do(() => { this.MoveSystemByIndex(system, index + 1); }, () => { this.MoveSystemByIndex(system, index); });
                 break;
             }
         }
@@ -346,7 +364,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService.RaiseSelectedChanged();
     }
 
-    private void MoveSystem(ILoopSystem system, int index) {
+    private void MoveSystemByIndex(ILoopSystem system, int index) {
         this.SceneService.CurrentScene.ReorderSystem(system, index);
         this.SceneService.RaiseSelectedChanged();
     }
@@ -360,7 +378,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             }
             case ILoopSystem system: {
                 var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystem(system, index - 1); }, () => { this.MoveSystem(system, index); });
+                this._undoService.Do(() => { this.MoveSystemByIndex(system, index - 1); }, () => { this.MoveSystemByIndex(system, index); });
                 break;
             }
         }
