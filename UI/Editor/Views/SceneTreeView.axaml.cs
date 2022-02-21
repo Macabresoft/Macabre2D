@@ -77,7 +77,7 @@ public class SceneTreeView : UserControl {
                     case IEntity entity when this.DraggedObject is IEntity draggedEntity && !Entity.IsNullOrEmpty(entity.Parent, out var parent): {
                         index = parent.Children.IndexOf(entity);
 
-                        if (entity.Parent != draggedEntity.Parent) {
+                        if (entity.Parent != draggedEntity.Parent || index < parent.Children.IndexOf(draggedEntity)) {
                             index++;
                         }
 
