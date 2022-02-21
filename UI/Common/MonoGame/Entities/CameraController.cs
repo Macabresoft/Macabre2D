@@ -74,6 +74,16 @@ public sealed class CameraController : UpdateableEntity {
                 if (keyboardState.IsKeyDown(Keys.D)) {
                     this._camera.LocalPosition += new Vector2(movementMultiplier, 0f);
                 }
+
+                if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.OemPlus)) {
+                    var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
+                    this._camera.ViewHeight -= scrollViewChange;
+                }
+                
+                if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.OemMinus)) {
+                    var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
+                    this._camera.ViewHeight += scrollViewChange;
+                }
             }
         }
     }
