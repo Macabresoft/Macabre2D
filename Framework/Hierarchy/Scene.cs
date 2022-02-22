@@ -21,7 +21,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// Gets the cameras in the scene.
     /// </summary>
     /// <value>The cameras.</value>
-    IReadOnlyCollection<ICamera> Cameras => Array.Empty<ICamera>();
+    IEnumerable<ICamera> Cameras => Array.Empty<ICamera>();
 
     /// <summary>
     /// Gets the game currently running this scene.
@@ -38,13 +38,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// Gets the physics bodies.
     /// </summary>
     /// <value>The physics bodies.</value>
-    IReadOnlyCollection<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
+    IEnumerable<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
 
     /// <summary>
     /// Gets the renderable entities in the scene.
     /// </summary>
     /// <value>The renderable entities.</value>
-    IReadOnlyCollection<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
+    IEnumerable<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
 
     /// <summary>
     /// Gets the systems.
@@ -83,6 +83,13 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// </summary>
     /// <param name="system">The system.</param>
     void AddSystem(ILoopSystem system);
+
+    /// <summary>
+    /// Gets the first found system of the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type of system.</typeparam>
+    /// <returns>The system.</returns>
+    T? GetSystem<T>() where T : class, ILoopSystem;
 
     /// <summary>
     /// Initializes this instance.
@@ -212,16 +219,16 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ICamera> Cameras => this._cameras;
+    public IEnumerable<ICamera> Cameras => this._cameras;
 
     /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IPhysicsBody> PhysicsBodies => this._physicsBodies;
+    public IEnumerable<IPhysicsBody> PhysicsBodies => this._physicsBodies;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IRenderableEntity> RenderableEntities => this._renderableEntities;
+    public IEnumerable<IRenderableEntity> RenderableEntities => this._renderableEntities;
 
     /// <inheritdoc />
     public IReadOnlyCollection<ILoopSystem> Systems => this._systems;
@@ -263,6 +270,11 @@ public sealed class Scene : GridContainer, IScene {
         if (this._isInitialized) {
             system.Initialize(this);
         }
+    }
+
+    /// <inheritdoc />
+    public T? GetSystem<T>() where T : class, ILoopSystem {
+        return this.Systems.OfType<T>().FirstOrDefault();
     }
 
     /// <inheritdoc />
@@ -440,6 +452,11 @@ public sealed class Scene : GridContainer, IScene {
 
         /// <inheritdoc />
         public void AddSystem(ILoopSystem service) {
+        }
+
+        /// <inheritdoc />
+        public T? GetSystem<T>() where T : class, ILoopSystem {
+            return null;
         }
 
         /// <inheritdoc />

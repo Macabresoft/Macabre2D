@@ -7,6 +7,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public readonly struct ActorState {
     /// <summary>
+    /// The default actor state.
+    /// </summary>
+    public static readonly ActorState Default = default;
+
+    /// <summary>
     /// The world position.
     /// </summary>
     public readonly Vector2 Position;

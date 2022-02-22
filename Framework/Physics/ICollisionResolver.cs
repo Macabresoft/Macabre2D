@@ -8,7 +8,7 @@ public interface ICollisionResolver {
     /// Initializes the collision resolver, providing it the physics service.
     /// </summary>
     /// <param name="service">The service.</param>
-    void Initialize(IGamePhysicsSystem service);
+    void Initialize(IPhysicsSystem service);
 
     /// <summary>
     /// Resolves the collision.

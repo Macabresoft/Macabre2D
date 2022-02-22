@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 /// <seealso cref="ICollisionResolver" />
 public sealed class DefaultCollisionResolver : ICollisionResolver {
-    private IGamePhysicsSystem? _service;
+    private IPhysicsSystem? _system;
 
     /// <inheritdoc />
-    public void Initialize(IGamePhysicsSystem system) {
-        this._service = system;
+    public void Initialize(IPhysicsSystem system) {
+        this._system = system;
     }
 
     /// <inheritdoc />
@@ -50,7 +50,7 @@ public sealed class DefaultCollisionResolver : ICollisionResolver {
     }
 
     private Vector2 ApplyFriction(Vector2 velocity, Vector2 normalPerpendicular, float friction) {
-        if (friction == 0 || this._service == null) {
+        if (friction == 0 || this._system == null) {
             return velocity;
         }
 
@@ -58,39 +58,39 @@ public sealed class DefaultCollisionResolver : ICollisionResolver {
 
         velocity -= frictionVector;
 
-        var dotProduct = Vector2.Dot(velocity, this._service.Gravity.Perpendicular);
-        if (Math.Abs(dotProduct) < this._service.MinimumPostFrictionMagnitude) {
-            velocity -= this._service.Gravity.Perpendicular * dotProduct;
+        var dotProduct = Vector2.Dot(velocity, this._system.Gravity.Perpendicular);
+        if (Math.Abs(dotProduct) < this._system.MinimumPostFrictionMagnitude) {
+            velocity -= this._system.Gravity.Perpendicular * dotProduct;
         }
 
         return velocity;
     }
 
     private Vector2 GetNewVelocity(IDynamicPhysicsBody firstBody, IPhysicsBody otherBody, Vector2 normal, Vector2 normalPerpendicular, float timeStep) {
-        if (this._service == null) {
+        if (this._system == null) {
             return firstBody.Velocity;
         }
 
         var stickyDotProduct = Vector2.Dot(firstBody.Velocity.GetNormalized(), normalPerpendicular);
 
-        if (1f - Math.Abs(stickyDotProduct) <= this._service.Stickiness) {
+        if (1f - Math.Abs(stickyDotProduct) <= this._system.Stickiness) {
             var velocity = normalPerpendicular * stickyDotProduct * firstBody.Velocity.Length();
             var friction = (firstBody.PhysicsMaterial.Friction + otherBody.PhysicsMaterial.Friction) * 0.5f * timeStep;
             return this.ApplyFriction(velocity, normalPerpendicular, friction);
         }
 
-        var bounceDotProduct = Vector2.Dot(firstBody.Velocity, this._service.Gravity.Direction);
-        if (Math.Abs(bounceDotProduct) < this._service.MinimumPostBounceMagnitude) {
-            var groundedDotProduct = Vector2.Dot(normalPerpendicular, this._service.Gravity.Direction);
-            if (Math.Abs(groundedDotProduct) <= this._service.Groundedness) {
-                var velocity = firstBody.Velocity - this._service.Gravity.Direction * bounceDotProduct;
+        var bounceDotProduct = Vector2.Dot(firstBody.Velocity, this._system.Gravity.Direction);
+        if (Math.Abs(bounceDotProduct) < this._system.MinimumPostBounceMagnitude) {
+            var groundedDotProduct = Vector2.Dot(normalPerpendicular, this._system.Gravity.Direction);
+            if (Math.Abs(groundedDotProduct) <= this._system.Groundedness) {
+                var velocity = firstBody.Velocity - this._system.Gravity.Direction * bounceDotProduct;
                 var friction = (firstBody.PhysicsMaterial.Friction + otherBody.PhysicsMaterial.Friction) * 0.5f * timeStep;
                 return this.ApplyFriction(velocity, normalPerpendicular, friction);
             }
             else {
                 var bounce = (firstBody.PhysicsMaterial.Bounce + otherBody.PhysicsMaterial.Bounce) * 0.5f;
                 var velocity = this.GetReflectedVelocity(firstBody, normal, bounce);
-                return velocity + this._service.Gravity.Direction * bounceDotProduct;
+                return velocity + this._system.Gravity.Direction * bounceDotProduct;
             }
         }
 

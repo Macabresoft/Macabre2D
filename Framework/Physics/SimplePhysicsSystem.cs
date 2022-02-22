@@ -6,11 +6,37 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A system which allows simple raycasting through colliders, which are sorted into a quad tree.
+/// Interface for a system which allows simple raycasting through colliders.
 /// </summary>
-/// <seealso cref="FixedTimeStepSystem" />
+public interface ISimplePhysicsSystem : ILoopSystem {
+    /// <summary>
+    /// Performs a raycast across colliders in the scene, returning all collisions in its path.
+    /// </summary>
+    /// <param name="start">The start.</param>
+    /// <param name="direction">The direction.</param>
+    /// <param name="distance">The distance.</param>
+    /// <param name="layers">The layers.</param>
+    /// <returns>Any hits that occurred during the raycast.</returns>
+    IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers);
+
+    /// <summary>
+    /// Performs a raycast across colliders in the scene, but stops after the first collision.
+    /// Performs a raycast across colliders in the scene.
+    /// </summary>
+    /// <param name="start">The start.</param>
+    /// <param name="direction">The direction.</param>
+    /// <param name="distance">The distance.</param>
+    /// <param name="layers">The layers.</param>
+    /// <param name="hit">The hit.</param>
+    /// <returns>A value indicating whether or not anything was hit.</returns>
+    bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit);
+}
+
+/// <summary>
+/// A system which allows simple raycasting through colliders.
+/// </summary>
 [Category(CommonCategories.Physics)]
-public class SimplePhysicsSystem : FixedTimeStepSystem {
+public class SimplePhysicsSystem : FixedTimeStepSystem, ISimplePhysicsSystem {
     /// <summary>
     /// Gets the collider tree.
     /// </summary>
@@ -23,15 +49,8 @@ public class SimplePhysicsSystem : FixedTimeStepSystem {
         this.InsertColliders();
     }
 
-    /// <summary>
-    /// Performs a raycast across colliders in the scene, returning all collisions in its path.
-    /// </summary>
-    /// <param name="start">The start.</param>
-    /// <param name="direction">The direction.</param>
-    /// <param name="distance">The distance.</param>
-    /// <param name="layers">The layers.</param>
-    /// <returns>Any hits that occurred during the raycast.</returns>
-    public List<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
+    /// <inheritdoc />
+    public IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
         var ray = new LineSegment(start, direction, distance);
         var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
         var hits = new List<RaycastHit>();
@@ -46,16 +65,7 @@ public class SimplePhysicsSystem : FixedTimeStepSystem {
         return hits;
     }
 
-    /// <summary>
-    /// Performs a raycast across colliders in the scene, but stops after the first collision.
-    /// Performs a raycast across colliders in the scene.
-    /// </summary>
-    /// <param name="start">The start.</param>
-    /// <param name="direction">The direction.</param>
-    /// <param name="distance">The distance.</param>
-    /// <param name="layers">The layers.</param>
-    /// <param name="hit">The hit.</param>
-    /// <returns>A value indicating whether or not anything was hit.</returns>
+    /// <inheritdoc />
     public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
         var hits = this.RaycastAll(start, direction, distance, layers);
 
