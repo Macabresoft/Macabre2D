@@ -19,6 +19,11 @@ public interface IPlatformerActor : IBoundable {
     float AirAccelerationMultiplier { get; }
 
     /// <summary>
+    /// Gets the ceiling layer.
+    /// </summary>
+    public Layers CeilingLayer { get; }
+
+    /// <summary>
     /// Gets the current state of this actor.
     /// </summary>
     ActorState CurrentState { get; }
@@ -89,6 +94,11 @@ public interface IPlatformerActor : IBoundable {
     float TerminalVelocity { get; }
 
     /// <summary>
+    /// Gets the wall layer.
+    /// </summary>
+    public Layers WallLayer { get; }
+
+    /// <summary>
     /// Gets the horizontal acceleration of this actor.
     /// </summary>
     /// <returns>The horizontal acceleration.</returns>
@@ -102,8 +112,8 @@ public interface IPlatformerActor : IBoundable {
 /// </summary>
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private float _acceleration = 6f;
-    private Vector2 _size = Vector2.One;
     private float _airAccelerationMultiplier = 0.9f;
+    private Layers _ceilingLayer;
     private ActorState _currentState;
     private float _decelerationRate = 25f;
     private float _gravity = 39f;
@@ -111,10 +121,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private float _maximumHorizontalVelocity = 7f;
     private float _minimumVelocity = 2f;
     private HorizontalDirection _movementDirection;
+    private ISimplePhysicsSystem? _physicsSystem;
     private ActorState _previousState;
+    private Vector2 _size = Vector2.One;
     private QueueableSpriteAnimator? _spriteAnimator;
     private float _terminalVelocity = 15f;
-    private ISimplePhysicsSystem? _physicsSystem;
+    private Layers _wallLayer;
 
     /// <summary>
     /// Gets the falling animation reference.
@@ -156,6 +168,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
+
+    /// <inheritdoc />
+    [DataMember]
+    public Layers CeilingLayer {
+        get => this._ceilingLayer;
+        protected set => this.Set(ref this._ceilingLayer, value);
+    }
 
     /// <inheritdoc />
     public ActorState CurrentState {
@@ -229,17 +248,24 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    /// <summary>
-    /// Gets a value that is half of <see cref="Size"/> for calculations.
-    /// </summary>
-    protected Vector2 HalfSize { get; private set; } = new(0.5f);
-
     /// <inheritdoc />
     [DataMember]
     public float TerminalVelocity {
         get => this._terminalVelocity;
         protected set => this.Set(ref this._terminalVelocity, value);
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    public Layers WallLayer {
+        get => this._wallLayer;
+        protected set => this.Set(ref this._wallLayer, value);
+    }
+
+    /// <summary>
+    /// Gets a value that is half of <see cref="Size" /> for calculations.
+    /// </summary>
+    protected Vector2 HalfSize { get; private set; } = new(0.5f);
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -267,19 +293,25 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             }
         }
     }
-    
+
+    /// <summary>
+    /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
+    /// </summary>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState GetNewActorState();
+
     private bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity) {
         var worldTransform = this.Transform;
         var direction = new Vector2(0f, 1f);
-        var distance = PlayerMovementValues.PlayerHalfWidth + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
+        var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
         var result = this.TryRaycast(
             direction,
             distance,
-            this.PlayerComponent.CeilingLayer,
+            this.CeilingLayer,
             out var hit,
-            new Vector2(-AnchorValue, 0f),
-            new Vector2(AnchorValue, 0f));
+            new Vector2(-this.HalfSize.X, 0f),
+            new Vector2(this.HalfSize.X, 0f));
 
         if (result && hit != RaycastHit.Empty) {
             this.SetWorldPosition(new Vector2(worldTransform.Position.X, hit.ContactPoint.Y - this.HalfSize.X));
@@ -287,8 +319,36 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         return result;
     }
-    
-    internal bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {
+
+    private bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+        return horizontalVelocity != 0f ? 
+            this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast) : 
+            this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
+    }
+
+
+    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+        var transform = this.Transform;
+        var isDirectionPositive = horizontalVelocity >= 0f;
+        var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
+        var distance = applyVelocityToRaycast ? this.HalfSize.X + (float)Math.Abs(horizontalVelocity * frameTime.SecondsPassed) : this.HalfSize.X;
+
+        var result = this.TryRaycast(
+            direction,
+            distance,
+            this.WallLayer,
+            out var hit,
+            new Vector2(0f, -this.HalfSize.Y),
+            new Vector2(0f, this.HalfSize.Y));
+
+        if (result && hit != RaycastHit.Empty) {
+            this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
+        }
+
+        return result;
+    }
+
+    private bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {
         var result = false;
         hit = RaycastHit.Empty;
 
@@ -305,10 +365,4 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         return result;
     }
-
-    /// <summary>
-    /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
-    /// </summary>
-    /// <returns>A new actor state.</returns>
-    protected abstract ActorState GetNewActorState();
 }
