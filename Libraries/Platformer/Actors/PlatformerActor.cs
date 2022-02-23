@@ -300,7 +300,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <returns>A new actor state.</returns>
     protected abstract ActorState GetNewActorState();
 
-    private bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity) {
+    /// <summary>
+    /// Checks if this has hit a ceiling.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="verticalVelocity">The vertical velocity.</param>
+    /// <returns>A value indicating whether or not this has hit a ceiling.</returns>
+    protected bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity) {
         var worldTransform = this.Transform;
         var direction = new Vector2(0f, 1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
@@ -320,7 +326,14 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return result;
     }
 
-    private bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+    /// <summary>
+    /// Checks if this has hit a wall.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
+    /// <returns>A value indicating whether or not this has hit a wall.</returns>
+    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
         return horizontalVelocity != 0f ? 
             this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast) : 
             this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
