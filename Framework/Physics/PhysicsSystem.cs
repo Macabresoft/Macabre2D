@@ -15,7 +15,7 @@ public interface IPhysicsSystem : ISimplePhysicsSystem {
     /// </summary>
     /// <value>The gravity.</value>
     Gravity Gravity { get; }
-    
+
     /// <summary>
     /// Gets the groundedness. This is a value indicating how likely a body is to be grounded.
     /// It should be a value between 0 and 1, where 0.5 would (theoretically) allow an object to
@@ -51,7 +51,7 @@ public interface IPhysicsSystem : ISimplePhysicsSystem {
 /// </summary>
 /// <seealso cref="SimplePhysicsSystem" />
 [Category(CommonCategories.Physics)]
-public sealed class PhysicsSystem : SimplePhysicsSystem, IPhysicsSystem {
+public class PhysicsSystem : SimplePhysicsSystem, IPhysicsSystem {
     private readonly Dictionary<Guid, List<Guid>> _collisionsHandled = new();
 
     [DataMember(Name = "Collision Resolver", Order = 0)]

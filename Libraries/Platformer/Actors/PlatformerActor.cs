@@ -2,6 +2,7 @@
 
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
+using Macabresoft.Macabre2D.Libraries.Platformer.Physics;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -19,11 +20,6 @@ public interface IPlatformerActor : IBoundable {
     float AirAccelerationMultiplier { get; }
 
     /// <summary>
-    /// Gets the ceiling layer.
-    /// </summary>
-    public Layers CeilingLayer { get; }
-
-    /// <summary>
     /// Gets the current state of this actor.
     /// </summary>
     ActorState CurrentState { get; }
@@ -37,11 +33,6 @@ public interface IPlatformerActor : IBoundable {
     /// Gets the falling animation reference.
     /// </summary>
     SpriteAnimationReference FallingAnimationReference { get; }
-
-    /// <summary>
-    /// Gets the gravity for this actor (or alternatively, the rate at which it will accelerate downwards when falling in units per second).
-    /// </summary>
-    float Gravity { get; }
 
     /// <summary>
     /// Gets the idle animation reference.
@@ -89,16 +80,6 @@ public interface IPlatformerActor : IBoundable {
     Vector2 Size { get; }
 
     /// <summary>
-    /// Gets the maximum downward velocity when falling.
-    /// </summary>
-    float TerminalVelocity { get; }
-
-    /// <summary>
-    /// Gets the wall layer.
-    /// </summary>
-    public Layers WallLayer { get; }
-
-    /// <summary>
     /// Gets the horizontal acceleration of this actor.
     /// </summary>
     /// <returns>The horizontal acceleration.</returns>
@@ -113,20 +94,16 @@ public interface IPlatformerActor : IBoundable {
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private float _acceleration = 6f;
     private float _airAccelerationMultiplier = 0.9f;
-    private Layers _ceilingLayer;
     private ActorState _currentState;
     private float _decelerationRate = 25f;
-    private float _gravity = 39f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
     private float _minimumVelocity = 2f;
     private HorizontalDirection _movementDirection;
-    private ISimplePhysicsSystem? _physicsSystem;
+    private IPlatformerPhysicsSystem _physicsSystem = PlatformerPhysicsSystem.Empty;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
     private QueueableSpriteAnimator? _spriteAnimator;
-    private float _terminalVelocity = 15f;
-    private Layers _wallLayer;
 
     /// <summary>
     /// Gets the falling animation reference.
@@ -169,12 +146,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
 
-    /// <inheritdoc />
-    [DataMember]
-    public Layers CeilingLayer {
-        get => this._ceilingLayer;
-        protected set => this.Set(ref this._ceilingLayer, value);
-    }
 
     /// <inheritdoc />
     public ActorState CurrentState {
@@ -187,13 +158,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public float DecelerationRate {
         get => this._decelerationRate;
         protected set => this.Set(ref this._decelerationRate, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public float Gravity {
-        get => this._gravity;
-        protected set => this.Set(ref this._gravity, value);
     }
 
     /// <inheritdoc />
@@ -248,20 +212,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    /// <inheritdoc />
-    [DataMember]
-    public float TerminalVelocity {
-        get => this._terminalVelocity;
-        protected set => this.Set(ref this._terminalVelocity, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public Layers WallLayer {
-        get => this._wallLayer;
-        protected set => this.Set(ref this._wallLayer, value);
-    }
-
     /// <summary>
     /// Gets a value that is half of <see cref="Size" /> for calculations.
     /// </summary>
@@ -270,7 +220,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._physicsSystem = this.Scene.GetSystem<ISimplePhysicsSystem>();
+        this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
     }
 
@@ -295,12 +245,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
-    /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
-    /// </summary>
-    /// <returns>A new actor state.</returns>
-    protected abstract ActorState GetNewActorState();
-
-    /// <summary>
     /// Checks if this has hit a ceiling.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
@@ -314,7 +258,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             distance,
-            this.CeilingLayer,
+            this._physicsSystem.CeilingLayer,
             out var hit,
             new Vector2(-this.HalfSize.X, 0f),
             new Vector2(this.HalfSize.X, 0f));
@@ -334,10 +278,18 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
     /// <returns>A value indicating whether or not this has hit a wall.</returns>
     protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
-        return horizontalVelocity != 0f ? 
-            this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast) : 
-            this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
+        if (horizontalVelocity != 0f) {
+            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast);
+        }
+
+        return this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
     }
+
+    /// <summary>
+    /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
+    /// </summary>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState GetNewActorState();
 
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
@@ -349,7 +301,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             distance,
-            this.WallLayer,
+            this._physicsSystem.WallLayer,
             out var hit,
             new Vector2(0f, -this.HalfSize.Y),
             new Vector2(0f, this.HalfSize.Y));
@@ -365,15 +317,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = false;
         hit = RaycastHit.Empty;
 
-        if (this._physicsSystem != null) {
-            var worldTransform = this.Transform;
-            var counter = 0;
+        var worldTransform = this.Transform;
+        var counter = 0;
 
-            while (!result && counter < anchors.Length) {
-                var (x, y) = anchors[counter];
-                result = this._physicsSystem.TryRaycast(new Vector2(worldTransform.Position.X + x, worldTransform.Position.Y + y), direction, distance, layers, out hit);
-                counter++;
-            }
+        while (!result && counter < anchors.Length) {
+            var (x, y) = anchors[counter];
+            result = this._physicsSystem.TryRaycast(new Vector2(worldTransform.Position.X + x, worldTransform.Position.Y + y), direction, distance, layers, out hit);
+            counter++;
         }
 
         return result;
