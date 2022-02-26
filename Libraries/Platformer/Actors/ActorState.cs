@@ -22,6 +22,11 @@ public readonly struct ActorState {
     public readonly MovementKind MovementKind;
 
     /// <summary>
+    /// The direction the actor is facing.
+    /// </summary>
+    public readonly HorizontalDirection DirectionFacing;
+
+    /// <summary>
     /// The velocity.
     /// </summary>
     public readonly Vector2 Velocity;
@@ -32,10 +37,12 @@ public readonly struct ActorState {
     /// <param name="movementKind">The kind of movement..</param>
     /// <param name="position">The position.</param>
     /// <param name="velocity">The velocity.</param>
-    public ActorState(MovementKind movementKind, Vector2 position, Vector2 velocity) {
+    /// <param name="directionFacing">The direction this is facing.</param>
+    public ActorState(MovementKind movementKind, Vector2 position, Vector2 velocity, HorizontalDirection directionFacing) {
         this.MovementKind = movementKind;
         this.Position = position;
         this.Velocity = velocity;
+        this.DirectionFacing = directionFacing;
     }
 
     /// <inheritdoc cref="object" />

@@ -4,6 +4,7 @@
 /// Represents a horizontal direction.
 /// </summary>
 public enum HorizontalDirection : byte {
+    None,
     Left,
     Right
 }

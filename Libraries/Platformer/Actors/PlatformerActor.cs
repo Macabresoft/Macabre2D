@@ -78,14 +78,6 @@ public interface IPlatformerActor : IBoundable {
     /// Gets the actor's size in world units.
     /// </summary>
     Vector2 Size { get; }
-
-    /// <summary>
-    /// Gets the horizontal acceleration of this actor.
-    /// </summary>
-    /// <returns>The horizontal acceleration.</returns>
-    float GetHorizontalAcceleration() {
-        return this.CurrentState.MovementKind == MovementKind.Moving ? this.Acceleration : this.Acceleration * this.AirAccelerationMultiplier;
-    }
 }
 
 /// <summary>
@@ -199,6 +191,14 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         private set => this.Set(ref this._previousState, value);
     }
 
+    /// <summary>
+    /// Gets the horizontal acceleration of this actor.
+    /// </summary>
+    /// <returns>The horizontal acceleration.</returns>
+    protected float GetHorizontalAcceleration() {
+        return this.CurrentState.MovementKind == MovementKind.Moving ? this.Acceleration : this.Acceleration * this.AirAccelerationMultiplier;
+    }
+    
     /// <inheritdoc />
     [DataMember]
     public Vector2 Size {
@@ -227,7 +227,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this.PreviousState = this._currentState;
-        this.CurrentState = this.GetNewActorState();
+        this.CurrentState = this.GetNewActorState(frameTime, inputState);
 
         if (this._spriteAnimator != null && this._currentState.MovementKind != this._previousState.MovementKind) {
             var spriteAnimation = this._currentState.MovementKind switch {
@@ -288,9 +288,54 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <summary>
     /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
     /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState GetNewActorState();
+    protected virtual ActorState GetNewActorState(FrameTime frameTime, InputState inputState) {
+        if (this.Size.X > 0f && this.Size.Y > 0f) {
+            return this.CurrentState.MovementKind switch {
+                MovementKind.Idle => this.HandleIdle(frameTime, inputState),
+                MovementKind.Moving => this.HandleMoving(frameTime, inputState),
+                MovementKind.Jumping => this.HandleJumping(frameTime, inputState),
+                MovementKind.Falling => this.HandleFalling(frameTime, inputState),
+                _ => this.CurrentState
+            };
+        }
 
+        return this.CurrentState;
+    }
+
+    /// <summary>
+    /// Handles interactions during the <see cref="MovementKind.Falling" /> movement state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState HandleFalling(FrameTime frameTime, InputState inputState);
+
+    /// <summary>
+    /// Handles interactions during the <see cref="MovementKind.Idle" /> movement state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState HandleIdle(FrameTime frameTime, InputState inputState);
+
+    /// <summary>
+    /// Handles interactions during the <see cref="MovementKind.Jumping" /> movement state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState HandleJumping(FrameTime frameTime, InputState inputState);
+
+    /// <summary>
+    /// Handles interactions during the <see cref="MovementKind.Moving" /> movement state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="inputState">The input state.</param>
+    /// <returns>A new actor state.</returns>
+    protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState);
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
         var transform = this.Transform;
