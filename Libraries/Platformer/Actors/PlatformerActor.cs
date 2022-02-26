@@ -248,6 +248,28 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             }
         }
     }
+    
+    /// <summary>
+    /// Checks if this has hit the ground.
+    /// </summary>
+    /// <param name="frameTime"></param>
+    /// <param name="verticalVelocity"></param>
+    /// <param name="hit"></param>
+    /// <returns></returns>
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+        var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
+
+        var result = this.TryRaycast(
+            direction,
+            distance,
+            this._physicsSystem.GroundLayer,
+            out hit,
+            new Vector2(-this.HalfSize.X, 0f),
+            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+
+        return result;
+    }
 
     /// <summary>
     /// Checks if this has hit a ceiling.
@@ -266,9 +288,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             this._physicsSystem.CeilingLayer,
             out var hit,
             new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f));
+            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
 
-        if (result && hit != RaycastHit.Empty) {
+        if (result) {
             this.SetWorldPosition(new Vector2(worldTransform.Position.X, hit.ContactPoint.Y - this.HalfSize.X));
         }
 
@@ -354,9 +376,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             this._physicsSystem.WallLayer,
             out var hit,
             new Vector2(0f, -this.HalfSize.Y),
-            new Vector2(0f, this.HalfSize.Y));
+            new Vector2(0f, this.HalfSize.Y)) && hit != RaycastHit.Empty;
 
-        if (result && hit != RaycastHit.Empty) {
+        if (result) {
             this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
         }
 

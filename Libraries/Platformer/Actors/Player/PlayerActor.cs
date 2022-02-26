@@ -10,7 +10,29 @@ using Microsoft.Xna.Framework.Input;
 public class PlayerPlatformerActor : PlatformerActor {
     /// <inheritdoc />
     protected override ActorState HandleFalling(FrameTime frameTime, InputState inputState) {
-        throw new NotImplementedException();
+        var verticalVelocity = this.CurrentState.Velocity.Y;
+        var movementKind = this.CurrentState.MovementKind;
+
+        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var hit)) {
+            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
+            movementKind = MovementKind.Idle;
+            verticalVelocity = 0f;
+        }
+        else {
+            if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
+                verticalVelocity = 0f;
+            }
+
+            verticalVelocity -= this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        }
+
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
+        this.MovementDirection = movementDirection;
+        if (movementKind == MovementKind.Idle && horizontalVelocity != 0f) {
+            movementKind = MovementKind.Moving;
+        }
+
+        return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity))
     }
 
     /// <inheritdoc />
@@ -18,9 +40,7 @@ public class PlayerPlatformerActor : PlatformerActor {
         // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
         this.MovementDirection = movementDirection;
-        return horizontalVelocity != 0f ?
-            new ActorState(MovementKind.Moving, this.CurrentState.Position, new Vector2(horizontalVelocity, 0f)) : 
-            this.CurrentState;
+        return horizontalVelocity != 0f ? new ActorState(MovementKind.Moving, this.CurrentState.Position, new Vector2(horizontalVelocity, 0f)) : this.CurrentState;
     }
 
     /// <inheritdoc />
@@ -34,9 +54,7 @@ public class PlayerPlatformerActor : PlatformerActor {
         }
 
         // TODO: longer jumps when held and maybe it doesn't make sense to check the jump button for any other reason in here
-        return inputState.IsKeyNewlyReleased(Keys.Space) ? 
-            new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity)) : 
-            this.CurrentState;
+        return inputState.IsKeyNewlyReleased(Keys.Space) ? new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity)) : this.CurrentState;
     }
 
 
