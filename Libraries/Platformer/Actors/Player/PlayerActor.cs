@@ -19,14 +19,26 @@ public class PlayerPlatformerActor : PlatformerActor {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
         this.MovementDirection = movementDirection;
         return horizontalVelocity != 0f ?
-            new ActorState(MovementKind.Moving, this.CurrentState.Position, new Vector2(horizontalVelocity, 0f), movementDirection) : 
+            new ActorState(MovementKind.Moving, this.CurrentState.Position, new Vector2(horizontalVelocity, 0f)) : 
             this.CurrentState;
     }
 
     /// <inheritdoc />
     protected override ActorState HandleJumping(FrameTime frameTime, InputState inputState) {
-        throw new NotImplementedException();
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
+        this.MovementDirection = movementDirection;
+
+        if (!this.CheckIfStillGrounded(out _)) {
+            var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            return new ActorState(MovementKind.Falling, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
+        }
+
+        // TODO: longer jumps when held and maybe it doesn't make sense to check the jump button for any other reason in here
+        return inputState.IsKeyNewlyReleased(Keys.Space) ? 
+            new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity)) : 
+            this.CurrentState;
     }
+
 
     /// <inheritdoc />
     protected override ActorState HandleMoving(FrameTime frameTime, InputState inputState) {

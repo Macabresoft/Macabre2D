@@ -217,6 +217,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     protected Vector2 HalfSize { get; private set; } = new(0.5f);
 
+    /// <summary>
+    /// Gets the physics system.
+    /// </summary>
+    protected IPlatformerPhysicsSystem PhysicsSystem => this._physicsSystem;
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -233,8 +238,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             var spriteAnimation = this._currentState.MovementKind switch {
                 MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
                 MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
-                MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
-                MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
+                MovementKind.Falling when this.CurrentState.Velocity.Y < 0f => this.FallingAnimationReference.PackagedAsset,
+                MovementKind.Jumping or MovementKind.Falling => this.JumpingAnimationReference.PackagedAsset,
                 _ => null
             };
 
@@ -353,6 +358,24 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result && hit != RaycastHit.Empty) {
             this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
+        }
+
+        return result;
+    }
+    
+    protected bool CheckIfStillGrounded(out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+
+        var result = this.TryRaycast(
+            direction,
+            this.HalfSize.Y,
+            this._physicsSystem.GroundLayer,
+            out hit,
+            new Vector2(-this.HalfSize.X, 0f),
+            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+
+        if (result) {
+            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
 
         return result;
