@@ -32,7 +32,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
                 verticalVelocity = 0f;
             }
 
-            verticalVelocity -= this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity += this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
 
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
@@ -50,7 +50,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
         this.MovementDirection = movementDirection;
 
-        if (inputState.IsKeyNewlyReleased(Keys.Space)) {
+        if (inputState.IsKeyNewlyPressed(Keys.Space)) {
             return this.GetJumpingState(horizontalVelocity);
         } 
         

@@ -19,7 +19,7 @@ public readonly struct ActorState {
     /// <summary>
     /// The kind of movement.
     /// </summary>
-    public readonly MovementKind MovementKind;
+    public readonly MovementKind MovementKind = MovementKind.Idle;
     
     /// <summary>
     /// The velocity.

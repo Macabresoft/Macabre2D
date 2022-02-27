@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Libraries.Platformer.Physics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for an actor, which is
@@ -218,8 +219,18 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
+
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.MovingAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.JumpingAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.FallingAnimationReference);
+
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
         this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
+
+        if (this.IdleAnimationReference.PackagedAsset is { } animation) {
+            this._spriteAnimator.Play(animation, true);
+        }
     }
 
     /// <inheritdoc />
@@ -240,6 +251,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 this._spriteAnimator.Play(spriteAnimation, true);
             }
         }
+        
+        this.LocalPosition += this.CurrentState.Velocity * (float)frameTime.SecondsPassed;
     }
 
     /// <summary>
@@ -382,7 +395,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="inputState">The input state.</param>
     /// <returns>A new actor state.</returns>
     protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState);
-    
+
     private ActorState GetNewActorState(FrameTime frameTime, InputState inputState) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             return this.CurrentState.MovementKind switch {
