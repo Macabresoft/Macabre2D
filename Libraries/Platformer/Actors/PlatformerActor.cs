@@ -219,6 +219,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         base.Initialize(scene, parent);
         this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
+        this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
     }
 
     /// <inheritdoc />
@@ -334,15 +335,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
-    /// Gets the jumping state for a newly jumping actor.
-    /// </summary>
-    /// <param name="horizontalVelocity">The horizontal velocity.</param>
-    /// <returns>The actor's state.</returns>
-    protected ActorState GetJumpingState(float horizontalVelocity) {
-        return new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
-    }
-
-    /// <summary>
     /// Gets the horizontal acceleration of this actor.
     /// </summary>
     /// <returns>The horizontal acceleration.</returns>
@@ -351,23 +343,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
-    /// Gets the new <see cref="ActorState" /> based on inheritor's preferences.
+    /// Gets the jumping state for a newly jumping actor.
     /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <param name="inputState">The input state.</param>
-    /// <returns>A new actor state.</returns>
-    protected virtual ActorState GetNewActorState(FrameTime frameTime, InputState inputState) {
-        if (this.Size.X > 0f && this.Size.Y > 0f) {
-            return this.CurrentState.MovementKind switch {
-                MovementKind.Idle => this.HandleIdle(frameTime, inputState),
-                MovementKind.Moving => this.HandleMoving(frameTime, inputState),
-                MovementKind.Jumping => this.HandleJumping(frameTime, inputState),
-                MovementKind.Falling => this.HandleFalling(frameTime, inputState),
-                _ => this.CurrentState
-            };
-        }
-
-        return this.CurrentState;
+    /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <returns>The actor's state.</returns>
+    protected ActorState GetJumpingState(float horizontalVelocity) {
+        return new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
     }
 
     /// <summary>
@@ -401,6 +382,20 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="inputState">The input state.</param>
     /// <returns>A new actor state.</returns>
     protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState);
+    
+    private ActorState GetNewActorState(FrameTime frameTime, InputState inputState) {
+        if (this.Size.X > 0f && this.Size.Y > 0f) {
+            return this.CurrentState.MovementKind switch {
+                MovementKind.Idle => this.HandleIdle(frameTime, inputState),
+                MovementKind.Moving => this.HandleMoving(frameTime, inputState),
+                MovementKind.Jumping => this.HandleJumping(frameTime, inputState),
+                MovementKind.Falling => this.HandleFalling(frameTime, inputState),
+                _ => this.CurrentState
+            };
+        }
+
+        return this.CurrentState;
+    }
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
         var transform = this.Transform;

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
-public class PlayerPlatformerActor : PlatformerActor {
+public sealed class PlayerPlatformerActor : PlatformerActor {
     private float _elapsedJumpSeconds;
 
     /// <summary>
@@ -73,9 +73,12 @@ public class PlayerPlatformerActor : PlatformerActor {
         if (this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
             verticalVelocity = 0f;
             movementKind = MovementKind.Falling;
+            this._elapsedJumpSeconds = 0f;
+
         }
         else if (!inputState.IsKeyHeld(Keys.Space) || this._elapsedJumpSeconds > this.JumpHoldTime) {
             movementKind = MovementKind.Falling;
+            this._elapsedJumpSeconds = 0f;
         }
 
         return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
