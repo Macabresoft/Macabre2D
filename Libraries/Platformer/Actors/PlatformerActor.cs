@@ -196,11 +196,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     [DataMember]
     public Vector2 Size {
         get => this._size;
-        private set {
+        set {
             if (this.Set(ref this._size, value)) {
-                var worldPosition = this.Transform.Position;
-                this.BoundingArea = new BoundingArea(worldPosition, worldPosition + this._size);
-                this.HalfSize = this._size * 0.5f;
+                this.ResetBoundingArea();
             }
         }
     }
@@ -218,13 +216,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
 
+        this.ResetBoundingArea();
+        this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.MovingAnimationReference);
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.JumpingAnimationReference);
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.FallingAnimationReference);
-
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
         this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
 
@@ -233,10 +231,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
+    private void ResetBoundingArea() {
+        var worldPosition = this.Transform.Position;
+        this.HalfSize = this._size * 0.5f;
+        this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
+    }
+
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
+        var anchorOffset = this._size.Y / 8;
         this.PreviousState = this._currentState;
-        this.CurrentState = this.GetNewActorState(frameTime, inputState);
+        this.CurrentState = this.GetNewActorState(frameTime, inputState, anchorOffset);
 
         if (this._spriteAnimator != null && this._currentState.MovementKind != this._previousState.MovementKind) {
             var spriteAnimation = this._currentState.MovementKind switch {
@@ -260,8 +265,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
+    /// <param name="anchorOffset">The anchor offset for raycasting.</param>
     /// <returns>A value indicating whether or not this has hit a ceiling.</returns>
-    protected bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity) {
+    protected bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity, float anchorOffset) {
         var worldTransform = this.Transform;
         var direction = new Vector2(0f, 1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
@@ -271,8 +277,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             distance,
             this._physicsSystem.CeilingLayer,
             out var hit,
-            new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+            new Vector2(-this.HalfSize.X + anchorOffset, 0f),
+            new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
 
         if (result) {
             this.SetWorldPosition(new Vector2(worldTransform.Position.X, hit.ContactPoint.Y - this.HalfSize.X));
@@ -284,11 +290,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <summary>
     /// Checks if this has hit the ground.
     /// </summary>
-    /// <param name="frameTime"></param>
-    /// <param name="verticalVelocity"></param>
-    /// <param name="hit"></param>
-    /// <returns></returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="verticalVelocity">The vertical velocity.</param>
+    /// <param name="anchorOffset">The anchor offset for raycasting.</param>
+    /// <param name="hit">The raycast hit.</param>
+    /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, float anchorOffset, out RaycastHit hit) {
         var direction = new Vector2(0f, -1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
@@ -297,8 +304,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             distance,
             this._physicsSystem.GroundLayer,
             out hit,
-            new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+            new Vector2(-this.HalfSize.X + anchorOffset, 0f),
+            new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
 
         return result;
     }
@@ -310,15 +317,15 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
     /// <returns>A value indicating whether or not this has hit a wall.</returns>
-    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
         if (horizontalVelocity != 0f) {
-            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast);
+            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast, anchorOffset);
         }
 
-        return this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
+        return this.RaycastWall(frameTime, -1f, false, anchorOffset) || this.RaycastWall(frameTime, 1f, false, anchorOffset);
     }
 
-    protected bool CheckIfStillGrounded(out RaycastHit hit) {
+    protected bool CheckIfStillGrounded(float anchorOffset, out RaycastHit hit) {
         var direction = new Vector2(0f, -1f);
 
         var result = this.TryRaycast(
@@ -369,40 +376,44 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
+    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleFalling(FrameTime frameTime, InputState inputState);
+    protected abstract ActorState HandleFalling(FrameTime frameTime, InputState inputState, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Idle" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
+    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleIdle(FrameTime frameTime, InputState inputState);
+    protected abstract ActorState HandleIdle(FrameTime frameTime, InputState inputState, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Jumping" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
+    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleJumping(FrameTime frameTime, InputState inputState);
+    protected abstract ActorState HandleJumping(FrameTime frameTime, InputState inputState, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Moving" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="inputState">The input state.</param>
+    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState);
+    protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState, float anchorOffset);
 
-    private ActorState GetNewActorState(FrameTime frameTime, InputState inputState) {
+    private ActorState GetNewActorState(FrameTime frameTime, InputState inputState, float anchorOffset) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             return this.CurrentState.MovementKind switch {
-                MovementKind.Idle => this.HandleIdle(frameTime, inputState),
-                MovementKind.Moving => this.HandleMoving(frameTime, inputState),
-                MovementKind.Jumping => this.HandleJumping(frameTime, inputState),
-                MovementKind.Falling => this.HandleFalling(frameTime, inputState),
+                MovementKind.Idle => this.HandleIdle(frameTime, inputState, anchorOffset),
+                MovementKind.Moving => this.HandleMoving(frameTime, inputState, anchorOffset),
+                MovementKind.Jumping => this.HandleJumping(frameTime, inputState, anchorOffset),
+                MovementKind.Falling => this.HandleFalling(frameTime, inputState, anchorOffset),
                 _ => this.CurrentState
             };
         }
@@ -410,7 +421,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return this.CurrentState;
     }
 
-    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
         var transform = this.Transform;
         var isDirectionPositive = horizontalVelocity >= 0f;
         var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
@@ -421,8 +432,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             distance,
             this._physicsSystem.WallLayer,
             out var hit,
-            new Vector2(0f, -this.HalfSize.Y),
-            new Vector2(0f, this.HalfSize.Y)) && hit != RaycastHit.Empty;
+            new Vector2(0f, -this.HalfSize.Y + anchorOffset),
+            new Vector2(0f, this.HalfSize.Y - anchorOffset)) && hit != RaycastHit.Empty;
 
         if (result) {
             this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
