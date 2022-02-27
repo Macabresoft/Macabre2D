@@ -191,14 +191,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         private set => this.Set(ref this._previousState, value);
     }
 
-    /// <summary>
-    /// Gets the horizontal acceleration of this actor.
-    /// </summary>
-    /// <returns>The horizontal acceleration.</returns>
-    protected float GetHorizontalAcceleration() {
-        return this.CurrentState.MovementKind == MovementKind.Moving ? this.Acceleration : this.Acceleration * this.AirAccelerationMultiplier;
-    }
-    
     /// <inheritdoc />
     [DataMember]
     public Vector2 Size {
@@ -213,14 +205,14 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
-    /// Gets a value that is half of <see cref="Size" /> for calculations.
-    /// </summary>
-    protected Vector2 HalfSize { get; private set; } = new(0.5f);
-
-    /// <summary>
     /// Gets the physics system.
     /// </summary>
     protected IPlatformerPhysicsSystem PhysicsSystem => this._physicsSystem;
+
+    /// <summary>
+    /// Gets a value that is half of <see cref="Size" /> for calculations.
+    /// </summary>
+    protected Vector2 HalfSize { get; private set; } = new(0.5f);
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -247,28 +239,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 this._spriteAnimator.Play(spriteAnimation, true);
             }
         }
-    }
-    
-    /// <summary>
-    /// Checks if this has hit the ground.
-    /// </summary>
-    /// <param name="frameTime"></param>
-    /// <param name="verticalVelocity"></param>
-    /// <param name="hit"></param>
-    /// <returns></returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
-        var direction = new Vector2(0f, -1f);
-        var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
-
-        var result = this.TryRaycast(
-            direction,
-            distance,
-            this._physicsSystem.GroundLayer,
-            out hit,
-            new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
-
-        return result;
     }
 
     /// <summary>
@@ -298,6 +268,28 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
+    /// Checks if this has hit the ground.
+    /// </summary>
+    /// <param name="frameTime"></param>
+    /// <param name="verticalVelocity"></param>
+    /// <param name="hit"></param>
+    /// <returns></returns>
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+        var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
+
+        var result = this.TryRaycast(
+            direction,
+            distance,
+            this._physicsSystem.GroundLayer,
+            out hit,
+            new Vector2(-this.HalfSize.X, 0f),
+            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+
+        return result;
+    }
+
+    /// <summary>
     /// Checks if this has hit a wall.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
@@ -310,6 +302,52 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         return this.RaycastWall(frameTime, -1f, false) || this.RaycastWall(frameTime, 1f, false);
+    }
+
+    protected bool CheckIfStillGrounded(out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+
+        var result = this.TryRaycast(
+            direction,
+            this.HalfSize.Y,
+            this._physicsSystem.GroundLayer,
+            out hit,
+            new Vector2(-this.HalfSize.X, 0f),
+            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+
+        if (result) {
+            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the falling state for a newly falling actor.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <returns>The actor's state.</returns>
+    protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity) {
+        var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        return new ActorState(MovementKind.Falling, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
+    }
+
+    /// <summary>
+    /// Gets the jumping state for a newly jumping actor.
+    /// </summary>
+    /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <returns>The actor's state.</returns>
+    protected ActorState GetJumpingState(float horizontalVelocity) {
+        return new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
+    }
+
+    /// <summary>
+    /// Gets the horizontal acceleration of this actor.
+    /// </summary>
+    /// <returns>The horizontal acceleration.</returns>
+    protected float GetHorizontalAcceleration() {
+        return this.CurrentState.MovementKind == MovementKind.Moving ? this.Acceleration : this.Acceleration * this.AirAccelerationMultiplier;
     }
 
     /// <summary>
@@ -380,24 +418,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
-        }
-
-        return result;
-    }
-    
-    protected bool CheckIfStillGrounded(out RaycastHit hit) {
-        var direction = new Vector2(0f, -1f);
-
-        var result = this.TryRaycast(
-            direction,
-            this.HalfSize.Y,
-            this._physicsSystem.GroundLayer,
-            out hit,
-            new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
-
-        if (result) {
-            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
 
         return result;

@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
+using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -8,6 +9,14 @@ using Microsoft.Xna.Framework.Input;
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
 public class PlayerPlatformerActor : PlatformerActor {
+    private float _elapsedJumpSeconds;
+
+    /// <summary>
+    /// Gets the maximum time a jump can be held in seconds.
+    /// </summary>
+    [DataMember]
+    public float JumpHoldTime { get; private set; } = 1f;
+
     /// <inheritdoc />
     protected override ActorState HandleFalling(FrameTime frameTime, InputState inputState) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
@@ -32,7 +41,7 @@ public class PlayerPlatformerActor : PlatformerActor {
             movementKind = MovementKind.Moving;
         }
 
-        return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity))
+        return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
     }
 
     /// <inheritdoc />
@@ -40,27 +49,58 @@ public class PlayerPlatformerActor : PlatformerActor {
         // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
         this.MovementDirection = movementDirection;
+
+        if (inputState.IsKeyNewlyReleased(Keys.Space)) {
+            return this.GetJumpingState(horizontalVelocity);
+        } 
+        
+        if (!this.CheckIfStillGrounded(out _)) {
+            return this.GetFallingState(frameTime, horizontalVelocity);
+        }
+
         return horizontalVelocity != 0f ? new ActorState(MovementKind.Moving, this.CurrentState.Position, new Vector2(horizontalVelocity, 0f)) : this.CurrentState;
     }
 
     /// <inheritdoc />
     protected override ActorState HandleJumping(FrameTime frameTime, InputState inputState) {
+        var verticalVelocity = this.JumpVelocity;
+        this._elapsedJumpSeconds += (float)frameTime.SecondsPassed;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
         this.MovementDirection = movementDirection;
+        var movementKind = this.CurrentState.MovementKind;
 
-        if (!this.CheckIfStillGrounded(out _)) {
-            var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            return new ActorState(MovementKind.Falling, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
+
+        if (this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
+            verticalVelocity = 0f;
+            movementKind = MovementKind.Falling;
+        }
+        else if (!inputState.IsKeyHeld(Keys.Space) || this._elapsedJumpSeconds > this.JumpHoldTime) {
+            movementKind = MovementKind.Falling;
         }
 
-        // TODO: longer jumps when held and maybe it doesn't make sense to check the jump button for any other reason in here
-        return inputState.IsKeyNewlyReleased(Keys.Space) ? new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity)) : this.CurrentState;
+        return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
     }
-
 
     /// <inheritdoc />
     protected override ActorState HandleMoving(FrameTime frameTime, InputState inputState) {
-        throw new NotImplementedException();
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState);
+        this.MovementDirection = movementDirection;
+        var movementKind = this.CurrentState.MovementKind;
+
+        // TODO: this could work for slopes if we use the raycast hit
+        if (!this.CheckIfStillGrounded(out _)) {
+            return this.GetFallingState(frameTime, horizontalVelocity);
+        }
+        
+        if (inputState.IsKeyNewlyPressed(Keys.Space)) {
+            return this.GetJumpingState(horizontalVelocity);
+        }
+
+        if (horizontalVelocity == 0f) {
+            return new ActorState(MovementKind.Idle, this.Transform.Position, Vector2.Zero);
+        }
+
+        return new ActorState(movementKind, this.Transform.Position, new Vector2(horizontalVelocity, 0f));
     }
 
     // TODO: need to make this generic for gamepads/keyboards/user settings
