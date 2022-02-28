@@ -230,7 +230,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public override void Update(FrameTime frameTime, InputState inputState) {
         var anchorOffset = this._size.Y / 8;
         this.PreviousState = this._currentState;
-        this.CurrentState = this.GetNewActorState(frameTime, inputState, anchorOffset);
+        this.CurrentState = this.GetNewActorState(frameTime, anchorOffset);
 
         if (this._spriteAnimator != null && this._currentState.MovementKind != this._previousState.MovementKind) {
             var spriteAnimation = this._currentState.MovementKind switch {
@@ -369,45 +369,41 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Handles interactions during the <see cref="MovementKind.Falling" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
-    /// <param name="inputState">The input state.</param>
     /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleFalling(FrameTime frameTime, InputState inputState, float anchorOffset);
+    protected abstract ActorState HandleFalling(FrameTime frameTime, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Idle" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
-    /// <param name="inputState">The input state.</param>
     /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleIdle(FrameTime frameTime, InputState inputState, float anchorOffset);
+    protected abstract ActorState HandleIdle(FrameTime frameTime, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Jumping" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
-    /// <param name="inputState">The input state.</param>
     /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleJumping(FrameTime frameTime, InputState inputState, float anchorOffset);
+    protected abstract ActorState HandleJumping(FrameTime frameTime, float anchorOffset);
 
     /// <summary>
     /// Handles interactions during the <see cref="MovementKind.Moving" /> movement state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
-    /// <param name="inputState">The input state.</param>
     /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
-    protected abstract ActorState HandleMoving(FrameTime frameTime, InputState inputState, float anchorOffset);
+    protected abstract ActorState HandleMoving(FrameTime frameTime, float anchorOffset);
 
-    private ActorState GetNewActorState(FrameTime frameTime, InputState inputState, float anchorOffset) {
+    private ActorState GetNewActorState(FrameTime frameTime, float anchorOffset) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             return this.CurrentState.MovementKind switch {
-                MovementKind.Idle => this.HandleIdle(frameTime, inputState, anchorOffset),
-                MovementKind.Moving => this.HandleMoving(frameTime, inputState, anchorOffset),
-                MovementKind.Jumping => this.HandleJumping(frameTime, inputState, anchorOffset),
-                MovementKind.Falling => this.HandleFalling(frameTime, inputState, anchorOffset),
+                MovementKind.Idle => this.HandleIdle(frameTime, anchorOffset),
+                MovementKind.Moving => this.HandleMoving(frameTime, anchorOffset),
+                MovementKind.Jumping => this.HandleJumping(frameTime, anchorOffset),
+                MovementKind.Falling => this.HandleFalling(frameTime, anchorOffset),
                 _ => this.CurrentState
             };
         }

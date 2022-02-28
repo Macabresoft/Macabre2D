@@ -3,12 +3,12 @@ namespace Macabresoft.Macabre2D.Libraries.Platformer;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
 public sealed class PlayerPlatformerActor : PlatformerActor {
+    private readonly InputManager _input = new();
     private float _elapsedJumpSeconds;
 
     /// <summary>
@@ -17,8 +17,13 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     [DataMember]
     public float JumpHoldTime { get; private set; } = 0.1f;
 
+    public override void Update(FrameTime frameTime, InputState inputState) {
+        this._input.Update(inputState);
+        base.Update(frameTime, inputState);
+    }
+
     /// <inheritdoc />
-    protected override ActorState HandleFalling(FrameTime frameTime, InputState inputState, float anchorOffset) {
+    protected override ActorState HandleFalling(FrameTime frameTime, float anchorOffset) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         var movementKind = this.CurrentState.MovementKind;
 
@@ -35,7 +40,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
             verticalVelocity += this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
 
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState, anchorOffset);
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         this.MovementDirection = movementDirection;
         if (movementKind == MovementKind.Idle && horizontalVelocity != 0f) {
             movementKind = MovementKind.Moving;
@@ -45,11 +50,11 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     }
 
     /// <inheritdoc />
-    protected override ActorState HandleIdle(FrameTime frameTime, InputState inputState, float anchorOffset) {
+    protected override ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
         // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState, anchorOffset);
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
 
-        if (inputState.IsKeyNewlyPressed(Keys.Space)) {
+        if (this._input.JumpState == ButtonState.Pressed) {
             return this.GetJumpingState(horizontalVelocity, movementDirection);
         }
 
@@ -61,10 +66,10 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     }
 
     /// <inheritdoc />
-    protected override ActorState HandleJumping(FrameTime frameTime, InputState inputState, float anchorOffset) {
+    protected override ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
         var verticalVelocity = this.JumpVelocity;
         this._elapsedJumpSeconds += (float)frameTime.SecondsPassed;
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState, anchorOffset);
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         this.MovementDirection = movementDirection;
         var movementKind = this.CurrentState.MovementKind;
 
@@ -74,7 +79,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
             movementKind = MovementKind.Falling;
             this._elapsedJumpSeconds = 0f;
         }
-        else if (!inputState.IsKeyHeld(Keys.Space) || this._elapsedJumpSeconds > this.JumpHoldTime) {
+        else if (this._input.JumpState != ButtonState.Held || this._elapsedJumpSeconds > this.JumpHoldTime) {
             movementKind = MovementKind.Falling;
             this._elapsedJumpSeconds = 0f;
         }
@@ -83,42 +88,29 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     }
 
     /// <inheritdoc />
-    protected override ActorState HandleMoving(FrameTime frameTime, InputState inputState, float anchorOffset) {
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, inputState, anchorOffset);
+    protected override ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         this.MovementDirection = movementDirection;
         var movementKind = this.CurrentState.MovementKind;
 
-        // TODO: this could work for slopes if we use the raycast hit
         if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
             return this.GetFallingState(frameTime, horizontalVelocity, movementDirection);
         }
 
-        if (inputState.IsKeyNewlyPressed(Keys.Space)) {
+        if (this._input.JumpState == ButtonState.Pressed) {
             return this.GetJumpingState(horizontalVelocity, movementDirection);
         }
 
-        if (horizontalVelocity == 0f) {
-            return new ActorState(MovementKind.Idle, movementDirection, this.Transform.Position, Vector2.Zero);
-        }
-
-        return new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, 0f));
+        return horizontalVelocity == 0f ? new ActorState(MovementKind.Idle, movementDirection, this.Transform.Position, Vector2.Zero) : new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, 0f));
     }
 
     // TODO: need to make this generic for gamepads/keyboards/user settings
-    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, InputState inputState, float anchorOffset) {
-        var horizontalAxis = 0f;
-        if (inputState.IsKeyHeld(Keys.A)) {
-            horizontalAxis = -1f;
-        }
-        else if (inputState.IsKeyHeld(Keys.D)) {
-            horizontalAxis = 1f;
-        }
-
+    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
         var previousVelocity = this.CurrentState.Velocity.X;
         var horizontalVelocity = previousVelocity;
         var movingDirection = this.CurrentState.FacingDirection;
 
-        if (horizontalAxis > 0f) {
+        if (this._input.HorizontalAxis > 0f) {
             var newVelocity = horizontalVelocity + this.GetHorizontalAcceleration() * (float)frameTime.SecondsPassed;
             horizontalVelocity = previousVelocity >= 0f ? Math.Max(newVelocity, this.MaximumHorizontalVelocity * 0.5f) : newVelocity;
             movingDirection = HorizontalDirection.Right;
@@ -131,7 +123,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
             }
         }
 
-        if (horizontalAxis < 0f) {
+        if (this._input.HorizontalAxis < 0f) {
             var newVelocity = horizontalVelocity - this.GetHorizontalAcceleration() * (float)frameTime.SecondsPassed;
             horizontalVelocity = previousVelocity <= 0f ? Math.Min(newVelocity, -this.MaximumHorizontalVelocity * 0.5f) : newVelocity;
             movingDirection = HorizontalDirection.Left;
