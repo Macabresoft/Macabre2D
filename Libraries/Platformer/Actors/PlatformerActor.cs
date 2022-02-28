@@ -236,8 +236,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             var spriteAnimation = this._currentState.MovementKind switch {
                 MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
                 MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
-                MovementKind.Falling when this.CurrentState.Velocity.Y < 0f => this.FallingAnimationReference.PackagedAsset,
-                MovementKind.Jumping or MovementKind.Falling => this.JumpingAnimationReference.PackagedAsset,
+                MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
+                MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
                 _ => null
             };
 
