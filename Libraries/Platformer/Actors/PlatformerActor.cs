@@ -61,11 +61,6 @@ public interface IPlatformerActor : IBoundable {
     float MinimumVelocity { get; }
 
     /// <summary>
-    /// Gets the current movement direction.
-    /// </summary>
-    HorizontalDirection MovementDirection { get; }
-
-    /// <summary>
     /// Gets the moving animation reference.
     /// </summary>
     SpriteAnimationReference MovingAnimationReference { get; }
@@ -231,12 +226,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    private void ResetBoundingArea() {
-        var worldPosition = this.Transform.Position;
-        this.HalfSize = this._size * 0.5f;
-        this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
-    }
-
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         var anchorOffset = this._size.Y / 8;
@@ -255,8 +244,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             if (spriteAnimation != null) {
                 this._spriteAnimator.Play(spriteAnimation, true);
             }
+
+            this._spriteAnimator.RenderSettings.FlipHorizontal = this._movementDirection == HorizontalDirection.Left;
         }
-        
+
         this.LocalPosition += this.CurrentState.Velocity * (float)frameTime.SecondsPassed;
     }
 
@@ -316,6 +307,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
+    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A value indicating whether or not this has hit a wall.</returns>
     protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
         if (horizontalVelocity != 0f) {
@@ -348,10 +340,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <param name="facingDirection">The direction this is facing.</param>
     /// <returns>The actor's state.</returns>
-    protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity) {
+    protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity, HorizontalDirection facingDirection) {
         var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-        return new ActorState(MovementKind.Falling, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
+        return new ActorState(MovementKind.Falling, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
     }
 
     /// <summary>
@@ -366,9 +359,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Gets the jumping state for a newly jumping actor.
     /// </summary>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
+    /// <param name="facingDirection">The direction this is facing.</param>
     /// <returns>The actor's state.</returns>
-    protected ActorState GetJumpingState(float horizontalVelocity) {
-        return new ActorState(MovementKind.Jumping, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
+    protected ActorState GetJumpingState(float horizontalVelocity, HorizontalDirection facingDirection) {
+        return new ActorState(MovementKind.Jumping, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
     }
 
     /// <summary>
@@ -440,6 +434,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         return result;
+    }
+
+    private void ResetBoundingArea() {
+        var worldPosition = this.Transform.Position;
+        this.HalfSize = this._size * 0.5f;
+        this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
     }
 
     private bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {

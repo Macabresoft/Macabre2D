@@ -20,6 +20,11 @@ public readonly struct ActorState {
     /// The kind of movement.
     /// </summary>
     public readonly MovementKind MovementKind = MovementKind.Idle;
+
+    /// <summary>
+    /// The direction the actor was facing.
+    /// </summary>
+    public readonly HorizontalDirection FacingDirection = HorizontalDirection.Right;
     
     /// <summary>
     /// The velocity.
@@ -29,11 +34,13 @@ public readonly struct ActorState {
     /// <summary>
     /// Initializes a new instance of the <see cref="ActorState" /> class.
     /// </summary>
-    /// <param name="movementKind">The kind of movement..</param>
+    /// <param name="movementKind">The kind of movement.</param>
+    /// <param name="facingDirection">The direction the actor is facing.</param>
     /// <param name="position">The position.</param>
     /// <param name="velocity">The velocity.</param>
-    public ActorState(MovementKind movementKind, Vector2 position, Vector2 velocity) {
+    public ActorState(MovementKind movementKind, HorizontalDirection facingDirection, Vector2 position, Vector2 velocity) {
         this.MovementKind = movementKind;
+        this.FacingDirection = facingDirection;
         this.Position = position;
         this.Velocity = velocity;
     }
