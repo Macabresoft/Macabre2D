@@ -11,24 +11,9 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public interface IPlatformerActor : IBoundable {
     /// <summary>
-    /// Gets the acceleration of this actor. This is the rate at which it gains speed when intentionally moving in a direction.
-    /// </summary>
-    float Acceleration { get; }
-
-    /// <summary>
-    /// Gets a multiplier for air acceleration. By making this value less than one, the player will have less control in the air than they do when grounded.
-    /// </summary>
-    float AirAccelerationMultiplier { get; }
-
-    /// <summary>
     /// Gets the current state of this actor.
     /// </summary>
     ActorState CurrentState { get; }
-
-    /// <summary>
-    /// Gets the rate at which this actor decelerates in units per second.
-    /// </summary>
-    float DecelerationRate { get; }
 
     /// <summary>
     /// Gets the falling animation reference.
@@ -56,11 +41,6 @@ public interface IPlatformerActor : IBoundable {
     float MaximumHorizontalVelocity { get; }
 
     /// <summary>
-    /// Gets the minimum velocity before this actor will stop moving (when no force is causing it to move).
-    /// </summary>
-    float MinimumVelocity { get; }
-
-    /// <summary>
     /// Gets the moving animation reference.
     /// </summary>
     SpriteAnimationReference MovingAnimationReference { get; }
@@ -80,14 +60,9 @@ public interface IPlatformerActor : IBoundable {
 /// An actor that moves and animates with a platformer focus.
 /// </summary>
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
-    private float _acceleration = 6f;
-    private float _airAccelerationMultiplier = 0.9f;
     private ActorState _currentState;
-    private float _decelerationRate = 25f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
-    private float _minimumVelocity = 2f;
-    private HorizontalDirection _movementDirection;
     private IPlatformerPhysicsSystem _physicsSystem = PlatformerPhysicsSystem.Empty;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
@@ -118,20 +93,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public SpriteAnimationReference MovingAnimationReference { get; } = new();
 
     /// <inheritdoc />
-    [DataMember]
-    public float Acceleration {
-        get => this._acceleration;
-        protected set => this.Set(ref this._acceleration, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public float AirAccelerationMultiplier {
-        get => this._airAccelerationMultiplier;
-        protected set => this.Set(ref this._airAccelerationMultiplier, value);
-    }
-
-    /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
 
 
@@ -139,13 +100,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public ActorState CurrentState {
         get => this._currentState;
         private set => this.Set(ref this._currentState, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public float DecelerationRate {
-        get => this._decelerationRate;
-        protected set => this.Set(ref this._decelerationRate, value);
     }
 
     /// <inheritdoc />
@@ -160,25 +114,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public float MaximumHorizontalVelocity {
         get => this._maximumHorizontalVelocity;
         protected set => this.Set(ref this._maximumHorizontalVelocity, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public float MinimumVelocity {
-        get => this._minimumVelocity;
-        protected set => this.Set(ref this._minimumVelocity, value);
-    }
-
-    /// <summary>
-    /// Gets the movement direction of the player.
-    /// </summary>
-    public HorizontalDirection MovementDirection {
-        get => this._movementDirection;
-        protected set {
-            if (this.Set(ref this._movementDirection, value) && this._spriteAnimator != null) {
-                this._spriteAnimator.RenderSettings.FlipHorizontal = this._movementDirection == HorizontalDirection.Left;
-            }
-        }
     }
 
     /// <inheritdoc />
@@ -245,7 +180,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 this._spriteAnimator.Play(spriteAnimation, true);
             }
 
-            this._spriteAnimator.RenderSettings.FlipHorizontal = this._movementDirection == HorizontalDirection.Left;
+            this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
 
         this.LocalPosition += this.CurrentState.Velocity * (float)frameTime.SecondsPassed;
@@ -345,14 +280,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity, HorizontalDirection facingDirection) {
         var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         return new ActorState(MovementKind.Falling, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
-    }
-
-    /// <summary>
-    /// Gets the horizontal acceleration of this actor.
-    /// </summary>
-    /// <returns>The horizontal acceleration.</returns>
-    protected float GetHorizontalAcceleration() {
-        return this.CurrentState.MovementKind == MovementKind.Moving ? this.Acceleration : this.Acceleration * this.AirAccelerationMultiplier;
     }
 
     /// <summary>

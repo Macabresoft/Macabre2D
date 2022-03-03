@@ -41,7 +41,6 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         }
 
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        this.MovementDirection = movementDirection;
         if (movementKind == MovementKind.Idle && horizontalVelocity != 0f) {
             movementKind = MovementKind.Moving;
         }
@@ -70,7 +69,6 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         var verticalVelocity = this.JumpVelocity;
         this._elapsedJumpSeconds += (float)frameTime.SecondsPassed;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        this.MovementDirection = movementDirection;
         var movementKind = this.CurrentState.MovementKind;
 
 
@@ -90,7 +88,6 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     /// <inheritdoc />
     protected override ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        this.MovementDirection = movementDirection;
         var movementKind = this.CurrentState.MovementKind;
 
         if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
@@ -106,35 +103,13 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
 
     // TODO: need to make this generic for gamepads/keyboards/user settings
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
-        var previousVelocity = this.CurrentState.Velocity.X;
-        var horizontalVelocity = previousVelocity;
-        var movingDirection = this.CurrentState.FacingDirection;
+        var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
 
-        if (this._input.HorizontalAxis > 0f) {
-            var newVelocity = horizontalVelocity + this.GetHorizontalAcceleration() * (float)frameTime.SecondsPassed;
-            horizontalVelocity = previousVelocity >= 0f ? Math.Max(newVelocity, this.MaximumHorizontalVelocity * 0.5f) : newVelocity;
-            movingDirection = HorizontalDirection.Right;
-        }
-        else if (horizontalVelocity > 0f) {
-            horizontalVelocity -= this.DecelerationRate * (float)frameTime.SecondsPassed;
-
-            if (horizontalVelocity < this.MinimumVelocity) {
-                horizontalVelocity = 0f;
-            }
-        }
-
-        if (this._input.HorizontalAxis < 0f) {
-            var newVelocity = horizontalVelocity - this.GetHorizontalAcceleration() * (float)frameTime.SecondsPassed;
-            horizontalVelocity = previousVelocity <= 0f ? Math.Min(newVelocity, -this.MaximumHorizontalVelocity * 0.5f) : newVelocity;
-            movingDirection = HorizontalDirection.Left;
-        }
-        else if (horizontalVelocity < 0f) {
-            horizontalVelocity += this.DecelerationRate * (float)frameTime.SecondsPassed;
-
-            if (horizontalVelocity > -this.MinimumVelocity) {
-                horizontalVelocity = 0f;
-            }
-        }
+        var movingDirection = this._input.HorizontalAxis switch {
+            > 0f => HorizontalDirection.Right,
+            < 0f => HorizontalDirection.Left,
+            _ => this.CurrentState.FacingDirection
+        };
 
         if (horizontalVelocity != 0f) {
             if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset)) {
