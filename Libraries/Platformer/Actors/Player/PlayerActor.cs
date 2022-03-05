@@ -16,6 +16,16 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     private float _timeUntilRun = 1f;
 
     /// <summary>
+    /// Gets the acceleration when changing directions.
+    /// </summary>
+    /// <remarks>
+    /// This is applied when the player has velocity in the opposite direction than the player input.
+    /// </remarks>
+    [DataMember]
+    [Category("Movement")]
+    public float AccelerationChangingDirections { get; private set; } = 8f;
+
+    /// <summary>
     /// Gets the deceleration when the player has no horizontal input.
     /// </summary>
     /// <remarks>
@@ -140,9 +150,16 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         return horizontalVelocity == 0f ? new ActorState(MovementKind.Idle, movementDirection, this.Transform.Position, Vector2.Zero) : new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, 0f));
     }
 
-    // TODO: need to make this generic for gamepads/keyboards/user settings
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
         var horizontalVelocity = this._input.HorizontalAxis * (this.ElapsedRunSeconds < this.TimeUntilRun ? this.MaximumHorizontalVelocity : this.RunVelocity);
+
+        if (this.ElapsedRunSeconds >= this.TimeUntilRun) {
+            horizontalVelocity = this._input.HorizontalAxis switch {
+                < 0f when this.PreviousState.Velocity.X > 0f => Math.Max(this.PreviousState.Velocity.X - (float)frameTime.SecondsPassed * this.AccelerationChangingDirections, -this.RunVelocity),
+                > 0f when this.PreviousState.Velocity.X < 0f => Math.Min(this.PreviousState.Velocity.X + (float)frameTime.SecondsPassed * this.AccelerationChangingDirections, this.RunVelocity),
+                _ => horizontalVelocity
+            };
+        }
 
         var movingDirection = this._input.HorizontalAxis switch {
             > 0f => HorizontalDirection.Right,
