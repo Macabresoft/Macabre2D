@@ -171,17 +171,19 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         this.PreviousState = this._currentState;
         this.CurrentState = this.GetNewActorState(frameTime, anchorOffset);
 
-        if (this._spriteAnimator != null && this._currentState.MovementKind != this._previousState.MovementKind) {
-            var spriteAnimation = this._currentState.MovementKind switch {
-                MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
-                MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
-                MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
-                MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
-                _ => null
-            };
+        if (this._spriteAnimator != null) {
+            if (this._currentState.MovementKind != this._previousState.MovementKind) {
+                var spriteAnimation = this._currentState.MovementKind switch {
+                    MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
+                    MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
+                    MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
+                    MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
+                    _ => null
+                };
 
-            if (spriteAnimation != null) {
-                this._spriteAnimator.Play(spriteAnimation, true);
+                if (spriteAnimation != null) {
+                    this._spriteAnimator.Play(spriteAnimation, true);
+                }
             }
 
             this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;

@@ -12,8 +12,18 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     private readonly InputManager _input = new();
     private float _elapsedJumpSeconds;
     private float _elapsedRunSeconds;
-    private float _timeUntilRun = 1f;
     private float _jumpHoldTime = 0.1f;
+    private float _timeUntilRun = 1f;
+
+    /// <summary>
+    /// Gets the deceleration when the player has no horizontal input.
+    /// </summary>
+    /// <remarks>
+    /// This is how much the velocity will decrease per second. A higher value will feel snappier, while a lower value will feel slippery.
+    /// </remarks>
+    [DataMember]
+    [Category("Movement")]
+    public float Deceleration { get; private set; } = 24f;
 
     /// <summary>
     /// Gets the maximum time a jump can be held in seconds.
@@ -26,6 +36,13 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     }
 
     /// <summary>
+    /// Gets the velocity when running.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float RunVelocity { get; private set; }
+
+    /// <summary>
     /// Gets the time until a walk becomes a run in seconds.
     /// </summary>
     [DataMember]
@@ -34,13 +51,6 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         get => this._timeUntilRun;
         private set => this._timeUntilRun = Math.Max(0f, value);
     }
-    
-    /// <summary>
-    /// Gets the velocity when running.
-    /// </summary>
-    [DataMember]
-    [Category("Movement")]
-    public float RunVelocity { get; private set; }
 
     private float ElapsedRunSeconds {
         get => this._elapsedRunSeconds;
@@ -154,7 +164,13 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         if (horizontalVelocity != 0f) {
             this.ElapsedRunSeconds += (float)frameTime.SecondsPassed;
         }
-        else {
+        else if (this.ElapsedRunSeconds > 0f) {
+            horizontalVelocity = this.PreviousState.Velocity.X switch {
+                > 0f => (float)Math.Max(0f, this.PreviousState.Velocity.X - frameTime.SecondsPassed * this.Deceleration),
+                < 0f => (float)Math.Min(0f, this.PreviousState.Velocity.X + frameTime.SecondsPassed * this.Deceleration),
+                _ => horizontalVelocity
+            };
+
             this.ElapsedRunSeconds -= (float)frameTime.SecondsPassed * 2f;
         }
 
