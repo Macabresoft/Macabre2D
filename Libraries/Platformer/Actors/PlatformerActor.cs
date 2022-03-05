@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Libraries.Platformer.Physics;
@@ -59,6 +60,7 @@ public interface IPlatformerActor : IBoundable {
 /// <summary>
 /// An actor that moves and animates with a platformer focus.
 /// </summary>
+[Category("Actor")]
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
     private float _jumpVelocity = 8f;
@@ -104,6 +106,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     [DataMember]
+    [Category("Movement")]
     public float JumpVelocity {
         get => this._jumpVelocity;
         protected set => this.Set(ref this._jumpVelocity, value);
@@ -111,6 +114,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     [DataMember]
+    [Category("Movement")]
     public float MaximumHorizontalVelocity {
         get => this._maximumHorizontalVelocity;
         protected set => this.Set(ref this._maximumHorizontalVelocity, value);

@@ -1,5 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -10,12 +11,41 @@ using Microsoft.Xna.Framework;
 public sealed class PlayerPlatformerActor : PlatformerActor {
     private readonly InputManager _input = new();
     private float _elapsedJumpSeconds;
+    private float _elapsedRunSeconds;
+    private float _timeUntilRun = 1f;
+    private float _jumpHoldTime = 0.1f;
 
     /// <summary>
     /// Gets the maximum time a jump can be held in seconds.
     /// </summary>
     [DataMember]
-    public float JumpHoldTime { get; private set; } = 0.1f;
+    [Category("Movement")]
+    public float JumpHoldTime {
+        get => this._jumpHoldTime;
+        private set => this._jumpHoldTime = Math.Max(0f, value);
+    }
+
+    /// <summary>
+    /// Gets the time until a walk becomes a run in seconds.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float TimeUntilRun {
+        get => this._timeUntilRun;
+        private set => this._timeUntilRun = Math.Max(0f, value);
+    }
+    
+    /// <summary>
+    /// Gets the velocity when running.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float RunVelocity { get; private set; }
+
+    private float ElapsedRunSeconds {
+        get => this._elapsedRunSeconds;
+        set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
+    }
 
     public override void Update(FrameTime frameTime, InputState inputState) {
         this._input.Update(inputState);
@@ -67,10 +97,8 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
     /// <inheritdoc />
     protected override ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
         var verticalVelocity = this.JumpVelocity;
-        this._elapsedJumpSeconds += (float)frameTime.SecondsPassed;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         var movementKind = this.CurrentState.MovementKind;
-
 
         if (this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
             verticalVelocity = 0f;
@@ -82,6 +110,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
             this._elapsedJumpSeconds = 0f;
         }
 
+        this._elapsedJumpSeconds += (float)frameTime.SecondsPassed;
         return new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
     }
 
@@ -103,7 +132,7 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
 
     // TODO: need to make this generic for gamepads/keyboards/user settings
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
-        var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
+        var horizontalVelocity = this._input.HorizontalAxis * (this.ElapsedRunSeconds < this.TimeUntilRun ? this.MaximumHorizontalVelocity : this.RunVelocity);
 
         var movingDirection = this._input.HorizontalAxis switch {
             > 0f => HorizontalDirection.Right,
@@ -120,6 +149,13 @@ public sealed class PlayerPlatformerActor : PlatformerActor {
         }
         else {
             this.CheckIfHitWall(frameTime, 0f, false, anchorOffset);
+        }
+
+        if (horizontalVelocity != 0f) {
+            this.ElapsedRunSeconds += (float)frameTime.SecondsPassed;
+        }
+        else {
+            this.ElapsedRunSeconds -= (float)frameTime.SecondsPassed * 2f;
         }
 
         return (horizontalVelocity, movingDirection);
