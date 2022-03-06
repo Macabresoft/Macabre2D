@@ -169,24 +169,6 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     /// <summary>
-    /// Moves a system.
-    /// </summary>
-    /// <param name="system">The system.</param>
-    /// <param name="newIndex">The new index.</param>
-    public void MoveSystem(ILoopSystem system, int newIndex) {
-        if (this.SceneService.CurrentScene.Systems is SystemCollection collection) {
-            var originalIndex = collection.IndexOf(system);
-            this._undoService.Do(() => {
-                collection.Move(originalIndex, newIndex);
-                this.SceneService.RaiseSelectedChanged();
-            }, () => {
-                collection.Move(newIndex, originalIndex);
-                this.SceneService.RaiseSelectedChanged();
-            });
-        }
-    }
-    
-    /// <summary>
     /// Moves the source entity to be a child of the target entity.
     /// </summary>
     /// <param name="sourceEntity">The source entity.</param>
@@ -204,7 +186,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 else {
                     this.MoveEntityByIndex(sourceEntity, targetEntity, index);
                 }
-                
+
                 sourceEntity.SetWorldTransform(transform);
                 this.SceneService.RaiseSelectedChanged();
             }, () => {
@@ -216,6 +198,24 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 }
 
                 sourceEntity.SetWorldTransform(transform);
+                this.SceneService.RaiseSelectedChanged();
+            });
+        }
+    }
+
+    /// <summary>
+    /// Moves a system.
+    /// </summary>
+    /// <param name="system">The system.</param>
+    /// <param name="newIndex">The new index.</param>
+    public void MoveSystem(ILoopSystem system, int newIndex) {
+        if (this.SceneService.CurrentScene.Systems is SystemCollection collection) {
+            var originalIndex = collection.IndexOf(system);
+            this._undoService.Do(() => {
+                collection.Move(originalIndex, newIndex);
+                this.SceneService.RaiseSelectedChanged();
+            }, () => {
+                collection.Move(newIndex, originalIndex);
                 this.SceneService.RaiseSelectedChanged();
             });
         }

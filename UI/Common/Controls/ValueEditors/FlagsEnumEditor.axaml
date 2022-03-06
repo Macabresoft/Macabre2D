@@ -48,12 +48,14 @@
         </ComboBox>
 
         <Button Grid.Column="2"
-                Command="{Binding SelectAllCommand}">
+                Command="{Binding SelectAllCommand}"
+                ToolTip.Tip="Select all enum values">
             <avaloniaEx:Icon Content="{StaticResource SelectAllIcon}" />
         </Button>
 
         <Button Grid.Column="3"
-                Command="{Binding ClearCommand}">
+                Command="{Binding ClearCommand}"
+                ToolTip.Tip="Clear all values from the selection">
             <avaloniaEx:Icon Content="{StaticResource EraserIcon}" />
         </Button>
     </Grid>
