@@ -18,9 +18,10 @@
                          Text="{Binding FilterText}"
                          Items="{Binding Types}"
                          ValueMemberBinding="{Binding Name}"
+                         SelectionChanged="AutoCompleteBox_OnSelectionChanged"
                          FilterMode="Contains"
                          Watermark="Filter..." />
-        
+
         <avaloniaEx:AlternatingListBox Grid.Row="1"
                                        Margin="{StaticResource StandardMarginAll}"
                                        Items="{Binding FilteredTypes, Mode=OneWay}"

@@ -1,5 +1,8 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
+using System;
+using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Unity;
@@ -16,6 +19,13 @@ public class TypeSelectionDialog : BaseDialog {
 
 
     public TypeSelectionViewModel ViewModel => this.DataContext as TypeSelectionViewModel;
+
+    private void AutoCompleteBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+        var addedTypes = e.AddedItems.OfType<Type>().ToList();
+        if (addedTypes.Count == 1) {
+            this.ViewModel.SelectedType = addedTypes.First();
+        }
+    }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
