@@ -268,7 +268,7 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
             }
 
             if (this.ResolveNewContentFiles(this._rootContentDirectory) || forceRebuild || this.CheckForMetadataChanges()) {
-                this._assetManager.Unload();
+                this.ResetAssets();
                 this.BuildContentForProject();
             }
 
@@ -302,11 +302,9 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
     }
 
     private bool CheckForMetadataChanges() {
-        var editorMetadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath) ?
-            this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList() :
-            null;
+        var editorMetadataFiles = this._fileSystem.DoesDirectoryExist(this._pathService.EditorMetadataDirectoryPath) ? this._fileSystem.GetFiles(this._pathService.EditorMetadataDirectoryPath).ToList() : null;
         return editorMetadataFiles == null ||
-            editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count || 
+               editorMetadataFiles.Count != this._assetManager.LoadedMetadata.Count ||
                this._assetManager.LoadedMetadata.Any(metadata => !editorMetadataFiles.Contains(metadata.GetFileName()));
     }
 
@@ -464,6 +462,14 @@ public sealed class ContentService : SelectionService<IContentNode>, IContentSer
 
     private void RefreshMGCBFiles() {
         this.CreateMGCBFile(out _);
+    }
+
+    private void ResetAssets() {
+        this._assetManager.Unload();
+        var contentFiles = this._rootContentDirectory.GetAllContentFiles();
+        foreach (var metadata in contentFiles.Select(x => x.Metadata).Where(x => x != null)) {
+            this._assetManager.RegisterMetadata(metadata);
+        }
     }
 
 
