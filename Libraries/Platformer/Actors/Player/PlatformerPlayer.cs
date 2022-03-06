@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
-public sealed class PlayerPlatformerActor : PlatformerActor {
+public sealed class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private float _elapsedJumpSeconds;
     private float _elapsedRunSeconds;
