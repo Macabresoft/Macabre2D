@@ -231,10 +231,10 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             }
         }
         else if (type.IsAssignableTo(typeof(IEntity))) {
-            await this.AddEntity(null);
+            await this.AddEntity(type);
         }
         else if (type.IsAssignableTo(typeof(ILoopSystem))) {
-            await this.AddSystem(null);
+            await this.AddSystem(type);
         }
     }
 
