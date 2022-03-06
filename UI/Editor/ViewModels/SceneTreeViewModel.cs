@@ -22,9 +22,9 @@ using Unity;
 public sealed class SceneTreeViewModel : BaseViewModel {
     private readonly IContentService _contentService;
     private readonly ICommonDialogService _dialogService;
+    private readonly ILoopService _loopService;
     private readonly ReactiveCommand<object, Unit> _moveDownCommand;
     private readonly ReactiveCommand<object, Unit> _moveUpCommand;
-    private readonly ISystemService _systemService;
     private readonly IUndoService _undoService;
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The selection service.</param>
     /// <param name="sceneService">The scene service.</param>
-    /// <param name="systemService">The system service.</param>
+    /// <param name="loopService">The loop service.</param>
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public SceneTreeViewModel(
@@ -51,14 +51,14 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         IEditorService editorService,
         IEntityService entityService,
         ISceneService sceneService,
-        ISystemService systemService,
+        ILoopService loopService,
         IUndoService undoService) {
         this._contentService = contentService;
         this._dialogService = dialogService;
         this.EditorService = editorService;
         this.EntityService = entityService;
         this.SceneService = sceneService;
-        this._systemService = systemService;
+        this._loopService = loopService;
         this._undoService = undoService;
 
         this.AddCommand = ReactiveCommand.CreateFromTask<Type>(async x => await this.AddChild(x));
@@ -78,12 +78,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
         this.AddEntityModels = this.EntityService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
-        this.AddSystemModels = this._systemService.AvailableTypes.OrderBy(x => x.Name)
+        this.AddLoopModels = this._loopService.AvailableTypes.OrderBy(x => x.Name)
             .Select(x => new MenuItemModel(x.Name, x.FullName, this.AddCommand, x)).ToList();
     }
 
     /// <summary>
-    /// Gets a command to add a system or an entity.
+    /// Gets a command to add a loop or an entity.
     /// </summary>
     public ICommand AddCommand { get; }
 
@@ -93,9 +93,9 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public IReadOnlyCollection<MenuItemModel> AddEntityModels { get; }
 
     /// <summary>
-    /// Gets a collection of <see cref="MenuItemModel" /> for adding systems.
+    /// Gets a collection of <see cref="MenuItemModel" /> for adding loops.
     /// </summary>
-    public IReadOnlyCollection<MenuItemModel> AddSystemModels { get; }
+    public IReadOnlyCollection<MenuItemModel> AddLoopModels { get; }
 
     /// <summary>
     /// Gets a command to clone an entity.
@@ -138,7 +138,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public ICommand RemoveCommand { get; }
 
     /// <summary>
-    /// Gets a command for renaming an entity or system..
+    /// Gets a command for renaming an entity or loop.
     /// </summary>
     public ICommand RenameCommand { get; }
 
@@ -204,13 +204,13 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     }
 
     /// <summary>
-    /// Moves a system.
+    /// Moves a loop.
     /// </summary>
-    /// <param name="system">The system.</param>
+    /// <param name="loop">The loop.</param>
     /// <param name="newIndex">The new index.</param>
-    public void MoveSystem(ILoopSystem system, int newIndex) {
-        if (this.SceneService.CurrentScene.Systems is SystemCollection collection) {
-            var originalIndex = collection.IndexOf(system);
+    public void MoveLoop(ILoop loop, int newIndex) {
+        if (this.SceneService.CurrentScene.Loops is LoopCollection collection) {
+            var originalIndex = collection.IndexOf(loop);
             this._undoService.Do(() => {
                 collection.Move(originalIndex, newIndex);
                 this.SceneService.RaiseSelectedChanged();
@@ -226,15 +226,15 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             if (this.SceneService.ImpliedSelected is IScene or IEntity) {
                 await this.AddEntity(null);
             }
-            else if (this.SceneService.Selected is ILoopSystem or SystemCollection) {
-                await this.AddSystem(null);
+            else if (this.SceneService.Selected is ILoop or LoopCollection) {
+                await this.AddLoop(null);
             }
         }
         else if (type.IsAssignableTo(typeof(IEntity))) {
             await this.AddEntity(type);
         }
-        else if (type.IsAssignableTo(typeof(ILoopSystem))) {
-            await this.AddSystem(type);
+        else if (type.IsAssignableTo(typeof(ILoop))) {
+            await this.AddLoop(type);
         }
     }
 
@@ -269,22 +269,22 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
-    private async Task AddSystem(Type type) {
+    private async Task AddLoop(Type type) {
         if (this.SceneService.CurrentScene is { } scene) {
             if (type == null || type.IsInterface) {
-                type = await this._dialogService.OpenTypeSelectionDialog(this._systemService.AvailableTypes);
+                type = await this._dialogService.OpenTypeSelectionDialog(this._loopService.AvailableTypes);
             }
 
-            if (type != null && Activator.CreateInstance(type) is ILoopSystem system) {
-                var originallySelected = this._systemService.Selected;
+            if (type != null && Activator.CreateInstance(type) is ILoop loop) {
+                var originallySelected = this._loopService.Selected;
                 this._undoService.Do(() => {
                     Dispatcher.UIThread.Post(() => {
-                        scene.AddSystem(system);
-                        this.SceneService.Selected = system;
+                        scene.AddLoop(loop);
+                        this.SceneService.Selected = loop;
                     });
                 }, () => {
                     Dispatcher.UIThread.Post(() => {
-                        scene.RemoveSystem(system);
+                        scene.RemoveLoop(loop);
                         this.SceneService.Selected = originallySelected;
                     });
                 });
@@ -295,7 +295,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private bool CanMoveDown(object selected) {
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) < parent.Children.Count - 1,
-            ILoopSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) < this.SceneService.CurrentScene.Systems.Count - 1,
+            ILoop loop => this.SceneService.CurrentScene.Loops.IndexOf(loop) < this.SceneService.CurrentScene.Loops.Count - 1,
             _ => false
         };
     }
@@ -310,7 +310,7 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private bool CanMoveUp(object selected) {
         return selected switch {
             IEntity entity and not IScene when !Entity.IsNullOrEmpty(entity.Parent, out var parent) => parent.Children.IndexOf(entity) != 0,
-            ILoopSystem system => this.SceneService.CurrentScene.Systems.IndexOf(system) != 0,
+            ILoop loop => this.SceneService.CurrentScene.Loops.IndexOf(loop) != 0,
             _ => false
         };
     }
@@ -351,9 +351,9 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index + 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case ILoopSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, index + 1); }, () => { this.MoveSystemByIndex(system, index); });
+            case ILoop loop: {
+                var index = this.SceneService.CurrentScene.Loops.IndexOf(loop);
+                this._undoService.Do(() => { this.MoveLoopByIndex(loop, index + 1); }, () => { this.MoveLoopByIndex(loop, index); });
                 break;
             }
         }
@@ -364,8 +364,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         this.SceneService.RaiseSelectedChanged();
     }
 
-    private void MoveSystemByIndex(ILoopSystem system, int index) {
-        this.SceneService.CurrentScene.ReorderSystem(system, index);
+    private void MoveLoopByIndex(ILoop loop, int index) {
+        this.SceneService.CurrentScene.ReorderLoop(loop, index);
         this.SceneService.RaiseSelectedChanged();
     }
 
@@ -376,9 +376,9 @@ public sealed class SceneTreeViewModel : BaseViewModel {
                 this._undoService.Do(() => { this.MoveEntityByIndex(entity, parent, index - 1); }, () => { this.MoveEntityByIndex(entity, parent, index); });
                 break;
             }
-            case ILoopSystem system: {
-                var index = this.SceneService.CurrentScene.Systems.IndexOf(system);
-                this._undoService.Do(() => { this.MoveSystemByIndex(system, index - 1); }, () => { this.MoveSystemByIndex(system, index); });
+            case ILoop loop: {
+                var index = this.SceneService.CurrentScene.Loops.IndexOf(loop);
+                this._undoService.Do(() => { this.MoveLoopByIndex(loop, index - 1); }, () => { this.MoveLoopByIndex(loop, index); });
                 break;
             }
         }
@@ -389,8 +389,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             case IEntity entity and not IScene:
                 this.RemoveEntity(entity);
                 break;
-            case ILoopSystem system:
-                this.RemoveSystem(system);
+            case ILoop loop:
+                this.RemoveLoop(loop);
                 break;
         }
     }
@@ -412,17 +412,17 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         }
     }
 
-    private void RemoveSystem(object selected) {
-        if (selected is ILoopSystem system && this.SceneService.CurrentScene is { } scene) {
+    private void RemoveLoop(object selected) {
+        if (selected is ILoop loop && this.SceneService.CurrentScene is { } scene) {
             this._undoService.Do(() => {
                 Dispatcher.UIThread.Post(() => {
-                    scene.RemoveSystem(system);
+                    scene.RemoveLoop(loop);
                     this.SceneService.Selected = null;
                 });
             }, () => {
                 Dispatcher.UIThread.Post(() => {
-                    scene.AddSystem(system);
-                    this.SceneService.Selected = system;
+                    scene.AddLoop(loop);
+                    this.SceneService.Selected = loop;
                 });
             });
         }

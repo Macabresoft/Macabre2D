@@ -21,9 +21,9 @@ public class PhysicsGame : BaseGame {
         this.TryCreateSpriteBatch();
 
         var scene = new Scene();
-        scene.AddSystem<UpdateSystem>();
-        scene.AddSystem<RenderSystem>();
-        var physicsService = scene.AddSystem<PhysicsSystem>();
+        scene.AddLoop<UpdateLoop>();
+        scene.AddLoop<RenderLoop>();
+        var physicsService = scene.AddLoop<PhysicsLoop>();
         physicsService.Gravity.Value = new Vector2(0f, -9f);
         physicsService.TimeStep = 1f / 60f;
 

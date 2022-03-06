@@ -34,8 +34,8 @@ public sealed class SkullViewModel : BaseViewModel {
 
     private IScene CreateScene(IAvaloniaGame game) {
         var scene = new Scene();
-        scene.AddSystem<RenderSystem>();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddLoop<RenderLoop>();
+        scene.AddLoop<UpdateLoop>();
         scene.BackgroundColor = DefinedColors.MacabresoftPurple;
 
         var skull = new SpriteSheetAsset();

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a physics engine for a platformer game.
 /// </summary>
-public interface IPlatformerPhysicsSystem : IPhysicsSystem {
+public interface IPlatformerPhysicsLoop : IPhysicsLoop {
     /// <summary>
     /// Gets the maximum downward velocity when falling.
     /// </summary>
@@ -31,10 +31,10 @@ public interface IPlatformerPhysicsSystem : IPhysicsSystem {
 }
 
 /// <summary>
-/// A physics system for a platformer game.
+/// A physics loop for a platformer game.
 /// </summary>
-public class PlatformerPhysicsSystem : PhysicsSystem, IPlatformerPhysicsSystem {
-    public static readonly IPlatformerPhysicsSystem Empty = new EmptyPlatformerPhysicsSystem();
+public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
+    public static readonly IPlatformerPhysicsLoop Empty = new EmptyPlatformerPhysicsLoop();
 
     private Layers _ceilingLayer;
     private Layers _groundLayer;
@@ -69,7 +69,7 @@ public class PlatformerPhysicsSystem : PhysicsSystem, IPlatformerPhysicsSystem {
         set => this.Set(ref this._wallLayer, value);
     }
 
-    private sealed class EmptyPlatformerPhysicsSystem : IPlatformerPhysicsSystem {
+    private sealed class EmptyPlatformerPhysicsLoop : IPlatformerPhysicsLoop {
         /// <inheritdoc />
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -80,7 +80,7 @@ public class PlatformerPhysicsSystem : PhysicsSystem, IPlatformerPhysicsSystem {
         public float Groundedness => 0f;
 
         /// <inheritdoc />
-        public SystemKind Kind => SystemKind.Update;
+        public LoopKind Kind => LoopKind.Update;
 
         /// <inheritdoc />
         public float MinimumPostBounceMagnitude => 0f;

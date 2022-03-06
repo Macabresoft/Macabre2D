@@ -49,7 +49,7 @@ public class SceneTreeView : UserControl {
     }
 
     private bool CanInsert(IControl target) {
-        return target is { DataContext: IEntity or ILoopSystem or EntityCollection or SystemCollection } &&
+        return target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&
                target.DataContext != this.DraggedObject;
     }
 
@@ -87,12 +87,12 @@ public class SceneTreeView : UserControl {
                     case EntityCollection when this.DraggedObject is IEntity draggedEntity:
                         this.ViewModel.MoveEntity(draggedEntity, this.ViewModel.SceneService.CurrentScene, 0);
                         break;
-                    case ILoopSystem targetSystem when this.DraggedObject is ILoopSystem draggedSystem:
-                        index = this.ViewModel.SceneService.CurrentScene.Systems.IndexOf(targetSystem);
-                        this.ViewModel.MoveSystem(draggedSystem, index);
+                    case ILoop targetSystem when this.DraggedObject is ILoop draggedSystem:
+                        index = this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(targetSystem);
+                        this.ViewModel.MoveLoop(draggedSystem, index);
                         break;
-                    case SystemCollection when this.DraggedObject is ILoopSystem draggedSystem:
-                        this.ViewModel.MoveSystem(draggedSystem, 0);
+                    case LoopCollection when this.DraggedObject is ILoop draggedSystem:
+                        this.ViewModel.MoveLoop(draggedSystem, 0);
                         break;
                 }
             }
@@ -113,7 +113,7 @@ public class SceneTreeView : UserControl {
         if (e != null && this._currentDropTarget is { DataContext: not IScene }) {
             IControl toCheck = null;
 
-            if (this._currentDropTarget.DataContext is EntityCollection or SystemCollection) {
+            if (this._currentDropTarget.DataContext is EntityCollection or LoopCollection) {
                 toCheck = this._currentDropTarget.FindDescendantOfType<Border>();
             }
 
@@ -154,7 +154,7 @@ public class SceneTreeView : UserControl {
 
     private async void TreeNode_OnPointerMoved(object sender, PointerEventArgs e) {
         if (!this._isDragging && this.DraggedObject != null &&
-            sender is IControl { DataContext: ILoopSystem or IEntity and not IScene } control &&
+            sender is IControl { DataContext: ILoop or IEntity and not IScene } control &&
             control.DataContext == this.DraggedObject) {
             this._isDragging = true;
             var dragData = new GenericDataObject(this.DraggedObject, this.DraggedObject.Name);
@@ -164,7 +164,7 @@ public class SceneTreeView : UserControl {
 
     private void TreeNode_OnPointerPressed(object sender, PointerPressedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed &&
-            sender is IControl { DataContext: ILoopSystem or IEntity and not IScene } control) {
+            sender is IControl { DataContext: ILoop or IEntity and not IScene } control) {
             this.DraggedObject = control.DataContext as INameable;
         }
     }
@@ -190,7 +190,7 @@ public class SceneTreeView : UserControl {
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
                        (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
-                        draggedObject is ILoopSystem && dropTarget is ILoopSystem or SystemCollection);
+                        draggedObject is ILoop && dropTarget is ILoop or LoopCollection);
             }
 
             return false;

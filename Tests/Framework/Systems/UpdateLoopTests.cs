@@ -8,13 +8,13 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class UpdateSystemTests {
+public class UpdateLoopTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotUpdateDisabled() {
         const int NumberOfUpdates = 100;
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddLoop<UpdateLoop>();
         var disabled = scene.AddChild<TestUpdateableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -35,7 +35,7 @@ public class UpdateSystemTests {
         const int NumberOfChildren = 10;
         const int NumberOfUpdates = 100;
         var scene = new Scene();
-        var updateSystem = scene.AddSystem<UpdateSystem>();
+        var updateSystem = scene.AddLoop<UpdateLoop>();
         var entities = new List<TestUpdateableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {

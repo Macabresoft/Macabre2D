@@ -17,8 +17,8 @@ public sealed class SolidViewModel : BaseViewModel {
 
     public IScene CreateScene(out ICamera camera) {
         var scene = new Scene();
-        scene.AddSystem<RenderSystem>();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddLoop<RenderLoop>();
+        scene.AddLoop<UpdateLoop>();
         scene.BackgroundColor = DefinedColors.CosmicJam;
 
         camera = scene.AddChild<Camera>();

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a system which allows simple raycasting through colliders.
 /// </summary>
-public interface ISimplePhysicsSystem : ILoopSystem {
+public interface ISimplePhysicsLoop : ILoop {
     /// <summary>
     /// Performs a raycast across colliders in the scene, returning all collisions in its path.
     /// </summary>
@@ -36,7 +36,7 @@ public interface ISimplePhysicsSystem : ILoopSystem {
 /// A system which allows simple raycasting through colliders.
 /// </summary>
 [Category(CommonCategories.Physics)]
-public class SimplePhysicsSystem : FixedTimeStepSystem, ISimplePhysicsSystem {
+public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     /// <summary>
     /// Gets the collider tree.
     /// </summary>

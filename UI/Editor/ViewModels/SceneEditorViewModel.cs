@@ -64,7 +64,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
 
     private IScene CreateScene() {
         var scene = new Scene();
-        scene.AddSystem(new EditorRenderSystem(this.SceneService));
+        scene.AddLoop(new EditorRender(this.SceneService));
         this._camera = scene.AddChild<Camera>();
         this._camera.AddChild(new CameraController(this._editorService));
         this._camera.AddChild(new EditorGrid(this._editorService, this._entityService));
@@ -88,7 +88,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
             this._editorService.SelectedGizmo = GizmoKind.Selector;
         }
 
-        scene.AddSystem(new EditorUpdateSystem(this._entityService, this.SceneService, selectorGizmo));
+        scene.AddLoop(new EditorUpdateLoop(this._entityService, this.SceneService, selectorGizmo));
         return scene;
     }
 

@@ -21,8 +21,8 @@ public class ContentGame : BaseGame {
 
         var scene = new Scene();
 
-        scene.AddSystem<UpdateSystem>();
-        scene.AddSystem<RenderSystem>();
+        scene.AddLoop<UpdateLoop>();
+        scene.AddLoop<RenderLoop>();
 
         var camera = scene.AddChild<Camera>();
         camera.AddChild<CameraScroller>();

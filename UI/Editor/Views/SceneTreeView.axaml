@@ -15,7 +15,7 @@
                         Orientation="Horizontal">
                 <Button Command="{Binding AddCommand}"
                         Classes="Icon"
-                        ToolTip.Tip="Contextually add an entity or system depending on the currently selected object in the tree">
+                        ToolTip.Tip="Contextually add an entity or loop depending on the currently selected object in the tree">
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Add Entity..."
@@ -23,10 +23,10 @@
                                       CommandParameter="{x:Type framework:IEntity}"
                                       ToolTip.Tip="Open a window to find an entity to add as a child" />
 
-                            <MenuItem Header="Add System..."
+                            <MenuItem Header="Add Loop..."
                                       Command="{Binding AddCommand}"
-                                      CommandParameter="{x:Type framework:ILoopSystem}"
-                                      ToolTip.Tip="Open a window to find a system to add" />
+                                      CommandParameter="{x:Type framework:ILoop}"
+                                      ToolTip.Tip="Open a window to find a loop to add" />
 
                             <Separator />
 
@@ -38,9 +38,9 @@
                                 </MenuItem.Styles>
                             </MenuItem>
 
-                            <MenuItem Header="All Systems"
+                            <MenuItem Header="All Loops"
                                       Classes="MenuItemParent"
-                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddSystemModels}">
+                                      Items="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
                                 <MenuItem.Styles>
                                     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                 </MenuItem.Styles>
@@ -109,7 +109,7 @@
                                                            Text="{Binding Name}" />
                     </TreeDataTemplate>
 
-                    <TreeDataTemplate DataType="framework:SystemCollection"
+                    <TreeDataTemplate DataType="framework:LoopCollection"
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                            HorizontalAlignment="Stretch"
@@ -120,12 +120,12 @@
                                 <ContextMenu>
                                     <MenuItem Header="Add..."
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.AddCommand}"
-                                              CommandParameter="{x:Type framework:ILoopSystem}"
-                                              ToolTip.Tip="Open a window to find a system to add" />
+                                              CommandParameter="{x:Type framework:ILoop}"
+                                              ToolTip.Tip="Open a window to find a loop to add" />
 
-                                    <MenuItem Header="All Systems"
+                                    <MenuItem Header="All Loops"
                                               Classes="MenuItemParent"
-                                              Items="{Binding $parent[local:SceneTreeView].ViewModel.AddSystemModels}">
+                                              Items="{Binding $parent[local:SceneTreeView].ViewModel.AddLoopModels}">
                                         <MenuItem.Styles>
                                             <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/Controls/MenuItemFromModel.axaml" />
                                         </MenuItem.Styles>
@@ -161,7 +161,7 @@
                         </avaloniaEx:EditableSelectableItem>
                     </TreeDataTemplate>
 
-                    <TreeDataTemplate DataType="framework:ILoopSystem">
+                    <TreeDataTemplate DataType="framework:ILoop">
                         <avaloniaEx:EditableSelectableItem IsEditable="True"
                                                            TextCommittedCommand="{Binding $parent[local:SceneTreeView].ViewModel.RenameCommand}"
                                                            Text="{Binding Path=Name, Mode=TwoWay}"
@@ -172,14 +172,14 @@
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
-                                              ToolTip.Tip="Rename this system" />
+                                              ToolTip.Tip="Rename this loop" />
 
                                     <Separator />
 
                                     <MenuItem Header="Remove"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.RemoveCommand}"
                                               CommandParameter="{Binding}"
-                                              ToolTip.Tip="Remove this system from the scene" />
+                                              ToolTip.Tip="Remove this loop from the scene" />
                                 </ContextMenu>
                             </avaloniaEx:EditableSelectableItem.ContextMenu>
                         </avaloniaEx:EditableSelectableItem>

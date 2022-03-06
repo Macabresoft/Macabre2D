@@ -1,11 +1,11 @@
 namespace Macabresoft.Macabre2D.Framework; 
 
 /// <summary>
-/// A system which does a sorted update loop over enabled updateable entities.
+/// A loop that calls updates on entities.
 /// </summary>
-public class UpdateSystem : LoopSystem {
+public class UpdateLoop : Loop {
     /// <inheritdoc />
-    public override SystemKind Kind => SystemKind.Update;
+    public override LoopKind Kind => LoopKind.Update;
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {

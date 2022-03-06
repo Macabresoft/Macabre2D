@@ -66,7 +66,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
-    private readonly ISystemService _systemService;
+    private readonly ILoopService _loopService;
     private ContentMetadata _currentSceneMetadata;
     private object _impliedSelected;
     private bool _isEntityContext;
@@ -80,20 +80,20 @@ public sealed class SceneService : ReactiveObject, ISceneService {
     /// <param name="pathService">The path service.</param>
     /// <param name="serializer">The serializer.</param>
     /// <param name="settingsService">The settings service.</param>
-    /// <param name="systemService">The system service.</param>
+    /// <param name="loopService">The system service.</param>
     public SceneService(
         IEntityService entityService,
         IFileSystemService fileSystem,
         IPathService pathService,
         ISerializer serializer,
         IEditorSettingsService settingsService,
-        ISystemService systemService) {
+        ILoopService loopService) {
         this._entityService = entityService;
         this._fileSystem = fileSystem;
         this._pathService = pathService;
         this._serializer = serializer;
         this._settingsService = settingsService;
-        this._systemService = systemService;
+        this._loopService = loopService;
     }
 
     /// <inheritdoc />
@@ -105,7 +105,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get {
             return this._selected switch {
                 IEntity => this._entityService.Editors,
-                ILoopSystem => this._systemService.Editors,
+                ILoop => this._loopService.Editors,
                 _ => null
             };
         }
@@ -138,7 +138,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         set {
             this.RaiseAndSetIfChanged(ref this._selected, value);
             this._entityService.Selected = null;
-            this._systemService.Selected = null;
+            this._loopService.Selected = null;
             this.IsEntityContext = false;
 
             switch (this._selected) {
@@ -146,8 +146,8 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this._entityService.Selected = scene;
                     this.ImpliedSelected = this._selected;
                     break;
-                case ILoopSystem system:
-                    this._systemService.Selected = system;
+                case ILoop system:
+                    this._loopService.Selected = system;
                     this.ImpliedSelected = this._selected;
                     break;
                 case IEntity entity:
@@ -155,7 +155,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
-                case SystemCollection:
+                case LoopCollection:
                     this._entityService.Selected = this.CurrentScene;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
@@ -221,7 +221,7 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                             this.CurrentSceneMetadata = metadata;
                             this._settingsService.Settings.LastSceneOpened = metadata.ContentId;
                             this._entityService.Selected = scene;
-                            this._systemService.Selected = scene.Systems.FirstOrDefault();
+                            this._loopService.Selected = scene.Loops.FirstOrDefault();
                         }
                     }
                 }

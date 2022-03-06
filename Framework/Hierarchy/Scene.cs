@@ -8,7 +8,7 @@ using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for a combination of <see cref="ILoopSystem" /> and <see cref="IEntity" />
+/// Interface for a combination of <see cref="ILoop" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public interface IScene : IUpdateableGameObject, IGridContainer {
@@ -30,6 +30,12 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     IGame Game => BaseGame.Empty;
 
     /// <summary>
+    /// Gets the loops.
+    /// </summary>
+    /// <value>The loops.</value>
+    IReadOnlyCollection<ILoop> Loops => Array.Empty<ILoop>();
+
+    /// <summary>
     /// Gets the named children.
     /// </summary>
     IReadOnlyCollection<INameableCollection> NamedChildren => Array.Empty<INameableCollection>();
@@ -45,12 +51,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// </summary>
     /// <value>The renderable entities.</value>
     IEnumerable<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
-
-    /// <summary>
-    /// Gets the systems.
-    /// </summary>
-    /// <value>The systems.</value>
-    IReadOnlyCollection<ILoopSystem> Systems => Array.Empty<ILoopSystem>();
 
     /// <summary>
     /// Gets the updateable entities.
@@ -70,26 +70,26 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     Version Version { get; set; }
 
     /// <summary>
-    /// Adds the system.
+    /// Adds the loop.
     /// </summary>
     /// <typeparam name="T">
-    /// A type that implements <see cref="ILoopSystem" /> and has an empty constructor.
+    /// A type that implements <see cref="ILoop" /> and has an empty constructor.
     /// </typeparam>
-    /// <returns>The added system.</returns>
-    T AddSystem<T>() where T : ILoopSystem, new();
+    /// <returns>The added loop.</returns>
+    T AddLoop<T>() where T : ILoop, new();
 
     /// <summary>
-    /// Adds the system.
+    /// Adds the loop.
     /// </summary>
-    /// <param name="system">The system.</param>
-    void AddSystem(ILoopSystem system);
+    /// <param name="loop">The loop.</param>
+    void AddLoop(ILoop loop);
 
     /// <summary>
-    /// Gets the first found system of the specified type.
+    /// Gets the first found loop of the specified type.
     /// </summary>
-    /// <typeparam name="T">The type of system.</typeparam>
-    /// <returns>The system.</returns>
-    T? GetSystem<T>() where T : class, ILoopSystem;
+    /// <typeparam name="T">The type of loop.</typeparam>
+    /// <returns>The loop.</returns>
+    T? GetLoop<T>() where T : class, ILoop;
 
     /// <summary>
     /// Initializes this instance.
@@ -99,11 +99,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     void Initialize(IGame game, IAssetManager assetManager);
 
     /// <summary>
-    /// Inserts a system at the specified index.
+    /// Inserts a loop at the specified index.
     /// </summary>
     /// <param name="index">The index.</param>
-    /// <param name="system">The system.</param>
-    void InsertSystem(int index, ILoopSystem system);
+    /// <param name="loop">The loop.</param>
+    void InsertLoop(int index, ILoop loop);
 
     /// <summary>
     /// Invokes the specified action after the current update
@@ -118,11 +118,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     void RegisterEntity(IEntity entity);
 
     /// <summary>
-    /// Removes the system.
+    /// Removes the loop.
     /// </summary>
-    /// <param name="system">The system.</param>
-    /// <returns>A value indicating whether or not the system was removed.</returns>
-    bool RemoveSystem(ILoopSystem system);
+    /// <param name="loop">The loop.</param>
+    /// <returns>A value indicating whether or not the loop was removed.</returns>
+    bool RemoveLoop(ILoop loop);
 
     /// <summary>
     /// Renders the scene.
@@ -132,11 +132,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     public void Render(FrameTime frameTime, InputState inputState);
 
     /// <summary>
-    /// Reorders systems so the specified system is moved to the specified index.
+    /// Reorders loops so the specified loop is moved to the specified index.
     /// </summary>
-    /// <param name="system">The system.</param>
+    /// <param name="loop">The loop.</param>
     /// <param name="newIndex">The new index.</param>
-    void ReorderSystem(ILoopSystem system, int newIndex);
+    void ReorderLoop(ILoop loop, int newIndex);
 
     /// <summary>
     /// Resolves the dependency.
@@ -163,7 +163,7 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
 }
 
 /// <summary>
-/// A user-created combination of <see cref="ILoopSystem" /> and <see cref="IEntity" />
+/// A user-created combination of <see cref="ILoop" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
@@ -179,6 +179,10 @@ public sealed class Scene : GridContainer, IScene {
         nameof(ICamera.RenderOrder));
 
     private readonly Dictionary<Type, object> _dependencies = new();
+
+    [DataMember]
+    private readonly LoopCollection _loops = new();
+
     private readonly List<INameableCollection> _namedChildren = new();
     private readonly List<Action> _pendingActions = new();
 
@@ -193,9 +197,6 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IRenderableEntity.IsVisible),
         (c1, c2) => Comparer<int>.Default.Compare(c1.RenderOrder, c2.RenderOrder),
         nameof(IRenderableEntity.RenderOrder));
-
-    [DataMember]
-    private readonly SystemCollection _systems = new();
 
     private readonly FilterSortCollection<IUpdateableEntity> _updateableEntities = new(
         c => c.IsEnabled,
@@ -212,7 +213,7 @@ public sealed class Scene : GridContainer, IScene {
     /// Initializes a new instance of the <see cref="Scene" /> class.
     /// </summary>
     public Scene() : base() {
-        this._namedChildren.Add(this._systems);
+        this._namedChildren.Add(this._loops);
         if (this.Children is INameableCollection nameableCollection) {
             this._namedChildren.Add(nameableCollection);
         }
@@ -222,6 +223,9 @@ public sealed class Scene : GridContainer, IScene {
     public IEnumerable<ICamera> Cameras => this._cameras;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<ILoop> Loops => this._loops;
+
+    /// <inheritdoc />
     public IReadOnlyCollection<INameableCollection> NamedChildren => this._namedChildren;
 
     /// <inheritdoc />
@@ -229,9 +233,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IEnumerable<IRenderableEntity> RenderableEntities => this._renderableEntities;
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<ILoopSystem> Systems => this._systems;
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
@@ -257,24 +258,24 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public T AddSystem<T>() where T : ILoopSystem, new() {
-        var system = new T();
-        this.AddSystem(system);
-        return system;
+    public T AddLoop<T>() where T : ILoop, new() {
+        var loop = new T();
+        this.AddLoop(loop);
+        return loop;
     }
 
     /// <inheritdoc />
-    public void AddSystem(ILoopSystem system) {
-        this._systems.Add(system);
+    public void AddLoop(ILoop loop) {
+        this._loops.Add(loop);
 
         if (this._isInitialized) {
-            system.Initialize(this);
+            loop.Initialize(this);
         }
     }
 
     /// <inheritdoc />
-    public T? GetSystem<T>() where T : class, ILoopSystem {
-        return this.Systems.OfType<T>().FirstOrDefault();
+    public T? GetLoop<T>() where T : class, ILoop {
+        return this.Loops.OfType<T>().FirstOrDefault();
     }
 
     /// <inheritdoc />
@@ -286,8 +287,8 @@ public sealed class Scene : GridContainer, IScene {
                 this.Game = game;
                 this.Initialize(this, this);
 
-                foreach (var system in this.Systems) {
-                    system.Initialize(this);
+                foreach (var loop in this.Loops) {
+                    loop.Initialize(this);
                 }
             }
             finally {
@@ -300,11 +301,11 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void InsertSystem(int index, ILoopSystem system) {
-        this._systems.InsertOrAdd(index, system);
+    public void InsertLoop(int index, ILoop loop) {
+        this._loops.InsertOrAdd(index, loop);
 
         if (this._isInitialized) {
-            system.Initialize(this);
+            loop.Initialize(this);
         }
     }
 
@@ -338,10 +339,10 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public bool RemoveSystem(ILoopSystem system) {
+    public bool RemoveLoop(ILoop loop) {
         var result = false;
-        if (this._systems.Contains(system)) {
-            this.Invoke(() => this._systems.Remove(system));
+        if (this._loops.Contains(loop)) {
+            this.Invoke(() => this._loops.Remove(loop));
             result = true;
         }
 
@@ -353,8 +354,8 @@ public sealed class Scene : GridContainer, IScene {
         try {
             this._isBusy = true;
 
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Kind == SystemKind.Render)) {
-                system.Update(frameTime, inputState);
+            foreach (var loop in this.Loops.Where(x => x.IsEnabled && x.Kind == LoopKind.Render)) {
+                loop.Update(frameTime, inputState);
             }
         }
         finally {
@@ -363,9 +364,9 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public void ReorderSystem(ILoopSystem system, int newIndex) {
-        if (this._systems.Remove(system)) {
-            this._systems.InsertOrAdd(newIndex, system);
+    public void ReorderLoop(ILoop loop, int newIndex) {
+        if (this._loops.Remove(loop)) {
+            this._loops.InsertOrAdd(newIndex, loop);
         }
     }
 
@@ -409,11 +410,10 @@ public sealed class Scene : GridContainer, IScene {
     public void Update(FrameTime frameTime, InputState inputState) {
         try {
             this._isBusy = true;
-
             this.InvokePendingActions();
 
-            foreach (var system in this.Systems.Where(x => x.IsEnabled && x.Kind == SystemKind.Update)) {
-                system.Update(frameTime, inputState);
+            foreach (var loop in this.Loops.Where(x => x.IsEnabled && x.Kind == LoopKind.Update)) {
+                loop.Update(frameTime, inputState);
             }
         }
         finally {
@@ -446,16 +446,16 @@ public sealed class Scene : GridContainer, IScene {
         public Version Version { get; set; } = new();
 
         /// <inheritdoc />
-        public T AddSystem<T>() where T : ILoopSystem, new() {
+        public T AddLoop<T>() where T : ILoop, new() {
             return new T();
         }
 
         /// <inheritdoc />
-        public void AddSystem(ILoopSystem service) {
+        public void AddLoop(ILoop loop) {
         }
 
         /// <inheritdoc />
-        public T? GetSystem<T>() where T : class, ILoopSystem {
+        public T? GetLoop<T>() where T : class, ILoop {
             return null;
         }
 
@@ -464,7 +464,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public void InsertSystem(int index, ILoopSystem system) {
+        public void InsertLoop(int index, ILoop loop) {
         }
 
         /// <inheritdoc />
@@ -476,7 +476,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public bool RemoveSystem(ILoopSystem service) {
+        public bool RemoveLoop(ILoop loop) {
             return false;
         }
 
@@ -485,7 +485,7 @@ public sealed class Scene : GridContainer, IScene {
         }
 
         /// <inheritdoc />
-        public void ReorderSystem(ILoopSystem system, int newIndex) {
+        public void ReorderLoop(ILoop loop, int newIndex) {
         }
 
         /// <inheritdoc />

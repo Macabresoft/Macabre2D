@@ -5,11 +5,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A system which updates at a fixed time step.
+/// A loop which updates at a fixed time step.
 /// </summary>
-/// <seealso cref="UpdateSystem" />
+/// <seealso cref="UpdateLoop" />
 [Category(CommonCategories.Timing)]
-public abstract class FixedTimeStepSystem : UpdateSystem {
+public abstract class FixedTimeStepLoop : UpdateLoop {
     private float _timePassed;
     private float _timeStep = 1f / 30f;
 

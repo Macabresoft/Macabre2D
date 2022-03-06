@@ -36,7 +36,7 @@ public static class Registrar {
             .RegisterType<IProjectService, ProjectService>(new SingletonLifetimeManager())
             .RegisterType<ISaveService, SaveService>(new SingletonLifetimeManager())
             .RegisterType<ISceneService, SceneService>(new SingletonLifetimeManager())
-            .RegisterType<ISystemService, SystemService>(new SingletonLifetimeManager())
+            .RegisterType<ILoopService, LoopService>(new SingletonLifetimeManager())
             .RegisterType<IValueControlService, ValueControlService>(new SingletonLifetimeManager())
             .PerformRegistrations();
     }

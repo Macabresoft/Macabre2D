@@ -1,9 +1,9 @@
 namespace Macabresoft.Macabre2D.Framework; 
 
 /// <summary>
-/// Defines the loop that a system should run in.
+/// The kind of loop being run.
 /// </summary>
-public enum SystemKind {
+public enum LoopKind {
     None = 0,
     Update = 1,
     Render = 2,

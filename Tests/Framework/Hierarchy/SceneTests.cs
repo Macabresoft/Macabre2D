@@ -15,15 +15,15 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddSystem<UpdateSystem>();
+            scene.AddLoop<UpdateLoop>();
         }
 
-        var reordered = scene.Systems.ElementAt(0);
-        scene.ReorderSystem(reordered, 1);
+        var reordered = scene.Loops.ElementAt(0);
+        scene.ReorderLoop(reordered, 1);
 
         using (new AssertionScope()) {
-            scene.Systems.Count.Should().Be(NumberOfChildren);
-            scene.Systems.ElementAt(1).Should().Be(reordered);
+            scene.Loops.Count.Should().Be(NumberOfChildren);
+            scene.Loops.ElementAt(1).Should().Be(reordered);
         }
     }
 
@@ -36,15 +36,15 @@ public sealed class SceneTests {
         var scene = new Scene();
 
         for (var i = 0; i < NumberOfChildren; i++) {
-            scene.AddSystem<UpdateSystem>();
+            scene.AddLoop<UpdateLoop>();
         }
 
-        var reordered = scene.Systems.ElementAt(OriginalIndex);
-        scene.ReorderSystem(reordered, NewIndex);
+        var reordered = scene.Loops.ElementAt(OriginalIndex);
+        scene.ReorderLoop(reordered, NewIndex);
 
         using (new AssertionScope()) {
-            scene.Systems.Count.Should().Be(NumberOfChildren);
-            scene.Systems.ElementAt(NewIndex).Should().Be(reordered);
+            scene.Loops.Count.Should().Be(NumberOfChildren);
+            scene.Loops.ElementAt(NewIndex).Should().Be(reordered);
         }
     }
 

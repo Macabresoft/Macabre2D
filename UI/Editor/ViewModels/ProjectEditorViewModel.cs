@@ -156,8 +156,8 @@ public class ProjectEditorViewModel : BaseViewModel {
             BackgroundColor = this.BackgroundColor
         };
 
-        scene.AddSystem<RenderSystem>();
-        scene.AddSystem<UpdateSystem>();
+        scene.AddLoop<RenderLoop>();
+        scene.AddLoop<UpdateLoop>();
 
         this._camera = scene.AddChild<Camera>();
         this._camera.LocalPosition = CameraAdjustment;

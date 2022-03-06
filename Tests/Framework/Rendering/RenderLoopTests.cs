@@ -8,14 +8,14 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class RenderSystemTests {
+public class RenderLoopTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotRenderDisabled() {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddSystem<RenderSystem>();
+        var renderSystem = scene.AddLoop<RenderLoop>();
         var disabled = scene.AddChild<TestRenderableEntity>();
         disabled.IsEnabled = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -37,7 +37,7 @@ public class RenderSystemTests {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddSystem<RenderSystem>();
+        var renderSystem = scene.AddLoop<RenderLoop>();
         var disabled = scene.AddChild<TestRenderableEntity>();
         disabled.IsVisible = false;
         disabled.SleepAmountInMilliseconds = 0;
@@ -60,7 +60,7 @@ public class RenderSystemTests {
         const int NumberOfRenders = 100;
         var scene = new Scene();
         scene.AddChild<Camera>();
-        var renderSystem = scene.AddSystem<RenderSystem>();
+        var renderSystem = scene.AddLoop<RenderLoop>();
         var entities = new List<TestRenderableEntity>();
 
         for (var i = 0; i < NumberOfChildren; i++) {

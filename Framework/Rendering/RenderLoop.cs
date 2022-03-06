@@ -1,17 +1,16 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// The default rendering system, which attempts to render every
+/// The default rendering loop, which attempts to render every
 /// <see cref="IRenderableEntity" /> in the scene.
 /// </summary>
-public class RenderSystem : LoopSystem {
+public class RenderLoop : Loop {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     /// <inheritdoc />
-    public override SystemKind Kind => SystemKind.Render;
+    public override LoopKind Kind => LoopKind.Render;
 
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Scene.Game is { } game) {

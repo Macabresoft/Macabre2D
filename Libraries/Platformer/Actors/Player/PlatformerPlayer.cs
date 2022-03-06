@@ -84,7 +84,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
                 verticalVelocity = 0f;
             }
 
-            verticalVelocity += this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
 
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);

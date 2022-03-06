@@ -65,7 +65,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
-    private IPlatformerPhysicsSystem _physicsSystem = PlatformerPhysicsSystem.Empty;
+    private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
     private QueueableSpriteAnimator? _spriteAnimator;
@@ -140,7 +140,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <summary>
     /// Gets the physics system.
     /// </summary>
-    protected IPlatformerPhysicsSystem PhysicsSystem => this._physicsSystem;
+    protected IPlatformerPhysicsLoop PhysicsLoop => this._physicsLoop;
 
     /// <summary>
     /// Gets a value that is half of <see cref="Size" /> for calculations.
@@ -152,7 +152,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         base.Initialize(scene, parent);
 
         this.ResetBoundingArea();
-        this._physicsSystem = this.Scene.GetSystem<IPlatformerPhysicsSystem>() ?? throw new ArgumentNullException(nameof(this._physicsSystem));
+        this._physicsLoop = this.Scene.GetLoop<IPlatformerPhysicsLoop>() ?? throw new ArgumentNullException(nameof(this._physicsLoop));
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.MovingAnimationReference);
         this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.JumpingAnimationReference);
@@ -207,7 +207,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             distance,
-            this._physicsSystem.CeilingLayer,
+            this._physicsLoop.CeilingLayer,
             out var hit,
             new Vector2(-this.HalfSize.X + anchorOffset, 0f),
             new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
@@ -234,7 +234,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             distance,
-            this._physicsSystem.GroundLayer,
+            this._physicsLoop.GroundLayer,
             out hit,
             new Vector2(-this.HalfSize.X + anchorOffset, 0f),
             new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
@@ -264,7 +264,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             this.HalfSize.Y,
-            this._physicsSystem.GroundLayer,
+            this._physicsLoop.GroundLayer,
             out hit,
             new Vector2(-this.HalfSize.X, 0f),
             new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
@@ -284,7 +284,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="facingDirection">The direction this is facing.</param>
     /// <returns>The actor's state.</returns>
     protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity, HorizontalDirection facingDirection) {
-        var verticalVelocity = -this.PhysicsSystem.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        var verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         return new ActorState(MovementKind.Falling, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
     }
 
@@ -353,7 +353,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = this.TryRaycast(
             direction,
             distance,
-            this._physicsSystem.WallLayer,
+            this._physicsLoop.WallLayer,
             out var hit,
             new Vector2(0f, -this.HalfSize.Y + anchorOffset),
             new Vector2(0f, this.HalfSize.Y - anchorOffset)) && hit != RaycastHit.Empty;
@@ -380,7 +380,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         while (!result && counter < anchors.Length) {
             var (x, y) = anchors[counter];
-            result = this._physicsSystem.TryRaycast(new Vector2(worldTransform.Position.X + x, worldTransform.Position.Y + y), direction, distance, layers, out hit);
+            result = this._physicsLoop.TryRaycast(new Vector2(worldTransform.Position.X + x, worldTransform.Position.Y + y), direction, distance, layers, out hit);
             counter++;
         }
 
