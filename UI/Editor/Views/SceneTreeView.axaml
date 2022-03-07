@@ -113,7 +113,7 @@
                                       ItemsSource="{Binding}">
                         <avaloniaEx:EditableSelectableItem IsEditable="False"
                                                            HorizontalAlignment="Stretch"
-                                                           Icon="{StaticResource SystemIcon}"
+                                                           Icon="{StaticResource LoopIcon}"
                                                            IconForeground="{StaticResource PurpleBrush}"
                                                            Text="{Binding Name}">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>

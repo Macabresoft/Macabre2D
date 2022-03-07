@@ -4,10 +4,10 @@
         <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.12" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.12" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.12" />
-        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.15" />
+        <PackageReference Include="Avalonia" Version="0.10.13" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.13" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.13" />
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.16" />
         <PackageReference Include="Unity" Version="5.11.10" />
     </ItemGroup>
     <ItemGroup>
