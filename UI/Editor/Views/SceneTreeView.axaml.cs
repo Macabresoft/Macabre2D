@@ -89,6 +89,11 @@ public class SceneTreeView : UserControl {
                         break;
                     case ILoop targetSystem when this.DraggedObject is ILoop draggedSystem:
                         index = this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(targetSystem);
+                        
+                        if (index < this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(draggedSystem)) {
+                            index++;
+                        }
+                        
                         this.ViewModel.MoveLoop(draggedSystem, index);
                         break;
                     case LoopCollection when this.DraggedObject is ILoop draggedSystem:
