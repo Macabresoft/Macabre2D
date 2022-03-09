@@ -20,7 +20,7 @@ public enum CardinalDirections : byte {
 }
 
 /// <summary>
-/// A tileable entity. Contains a <see cref="TileGrid" /> and implements
+/// A tileable entity.
 /// <see cref="ITileableEntity" />
 /// </summary>
 public abstract class TileableEntity : Entity, ITileableEntity {
@@ -44,7 +44,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
-    public IGridContainer CurrentGrid { get; private set; } = GridContainer.EmptyGridContainer;
+    public IGridContainer CurrentGrid { get; private set; } = GridContainer.Empty;
 
     /// <inheritdoc />
     public Point MaximumTile { get; private set; }
@@ -239,7 +239,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
 
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
-        if (this.HasActiveTiles() && this.CurrentGrid is { } grid and not EmptyGridContainer) {
+        if (this.HasActiveTiles() && this.CurrentGrid is { } grid && grid != GridContainer.Empty) {
             result = new BoundingArea(grid.GetTilePosition(this.MinimumTile), grid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
         }
         else {
@@ -264,7 +264,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
             this.CurrentGrid.PropertyChanged += this.GridContainer_PropertyChanged;
         }
         else {
-            this.CurrentGrid = GridContainer.EmptyGridContainer;
+            this.CurrentGrid = GridContainer.Empty;
         }
 
         this.ResetBoundingArea();

@@ -9,7 +9,7 @@ using NUnit.Framework;
 [TestFixture]
 public sealed class GridContainerTests {
     private sealed class GridContainerUser : Entity {
-        public IGridContainer Container { get; private set; } = GridContainer.EmptyGridContainer;
+        public IGridContainer Container { get; private set; } = GridContainer.Empty;
 
         public override void Initialize(IScene scene, IEntity parent) {
             base.Initialize(scene, parent);

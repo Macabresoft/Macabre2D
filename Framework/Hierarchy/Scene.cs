@@ -167,11 +167,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
 /// which runs on a <see cref="IGame" />.
 /// </summary>
 public sealed class Scene : GridContainer, IScene {
-    /// <summary>
-    /// The default empty <see cref="IScene" /> that is present before initialization.
-    /// </summary>
-    public new static readonly IScene Empty = new EmptyScene();
-
     private readonly FilterSortCollection<ICamera> _cameras = new(
         c => c.IsEnabled,
         nameof(IEnableable.IsEnabled),
@@ -221,6 +216,11 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IEnumerable<ICamera> Cameras => this._cameras;
+
+    /// <summary>
+    /// Gets the default empty <see cref="IScene" /> that is present before initialization.
+    /// </summary>
+    public new static IScene Empty => EmptyObject.Instance;
 
     /// <inheritdoc />
     public IReadOnlyCollection<ILoop> Loops => this._loops;
@@ -432,78 +432,6 @@ public sealed class Scene : GridContainer, IScene {
         foreach (var action in actions) {
             action();
             this._pendingActions.Remove(action);
-        }
-    }
-
-    private class EmptyScene : EmptyGridContainer, IScene {
-        /// <inheritdoc />
-        public Color BackgroundColor {
-            get => Color.HotPink;
-            set { }
-        }
-
-        /// <inheritdoc />
-        public Version Version { get; set; } = new();
-
-        /// <inheritdoc />
-        public T AddLoop<T>() where T : ILoop, new() {
-            return new T();
-        }
-
-        /// <inheritdoc />
-        public void AddLoop(ILoop loop) {
-        }
-
-        /// <inheritdoc />
-        public T? GetLoop<T>() where T : class, ILoop {
-            return null;
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IGame gameLoop, IAssetManager assetManager) {
-        }
-
-        /// <inheritdoc />
-        public void InsertLoop(int index, ILoop loop) {
-        }
-
-        /// <inheritdoc />
-        public void Invoke(Action action) {
-        }
-
-        /// <inheritdoc />
-        public void RegisterEntity(IEntity entity) {
-        }
-
-        /// <inheritdoc />
-        public bool RemoveLoop(ILoop loop) {
-            return false;
-        }
-
-        /// <inheritdoc />
-        public void Render(FrameTime frameTime, InputState inputState) {
-        }
-
-        /// <inheritdoc />
-        public void ReorderLoop(ILoop loop, int newIndex) {
-        }
-
-        /// <inheritdoc />
-        public T ResolveDependency<T>() where T : new() {
-            return new T();
-        }
-
-        /// <inheritdoc />
-        public T ResolveDependency<T>(Func<T> objectFactory) where T : class {
-            return objectFactory.SafeInvoke();
-        }
-
-        /// <inheritdoc />
-        public void UnregisterEntity(IEntity entity) {
-        }
-
-        /// <inheritdoc />
-        public void Update(FrameTime frameTime, InputState inputState) {
         }
     }
 }

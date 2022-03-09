@@ -152,12 +152,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
 /// </summary>
 [Category("Entity")]
 public class Entity : Transformable, IEntity {
-    /// <summary>
-    /// The default empty <see cref="IEntity" /> that is present before initialization.
-    /// </summary>
-    /// 43E
-    public static readonly IEntity Empty = new EmptyEntity();
-
     [DataMember]
     private readonly EntityCollection _children = new();
 
@@ -175,6 +169,11 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IEntity> Children => this._children;
+
+    /// <summary>
+    /// Gets the default empty <see cref="IEntity" /> that is present before initialization.
+    /// </summary>
+    public static IEntity Empty => EmptyObject.Instance;
 
     /// <inheritdoc />
     [DataMember]
@@ -409,109 +408,6 @@ public class Entity : Transformable, IEntity {
         if (this._children.Contains(entity)) {
             entity.OnRemovedFromSceneTree();
             this._children.Remove(entity);
-        }
-    }
-
-    internal class EmptyEntity : EmptyTransformable, IEntity {
-        /// <inheritdoc />
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        /// <inheritdoc />
-        public Guid Id {
-            get => Guid.Empty;
-            set { }
-        }
-
-        /// <inheritdoc />
-        public bool IsEnabled {
-            get => false;
-            set { }
-        }
-
-        /// <inheritdoc />
-        public Layers Layers {
-            get => Layers.None;
-            set { }
-        }
-
-        /// <inheritdoc />
-        public string Name {
-            get => "Empty";
-            set { }
-        }
-
-        /// <inheritdoc />
-        public T AddChild<T>() where T : IEntity, new() {
-            throw new NotSupportedException("Initialization has not occured.");
-        }
-
-        /// <inheritdoc />
-        public IEntity AddChild() {
-            throw new NotSupportedException("Initialization has not occured.");
-        }
-
-        /// <inheritdoc />
-        public void AddChild(IEntity entity) {
-            throw new NotSupportedException("Initialization has not occured.");
-        }
-
-        /// <inheritdoc />
-        public IEntity FindChild(Guid id) {
-            return Empty;
-        }
-
-        public IEntity FindChild(string name) {
-            return Empty;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<T> GetDescendents<T>() {
-            return Enumerable.Empty<T>();
-        }
-
-        /// <inheritdoc />
-        public T GetOrAddChild<T>() where T : class, IEntity, new() {
-            throw new NotSupportedException("Initialization has not occured.");
-        }
-
-        /// <inheritdoc />
-        public void Initialize(IScene scene, IEntity parent) {
-            throw new NotSupportedException("An empty entity cannot be initialized.");
-        }
-
-        /// <inheritdoc />
-        public void InsertChild(int index, IEntity entity) {
-            throw new NotSupportedException("Initialization has not occured.");
-        }
-
-        /// <inheritdoc />
-        public bool IsDescendentOf(IEntity entity) {
-            return false;
-        }
-
-        /// <inheritdoc />
-        public void OnRemovedFromSceneTree() {
-            throw new NotSupportedException("An empty entity should never be added to a scene tree, much less removed.");
-        }
-
-        /// <inheritdoc />
-        public void RemoveChild(IEntity entity) {
-        }
-
-        /// <inheritdoc />
-        public void ReorderChild(IEntity entity, int newIndex) {
-        }
-
-        /// <inheritdoc />
-        public bool TryGetChild<T>(out T? entity) where T : class, IEntity {
-            entity = null;
-            return false;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetParentEntity<T>(out T? entity) where T : class, IEntity {
-            entity = default;
-            return false;
         }
     }
 }

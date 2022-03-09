@@ -39,17 +39,17 @@ public interface IGridContainer : IEntity {
 /// An entity which contains a grid.
 /// </summary>
 public class GridContainer : Entity, IGridContainer {
-    /// <summary>
-    /// An empty grid container. Defaults to a 1 by 1 grid.
-    /// </summary>
-    public static readonly IGridContainer EmptyGridContainer = new EmptyGridContainer();
-
     private readonly ResettableLazy<Vector2> _worldTileSize;
     private Vector2 _tileSize = Vector2.One;
 
     public GridContainer() : base() {
         this._worldTileSize = new ResettableLazy<Vector2>(this.GetWorldTileSize);
     }
+
+    /// <summary>
+    /// An empty grid container. Defaults to a 1 by 1 grid.
+    /// </summary>
+    public new static IGridContainer Empty => EmptyObject.Instance;
 
     /// <inheritdoc />
     public Vector2 WorldTileSize => this._worldTileSize.Value;
@@ -109,22 +109,5 @@ public class GridContainer : Entity, IGridContainer {
     private void ResetWorldTileSize() {
         this._worldTileSize.Reset();
         this.RaisePropertyChanged(nameof(this.WorldTileSize));
-    }
-}
-
-internal class EmptyGridContainer : Entity.EmptyEntity, IGridContainer {
-    public Vector2 WorldTileSize => this.LocalTileSize;
-
-    public Vector2 LocalTileSize {
-        get => Vector2.One;
-        set { }
-    }
-
-    public Vector2 GetNearestTilePosition(Vector2 position) {
-        throw new NotImplementedException();
-    }
-
-    public Vector2 GetTilePosition(Point tile) {
-        throw new NotImplementedException();
     }
 }
