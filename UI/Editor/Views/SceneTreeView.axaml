@@ -200,15 +200,21 @@
 
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
+                                              HotKey="Ctrl + R"
+                                              InputGesture="Ctrl + R"
                                               ToolTip.Tip="Rename this entity" />
 
                                     <MenuItem Header="Focus"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
+                                              HotKey="Ctrl + F"
+                                              InputGesture="Ctrl + F"
                                               ToolTip.Tip="Focus on this entity in the scene editor" />
 
                                     <MenuItem Header="Clone"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
                                               CommandParameter="{Binding}"
+                                              HotKey="Ctrl + Shift + C"
+                                              InputGesture="Ctrl + Shift + C"
                                               ToolTip.Tip="Clone this entity" />
 
                                     <MenuItem Header="Create Prefab"
