@@ -10,11 +10,11 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-public class EmptyObject : IScene {
+internal class EmptyObject : IScene {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
-    public static EmptyObject Instance = new();
+    public static readonly EmptyObject Instance = new();
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
