@@ -41,7 +41,7 @@ public class PlatformerCamera : Camera, IUpdateableEntity {
 
     private void ResetFocusedBoundingArea() {
         var height = this.ViewHeight * this.FocusedScreenArea.Y;
-        var width = this.GetViewWidth() * this.FocusedScreenArea.X;
+        var width = this.ViewWidth * this.FocusedScreenArea.X;
         var minimum = this.Transform.Position;
         this.FocusedBoundingArea = new BoundingArea(minimum, width, height);
     }

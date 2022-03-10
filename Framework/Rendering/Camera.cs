@@ -19,6 +19,8 @@ public class Camera : Entity, ICamera {
     [DataMember(Name = "Shader")]
     private readonly ShaderReference _shaderReference = new();
 
+    private readonly ResettableLazy<float> _viewWidth;
+
     private Layers _layersToRender = ~Layers.None;
     private int _renderOrder;
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
@@ -30,6 +32,7 @@ public class Camera : Entity, ICamera {
     /// </summary>
     public Camera() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
+        this._viewWidth = new ResettableLazy<float>(this.CreateViewWidth);
     }
 
     /// <inheritdoc />
@@ -38,6 +41,11 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     [DataMember(Name = "Offset Settings")]
     public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
+
+    /// <summary>
+    /// Gets the view width.
+    /// </summary>
+    public float ViewWidth => this._viewWidth.Value;
 
     /// <inheritdoc />
     [DataMember(Name = "Layers to Render")]
@@ -88,9 +96,8 @@ public class Camera : Entity, ICamera {
     }
 
     /// <summary>
-    /// Gets the height of the view.
+    /// Gets or sets the height of the view.
     /// </summary>
-    /// <value>The height of the view.</value>
     [DataMember(Name = "View Height")]
     public float ViewHeight {
         get => this._viewHeight;
@@ -133,16 +140,6 @@ public class Camera : Entity, ICamera {
             Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Scene.Game.Project.Settings) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
-    }
-
-    /// <summary>
-    /// Gets the width of the view.
-    /// </summary>
-    /// <returns>The width of the view.</returns>
-    public float GetViewWidth() {
-        var size = this.OffsetSettings.Size;
-        var ratio = size.Y != 0 ? this.ViewHeight / this.OffsetSettings.Size.Y : 0f;
-        return size.X * ratio;
     }
 
     /// <inheritdoc />
@@ -213,9 +210,8 @@ public class Camera : Entity, ICamera {
         this.SetWorldPosition(origin);
 
         this.ViewHeight = difference.Y;
-        var currentViewWidth = this.GetViewWidth();
-        if (currentViewWidth < difference.X) {
-            this.ViewHeight *= difference.X / currentViewWidth;
+        if (this.ViewWidth < difference.X && this.ViewWidth != 0f) {
+            this.ViewHeight *= difference.X / this.ViewWidth;
         }
     }
 
@@ -235,6 +231,7 @@ public class Camera : Entity, ICamera {
     /// </summary>
     protected virtual void OnScreenAreaChanged() {
         this._boundingArea.Reset();
+        this._viewWidth.Reset();
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -269,9 +266,16 @@ public class Camera : Entity, ICamera {
         return new Vector2(this.Scene.Game.ViewportSize.X, this.Scene.Game.ViewportSize.Y);
     }
 
+    private float CreateViewWidth() {
+        var (x, y) = this.OffsetSettings.Size;
+        var ratio = y != 0 ? this.ViewHeight / y : 0f;
+        return x * ratio;
+    }
+
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OffsetSettings.InvalidateSize();
         this.OnScreenAreaChanged();
+        this._viewWidth.Reset();
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
