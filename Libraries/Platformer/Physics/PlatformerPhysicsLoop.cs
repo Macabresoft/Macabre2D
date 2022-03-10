@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Libraries.Platformer.Physics;
+﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;

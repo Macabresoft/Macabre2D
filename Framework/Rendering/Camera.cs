@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// Represents a camera into the game world.
 /// </summary>
 [Display(Name = "Camera")]
-public sealed class Camera : Entity, ICamera {
+public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
 
     [DataMember(Name = "Shader")]
@@ -82,7 +82,7 @@ public sealed class Camera : Entity, ICamera {
 
         set {
             if (this.Set(ref this._snapToPixels, value)) {
-                this.ResetBoundingArea();
+                this.OnScreenAreaChanged();
             }
         }
     }
@@ -103,7 +103,7 @@ public sealed class Camera : Entity, ICamera {
             }
 
             if (this.Set(ref this._viewHeight, value)) {
-                this.ResetBoundingArea();
+                this.OnScreenAreaChanged();
             }
         }
     }
@@ -150,7 +150,7 @@ public sealed class Camera : Entity, ICamera {
         base.Initialize(scene, parent);
 
         this.OffsetSettings.Initialize(this.CreateSize);
-        this.ResetBoundingArea();
+        this.OnScreenAreaChanged();
         this.SamplerState = this._samplerStateType.ToSamplerState();
 
         this.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
@@ -224,8 +224,17 @@ public sealed class Camera : Entity, ICamera {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(IEntity.Transform)) {
-            this.ResetBoundingArea();
+            this.OnScreenAreaChanged();
         }
+    }
+
+    /// <summary>
+    /// Called when the screen area changes.
+    /// This could be the resolution changing, the transform of this entity changing, the offset settings changing, or snap to pixels changing.
+    /// This will also be called during initialization.
+    /// </summary>
+    protected virtual void OnScreenAreaChanged() {
+        this._boundingArea.Reset();
     }
 
     private BoundingArea CreateBoundingArea() {
@@ -262,16 +271,12 @@ public sealed class Camera : Entity, ICamera {
 
     private void Game_ViewportSizeChanged(object? sender, Point e) {
         this.OffsetSettings.InvalidateSize();
-        this.ResetBoundingArea();
+        this.OnScreenAreaChanged();
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(this.OffsetSettings.Offset)) {
-            this.ResetBoundingArea();
+            this.OnScreenAreaChanged();
         }
-    }
-
-    private void ResetBoundingArea() {
-        this._boundingArea.Reset();
     }
 }

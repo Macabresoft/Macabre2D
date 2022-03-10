@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -10,12 +9,23 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public static class VectorExtensions {
     /// <summary>
+    /// Clamps a vector between the minimum and maximum.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <param name="minimum">The minimum values.</param>
+    /// <param name="maximum">The maximum values.</param>
+    /// <returns>The clamped vector.</returns>
+    public static Vector2 Clamp(this Vector2 vector, Vector2 minimum, Vector2 maximum) {
+        return new Vector2(Math.Clamp(vector.X, minimum.X, maximum.X), Math.Clamp(vector.Y, minimum.Y, maximum.Y));
+    }
+
+    /// <summary>
     /// Gets the average of an array of vectors.
     /// </summary>
     /// <param name="vectors">The vectors.</param>
     /// <returns>A vector that should be in the mathematical center of all specified vectors.</returns>
-    public static Vector2 GetAverage(this IEnumerable<Vector2> vectors) {
-        var count = vectors.Count();
+    public static Vector2 GetAverage(this IReadOnlyCollection<Vector2> vectors) {
+        var count = vectors.Count;
         if (count == 0) {
             return Vector2.Zero;
         }

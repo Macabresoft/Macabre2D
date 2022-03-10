@@ -55,15 +55,20 @@ public struct BoundingArea {
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
     /// </summary>
+    /// <param name="minimum">The minimum.</param>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    public BoundingArea(Vector2 minimum, float width, float height) : this(minimum, new Vector2(minimum.X + width, minimum.Y + height)) {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoundingArea" /> class.
+    /// </summary>
     /// <param name="minimumX">The minimum x.</param>
     /// <param name="maximumX">The maximum x.</param>
     /// <param name="minimumY">The minimum y.</param>
     /// <param name="maximumY">The maximum y.</param>
-    public BoundingArea(float minimumX, float maximumX, float minimumY, float maximumY) {
-        this.Minimum = new Vector2(minimumX, minimumY);
-        this.Maximum = new Vector2(maximumX, maximumY);
-        this.Height = maximumY - minimumY;
-        this.Width = maximumX - minimumX;
+    public BoundingArea(float minimumX, float maximumX, float minimumY, float maximumY) : this(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY)) {
     }
 
     /// <summary>
@@ -71,11 +76,7 @@ public struct BoundingArea {
     /// </summary>
     /// <param name="minimumValue">The minimum value.</param>
     /// <param name="maximumValue">The maximum value.</param>
-    public BoundingArea(float minimumValue, float maximumValue) {
-        this.Minimum = new Vector2(minimumValue);
-        this.Maximum = new Vector2(maximumValue);
-        this.Height = maximumValue - minimumValue;
-        this.Width = this.Height;
+    public BoundingArea(float minimumValue, float maximumValue) : this(new Vector2(minimumValue), new Vector2(maximumValue)) {
     }
 
     /// <summary>

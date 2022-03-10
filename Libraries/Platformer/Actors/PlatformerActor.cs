@@ -3,7 +3,6 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.Libraries.Platformer.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
