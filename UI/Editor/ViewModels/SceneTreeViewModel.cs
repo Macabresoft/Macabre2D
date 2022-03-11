@@ -399,15 +399,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         if (selected is IEntity entity) {
             var parent = entity.Parent;
             this._undoService.Do(() => {
-                Dispatcher.UIThread.Post(() => {
-                    parent.RemoveChild(entity);
-                    this.SceneService.Selected = null;
-                });
+                parent.RemoveChild(entity);
+                this.SceneService.Selected = null;
             }, () => {
-                Dispatcher.UIThread.Post(() => {
-                    parent.AddChild(entity);
-                    this.SceneService.Selected = entity;
-                });
+                parent.AddChild(entity);
+                this.SceneService.Selected = entity;
             });
         }
     }
@@ -415,15 +411,11 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private void RemoveLoop(object selected) {
         if (selected is ILoop loop && this.SceneService.CurrentScene is { } scene) {
             this._undoService.Do(() => {
-                Dispatcher.UIThread.Post(() => {
-                    scene.RemoveLoop(loop);
-                    this.SceneService.Selected = null;
-                });
+                scene.RemoveLoop(loop);
+                this.SceneService.Selected = null;
             }, () => {
-                Dispatcher.UIThread.Post(() => {
-                    scene.AddLoop(loop);
-                    this.SceneService.Selected = loop;
-                });
+                scene.AddLoop(loop);
+                this.SceneService.Selected = loop;
             });
         }
     }
@@ -432,8 +424,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         if (this.SceneService.ImpliedSelected is INameable nameable && nameable.Name != updatedName) {
             var originalName = nameable.Name;
             this._undoService.Do(
-                () => { Dispatcher.UIThread.Post(() => { nameable.Name = updatedName; }); },
-                () => { Dispatcher.UIThread.Post(() => { nameable.Name = originalName; }); });
+                () => { nameable.Name = updatedName; },
+                () => { nameable.Name = originalName; });
         }
     }
 }
