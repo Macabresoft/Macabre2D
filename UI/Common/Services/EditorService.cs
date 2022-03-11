@@ -24,6 +24,16 @@ public interface IEditorService : INotifyPropertyChanged {
     event EventHandler<IEntity> FocusRequested;
 
     /// <summary>
+    /// Requests the editor camera to zoom in.
+    /// </summary>
+    public event EventHandler ZoomInRequested;
+
+    /// <summary>
+    /// Requests the editor camera to zoom out.
+    /// </summary>
+    public event EventHandler ZoomOutRequested;
+
+    /// <summary>
     /// Gets a command to request the camera to be centered on the scene.
     /// </summary>
     ICommand RequestCenterCameraCommand { get; }
@@ -32,6 +42,16 @@ public interface IEditorService : INotifyPropertyChanged {
     /// Gets a command to request focus of the currently selected entity.
     /// </summary>
     ICommand RequestFocusCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom in the camera.
+    /// </summary>
+    ICommand RequestZoomInCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom out the camera.
+    /// </summary>
+    ICommand RequestZoomOutCommand { get; }
 
     /// <summary>
     /// Gets or sets the color of selected colliders.
@@ -107,6 +127,12 @@ public class EditorService : ReactiveObject, IEditorService {
     /// <inheritdoc />
     public event EventHandler<IEntity> FocusRequested;
 
+    /// <inheritdoc />
+    public event EventHandler ZoomInRequested;
+
+    /// <inheritdoc />
+    public event EventHandler ZoomOutRequested;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="EditorService" /> class.
     /// </summary>
@@ -122,6 +148,9 @@ public class EditorService : ReactiveObject, IEditorService {
         this.RequestFocusCommand = ReactiveCommand.Create(
             this.RequestFocus,
             this._entityService.WhenAny(x => x.Selected, y => y.Value != null));
+
+        this.RequestZoomInCommand = ReactiveCommand.Create(this.RequestZoomIn);
+        this.RequestZoomOutCommand = ReactiveCommand.Create(this.RequestZoomOut);
     }
 
     /// <inheritdoc />
@@ -129,6 +158,12 @@ public class EditorService : ReactiveObject, IEditorService {
 
     /// <inheritdoc />
     public ICommand RequestFocusCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomInCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomOutCommand { get; }
 
     /// <inheritdoc />
     public Color ColliderColor {
@@ -200,8 +235,15 @@ public class EditorService : ReactiveObject, IEditorService {
         this.CenterCameraRequested.SafeInvoke(this);
     }
 
-
     private void RequestFocus() {
         this.FocusRequested.SafeInvoke(this, this._entityService.Selected);
+    }
+
+    private void RequestZoomIn() {
+        this.ZoomInRequested.SafeInvoke(this);
+    }
+
+    private void RequestZoomOut() {
+        this.ZoomOutRequested.SafeInvoke(this);
     }
 }

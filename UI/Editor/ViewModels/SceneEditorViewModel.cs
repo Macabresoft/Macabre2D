@@ -52,10 +52,13 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this.TryLoadScene();
 
         this._editorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
-        this._editorService.FocusRequested += this.EntityService_FocusRequested;
+        this._editorService.FocusRequested += this.EditorService_FocusRequested;
+        this._editorService.ZoomInRequested += this.EditorService_ZoomInRequested;
+        this._editorService.ZoomOutRequested += this.EditorService_ZoomOutRequested;
         this._editorService.PropertyChanged += this.EditorService_PropertyChanged;
         this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
     }
+
 
     /// <summary>
     /// Gets the scene service.
@@ -96,16 +99,24 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this._camera.LocalPosition = Vector2.Zero;
     }
 
+    private void EditorService_FocusRequested(object sender, IEntity e) {
+        if (e != null) {
+            this._camera.LocalPosition = e.Transform.Position;
+        }
+    }
+
     private void EditorService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(IEditorService.SelectedTab) && this._editorService.SelectedTab == EditorTabs.Scene) {
             this.TryLoadScene();
         }
     }
 
-    private void EntityService_FocusRequested(object sender, IEntity e) {
-        if (e != null) {
-            this._camera.LocalPosition = e.Transform.Position;
-        }
+    private void EditorService_ZoomInRequested(object sender, EventArgs e) {
+        this._camera.ViewHeight *= 0.75f;
+    }
+
+    private void EditorService_ZoomOutRequested(object sender, EventArgs e) {
+        this._camera.ViewHeight *= 1.25f;
     }
 
     private void SceneService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
