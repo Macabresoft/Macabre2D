@@ -1,5 +1,7 @@
 namespace Macabresoft.Macabre2D.Tests.Framework;
 
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using NSubstitute;
@@ -30,5 +32,32 @@ public sealed class CameraTests {
         Assert.AreEqual(expectedViewHeight, camera.ViewHeight);
         Assert.AreEqual(expectedX, camera.LocalPosition.X, 0.001f);
         Assert.AreEqual(expectedY, camera.LocalPosition.Y, 0.001f);
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    [TestCase(1, 1, 1f, 1f)]
+    [TestCase(1, 2, 1f, 2f)]
+    [TestCase(5, 3, 50f, 30f)]
+    public void ViewWidth_Should_BeCorrect(int screenHeight, int screenWidth, float viewHeight, float expectedViewWidth) {
+        var camera = this.CreateCamera(screenWidth, screenHeight, viewHeight);
+
+        using (new AssertionScope()) {
+            camera.ViewWidth.Should().Be(expectedViewWidth);
+        }
+    }
+
+    private ICamera CreateCamera(int screenWidth, int screenHeight, float viewHeight) {
+        var scene = Substitute.For<IScene>();
+        var game = Substitute.For<IGame>();
+        scene.Game.Returns(game);
+        game.ViewportSize.Returns(new Point(screenWidth, screenHeight));
+
+        var camera = new Camera {
+            ViewHeight = viewHeight
+        };
+
+        camera.Initialize(scene, scene);
+        return camera;
     }
 }

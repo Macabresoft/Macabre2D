@@ -10,6 +10,54 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
+/// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
+/// </summary>
+public interface ICamera : IEntity, IBoundable {
+    /// <summary>
+    /// Gets the layers to render.
+    /// </summary>
+    /// <value>The layers to render.</value>
+    Layers LayersToRender { get; }
+
+    /// <summary>
+    /// Gets the offset settings.
+    /// </summary>
+    /// <value>The offset settings.</value>
+    OffsetSettings OffsetSettings { get; }
+
+    /// <summary>
+    /// Gets the render order.
+    /// </summary>
+    /// <value>The render order.</value>
+    int RenderOrder => 0;
+
+    /// <summary>
+    /// Gets the view width.
+    /// </summary>
+    float ViewWidth { get; }
+
+    /// <summary>
+    /// Gets or sets the view height of the camera in world units (not screen pixels).
+    /// </summary>
+    float ViewHeight { get; set; }
+
+    /// <summary>
+    /// Converts the point from screen space to world space.
+    /// </summary>
+    /// <param name="point">The point.</param>
+    /// <returns>The world space location of the point.</returns>
+    Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point);
+
+    /// <summary>
+    /// Renders the provided entities.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
+    /// <param name="entities">The entities to render.</param>
+    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities);
+}
+
+/// <summary>
 /// Represents a camera into the game world.
 /// </summary>
 [Display(Name = "Camera")]
@@ -20,9 +68,9 @@ public class Camera : Entity, ICamera {
     private readonly ShaderReference _shaderReference = new();
 
     private readonly ResettableLazy<float> _viewWidth;
-
     private Layers _layersToRender = ~Layers.None;
     private int _renderOrder;
+    private SamplerState _samplerState = SamplerState.PointClamp;
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
     private bool _snapToPixels;
     private float _viewHeight = 10f;
@@ -42,9 +90,7 @@ public class Camera : Entity, ICamera {
     [DataMember(Name = "Offset Settings")]
     public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
-    /// <summary>
-    /// Gets the view width.
-    /// </summary>
+    /// <inheritdoc />
     public float ViewWidth => this._viewWidth.Value;
 
     /// <inheritdoc />
@@ -61,9 +107,6 @@ public class Camera : Entity, ICamera {
         set => this.Set(ref this._renderOrder, value, true);
     }
 
-    /// <inheritdoc />
-    public SamplerState SamplerState { get; private set; } = SamplerState.PointClamp;
-
     /// <summary>
     /// Gets or sets the type of the sampler state.
     /// </summary>
@@ -74,8 +117,8 @@ public class Camera : Entity, ICamera {
 
         set {
             this.Set(ref this._samplerStateType, value);
-            this.SamplerState = this._samplerStateType.ToSamplerState();
-            this.RaisePropertyChanged(nameof(this.SamplerState));
+            this._samplerState = this._samplerStateType.ToSamplerState();
+            this.RaisePropertyChanged(nameof(this._samplerState));
         }
     }
 
@@ -130,25 +173,12 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public Matrix GetViewMatrix() {
-        var settings = this.Scene.Game.Project.Settings;
-        var pixelsPerUnit = settings.PixelsPerUnit;
-        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
-        var worldTransform = this.Transform;
-
-        return
-            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Scene.Game.Project.Settings) * pixelsPerUnit, 0f)) *
-            Matrix.CreateScale(zoom, -zoom, 0f) *
-            Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
-    }
-
-    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
         this.OffsetSettings.Initialize(this.CreateSize);
         this.OnScreenAreaChanged();
-        this.SamplerState = this._samplerStateType.ToSamplerState();
+        this._samplerState = this._samplerStateType.ToSamplerState();
 
         this.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
@@ -161,7 +191,7 @@ public class Camera : Entity, ICamera {
         spriteBatch?.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,
-            this.SamplerState,
+            this._samplerState,
             null,
             RasterizerState.CullNone,
             this._shaderReference.Asset?.Content,
@@ -276,6 +306,18 @@ public class Camera : Entity, ICamera {
         this.OffsetSettings.InvalidateSize();
         this.OnScreenAreaChanged();
         this._viewWidth.Reset();
+    }
+
+    private Matrix GetViewMatrix() {
+        var settings = this.Scene.Game.Project.Settings;
+        var pixelsPerUnit = settings.PixelsPerUnit;
+        var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
+        var worldTransform = this.Transform;
+
+        return
+            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Scene.Game.Project.Settings) * pixelsPerUnit, 0f)) *
+            Matrix.CreateScale(zoom, -zoom, 0f) *
+            Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
     }
 
     private void OffsetSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
