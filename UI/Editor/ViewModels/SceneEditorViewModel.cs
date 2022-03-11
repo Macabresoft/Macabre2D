@@ -17,6 +17,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     private readonly IEntityService _entityService;
     private readonly IEditorGame _game;
     private readonly IScene _scene;
+    private readonly IEditorSettingsService _settingsService;
     private readonly IUndoService _undoService;
     private ICamera _camera;
 
@@ -31,25 +32,29 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     /// Initializes a new instance of the <see cref="SceneEditorViewModel" /> class.
     /// </summary>
     /// <param name="editorService">The editor service.</param>
+    /// <param name="entityService">The entity service.</param>
     /// <param name="game">The game.</param>
     /// <param name="sceneService">The scene service.</param>
-    /// <param name="entityService">The entity service.</param>
+    /// <param name="settingsService">The settings service.</param>
     /// <param name="undoService">The undo service.</param>
     [InjectionConstructor]
     public SceneEditorViewModel(
         IEditorService editorService,
+        IEntityService entityService,
         IEditorGame game,
         ISceneService sceneService,
-        IEntityService entityService,
+        IEditorSettingsService settingsService,
         IUndoService undoService) : base() {
         this._editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+        this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
         this._game = game ?? throw new ArgumentNullException(nameof(game));
         this.SceneService = sceneService ?? throw new ArgumentNullException(nameof(sceneService));
-        this._entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
+        this._settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         this._undoService = undoService ?? throw new ArgumentNullException(nameof(undoService));
 
         this._scene = this.CreateScene();
         this.TryLoadScene();
+        this._camera.PropertyChanged += this.Camera_PropertyChanged;
 
         this._editorService.CenterCameraRequested += this.EditorService_CenterCameraRequested;
         this._editorService.FocusRequested += this.EditorService_FocusRequested;
@@ -59,16 +64,28 @@ public sealed class SceneEditorViewModel : BaseViewModel {
         this.SceneService.PropertyChanged += this.SceneService_PropertyChanged;
     }
 
-
     /// <summary>
     /// Gets the scene service.
     /// </summary>
     public ISceneService SceneService { get; }
 
+    private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        switch (e.PropertyName) {
+            case nameof(ICamera.Transform):
+                this._settingsService.Settings.CameraPosition = this._camera.Transform.Position;
+                break;
+            case nameof(ICamera.ViewHeight):
+                this._settingsService.Settings.CameraViewHeight = this._camera.ViewHeight;
+                break;
+        }
+    }
+
     private IScene CreateScene() {
         var scene = new Scene();
         scene.AddLoop(new EditorRender(this.SceneService));
         this._camera = scene.AddChild<Camera>();
+        this._camera.ViewHeight = this._settingsService.Settings.CameraViewHeight;
+        this._camera.SetWorldPosition(this._settingsService.Settings.CameraPosition);
         this._camera.AddChild(new CameraController(this._editorService));
         this._camera.AddChild(new EditorGrid(this._editorService, this._entityService));
         this._camera.AddChild(new SelectionDisplay(this._editorService, this._entityService));

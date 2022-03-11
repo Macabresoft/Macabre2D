@@ -28,6 +28,18 @@ public class EditorSettings {
     public Color BackgroundColor { get; set; } = DefinedColors.MacabresoftPurple;
 
     /// <summary>
+    /// Gets or sets the position of the editor camera.
+    /// </summary>
+    [DataMember]
+    public Vector2 CameraPosition { get; set; } = Vector2.Zero;
+
+    /// <summary>
+    /// Gets or sets the view height of the editor camera.
+    /// </summary>
+    [DataMember]
+    public float CameraViewHeight { get; set; } = 10f;
+
+    /// <summary>
     /// Gets or sets the last gizmo opened.
     /// </summary>
     [DataMember]
