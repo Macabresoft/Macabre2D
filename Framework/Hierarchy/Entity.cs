@@ -166,7 +166,7 @@ public class Entity : Transformable, IEntity {
     public Entity() : base() {
         this.PropertyChanged += this.OnPropertyChanged;
     }
-
+    
     /// <inheritdoc />
     public IReadOnlyCollection<IEntity> Children => this._children;
 
@@ -383,7 +383,7 @@ public class Entity : Transformable, IEntity {
     /// The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
     /// </param>
     protected virtual void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.Parent)) {
+        if (this.IsTransformRelativeToParent && e.PropertyName == nameof(this.Parent)) {
             this.HandleMatrixOrTransformChanged();
         }
     }
@@ -399,7 +399,7 @@ public class Entity : Transformable, IEntity {
     }
 
     private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ITransformable.Transform)) {
+        if (this.IsTransformRelativeToParent &&e.PropertyName == nameof(ITransformable.Transform)) {
             this.HandleMatrixOrTransformChanged();
         }
     }

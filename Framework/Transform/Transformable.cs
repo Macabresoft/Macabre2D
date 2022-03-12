@@ -118,6 +118,12 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether or not the transform is relative to its parent.
+    /// </summary>
+    /// <remarks>If this is set to false, the world transform's position and scale will be the same as it's local position and scale.</remarks>
+    protected virtual bool IsTransformRelativeToParent => true;
+
     /// <inheritdoc />
     public Transform Transform {
         get {
@@ -269,10 +275,12 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         var transformMatrix =
             Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
             Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
-
-        var parent = this.GetParentTransformable();
-        if (parent != this) {
-            transformMatrix *= parent.TransformMatrix;
+        
+        if (this.IsTransformRelativeToParent) {
+            var parent = this.GetParentTransformable();
+            if (parent != this) {
+                transformMatrix *= parent.TransformMatrix;
+            }
         }
 
         return transformMatrix;
