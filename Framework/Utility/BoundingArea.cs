@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.Framework;
 
-using System.Collections.Generic;
 using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -9,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// Represents the area around a collider in which a potential collision could be happening.
 /// This is an axis aligned bounding box.
 /// </summary>
-public struct BoundingArea {
+public readonly struct BoundingArea {
     /// <summary>
     /// The empty bounding area.
     /// </summary>
@@ -26,7 +25,7 @@ public struct BoundingArea {
     public readonly float Height;
 
     /// <summary>
-    /// The maximum poositions of this instance.
+    /// The maximum positions of this instance.
     /// </summary>
     public readonly Vector2 Maximum;
 
@@ -117,12 +116,25 @@ public struct BoundingArea {
     /// Gets a value indicating whether or not this bounding area contains the specified point.
     /// </summary>
     /// <param name="point">The point.</param>
-    /// <returns><c>true</c>, if the bounding area contains the point, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if this bounding area contains the point, <c>false</c> otherwise.</returns>
     public bool Contains(Vector2 point) {
-        return (this.Minimum.X <= point.X || this.Minimum.X.HasMinimalDifference(point.X)) &&
-               (this.Minimum.Y <= point.Y || this.Minimum.Y.HasMinimalDifference(point.Y)) &&
-               (this.Maximum.X >= point.X || this.Maximum.X.HasMinimalDifference(point.X)) &&
-               (this.Maximum.Y >= point.Y || this.Maximum.Y.HasMinimalDifference(point.Y));
+        var (x, y) = point;
+        return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
+               (this.Minimum.Y <= y || this.Minimum.Y.HasMinimalDifference(y)) &&
+               (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x)) &&
+               (this.Maximum.Y >= y || this.Maximum.Y.HasMinimalDifference(y));
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its bounds.
+    /// </summary>
+    /// <param name="other">The other bounding area.</param>
+    /// <returns><c>true</c>, if this bounding area contains the other bounding area, <c>false</c> otherwise.</returns>
+    public bool Contains(BoundingArea other) {
+        return (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
+               (this.Minimum.Y <= other.Minimum.Y || this.Minimum.Y.HasMinimalDifference(other.Minimum.Y)) &&
+               (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X)) &&
+               (this.Maximum.Y >= other.Maximum.Y || this.Maximum.Y.HasMinimalDifference(other.Maximum.Y));
     }
 
     /// <summary>
