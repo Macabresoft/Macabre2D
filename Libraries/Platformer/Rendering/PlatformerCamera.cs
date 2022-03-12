@@ -9,24 +9,15 @@ using Microsoft.Xna.Framework;
 /// A <see cref="ICamera" /> for platformers.
 /// </summary>
 public class PlatformerCamera : Camera {
-    private Vector2 _focusedScreenArea = new(0.25f, 0.25f);
+    private Vector2 _distanceAllowedFromParent = Vector2.Zero;
 
     /// <summary>
-    /// Gets the focused bounding area.
-    /// </summary>
-    public BoundingArea FocusedBoundingArea { get; private set; } = BoundingArea.Empty;
-
-    /// <summary>
-    /// Gets or sets the area of the camera the tracked object can freely move without the camera having to move. This is a percentage of the total screen area.
+    /// Gets or sets the distance allowed from the player.
     /// </summary>
     [DataMember]
-    public Vector2 FocusedScreenArea {
-        get => this._focusedScreenArea;
-        set {
-            if (this.Set(ref this._focusedScreenArea, value.Clamp(Vector2.Zero, Vector2.One))) {
-                this.ResetFocusedBoundingArea();
-            }
-        }
+    public Vector2 DistanceAllowedFromParent {
+        get => this._distanceAllowedFromParent;
+        set => this.Set(ref this._distanceAllowedFromParent, value);
     }
 
     /// <inheritdoc />
@@ -47,36 +38,38 @@ public class PlatformerCamera : Camera {
         this.UpdatePosition();
     }
 
-    /// <inheritdoc />
-    protected override void OnScreenAreaChanged() {
-        base.OnScreenAreaChanged();
-        this.ResetFocusedBoundingArea();
-    }
-
     private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(ITransformable.Transform)) {
             this.UpdatePosition();
         }
     }
 
-    private void ResetFocusedBoundingArea() {
-        var height = this.ViewHeight * this.FocusedScreenArea.Y;
-        var width = this.ViewWidth * this.FocusedScreenArea.X;
-        var minimum = this.Transform.Position;
-        this.FocusedBoundingArea = new BoundingArea(minimum, width, height);
-    }
-
     private void UpdatePosition() {
-        if (this.FocusedBoundingArea.IsEmpty) {
+        if (this.DistanceAllowedFromParent == Vector2.Zero) {
             this.LocalPosition = this.Parent.Transform.Position;
         }
-        else if (this.Parent is IBoundable boundable) {
-            if (boundable.BoundingArea.Contains(this.FocusedBoundingArea)) {
-                this.LocalPosition = this.Parent.Transform.Position;
+        else if (this.Parent is ITransformable parent) {
+            var parentPosition = parent.Transform.Position;
+            var x = this.LocalPosition.X;
+            var horizontalDistance = parentPosition.X - this.LocalPosition.X;
+            if (horizontalDistance > this.DistanceAllowedFromParent.X) {
+                x = parentPosition.X - this.DistanceAllowedFromParent.X;
             }
-            else if (!this.FocusedBoundingArea.Contains(boundable.BoundingArea)) {
-                // TODO: move so that the focused bounding area once again contains the parent
+            else if (horizontalDistance < -this.DistanceAllowedFromParent.X) {
+                x = parentPosition.X + this.DistanceAllowedFromParent.X;
             }
+
+            var y = this.LocalPosition.Y;
+            var verticalDistance = parentPosition.Y - this.LocalPosition.Y;
+
+            if (verticalDistance > this.DistanceAllowedFromParent.Y) {
+                y = parentPosition.Y - this.DistanceAllowedFromParent.Y;
+            }
+            else if (verticalDistance < -this.DistanceAllowedFromParent.Y) {
+                y = parentPosition.Y + this.DistanceAllowedFromParent.Y;
+            }
+
+            this.LocalPosition = new Vector2(x, y);
         }
     }
 }

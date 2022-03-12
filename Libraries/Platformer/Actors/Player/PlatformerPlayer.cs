@@ -64,6 +64,13 @@ public sealed class PlatformerPlayer : PlatformerActor {
         set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
     }
 
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+        this.GetOrAddChild<PlatformerCamera>();
+    }
+
+    /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this._input.Update(inputState);
         base.Update(frameTime, inputState);
