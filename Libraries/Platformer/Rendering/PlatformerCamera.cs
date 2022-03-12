@@ -49,24 +49,24 @@ public class PlatformerCamera : Camera {
             this.LocalPosition = this.Parent.Transform.Position;
         }
         else if (this.Parent is ITransformable parent) {
-            var parentPosition = parent.Transform.Position;
+            var (parentX, parentY) = parent.Transform.Position;
             var x = this.LocalPosition.X;
-            var horizontalDistance = parentPosition.X - this.LocalPosition.X;
+            var horizontalDistance = parentX - this.LocalPosition.X;
             if (horizontalDistance > this.DistanceAllowedFromParent.X) {
-                x = parentPosition.X - this.DistanceAllowedFromParent.X;
+                x = parentX - this.DistanceAllowedFromParent.X;
             }
             else if (horizontalDistance < -this.DistanceAllowedFromParent.X) {
-                x = parentPosition.X + this.DistanceAllowedFromParent.X;
+                x = parentX + this.DistanceAllowedFromParent.X;
             }
 
             var y = this.LocalPosition.Y;
-            var verticalDistance = parentPosition.Y - this.LocalPosition.Y;
+            var verticalDistance = parentY - this.LocalPosition.Y;
 
             if (verticalDistance > this.DistanceAllowedFromParent.Y) {
-                y = parentPosition.Y - this.DistanceAllowedFromParent.Y;
+                y = parentY - this.DistanceAllowedFromParent.Y;
             }
             else if (verticalDistance < -this.DistanceAllowedFromParent.Y) {
-                y = parentPosition.Y + this.DistanceAllowedFromParent.Y;
+                y = parentY + this.DistanceAllowedFromParent.Y;
             }
 
             this.LocalPosition = new Vector2(x, y);
