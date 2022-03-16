@@ -8,7 +8,7 @@ using NSubstitute;
 using NUnit.Framework;
 
 [TestFixture]
-public class UpdateLoopTests {
+public static class UpdateLoopTests {
     [Category("Unit Tests")]
     [Test]
     public static void Update_ShouldNotUpdateDisabled() {

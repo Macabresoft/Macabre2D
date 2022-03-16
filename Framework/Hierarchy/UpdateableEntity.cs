@@ -26,7 +26,6 @@ public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     [DataMember]
     public int UpdateOrder {
         get => this._updateOrder;
-
         set => this.Set(ref this._updateOrder, value);
     }
 

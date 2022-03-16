@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class PlatformerCamera : Camera {
     private Vector2 _distanceAllowedFromActor = Vector2.Zero;
-    private Vector2 _focusOffset = Vector2.Zero;
     private float _speedMultiplier = 5f;
 
     /// <summary>
@@ -37,7 +36,6 @@ public class PlatformerCamera : Camera {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     public void UpdatePosition(FrameTime frameTime) {
-
         if (this.DistanceAllowedFromActor == Vector2.Zero) {
             this.LocalPosition = this.Parent.Transform.Position;
         }

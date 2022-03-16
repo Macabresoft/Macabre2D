@@ -20,19 +20,16 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
-    /// <value>The cameras.</value>
     IEnumerable<ICamera> Cameras => Array.Empty<ICamera>();
 
     /// <summary>
     /// Gets the game currently running this scene.
     /// </summary>
-    /// <value>The game.</value>
     IGame Game => BaseGame.Empty;
 
     /// <summary>
     /// Gets the loops.
     /// </summary>
-    /// <value>The loops.</value>
     IReadOnlyCollection<ILoop> Loops => Array.Empty<ILoop>();
 
     /// <summary>
@@ -43,25 +40,26 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// <summary>
     /// Gets the physics bodies.
     /// </summary>
-    /// <value>The physics bodies.</value>
     IEnumerable<IPhysicsBody> PhysicsBodies => Array.Empty<IPhysicsBody>();
 
     /// <summary>
     /// Gets the renderable entities in the scene.
     /// </summary>
-    /// <value>The renderable entities.</value>
     IEnumerable<IRenderableEntity> RenderableEntities => Array.Empty<IRenderableEntity>();
 
     /// <summary>
     /// Gets the updateable entities.
     /// </summary>
-    /// <value>The updateable entities.</value>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
+
+    /// <summary>
+    /// Gets the fixed updateable entities.
+    /// </summary>
+    IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
 
     /// <summary>
     /// Gets or sets the color of the background.
     /// </summary>
-    /// <value>The color of the background.</value>
     Color BackgroundColor { get; set; }
 
     /// <summary>
@@ -198,6 +196,12 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IUpdateableEntity.IsEnabled),
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IUpdateableEntity.UpdateOrder));
+    
+    private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
+        c => c.IsEnabled,
+        nameof(IFixedUpdateableEntity.IsEnabled),
+        (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
+        nameof(IFixedUpdateableEntity.UpdateOrder));
 
     private Color _backgroundColor = DefinedColors.MacabresoftBlack;
     private bool _isBusy;
@@ -236,6 +240,9 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
 
     /// <inheritdoc />
     public IAssetManager Assets { get; private set; } = AssetManager.Empty;
@@ -336,6 +343,7 @@ public sealed class Scene : GridContainer, IScene {
         this._physicsBodies.Add(entity);
         this._renderableEntities.Add(entity);
         this._updateableEntities.Add(entity);
+        this._fixedUpdateableEntities.Add(entity);
     }
 
     /// <inheritdoc />
@@ -404,6 +412,7 @@ public sealed class Scene : GridContainer, IScene {
         this._physicsBodies.Remove(entity);
         this._renderableEntities.Remove(entity);
         this._updateableEntities.Remove(entity);
+        this._fixedUpdateableEntities.Remove(entity);
     }
 
     /// <inheritdoc />
