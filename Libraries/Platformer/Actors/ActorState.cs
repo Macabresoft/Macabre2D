@@ -32,17 +32,24 @@ public readonly struct ActorState {
     public readonly Vector2 Velocity;
 
     /// <summary>
+    /// The number of seconds the actor has been in this state.
+    /// </summary>
+    public readonly float SecondsInState;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ActorState" /> class.
     /// </summary>
     /// <param name="movementKind">The kind of movement.</param>
     /// <param name="facingDirection">The direction the actor is facing.</param>
     /// <param name="position">The position.</param>
     /// <param name="velocity">The velocity.</param>
-    public ActorState(MovementKind movementKind, HorizontalDirection facingDirection, Vector2 position, Vector2 velocity) {
+    /// <param name="secondsInState">The seconds in the same state.</param>
+    public ActorState(MovementKind movementKind, HorizontalDirection facingDirection, Vector2 position, Vector2 velocity, float secondsInState) {
         this.MovementKind = movementKind;
         this.FacingDirection = facingDirection;
         this.Position = position;
         this.Velocity = velocity;
+        this.SecondsInState = Math.Max(0f, secondsInState);
     }
 
     /// <inheritdoc cref="object" />

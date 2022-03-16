@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -9,80 +8,78 @@ using Microsoft.Xna.Framework;
 /// A <see cref="ICamera" /> for platformers.
 /// </summary>
 public class PlatformerCamera : Camera {
-    private Vector2 _distanceAllowedFromParent = Vector2.Zero;
+    private Vector2 _distanceAllowedFromActor = Vector2.Zero;
     private Vector2 _focusOffset = Vector2.Zero;
+    private float _speedMultiplier = 5f;
 
     /// <summary>
     /// Gets or sets the distance allowed from the player.
     /// </summary>
     [DataMember]
-    public Vector2 DistanceAllowedFromParent {
-        get => this._distanceAllowedFromParent;
-        set => this.Set(ref this._distanceAllowedFromParent, value);
+    public Vector2 DistanceAllowedFromActor {
+        get => this._distanceAllowedFromActor;
+        set => this.Set(ref this._distanceAllowedFromActor, value);
     }
 
     /// <summary>
-    /// Gets or sets the focus offset.
+    /// Gets or sets the camera speed multiplier. In the camera lerp operation, this is multiplied by the seconds passed for the frame.
     /// </summary>
-    /// <remarks>
-    /// If this value is non zero, it essentially offsets where the center of this camera is for operations following its owner.
-    /// </remarks>
-    [DataMember]
-    public Vector2 FocusOffset {
-        get => this._focusOffset;
-        set => this.Set(ref this._focusOffset, value);
+    public float SpeedMultiplier {
+        get => this._speedMultiplier;
+        set => this.Set(ref this._speedMultiplier, value);
     }
 
     /// <inheritdoc />
     protected override bool IsTransformRelativeToParent => false;
 
-    /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
-        if (!IsNullOrEmpty(this.Parent, out var originalParent)) {
-            originalParent.PropertyChanged -= this.Parent_PropertyChanged;
+    /// <summary>
+    /// Updates the position according to the specified actor state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void UpdatePosition(FrameTime frameTime) {
+
+        if (this.DistanceAllowedFromActor == Vector2.Zero) {
+            this.LocalPosition = this.Parent.Transform.Position;
         }
-
-        base.Initialize(scene, parent);
-
-        if (!IsNullOrEmpty(this.Parent, out var newParent)) {
-            newParent.PropertyChanged += this.Parent_PropertyChanged;
-        }
-
-        this.UpdatePosition();
-    }
-
-    private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ITransformable.Transform)) {
-            this.UpdatePosition();
-        }
-    }
-
-    private void UpdatePosition() {
-        if (this.DistanceAllowedFromParent == Vector2.Zero) {
-            this.LocalPosition = this.Parent.Transform.Position + this.FocusOffset;
-        }
-        else if (this.Parent is ITransformable parent) {
-            var (parentX, parentY) = parent.Transform.Position;
-            var x = this.LocalPosition.X + this.FocusOffset.X;
+        else if (this.Parent is PlatformerActor actor) {
+            var (parentX, parentY) = actor.Transform.Position;
+            var x = this.LocalPosition.X;
             var horizontalDistance = parentX - x;
-            if (horizontalDistance > this.DistanceAllowedFromParent.X) {
-                x = parentX - this.DistanceAllowedFromParent.X + this.FocusOffset.X;
+            /*if (Math.Abs(actor.CurrentState.Velocity.X) > actor.MaximumHorizontalVelocity) {
+                if (actor.CurrentState.FacingDirection == HorizontalDirection.Left) {
+                    x = parentX - this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                }
+                else {
+                    x = parentX + this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                }
             }
-            else if (horizontalDistance < -this.DistanceAllowedFromParent.X) {
-                x = parentX + this.DistanceAllowedFromParent.X + this.FocusOffset.X;
+            else {
+                if (horizontalDistance > this.DistanceAllowedFromActor.X) {
+                    x = parentX - this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                }
+                else if (horizontalDistance < -this.DistanceAllowedFromActor.X) {
+                    x = parentX + this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                }
+            }*/
+            
+            if (horizontalDistance > this.DistanceAllowedFromActor.X) {
+                x = parentX - this.DistanceAllowedFromActor.X;
+            }
+            else if (horizontalDistance < -this.DistanceAllowedFromActor.X) {
+                x = parentX + this.DistanceAllowedFromActor.X;
             }
 
-            var y = this.LocalPosition.Y + this.FocusOffset.Y;
+            var y = this.LocalPosition.Y;
             var verticalDistance = parentY - y;
 
-            if (verticalDistance > this.DistanceAllowedFromParent.Y) {
-                y = parentY - this.DistanceAllowedFromParent.Y + this.FocusOffset.X;
+            if (verticalDistance > this.DistanceAllowedFromActor.Y) {
+                y = parentY - this.DistanceAllowedFromActor.Y;
             }
-            else if (verticalDistance < -this.DistanceAllowedFromParent.Y) {
-                y = parentY + this.DistanceAllowedFromParent.Y + this.FocusOffset.X;
+            else if (verticalDistance < -this.DistanceAllowedFromActor.Y) {
+                y = parentY + this.DistanceAllowedFromActor.Y;
             }
 
-            this.LocalPosition = new Vector2(x, y) - this.FocusOffset;
+            this.LocalPosition = new Vector2(x, y);
         }
     }
 }

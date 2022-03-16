@@ -281,10 +281,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="facingDirection">The direction this is facing.</param>
+    /// <param name="secondsInState">The number of seconds this has been in a falling state.</param>
     /// <returns>The actor's state.</returns>
-    protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity, HorizontalDirection facingDirection) {
+    protected ActorState GetFallingState(FrameTime frameTime, float horizontalVelocity, HorizontalDirection facingDirection, float secondsInState) {
         var verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-        return new ActorState(MovementKind.Falling, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity));
+        return new ActorState(MovementKind.Falling, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity), secondsInState);
     }
 
     /// <summary>
@@ -292,9 +293,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="facingDirection">The direction this is facing.</param>
+    /// <param name="secondsInState">The number of seconds this has been in a falling state.</param>
     /// <returns>The actor's state.</returns>
-    protected ActorState GetJumpingState(float horizontalVelocity, HorizontalDirection facingDirection) {
-        return new ActorState(MovementKind.Jumping, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity));
+    protected ActorState GetJumpingState(float horizontalVelocity, HorizontalDirection facingDirection, float secondsInState) {
+        return new ActorState(MovementKind.Jumping, facingDirection, this.Transform.Position, new Vector2(horizontalVelocity, this.JumpVelocity), secondsInState);
     }
 
     /// <summary>
