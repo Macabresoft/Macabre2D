@@ -8,15 +8,15 @@ using Microsoft.Xna.Framework;
 /// A <see cref="ICamera" /> for platformers.
 /// </summary>
 public class PlatformerCamera : Camera {
-    private Vector2 _distanceAllowedFromActor = Vector2.Zero;
+    private float _horizontalDistanceFromActorAllowed = 2f;
 
     /// <summary>
-    /// Gets or sets the distance allowed from the player.
+    /// Gets or sets the horizontal distance allowed from the player.
     /// </summary>
     [DataMember]
-    public Vector2 DistanceAllowedFromActor {
-        get => this._distanceAllowedFromActor;
-        set => this.Set(ref this._distanceAllowedFromActor, value);
+    public float HorizontalDistanceFromActorAllowed {
+        get => this._horizontalDistanceFromActorAllowed;
+        set => this.Set(ref this._horizontalDistanceFromActorAllowed, value);
     }
 
     /// <inheritdoc />
@@ -27,48 +27,38 @@ public class PlatformerCamera : Camera {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     public void UpdatePosition(FrameTime frameTime) {
-        if (this.DistanceAllowedFromActor == Vector2.Zero) {
+        if (this.HorizontalDistanceFromActorAllowed == 0f) {
             this.LocalPosition = this.Parent.Transform.Position;
         }
-        else if (this.Parent is PlatformerActor actor) {
+        else if (this.Parent is PlatformerPlayer actor) {
             var (parentX, parentY) = actor.Transform.Position;
             var x = this.LocalPosition.X;
             var horizontalDistance = parentX - x;
-            /*if (Math.Abs(actor.CurrentState.Velocity.X) > actor.MaximumHorizontalVelocity) {
+            /*if (actor.MaximumHorizontalVelocity >= actor.RunVelocity) {
                 if (actor.CurrentState.FacingDirection == HorizontalDirection.Left) {
-                    x = parentX - this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                    x = parentX - this.HorizontalDistanceFromActorAllowed;
                 }
                 else {
-                    x = parentX + this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                    x = parentX + this.HorizontalDistanceFromActorAllowed;
                 }
             }
             else {
-                if (horizontalDistance > this.DistanceAllowedFromActor.X) {
-                    x = parentX - this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                if (horizontalDistance > this.HorizontalDistanceFromActorAllowed) {
+                    x = parentX - this.HorizontalDistanceFromActorAllowed;
                 }
-                else if (horizontalDistance < -this.DistanceAllowedFromActor.X) {
-                    x = parentX + this.DistanceAllowedFromActor.X + this.FocusOffset.X;
+                else if (horizontalDistance < -this.HorizontalDistanceFromActorAllowed) {
+                    x = parentX + this.HorizontalDistanceFromActorAllowed;
                 }
             }*/
 
-            if (horizontalDistance > this.DistanceAllowedFromActor.X) {
-                x = parentX - this.DistanceAllowedFromActor.X;
+            if (horizontalDistance > this.HorizontalDistanceFromActorAllowed) {
+                x = parentX - this.HorizontalDistanceFromActorAllowed;
             }
-            else if (horizontalDistance < -this.DistanceAllowedFromActor.X) {
-                x = parentX + this.DistanceAllowedFromActor.X;
-            }
-
-            var y = this.LocalPosition.Y;
-            var verticalDistance = parentY - y;
-
-            if (verticalDistance > this.DistanceAllowedFromActor.Y) {
-                y = parentY - this.DistanceAllowedFromActor.Y;
-            }
-            else if (verticalDistance < -this.DistanceAllowedFromActor.Y) {
-                y = parentY + this.DistanceAllowedFromActor.Y;
+            else if (horizontalDistance < -this.HorizontalDistanceFromActorAllowed) {
+                x = parentX + this.HorizontalDistanceFromActorAllowed;
             }
 
-            this.LocalPosition = new Vector2(x, y);
+            this.LocalPosition = new Vector2(x, parentY);
         }
     }
 }
