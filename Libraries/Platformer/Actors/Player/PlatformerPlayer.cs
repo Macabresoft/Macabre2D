@@ -13,6 +13,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     private PlatformerCamera? _camera;
     private float _elapsedRunSeconds;
     private float _jumpHoldTime = 0.1f;
+    private float _originalMaximumHorizontalVelocity;
     private float _timeUntilRun = 1f;
 
     /// <summary>
@@ -67,6 +68,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
+        this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
         this._camera = this.GetOrAddChild<PlatformerCamera>();
         this._camera.UpdatePosition(new FrameTime());
     }
@@ -75,6 +77,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
     public override void Update(FrameTime frameTime, InputState inputState) {
         this._input.Update(inputState);
         base.Update(frameTime, inputState);
+
+        this.MaximumHorizontalVelocity = this.GetIsMovingFast() ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
         this._camera?.UpdatePosition(frameTime);
     }
 
@@ -162,12 +166,12 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
-        var horizontalVelocity = this._input.HorizontalAxis * (this.GetIsMovingFast() ? this.RunVelocity : this.MaximumHorizontalVelocity);
+        var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
 
         if (this.ElapsedRunSeconds > 0f) {
             horizontalVelocity = this._input.HorizontalAxis switch {
-                < 0f when this.PreviousState.Velocity.X > 0f => Math.Max(this.PreviousState.Velocity.X - (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, -this.RunVelocity),
-                > 0f when this.PreviousState.Velocity.X < 0f => Math.Min(this.PreviousState.Velocity.X + (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, this.RunVelocity),
+                < 0f when this.PreviousState.Velocity.X > 0f => Math.Max(this.PreviousState.Velocity.X - (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, -this.MaximumHorizontalVelocity),
+                > 0f when this.PreviousState.Velocity.X < 0f => Math.Min(this.PreviousState.Velocity.X + (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, this.MaximumHorizontalVelocity),
                 _ => horizontalVelocity
             };
         }

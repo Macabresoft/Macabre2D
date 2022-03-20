@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class PlatformerCamera : Camera {
     private Vector2 _distanceAllowedFromActor = Vector2.Zero;
-    private float _speedMultiplier = 5f;
 
     /// <summary>
     /// Gets or sets the distance allowed from the player.
@@ -18,14 +17,6 @@ public class PlatformerCamera : Camera {
     public Vector2 DistanceAllowedFromActor {
         get => this._distanceAllowedFromActor;
         set => this.Set(ref this._distanceAllowedFromActor, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the camera speed multiplier. In the camera lerp operation, this is multiplied by the seconds passed for the frame.
-    /// </summary>
-    public float SpeedMultiplier {
-        get => this._speedMultiplier;
-        set => this.Set(ref this._speedMultiplier, value);
     }
 
     /// <inheritdoc />
@@ -59,7 +50,7 @@ public class PlatformerCamera : Camera {
                     x = parentX + this.DistanceAllowedFromActor.X + this.FocusOffset.X;
                 }
             }*/
-            
+
             if (horizontalDistance > this.DistanceAllowedFromActor.X) {
                 x = parentX - this.DistanceAllowedFromActor.X;
             }
