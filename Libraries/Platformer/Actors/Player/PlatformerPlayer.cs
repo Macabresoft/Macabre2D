@@ -70,7 +70,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
         base.Initialize(scene, parent);
         this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
         this._camera = this.GetOrAddChild<PlatformerCamera>();
-        this._camera.UpdatePosition(new FrameTime());
     }
 
     /// <inheritdoc />
@@ -78,8 +77,9 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this._input.Update(inputState);
         base.Update(frameTime, inputState);
 
-        this.MaximumHorizontalVelocity = this.GetIsMovingFast() ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
-        this._camera?.UpdatePosition(frameTime);
+        var isMovingFast = this.GetIsMovingFast();
+        this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
+        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState);
     }
 
     /// <inheritdoc />
