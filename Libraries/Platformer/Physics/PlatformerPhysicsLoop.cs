@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IPlatformerPhysicsLoop : IPhysicsLoop {
     /// <summary>
-    /// Gets the maximum downward velocity when falling.
+    /// Gets the maximum downward velocity when falling. This value should be greater than 0.
     /// </summary>
     float TerminalVelocity { get; }
 
