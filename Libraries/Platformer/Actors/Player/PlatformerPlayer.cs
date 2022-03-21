@@ -75,11 +75,10 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this._input.Update(inputState);
-        base.Update(frameTime, inputState);
-
         var isMovingFast = this.GetIsMovingFast();
         this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
-        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState);
+        base.Update(frameTime, inputState);
+        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
     }
 
     /// <inheritdoc />

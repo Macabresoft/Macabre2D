@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class PlatformerCamera : Camera {
     private float _horizontalDistanceAllowed = 2f;
+    private float _lerpSpeed = 5f;
+    private float _verticalDistanceAllowed = 4f;
 
     /// <summary>
     /// Gets or sets the horizontal distance allowed from the player.
@@ -20,17 +22,49 @@ public class PlatformerCamera : Camera {
     }
 
     /// <summary>
+    /// Gets or sets the lerp speed.
+    /// </summary>
+    [DataMember]
+    public float LerpSpeed {
+        get => this._lerpSpeed;
+        set => this.Set(ref this._lerpSpeed, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the vertical distance allowed from the player.
+    /// </summary>
+    [DataMember]
+    public float VerticalDistanceAllowed {
+        get => this._verticalDistanceAllowed;
+        set => this.Set(ref this._verticalDistanceAllowed, value);
+    }
+
+    /// <summary>
     /// Updates the position according to the specified actor state.
     /// </summary>
     /// <param name="previousState">The previous state.</param>
     /// <param name="currentState">The current state.</param>
-    public void UpdateDesiredPosition(ActorState previousState, ActorState currentState) {
-        if (this.HorizontalDistanceAllowed == 0f) {
-            this.LocalPosition = Vector2.Zero;
+    /// <param name="frameTime">The frame time.</param>
+    public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime) {
+        var x = this.LocalPosition.X;
+        if (this.HorizontalDistanceAllowed != 0f) {
+            x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed, this.HorizontalDistanceAllowed);
         }
-        else {
-            var x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed, this.HorizontalDistanceAllowed);
-            this.LocalPosition = new Vector2(x, this.LocalPosition.Y);
+
+        var y = this.LocalPosition.Y;
+        if (this.VerticalDistanceAllowed != 0f) {
+            if (currentState.MovementKind is MovementKind.Falling or MovementKind.Jumping) {
+                y = Math.Clamp(this.LocalPosition.Y + currentState.Position.Y - previousState.Position.Y, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
+            }
+            else if (y != 0f) {
+                y += -this.LocalPosition.Y * (float)frameTime.SecondsPassed * this._lerpSpeed;
+
+                if (Math.Abs(y) < this.Scene.Game.Project.Settings.InversePixelsPerUnit * 0.25f) {
+                    y = 0f;
+                }
+            }
         }
+
+        this.LocalPosition = new Vector2(x, y);
     }
 }

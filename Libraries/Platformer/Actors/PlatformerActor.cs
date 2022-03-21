@@ -168,11 +168,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public override void Update(FrameTime frameTime, InputState inputState) {
         var anchorOffset = this._size.Y / 8;
         this.PreviousState = this._currentState;
-        this.CurrentState = this.GetNewActorState(frameTime, anchorOffset);
+        var currentState = this.GetNewActorState(frameTime, anchorOffset);
 
         if (this._spriteAnimator != null) {
-            if (this._currentState.MovementKind != this._previousState.MovementKind) {
-                var spriteAnimation = this._currentState.MovementKind switch {
+            if (currentState.MovementKind != this._previousState.MovementKind) {
+                var spriteAnimation = currentState.MovementKind switch {
                     MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
                     MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
                     MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
@@ -185,10 +185,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 }
             }
 
-            this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
+            this._spriteAnimator.RenderSettings.FlipHorizontal = currentState.FacingDirection == HorizontalDirection.Left;
         }
 
-        this.LocalPosition += this.CurrentState.Velocity * (float)frameTime.SecondsPassed;
+        this.ApplyVelocity(frameTime, currentState.Velocity);
+        this.CurrentState = new ActorState(currentState.MovementKind, currentState.FacingDirection, this.Transform.Position, currentState.Velocity, currentState.SecondsInState);
+    }
+
+
+    private void ApplyVelocity(FrameTime frameTime, Vector2 velocity) {
+        this.LocalPosition += velocity * (float)frameTime.SecondsPassed;
     }
 
     /// <summary>
