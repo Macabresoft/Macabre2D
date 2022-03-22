@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -54,12 +53,13 @@ public class PlatformerCamera : Camera {
 
         var y = this.LocalPosition.Y;
         if (this.VerticalDistanceAllowed != 0f) {
-            if (currentState.MovementKind is MovementKind.Falling or MovementKind.Jumping) {
+            var yMovement = currentState.Position.Y - previousState.Position.Y; 
+            if (Math.Abs(yMovement) > 0.001f) {
                 if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
                     y += this.Lerp(this.LocalPosition.Y, -this.VerticalDistanceAllowed, (float)frameTime.SecondsPassed);
                 }
                 else {
-                    y = Math.Clamp(this.LocalPosition.Y + currentState.Position.Y - previousState.Position.Y, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
+                    y = Math.Clamp(this.LocalPosition.Y + yMovement, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
                 }
             }
             else if (y != 0f) {
