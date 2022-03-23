@@ -242,8 +242,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     private void MoveWithPlatform() {
-        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position) {
-            this.SetWorldPosition(this.Transform.Position + (this._platform.CurrentState.Position - this._platform.PreviousState.Position));
+        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position && 
+            this._platform is IEntity entity && entity.TryGetChild<SimplePhysicsBody>(out var body) && 
+            body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
+            var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
+            this.SetWorldPosition(newPosition);
         }
     }
 }
