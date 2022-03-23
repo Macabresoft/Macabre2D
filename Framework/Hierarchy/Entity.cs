@@ -143,7 +143,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <typeparam name="T">The type of parent entity.</typeparam>
     /// <param name="entity">The parent entity.</param>
     /// <returns>A value indicating whether or not the entity was found.</returns>
-    bool TryGetParentEntity<T>(out T? entity) where T : class, IEntity;
+    bool TryGetParentEntity<T>(out T? entity);
 }
 
 /// <summary>
@@ -166,7 +166,7 @@ public class Entity : Transformable, IEntity {
     public Entity() : base() {
         this.PropertyChanged += this.OnPropertyChanged;
     }
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<IEntity> Children => this._children;
 
@@ -291,7 +291,7 @@ public class Entity : Transformable, IEntity {
         this.Scene = scene;
         this.Parent = parent;
         this.Scene.RegisterEntity(this);
-
+        
         foreach (var child in this.Children) {
             child.Initialize(this.Scene, this);
         }
@@ -359,7 +359,7 @@ public class Entity : Transformable, IEntity {
     }
 
     /// <inheritdoc />
-    public virtual bool TryGetParentEntity<T>(out T? entity) where T : class, IEntity {
+    public virtual bool TryGetParentEntity<T>(out T? entity) {
         if (this.Parent is T parent) {
             entity = parent;
         }
@@ -399,7 +399,7 @@ public class Entity : Transformable, IEntity {
     }
 
     private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (this.IsTransformRelativeToParent &&e.PropertyName == nameof(ITransformable.Transform)) {
+        if (this.IsTransformRelativeToParent && e.PropertyName == nameof(ITransformable.Transform)) {
             this.HandleMatrixOrTransformChanged();
         }
     }

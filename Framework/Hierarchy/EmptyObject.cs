@@ -253,7 +253,7 @@ internal class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public bool TryGetParentEntity<T>(out T? entity) where T : class, IEntity {
+    public bool TryGetParentEntity<T>(out T? entity) {
         entity = default;
         return false;
     }

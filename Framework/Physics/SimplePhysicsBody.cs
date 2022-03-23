@@ -39,11 +39,13 @@ public class SimplePhysicsBody : PhysicsBody {
         return new[] { this.Collider };
     }
 
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this._collider.Initialize(this);
     }
-
+    
+    /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 

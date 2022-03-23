@@ -15,6 +15,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     private float _jumpHoldTime = 0.1f;
     private float _originalMaximumHorizontalVelocity;
     private float _timeUntilRun = 1f;
+    private IBaseActor _platform = BaseActor.Empty;
 
     /// <summary>
     /// Gets the acceleration in velocity per second when the player is changing directions.
@@ -88,6 +89,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
         if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, anchorOffset, out var hit)) {
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
+            this.TrySetPlatform(hit);
             movementKind = MovementKind.Idle;
             verticalVelocity = 0f;
         }
@@ -111,13 +113,17 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// <inheritdoc />
     protected override ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
         // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
+        this.MoveWithPlatform();
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         var secondsPassed = (float)frameTime.SecondsPassed;
         if (this._input.JumpState == ButtonState.Pressed) {
             return this.GetJumpingState(horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
         }
 
-        if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
+        if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
+            this.TrySetPlatform(hit);
+        }
+        else {
             return this.GetFallingState(frameTime, horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
         }
 
@@ -148,9 +154,13 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     /// <inheritdoc />
     protected override ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
+        this.MoveWithPlatform();
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         var movementKind = this.CurrentState.MovementKind;
-        if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
+        if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
+            this.TrySetPlatform(hit);
+        }
+        else {
             return this.GetFallingState(frameTime, horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
         }
 
@@ -220,5 +230,20 @@ public sealed class PlatformerPlayer : PlatformerActor {
         }
 
         return secondsPassed;
+    }
+
+    private void TrySetPlatform(RaycastHit hit) {
+        if (hit.Collider?.Body is IEntity entity && entity.TryGetParentEntity<IBaseActor>(out var platform) && platform != null) {
+            this._platform = platform;
+        }
+        else {
+            this._platform = Empty;
+        }
+    }
+
+    private void MoveWithPlatform() {
+        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position) {
+            this.SetWorldPosition(this.Transform.Position + (this._platform.CurrentState.Position - this._platform.PreviousState.Position));
+        }
     }
 }

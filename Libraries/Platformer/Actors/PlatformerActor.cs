@@ -9,12 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for an actor, which is
 /// </summary>
-public interface IPlatformerActor : IBoundable {
-    /// <summary>
-    /// Gets the current state of this actor.
-    /// </summary>
-    ActorState CurrentState { get; }
-
+public interface IPlatformerActor : IBaseActor, IBoundable {
     /// <summary>
     /// Gets the falling animation reference.
     /// </summary>
@@ -46,11 +41,6 @@ public interface IPlatformerActor : IBoundable {
     SpriteAnimationReference MovingAnimationReference { get; }
 
     /// <summary>
-    /// Gets the previous state of this actor.
-    /// </summary>
-    ActorState PreviousState { get; }
-
-    /// <summary>
     /// Gets the actor's size in world units.
     /// </summary>
     Vector2 Size { get; }
@@ -60,12 +50,10 @@ public interface IPlatformerActor : IBoundable {
 /// An actor that moves and animates with a platformer focus.
 /// </summary>
 [Category("Actor")]
-public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
-    private ActorState _currentState;
+public abstract class PlatformerActor : BaseActor, IPlatformerActor {
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
-    private ActorState _previousState;
     private Vector2 _size = Vector2.One;
     private QueueableSpriteAnimator? _spriteAnimator;
 
@@ -98,12 +86,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
 
     /// <inheritdoc />
-    public ActorState CurrentState {
-        get => this._currentState;
-        private set => this.Set(ref this._currentState, value);
-    }
-
-    /// <inheritdoc />
     [DataMember]
     [Category("Movement")]
     public float JumpVelocity {
@@ -119,11 +101,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         protected set => this.Set(ref this._maximumHorizontalVelocity, value);
     }
 
-    /// <inheritdoc />
-    public ActorState PreviousState {
-        get => this._previousState;
-        private set => this.Set(ref this._previousState, value);
-    }
 
     /// <inheritdoc />
     [DataMember]
@@ -167,11 +144,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         var anchorOffset = this._size.Y / 8;
-        this.PreviousState = this._currentState;
+        this.PreviousState = this.CurrentState;
         var currentState = this.GetNewActorState(frameTime, anchorOffset);
 
         if (this._spriteAnimator != null) {
-            if (currentState.MovementKind != this._previousState.MovementKind) {
+            if (currentState.MovementKind != this.PreviousState.MovementKind) {
                 var spriteAnimation = currentState.MovementKind switch {
                     MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
                     MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
@@ -190,11 +167,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         this.ApplyVelocity(frameTime, currentState.Velocity);
         this.CurrentState = new ActorState(currentState.MovementKind, currentState.FacingDirection, this.Transform.Position, currentState.Velocity, currentState.SecondsInState);
-    }
-
-
-    private void ApplyVelocity(FrameTime frameTime, Vector2 velocity) {
-        this.LocalPosition += velocity * (float)frameTime.SecondsPassed;
     }
 
     /// <summary>
@@ -336,6 +308,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A new actor state.</returns>
     protected abstract ActorState HandleMoving(FrameTime frameTime, float anchorOffset);
+
+
+    private void ApplyVelocity(FrameTime frameTime, Vector2 velocity) {
+        this.LocalPosition += velocity * (float)frameTime.SecondsPassed;
+    }
 
     private ActorState GetNewActorState(FrameTime frameTime, float anchorOffset) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {

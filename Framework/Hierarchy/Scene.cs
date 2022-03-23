@@ -401,8 +401,8 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
-    public override bool TryGetParentEntity<T>(out T? entity) where T : class {
-        entity = null;
+    public override bool TryGetParentEntity<T>(out T? entity) where T : default {
+        entity = default;
         return false;
     }
 

@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -78,7 +79,6 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     [DataMember(Name = "Collider Layers")]
     public Layers Layers {
         get => this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Layers ?? Layers.None;
-
         internal set => this.Set(ref this._overrideLayers, value);
     }
 
