@@ -17,15 +17,10 @@ public readonly struct ActorState {
     public readonly Vector2 Position;
 
     /// <summary>
-    /// The kind of movement.
-    /// </summary>
-    public readonly MovementKind MovementKind = MovementKind.Idle;
-
-    /// <summary>
     /// The direction the actor was facing.
     /// </summary>
     public readonly HorizontalDirection FacingDirection = HorizontalDirection.Right;
-    
+
     /// <summary>
     /// The velocity.
     /// </summary>
@@ -39,13 +34,11 @@ public readonly struct ActorState {
     /// <summary>
     /// Initializes a new instance of the <see cref="ActorState" /> class.
     /// </summary>
-    /// <param name="movementKind">The kind of movement.</param>
     /// <param name="facingDirection">The direction the actor is facing.</param>
     /// <param name="position">The position.</param>
     /// <param name="velocity">The velocity.</param>
     /// <param name="secondsInState">The seconds in the same state.</param>
-    public ActorState(MovementKind movementKind, HorizontalDirection facingDirection, Vector2 position, Vector2 velocity, float secondsInState) {
-        this.MovementKind = movementKind;
+    public ActorState(HorizontalDirection facingDirection, Vector2 position, Vector2 velocity, float secondsInState) {
         this.FacingDirection = facingDirection;
         this.Position = position;
         this.Velocity = velocity;
@@ -68,13 +61,14 @@ public readonly struct ActorState {
     }
 
     private bool Equals(ActorState other) {
-        return this.Position.Equals(other.Position) &&
-               this.MovementKind == other.MovementKind &&
+        return this.FacingDirection.Equals(other.FacingDirection) &&
+               this.SecondsInState.Equals(other.SecondsInState) &&
+               this.Position.Equals(other.Position) &&
                this.Velocity.Equals(other.Velocity);
     }
 
     /// <inheritdoc />
     public override int GetHashCode() {
-        return HashCode.Combine(this.Position, (int)this.MovementKind, this.Velocity);
+        return HashCode.Combine(this.Position, (int)this.FacingDirection, this.Velocity, this.SecondsInState);
     }
 }

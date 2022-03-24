@@ -1,9 +1,11 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
@@ -11,11 +13,39 @@ using Microsoft.Xna.Framework;
 public sealed class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
+    private MovementKind _currentMovementKind = MovementKind.Idle;
+    private MovementKind _previousMovementKind = MovementKind.Idle;
     private float _elapsedRunSeconds;
     private float _jumpHoldTime = 0.1f;
     private float _originalMaximumHorizontalVelocity;
+    private IBaseActor _platform = Empty;
+    private QueueableSpriteAnimator? _spriteAnimator;
     private float _timeUntilRun = 1f;
-    private IBaseActor _platform = BaseActor.Empty;
+
+    /// <summary>
+    /// Gets the falling animation reference.
+    /// </summary>
+    [DataMember(Order = 13, Name = "Falling Animation")]
+    public SpriteAnimationReference FallingAnimationReference { get; } = new();
+
+    /// <summary>
+    /// Gets the idle animation reference.
+    /// </summary>
+    [DataMember(Order = 10, Name = "Idle Animation")]
+    public SpriteAnimationReference IdleAnimationReference { get; } = new();
+
+    /// <summary>
+    /// Gets the jumping animation reference.
+    /// </summary>
+    [DataMember(Order = 12, Name = "Jumping Animation")]
+    public SpriteAnimationReference JumpingAnimationReference { get; } = new();
+
+    /// <summary>
+    /// Gets the moving animation reference.
+    /// </summary>
+    [DataMember(Order = 11, Name = "Moving Animation")]
+    public SpriteAnimationReference MovingAnimationReference { get; } = new();
+
 
     /// <summary>
     /// Gets the acceleration in velocity per second when the player is changing directions.
@@ -66,11 +96,31 @@ public sealed class PlatformerPlayer : PlatformerActor {
         set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
     }
 
+    private MovementKind CurrentMovementKind {
+        get => this._currentMovementKind;
+        set {
+            this._previousMovementKind = this._currentMovementKind;
+            this._currentMovementKind = value;
+        }
+    }
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
+
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.MovingAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.JumpingAnimationReference);
+        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.FallingAnimationReference);
+
         this._camera = this.GetOrAddChild<PlatformerCamera>();
+        this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
+        this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
+
+        if (this.IdleAnimationReference.PackagedAsset is { } animation) {
+            this._spriteAnimator.Play(animation, true);
+        }
     }
 
     /// <inheritdoc />
@@ -78,101 +128,31 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this._input.Update(inputState);
         var isMovingFast = this.GetIsMovingFast();
         this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
-        base.Update(frameTime, inputState);
-        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
-    }
 
-    /// <inheritdoc />
-    protected override ActorState HandleFalling(FrameTime frameTime, float anchorOffset) {
-        var verticalVelocity = this.CurrentState.Velocity.Y;
-        var movementKind = this.CurrentState.MovementKind;
+        var anchorOffset = this.Size.Y * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
+        this.PreviousState = this.CurrentState;
+        var currentState = this.GetNewActorState(frameTime, anchorOffset);
 
-        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, anchorOffset, out var hit)) {
-            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
-            this.TrySetPlatform(hit);
-            movementKind = MovementKind.Idle;
-            verticalVelocity = 0f;
-        }
-        else {
-            if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
-                verticalVelocity = 0f;
+        if (this._spriteAnimator != null) {
+            if (this.CurrentMovementKind != this._previousMovementKind) {
+                var spriteAnimation = this.CurrentMovementKind switch {
+                    MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
+                    MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
+                    MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
+                    MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
+                    _ => null
+                };
+
+                if (spriteAnimation != null) {
+                    this._spriteAnimator.Play(spriteAnimation, true);
+                }
             }
 
-            verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
+            this._spriteAnimator.RenderSettings.FlipHorizontal = currentState.FacingDirection == HorizontalDirection.Left;
         }
 
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        if (movementKind == MovementKind.Idle && horizontalVelocity != 0f) {
-            movementKind = MovementKind.Moving;
-        }
-
-        return new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity), this.GetSecondsInState(movementKind, frameTime));
-    }
-
-    /// <inheritdoc />
-    protected override ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
-        // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
-        this.MoveWithPlatform();
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this._input.JumpState == ButtonState.Pressed) {
-            return this.GetJumpingState(horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
-        }
-
-        if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
-            this.TrySetPlatform(hit);
-        }
-        else {
-            return this.GetFallingState(frameTime, horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
-        }
-
-        if (horizontalVelocity != 0f) {
-            return new ActorState(MovementKind.Moving, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, 0f), secondsPassed);
-        }
-
-        return new ActorState(MovementKind.Idle, this.CurrentState.FacingDirection, this.Transform.Position, Vector2.Zero, this.GetSecondsInState(MovementKind.Idle, frameTime));
-    }
-
-    /// <inheritdoc />
-    protected override ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
-        var verticalVelocity = this.JumpVelocity;
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        var movementKind = this.CurrentState.MovementKind;
-
-        if (this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
-            verticalVelocity = 0f;
-            movementKind = MovementKind.Falling;
-        }
-        else if (this._input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
-            movementKind = MovementKind.Falling;
-        }
-
-        var secondsPassed = this.GetSecondsInState(movementKind, frameTime);
-        return new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, verticalVelocity), secondsPassed);
-    }
-
-    /// <inheritdoc />
-    protected override ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
-        this.MoveWithPlatform();
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        var movementKind = this.CurrentState.MovementKind;
-        if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
-            this.TrySetPlatform(hit);
-        }
-        else {
-            return this.GetFallingState(frameTime, horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
-        }
-
-        if (this._input.JumpState == ButtonState.Pressed) {
-            return this.GetJumpingState(horizontalVelocity, movementDirection, (float)frameTime.SecondsPassed);
-        }
-
-        if (horizontalVelocity == 0f) {
-            return new ActorState(MovementKind.Idle, movementDirection, this.Transform.Position, Vector2.Zero, (float)frameTime.SecondsPassed);
-        }
-
-        return new ActorState(movementKind, movementDirection, this.Transform.Position, new Vector2(horizontalVelocity, 0f), this.GetSecondsInState(movementKind, frameTime));
+        this.CurrentState = currentState;
+        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
     }
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
@@ -223,13 +203,130 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return this.ElapsedRunSeconds >= this.TimeUntilRun;
     }
 
-    private float GetSecondsInState(MovementKind currentMovement, FrameTime frameTime) {
-        var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this.CurrentState.MovementKind == currentMovement) {
-            secondsPassed += this.CurrentState.SecondsInState;
+    private ActorState GetNewActorState(FrameTime frameTime, float anchorOffset) {
+        if (this.Size.X > 0f && this.Size.Y > 0f) {
+            return this.CurrentMovementKind switch {
+                MovementKind.Idle => this.HandleIdle(frameTime, anchorOffset),
+                MovementKind.Moving => this.HandleMoving(frameTime, anchorOffset),
+                MovementKind.Jumping => this.HandleJumping(frameTime, anchorOffset),
+                MovementKind.Falling => this.HandleFalling(frameTime, anchorOffset),
+                _ => this.CurrentState
+            };
         }
 
+        return this.CurrentState;
+    }
+
+    private float GetSecondsInState(FrameTime frameTime) {
+        var secondsPassed = (float)frameTime.SecondsPassed;
+        if (this.CurrentMovementKind == this._previousMovementKind) {
+            secondsPassed += this.CurrentState.SecondsInState;
+        }
+        
+        Debug.WriteLine($"{secondsPassed} vs {frameTime.SecondsPassed}");
+
         return secondsPassed;
+    }
+
+    private ActorState HandleFalling(FrameTime frameTime, float anchorOffset) {
+        var verticalVelocity = this.CurrentState.Velocity.Y;
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+
+        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, anchorOffset, out var hit)) {
+            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
+            this.TrySetPlatform(hit);
+            this.CurrentMovementKind = horizontalVelocity != 0f ? MovementKind.Moving : MovementKind.Idle;
+            verticalVelocity = 0f;
+        }
+        else {
+            if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
+                verticalVelocity = 0f;
+            }
+
+            verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
+            this.CurrentMovementKind = MovementKind.Falling;
+        }
+
+        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
+        this.ApplyVelocity(frameTime, velocity);
+        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+    }
+
+    private ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
+        // TODO: should check if the user is suddenly falling due to a wall pushing them, a platform falling, or an elevator rising etc
+        this.MoveWithPlatform();
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+        var verticalVelocity = 0f;
+
+        if (this._input.JumpState == ButtonState.Pressed) {
+            this.CurrentMovementKind = MovementKind.Jumping;
+            verticalVelocity = this.JumpVelocity;
+        }
+        else if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
+            this.TrySetPlatform(hit);
+            this.CurrentMovementKind = horizontalVelocity != 0f ? MovementKind.Moving : MovementKind.Idle;
+        }
+        else {
+            this.CurrentMovementKind = MovementKind.Falling;
+            verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        }
+
+        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
+        this.ApplyVelocity(frameTime, velocity);
+        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+    }
+
+    private ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
+        var verticalVelocity = this.JumpVelocity;
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+        
+        if (this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
+            verticalVelocity = 0f;
+            this.CurrentMovementKind = MovementKind.Falling;
+        }
+        else if (this._input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
+            this.CurrentMovementKind = MovementKind.Falling;
+        }
+        else {
+            this.CurrentMovementKind = MovementKind.Jumping;
+        }
+        
+        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
+        this.ApplyVelocity(frameTime, velocity);
+        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+    }
+
+    private ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
+        this.MoveWithPlatform();
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+        var verticalVelocity = 0f;
+
+        if (this._input.JumpState == ButtonState.Pressed) {
+            this.CurrentMovementKind = MovementKind.Jumping;
+            verticalVelocity = this.JumpVelocity;
+        }
+        else if (this.CheckIfStillGrounded(anchorOffset, out var hit)) {
+            this.TrySetPlatform(hit);
+            this.CurrentMovementKind = horizontalVelocity != 0f ? MovementKind.Moving : MovementKind.Idle;
+        }
+        else {
+            verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            this.CurrentMovementKind = MovementKind.Falling;
+        }
+
+        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
+        this.ApplyVelocity(frameTime, velocity);
+        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+    }
+
+    private void MoveWithPlatform() {
+        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position &&
+            this._platform is IEntity entity && entity.TryGetChild<SimplePhysicsBody>(out var body) &&
+            body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
+            var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
+            this.SetWorldPosition(newPosition);
+        }
     }
 
     private void TrySetPlatform(RaycastHit hit) {
@@ -238,15 +335,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
         }
         else {
             this._platform = Empty;
-        }
-    }
-
-    private void MoveWithPlatform() {
-        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position && 
-            this._platform is IEntity entity && entity.TryGetChild<SimplePhysicsBody>(out var body) && 
-            body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
-            var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
-            this.SetWorldPosition(newPosition);
         }
     }
 }

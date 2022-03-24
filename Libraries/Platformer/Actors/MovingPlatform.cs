@@ -65,7 +65,7 @@ public class MovingPlatform : BaseActor {
         this.PreviousState = this.CurrentState;
         if (this._timePaused < this.PauseTimeInSeconds) {
             this._timePaused += (float)frameTime.SecondsPassed;
-            this.CurrentState = new ActorState(MovementKind.Moving, HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, this._timePaused);
+            this.CurrentState = new ActorState(HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, this._timePaused);
         }
         else {
             var desiredPosition = this._isTravelingToEnd ? this._endPoint : this._startPoint;
@@ -80,7 +80,7 @@ public class MovingPlatform : BaseActor {
                 this.LocalPosition += velocity;
             }
 
-            this.CurrentState = new ActorState(MovementKind.Moving, HorizontalDirection.Right, this.Transform.Position, velocity, 0f);
+            this.CurrentState = new ActorState(HorizontalDirection.Right, this.Transform.Position, velocity, 0f);
         }
     }
 
