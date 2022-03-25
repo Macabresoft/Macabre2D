@@ -9,8 +9,6 @@ using Microsoft.Xna.Framework;
 /// Interface for an actor, which is
 /// </summary>
 public interface IPlatformerActor : IBaseActor, IBoundable {
-
-
     /// <summary>
     /// Gets the actor's size in world units.
     /// </summary>
@@ -22,19 +20,11 @@ public interface IPlatformerActor : IBaseActor, IBoundable {
 /// </summary>
 [Category("Actor")]
 public abstract class PlatformerActor : BaseActor, IPlatformerActor {
-
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private Vector2 _size = Vector2.One;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
-
-
-    /// <inheritdoc />
-
-
-    /// <inheritdoc />
-
 
 
     /// <inheritdoc />
