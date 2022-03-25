@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -14,11 +13,13 @@ public sealed class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
     private MovementKind _currentMovementKind = MovementKind.Idle;
-    private MovementKind _previousMovementKind = MovementKind.Idle;
     private float _elapsedRunSeconds;
     private float _jumpHoldTime = 0.1f;
+    private float _jumpVelocity = 8f;
+    private float _maximumHorizontalVelocity = 7f;
     private float _originalMaximumHorizontalVelocity;
     private IBaseActor _platform = Empty;
+    private MovementKind _previousMovementKind = MovementKind.Idle;
     private QueueableSpriteAnimator? _spriteAnimator;
     private float _timeUntilRun = 1f;
 
@@ -75,6 +76,26 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
+    /// Gets or sets the initial velocity of a jump for this actor.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float JumpVelocity {
+        get => this._jumpVelocity;
+        set => this.Set(ref this._jumpVelocity, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum horizontal velocity allowed.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float MaximumHorizontalVelocity {
+        get => this._maximumHorizontalVelocity;
+        set => this.Set(ref this._maximumHorizontalVelocity, value);
+    }
+
+    /// <summary>
     /// Gets the velocity when running.
     /// </summary>
     [DataMember]
@@ -91,17 +112,21 @@ public sealed class PlatformerPlayer : PlatformerActor {
         private set => this._timeUntilRun = Math.Max(0f, value);
     }
 
-    private float ElapsedRunSeconds {
-        get => this._elapsedRunSeconds;
-        set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
-    }
-
     private MovementKind CurrentMovementKind {
         get => this._currentMovementKind;
         set {
             this._previousMovementKind = this._currentMovementKind;
             this._currentMovementKind = value;
+
+            if (this._currentMovementKind != this._previousMovementKind) {
+                this.ResetAnimation();
+            }
         }
+    }
+
+    private float ElapsedRunSeconds {
+        get => this._elapsedRunSeconds;
+        set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
     }
 
     /// <inheritdoc />
@@ -131,27 +156,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
         var anchorOffset = this.Size.Y * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
         this.PreviousState = this.CurrentState;
-        var currentState = this.GetNewActorState(frameTime, anchorOffset);
-
-        if (this._spriteAnimator != null) {
-            if (this.CurrentMovementKind != this._previousMovementKind) {
-                var spriteAnimation = this.CurrentMovementKind switch {
-                    MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
-                    MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
-                    MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
-                    MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
-                    _ => null
-                };
-
-                if (spriteAnimation != null) {
-                    this._spriteAnimator.Play(spriteAnimation, true);
-                }
-            }
-
-            this._spriteAnimator.RenderSettings.FlipHorizontal = currentState.FacingDirection == HorizontalDirection.Left;
-        }
-
-        this.CurrentState = currentState;
+        this.CurrentState = this.GetNewActorState(frameTime, anchorOffset);
+        this.ResetFacingDirection();
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
     }
 
@@ -222,8 +228,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
         if (this.CurrentMovementKind == this._previousMovementKind) {
             secondsPassed += this.CurrentState.SecondsInState;
         }
-        
-        Debug.WriteLine($"{secondsPassed} vs {frameTime.SecondsPassed}");
 
         return secondsPassed;
     }
@@ -280,7 +284,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     private ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
         var verticalVelocity = this.JumpVelocity;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
-        
+
         if (this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
             verticalVelocity = 0f;
             this.CurrentMovementKind = MovementKind.Falling;
@@ -291,7 +295,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
         else {
             this.CurrentMovementKind = MovementKind.Jumping;
         }
-        
+
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
         return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
@@ -326,6 +330,30 @@ public sealed class PlatformerPlayer : PlatformerActor {
             body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
             var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
             this.SetWorldPosition(newPosition);
+        }
+    }
+
+    private void ResetAnimation() {
+        if (this._spriteAnimator != null) {
+            if (this.CurrentMovementKind != this._previousMovementKind) {
+                var spriteAnimation = this.CurrentMovementKind switch {
+                    MovementKind.Idle => this.IdleAnimationReference.PackagedAsset,
+                    MovementKind.Moving => this.MovingAnimationReference.PackagedAsset,
+                    MovementKind.Falling => this.FallingAnimationReference.PackagedAsset,
+                    MovementKind.Jumping => this.JumpingAnimationReference.PackagedAsset,
+                    _ => null
+                };
+
+                if (spriteAnimation != null) {
+                    this._spriteAnimator.Play(spriteAnimation, true);
+                }
+            }
+        }
+    }
+
+    private void ResetFacingDirection() {
+        if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this._spriteAnimator != null) {
+            this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
     }
 

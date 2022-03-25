@@ -9,15 +9,7 @@ using Microsoft.Xna.Framework;
 /// Interface for an actor, which is
 /// </summary>
 public interface IPlatformerActor : IBaseActor, IBoundable {
-    /// <summary>
-    /// Gets the initial velocity of a jump for this actor.
-    /// </summary>
-    float JumpVelocity { get; }
 
-    /// <summary>
-    /// Gets the maximum horizontal velocity allowed.
-    /// </summary>
-    float MaximumHorizontalVelocity { get; }
 
     /// <summary>
     /// Gets the actor's size in world units.
@@ -30,8 +22,7 @@ public interface IPlatformerActor : IBaseActor, IBoundable {
 /// </summary>
 [Category("Actor")]
 public abstract class PlatformerActor : BaseActor, IPlatformerActor {
-    private float _jumpVelocity = 8f;
-    private float _maximumHorizontalVelocity = 7f;
+
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private Vector2 _size = Vector2.One;
 
@@ -40,20 +31,10 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
 
 
     /// <inheritdoc />
-    [DataMember]
-    [Category("Movement")]
-    public float JumpVelocity {
-        get => this._jumpVelocity;
-        protected set => this.Set(ref this._jumpVelocity, value);
-    }
+
 
     /// <inheritdoc />
-    [DataMember]
-    [Category("Movement")]
-    public float MaximumHorizontalVelocity {
-        get => this._maximumHorizontalVelocity;
-        protected set => this.Set(ref this._maximumHorizontalVelocity, value);
-    }
+
 
 
     /// <inheritdoc />
