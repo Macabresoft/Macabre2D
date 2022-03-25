@@ -21,6 +21,7 @@ public interface IPlatformerActor : IBaseActor, IBoundable {
 [Category("Actor")]
 public abstract class PlatformerActor : BaseActor, IPlatformerActor {
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
+    private IBaseActor _platform = Empty;
     private Vector2 _size = Vector2.One;
 
     /// <inheritdoc />
@@ -112,6 +113,10 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
             new Vector2(-this.HalfSize.X + anchorOffset, 0f),
             new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
 
+        if (result) {
+            this.TrySetPlatform(hit);
+        }
+
         return result;
     }
 
@@ -143,10 +148,23 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
             new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
 
         if (result) {
+            this.TrySetPlatform(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Moves this actor with the platform beneath it.
+    /// </summary>
+    protected void MoveWithPlatform() {
+        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position &&
+            this._platform is IEntity entity && entity.TryGetChild<SimplePhysicsBody>(out var body) &&
+            body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
+            var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
+            this.SetWorldPosition(newPosition);
+        }
     }
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
@@ -190,5 +208,14 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
         }
 
         return result;
+    }
+
+    private void TrySetPlatform(RaycastHit hit) {
+        if (hit.Collider?.Body is IEntity entity && entity.TryGetParentEntity<IBaseActor>(out var platform) && platform != null) {
+            this._platform = platform;
+        }
+        else {
+            this._platform = Empty;
+        }
     }
 }
