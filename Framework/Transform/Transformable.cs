@@ -73,6 +73,12 @@ public interface ITransformable {
     Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale);
 
     /// <summary>
+    /// Moves this actor the specified amount.
+    /// </summary>
+    /// <param name="amount">The amount.</param>
+    void Move(Vector2 amount);
+
+    /// <summary>
     /// Sets the world position.
     /// </summary>
     /// <param name="position">The position.</param>
@@ -118,12 +124,6 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
     }
 
-    /// <summary>
-    /// Gets a value indicating whether or not the transform is relative to its parent.
-    /// </summary>
-    /// <remarks>If this is set to false, the world transform's position and scale will be the same as it's local position and scale.</remarks>
-    protected virtual bool IsTransformRelativeToParent => true;
-
     /// <inheritdoc />
     public Transform Transform {
         get {
@@ -166,6 +166,12 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
             }
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether or not the transform is relative to its parent.
+    /// </summary>
+    /// <remarks>If this is set to false, the world transform's position and scale will be the same as it's local position and scale.</remarks>
+    protected virtual bool IsTransformRelativeToParent => true;
 
     /// <inheritdoc />
     public Transform GetWorldTransform(float rotationAngle) {
@@ -223,6 +229,11 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     }
 
     /// <inheritdoc />
+    public void Move(Vector2 amount) {
+        this.SetWorldPosition(this.Transform.Position + amount);
+    }
+
+    /// <inheritdoc />
     public void SetWorldPosition(Vector2 position) {
         this.SetWorldTransform(position, this.Transform.Scale);
     }
@@ -275,7 +286,7 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         var transformMatrix =
             Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
             Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
-        
+
         if (this.IsTransformRelativeToParent) {
             var parent = this.GetParentTransformable();
             if (parent != this) {

@@ -1,15 +1,34 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// Interface for a moving platform.
+/// </summary>
+public interface IMovingPlatform {
+    /// <summary>
+    /// Attaches the actor to this platform.
+    /// </summary>
+    /// <param name="actor">The actor to attach.</param>
+    void Attach(IPlatformerActor actor);
+
+    /// <summary>
+    /// Detaches the actor from this platform.
+    /// </summary>
+    /// <param name="actor">The actor to detach.</param>
+    void Detach(IPlatformerActor actor);
+}
+
+/// <summary>
 /// A moving platform.
 /// </summary>
 [Category("Platform")]
-public class MovingPlatform : BaseActor {
+public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEntity {
+    private readonly HashSet<IPlatformerActor> _attachedActors = new();
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
@@ -51,6 +70,16 @@ public class MovingPlatform : BaseActor {
     }
 
     /// <inheritdoc />
+    public void Attach(IPlatformerActor actor) {
+        this._attachedActors.Add(actor);
+    }
+
+    /// <inheritdoc />
+    public void Detach(IPlatformerActor actor) {
+        this._attachedActors.Remove(actor);
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
@@ -61,26 +90,37 @@ public class MovingPlatform : BaseActor {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
-        this.PreviousState = this.CurrentState;
+    public void Update(FrameTime frameTime, InputState inputState) {
         if (this._timePaused < this.PauseTimeInSeconds) {
             this._timePaused += (float)frameTime.SecondsPassed;
-            this.CurrentState = new ActorState(HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, this._timePaused);
         }
         else {
+            var originalPosition = this.Transform.Position;
             var desiredPosition = this._isTravelingToEnd ? this._endPoint : this._startPoint;
             var velocity = (desiredPosition - this.LocalPosition).GetNormalized() * this.Velocity * (float)frameTime.SecondsPassed;
 
             if (Math.Abs(this.LocalPosition.X - desiredPosition.X) < Math.Abs(velocity.X) || Math.Abs(this.LocalPosition.Y - desiredPosition.Y) < Math.Abs(velocity.Y)) {
-                this.LocalPosition = desiredPosition;
+                this.SetWorldPosition(desiredPosition);
                 this._isTravelingToEnd = !this._isTravelingToEnd;
                 this._timePaused = 0f;
             }
             else {
-                this.LocalPosition += velocity;
+                this.Move(velocity);
             }
 
-            this.CurrentState = new ActorState(HorizontalDirection.Right, this.Transform.Position, velocity, 0f);
+            // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
+            var attachedMovement = this.Transform.Position - originalPosition;
+            var polygonCollider = this.Collider as PolygonCollider;
+            var adjustForY = polygonCollider != null && polygonCollider.WorldPoints.Any() && Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
+            foreach (var attached in this._attachedActors) {
+                attached.Move(attachedMovement);
+                if (adjustForY) {
+                    var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
+                    Debug.WriteLine("Adjusting");
+
+                    attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
+                }
+            }
         }
     }
 

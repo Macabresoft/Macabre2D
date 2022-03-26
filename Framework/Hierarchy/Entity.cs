@@ -108,7 +108,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <c>true</c> if this instance is a descendent of <paramref name="entity" />; otherwise, <c>false</c>.
     /// </returns>
     bool IsDescendentOf(IEntity entity);
-
+    
     /// <summary>
     /// Called when this instance is removed from the <see cref="IScene" /> tree.
     /// </summary>
@@ -291,7 +291,7 @@ public class Entity : Transformable, IEntity {
         this.Scene = scene;
         this.Parent = parent;
         this.Scene.RegisterEntity(this);
-        
+
         foreach (var child in this.Children) {
             child.Initialize(this.Scene, this);
         }

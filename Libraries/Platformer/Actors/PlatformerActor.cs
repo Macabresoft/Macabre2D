@@ -8,7 +8,22 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an actor, which is
 /// </summary>
-public interface IPlatformerActor : IBaseActor, IBoundable {
+public interface IPlatformerActor : IBoundable, ITransformable {
+    /// <summary>
+    /// Gets the current state of this actor.
+    /// </summary>
+    ActorState CurrentState { get; }
+
+    /// <summary>
+    /// Gets a value that is half of <see cref="Size" /> for calculations.
+    /// </summary>
+    public Vector2 HalfSize { get; }
+
+    /// <summary>
+    /// Gets the previous state of this actor.
+    /// </summary>
+    ActorState PreviousState { get; }
+
     /// <summary>
     /// Gets the actor's size in world units.
     /// </summary>
@@ -19,14 +34,30 @@ public interface IPlatformerActor : IBaseActor, IBoundable {
 /// An actor that moves and animates with a platformer focus.
 /// </summary>
 [Category("Actor")]
-public abstract class PlatformerActor : BaseActor, IPlatformerActor {
+public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
+    private ActorState _currentState;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
-    private IBaseActor _platform = Empty;
+    private IMovingPlatform? _platform;
+    private ActorState _previousState;
     private Vector2 _size = Vector2.One;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
 
+    /// <inheritdoc />
+    public ActorState CurrentState {
+        get => this._currentState;
+        protected set => this.Set(ref this._currentState, value);
+    }
+
+    /// <inheritdoc />
+    public Vector2 HalfSize { get; private set; } = new(0.5f);
+
+    /// <inheritdoc />
+    public ActorState PreviousState {
+        get => this._previousState;
+        protected set => this.Set(ref this._previousState, value);
+    }
 
     /// <inheritdoc />
     [DataMember]
@@ -44,15 +75,9 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
     /// </summary>
     protected IPlatformerPhysicsLoop PhysicsLoop => this._physicsLoop;
 
-    /// <summary>
-    /// Gets a value that is half of <see cref="Size" /> for calculations.
-    /// </summary>
-    protected Vector2 HalfSize { get; private set; } = new(0.5f);
-
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
         this.ResetBoundingArea();
         this._physicsLoop = this.Scene.GetLoop<IPlatformerPhysicsLoop>() ?? throw new ArgumentNullException(nameof(this._physicsLoop));
     }
@@ -63,7 +88,7 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="velocity">The velocity.</param>
     protected void ApplyVelocity(FrameTime frameTime, Vector2 velocity) {
-        this.LocalPosition += velocity * (float)frameTime.SecondsPassed;
+        this.Move(velocity * (float)frameTime.SecondsPassed);
     }
 
     /// <summary>
@@ -155,18 +180,6 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
         return result;
     }
 
-    /// <summary>
-    /// Moves this actor with the platform beneath it.
-    /// </summary>
-    protected void MoveWithPlatform() {
-        if (this._platform.CurrentState.Position != this._platform.PreviousState.Position &&
-            this._platform is IEntity entity && entity.TryGetChild<SimplePhysicsBody>(out var body) &&
-            body is { HasCollider: true, Collider: LineCollider collider } && collider.WorldPoints.Any()) {
-            var newPosition = new Vector2(this.Transform.Position.X + this._platform.CurrentState.Position.X - this._platform.PreviousState.Position.X, collider.WorldPoints.First().Y + this.HalfSize.Y);
-            this.SetWorldPosition(newPosition);
-        }
-    }
-
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
         var transform = this.Transform;
         var isDirectionPositive = horizontalVelocity >= 0f;
@@ -211,11 +224,23 @@ public abstract class PlatformerActor : BaseActor, IPlatformerActor {
     }
 
     private void TrySetPlatform(RaycastHit hit) {
-        if (hit.Collider?.Body is IEntity entity && entity.TryGetParentEntity<IBaseActor>(out var platform) && platform != null) {
-            this._platform = platform;
+        if (hit.Collider?.Body is IMovingPlatform platform) {
+            if (platform != this._platform) {
+                this._platform?.Detach(this);
+                this._platform = platform;
+                this._platform.Attach(this);
+            }
         }
         else {
-            this._platform = Empty;
+            this.UnsetPlatform();
         }
+    }
+
+    /// <summary>
+    /// Unsets the platform.
+    /// </summary>
+    protected void UnsetPlatform() {
+        this._platform?.Detach(this);
+        this._platform = null;
     }
 }

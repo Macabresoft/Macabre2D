@@ -256,11 +256,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     private ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
-        this.MoveWithPlatform();
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         var verticalVelocity = 0f;
 
         if (this._input.JumpState == ButtonState.Pressed) {
+            this.UnsetPlatform();
             this.CurrentMovementKind = MovementKind.Jumping;
             verticalVelocity = this.JumpVelocity;
         }
@@ -298,11 +298,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     private ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
-        this.MoveWithPlatform();
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
         var verticalVelocity = 0f;
 
         if (this._input.JumpState == ButtonState.Pressed) {
+            this.UnsetPlatform();
             this.CurrentMovementKind = MovementKind.Jumping;
             verticalVelocity = this.JumpVelocity;
         }

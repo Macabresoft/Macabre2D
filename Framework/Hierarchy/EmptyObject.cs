@@ -164,6 +164,10 @@ internal class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
+    public void Move(Vector2 amount) {
+    }
+
+    /// <inheritdoc />
     public void Initialize(IScene scene, IEntity parent) {
         throw new NotSupportedException("An empty entity cannot be initialized.");
     }
