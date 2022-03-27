@@ -107,15 +107,24 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
                 this.Move(velocity);
             }
 
-            // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
-            var attachedMovement = this.Transform.Position - originalPosition;
-            var polygonCollider = this.Collider as PolygonCollider;
-            var adjustForY = polygonCollider != null && polygonCollider.WorldPoints.Any() && Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
-            foreach (var attached in this._attachedActors) {
-                attached.Move(attachedMovement);
-                if (adjustForY) {
-                    var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
-                    attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
+            if (this._attachedActors.Any()) {
+                // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
+                var attachedMovement = this.Transform.Position - originalPosition;
+                var polygonCollider = this.Collider as PolygonCollider;
+                var adjustForY = polygonCollider != null && polygonCollider.WorldPoints.Any() && Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
+                var settings = this.Game.Project.Settings;
+                var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
+
+                foreach (var attached in this._attachedActors) {
+                    attached.Move(attachedMovement);
+                    if (settings.SnapToPixels) {
+                        attached.SetWorldPosition(new Vector2(attached.Transform.ToPixelSnappedValue(settings).Position.X + platformPixelOffset, attached.Transform.Position.Y));
+                    }
+                    
+                    if (adjustForY) {
+                        var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
+                        attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
+                    }
                 }
             }
         }
