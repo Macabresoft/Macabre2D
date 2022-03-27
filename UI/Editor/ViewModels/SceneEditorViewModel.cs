@@ -82,7 +82,7 @@ public sealed class SceneEditorViewModel : BaseViewModel {
 
     private IScene CreateScene() {
         var scene = new Scene();
-        scene.AddLoop(new EditorRender(this.SceneService));
+        scene.AddLoop(new EditorRenderLoop(this.SceneService));
         this._camera = scene.AddChild<Camera>();
         this._camera.ViewHeight = this._settingsService.Settings.CameraViewHeight;
         this._camera.SetWorldPosition(this._settingsService.Settings.CameraPosition);

@@ -7,16 +7,16 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// A render system built explicitly for the <see cref="IEditorGame" />.
 /// </summary>
-public class EditorRender : Loop {
+public class EditorRenderLoop : Loop {
     private readonly QuadTree<IRenderableEntity> _renderTree = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     private readonly ISceneService _sceneService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EditorRender" /> class.
+    /// Initializes a new instance of the <see cref="EditorRenderLoop" /> class.
     /// </summary>
     /// <param name="sceneService">The scene service.</param>
-    public EditorRender(ISceneService sceneService) {
+    public EditorRenderLoop(ISceneService sceneService) {
         this._sceneService = sceneService;
     }
 
@@ -25,7 +25,7 @@ public class EditorRender : Loop {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Game is IEditorGame { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
+        if (this.Game is IEditorGame { SpriteBatch: { } spriteBatch, Camera: { } camera } sceneEditor) {
             this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
             this._renderTree.Clear();

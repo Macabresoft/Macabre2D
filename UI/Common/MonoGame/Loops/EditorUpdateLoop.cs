@@ -16,6 +16,7 @@ public class EditorUpdateLoop : UpdateLoop {
     /// Initializes a new instance of the <see cref="EditorUpdateLoop" /> class.
     /// </summary>
     /// <param name="entityService">The entity service.</param>
+    /// <param name="sceneService">The scene service.</param>
     /// <param name="selectorGizmo">The selector gizmo.</param>
     public EditorUpdateLoop(IEntityService entityService, ISceneService sceneService, IGizmo selectorGizmo) {
         this._entityService = entityService;
