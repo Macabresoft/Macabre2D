@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -116,8 +115,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
                 attached.Move(attachedMovement);
                 if (adjustForY) {
                     var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
-                    Debug.WriteLine("Adjusting");
-
                     attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
                 }
             }
