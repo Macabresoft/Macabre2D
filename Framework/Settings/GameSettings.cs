@@ -36,6 +36,11 @@ public interface IGameSettings : INotifyPropertyChanged {
     LayerSettings LayerSettings { get; }
 
     /// <summary>
+    /// Gets a value indicating whether or not this should pixel snap.
+    /// </summary>
+    bool SnapToPixels { get; }
+
+    /// <summary>
     /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
     /// </summary>
     Color ErrorSpritesColor { get; set; }
@@ -70,6 +75,7 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
     private Color _errorSpritesColor = Color.HotPink;
     private Color _fallbackBackgroundColor = Color.Black;
     private ushort _pixelsPerUnit = 32;
+    private bool _snapToPixels;
 
 
     /// <inheritdoc />
@@ -122,6 +128,13 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
                 this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
             }
         }
+    }
+
+    /// <inheritdoc />
+    [DataMember(Name = "Snap to Pixels During Render")]
+    public bool SnapToPixels {
+        get => this._snapToPixels;
+        set => this.Set(ref this._snapToPixels, value);
     }
 
     /// <inheritdoc />

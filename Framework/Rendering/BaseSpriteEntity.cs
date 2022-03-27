@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An abstract base entity that renders a single sprite, given a sprite sheet and a sprite index.
@@ -18,7 +17,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     private readonly ResettableLazy<Transform> _rotatableTransform;
     private Color _color = Color.White;
     private float _rotation;
-    private bool _snapToPixels;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
@@ -63,38 +61,14 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     [DataMember(Order = 3)]
     [Category(CommonCategories.Transform)]
     public float Rotation {
-        get => this._snapToPixels ? 0f : this._rotation;
+        get => this.Scene.Game.Project.Settings.SnapToPixels ? 0f : this._rotation;
 
         set {
             if (this.Set(ref this._rotation, value.NormalizeAngle())) {
-                if (!this._snapToPixels) {
+                if (!this.Scene.Game.Project.Settings.SnapToPixels) {
                     this._boundingArea.Reset();
                     this._rotatableTransform.Reset();
                 }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this sprite renderer should snap to the pixel
-    /// ratio defined in <see cref="IGameSettings" />.
-    /// </summary>
-    /// <remarks>Snapping to pixels will disable rotations on this renderer.</remarks>
-    /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-    [DataMember(Order = 2, Name = "Snap to Pixels")]
-    public bool SnapToPixels {
-        get => this._snapToPixels;
-
-        set {
-            if (this.Set(ref this._snapToPixels, value)) {
-                if (!this._snapToPixels) {
-                    this._rotatableTransform.Reset();
-                }
-                else {
-                    this._pixelTransform.Reset();
-                }
-
-                this._boundingArea.Reset();
             }
         }
     }
@@ -162,7 +136,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
             var maximumX = points.Max(x => x.X);
             var maximumY = points.Max(x => x.Y);
 
-            if (this.SnapToPixels) {
+            if (this.Scene.Game.Project.Settings.SnapToPixels) {
                 minimumX = minimumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
                 minimumY = minimumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
                 maximumX = maximumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
@@ -199,7 +173,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     }
 
     private Transform GetRenderTransform() {
-        return this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value;
+        return this.Scene.Game.Project.Settings.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value;
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

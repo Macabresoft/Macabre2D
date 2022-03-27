@@ -72,7 +72,6 @@ public class Camera : Entity, ICamera {
     private int _renderOrder;
     private SamplerState _samplerState = SamplerState.PointClamp;
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
-    private bool _snapToPixels;
     private float _viewHeight = 10f;
 
     /// <summary>
@@ -119,22 +118,6 @@ public class Camera : Entity, ICamera {
             this.Set(ref this._samplerStateType, value);
             this._samplerState = this._samplerStateType.ToSamplerState();
             this.RaisePropertyChanged(nameof(this._samplerState));
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this camera should snap to the pixel ratio
-    /// defined in <see cref="IGameSettings" />.
-    /// </summary>
-    /// <value><c>true</c> if this should snap to pixels; otherwise, <c>false</c>.</value>
-    [DataMember(Name = "Snap to Pixels")]
-    public bool SnapToPixels {
-        get => this._snapToPixels;
-
-        set {
-            if (this.Set(ref this._snapToPixels, value)) {
-                this.OnScreenAreaChanged();
-            }
         }
     }
 
@@ -282,7 +265,7 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.SnapToPixels) {
+        if (this.Scene.Game.Project.Settings.SnapToPixels) {
             minimumX = minimumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
             minimumY = minimumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
             maximumX = maximumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
