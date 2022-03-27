@@ -55,6 +55,11 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
     }
 
     /// <summary>
+    /// Gets the game.
+    /// </summary>
+    protected IGame Game => this.Scene.Game;
+
+    /// <summary>
     /// Gets the scene.
     /// </summary>
     /// <value>The scene.</value>

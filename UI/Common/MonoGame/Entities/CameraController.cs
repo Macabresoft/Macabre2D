@@ -24,7 +24,7 @@ public sealed class CameraController : UpdateableEntity {
     }
 
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game is IAvaloniaGame game && this._camera != null) {
+        if (this.Game is IAvaloniaGame game && this._camera != null) {
             var mouseState = inputState.CurrentMouseState;
             var keyboardState = inputState.CurrentKeyboardState;
             var previousMouseState = inputState.PreviousMouseState;

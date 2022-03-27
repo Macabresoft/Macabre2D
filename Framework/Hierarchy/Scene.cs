@@ -23,6 +23,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     IEnumerable<ICamera> Cameras => Array.Empty<ICamera>();
 
     /// <summary>
+    /// Gets the fixed updateable entities.
+    /// </summary>
+    IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
+
+    /// <summary>
     /// Gets the game currently running this scene.
     /// </summary>
     IGame Game => BaseGame.Empty;
@@ -51,11 +56,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer {
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
-
-    /// <summary>
-    /// Gets the fixed updateable entities.
-    /// </summary>
-    IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => Array.Empty<IFixedUpdateableEntity>();
 
     /// <summary>
     /// Gets or sets the color of the background.
@@ -173,6 +173,12 @@ public sealed class Scene : GridContainer, IScene {
 
     private readonly Dictionary<Type, object> _dependencies = new();
 
+    private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
+        c => c.IsEnabled,
+        nameof(IFixedUpdateableEntity.IsEnabled),
+        (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
+        nameof(IFixedUpdateableEntity.UpdateOrder));
+
     [DataMember]
     private readonly LoopCollection _loops = new();
 
@@ -196,14 +202,9 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IUpdateableEntity.IsEnabled),
         (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
         nameof(IUpdateableEntity.UpdateOrder));
-    
-    private readonly FilterSortCollection<IFixedUpdateableEntity> _fixedUpdateableEntities = new(
-        c => c.IsEnabled,
-        nameof(IFixedUpdateableEntity.IsEnabled),
-        (c1, c2) => Comparer<int>.Default.Compare(c1.UpdateOrder, c2.UpdateOrder),
-        nameof(IFixedUpdateableEntity.UpdateOrder));
 
     private Color _backgroundColor = DefinedColors.MacabresoftBlack;
+    private IGame _game = BaseGame.Empty;
     private bool _isBusy;
     private bool _isInitialized;
     private Version _version = new(0, 0, 0, 0);
@@ -227,6 +228,12 @@ public sealed class Scene : GridContainer, IScene {
     public new static IScene Empty => EmptyObject.Instance;
 
     /// <inheritdoc />
+    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
+
+    /// <inheritdoc cref="IScene" />
+    public override IGame Game => this._game;
+
+    /// <inheritdoc />
     public IReadOnlyCollection<ILoop> Loops => this._loops;
 
     /// <inheritdoc />
@@ -242,9 +249,6 @@ public sealed class Scene : GridContainer, IScene {
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IFixedUpdateableEntity> FixedUpdateableEntities => this._fixedUpdateableEntities;
-
-    /// <inheritdoc />
     public IAssetManager Assets { get; private set; } = AssetManager.Empty;
 
     /// <inheritdoc />
@@ -253,9 +257,6 @@ public sealed class Scene : GridContainer, IScene {
         get => this._backgroundColor;
         set => this.Set(ref this._backgroundColor, value);
     }
-
-    /// <inheritdoc />
-    public IGame Game { get; private set; } = BaseGame.Empty;
 
     /// <inheritdoc />
     [DataMember]
@@ -291,7 +292,7 @@ public sealed class Scene : GridContainer, IScene {
             try {
                 this._isBusy = true;
                 this.Assets = assetManager;
-                this.Game = game;
+                this._game = game;
                 this.Initialize(this, this);
 
                 foreach (var loop in this.Loops) {

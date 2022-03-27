@@ -25,7 +25,7 @@ public class EditorRender : Loop {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game is IEditorGame { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
+        if (this.Game is IEditorGame { SpriteBatch: SpriteBatch spriteBatch, Camera: ICamera camera } sceneEditor) {
             this.Scene.BackgroundColor = this._sceneService.CurrentScene.BackgroundColor;
             spriteBatch.GraphicsDevice.Clear(this._sceneService.CurrentScene.BackgroundColor);
             this._renderTree.Clear();

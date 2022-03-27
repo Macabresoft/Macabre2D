@@ -50,7 +50,7 @@ public sealed class EditorGrid : BaseDrawer {
             return;
         }
 
-        if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
+        if (this.Game.SpriteBatch is { } spriteBatch) {
             if (this._editorService.GridDivisions > 0 && this.ResolveGridContainer() is IGridContainer container) {
                 this.ResetColor();
 
@@ -71,13 +71,13 @@ public sealed class EditorGrid : BaseDrawer {
         float lineThickness,
         float alpha) {
         if (this.PrimitiveDrawer != null) {
-            var shadowOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit;
+            var shadowOffset = lineThickness * this.Game.Project.Settings.InversePixelsPerUnit;
             var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
             var verticalShadowOffset = new Vector2(0f, shadowOffset);
             var color = this.Color * alpha;
 
             var columns = GetGridPositions(boundingArea.Minimum.X, boundingArea.Maximum.X, tileSize.X, offset.X);
-            var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
+            var pixelsPerUnit = this.Game.Project.Settings.PixelsPerUnit;
             foreach (var column in columns) {
                 var minimum = new Vector2(column, boundingArea.Minimum.Y);
                 var maximum = new Vector2(column, boundingArea.Maximum.Y);

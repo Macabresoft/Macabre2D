@@ -24,7 +24,7 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer != null && this._body != null && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.PrimitiveDrawer != null && this._body != null && this.Game.SpriteBatch is SpriteBatch spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var colliders = this._body.GetColliders();
 
@@ -32,7 +32,7 @@ public sealed class ColliderDrawer : BaseDrawer, IUpdateableEntity {
                 this.PrimitiveDrawer.DrawCollider(
                     collider,
                     spriteBatch,
-                    this.Scene.Game.Project.Settings.PixelsPerUnit,
+                    this.Game.Project.Settings.PixelsPerUnit,
                     this.Color,
                     lineThickness,
                     Vector2.Zero);

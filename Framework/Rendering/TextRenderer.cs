@@ -122,9 +122,9 @@ public class TextRenderer : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is FontAsset font && this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is FontAsset font && this.Game.SpriteBatch is SpriteBatch spriteBatch) {
             spriteBatch.Draw(
-                this.Scene.Game.Project.Settings.PixelsPerUnit,
+                this.Game.Project.Settings.PixelsPerUnit,
                 font,
                 this.Text,
                 this.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value,
@@ -145,7 +145,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.LocalScale.X != 0f && this.LocalScale.Y != 0f) {
-            var inversePixelsPerUnit = this.Scene.Game.Project.Settings.InversePixelsPerUnit;
+            var inversePixelsPerUnit = this.Game.Project.Settings.InversePixelsPerUnit;
             var (x, y) = this.RenderSettings.Size;
             var width = x * inversePixelsPerUnit;
             var height = y * inversePixelsPerUnit;
@@ -163,10 +163,10 @@ public class TextRenderer : RenderableEntity, IRotatable {
             var maximumY = points.Max(point => point.Y);
 
             if (this.SnapToPixels) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                minimumY = minimumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                maximumX = maximumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                maximumY = maximumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
+                minimumX = minimumX.ToPixelSnappedValue(this.Game.Project.Settings);
+                minimumY = minimumY.ToPixelSnappedValue(this.Game.Project.Settings);
+                maximumX = maximumX.ToPixelSnappedValue(this.Game.Project.Settings);
+                maximumY = maximumY.ToPixelSnappedValue(this.Game.Project.Settings);
             }
 
             result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -179,12 +179,12 @@ public class TextRenderer : RenderableEntity, IRotatable {
     }
 
     private Transform CreatePixelTransform() {
-        var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * this.Scene.Game.Project.Settings.InversePixelsPerUnit);
-        return worldTransform.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
+        var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * this.Game.Project.Settings.InversePixelsPerUnit);
+        return worldTransform.ToPixelSnappedValue(this.Game.Project.Settings);
     }
 
     private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Scene.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
+        return this.GetWorldTransform(this.RenderSettings.Offset * this.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
     }
 
     private Vector2 CreateSize() {

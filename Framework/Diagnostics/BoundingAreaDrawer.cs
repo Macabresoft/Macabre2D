@@ -23,7 +23,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
             return;
         }
 
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && !this._boundingArea.IsEmpty) {
+        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && !this._boundingArea.IsEmpty) {
             var minimum = this._boundingArea.Minimum;
             var maximum = this._boundingArea.Maximum;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
@@ -31,7 +31,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
             var points = new[] { minimum, new Vector2(minimum.X, maximum.Y), maximum, new Vector2(maximum.X, minimum.Y) };
             this.PrimitiveDrawer.DrawPolygon(
                 spriteBatch,
-                this.Scene.Game.Project.Settings.PixelsPerUnit,
+                this.Game.Project.Settings.PixelsPerUnit,
                 this.Color,
                 lineThickness,
                 points);

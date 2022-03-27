@@ -51,9 +51,9 @@ public abstract class BaseDrawer : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        if (this.Scene.Game.SpriteBatch != null) {
+        if (this.Game.SpriteBatch != null) {
             this.PrimitiveDrawer = this.Scene.ResolveDependency(
-                () => new PrimitiveDrawer(this.Scene.Game.SpriteBatch));
+                () => new PrimitiveDrawer(this.Game.SpriteBatch));
         }
     }
 
@@ -64,8 +64,8 @@ public abstract class BaseDrawer : RenderableEntity {
     /// <returns>The appropriate line thickness for this drawer.</returns>
     protected float GetLineThickness(float viewHeight) {
         var result = this.LineThickness;
-        if (this.UseDynamicLineThickness && this.Scene.Game.GraphicsDevice is GraphicsDevice device) {
-            result = LineHelper.GetDynamicLineThickness(result, viewHeight, device, this.Scene.Game.Project.Settings);
+        if (this.UseDynamicLineThickness && this.Game.GraphicsDevice is GraphicsDevice device) {
+            result = LineHelper.GetDynamicLineThickness(result, viewHeight, device, this.Game.Project.Settings);
         }
 
         return result;

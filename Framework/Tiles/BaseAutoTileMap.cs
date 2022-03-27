@@ -60,12 +60,12 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is { } spriteBatch && this.TileSetReference.PackagedAsset is { } tileSet && this.TileSetReference.Asset is { } spriteSheet) {
+        if (this.Game.SpriteBatch is { } spriteBatch && this.TileSetReference.PackagedAsset is { } tileSet && this.TileSetReference.Asset is { } spriteSheet) {
             foreach (var (activeTile, tileIndex) in this._activeTileToIndex) {
                 var boundingArea = this.GetTileBoundingArea(activeTile);
                 if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex)) {
                     spriteBatch.Draw(
-                        this.Scene.Game.Project.Settings.PixelsPerUnit,
+                        this.Game.Project.Settings.PixelsPerUnit,
                         spriteSheet,
                         spriteIndex,
                         boundingArea.Minimum,

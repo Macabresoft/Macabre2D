@@ -13,7 +13,7 @@ public class RenderLoop : Loop {
     public override LoopKind Kind => LoopKind.Render;
 
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game is { } game) {
+        if (this.Game is { } game) {
             var enabledLayers = game.Project.Settings.LayerSettings.EnabledLayers;
             this._renderTree.Clear();
 

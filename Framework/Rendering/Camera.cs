@@ -163,7 +163,7 @@ public class Camera : Entity, ICamera {
         this.OnScreenAreaChanged();
         this._samplerState = this._samplerStateType.ToSamplerState();
 
-        this.Scene.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
+        this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
 
         this.Scene.Assets.ResolveAsset<ShaderAsset, Effect>(this._shaderReference);
@@ -265,18 +265,18 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.Scene.Game.Project.Settings.SnapToPixels) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-            minimumY = minimumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-            maximumX = maximumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-            maximumY = maximumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
+        if (this.Game.Project.Settings.SnapToPixels) {
+            minimumX = minimumX.ToPixelSnappedValue(this.Game.Project.Settings);
+            minimumY = minimumY.ToPixelSnappedValue(this.Game.Project.Settings);
+            maximumX = maximumX.ToPixelSnappedValue(this.Game.Project.Settings);
+            maximumY = maximumY.ToPixelSnappedValue(this.Game.Project.Settings);
         }
 
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
     }
 
     private Vector2 CreateSize() {
-        return new Vector2(this.Scene.Game.ViewportSize.X, this.Scene.Game.ViewportSize.Y);
+        return new Vector2(this.Game.ViewportSize.X, this.Game.ViewportSize.Y);
     }
 
     private float CreateViewWidth() {
@@ -292,13 +292,13 @@ public class Camera : Entity, ICamera {
     }
 
     private Matrix GetViewMatrix() {
-        var settings = this.Scene.Game.Project.Settings;
+        var settings = this.Game.Project.Settings;
         var pixelsPerUnit = settings.PixelsPerUnit;
         var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
         var worldTransform = this.Transform;
 
         return
-            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Scene.Game.Project.Settings) * pixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Game.Project.Settings) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
     }

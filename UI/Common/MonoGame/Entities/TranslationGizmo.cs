@@ -39,7 +39,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
-        if (this.Scene.Game.GraphicsDevice is { } graphicsDevice) {
+        if (this.Game.GraphicsDevice is { } graphicsDevice) {
             this._xAxisArrowSprite = PrimitiveDrawer.CreateForwardArrowSprite(graphicsDevice, GizmoPointSize);
             this._yAxisArrowSprite = PrimitiveDrawer.CreateUpwardsArrowSprite(graphicsDevice, GizmoPointSize);
             this._neutralAxisTriangleSprite = PrimitiveDrawer.CreateTopLeftRightTriangleSprite(graphicsDevice, new Point(GizmoPointSize));
@@ -48,13 +48,13 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is { } spriteBatch) {
-            var settings = this.Scene.Game.Project.Settings;
+        if (this.Game.SpriteBatch is { } spriteBatch) {
+            var settings = this.Game.Project.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
-            var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Scene.Game.ViewportSize.Y);
+            var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
             var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
 

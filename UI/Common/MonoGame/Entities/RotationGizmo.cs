@@ -44,20 +44,20 @@ public class RotationGizmo : BaseAxisGizmo {
             throw new NotSupportedException("Could not find a camera ancestor.");
         }
 
-        if (this.Scene.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
+        if (this.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
             this._sprite = PrimitiveDrawer.CreateCircleSprite(graphicsDevice, GizmoPointSize);
         }
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
-            var settings = this.Scene.Game.Project.Settings;
+        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
+            var settings = this.Game.Project.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
-            var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Scene.Game.ViewportSize.Y);
+            var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
             var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
             var axisLength = this.GetAxisLength();

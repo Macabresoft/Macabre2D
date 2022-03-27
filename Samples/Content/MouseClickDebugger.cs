@@ -18,10 +18,10 @@ public sealed class MouseClickDebugger : BaseDrawer, IUpdateableEntity {
     }
 
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.Game.SpriteBatch is SpriteBatch spriteBatch) {
             this.PrimitiveDrawer?.DrawCircle(
                 spriteBatch,
-                this.Scene.Game.Project.Settings.PixelsPerUnit,
+                this.Game.Project.Settings.PixelsPerUnit,
                 1f,
                 this.Transform.Position,
                 50,

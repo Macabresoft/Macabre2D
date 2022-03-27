@@ -28,7 +28,7 @@ public class EditorUpdateLoop : UpdateLoop {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        if (this.Scene.Game is IEditorGame sceneEditor) {
+        if (this.Game is IEditorGame sceneEditor) {
             var performedActions = false;
             
             if (inputState.IsKeyNewlyReleased(Keys.Escape)) {

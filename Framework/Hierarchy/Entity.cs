@@ -108,7 +108,7 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// <c>true</c> if this instance is a descendent of <paramref name="entity" />; otherwise, <c>false</c>.
     /// </returns>
     bool IsDescendentOf(IEntity entity);
-    
+
     /// <summary>
     /// Called when this instance is removed from the <see cref="IScene" /> tree.
     /// </summary>
@@ -174,6 +174,11 @@ public class Entity : Transformable, IEntity {
     /// Gets the default empty <see cref="IEntity" /> that is present before initialization.
     /// </summary>
     public static IEntity Empty => EmptyObject.Instance;
+
+    /// <summary>
+    /// Gets the game.
+    /// </summary>
+    public virtual IGame Game => this.Scene.Game;
 
     /// <inheritdoc />
     [DataMember]

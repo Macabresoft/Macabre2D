@@ -61,11 +61,11 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     [DataMember(Order = 3)]
     [Category(CommonCategories.Transform)]
     public float Rotation {
-        get => this.Scene.Game.Project.Settings.SnapToPixels ? 0f : this._rotation;
+        get => this.Game.Project.Settings.SnapToPixels ? 0f : this._rotation;
 
         set {
             if (this.Set(ref this._rotation, value.NormalizeAngle())) {
-                if (!this.Scene.Game.Project.Settings.SnapToPixels) {
+                if (!this.Game.Project.Settings.SnapToPixels) {
                     this._boundingArea.Reset();
                     this._rotatableTransform.Reset();
                 }
@@ -83,10 +83,10 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteIndex.HasValue && this.Scene.Game.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
+        if (this.SpriteIndex.HasValue && this.Game.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             spriteSheet.Draw(
                 spriteBatch,
-                this.Scene.Game.Project.Settings.PixelsPerUnit,
+                this.Game.Project.Settings.PixelsPerUnit,
                 this.SpriteIndex.Value,
                 this.GetRenderTransform(),
                 this.Color,
@@ -119,7 +119,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.SpriteSheet is { } spriteSheet) {
-            var inversePixelsPerUnit = this.Scene.Game.Project.Settings.InversePixelsPerUnit;
+            var inversePixelsPerUnit = this.Game.Project.Settings.InversePixelsPerUnit;
             var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
             var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
             var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
@@ -136,11 +136,11 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
             var maximumX = points.Max(x => x.X);
             var maximumY = points.Max(x => x.Y);
 
-            if (this.Scene.Game.Project.Settings.SnapToPixels) {
-                minimumX = minimumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                minimumY = minimumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                maximumX = maximumX.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
-                maximumY = maximumY.ToPixelSnappedValue(this.Scene.Game.Project.Settings);
+            if (this.Game.Project.Settings.SnapToPixels) {
+                minimumX = minimumX.ToPixelSnappedValue(this.Game.Project.Settings);
+                minimumY = minimumY.ToPixelSnappedValue(this.Game.Project.Settings);
+                maximumX = maximumX.ToPixelSnappedValue(this.Game.Project.Settings);
+                maximumY = maximumY.ToPixelSnappedValue(this.Game.Project.Settings);
             }
 
             result = new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -154,13 +154,13 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     private Transform CreatePixelTransform() {
         var worldTransform =
-            this.GetWorldTransform(this.RenderSettings.Offset * this.Scene.Game.Project.Settings.InversePixelsPerUnit)
-                .ToPixelSnappedValue(this.Scene.Game.Project.Settings);
+            this.GetWorldTransform(this.RenderSettings.Offset * this.Game.Project.Settings.InversePixelsPerUnit)
+                .ToPixelSnappedValue(this.Game.Project.Settings);
         return worldTransform;
     }
 
     private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Scene.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
+        return this.GetWorldTransform(this.RenderSettings.Offset * this.Game.Project.Settings.InversePixelsPerUnit, this.Rotation);
     }
 
     private Vector2 CreateSize() {
@@ -173,7 +173,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     }
 
     private Transform GetRenderTransform() {
-        return this.Scene.Game.Project.Settings.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value;
+        return this.Game.Project.Settings.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value;
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

@@ -100,11 +100,11 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Scene.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
+        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var lineOffset = lineThickness * this.Scene.Game.Project.Settings.InversePixelsPerUnit * -0.5f;
+            var lineOffset = lineThickness * this.Game.Project.Settings.InversePixelsPerUnit * -0.5f;
             var lineOffsetVector = new Vector2(-lineOffset, lineOffset);
-            var pixelsPerUnit = this.Scene.Game.Project.Settings.PixelsPerUnit;
+            var pixelsPerUnit = this.Game.Project.Settings.PixelsPerUnit;
 
             drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.XAxisPosition, this.EditorService.DropShadowColor, lineThickness);
             drawer.DrawLine(spriteBatch, pixelsPerUnit, this.NeutralAxisPosition, this.YAxisPosition, this.EditorService.DropShadowColor, lineThickness);
@@ -138,8 +138,8 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected GizmoAxis GetAxisUnderMouse(Vector2 mousePosition) {
         var result = GizmoAxis.None;
 
-        var viewRatio = this.Scene.Game.Project.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Scene.Game.ViewportSize.Y);
-        var radius = viewRatio * GizmoPointSize * this.Scene.Game.Project.Settings.InversePixelsPerUnit * 0.5f;
+        var viewRatio = this.Game.Project.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Game.ViewportSize.Y);
+        var radius = viewRatio * GizmoPointSize * this.Game.Project.Settings.InversePixelsPerUnit * 0.5f;
         if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
             result = GizmoAxis.X;
         }

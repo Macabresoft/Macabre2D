@@ -54,7 +54,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
         var ray = new LineSegment(start, direction, distance);
         var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
         var hits = new List<RaycastHit>();
-        var enabledLayers = this.Scene.Game.Project.Settings.LayerSettings.EnabledLayers;
+        var enabledLayers = this.Game.Project.Settings.LayerSettings.EnabledLayers;
 
         foreach (var collider in potentialColliders.Where(x => (x.Layers & layers & enabledLayers) != Layers.None)) {
             if (collider.IsHitBy(ray, out var hit)) {
