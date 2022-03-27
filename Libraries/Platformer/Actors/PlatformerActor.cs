@@ -176,8 +176,19 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             this.TrySetPlatform(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
+        else {
+            this.UnsetPlatform();
+        }
 
         return result;
+    }
+
+    /// <summary>
+    /// Unsets the platform.
+    /// </summary>
+    protected void UnsetPlatform() {
+        this._platform?.Detach(this);
+        this._platform = null;
     }
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
@@ -234,13 +245,5 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         else {
             this.UnsetPlatform();
         }
-    }
-
-    /// <summary>
-    /// Unsets the platform.
-    /// </summary>
-    protected void UnsetPlatform() {
-        this._platform?.Detach(this);
-        this._platform = null;
     }
 }
