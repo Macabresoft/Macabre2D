@@ -163,9 +163,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
         var isMovingFast = this.GetIsMovingFast();
         this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
 
-        var anchorOffset = this.Size.Y * this.Game.Project.Settings.InversePixelsPerUnit;
         this.PreviousState = this.CurrentState;
-        this.CurrentState = this.GetNewActorState(frameTime, anchorOffset);
+        this.CurrentState = this.GetNewActorState(frameTime);
         this.ResetFacingDirection();
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
     }
@@ -218,8 +217,10 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return this.ElapsedRunSeconds >= this.TimeUntilRun;
     }
 
-    private ActorState GetNewActorState(FrameTime frameTime, float anchorOffset) {
+    private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
+            var anchorOffset = this.Size.Y * this.Game.Project.Settings.InversePixelsPerUnit;
+
             return this.CurrentPlayerMovement switch {
                 PlayerMovement.Idle => this.HandleIdle(frameTime, anchorOffset),
                 PlayerMovement.Moving => this.HandleMoving(frameTime, anchorOffset),
@@ -279,7 +280,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
         }
         else {
             this.CurrentPlayerMovement = PlayerMovement.Falling;
-            verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
@@ -320,7 +321,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
             this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
         }
         else {
-            verticalVelocity = -this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
             this.CurrentPlayerMovement = PlayerMovement.Falling;
         }
 

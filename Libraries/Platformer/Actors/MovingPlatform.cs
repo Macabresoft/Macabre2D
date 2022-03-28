@@ -58,7 +58,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
         set => this.Set(ref this._pauseTimeInSeconds, value);
     }
 
-
     /// <summary>
     /// Gets or sets the velocity.
     /// </summary>
