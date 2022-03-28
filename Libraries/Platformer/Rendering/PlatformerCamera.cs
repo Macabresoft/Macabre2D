@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -68,7 +67,7 @@ public class PlatformerCamera : Camera {
                 }
             }
             else {
-                var yMovement = currentState.Position.Y - previousState.Position.Y; 
+                var yMovement = currentState.Position.Y - previousState.Position.Y;
                 if (Math.Abs(yMovement) > 0.001f) {
                     if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
                         y = this.Lerp(this.LocalPosition.Y, -this.VerticalDistanceAllowed, (float)frameTime.SecondsPassed);
@@ -81,7 +80,6 @@ public class PlatformerCamera : Camera {
                     y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
-
         }
 
         this.LocalPosition = new Vector2(x, y);
