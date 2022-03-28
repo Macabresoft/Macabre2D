@@ -20,6 +20,11 @@ public interface IPlatformerActor : IBoundable, ITransformable {
     public Vector2 HalfSize { get; }
 
     /// <summary>
+    /// Gets a value indicating whether or not this actor is on a platform.
+    /// </summary>
+    bool IsOnPlatform { get; }
+
+    /// <summary>
     /// Gets the previous state of this actor.
     /// </summary>
     ActorState PreviousState { get; }
@@ -40,6 +45,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private IMovingPlatform? _platform;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
+
+    /// <inheritdoc />
+    public bool IsOnPlatform => this._platform != null;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
