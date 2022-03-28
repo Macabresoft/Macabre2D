@@ -166,7 +166,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this.PreviousState = this.CurrentState;
         this.CurrentState = this.GetNewActorState(frameTime);
         this.ResetFacingDirection();
-        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime);
+        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {

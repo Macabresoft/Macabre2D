@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -45,33 +46,49 @@ public class PlatformerCamera : Camera {
     /// <param name="previousState">The previous state.</param>
     /// <param name="currentState">The current state.</param>
     /// <param name="frameTime">The frame time.</param>
-    public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime) {
+    /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
+    public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime, bool isOnPlatform) {
         var x = this.LocalPosition.X;
         if (this.HorizontalDistanceAllowed != 0f) {
-            x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed, this.HorizontalDistanceAllowed);
+            if (isOnPlatform) {
+                if (x != 0f) {
+                    x = this.Lerp(this.LocalPosition.X, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                }
+            }
+            else {
+                x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed, this.HorizontalDistanceAllowed);
+            }
         }
 
         var y = this.LocalPosition.Y;
         if (this.VerticalDistanceAllowed != 0f) {
-            var yMovement = currentState.Position.Y - previousState.Position.Y; 
-            if (Math.Abs(yMovement) > 0.001f) {
-                if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
-                    y += this.Lerp(this.LocalPosition.Y, -this.VerticalDistanceAllowed, (float)frameTime.SecondsPassed);
-                }
-                else {
-                    y = Math.Clamp(this.LocalPosition.Y + yMovement, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
+            if (isOnPlatform) {
+                if (y != 0f) {
+                    y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
-            else if (y != 0f) {
-                y += this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+            else {
+                var yMovement = currentState.Position.Y - previousState.Position.Y; 
+                if (Math.Abs(yMovement) > 0.001f) {
+                    if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
+                        y = this.Lerp(this.LocalPosition.Y, -this.VerticalDistanceAllowed, (float)frameTime.SecondsPassed);
+                    }
+                    else {
+                        y = Math.Clamp(this.LocalPosition.Y + yMovement, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
+                    }
+                }
+                else if (y != 0f) {
+                    y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                }
             }
+
         }
 
         this.LocalPosition = new Vector2(x, y);
     }
 
     private float Lerp(float current, float desired, float amount) {
-        var result = (desired - current) * amount;
+        var result = current + (desired - current) * amount;
 
         if (Math.Abs(result - desired) < this.Settings.InversePixelsPerUnit * 0.5f) {
             result = desired;
