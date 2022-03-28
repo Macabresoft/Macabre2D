@@ -219,7 +219,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
-            var anchorOffset = this.Size.Y * this.Game.Project.Settings.InversePixelsPerUnit;
+            var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
 
             return this.CurrentPlayerMovement switch {
                 PlayerMovement.Idle => this.HandleIdle(frameTime, anchorOffset),

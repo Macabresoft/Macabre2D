@@ -215,6 +215,11 @@ public class Entity : Transformable, IEntity {
     /// <inheritdoc />
     public IScene Scene { get; private set; } = Framework.Scene.Empty;
 
+    /// <summary>
+    /// Gets the settings.
+    /// </summary>
+    protected IGameSettings Settings => this.Game.Project.Settings;
+
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {
         var entity = new T {

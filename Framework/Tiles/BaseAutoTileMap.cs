@@ -65,7 +65,7 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
                 var boundingArea = this.GetTileBoundingArea(activeTile);
                 if (boundingArea.Overlaps(viewBoundingArea) && tileSet.TryGetSpriteIndex(tileIndex, out var spriteIndex)) {
                     spriteBatch.Draw(
-                        this.Game.Project.Settings.PixelsPerUnit,
+                        this.Settings.PixelsPerUnit,
                         spriteSheet,
                         spriteIndex,
                         boundingArea.Minimum,

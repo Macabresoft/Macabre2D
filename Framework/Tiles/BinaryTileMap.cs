@@ -65,7 +65,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
         if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheetAsset spriteSheet && this._activeTiles.Any()) {
             foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
                 spriteBatch.Draw(
-                    this.Game.Project.Settings.PixelsPerUnit,
+                    this.Settings.PixelsPerUnit,
                     spriteSheet,
                     this.SpriteReference.SpriteIndex,
                     boundingArea.Minimum,

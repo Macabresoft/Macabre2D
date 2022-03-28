@@ -73,7 +73,7 @@ public class PlatformerCamera : Camera {
     private float Lerp(float current, float desired, float amount) {
         var result = (desired - current) * amount;
 
-        if (Math.Abs(result - desired) < this.Game.Project.Settings.InversePixelsPerUnit * 0.5f) {
+        if (Math.Abs(result - desired) < this.Settings.InversePixelsPerUnit * 0.5f) {
             result = desired;
         }
 

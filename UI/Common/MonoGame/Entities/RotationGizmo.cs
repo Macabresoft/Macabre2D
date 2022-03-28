@@ -52,7 +52,7 @@ public class RotationGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
-            var settings = this.Game.Project.Settings;
+            var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);

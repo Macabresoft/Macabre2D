@@ -265,11 +265,11 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.Game.Project.Settings.SnapToPixels) {
-            minimumX = minimumX.ToPixelSnappedValue(this.Game.Project.Settings);
-            minimumY = minimumY.ToPixelSnappedValue(this.Game.Project.Settings);
-            maximumX = maximumX.ToPixelSnappedValue(this.Game.Project.Settings);
-            maximumY = maximumY.ToPixelSnappedValue(this.Game.Project.Settings);
+        if (this.Settings.SnapToPixels) {
+            minimumX = minimumX.ToPixelSnappedValue(this.Settings);
+            minimumY = minimumY.ToPixelSnappedValue(this.Settings);
+            maximumX = maximumX.ToPixelSnappedValue(this.Settings);
+            maximumY = maximumY.ToPixelSnappedValue(this.Settings);
         }
 
         return new BoundingArea(new Vector2(minimumX, minimumY), new Vector2(maximumX, maximumY));
@@ -292,13 +292,13 @@ public class Camera : Entity, ICamera {
     }
 
     private Matrix GetViewMatrix() {
-        var settings = this.Game.Project.Settings;
+        var settings = this.Settings;
         var pixelsPerUnit = settings.PixelsPerUnit;
         var zoom = 1f / settings.GetPixelAgnosticRatio(this.ViewHeight, (int)this.OffsetSettings.Size.Y);
         var worldTransform = this.Transform;
 
         return
-            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Game.Project.Settings) * pixelsPerUnit, 0f)) *
+            Matrix.CreateTranslation(new Vector3(-worldTransform.Position.ToPixelSnappedValue(this.Settings) * pixelsPerUnit, 0f)) *
             Matrix.CreateScale(zoom, -zoom, 0f) *
             Matrix.CreateTranslation(new Vector3(-this.OffsetSettings.Offset.X, this.OffsetSettings.Size.Y + this.OffsetSettings.Offset.Y, 0f));
     }

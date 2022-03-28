@@ -21,7 +21,7 @@ public sealed class MouseClickDebugger : BaseDrawer, IUpdateableEntity {
         if (this.Game.SpriteBatch is SpriteBatch spriteBatch) {
             this.PrimitiveDrawer?.DrawCircle(
                 spriteBatch,
-                this.Game.Project.Settings.PixelsPerUnit,
+                this.Settings.PixelsPerUnit,
                 1f,
                 this.Transform.Position,
                 50,

@@ -102,7 +102,7 @@ public class WalkerAutomaton : PlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this.PreviousState = this.CurrentState;
-        var anchorOffset = this.Size.Y * this.Game.Project.Settings.InversePixelsPerUnit;
+        var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
         this.CurrentState = this.CurrentMovement switch {
             WalkerMovement.Idle => this.HandleIdle(frameTime, anchorOffset),
             WalkerMovement.Falling => this.HandleFalling(frameTime, anchorOffset),

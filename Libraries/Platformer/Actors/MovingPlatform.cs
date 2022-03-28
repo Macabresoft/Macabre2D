@@ -111,7 +111,7 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
                 var attachedMovement = this.Transform.Position - originalPosition;
                 var polygonCollider = this.Collider as PolygonCollider;
                 var adjustForY = polygonCollider != null && polygonCollider.WorldPoints.Any() && Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
-                var settings = this.Game.Project.Settings;
+                var settings = this.Settings;
                 var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
 
                 foreach (var attached in this._attachedActors) {

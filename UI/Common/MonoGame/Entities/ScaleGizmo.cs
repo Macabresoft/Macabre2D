@@ -46,7 +46,7 @@ public sealed class ScaleGizmo : BaseAxisGizmo {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.Game.SpriteBatch is SpriteBatch spriteBatch) {
-            var settings = this.Game.Project.Settings;
+            var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
@@ -54,7 +54,7 @@ public sealed class ScaleGizmo : BaseAxisGizmo {
             var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
             var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
-            var pixelsPerUnit = this.Game.Project.Settings.PixelsPerUnit;
+            var pixelsPerUnit = this.Settings.PixelsPerUnit;
             spriteBatch.Draw(
                 pixelsPerUnit,
                 this._squareSprite,
