@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Libraries.Platformer.Automatons;
+﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;

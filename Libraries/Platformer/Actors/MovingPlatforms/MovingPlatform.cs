@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for a moving platform.
 /// </summary>
-public interface IMovingPlatform {
+public interface IMovingPlatform : ISimplePhysicsBody {
     /// <summary>
     /// Attaches the actor to this platform.
     /// </summary>
@@ -20,6 +20,21 @@ public interface IMovingPlatform {
     /// </summary>
     /// <param name="actor">The actor to detach.</param>
     void Detach(IPlatformerActor actor);
+    
+    /// <summary>
+    /// Gets the attached actors.
+    /// </summary>
+    IReadOnlyCollection<IPlatformerActor> Attached { get; }
+    
+    /// <summary>
+    /// Gets the previous position;
+    /// </summary>
+    Vector2 PreviousPosition { get; }
+    
+    /// <summary>
+    /// Gets a value indicating whether or not this moves vertically.
+    /// </summary>
+    bool MovesVertically { get; }
 }
 
 /// <summary>
@@ -27,7 +42,7 @@ public interface IMovingPlatform {
 /// </summary>
 [Category("Platform")]
 public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEntity {
-    private readonly HashSet<IPlatformerActor> _attachedActors = new();
+    private readonly HashSet<IPlatformerActor> _attached = new();
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
@@ -68,19 +83,27 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
     }
 
     /// <inheritdoc />
+    public Vector2 PreviousPosition { get; private set; }
+
+    /// <inheritdoc />
+    public bool MovesVertically { get; private set; }
+
+    /// <inheritdoc />
     public void Attach(IPlatformerActor actor) {
-        this._attachedActors.Add(actor);
+        this._attached.Add(actor);
     }
 
     /// <inheritdoc />
     public void Detach(IPlatformerActor actor) {
-        this._attachedActors.Remove(actor);
+        this._attached.Remove(actor);
     }
+
+    public IReadOnlyCollection<IPlatformerActor> Attached => this._attached;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
+        this.PreviousPosition = this.Transform.Position;
         this.GetOrAddChild<SimplePhysicsBody>();
         this._timePaused = this.PauseTimeInSeconds;
         this._startPoint = this.LocalPosition;
@@ -93,7 +116,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
             this._timePaused += (float)frameTime.SecondsPassed;
         }
         else {
-            var originalPosition = this.Transform.Position;
             var desiredPosition = this._isTravelingToEnd ? this._endPoint : this._startPoint;
             var velocity = (desiredPosition - this.LocalPosition).GetNormalized() * this.Velocity * (float)frameTime.SecondsPassed;
 
@@ -105,31 +127,15 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
             else {
                 this.Move(velocity);
             }
-
-            if (this._attachedActors.Any()) {
-                // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
-                var attachedMovement = this.Transform.Position - originalPosition;
-                var polygonCollider = this.Collider as PolygonCollider;
-                var adjustForY = polygonCollider != null && polygonCollider.WorldPoints.Any() && Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
-                var settings = this.Settings;
-                var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
-
-                foreach (var attached in this._attachedActors) {
-                    attached.Move(attachedMovement);
-                    if (settings.SnapToPixels) {
-                        attached.SetWorldPosition(new Vector2(attached.Transform.ToPixelSnappedValue(settings).Position.X + platformPixelOffset, attached.Transform.Position.Y));
-                    }
-                    
-                    if (adjustForY) {
-                        var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
-                        attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
-                    }
-                }
-            }
+            
+            this.MoveAttached();
         }
+
+        this.PreviousPosition = this.Transform.Position;
     }
 
     private void ResetEndPoint() {
         this._endPoint = this._startPoint + this.DistanceToTravel;
+        this.MovesVertically = Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
     }
 }

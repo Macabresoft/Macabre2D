@@ -6,10 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 /// <summary>
+/// A <see cref="IPhysicsBody"/> with a <see cref="Collider"/>.
+/// </summary>
+public interface ISimplePhysicsBody : IPhysicsBody {
+    /// <summary>
+    /// Gets the colliders
+    /// </summary>
+    Collider Collider { get; }
+}
+
+/// <summary>
 /// A body to be used by the physics engine.
 /// </summary>
 [Display(Name = "Simple Physics Body")]
-public class SimplePhysicsBody : PhysicsBody {
+public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     private Collider _collider = new CircleCollider();
 
     /// <inheritdoc />
@@ -18,10 +28,7 @@ public class SimplePhysicsBody : PhysicsBody {
     /// <inheritdoc />
     public override bool HasCollider => true;
 
-    /// <summary>
-    /// Gets the colliders.
-    /// </summary>
-    /// <value>The colliders.</value>
+    /// <inheritdoc />
     [DataMember(Order = 0)]
     [Category("Collider")]
     public Collider Collider {
