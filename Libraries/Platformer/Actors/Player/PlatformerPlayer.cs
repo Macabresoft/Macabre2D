@@ -275,7 +275,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
             this.CurrentPlayerMovement = PlayerMovement.Jumping;
             verticalVelocity = this.JumpVelocity;
         }
-        else if (this.CheckIfStillGrounded(anchorOffset, out _)) {
+        else if (this.CheckIfStillGrounded(out _)) {
             this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
         }
         else {
@@ -317,7 +317,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
             this.CurrentPlayerMovement = PlayerMovement.Jumping;
             verticalVelocity = this.JumpVelocity;
         }
-        else if (this.CheckIfStillGrounded(anchorOffset, out _)) {
+        else if (this.CheckIfStillGrounded(out _)) {
             this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
         }
         else {

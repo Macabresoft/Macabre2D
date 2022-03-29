@@ -165,7 +165,7 @@ public class WalkerAutomaton : PlatformerActor {
                 horizontalVelocity = -this.MaxHorizontalVelocity;
             }
         }
-        else if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
+        else if (!this.CheckIfStillGrounded(out _)) {
             this.CurrentMovement = WalkerMovement.Falling;
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
@@ -183,11 +183,11 @@ public class WalkerAutomaton : PlatformerActor {
         var verticalVelocity = 0f;
         var facingDirection = this.CurrentState.FacingDirection;
         // TODO: check for ledge when applicable
-        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset)) {
+        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection, out _))) {
             this.CurrentMovement = WalkerMovement.Idle;
             horizontalVelocity = 0f;
         }
-        else if (!this.CheckIfStillGrounded(anchorOffset, out _)) {
+        else if (!this.CheckIfStillGrounded(out _)) {
             this.CurrentMovement = WalkerMovement.Falling;
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }

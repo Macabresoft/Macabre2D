@@ -169,7 +169,30 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return this.RaycastWall(frameTime, -1f, false, anchorOffset) || this.RaycastWall(frameTime, 1f, false, anchorOffset);
     }
 
-    protected bool CheckIfStillGrounded(float anchorOffset, out RaycastHit hit) {
+    /// <summary>
+    /// Checks if this is still grounded.
+    /// </summary>
+    /// <param name="facingDirection">The facing direction.</param>
+    /// <param name="hit">The raycast hit.</param>
+    /// <returns>A value indicating whether or not this is still grounded.</returns>
+    protected bool CheckIfLedgeAhead(HorizontalDirection facingDirection, out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+        var anchor = facingDirection == HorizontalDirection.Left ? new Vector2(-this.HalfSize.X, 0f) : new Vector2(this.HalfSize.X, 0f);
+
+        return !this.TryRaycast(
+            direction,
+            this.HalfSize.Y,
+            this._physicsLoop.GroundLayer,
+            out hit,
+            anchor);
+    }
+
+    /// <summary>
+    /// Checks if this is still grounded.
+    /// </summary>
+    /// <param name="hit">The raycast hit.</param>
+    /// <returns>A value indicating whether or not this is still grounded.</returns>
+    protected bool CheckIfStillGrounded(out RaycastHit hit) {
         var direction = new Vector2(0f, -1f);
 
         var result = this.TryRaycast(
