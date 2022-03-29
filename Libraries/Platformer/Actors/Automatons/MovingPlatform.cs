@@ -31,8 +31,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
-    private bool _movesHorizontally;
-    private bool _movesVertically;
     private float _pauseTimeInSeconds;
     private Vector2 _previousPosition;
     private Vector2 _startPoint;
@@ -128,8 +126,8 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
             // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
             var attachedMovement = this.Transform.Position - this._previousPosition;
             var polygonCollider = this.Collider as PolygonCollider;
-            var adjustForY = this._movesVertically && polygonCollider != null && polygonCollider.WorldPoints.Any();
-            var adjustForPixels = this.Settings.SnapToPixels && this._movesHorizontally;
+            var adjustForY = attachedMovement.Y != 0f && polygonCollider != null && polygonCollider.WorldPoints.Any();
+            var adjustForPixels = this.Settings.SnapToPixels && attachedMovement.X != 0f;
             var settings = this.Settings;
             var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
 
@@ -149,7 +147,5 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
 
     private void ResetEndPoint() {
         this._endPoint = this._startPoint + this.DistanceToTravel;
-        this._movesHorizontally = Math.Abs(this._startPoint.X - this._endPoint.X) > 0.001f;
-        this._movesVertically = Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
     }
 }
