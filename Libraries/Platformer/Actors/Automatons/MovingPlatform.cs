@@ -31,7 +31,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
-    private bool _movesHorizontally;
     private bool _movesVertically;
     private float _pauseTimeInSeconds;
     private Vector2 _previousPosition;
@@ -109,8 +108,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
                 else {
                     this.Move(velocity);
                 }
-
-                this.MoveAttached();
             }
         }
     }
@@ -131,15 +128,9 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
             var attachedMovement = this.Transform.Position - this._previousPosition;
             var polygonCollider = this.Collider as PolygonCollider;
             var adjustForY = this._movesVertically && polygonCollider != null && polygonCollider.WorldPoints.Any();
-            var adjustForPixels = this.Settings.SnapToPixels && this._movesHorizontally;
-            var settings = this.Settings;
-            var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
 
             foreach (var attached in this._attached) {
                 attached.Move(attachedMovement);
-                if (adjustForPixels && attached.CurrentState.Velocity.X == 0f) {
-                    attached.SetWorldPosition(new Vector2(attached.Transform.ToPixelSnappedValue(settings).Position.X + platformPixelOffset, attached.Transform.Position.Y));
-                }
 
                 if (adjustForY) {
                     var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
@@ -151,7 +142,6 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
 
     private void ResetEndPoint() {
         this._endPoint = this._startPoint + this.DistanceToTravel;
-        this._movesHorizontally = Math.Abs(this._startPoint.X - this._endPoint.X) > 0.001f;
         this._movesVertically = Math.Abs(this._startPoint.Y - this._endPoint.Y) > 0.001f;
     }
 }
