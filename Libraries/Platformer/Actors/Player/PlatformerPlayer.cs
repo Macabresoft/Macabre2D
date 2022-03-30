@@ -55,8 +55,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// </summary>
     [DataMember(Order = 11, Name = "Moving Animation")]
     public SpriteAnimationReference MovingAnimationReference { get; } = new();
-
-
+    
     /// <summary>
     /// Gets the acceleration in velocity per second when the player is changing directions.
     /// </summary>
@@ -155,6 +154,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
         if (this.IdleAnimationReference.PackagedAsset is { } animation) {
             this._spriteAnimator.Play(animation, true);
         }
+        
+        this.CurrentState = new ActorState(this._spriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
     }
 
     /// <inheritdoc />
