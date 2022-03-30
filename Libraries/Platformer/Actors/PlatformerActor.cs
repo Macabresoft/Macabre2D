@@ -204,6 +204,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
 
         if (result) {
+            if (this.IsOnPlatform &&
+                hit.Collider?.Body is not IMovingPlatform &&
+                this.TryRaycast(
+                    direction,
+                        this.HalfSize.Y,
+                        this._physicsLoop.GroundLayer,
+                        out var secondHit,
+                        new Vector2(this.HalfSize.X, 0f)) && secondHit != RaycastHit.Empty) {
+                    hit = secondHit;
+            }
+
             this.TrySetPlatform(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
