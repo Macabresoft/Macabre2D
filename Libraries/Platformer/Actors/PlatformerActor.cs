@@ -104,12 +104,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
-    /// <param name="anchorOffset">The anchor offset for raycasting.</param>
     /// <returns>A value indicating whether or not this has hit a ceiling.</returns>
-    protected bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity, float anchorOffset) {
+    protected bool CheckIfHitCeiling(FrameTime frameTime, float verticalVelocity) {
         var worldTransform = this.Transform;
         var direction = new Vector2(0f, 1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
+        var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
 
         var result = this.TryRaycast(
             direction,
@@ -131,13 +131,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
-    /// <param name="anchorOffset">The anchor offset for raycasting.</param>
     /// <param name="hit">The raycast hit.</param>
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, float anchorOffset, out RaycastHit hit) {
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
         var direction = new Vector2(0f, -1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
-
+        var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
+        
         var result = this.TryRaycast(
             direction,
             distance,
@@ -159,9 +159,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
-    /// <param name="anchorOffset">The anchor offset.</param>
     /// <returns>A value indicating whether or not this has hit a wall.</returns>
-    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
+    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+        var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
         if (horizontalVelocity != 0f) {
             return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast, anchorOffset);
         }

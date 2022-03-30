@@ -169,7 +169,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
-    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime, float anchorOffset) {
+    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
         var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
 
         if (this.ElapsedRunSeconds > 0f) {
@@ -187,14 +187,14 @@ public sealed class PlatformerPlayer : PlatformerActor {
         };
 
         if (horizontalVelocity != 0f) {
-            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset)) {
+            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
                 horizontalVelocity = 0f;
             }
 
-            this.CheckIfHitWall(frameTime, -horizontalVelocity, false, anchorOffset);
+            this.CheckIfHitWall(frameTime, -horizontalVelocity, false);
         }
         else {
-            this.CheckIfHitWall(frameTime, 0f, false, anchorOffset);
+            this.CheckIfHitWall(frameTime, 0f, false);
         }
 
         if (horizontalVelocity != 0f) {
@@ -219,13 +219,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
-            var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
-
             return this.CurrentPlayerMovement switch {
-                PlayerMovement.Idle => this.HandleIdle(frameTime, anchorOffset),
-                PlayerMovement.Moving => this.HandleMoving(frameTime, anchorOffset),
-                PlayerMovement.Jumping => this.HandleJumping(frameTime, anchorOffset),
-                PlayerMovement.Falling => this.HandleFalling(frameTime, anchorOffset),
+                PlayerMovement.Idle => this.HandleIdle(frameTime),
+                PlayerMovement.Moving => this.HandleMoving(frameTime),
+                PlayerMovement.Jumping => this.HandleJumping(frameTime),
+                PlayerMovement.Falling => this.HandleFalling(frameTime),
                 _ => this.CurrentState
             };
         }
@@ -242,17 +240,17 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return secondsPassed;
     }
 
-    private ActorState HandleFalling(FrameTime frameTime, float anchorOffset) {
+    private ActorState HandleFalling(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
-        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, anchorOffset, out var hit)) {
+        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var hit)) {
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
             this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
             verticalVelocity = 0f;
         }
         else {
-            if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
+            if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
                 verticalVelocity = 0f;
             }
 
@@ -266,8 +264,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
-    private ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+    private ActorState HandleIdle(FrameTime frameTime) {
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
 
         if (this._input.JumpState == ButtonState.Pressed) {
@@ -288,11 +286,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
-    private ActorState HandleJumping(FrameTime frameTime, float anchorOffset) {
+    private ActorState HandleJumping(FrameTime frameTime) {
         var verticalVelocity = this.JumpVelocity;
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
-        if (this.CheckIfHitCeiling(frameTime, verticalVelocity, anchorOffset)) {
+        if (this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
             verticalVelocity = 0f;
             this.CurrentPlayerMovement = PlayerMovement.Falling;
         }
@@ -308,8 +306,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
-    private ActorState HandleMoving(FrameTime frameTime, float anchorOffset) {
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime, anchorOffset);
+    private ActorState HandleMoving(FrameTime frameTime) {
+        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
 
         if (this._input.JumpState == ButtonState.Pressed) {

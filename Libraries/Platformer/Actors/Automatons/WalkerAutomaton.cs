@@ -102,11 +102,10 @@ public class WalkerAutomaton : PlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this.PreviousState = this.CurrentState;
-        var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
         this.CurrentState = this.CurrentMovement switch {
-            WalkerMovement.Idle => this.HandleIdle(frameTime, anchorOffset),
-            WalkerMovement.Falling => this.HandleFalling(frameTime, anchorOffset),
-            WalkerMovement.Walking => this.HandleWalking(frameTime, anchorOffset),
+            WalkerMovement.Idle => this.HandleIdle(frameTime),
+            WalkerMovement.Falling => this.HandleFalling(frameTime),
+            WalkerMovement.Walking => this.HandleWalking(frameTime),
             _ => this.CurrentState
         };
 
@@ -126,15 +125,15 @@ public class WalkerAutomaton : PlatformerActor {
         return secondsPassed;
     }
 
-    private ActorState HandleFalling(FrameTime frameTime, float anchorOffset) {
+    private ActorState HandleFalling(FrameTime frameTime) {
         var horizontalVelocity = this.GetHorizontalVelocity(this.CurrentState.FacingDirection);
         var verticalVelocity = this.CurrentState.Velocity.Y;
 
-        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset)) {
+        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
             horizontalVelocity = 0f;
         }
 
-        if (this.CheckIfHitGround(frameTime, verticalVelocity, anchorOffset, out _)) {
+        if (this.CheckIfHitGround(frameTime, verticalVelocity, out _)) {
             verticalVelocity = 0f;
             this.CurrentMovement = horizontalVelocity != 0f ? WalkerMovement.Walking : WalkerMovement.Idle;
         }
@@ -149,7 +148,7 @@ public class WalkerAutomaton : PlatformerActor {
         return new ActorState(this.CurrentState.FacingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
-    private ActorState HandleIdle(FrameTime frameTime, float anchorOffset) {
+    private ActorState HandleIdle(FrameTime frameTime) {
         var horizontalVelocity = 0f;
         var verticalVelocity = 0f;
         var facingDirection = this.CurrentState.FacingDirection;
@@ -178,12 +177,12 @@ public class WalkerAutomaton : PlatformerActor {
         return new ActorState(facingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
-    private ActorState HandleWalking(FrameTime frameTime, float anchorOffset) {
+    private ActorState HandleWalking(FrameTime frameTime) {
         var horizontalVelocity = this.GetHorizontalVelocity(this.CurrentState.FacingDirection);
         var verticalVelocity = 0f;
         var facingDirection = this.CurrentState.FacingDirection;
         // TODO: check for ledge when applicable
-        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, anchorOffset) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection, out _))) {
+        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true) || this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection, out _)) {
             this.CurrentMovement = WalkerMovement.Idle;
             horizontalVelocity = 0f;
         }
