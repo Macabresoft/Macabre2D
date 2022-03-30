@@ -131,23 +131,23 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
-    /// <param name="hit">The raycast hit.</param>
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit) {
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity) {
         var direction = new Vector2(0f, -1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
         var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
-        
+
         var result = this.TryRaycast(
             direction,
             distance,
             this._physicsLoop.GroundLayer,
-            out hit,
+            out var hit,
             new Vector2(-this.HalfSize.X + anchorOffset, 0f),
             new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
 
         if (result) {
             this.TrySetPlatform(hit);
+            this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
 
         return result;
@@ -173,9 +173,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Checks if this is still grounded.
     /// </summary>
     /// <param name="facingDirection">The facing direction.</param>
-    /// <param name="hit">The raycast hit.</param>
     /// <returns>A value indicating whether or not this is still grounded.</returns>
-    protected bool CheckIfLedgeAhead(HorizontalDirection facingDirection, out RaycastHit hit) {
+    protected bool CheckIfLedgeAhead(HorizontalDirection facingDirection) {
         var direction = new Vector2(0f, -1f);
         var anchor = facingDirection == HorizontalDirection.Left ? new Vector2(-this.HalfSize.X, 0f) : new Vector2(this.HalfSize.X, 0f);
 
@@ -183,38 +182,29 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             direction,
             this.HalfSize.Y,
             this._physicsLoop.GroundLayer,
-            out hit,
+            out _,
             anchor);
     }
 
     /// <summary>
     /// Checks if this is still grounded.
     /// </summary>
-    /// <param name="hit">The raycast hit.</param>
     /// <returns>A value indicating whether or not this is still grounded.</returns>
-    protected bool CheckIfStillGrounded(out RaycastHit hit) {
+    protected bool CheckIfStillGrounded() {
         var direction = new Vector2(0f, -1f);
+        var result = this.CheckIfStillOnPlatform(out var hit);
 
-        var result = this.TryRaycast(
-            direction,
-            this.HalfSize.Y,
-            this._physicsLoop.GroundLayer,
-            out hit,
-            new Vector2(-this.HalfSize.X, 0f),
-            new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+        if (!result) {
+            result = this.TryRaycast(
+                direction,
+                this.HalfSize.Y,
+                this._physicsLoop.GroundLayer,
+                out hit,
+                new Vector2(-this.HalfSize.X, 0f),
+                new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+        }
 
         if (result) {
-            if (this.IsOnPlatform &&
-                hit.Collider?.Body is not IMovingPlatform &&
-                this.TryRaycast(
-                    direction,
-                        this.HalfSize.Y,
-                        this._physicsLoop.GroundLayer,
-                        out var secondHit,
-                        new Vector2(this.HalfSize.X, 0f)) && secondHit != RaycastHit.Empty) {
-                    hit = secondHit;
-            }
-
             this.TrySetPlatform(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
@@ -229,8 +219,31 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Unsets the platform.
     /// </summary>
     protected void UnsetPlatform() {
-        this._platform?.Detach(this);
-        this._platform = null;
+        if (this._platform != null) {
+            this._platform.Detach(this);
+            this._platform = null;
+        }
+    }
+
+    private bool CheckIfStillOnPlatform(out RaycastHit hit) {
+        var direction = new Vector2(0f, -1f);
+        var result = false;
+        hit = RaycastHit.Empty;
+
+        if (this.IsOnPlatform) {
+            if (this.TryRaycastAll(
+                    direction,
+                    this.HalfSize.Y,
+                    this._physicsLoop.GroundLayer,
+                    out var hits,
+                    new Vector2(-this.HalfSize.X, 0f),
+                    new Vector2(this.HalfSize.X, 0f))) {
+                hit = hits.FirstOrDefault(x => x.Collider?.Body == this._platform) ?? RaycastHit.Empty;
+                result = hit != RaycastHit.Empty;
+            }
+        }
+
+        return result;
     }
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
@@ -264,15 +277,34 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = false;
         hit = RaycastHit.Empty;
 
-        var worldTransform = this.Transform;
+        var position = this.Transform.Position;
         var counter = 0;
 
         while (!result && counter < anchors.Length) {
             var (x, y) = anchors[counter];
-            result = this._physicsLoop.TryRaycast(new Vector2(worldTransform.Position.X + x, worldTransform.Position.Y + y), direction, distance, layers, out hit);
+            result = this._physicsLoop.TryRaycast(new Vector2(position.X + x, position.Y + y), direction, distance, layers, out hit);
             counter++;
         }
 
+        return result;
+    }
+
+    private bool TryRaycastAll(Vector2 direction, float distance, Layers layers, out IEnumerable<RaycastHit> hits, params Vector2[] anchors) {
+        var result = false;
+        var actualHits = new List<RaycastHit>();
+
+        var position = this.Transform.Position;
+
+        foreach (var anchor in anchors) {
+            var (x, y) = anchor;
+            var potentialHits = this._physicsLoop.RaycastAll(new Vector2(position.X + x, position.Y + y), direction, distance, layers);
+            if (potentialHits.Any()) {
+                actualHits.AddRange(potentialHits);
+                result = true;
+            }
+        }
+
+        hits = actualHits;
         return result;
     }
 
@@ -283,9 +315,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 this._platform = platform;
                 this._platform.Attach(this);
             }
-        }
-        else {
-            this.UnsetPlatform();
         }
     }
 }
