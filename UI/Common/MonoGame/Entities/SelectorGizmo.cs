@@ -61,7 +61,7 @@ public class SelectorGizmo : Entity, IGizmo {
                 if (selected == null && this._sceneService.IsEntityContext) {
                     Dispatcher.UIThread.Post(() => this._sceneService.Selected = null);
                 }
-                else {
+                else if (!(this._sceneService.IsEntityContext && this._sceneService.Selected is IEntity entity and not IScene && entity == selected?.Parent)) {
                     this.CheckForPrefab(selected, out selected);
                     Dispatcher.UIThread.Post(() => this._sceneService.Selected = selected);
                 }
