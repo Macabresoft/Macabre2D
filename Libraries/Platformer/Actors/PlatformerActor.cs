@@ -233,7 +233,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         if (this.IsOnPlatform) {
             if (this.TryRaycastAll(
                     direction,
-                    this.HalfSize.Y,
+                    this.HalfSize.Y + this.Settings.InversePixelsPerUnit,
                     this._physicsLoop.GroundLayer,
                     out var hits,
                     new Vector2(-this.HalfSize.X, 0f),
