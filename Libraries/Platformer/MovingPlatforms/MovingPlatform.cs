@@ -26,13 +26,11 @@ public interface IMovingPlatform : ISimplePhysicsBody {
 /// A moving platform.
 /// </summary>
 [Category("Platform")]
-public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEntity {
-    private readonly HashSet<IPlatformerActor> _attached = new();
+public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
     private float _pauseTimeInSeconds;
-    private Vector2 _previousPosition;
     private Vector2 _startPoint;
     private float _timePaused;
     private float _velocity;
@@ -69,20 +67,10 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
     }
 
 
-    /// <inheritdoc />
-    public void Attach(IPlatformerActor actor) {
-        this._attached.Add(actor);
-    }
-
-    /// <inheritdoc />
-    public void Detach(IPlatformerActor actor) {
-        this._attached.Remove(actor);
-    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._previousPosition = this.Transform.Position;
         this.GetOrAddChild<SimplePhysicsBody>();
         this._timePaused = this.PauseTimeInSeconds;
         this._startPoint = this.LocalPosition;
@@ -90,7 +78,7 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public virtual void Update(FrameTime frameTime, InputState inputState) {
         if (this._endPoint != this._startPoint) {
             if (this._timePaused < this.PauseTimeInSeconds) {
                 this._timePaused += (float)frameTime.SecondsPassed;
@@ -111,39 +99,9 @@ public class MovingPlatform : SimplePhysicsBody, IMovingPlatform, IUpdateableEnt
         }
     }
 
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        base.OnPropertyChanged(sender, e);
 
-        if (e.PropertyName == nameof(this.Transform)) {
-            this.MoveAttached();
-            this._previousPosition = this.Transform.Position;
-        }
-    }
 
-    private void MoveAttached() {
-        if (this._attached.Any()) {
-            // TODO: this can only hand polygon colliders that are flat. Expand for any collider and find the actual collision spot.
-            var attachedMovement = this.Transform.Position - this._previousPosition;
-            var polygonCollider = this.Collider as PolygonCollider;
-            var adjustForY = attachedMovement.Y != 0f && polygonCollider != null && polygonCollider.WorldPoints.Any();
-            var adjustForPixels = this.Settings.SnapToPixels && attachedMovement.X != 0f;
-            var settings = this.Settings;
-            var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
 
-            foreach (var attached in this._attached) {
-                attached.Move(attachedMovement);
-                if (adjustForPixels && attached.CurrentState.Velocity.X == 0f) {
-                    attached.SetWorldPosition(new Vector2(attached.Transform.ToPixelSnappedValue(settings).Position.X - platformPixelOffset, attached.Transform.Position.Y));
-                }
-
-                if (adjustForY) {
-                    var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
-                    attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
-                }
-            }
-        }
-    }
 
     private void ResetEndPoint() {
         this._endPoint = this._startPoint + this.DistanceToTravel;
