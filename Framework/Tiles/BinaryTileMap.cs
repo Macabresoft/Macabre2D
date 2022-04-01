@@ -47,7 +47,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
         set => this.Set(ref this._color, value);
     }
 
-
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) {
         return this._activeTiles.Contains(tilePosition);
@@ -62,7 +61,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.SpriteReference.Asset is SpriteSheetAsset spriteSheet && this._activeTiles.Any()) {
+        if (this.SpriteBatch is { } spriteBatch && this.SpriteReference.Asset is { } spriteSheet && this._activeTiles.Any()) {
             foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
                 spriteBatch.Draw(
                     this.Settings.PixelsPerUnit,
@@ -100,7 +99,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(IEntity.Transform)) {
-            if (this.SpriteReference.Asset is SpriteSheetAsset spriteSheet) {
+            if (this.SpriteReference.Asset is { } spriteSheet) {
                 this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
             }
         }
@@ -123,7 +122,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     }
 
     private void ResetSpriteScale() {
-        if (this.SpriteReference.Asset is SpriteSheetAsset spriteSheet) {
+        if (this.SpriteReference.Asset is { } spriteSheet) {
             this._tileScale = this.GetTileScale(spriteSheet.SpriteSize);
         }
     }

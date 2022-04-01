@@ -39,7 +39,7 @@ public sealed class LineStripDrawer : BaseDrawer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer != null && this.Game.SpriteBatch is SpriteBatch spriteBatch && this._vertices.Any()) {
+        if (this.PrimitiveDrawer != null && this.SpriteBatch is SpriteBatch spriteBatch && this._vertices.Any()) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawLineStrip(spriteBatch, this.Settings.PixelsPerUnit, this.Color, lineThickness, this.Vertices.ToArray());
         }

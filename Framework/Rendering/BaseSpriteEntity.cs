@@ -83,7 +83,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteIndex.HasValue && this.Game.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
+        if (this.SpriteIndex.HasValue && this.SpriteBatch is { } spriteBatch && this.SpriteSheet is { } spriteSheet) {
             spriteSheet.Draw(
                 spriteBatch,
                 this.Settings.PixelsPerUnit,

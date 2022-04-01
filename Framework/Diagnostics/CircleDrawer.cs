@@ -44,7 +44,7 @@ public sealed class CircleDrawer : BaseDrawer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Radius > 0f && this.PrimitiveDrawer != null && this.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.Radius > 0f && this.PrimitiveDrawer != null && this.SpriteBatch is SpriteBatch spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawCircle(
                 spriteBatch,

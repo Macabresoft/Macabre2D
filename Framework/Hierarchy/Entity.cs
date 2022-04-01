@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Interface for a <see cref="ITransformable" /> descendent of <see cref="IScene" /> which
@@ -219,6 +220,11 @@ public class Entity : Transformable, IEntity {
     /// Gets the settings.
     /// </summary>
     protected IGameSettings Settings => this.Game.Project.Settings;
+
+    /// <summary>
+    /// Gets the sprite batch.
+    /// </summary>
+    protected SpriteBatch? SpriteBatch => this.Game.SpriteBatch;
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {

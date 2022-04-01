@@ -42,7 +42,7 @@ public class SelectionDisplay : BaseDrawer {
             return;
         }
 
-        if (this.Game.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer && this._entityService.Selected is { } selected) {
+        if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer && this._entityService.Selected is { } selected) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;

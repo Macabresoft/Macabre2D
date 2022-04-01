@@ -50,7 +50,7 @@ public sealed class EditorGrid : BaseDrawer {
             return;
         }
 
-        if (this.Game.SpriteBatch is { } spriteBatch) {
+        if (this.SpriteBatch is { } spriteBatch) {
             if (this._editorService.GridDivisions > 0 && this.ResolveGridContainer() is IGridContainer container) {
                 this.ResetColor();
 

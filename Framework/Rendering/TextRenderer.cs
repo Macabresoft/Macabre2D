@@ -122,7 +122,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is FontAsset font && this.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (!string.IsNullOrEmpty(this.Text) && this.FontReference.Asset is FontAsset font && this.SpriteBatch is SpriteBatch spriteBatch) {
             spriteBatch.Draw(
                 this.Settings.PixelsPerUnit,
                 font,

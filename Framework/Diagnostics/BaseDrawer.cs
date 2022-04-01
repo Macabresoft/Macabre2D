@@ -51,9 +51,9 @@ public abstract class BaseDrawer : RenderableEntity {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        if (this.Game.SpriteBatch != null) {
+        if (this.SpriteBatch != null) {
             this.PrimitiveDrawer = this.Scene.ResolveDependency(
-                () => new PrimitiveDrawer(this.Game.SpriteBatch));
+                () => new PrimitiveDrawer(this.SpriteBatch));
         }
     }
 

@@ -40,7 +40,7 @@ public sealed class LineDrawer : BaseDrawer {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && this.Game.SpriteBatch is SpriteBatch spriteBatch) {
+        if (this.PrimitiveDrawer != null && this.StartPoint != this.EndPoint && this.SpriteBatch is SpriteBatch spriteBatch) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             this.PrimitiveDrawer.DrawLine(spriteBatch, this.Settings.PixelsPerUnit, this.StartPoint, this.EndPoint, this.Color, lineThickness);
         }

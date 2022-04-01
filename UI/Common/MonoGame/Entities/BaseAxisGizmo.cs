@@ -100,7 +100,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
+        if (this.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var lineOffset = lineThickness * this.Settings.InversePixelsPerUnit * -0.5f;
             var lineOffsetVector = new Vector2(-lineOffset, lineOffset);

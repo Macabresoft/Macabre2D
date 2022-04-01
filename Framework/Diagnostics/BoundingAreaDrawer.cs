@@ -23,7 +23,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
             return;
         }
 
-        if (this.Game.SpriteBatch is SpriteBatch spriteBatch && !this._boundingArea.IsEmpty) {
+        if (this.SpriteBatch is SpriteBatch spriteBatch && !this._boundingArea.IsEmpty) {
             var minimum = this._boundingArea.Minimum;
             var maximum = this._boundingArea.Maximum;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
