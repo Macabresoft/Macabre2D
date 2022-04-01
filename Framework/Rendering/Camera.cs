@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 /// <summary>
 /// Interface for a camera which tells the engine where to render any <see cref="IRenderableEntity" />.
 /// </summary>
-public interface ICamera : IEntity, IBoundable {
+public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// <summary>
     /// Gets the layers to render.
     /// </summary>
@@ -69,6 +69,7 @@ public class Camera : Entity, ICamera {
 
     private readonly ResettableLazy<float> _viewWidth;
     private Layers _layersToRender = ~Layers.None;
+    private PixelSnap _pixelSnap = PixelSnap.Inherit;
     private int _renderOrder;
     private SamplerState _samplerState = SamplerState.PointClamp;
     private SamplerStateType _samplerStateType = SamplerStateType.PointClamp;
@@ -97,6 +98,14 @@ public class Camera : Entity, ICamera {
     public Layers LayersToRender {
         get => this._layersToRender;
         set => this.Set(ref this._layersToRender, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public PixelSnap PixelSnap {
+        get => this._pixelSnap;
+        set => this.Set(ref this._pixelSnap, value);
     }
 
     /// <inheritdoc />
@@ -265,7 +274,7 @@ public class Camera : Entity, ICamera {
         var maximumX = points.Max(x => x.X);
         var maximumY = points.Max(x => x.Y);
 
-        if (this.Settings.SnapToPixels) {
+        if (this.ShouldSnapToPixels(this.Settings)) {
             minimumX = minimumX.ToPixelSnappedValue(this.Settings);
             minimumY = minimumY.ToPixelSnappedValue(this.Settings);
             maximumX = maximumX.ToPixelSnappedValue(this.Settings);

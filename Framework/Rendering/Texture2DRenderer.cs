@@ -11,9 +11,6 @@ public sealed class Texture2DRenderer : BaseSpriteEntity {
     /// <inheritdoc />
     public override byte? SpriteIndex => 0;
 
-    /// <inheritdoc />
-    public override SpriteSheetAsset SpriteSheet { get; } = new();
-
     /// <summary>
     /// Gets or sets the texture.
     /// </summary>
@@ -29,4 +26,7 @@ public sealed class Texture2DRenderer : BaseSpriteEntity {
             }
         }
     }
+
+    /// <inheritdoc />
+    protected override SpriteSheetAsset SpriteSheet { get; } = new();
 }

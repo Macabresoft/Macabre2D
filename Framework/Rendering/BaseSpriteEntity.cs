@@ -36,11 +36,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     public abstract byte? SpriteIndex { get; }
 
     /// <summary>
-    /// Gets the sprite sheet.
-    /// </summary>
-    public abstract SpriteSheetAsset? SpriteSheet { get; }
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -61,17 +56,21 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     [DataMember(Order = 3)]
     [Category(CommonCategories.Transform)]
     public float Rotation {
-        get => this.Settings.SnapToPixels ? 0f : this._rotation;
-
+        get => this.ShouldSnapToPixels(this.Settings) ? 0f : this._rotation;
         set {
             if (this.Set(ref this._rotation, value.NormalizeAngle())) {
-                if (!this.Settings.SnapToPixels) {
+                if (!this.ShouldSnapToPixels(this.Settings)) {
                     this._boundingArea.Reset();
                     this._rotatableTransform.Reset();
                 }
             }
         }
     }
+
+    /// <summary>
+    /// Gets the sprite sheet.
+    /// </summary>
+    protected abstract SpriteSheetAsset? SpriteSheet { get; }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -136,7 +135,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
             var maximumX = points.Max(x => x.X);
             var maximumY = points.Max(x => x.Y);
 
-            if (this.Settings.SnapToPixels) {
+            if (this.ShouldSnapToPixels(this.Settings)) {
                 minimumX = minimumX.ToPixelSnappedValue(this.Settings);
                 minimumY = minimumY.ToPixelSnappedValue(this.Settings);
                 maximumX = maximumX.ToPixelSnappedValue(this.Settings);
@@ -173,7 +172,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     }
 
     private Transform GetRenderTransform() {
-        return this.Settings.SnapToPixels ? this._pixelTransform.Value : this._rotatableTransform.Value;
+        return this.ShouldSnapToPixels(this.Settings) ? this._pixelTransform.Value : this._rotatableTransform.Value;
     }
 
     private void RenderSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

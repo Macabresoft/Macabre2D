@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 /// <summary>
 /// Interface for an entity which can be rendered.
 /// </summary>
-public interface IRenderableEntity : IBoundable, IEntity {
+public interface IRenderableEntity : IBoundable, IEntity, IPixelSnappable {
     /// <summary>
     /// Gets a value indicating whether this instance is visible.
     /// </summary>
@@ -34,6 +34,7 @@ public interface IRenderableEntity : IBoundable, IEntity {
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableEntity : Entity, IRenderableEntity {
     private bool _isVisible = true;
+    private PixelSnap _pixelSnap = PixelSnap.Inherit;
     private int _renderOrder;
 
     /// <inheritdoc />
@@ -45,6 +46,14 @@ public abstract class RenderableEntity : Entity, IRenderableEntity {
     public bool IsVisible {
         get => this._isVisible && this.IsEnabled;
         set => this.Set(ref this._isVisible, value, this.IsEnabled);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public PixelSnap PixelSnap {
+        get => this._pixelSnap;
+        set => this.Set(ref this._pixelSnap, value);
     }
 
     /// <inheritdoc />

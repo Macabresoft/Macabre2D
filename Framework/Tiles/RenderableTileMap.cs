@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 [Category(CommonCategories.Rendering)]
 public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     private bool _isVisible = true;
+    private PixelSnap _pixelSnap = PixelSnap.Inherit;
     private int _renderOrder;
 
     /// <inheritdoc />
@@ -16,6 +17,14 @@ public abstract class RenderableTileMap : TileableEntity, IRenderableEntity {
     public bool IsVisible {
         get => this._isVisible && this.IsEnabled;
         set => this.Set(ref this._isVisible, value, this.IsEnabled);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Rendering)]
+    public PixelSnap PixelSnap {
+        get => this._pixelSnap;
+        set => this.Set(ref this._pixelSnap, value);
     }
 
     /// <inheritdoc />

@@ -17,9 +17,6 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
     [DataMember(Order = 10, Name = "Animation")]
     public SpriteAnimationReference AnimationReference { get; } = new();
 
-    /// <inheritdoc />
-    public override SpriteSheetAsset? SpriteSheet => this.AnimationReference?.Asset;
-
     /// <summary>
     /// Gets or sets a value indicating whether or not this should start playing by default.
     /// </summary>
@@ -27,6 +24,9 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
         get => this._startPlaying;
         set => this.Set(ref this._startPlaying, value);
     }
+
+    /// <inheritdoc />
+    protected override SpriteSheetAsset? SpriteSheet => this.AnimationReference?.Asset;
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {

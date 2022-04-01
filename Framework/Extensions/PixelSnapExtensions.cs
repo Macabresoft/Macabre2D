@@ -40,4 +40,15 @@ public static class PixelSnapExtensions {
         var scale = new Vector2((int)Math.Round(transform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.Scale.Y, 0, MidpointRounding.AwayFromZero));
         return new Transform(position, scale);
     }
+
+    /// <summary>
+    /// Gets a value indicating whether or not the entity should snap to pixels.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="settings">The settings.</param>
+    /// <returns>A value indicating whether or not this should snap to pixels.</returns>
+    public static bool ShouldSnapToPixels(this IPixelSnappable entity, IGameSettings settings) {
+        return entity.PixelSnap == PixelSnap.Yes || entity.PixelSnap == PixelSnap.Inherit && settings.SnapToPixels;
+
+    }
 }

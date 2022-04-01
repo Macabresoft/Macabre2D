@@ -77,7 +77,6 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
     private ushort _pixelsPerUnit = 32;
     private bool _snapToPixels;
 
-
     /// <inheritdoc />
     [DataMember]
     [Category(CommonCategories.DefaultGraphics)]
