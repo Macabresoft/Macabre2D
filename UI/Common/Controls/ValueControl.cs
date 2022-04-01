@@ -71,6 +71,11 @@ public class ValueControl<T> : UserControl, IValueInfo<T> {
     protected virtual void OnValueChanging() {
     }
 
+    public void Teardown() {
+        this.Owner = null;
+        this.Value = default;
+    }
+
     private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {
         if (control is ValueControl<T> valueControl) {
             if (isBeforeChange) {

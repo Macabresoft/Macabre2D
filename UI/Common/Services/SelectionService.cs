@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Avalonia.Threading;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using ReactiveUI;
@@ -104,24 +103,30 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
     }
 
     private void ResetEditors() {
+        lock (this._editorsLock) {
+            foreach (var editorCollection in this._editors) {
+                editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
+            }
+
+            // This is in a separate loop with a ToList because ValueControls will be changed while iterating, causing an exception.
+            foreach (var valueControl in this._editors.SelectMany(x => x.ValueControls).ToList()) {
+                valueControl.Teardown();
+            }
+        }
+
         if (this.ShouldLoadEditors()) {
             lock (this._editorsLock) {
                 var editorCollections = this._valueControlService.CreateControls(this.Selected).ToList();
-
-                foreach (var editorCollection in this._editors) {
-                    editorCollection.OwnedValueChanged -= this.EditorCollection_OwnedValueChanged;
-                }
-
                 foreach (var editorCollection in editorCollections) {
                     editorCollection.OwnedValueChanged += this.EditorCollection_OwnedValueChanged;
                 }
 
-                Dispatcher.UIThread.Post(() => this._editors.Reset(editorCollections));
+                this._editors.Reset(editorCollections);
             }
         }
         else {
             lock (this._editorsLock) {
-                Dispatcher.UIThread.Post(() => this._editors.Clear());
+                this._editors.Clear();
             }
         }
     }

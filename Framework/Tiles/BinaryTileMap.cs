@@ -52,6 +52,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
         return this._activeTiles.Contains(tilePosition);
     }
 
+    /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 

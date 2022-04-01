@@ -25,4 +25,9 @@ public interface IValueControl : IAvaloniaObject {
     /// Gets or sets the title.
     /// </summary>
     string Title { get; set; }
+
+    /// <summary>
+    /// Tears down this control, removing references.
+    /// </summary>
+    void Teardown();
 }
