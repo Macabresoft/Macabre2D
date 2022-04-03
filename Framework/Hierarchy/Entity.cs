@@ -116,6 +116,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     void OnRemovedFromSceneTree();
 
     /// <summary>
+    /// Gets a value indicating whether or not this is initialized;
+    /// </summary>
+    bool IsInitialized => false;
+
+    /// <summary>
     /// Removes the child.
     /// </summary>
     /// <param name="entity">The entity.</param>
@@ -195,6 +200,9 @@ public class Entity : Transformable, IEntity {
         get => this._isEnabled;
         set => this.Set(ref this._isEnabled, value);
     }
+
+    /// <inheritdoc />
+    public bool IsInitialized { get; private set; }
 
     /// <inheritdoc />
     [DataMember]
@@ -303,17 +311,23 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public virtual void Initialize(IScene scene, IEntity parent) {
-        this.Parent.PropertyChanged -= this.Parent_PropertyChanged;
-        this.Scene = scene;
-        this.Parent = parent;
-        this.Scene.RegisterEntity(this);
+        try {
+            this.Parent.PropertyChanged -= this.Parent_PropertyChanged;
+            this.Scene = scene;
+            this.Parent = parent;
+            this.Scene.RegisterEntity(this);
 
-        foreach (var child in this.Children) {
-            child.Initialize(this.Scene, this);
+            foreach (var child in this.Children) {
+                child.Initialize(this.Scene, this);
+            }
+
+            this.HandleMatrixOrTransformChanged();
+            this.Parent.PropertyChanged += this.Parent_PropertyChanged;
+        }
+        finally {
+            this.IsInitialized = true;
         }
 
-        this.HandleMatrixOrTransformChanged();
-        this.Parent.PropertyChanged += this.Parent_PropertyChanged;
     }
 
     /// <inheritdoc />

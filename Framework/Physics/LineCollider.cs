@@ -68,7 +68,7 @@ public sealed class LineCollider : PolygonCollider {
     }
 
     /// <inheritdoc />
-    public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
+    protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
         var normals = base.GetAxesForSat(other);
         var result = new List<Vector2>();
         var thisCenter = this.GetCenter();

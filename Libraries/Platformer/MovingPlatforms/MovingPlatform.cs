@@ -69,7 +69,6 @@ public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this.GetOrAddChild<SimplePhysicsBody>();
         this._timePaused = this.PauseTimeInSeconds;
         this._startPoint = this.LocalPosition;
         this.ResetEndPoint();
@@ -96,9 +95,6 @@ public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
             }
         }
     }
-
-
-
 
 
     private void ResetEndPoint() {

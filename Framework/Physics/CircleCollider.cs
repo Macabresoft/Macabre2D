@@ -143,7 +143,21 @@ public sealed class CircleCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
+    public override Vector2 GetCenter() {
+        return this.Center;
+    }
+
+    /// <inheritdoc />
+    protected override BoundingArea CreateBoundingArea() {
+        return new BoundingArea(
+            this.Center.X - this.ScaledRadius,
+            this.Center.X + this.ScaledRadius,
+            this.Center.Y - this.ScaledRadius,
+            this.Center.Y + this.ScaledRadius);
+    }
+
+    /// <inheritdoc />
+    protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
         var axes = new List<Vector2>();
 
         if (other is PolygonCollider polygon) {
@@ -180,25 +194,11 @@ public sealed class CircleCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override Vector2 GetCenter() {
-        return this.Center;
-    }
-
-    /// <inheritdoc />
-    public override Projection GetProjection(Vector2 axis) {
+    protected override Projection GetProjection(Vector2 axis) {
         var minimum = Vector2.Dot(axis, this.Center);
         var maximum = minimum + this.ScaledRadius;
         minimum -= this.ScaledRadius;
         return new Projection(axis, minimum, maximum);
-    }
-
-    /// <inheritdoc />
-    protected override BoundingArea CreateBoundingArea() {
-        return new BoundingArea(
-            this.Center.X - this.ScaledRadius,
-            this.Center.X + this.ScaledRadius,
-            this.Center.Y - this.ScaledRadius,
-            this.Center.Y + this.ScaledRadius);
     }
 
     /// <inheritdoc />

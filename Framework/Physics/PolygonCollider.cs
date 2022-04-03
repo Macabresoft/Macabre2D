@@ -177,18 +177,8 @@ public class PolygonCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
-        return this.Normals;
-    }
-
-    /// <inheritdoc />
     public override Vector2 GetCenter() {
         return this._center.Value;
-    }
-
-    /// <inheritdoc />
-    public override Projection GetProjection(Vector2 axis) {
-        return Projection.CreatePolygonProjection(axis, this.WorldPoints);
     }
 
     /// <summary>
@@ -206,6 +196,11 @@ public class PolygonCollider : Collider {
             this.WorldPoints.Max(p => p.X),
             this.WorldPoints.Min(p => p.Y),
             this.WorldPoints.Max(p => p.Y));
+    }
+
+    /// <inheritdoc />
+    protected override IReadOnlyCollection<Vector2> GetAxesForSat(Collider other) {
+        return this.Normals;
     }
 
     /// <summary>
@@ -229,6 +224,11 @@ public class PolygonCollider : Collider {
         }
 
         return normals;
+    }
+
+    /// <inheritdoc />
+    protected override Projection GetProjection(Vector2 axis) {
+        return Projection.CreatePolygonProjection(axis, this.WorldPoints);
     }
 
     /// <inheritdoc />

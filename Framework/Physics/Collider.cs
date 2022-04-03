@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -57,35 +56,25 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// <summary>
     /// Gets the type of the collider.
     /// </summary>
-    /// <value>The type of the collider.</value>
     public abstract ColliderType ColliderType { get; }
-
-    /// <summary>
-    /// Gets the transform.
-    /// </summary>
-    /// <value>The transform.</value>
-    public Transform Transform => this._transform.Value;
 
     /// <summary>
     /// Gets the body that this collider is attached to.
     /// </summary>
-    /// <value>The body.</value>
     public IPhysicsBody? Body { get; private set; }
 
     /// <summary>
-    /// Gets the layers.
+    /// Gets or sets the layers.
     /// </summary>
-    /// <value>The layers.</value>
     [DataMember(Name = "Collider Layers")]
     public Layers Layers {
         get => this._overrideLayers != Layers.None ? this._overrideLayers : this.Body?.Layers ?? Layers.None;
-        internal set => this.Set(ref this._overrideLayers, value);
+        set => this.Set(ref this._overrideLayers, value);
     }
 
     /// <summary>
     /// Gets the offset.
     /// </summary>
-    /// <value>The offset.</value>
     [DataMember]
     public Vector2 Offset {
         get => this._offset;
@@ -96,6 +85,11 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the transform.
+    /// </summary>
+    protected Transform Transform => this._transform.Value;
 
     /// <summary>
     /// Gets a value indicating whether or not this instance collides with the specified collider.
@@ -188,24 +182,10 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     public abstract bool Contains(Vector2 point);
 
     /// <summary>
-    /// Gets the axes to test for the Separating Axis Theorem.
-    /// </summary>
-    /// <param name="other">The other collider.</param>
-    /// <returns>The axes to test for the Separating Axis Theorem</returns>
-    public abstract IReadOnlyCollection<Vector2> GetAxesForSat(Collider other);
-
-    /// <summary>
     /// Gets the center of the collider.
     /// </summary>
     /// <returns>The center of the collider.</returns>
     public abstract Vector2 GetCenter();
-
-    /// <summary>
-    /// Gets the projection of this collider onto the specified axis.
-    /// </summary>
-    /// <param name="axis">The axis.</param>
-    /// <returns>The projection of this collider onto the specified axis.</returns>
-    public abstract Projection GetProjection(Vector2 axis);
 
     /// <summary>
     /// Initializes the specified body.
@@ -254,6 +234,13 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     protected abstract BoundingArea CreateBoundingArea();
 
     /// <summary>
+    /// Gets the axes to test for the Separating Axis Theorem.
+    /// </summary>
+    /// <param name="other">The other collider.</param>
+    /// <returns>The axes to test for the Separating Axis Theorem</returns>
+    protected abstract IReadOnlyCollection<Vector2> GetAxesForSat(Collider other);
+
+    /// <summary>
     /// Gets the normal from the line defined by two points.
     /// </summary>
     /// <param name="firstPoint">The first point.</param>
@@ -265,6 +252,13 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
         normal.Normalize();
         return normal;
     }
+
+    /// <summary>
+    /// Gets the projection of this collider onto the specified axis.
+    /// </summary>
+    /// <param name="axis">The axis.</param>
+    /// <returns>The projection of this collider onto the specified axis.</returns>
+    protected abstract Projection GetProjection(Vector2 axis);
 
     /// <summary>
     /// Resets the lazy fields.
