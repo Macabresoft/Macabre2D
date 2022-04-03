@@ -66,8 +66,6 @@ public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
         set => this.Set(ref this._velocity, value);
     }
 
-
-
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -78,7 +76,7 @@ public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public virtual void Update(FrameTime frameTime, InputState inputState) {
+    public void Update(FrameTime frameTime, InputState inputState) {
         if (this._endPoint != this._startPoint) {
             if (this._timePaused < this.PauseTimeInSeconds) {
                 this._timePaused += (float)frameTime.SecondsPassed;
