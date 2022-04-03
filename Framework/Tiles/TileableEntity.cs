@@ -55,7 +55,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
 
     /// <inheritdoc />
     public bool AddTile(Point tile) {
-        var isFirst = !this.ActiveTiles.Any();
+        var isFirst = !this.HasActiveTiles();
         var result = this.TryAddTile(tile);
         if (result) {
             if (isFirst) {
