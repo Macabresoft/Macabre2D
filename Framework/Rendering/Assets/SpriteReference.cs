@@ -2,11 +2,12 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A reference to a sprite on a <see cref="SpriteSheetAsset" />.
 /// </summary>
-public class SpriteReference : AssetReference<SpriteSheetAsset> {
+public class SpriteReference : AssetReference<SpriteSheetAsset, Texture2D> {
     private byte _spriteIndex;
 
     /// <summary>

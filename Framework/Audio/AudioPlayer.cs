@@ -95,8 +95,8 @@ public sealed class AudioPlayer : Entity {
 
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
-        this.Scene.Assets.ResolveAsset<AudioClipAsset, SoundEffect>(this.AudioClipReference);
+        
+        this.AudioClipReference.Initialize(this.Scene.Assets);
 
         if (this._shouldLoop && this.IsEnabled) {
             this.Play();

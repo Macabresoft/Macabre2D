@@ -50,6 +50,7 @@ public interface IAsset<TContent> : IAsset {
 /// </summary>
 [DataContract]
 public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> {
+    private IAssetManager _assetManager = AssetManager.Empty;
     private TContent? _content;
 
     /// <summary>

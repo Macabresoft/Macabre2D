@@ -32,7 +32,7 @@ public sealed class LoopingSpriteAnimator : BaseSpriteAnimator {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.AnimationReference.PropertyChanged -= this.AnimationReference_PropertyChanged;
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.AnimationReference);
+        this.AnimationReference.Initialize(this.Scene.Assets);
         this.ResetStep();
         this.TryStart();
         this.AnimationReference.PropertyChanged += this.AnimationReference_PropertyChanged;

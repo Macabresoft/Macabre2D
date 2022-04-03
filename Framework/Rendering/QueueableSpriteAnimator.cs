@@ -61,7 +61,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         this.Enqueue(animation, shouldLoop);
         this.ResetAnimation();
 
-        if (animation.Steps.FirstOrDefault() is SpriteAnimationStep step) {
+        if (animation.Steps.FirstOrDefault() is { } step) {
             this.CurrentSpriteIndex = step.SpriteIndex;
         }
 

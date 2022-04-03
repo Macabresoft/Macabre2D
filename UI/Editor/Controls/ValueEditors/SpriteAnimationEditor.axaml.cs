@@ -126,7 +126,7 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
             this._undoService.Do(
                 () => this.Value.Clear(),
                 () => {
-                    this.Value.Initialize(asset);
+                    this.Value.LoadAsset(asset);
                     this.Value.PackagedAssetId = animationId;
                 });
         }
@@ -164,14 +164,14 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
             var originalAnimationId = this.Value.PackagedAssetId;
             this._undoService.Do(
                 () => {
-                    this.Value.Initialize(spriteSheet);
+                    this.Value.LoadAsset(spriteSheet);
                     this.Value.PackagedAssetId = animationId;
                     this.ResetBitmap();
                 },
                 () => {
                     if (originalAsset != null) {
                         this.Value.PackagedAssetId = originalAnimationId;
-                        this.Value.Initialize(originalAsset);
+                        this.Value.LoadAsset(originalAsset);
                         this.ResetBitmap();
                     }
                     else {

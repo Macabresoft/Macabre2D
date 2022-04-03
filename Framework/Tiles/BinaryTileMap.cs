@@ -55,8 +55,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
+        this.SpriteReference.Initialize(this.Scene.Assets);
         this.ResetSpriteScale();
     }
 

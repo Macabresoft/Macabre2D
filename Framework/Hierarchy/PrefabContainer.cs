@@ -47,7 +47,7 @@ public sealed class PrefabContainer : Entity {
     }
 
     private void Reset() {
-        this.Scene.Assets.ResolveAsset<PrefabAsset, Entity>(this.PrefabReference);
+        this.PrefabReference.Initialize(this.Scene.Assets);
 
         if (this._prefabChild != null) {
             this.RemoveChild(this._prefabChild);

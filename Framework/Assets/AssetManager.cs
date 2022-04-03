@@ -25,6 +25,13 @@ public interface IAssetManager : IDisposable {
     void Initialize(ContentManager contentManager, ISerializer serializer);
 
     /// <summary>
+    /// Loads content for an ass
+    /// </summary>
+    /// <param name="asset"></param>
+    /// <typeparam name="TContent"></typeparam>
+    void LoadContentForAsset<TContent>(IAsset asset) where TContent : class;
+
+    /// <summary>
     /// Registers the content meta data into the cache.
     /// </summary>
     /// <param name="metadata">The metadata.</param>
@@ -34,10 +41,12 @@ public interface IAssetManager : IDisposable {
     /// Resolves an asset reference and loads required content.
     /// </summary>
     /// <param name="assetReference">The asset reference to resolve.</param>
+    /// <param name="asset">The asset if found.</param>
     /// <typeparam name="TAsset">The type of asset.</typeparam>
     /// <typeparam name="TContent">The type of content.</typeparam>
     /// <returns>A value indicating whether or not the asset was resolved.</returns>
-    bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class;
+    bool TryGetAsset<TAsset, TContent>(AssetReference<TAsset, TContent> assetReference, out TAsset? asset)
+        where TAsset : class, IAsset, IAsset<TContent> where TContent : class;
 
     /// <summary>
     /// Tries sto get metadata.
@@ -105,20 +114,24 @@ public sealed class AssetManager : IAssetManager {
     }
 
     /// <inheritdoc />
+    public void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
+        if (asset is IAsset<TContent> { Content: null } contentAsset &&
+            this.TryLoadContent<TContent>(asset.ContentId, out var content) &&
+            content != null) {
+            contentAsset.LoadContent(content);
+        }
+    }
+
+    /// <inheritdoc />
     public void RegisterMetadata(ContentMetadata metadata) {
         this._loadedMetadata.Add(metadata);
     }
 
     /// <inheritdoc />
-    public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference)
-        where TAsset : class, IAsset
+    public bool TryGetAsset<TAsset, TContent>(AssetReference<TAsset, TContent> assetReference, out TAsset? asset)
+        where TAsset : class, IAsset, IAsset<TContent>
         where TContent : class {
-        var asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.ContentId);
-        if (asset != null) {
-            this.LoadContentForAsset<TContent>(asset);
-            assetReference.Initialize(asset);
-        }
-
+        asset = assetReference.Asset ?? this.GetAsset<TAsset>(assetReference.ContentId);
         return asset != null;
     }
 
@@ -205,15 +218,6 @@ public sealed class AssetManager : IAssetManager {
         return result;
     }
 
-
-    private void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
-        if (asset is IAsset<TContent> { Content: null } contentAsset &&
-            this.TryLoadContent<TContent>(asset.ContentId, out var content) &&
-            content != null) {
-            contentAsset.LoadContent(content);
-        }
-    }
-
     private bool TryGetContentPath(Guid contentId, out string? contentPath) {
         if (this.TryGetMetadata(contentId, out var metadata) && metadata != null) {
             contentPath = metadata.GetContentPath();
@@ -234,10 +238,15 @@ public sealed class AssetManager : IAssetManager {
         public void Initialize(ContentManager contentManager, ISerializer serializer) {
         }
 
+        public void LoadContentForAsset<TContent>(IAsset asset) where TContent : class {
+        }
+
         public void RegisterMetadata(ContentMetadata metadata) {
         }
 
-        public bool ResolveAsset<TAsset, TContent>(AssetReference<TAsset> assetReference) where TAsset : class, IAsset where TContent : class {
+        public bool TryGetAsset<TAsset, TContent>(AssetReference<TAsset, TContent> assetReference, out TAsset? asset)
+            where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
+            asset = null;
             return false;
         }
 

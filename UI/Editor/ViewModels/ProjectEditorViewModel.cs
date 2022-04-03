@@ -248,7 +248,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(AutoTileSet tileSet) {
         if (tileSet.SpriteSheet != null) {
             this._tileMap.TileSetReference.Reset(tileSet);
-            this._scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this._tileMap.TileSetReference);
+            this._tileMap.TileSetReference.Initialize(this._scene.Assets);
             this._tileMap.IsEnabled = true;
             this._grid.IsEnabled = true;
         }
@@ -257,7 +257,7 @@ public class ProjectEditorViewModel : BaseViewModel {
     private void ResetScene(SpriteAnimation spriteAnimation) {
         if (spriteAnimation.SpriteSheet != null) {
             this._spriteAnimator.AnimationReference.Reset(spriteAnimation);
-            this._scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this._spriteAnimator.AnimationReference);
+            this._spriteAnimator.AnimationReference.Initialize(this._scene.Assets);
             this._spriteAnimator.Play();
             this._spriteAnimator.IsEnabled = true;
         }

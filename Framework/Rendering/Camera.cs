@@ -174,8 +174,7 @@ public class Camera : Entity, ICamera {
 
         this.Game.ViewportSizeChanged += this.Game_ViewportSizeChanged;
         this.OffsetSettings.PropertyChanged += this.OffsetSettings_PropertyChanged;
-
-        this.Scene.Assets.ResolveAsset<ShaderAsset, Effect>(this._shaderReference);
+        this._shaderReference.Initialize(this.Scene.Assets);
     }
 
     /// <inheritdoc />

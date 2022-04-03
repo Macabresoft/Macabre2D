@@ -3,5 +3,5 @@
 /// <summary>
 /// Reference to a <see cref="PrefabAsset"/>.
 /// </summary>
-public class PrefabReference : AssetReference<PrefabAsset> {
+public class PrefabReference : AssetReference<PrefabAsset, Entity> {
 }

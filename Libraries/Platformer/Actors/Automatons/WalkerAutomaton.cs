@@ -86,9 +86,9 @@ public class WalkerAutomaton : PlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.FallingAnimationReference);
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.WalkingAnimationReference);
+        this.IdleAnimationReference.Initialize(this.Scene.Assets);
+        this.FallingAnimationReference.Initialize(this.Scene.Assets);
+        this.WalkingAnimationReference.Initialize(this.Scene.Assets);
 
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
         this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;

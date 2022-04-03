@@ -33,7 +33,7 @@ public class PhysicsGame : BaseGame {
         var frameRateDisplay = cameraEntity.AddChild<FrameRateDisplayEntity>();
         frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
         frameRateDisplay.LocalScale = new Vector2(0.1f);
-        frameRateDisplay.FontReference.Initialize(this._font);
+        frameRateDisplay.FontReference.LoadAsset(this._font);
 
         var circleEntity = scene.AddChild<DynamicPhysicsBody>();
         circleEntity.LocalPosition -= new Vector2(0f, 3f);

@@ -42,14 +42,14 @@ public sealed class SkullViewModel : BaseViewModel {
 
         this._skullRenderer = scene.AddChild<SpriteRenderer>();
         this._skullRenderer.LocalPosition += new Vector2(0f, 0.5f);
-        this._skullRenderer.SpriteReference.Initialize(skull);
+        this._skullRenderer.SpriteReference.LoadAsset(skull);
         this._skullRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
         this._skullRenderer.AddChild<SampleInputEntity>();
 
         var leagueMono = new FontAsset();
 
         this._displayTextRenderer = scene.AddChild<TextRenderer>();
-        this._displayTextRenderer.FontReference.Initialize(leagueMono);
+        this._displayTextRenderer.FontReference.LoadAsset(leagueMono);
         this._displayTextRenderer.Color = DefinedColors.MacabresoftYellow;
         this._displayTextRenderer.Text = this.DisplayText;
         this._displayTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
@@ -59,7 +59,7 @@ public sealed class SkullViewModel : BaseViewModel {
         this._camera = scene.AddChild<Camera>();
         this._camera.ViewHeight = 9f;
         var cameraTextRenderer = this._camera.AddChild<TextRenderer>();
-        cameraTextRenderer.FontReference.Initialize(leagueMono);
+        cameraTextRenderer.FontReference.LoadAsset(leagueMono);
         cameraTextRenderer.Color = DefinedColors.MacabresoftBone;
         cameraTextRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
         cameraTextRenderer.Text = "Mouse Position: (0.00, 0.00)";
@@ -67,7 +67,7 @@ public sealed class SkullViewModel : BaseViewModel {
         cameraTextRenderer.LocalScale = new Vector2(0.1f);
         cameraTextRenderer.LocalPosition = new Vector2(0f, -2.5f);
         var frameRateDisplay = this._camera.AddChild<FrameRateDisplayEntity>();
-        frameRateDisplay.FontReference.Initialize(leagueMono);
+        frameRateDisplay.FontReference.LoadAsset(leagueMono);
         frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
         frameRateDisplay.LocalScale = new Vector2(0.1f);
 

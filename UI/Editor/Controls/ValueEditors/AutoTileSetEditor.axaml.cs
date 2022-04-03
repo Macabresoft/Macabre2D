@@ -126,7 +126,7 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
             this._undoService.Do(
                 () => this.Value.Clear(),
                 () => {
-                    this.Value.Initialize(asset);
+                    this.Value.LoadAsset(asset);
                     this.Value.PackagedAssetId = tileSetId;
                 });
         }
@@ -164,14 +164,14 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
             var originalTileSetId = this.Value.PackagedAssetId;
             this._undoService.Do(
                 () => {
-                    this.Value.Initialize(spriteSheet);
+                    this.Value.LoadAsset(spriteSheet);
                     this.Value.PackagedAssetId = tileSetId;
                     this.ResetBitmap();
                 },
                 () => {
                     if (originalAsset != null) {
                         this.Value.PackagedAssetId = originalTileSetId;
-                        this.Value.Initialize(originalAsset);
+                        this.Value.LoadAsset(originalAsset);
                         this.ResetBitmap();
                     }
                     else {

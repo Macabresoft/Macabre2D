@@ -141,11 +141,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
-
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.IdleAnimationReference);
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.MovingAnimationReference);
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.JumpingAnimationReference);
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.FallingAnimationReference);
+        
+        this.IdleAnimationReference.Initialize(this.Scene.Assets);
+        this.MovingAnimationReference.Initialize(this.Scene.Assets);
+        this.JumpingAnimationReference.Initialize(this.Scene.Assets);
+        this.FallingAnimationReference.Initialize(this.Scene.Assets);
 
         this._camera = this.GetOrAddChild<PlatformerCamera>();
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();

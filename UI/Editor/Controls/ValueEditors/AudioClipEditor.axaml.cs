@@ -96,7 +96,7 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
         if (asset != null) {
             this._undoService.Do(
                 () => this.Value.Clear(),
-                () => { this.Value.Initialize(asset); });
+                () => { this.Value.LoadAsset(asset); });
         }
     }
 
@@ -124,7 +124,7 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
             this._undoService.Do(
                 () => {
                     if (newAsset != null) {
-                        this.Value.Initialize(newAsset);
+                        this.Value.LoadAsset(newAsset);
                     }
                     else {
                         this.Value.Clear();
@@ -132,7 +132,7 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
                 },
                 () => {
                     if (originalAsset != null) {
-                        this.Value.Initialize(originalAsset);
+                        this.Value.LoadAsset(originalAsset);
                     }
                     else {
                         this.Value.Clear();

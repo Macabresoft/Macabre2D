@@ -3,12 +3,13 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An asset reference for an asset packaged inside of a <see cref="SpriteSheetAsset" />.
 /// </summary>
 /// <typeparam name="TPackagedAsset">The type of packaged asset.</typeparam>
-public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheetAsset> where TPackagedAsset : SpriteSheetMember {
+public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSheetAsset, Texture2D> where TPackagedAsset : SpriteSheetMember {
     private TPackagedAsset? _packagedAsset;
     private Guid _packagedAssetId;
 
@@ -53,8 +54,8 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
     }
 
     /// <inheritdoc />
-    public override void Initialize(SpriteSheetAsset asset) {
-        base.Initialize(asset);
+    public override void LoadAsset(SpriteSheetAsset asset) {
+        base.LoadAsset(asset);
         this.ResolvePackagedAsset();
     }
 
@@ -69,7 +70,7 @@ public class SpriteSheetAssetReference<TPackagedAsset> : AssetReference<SpriteSh
             }
 
             this.PackagedAssetId = packagedAsset.Id;
-            this.Initialize(spriteSheet);
+            this.LoadAsset(spriteSheet);
         }
     }
 

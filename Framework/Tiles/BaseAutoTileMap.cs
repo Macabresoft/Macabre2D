@@ -49,7 +49,7 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
         base.Initialize(scene, parent);
 
         this.TileSetReference.PropertyChanged -= this.TileSetReference_PropertyChanged;
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.TileSetReference);
+        this.TileSetReference.Initialize(this.Scene.Assets);
         this.TileSetReference.PropertyChanged += this.TileSetReference_PropertyChanged;
         this._previousWorldScale = this.Transform.Scale;
         this.ReevaluateIndexes();

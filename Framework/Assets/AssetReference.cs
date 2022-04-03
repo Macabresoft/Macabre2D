@@ -8,10 +8,13 @@ using System.Runtime.Serialization;
 /// A reference to an asset using identifier and type. Held by entities for serialization.
 /// </summary>
 /// <typeparam name="TAsset">The type of the referenced asset.</typeparam>
+/// <typeparam name="TContent">The type of the content this asset uses.</typeparam>
 [DataContract]
-public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class, IAsset {
+public class AssetReference<TAsset, TContent> : NotifyPropertyChanged where TAsset : class, IAsset, IAsset<TContent> where TContent : class {
     private TAsset? _asset;
+    private IAssetManager _assetManager = AssetManager.Empty;
     private Guid _contentId;
+    private bool _isLoadingAsset;
 
     /// <summary>
     /// Gets the asset.
@@ -43,10 +46,22 @@ public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class
     }
 
     /// <summary>
-    /// Initializes this instance with an asset.
+    /// Initializes this reference with the asset manager.
+    /// </summary>
+    /// <param name="assetManager"></param>
+    public void Initialize(IAssetManager assetManager) {
+        this._assetManager = assetManager;
+
+        if (this._assetManager.TryGetAsset(this, out var asset) && asset != null) {
+            this.LoadAsset(asset);
+        }
+    }
+
+    /// <summary>
+    /// Loads this instance with an asset.
     /// </summary>
     /// <param name="asset">The asset.</param>
-    public virtual void Initialize(TAsset asset) {
+    public virtual void LoadAsset(TAsset asset) {
         if (this.Asset != null) {
             this.Asset.PropertyChanged -= this.Asset_PropertyChanged;
         }
@@ -54,6 +69,7 @@ public class AssetReference<TAsset> : NotifyPropertyChanged where TAsset : class
         this.Asset = asset;
         this.Asset.PropertyChanged += this.Asset_PropertyChanged;
         this.ContentId = this.Asset.ContentId;
+        this._assetManager.LoadContentForAsset<TContent>(this.Asset);
     }
 
     /// <summary>

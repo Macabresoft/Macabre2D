@@ -35,16 +35,12 @@ public sealed class SpriteRenderer : BaseSpriteEntity {
         base.Initialize(scene, parent);
 
         this.SpriteReference.PropertyChanged -= this.SpriteReference_PropertyChanged;
-        this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
+        this.SpriteReference.Initialize(this.Scene.Assets);
         this.SpriteReference.PropertyChanged += this.SpriteReference_PropertyChanged;
     }
 
     private void SpriteReference_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(this.SpriteSheet.SpriteSize)) {
-            this.Reset();
-        }
-        else if (e.PropertyName == nameof(this.SpriteSheet.ContentId)) {
-            this.Scene.Assets.ResolveAsset<SpriteSheetAsset, Texture2D>(this.SpriteReference);
+        if (e.PropertyName is nameof(this.SpriteSheet.SpriteSize)) {
             this.Reset();
         }
     }

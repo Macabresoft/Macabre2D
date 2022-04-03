@@ -139,7 +139,7 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
                 () => this.Value.Clear(),
                 () => {
                     this.Value.SpriteIndex = spriteIndex;
-                    this.Value.Initialize(asset);
+                    this.Value.LoadAsset(asset);
                 });
         }
     }
@@ -187,12 +187,12 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
             this._undoService.Do(
                 () => {
                     this.Value.SpriteIndex = spriteIndex;
-                    this.Value.Initialize(spriteSheet);
+                    this.Value.LoadAsset(spriteSheet);
                 },
                 () => {
                     if (originalAsset != null) {
                         this.Value.SpriteIndex = originalIndex;
-                        this.Value.Initialize(originalAsset);
+                        this.Value.LoadAsset(originalAsset);
                     }
                     else {
                         this.Value.Clear();

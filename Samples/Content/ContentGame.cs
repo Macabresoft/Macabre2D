@@ -34,7 +34,7 @@ public class ContentGame : BaseGame {
         this._whiteSquare = new SpriteSheetAsset();
 
         var spriteRenderer = camera.AddChild<SpriteRenderer>();
-        spriteRenderer.SpriteReference.Initialize(this._whiteSquare);
+        spriteRenderer.SpriteReference.LoadAsset(this._whiteSquare);
         spriteRenderer.RenderSettings.OffsetType = PixelOffsetType.Center;
 
         var gridContainer = scene.AddChild<GridContainer>();
@@ -43,7 +43,7 @@ public class ContentGame : BaseGame {
         binaryTileMap.RenderOrder = -300;
         binaryTileMap.LocalPosition = new Vector2(-5f, -10f);
         binaryTileMap.LocalScale = new Vector2(1f, 1f);
-        binaryTileMap.SpriteReference.Initialize(this._whiteSquare);
+        binaryTileMap.SpriteReference.LoadAsset(this._whiteSquare);
         binaryTileMap.Color = Color.DarkGray;
 
         for (var x = 0; x < 5; x++) {
@@ -76,12 +76,12 @@ public class ContentGame : BaseGame {
 
             spriteAnimations.Add(spriteAnimation);
             spriteAnimator.AnimationReference.PackagedAssetId = spriteAnimation.Id;
-            spriteAnimator.AnimationReference.Initialize(this._colorfulSquares);
+            spriteAnimator.AnimationReference.LoadAsset(this._colorfulSquares);
         }
 
         var spriteRenderer3 = scene.AddChild<SpriteRenderer>();
         spriteRenderer3.RenderOrder = -200;
-        spriteRenderer3.SpriteReference.Initialize(this._whiteSquare);
+        spriteRenderer3.SpriteReference.LoadAsset(this._whiteSquare);
         spriteRenderer3.RenderSettings.OffsetType = PixelOffsetType.Center;
         spriteRenderer3.LocalPosition -= new Vector2(2f, 0);
         spriteRenderer3.AddChild<Scaler>();
@@ -91,7 +91,7 @@ public class ContentGame : BaseGame {
 
         var spriteRenderer4 = spriteRenderer3.AddChild<SpriteRenderer>();
         spriteRenderer4.RenderOrder = 100;
-        spriteRenderer4.SpriteReference.Initialize(this._whiteSquare);
+        spriteRenderer4.SpriteReference.LoadAsset(this._whiteSquare);
         spriteRenderer4.RenderSettings.OffsetType = PixelOffsetType.Center;
         spriteRenderer4.LocalPosition -= new Vector2(2f, 0f);
         spriteRenderer4.AddChild<Scaler>();
@@ -101,7 +101,7 @@ public class ContentGame : BaseGame {
 
         var textRenderer = new TextRenderer();
         textRenderer.Text = "Hello, World";
-        textRenderer.FontReference.Initialize(this._font);
+        textRenderer.FontReference.LoadAsset(this._font);
         textRenderer.Color = Color.DarkMagenta;
         var textRendererBoundingArea = textRenderer.AddChild<BoundingAreaDrawer>();
         textRendererBoundingArea.Color = Color.Red;
@@ -113,25 +113,25 @@ public class ContentGame : BaseGame {
         var prefabContainer1 = scene.AddChild<PrefabContainer>();
         prefabContainer1.LocalScale = new Vector2(0.5f, 0.5f);
         prefabContainer1.LocalPosition -= new Vector2(5f, 5f);
-        prefabContainer1.PrefabReference.Initialize(this._prefabHelloWorld);
+        prefabContainer1.PrefabReference.LoadAsset(this._prefabHelloWorld);
 
         var prefabContainer2 = scene.AddChild<PrefabContainer>();
         prefabContainer2.LocalScale = new Vector2(2f, 2f);
         prefabContainer2.LocalPosition = new Vector2(-6f, 3f);
-        prefabContainer2.PrefabReference.Initialize(this._prefabHelloWorld);
+        prefabContainer2.PrefabReference.LoadAsset(this._prefabHelloWorld);
 
         var secondCamera = scene.AddChild<Camera>();
         secondCamera.LayersToRender = Layers.Layer03;
         var frameRateDisplay = secondCamera.AddChild<FrameRateDisplayEntity>();
         frameRateDisplay.Layers = Layers.Layer03;
-        frameRateDisplay.FontReference.Initialize(this._font);
+        frameRateDisplay.FontReference.LoadAsset(this._font);
         frameRateDisplay.Color = DefinedColors.ZvukostiGreen;
         frameRateDisplay.LocalScale = new Vector2(0.1f);
 
         this._laser = new AudioClipAsset();
         var audioPlayer = scene.AddChild<AudioPlayer>();
         audioPlayer.Volume = 0.5f;
-        audioPlayer.AudioClipReference.Initialize(this._laser);
+        audioPlayer.AudioClipReference.LoadAsset(this._laser);
         audioPlayer.AddChild<VolumeController>();
 
         var filePath = Path.GetTempFileName();
