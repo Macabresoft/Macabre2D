@@ -3,6 +3,7 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -54,20 +55,27 @@ public abstract class TileableEntity : Entity, ITileableEntity {
 
     /// <inheritdoc />
     public bool AddTile(Point tile) {
+        var isFirst = !this.ActiveTiles.Any();
         var result = this.TryAddTile(tile);
         if (result) {
-            if (tile.X > this.MaximumTile.X) {
-                this.MaximumTile = new Point(tile.X, this.MaximumTile.Y);
+            if (isFirst) {
+                this.MaximumTile = tile;
+                this.MinimumTile = tile;
             }
-            else if (tile.X < this.MinimumTile.X) {
-                this.MinimumTile = new Point(tile.X, this.MinimumTile.Y);
-            }
+            else {
+                if (tile.X > this.MaximumTile.X) {
+                    this.MaximumTile = new Point(tile.X, this.MaximumTile.Y);
+                }
+                else if (tile.X < this.MinimumTile.X) {
+                    this.MinimumTile = new Point(tile.X, this.MinimumTile.Y);
+                }
 
-            if (tile.Y > this.MaximumTile.Y) {
-                this.MaximumTile = new Point(this.MaximumTile.X, tile.Y);
-            }
-            else if (tile.Y < this.MinimumTile.Y) {
-                this.MinimumTile = new Point(this.MinimumTile.X, tile.Y);
+                if (tile.Y > this.MaximumTile.Y) {
+                    this.MaximumTile = new Point(this.MaximumTile.X, tile.Y);
+                }
+                else if (tile.Y < this.MinimumTile.Y) {
+                    this.MinimumTile = new Point(this.MinimumTile.X, tile.Y);
+                }
             }
 
             this.ResetBoundingArea();
