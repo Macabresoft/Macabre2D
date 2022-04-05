@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.5.1" />
+        <PackageReference Include="FluentAssertions" Version="6.6.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
         <PackageReference Include="NSubstitute" Version="4.3.0" />
         <PackageReference Include="nunit" Version="3.13.3" />
@@ -16,5 +16,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
+        <ProjectReference Include="..\Libraries\Platformer\Macabre2D.Libraries.Platformer.csproj" />
     </ItemGroup>
 </Project>
