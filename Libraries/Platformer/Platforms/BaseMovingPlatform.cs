@@ -18,8 +18,10 @@ public class BaseMovingPlatform : Entity, IMovingPlatform {
     private Vector2 _previousPosition;
     private int _updateOrder;
 
+    /// <inheritdoc />
     public event EventHandler<CollisionEventArgs>? CollisionOccured;
 
+    /// <inheritdoc />
     public BoundingArea BoundingArea => this.Collider.BoundingArea;
 
     /// <inheritdoc />
