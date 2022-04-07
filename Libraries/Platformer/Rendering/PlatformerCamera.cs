@@ -3,6 +3,7 @@
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A <see cref="ICamera" /> for platformers.
@@ -11,6 +12,18 @@ public class PlatformerCamera : Camera {
     private float _horizontalDistanceAllowed = 2f;
     private float _lerpSpeed = 5f;
     private float _verticalDistanceAllowed = 4f;
+
+    /// <summary>
+    /// Gets or sets the background layer.
+    /// </summary>
+    [DataMember]
+    public Layers BackgroundLayer { get; set; }
+
+    /// <summary>
+    /// Gets or sets the foreground layer.
+    /// </summary>
+    [DataMember]
+    public Layers ForegroundLayer { get; set; }
 
     /// <summary>
     /// Gets or sets the horizontal distance allowed from the player.
@@ -37,6 +50,69 @@ public class PlatformerCamera : Camera {
     public float VerticalDistanceAllowed {
         get => this._verticalDistanceAllowed;
         set => this.Set(ref this._verticalDistanceAllowed, value);
+    }
+
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+        if (this.ShaderReference.Asset?.Content is { } effect) {
+            var backgroundEntities = entities.Where(x => x.Layers.HasFlag(this.BackgroundLayer)).ToList();
+            if (backgroundEntities.Any()) {
+                spriteBatch?.Begin(
+                    SpriteSortMode.Deferred,
+                    BlendState.AlphaBlend,
+                    this.SamplerState,
+                    null,
+                    RasterizerState.CullNone,
+                    null,
+                    this.GetViewMatrix());
+
+                foreach (var entity in backgroundEntities) {
+                    entity.Render(frameTime, this.BoundingArea);
+                }
+
+                spriteBatch?.End();
+            }
+
+            var foregroundEntities = entities.Where(x => x.Layers.HasFlag(this.ForegroundLayer)).ToList();
+            if (foregroundEntities.Any()) {
+                var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.InversePixelsPerUnit, -this.Settings.InversePixelsPerUnit), this.Transform.Scale);
+
+                // TODO: customize this
+                //effect.Parameters["FillColor"].SetValue(Color.HotPink.ToVector3());
+                spriteBatch?.Begin(
+                    SpriteSortMode.Deferred,
+                    BlendState.AlphaBlend,
+                    this.SamplerState,
+                    null,
+                    RasterizerState.CullNone,
+                    effect,
+                    this.GetViewMatrix(offsetTransform));
+
+                foreach (var entity in foregroundEntities) {
+                    entity.Render(frameTime, this.BoundingArea);
+                }
+
+                spriteBatch?.End();
+
+                spriteBatch?.Begin(
+                    SpriteSortMode.Deferred,
+                    BlendState.AlphaBlend,
+                    this.SamplerState,
+                    null,
+                    RasterizerState.CullNone,
+                    null,
+                    this.GetViewMatrix());
+
+                foreach (var entity in foregroundEntities) {
+                    entity.Render(frameTime, this.BoundingArea);
+                }
+
+                spriteBatch?.End();
+            }
+        }
+        else {
+            base.Render(frameTime, spriteBatch, entities);
+        }
     }
 
     /// <summary>
