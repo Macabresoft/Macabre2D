@@ -112,6 +112,8 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
             foreach (var valueControl in this._editors.SelectMany(x => x.ValueControls).ToList()) {
                 valueControl.Teardown();
             }
+            
+            this._editors.Clear();
         }
 
         if (this.ShouldLoadEditors()) {
@@ -122,11 +124,6 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
                 }
 
                 this._editors.Reset(editorCollections);
-            }
-        }
-        else {
-            lock (this._editorsLock) {
-                this._editors.Clear();
             }
         }
     }

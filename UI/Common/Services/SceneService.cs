@@ -137,31 +137,34 @@ public sealed class SceneService : ReactiveObject, ISceneService {
         get => this._selected;
         set {
             this.RaiseAndSetIfChanged(ref this._selected, value);
-            this._entityService.Selected = null;
-            this._loopService.Selected = null;
-            this.IsEntityContext = false;
 
             switch (this._selected) {
                 case IScene scene:
                     this._entityService.Selected = scene;
+                    this._loopService.Selected = null;
                     this.ImpliedSelected = this._selected;
+                    this.IsEntityContext = true;
                     break;
                 case ILoop system:
                     this._loopService.Selected = system;
+                    this._entityService.Selected = null;
                     this.ImpliedSelected = this._selected;
+                    this.IsEntityContext = false;
                     break;
                 case IEntity entity:
                     this._entityService.Selected = entity;
+                    this._loopService.Selected = null;
                     this.ImpliedSelected = this._selected;
                     this.IsEntityContext = true;
                     break;
                 case LoopCollection:
-                    this._entityService.Selected = this.CurrentScene;
+                    this.IsEntityContext = false;
+                    this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
                 case EntityCollection:
                     this.IsEntityContext = true;
-                    this._entityService.Selected = this.CurrentScene;
+                    this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
             }
