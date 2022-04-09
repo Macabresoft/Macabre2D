@@ -60,6 +60,11 @@ public static class CommonCategories {
     public const string Settings = "Settings";
 
     /// <summary>
+    /// Category for shader properties.
+    /// </summary>
+    public const string Shader = "Shader";
+
+    /// <summary>
     /// Category for tile map properties.
     /// </summary>
     public const string TileMap = "Tile Map";

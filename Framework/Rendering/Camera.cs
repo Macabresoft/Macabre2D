@@ -89,7 +89,8 @@ public class Camera : Entity, ICamera {
     /// <summary>
     /// Gets the shader reference.
     /// </summary>
-    [DataMember(Name = "Shader")]
+    [DataMember(Name = CommonCategories.Shader)]
+    [Category(CommonCategories.Shader)]
     public ShaderReference ShaderReference { get; } = new();
 
     /// <inheritdoc />
@@ -124,7 +125,6 @@ public class Camera : Entity, ICamera {
     [DataMember(Name = "Sampler State")]
     public SamplerStateType SamplerStateType {
         get => this._samplerStateType;
-
         set {
             this.Set(ref this._samplerStateType, value);
             this._samplerState = this._samplerStateType.ToSamplerState();
@@ -138,7 +138,6 @@ public class Camera : Entity, ICamera {
     [DataMember(Name = "View Height")]
     public float ViewHeight {
         get => this._viewHeight;
-
         set {
             // This is kind of an arbitrary value, but imagine the chaos if we allowed the
             // camera to reach 0.
@@ -186,10 +185,6 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
-        if (this.ShaderReference.Asset?.Content is { } effect && this.ShaderReference.HasParameter) {
-            effect.Parameters[this.ShaderReference.ParameterName].SetValue(this.ShaderReference.ParameterValue.ToVector4());
-        }
-
         spriteBatch?.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,

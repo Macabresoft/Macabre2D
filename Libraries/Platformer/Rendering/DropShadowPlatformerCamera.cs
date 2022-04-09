@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 /// A camera which uses a color fill shader to add a drop shadow to foreground elements.
 /// </summary>
 public class DropShadowPlatformerCamera : PlatformerCamera {
+    private Color _shadowColor = Color.Black;
+
     /// <summary>
     /// Gets or sets the background layer.
     /// </summary>
@@ -20,6 +23,16 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     /// </summary>
     [DataMember]
     public Layers ForegroundLayer { get; set; }
+
+    /// <summary>
+    /// Gets or sets the shadow color for the shader.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Shader)]
+    public Color ShadowColor {
+        get => this._shadowColor;
+        set => this.Set(ref this._shadowColor, value);
+    }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
@@ -49,8 +62,7 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
                 if (foregroundEntities.Any()) {
                     var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.InversePixelsPerUnit, -this.Settings.InversePixelsPerUnit), this.Transform.Scale);
 
-                    // TODO: customize this in the shader reference
-                    effect.Parameters["Fill"].SetValue(Color.Black.ToVector4());
+                    effect.Parameters["Fill"].SetValue(this.ShadowColor.ToVector4());
                     spriteBatch?.Begin(
                         SpriteSortMode.Deferred,
                         BlendState.AlphaBlend,
