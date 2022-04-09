@@ -12,6 +12,9 @@ public class StringEditor : ValueEditorControl<string> {
             editor => editor.IntermediaryValue,
             (editor, value) => editor.IntermediaryValue = value);
 
+    public static readonly StyledProperty<string> WatermarkProperty =
+        AvaloniaProperty.Register<StringEditor, string>(nameof(Watermark));
+
     private string _intermediaryValue;
 
     public StringEditor() : this(null) {
@@ -20,6 +23,10 @@ public class StringEditor : ValueEditorControl<string> {
     [InjectionConstructor]
     public StringEditor(ValueControlDependencies dependencies) : base(dependencies) {
         this.InitializeComponent();
+
+        if (dependencies != null && string.IsNullOrEmpty(this.Watermark)) {
+            this.Watermark = dependencies.Title;
+        }
     }
 
     public string IntermediaryValue {
@@ -31,6 +38,11 @@ public class StringEditor : ValueEditorControl<string> {
 
             this.SetAndRaise(IntermediaryValueProperty, ref this._intermediaryValue, value);
         }
+    }
+
+    public string Watermark {
+        get => this.GetValue(WatermarkProperty);
+        set => this.SetValue(WatermarkProperty, value);
     }
 
     protected override void OnValueChanged() {
