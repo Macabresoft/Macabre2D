@@ -25,7 +25,7 @@ public class RenderLoop : Loop {
                 var potentialRenderables =
                     this._renderTree
                         .RetrievePotentialCollisions(camera.BoundingArea)
-                        .Where(x => (x.Layers & camera.LayersToRender & enabledLayers) != Layers.None)
+                        .Where(x => (x.Layers & camera.LayersToExcludeFromRender) == Layers.None && (x.Layers & camera.LayersToRender & enabledLayers) != Layers.None)
                         .ToList();
 
                 if (potentialRenderables.Any()) {

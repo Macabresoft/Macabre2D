@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -27,6 +29,38 @@ public class RenderLoopTests {
             for (var i = 0; i < NumberOfRenders; i++) {
                 renderSystem.Update(new FrameTime(), new InputState());
                 disabled.RenderCount.Should().Be(0);
+            }
+        }
+    }
+
+    [Category("Unit Tests")]
+    [Test]
+    public static void Update_ShouldNotRenderExcludedLayers() {
+        const int NumberOfRenders = 100;
+        var game = Substitute.For<IGame>();
+        var project = Substitute.For<IGameProject>();
+        game.Project.Returns(project);
+        var settings = Substitute.For<IGameSettings>();
+        project.Settings.Returns(settings);
+        var layerSettings = new LayerSettings();
+        settings.LayerSettings.Returns(layerSettings);
+        var renderSystem = new RenderLoop();
+        var scene = Substitute.For<IScene>();
+        scene.Game.Returns(game);
+        renderSystem.Initialize(scene);
+
+        var includedRenderable = new TestRenderable { Layers = Layers.Layer01 };
+        var excludedRenderable = new TestRenderable { Layers = Layers.Layer06 | Layers.Layer01 };
+        scene.RenderableEntities.Returns(new[] { includedRenderable, excludedRenderable });
+        
+        var camera = new TestCamera();
+        scene.Cameras.Returns(new[] { camera });
+
+        using (new AssertionScope()) {
+            for (var i = 0; i < NumberOfRenders; i++) {
+                renderSystem.Update(new FrameTime(), new InputState());
+                includedRenderable.RenderCount.Should().Be(i + 1);
+                excludedRenderable.RenderCount.Should().Be(0);
             }
         }
     }
@@ -80,6 +114,37 @@ public class RenderLoopTests {
 
                 renderSystem.Update(new FrameTime(), new InputState());
             }
+        }
+    }
+
+    private class TestCamera : Entity, ICamera {
+        public BoundingArea BoundingArea { get; } = new(new Vector2(-2, -2), new Vector2(2f, 2f));
+        public Layers LayersToExcludeFromRender => Layers.Layer06;
+        public Layers LayersToRender => Layers.Layer01;
+        public OffsetSettings OffsetSettings { get; } = new();
+        public PixelSnap PixelSnap => PixelSnap.Inherit;
+        public float ViewWidth => 4f;
+        public float ViewHeight { get; set; } = 4f;
+
+        public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
+            return Vector2.Zero;
+        }
+
+        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+            foreach (var entity in entities) {
+                entity.Render(frameTime, this.BoundingArea);
+            }
+        }
+    }
+
+    private class TestRenderable : Entity, IRenderableEntity {
+        public BoundingArea BoundingArea { get; } = new(-Vector2.One, Vector2.One);
+        public bool IsVisible => true;
+        public PixelSnap PixelSnap => PixelSnap.Inherit;
+        public int RenderCount { get; private set; }
+
+        public void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
+            this.RenderCount++;
         }
     }
 }

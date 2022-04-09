@@ -60,7 +60,7 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// <param name="item">The item to insert.</param>
     public void Insert(T item) {
         // We only have to null check the first node, because we always add every node at once.
-        var hasNodes = this._nodes[0] != null;
+        var hasNodes = true;
 
         if (hasNodes) {
             var boundingArea = item.BoundingArea;

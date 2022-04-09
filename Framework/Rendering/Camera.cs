@@ -14,6 +14,15 @@ using Microsoft.Xna.Framework.Graphics;
 /// </summary>
 public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// <summary>
+    /// Gets the layers to exclude from renders.
+    /// </summary>
+    /// <remarks>
+    /// An entity will be excluded from the render if it includes any layer specified here,
+    /// regardless of whether or not one of the other layers it has it meant to be rendered.
+    /// </remarks>
+    Layers LayersToExcludeFromRender { get; }
+
+    /// <summary>
     /// Gets the layers to render.
     /// </summary>
     /// <value>The layers to render.</value>
@@ -64,6 +73,7 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
 public class Camera : Entity, ICamera {
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<float> _viewWidth;
+    private Layers _layersToExcludeFromRender = Layers.None;
     private Layers _layersToRender = ~Layers.None;
     private PixelSnap _pixelSnap = PixelSnap.Inherit;
     private int _renderOrder;
@@ -95,6 +105,13 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public float ViewWidth => this._viewWidth.Value;
+
+    /// <inheritdoc />
+    [DataMember(Name = "Layers to Exclude")]
+    public Layers LayersToExcludeFromRender {
+        get => this._layersToExcludeFromRender;
+        set => this.Set(ref this._layersToExcludeFromRender, value);
+    }
 
     /// <inheritdoc />
     [DataMember(Name = "Layers to Render")]
