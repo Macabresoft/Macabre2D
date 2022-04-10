@@ -29,6 +29,10 @@ The full source code is available here from GitHub:
 * Pull down LFS objects: `git lfs fetch --all`
 * Restore NuGet packages for Macabre2D.sln.
 
+### Compiling Shaders on Linux
+
+MonoGame has a guide for compiling Shaders on linux [here](https://docs.monogame.net/articles/getting_started/1_setting_up_your_development_environment_ubuntu.html#install-mgcb-editor).
+
 ### Using Fonts
  
 When using custom fonts (non-system fonts) make sure to *install the font for all users* before using it within Macabre2D. This cannot be done from inside an archive folder (.zip, .rar, etc), so be sure to extract the font to your system, right click, and select 'Install for All Users'. This is a limitation of the MonoGame Content Pipeline.
