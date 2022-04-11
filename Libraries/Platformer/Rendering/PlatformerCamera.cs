@@ -40,8 +40,6 @@ public class PlatformerCamera : Camera {
         set => this.Set(ref this._verticalDistanceAllowed, value);
     }
 
-
-
     /// <summary>
     /// Updates the position according to the specified actor state.
     /// </summary>
@@ -51,7 +49,7 @@ public class PlatformerCamera : Camera {
     /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
     public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime, bool isOnPlatform) {
         var x = this.LocalPosition.X;
-        if (this.HorizontalDistanceAllowed != 0f) {
+        if (this.HorizontalDistanceAllowed != 0f && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.X) {
             if (isOnPlatform) {
                 if (x != 0f) {
                     x = this.Lerp(this.LocalPosition.X, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
@@ -63,7 +61,7 @@ public class PlatformerCamera : Camera {
         }
 
         var y = this.LocalPosition.Y;
-        if (this.VerticalDistanceAllowed != 0f) {
+        if (this.VerticalDistanceAllowed != 0f  && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.Y) {
             if (isOnPlatform) {
                 if (y != 0f) {
                     y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
