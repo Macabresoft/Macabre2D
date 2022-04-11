@@ -5,6 +5,7 @@ using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Unity;
 
@@ -32,12 +33,19 @@ public class ColorEditor : ValueEditorControl<Color> {
             nameof(RedValue),
             editor => editor.RedValue,
             (editor, value) => editor.RedValue = value);
+    
+    public static readonly DirectProperty<ColorEditor, string> HexValueProperty =
+        AvaloniaProperty.RegisterDirect<ColorEditor, string>(
+            nameof(HexValue),
+            editor => editor.HexValue,
+            (editor, value) => editor.HexValue = value);
 
     private byte _alphaValue;
     private byte _blueValue;
     private byte _greenValue;
-
     private byte _redValue;
+    private string _hexValue;
+    private bool _isUpdating;
 
     public ColorEditor() : this(null) {
     }
@@ -66,6 +74,11 @@ public class ColorEditor : ValueEditorControl<Color> {
         get => this._redValue;
         set => this.SetAndRaise(RedValueProperty, ref this._redValue, value);
     }
+    
+    public string HexValue {
+        get => this._hexValue;
+        set => this.SetAndRaise(HexValueProperty, ref this._hexValue, value);
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e) {
         base.OnAttachedToLogicalTree(e);
@@ -74,6 +87,10 @@ public class ColorEditor : ValueEditorControl<Color> {
 
     protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
         base.OnPropertyChanged(change);
+
+        if (this._isUpdating) {
+            return;
+        }
 
         switch (change.Property.Name) {
             case nameof(this.Value):
@@ -91,6 +108,9 @@ public class ColorEditor : ValueEditorControl<Color> {
             case nameof(this.AlphaValue):
                 Dispatcher.UIThread.Post(() => this.SetValue(ValueProperty, new Color(this.Value.R, this.Value.G, this.Value.B, this.AlphaValue)));
                 break;
+            case nameof(this.HexValue):
+                Dispatcher.UIThread.Post(this.UpdateValueFromHex);
+                break;
         }
     }
 
@@ -99,16 +119,22 @@ public class ColorEditor : ValueEditorControl<Color> {
     }
 
     private void UpdateDisplayValues() {
-        this._redValue = this.Value.R;
-        this._greenValue = this.Value.G;
-        this._blueValue = this.Value.B;
-        this._alphaValue = this.Value.A;
-
         Dispatcher.UIThread.Post(() => {
-            this.RaisePropertyChanged(RedValueProperty, Optional<byte>.Empty, this.RedValue);
-            this.RaisePropertyChanged(GreenValueProperty, Optional<byte>.Empty, this.GreenValue);
-            this.RaisePropertyChanged(BlueValueProperty, Optional<byte>.Empty, this.BlueValue);
-            this.RaisePropertyChanged(AlphaValueProperty, Optional<byte>.Empty, this.AlphaValue);
+            try {
+                this._isUpdating = true;
+                this.RedValue = this.Value.R;
+                this.GreenValue = this.Value.G;
+                this.BlueValue = this.Value.B;
+                this.AlphaValue = this.Value.A;
+                this.HexValue = this.Value.ToHex();
+            }
+            finally {
+                this._isUpdating = false;
+            }
         });
+    }
+
+    private void UpdateValueFromHex() {
+        // TODO: update it
     }
 }

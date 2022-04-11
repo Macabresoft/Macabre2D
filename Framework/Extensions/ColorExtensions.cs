@@ -25,4 +25,13 @@ public static class ColorExtensions {
         color.Deconstruct(out var red, out var green, out byte blue);
         return 0.2126f * red + 0.7152f * green + 0.0722f * blue;
     }
+
+    /// <summary>
+    /// Converts the color to a hex code.
+    /// </summary>
+    /// <param name="color">The color.</param>
+    /// <returns>The hex code.</returns>
+    public static string ToHex(this Color color) {
+        return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+    }
 }
