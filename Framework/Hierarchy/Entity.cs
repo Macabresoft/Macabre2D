@@ -413,7 +413,7 @@ public class Entity : Transformable, IEntity {
     /// The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
     /// </param>
     protected virtual void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (this.IsTransformRelativeToParent && e.PropertyName == nameof(this.Parent)) {
+        if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(this.Parent)) {
             this.HandleMatrixOrTransformChanged();
         }
     }
@@ -429,7 +429,7 @@ public class Entity : Transformable, IEntity {
     }
 
     private void Parent_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (this.IsTransformRelativeToParent && e.PropertyName == nameof(ITransformable.Transform)) {
+        if (this.TransformInheritance != TransformInheritance.None && e.PropertyName == nameof(ITransformable.Transform)) {
             this.HandleMatrixOrTransformChanged();
         }
     }

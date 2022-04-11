@@ -63,19 +63,19 @@ public static class VectorExtensions {
     }
 
     /// <summary>
-    /// Gets the vector perpindicular (clockwise) to the provided vector.
+    /// Gets the vector perpendicular (clockwise) to the provided vector.
     /// </summary>
     /// <param name="vector">The vector.</param>
-    /// <returns>The vector perpindicular (clockwise) to the provided vector.</returns>
+    /// <returns>The vector perpendicular (clockwise) to the provided vector.</returns>
     public static Vector2 GetPerpendicular(this Vector2 vector) {
         return new Vector2(-vector.Y, vector.X);
     }
 
     /// <summary>
-    /// Gets the vector perpindicular (counter clockwise) to the provided vector.
+    /// Gets the vector perpendicular (counter clockwise) to the provided vector.
     /// </summary>
     /// <param name="vector">The vector.</param>
-    /// <returns>The vector perpindicular (counter clockwise) to the provided vector.</returns>
+    /// <returns>The vector perpendicular (counter clockwise) to the provided vector.</returns>
     public static Vector2 GetPerpendicularCounterClockwise(this Vector2 vector) {
         return new Vector2(vector.Y, -vector.X);
     }
@@ -90,6 +90,44 @@ public static class VectorExtensions {
     public static bool HasMinimalDifference(this Vector2 value1, Vector2 value2, float difference = 0.00001f) {
         var VectorDifference = value1 - value2;
         return Math.Abs(VectorDifference.X) <= difference && Math.Abs(VectorDifference.Y) <= difference;
+    }
+
+    /// <summary>
+    /// Removes the X value from a <see cref="Vector2" />.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <returns>The vector with the X value set to 0.</returns>
+    public static Vector2 RemoveX(this Vector2 vector) {
+        return new Vector2(0f, vector.Y);
+    }
+
+    /// <summary>
+    /// Removes the Y value from a <see cref="Vector2" />.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <returns>The vector with the Y value set to 0.</returns>
+    public static Vector2 RemoveY(this Vector2 vector) {
+        return new Vector2(vector.X, 0f);
+    }
+
+    /// <summary>
+    /// Replaces the X value in a <see cref="Vector2" />.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <param name="x">The new x value.</param>
+    /// <returns>The vector with the X value set to the specified value.</returns>
+    public static Vector2 ReplaceX(this Vector2 vector, float x) {
+        return new Vector2(x, vector.Y);
+    }
+
+    /// <summary>
+    /// Replaces the Y value in a <see cref="Vector2" />.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <param name="y">The new y value.</param>
+    /// <returns>The vector with the Y value set to the specified value.</returns>
+    public static Vector2 ReplaceY(this Vector2 vector, float y) {
+        return new Vector2(vector.X, y);
     }
 
     /// <summary>

@@ -116,6 +116,7 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     private Vector2 _localPosition;
     private Vector2 _localScale = Vector2.One;
     private Transform _transform;
+    private TransformInheritance _transformInheritance = TransformInheritance.Both;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Transformable" /> class.
@@ -168,10 +169,13 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not the transform is relative to its parent.
+    /// Gets or sets the way this inherits its parent's <see cref="Transform" />.
     /// </summary>
-    /// <remarks>If this is set to false, the world transform's position and scale will be the same as it's local position and scale.</remarks>
-    protected virtual bool IsTransformRelativeToParent => true;
+    [DataMember(Name = "Inheritance")]
+    public TransformInheritance TransformInheritance {
+        get => this._transformInheritance;
+        set => this.Set(ref this._transformInheritance, value);
+    }
 
     /// <inheritdoc />
     public Transform GetWorldTransform(float rotationAngle) {
@@ -287,10 +291,23 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
             Matrix.CreateScale(this.LocalScale.X, this.LocalScale.Y, 1f) *
             Matrix.CreateTranslation(this.LocalPosition.X, this.LocalPosition.Y, 0f);
 
-        if (this.IsTransformRelativeToParent) {
-            var parent = this.GetParentTransformable();
-            if (parent != this) {
-                transformMatrix *= parent.TransformMatrix;
+        var parent = this.GetParentTransformable();
+        if (this.TransformInheritance != TransformInheritance.None && parent != this) {
+            switch (this.TransformInheritance) {
+                case TransformInheritance.Both: {
+                    transformMatrix *= parent.TransformMatrix;
+                    break;
+                }
+                case TransformInheritance.X: {
+                    var parentTransform = new Transform(parent.Transform.Position.RemoveY(), parent.Transform.Scale.ReplaceY(1f));
+                    transformMatrix *= parentTransform.ToMatrix();
+                    break;
+                }
+                case TransformInheritance.Y: {
+                    var parentTransform = new Transform(parent.Transform.Position.RemoveX(), parent.Transform.Scale.ReplaceX(1f));
+                    transformMatrix *= parentTransform.ToMatrix();
+                    break;
+                }
             }
         }
 

@@ -16,14 +16,23 @@ public readonly struct Transform {
     /// </summary>
     public static readonly Transform Origin = new(Vector2.Zero, Vector2.One);
 
+    /// <summary>
+    /// The position.
+    /// </summary>
     [DataMember]
     [Category("Transform")]
     public readonly Vector2 Position;
 
+    /// <summary>
+    /// The rotation.
+    /// </summary>
     [DataMember]
     [Category("Transform")]
     public readonly float Rotation;
 
+    /// <summary>
+    /// The scale.
+    /// </summary>
     [DataMember]
     [Category("Transform")]
     public readonly Vector2 Scale;
@@ -60,18 +69,31 @@ public readonly struct Transform {
         this.Rotation = rotation.NormalizeAngle();
     }
 
+    /// <summary>
+    /// Creates a <see cref="Matrix" /> from this transform.
+    /// </summary>
+    /// <returns></returns>
+    public Matrix ToMatrix() {
+        return Matrix.CreateScale(this.Scale.X, this.Scale.Y, 1f) *
+               Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0f);
+    }
+
+    /// <inheritdoc cref="object" />
     public static bool operator !=(Transform left, Transform right) {
         return !(left == right);
     }
 
+    /// <inheritdoc cref="object" />
     public static bool operator ==(Transform left, Transform right) {
         return left.Equals(right);
     }
 
+    /// <inheritdoc cref="object" />
     public override bool Equals(object? obj) {
         return obj is Transform transform && this.Position == transform.Position && this.Rotation == transform.Rotation && this.Scale == transform.Scale;
     }
 
+    /// <inheritdoc cref="object" />
     public override int GetHashCode() {
         return HashCode.Combine(this.Position, this.Scale, this.Rotation);
     }
