@@ -83,7 +83,7 @@
         
         <TextBox Grid.Column="0"
                  Grid.Row="3"
-                 Text="{Binding HexValue}"
-                 IsReadOnly="True" />
+                 LostFocus="HexValueTextBox_OnLostFocus"
+                 Text="{Binding HexValue}" />
     </Grid>
 </local:ValueEditorControl>
