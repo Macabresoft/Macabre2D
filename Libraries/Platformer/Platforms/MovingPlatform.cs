@@ -6,27 +6,10 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// Interface for a moving platform.
-/// </summary>
-public interface IMovingPlatform : ISimplePhysicsBody {
-    /// <summary>
-    /// Attaches the actor to this platform.
-    /// </summary>
-    /// <param name="actor">The actor to attach.</param>
-    void Attach(IPlatformerActor actor);
-
-    /// <summary>
-    /// Detaches the actor from this platform.
-    /// </summary>
-    /// <param name="actor">The actor to detach.</param>
-    void Detach(IPlatformerActor actor);
-}
-
-/// <summary>
 /// A moving platform.
 /// </summary>
 [Category("Platform")]
-public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
+public class MovingPlatform : MoverPlatform, IUpdateableEntity {
     private Vector2 _distanceToTravel;
     private Vector2 _endPoint;
     private bool _isTravelingToEnd = true;
@@ -95,7 +78,6 @@ public class MovingPlatform : BaseMovingPlatform, IUpdateableEntity {
             }
         }
     }
-
 
     private void ResetEndPoint() {
         this._endPoint = this._startPoint + this.DistanceToTravel;

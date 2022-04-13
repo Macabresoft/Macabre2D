@@ -7,15 +7,31 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A base class for <see cref="IMovingPlatform" />.
+/// A base interface for all platforms.
 /// </summary>
-public class BaseMovingPlatform : Entity, IMovingPlatform {
+public interface IPlatform : ISimplePhysicsBody {
+    /// <summary>
+    /// Attaches the actor to this platform.
+    /// </summary>
+    /// <param name="actor">The actor to attach.</param>
+    void Attach(IPlatformerActor actor);
+
+    /// <summary>
+    /// Detaches the actor from this platform.
+    /// </summary>
+    /// <param name="actor">The actor to detach.</param>
+    void Detach(IPlatformerActor actor);
+}
+
+/// <summary>
+/// A base class for all platforms.
+/// </summary>
+public class Platform : Entity, IPlatform {
     private readonly HashSet<IPlatformerActor> _attached = new();
     private readonly LineCollider _collider = new();
     private Layers _colliderLayers;
     private float _platformLength;
     private Vector2 _platformOffset;
-    private Vector2 _previousPosition;
     private int _updateOrder;
 
     /// <inheritdoc />
@@ -83,6 +99,11 @@ public class BaseMovingPlatform : Entity, IMovingPlatform {
         set => this.Set(ref this._updateOrder, value);
     }
 
+    /// <summary>
+    /// Gets the attached actors.
+    /// </summary>
+    protected IReadOnlyCollection<IPlatformerActor> Attached => this._attached;
+
     /// <inheritdoc />
     public void Attach(IPlatformerActor actor) {
         this._attached.Add(actor);
@@ -101,7 +122,7 @@ public class BaseMovingPlatform : Entity, IMovingPlatform {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._previousPosition = this.Transform.Position;
+
         this._collider.Initialize(this);
         this.ResetCollider();
     }
@@ -111,40 +132,12 @@ public class BaseMovingPlatform : Entity, IMovingPlatform {
         this.CollisionOccured.SafeInvoke(this, eventArgs);
     }
 
-    /// <summary>
-    /// Moves the attached actors.
-    /// </summary>
-    /// <param name="amount">The amount to move attached actors.</param>
-    protected void MoveAttached(Vector2 amount) {
-        if (this._attached.Any()) {
-            var polygonCollider = this.Collider as PolygonCollider;
-            var adjustForY = amount.Y != 0f && polygonCollider != null && polygonCollider.WorldPoints.Any();
-            var adjustForPixels = this.Settings.SnapToPixels && this.Transform.Position != this._previousPosition && amount.X != 0f;
-            var settings = this.Settings;
-            var platformPixelOffset = this.Transform.ToPixelSnappedValue(settings).Position.X - this.Transform.Position.X;
-
-            foreach (var attached in this._attached) {
-                attached.Move(amount);
-                if (adjustForPixels && attached.CurrentState.Velocity.X == 0f) {
-                    attached.SetWorldPosition(new Vector2(attached.Transform.ToPixelSnappedValue(settings).Position.X - platformPixelOffset, attached.Transform.Position.Y));
-                }
-
-                if (adjustForY) {
-                    var yValue = polygonCollider?.WorldPoints.Select(x => x.Y).Max() ?? attached.Transform.Position.Y;
-                    attached.SetWorldPosition(new Vector2(attached.Transform.Position.X, yValue + attached.HalfSize.Y));
-                }
-            }
-        }
-    }
-
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
 
         if (e.PropertyName == nameof(this.Transform)) {
             this.ResetCollider();
-            this.MoveAttached(this.Transform.Position - this._previousPosition);
-            this._previousPosition = this.Transform.Position;
         }
     }
 

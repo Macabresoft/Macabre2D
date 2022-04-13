@@ -33,6 +33,12 @@ public interface IPlatformerActor : IBoundable, ITransformable {
     /// Gets the actor's size in world units.
     /// </summary>
     Vector2 Size { get; }
+
+    /// <summary>
+    /// Bounces this actor with the specified velocity.
+    /// </summary>
+    /// <param name="velocity">The velocity.</param>
+    void Bounce(Vector2 velocity);
 }
 
 /// <summary>
@@ -42,7 +48,7 @@ public interface IPlatformerActor : IBoundable, ITransformable {
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
-    private IMovingPlatform? _platform;
+    private IPlatform? _platform;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
 
@@ -82,6 +88,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Gets the physics system.
     /// </summary>
     protected IPlatformerPhysicsLoop PhysicsLoop => this._physicsLoop;
+
+    /// <summary>
+    /// Gets the bounce velocity to set on the next frame.
+    /// </summary>
+    protected Vector2 BounceVelocity { get; set; }
+
+    /// <inheritdoc />
+    public void Bounce(Vector2 velocity) {
+        this.BounceVelocity = velocity;
+    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -309,7 +325,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     private void TrySetPlatform(RaycastHit hit) {
-        if (hit.Collider?.Body is IMovingPlatform platform) {
+        if (hit.Collider?.Body is IPlatform platform) {
             if (platform != this._platform) {
                 this._platform?.Detach(this);
                 this._platform = platform;

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A conveyor belt which stays in place but moves all actors which stand on it.
 /// </summary>
-public class ConveyorBelt : BaseMovingPlatform, IUpdateableEntity {
+public class ConveyorBelt : MoverPlatform, IUpdateableEntity {
     private float _velocity = 1f;
 
     /// <summary>

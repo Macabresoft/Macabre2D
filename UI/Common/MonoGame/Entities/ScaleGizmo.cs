@@ -144,6 +144,7 @@ public sealed class ScaleGizmo : BaseAxisGizmo {
 
                 this._undoService.Do(() => { UpdateScale(entity, scale); },
                     () => { UpdateScale(entity, unmovedScale); });
+                result = true;
             }
         }
         else {

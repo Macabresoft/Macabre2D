@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Describes a player's kind of movement.
@@ -141,7 +140,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
-        
+
         this.IdleAnimationReference.Initialize(this.Scene.Assets);
         this.MovingAnimationReference.Initialize(this.Scene.Assets);
         this.JumpingAnimationReference.Initialize(this.Scene.Assets);
@@ -220,6 +219,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
+            this.HandleBounce(frameTime);
+
             return this.CurrentPlayerMovement switch {
                 PlayerMovement.Idle => this.HandleIdle(frameTime),
                 PlayerMovement.Moving => this.HandleMoving(frameTime),
@@ -239,6 +240,26 @@ public sealed class PlatformerPlayer : PlatformerActor {
         }
 
         return secondsPassed;
+    }
+
+    private void HandleBounce(FrameTime frameTime) {
+        var velocity = this.BounceVelocity;
+        if (velocity != Vector2.Zero) {
+            this.ApplyVelocity(frameTime, this.BounceVelocity);
+            if (velocity.X == 0f) {
+                velocity = new Vector2(this.CurrentState.Velocity.X, velocity.Y);
+                this.UnsetPlatform();
+                this.CurrentPlayerMovement = velocity.Y > 0f ? PlayerMovement.Jumping : PlayerMovement.Falling;
+            }
+            else if (velocity.Y == 0f) {
+                velocity = new Vector2(velocity.X, this.CurrentState.Velocity.Y);
+            }
+
+            this.PreviousState = this.CurrentState;
+            this.CurrentState = new ActorState(this.CurrentState.FacingDirection, this.Transform.Position, velocity, (float)frameTime.SecondsPassed);
+        }
+
+        this.BounceVelocity = Vector2.Zero;
     }
 
     private ActorState HandleFalling(FrameTime frameTime) {

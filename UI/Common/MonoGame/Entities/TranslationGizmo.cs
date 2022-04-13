@@ -148,6 +148,7 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
                     this._undoService.Do(
                         () => { UpdatePosition(entity, position); },
                         () => { UpdatePosition(entity, unmovedPosition); });
+                    result = true;
                 }
             }
         }

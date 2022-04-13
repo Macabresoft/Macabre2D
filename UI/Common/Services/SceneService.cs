@@ -167,6 +167,11 @@ public sealed class SceneService : ReactiveObject, ISceneService {
                     this._entityService.Selected = null;
                     this.ImpliedSelected = this.CurrentScene;
                     break;
+                case null:
+                    this.IsEntityContext = true;
+                    this._entityService.Selected = null;
+                    this.ImpliedSelected = this.CurrentScene;
+                    break;
             }
 
             this.RaisePropertyChanged(nameof(this.Editors));
