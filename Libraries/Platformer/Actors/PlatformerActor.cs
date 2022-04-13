@@ -208,9 +208,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <returns>A value indicating whether or not this is still grounded.</returns>
     protected bool CheckIfStillGrounded() {
         var direction = new Vector2(0f, -1f);
-        var result = this.CheckIfStillOnPlatform(out var hit);
+        var result = false;
+        var hit = RaycastHit.Empty;
 
-        if (!result) {
+        if (this.IsOnPlatform && this.PreviousState.Position.Y > this.CurrentState.Position.Y) {
             result = this.TryRaycast(
                 direction,
                 this.HalfSize.Y,
@@ -218,6 +219,24 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 out hit,
                 new Vector2(-this.HalfSize.X, 0f),
                 new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+            
+            if (result) {
+                this.UnsetPlatform();
+            }
+        }
+
+        if (!result) {
+            result = this.CheckIfStillOnPlatform(out hit);
+            
+            if (!result) {
+                result = this.TryRaycast(
+                    direction,
+                    this.HalfSize.Y,
+                    this._physicsLoop.GroundLayer,
+                    out hit,
+                    new Vector2(-this.HalfSize.X, 0f),
+                    new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+            }
         }
 
         if (result) {

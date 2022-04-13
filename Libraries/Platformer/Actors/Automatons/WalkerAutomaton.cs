@@ -101,14 +101,15 @@ public class WalkerAutomaton : PlatformerActor {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        this.PreviousState = this.CurrentState;
+        var previousState = this.CurrentState;
         this.CurrentState = this.CurrentMovement switch {
             WalkerMovement.Idle => this.HandleIdle(frameTime),
             WalkerMovement.Falling => this.HandleFalling(frameTime),
             WalkerMovement.Walking => this.HandleWalking(frameTime),
             _ => this.CurrentState
         };
-
+        
+        this.PreviousState = previousState;
         this.ResetFacingDirection();
     }
 

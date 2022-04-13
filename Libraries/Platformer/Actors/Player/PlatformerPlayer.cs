@@ -163,8 +163,9 @@ public sealed class PlatformerPlayer : PlatformerActor {
         var isMovingFast = this.GetIsMovingFast();
         this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
 
-        this.PreviousState = this.CurrentState;
+        var previousState = this.CurrentState;
         this.CurrentState = this.GetNewActorState(frameTime);
+        this.PreviousState = previousState;
         this.ResetFacingDirection();
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
