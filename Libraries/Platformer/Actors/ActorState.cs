@@ -17,6 +17,11 @@ public readonly struct ActorState {
     public readonly Vector2 Position;
 
     /// <summary>
+    /// The type of state.
+    /// </summary>
+    public readonly StateType StateType;
+
+    /// <summary>
     /// The direction the actor was facing.
     /// </summary>
     public readonly HorizontalDirection FacingDirection = HorizontalDirection.Right;
@@ -34,11 +39,13 @@ public readonly struct ActorState {
     /// <summary>
     /// Initializes a new instance of the <see cref="ActorState" /> class.
     /// </summary>
+    /// <param name="stateType">The state type.</param>
     /// <param name="facingDirection">The direction the actor is facing.</param>
     /// <param name="position">The position.</param>
     /// <param name="velocity">The velocity.</param>
     /// <param name="secondsInState">The seconds in the same state.</param>
-    public ActorState(HorizontalDirection facingDirection, Vector2 position, Vector2 velocity, float secondsInState) {
+    public ActorState(StateType stateType, HorizontalDirection facingDirection, Vector2 position, Vector2 velocity, float secondsInState) {
+        this.StateType = stateType;
         this.FacingDirection = facingDirection;
         this.Position = position;
         this.Velocity = velocity;
@@ -61,7 +68,8 @@ public readonly struct ActorState {
     }
 
     private bool Equals(ActorState other) {
-        return this.FacingDirection.Equals(other.FacingDirection) &&
+        return this.StateType.Equals(other.StateType) &&
+            this.FacingDirection.Equals(other.FacingDirection) &&
                this.SecondsInState.Equals(other.SecondsInState) &&
                this.Position.Equals(other.Position) &&
                this.Velocity.Equals(other.Velocity);

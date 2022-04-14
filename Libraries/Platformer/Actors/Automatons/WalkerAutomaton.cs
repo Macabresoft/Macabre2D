@@ -6,23 +6,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
-/// Defines ways walkers can move.
-/// </summary>
-public enum WalkerMovement {
-    Idle,
-    Falling,
-    Walking
-}
-
-/// <summary>
 /// A simple automaton that moves forward until it hits a wall, then it moves the opposite direction.
 /// </summary>
 public class WalkerAutomaton : PlatformerActor {
     private bool _avoidLedges = true;
-    private WalkerMovement _currentMovement = WalkerMovement.Walking;
     private float _maxHorizontalVelocity = 1f;
     private float _pauseTime = 1f;
-    private WalkerMovement _previousMovement = WalkerMovement.Idle;
     private QueueableSpriteAnimator? _spriteAnimator;
 
     /// <summary>
@@ -70,18 +59,6 @@ public class WalkerAutomaton : PlatformerActor {
         set => this.Set(ref this._pauseTime, value);
     }
 
-    private WalkerMovement CurrentMovement {
-        get => this._currentMovement;
-        set {
-            this._previousMovement = this._currentMovement;
-            this._currentMovement = value;
-
-            if (this._currentMovement != this._previousMovement) {
-                this.ResetAnimation();
-            }
-        }
-    }
-
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -92,7 +69,7 @@ public class WalkerAutomaton : PlatformerActor {
 
         this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
         this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
-        this.CurrentState = new ActorState(HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
+        this.CurrentState = new ActorState(StateType.Moving, HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
 
         if (this.WalkingAnimationReference.PackagedAsset is { } animation) {
             this._spriteAnimator.Play(animation, true);
@@ -102,14 +79,17 @@ public class WalkerAutomaton : PlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         var previousState = this.CurrentState;
-        this.CurrentState = this.CurrentMovement switch {
-            WalkerMovement.Idle => this.HandleIdle(frameTime),
-            WalkerMovement.Falling => this.HandleFalling(frameTime),
-            WalkerMovement.Walking => this.HandleWalking(frameTime),
+        this.CurrentState = this.CurrentState.StateType switch {
+            StateType.Idle => this.HandleIdle(frameTime),
+            StateType.Falling => this.HandleFalling(frameTime),
+            StateType.Moving => this.HandleWalking(frameTime),
             _ => this.CurrentState
         };
         
         this.PreviousState = previousState;
+        if (this.CurrentState.StateType != this.PreviousState.StateType) {
+            this.ResetAnimation();
+        }
         this.ResetFacingDirection();
     }
 
@@ -119,7 +99,7 @@ public class WalkerAutomaton : PlatformerActor {
 
     private float GetSecondsInState(FrameTime frameTime) {
         var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this.CurrentMovement == this._previousMovement) {
+        if (this.CurrentState.StateType == this.PreviousState.StateType) {
             secondsPassed += this.CurrentState.SecondsInState;
         }
 
@@ -129,6 +109,7 @@ public class WalkerAutomaton : PlatformerActor {
     private ActorState HandleFalling(FrameTime frameTime) {
         var horizontalVelocity = this.GetHorizontalVelocity(this.CurrentState.FacingDirection);
         var verticalVelocity = this.CurrentState.Velocity.Y;
+        StateType stateType;
 
         if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
             horizontalVelocity = 0f;
@@ -136,26 +117,27 @@ public class WalkerAutomaton : PlatformerActor {
 
         if (this.CheckIfHitGround(frameTime, verticalVelocity)) {
             verticalVelocity = 0f;
-            this.CurrentMovement = horizontalVelocity != 0f ? WalkerMovement.Walking : WalkerMovement.Idle;
+            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
         }
         else {
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
             verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
-            this.CurrentMovement = WalkerMovement.Falling;
+            stateType = StateType.Falling;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(this.CurrentState.FacingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, this.CurrentState.FacingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
     private ActorState HandleIdle(FrameTime frameTime) {
         var horizontalVelocity = 0f;
         var verticalVelocity = 0f;
         var facingDirection = this.CurrentState.FacingDirection;
+        StateType stateType;
 
         if (this.CurrentState.SecondsInState > this.PauseTime) {
-            this.CurrentMovement = WalkerMovement.Walking;
+            stateType = StateType.Moving;
             if (facingDirection == HorizontalDirection.Left) {
                 facingDirection = HorizontalDirection.Right;
                 horizontalVelocity = this.MaxHorizontalVelocity;
@@ -166,47 +148,48 @@ public class WalkerAutomaton : PlatformerActor {
             }
         }
         else if (!this.CheckIfStillGrounded()) {
-            this.CurrentMovement = WalkerMovement.Falling;
+            stateType = StateType.Falling;
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
         else {
-            this.CurrentMovement = WalkerMovement.Idle;
+            stateType = StateType.Idle;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(facingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, facingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
     private ActorState HandleWalking(FrameTime frameTime) {
         var horizontalVelocity = this.GetHorizontalVelocity(this.CurrentState.FacingDirection);
         var verticalVelocity = 0f;
         var facingDirection = this.CurrentState.FacingDirection;
-        // TODO: check for ledge when applicable
+        StateType stateType;
+
         if (this.CheckIfHitWall(frameTime, horizontalVelocity, true) || this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection)) {
-            this.CurrentMovement = WalkerMovement.Idle;
+            stateType = StateType.Idle;
             horizontalVelocity = 0f;
         }
         else if (!this.CheckIfStillGrounded()) {
-            this.CurrentMovement = WalkerMovement.Falling;
+            stateType = StateType.Falling;
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
         else {
-            this.CurrentMovement = WalkerMovement.Walking;
+            stateType = StateType.Moving;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(facingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, facingDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
     }
 
     private void ResetAnimation() {
         if (this._spriteAnimator != null) {
-            if (this.CurrentMovement != this._previousMovement) {
-                var spriteAnimation = this.CurrentMovement switch {
-                    WalkerMovement.Idle => this.IdleAnimationReference.PackagedAsset,
-                    WalkerMovement.Walking => this.WalkingAnimationReference.PackagedAsset,
-                    WalkerMovement.Falling => this.FallingAnimationReference.PackagedAsset,
+            if (this.CurrentState.StateType != this.PreviousState.StateType) {
+                var spriteAnimation = this.CurrentState.StateType switch {
+                    StateType.Idle => this.IdleAnimationReference.PackagedAsset,
+                    StateType.Moving => this.WalkingAnimationReference.PackagedAsset,
+                    StateType.Falling => this.FallingAnimationReference.PackagedAsset,
                     _ => null
                 };
 

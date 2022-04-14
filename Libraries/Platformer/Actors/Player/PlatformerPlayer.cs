@@ -1,19 +1,10 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-
-/// <summary>
-/// Describes a player's kind of movement.
-/// </summary>
-public enum PlayerMovement : byte {
-    Idle,
-    Moving,
-    Jumping,
-    Falling
-}
 
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
@@ -21,13 +12,11 @@ public enum PlayerMovement : byte {
 public sealed class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
-    private PlayerMovement _currentPlayerMovement = PlayerMovement.Idle;
     private float _elapsedRunSeconds;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
     private float _originalMaximumHorizontalVelocity;
-    private PlayerMovement _previousPlayerMovement = PlayerMovement.Idle;
     private QueueableSpriteAnimator? _spriteAnimator;
     private float _timeUntilRun = 1f;
 
@@ -119,18 +108,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
         private set => this._timeUntilRun = Math.Max(0f, value);
     }
 
-    private PlayerMovement CurrentPlayerMovement {
-        get => this._currentPlayerMovement;
-        set {
-            this._previousPlayerMovement = this._currentPlayerMovement;
-            this._currentPlayerMovement = value;
-
-            if (this._currentPlayerMovement != this._previousPlayerMovement) {
-                this.ResetAnimation();
-            }
-        }
-    }
-
     private float ElapsedRunSeconds {
         get => this._elapsedRunSeconds;
         set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
@@ -154,7 +131,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
             this._spriteAnimator.Play(animation, true);
         }
 
-        this.CurrentState = new ActorState(this._spriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
+        this.CurrentState = new ActorState(StateType.Idle, this._spriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
     }
 
     /// <inheritdoc />
@@ -167,6 +144,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this.CurrentState = this.GetNewActorState(frameTime);
         this.PreviousState = previousState;
         this.ResetFacingDirection();
+        
+        if (this.CurrentState.StateType != this.PreviousState.StateType) {
+            this.ResetAnimation();
+        }
+        
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
@@ -222,11 +204,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             this.HandleBounce(frameTime);
 
-            return this.CurrentPlayerMovement switch {
-                PlayerMovement.Idle => this.HandleIdle(frameTime),
-                PlayerMovement.Moving => this.HandleMoving(frameTime),
-                PlayerMovement.Jumping => this.HandleJumping(frameTime),
-                PlayerMovement.Falling => this.HandleFalling(frameTime),
+            return this.CurrentState.StateType switch {
+                StateType.Idle => this.HandleIdle(frameTime),
+                StateType.Moving => this.HandleMoving(frameTime),
+                StateType.Jumping => this.HandleJumping(frameTime),
+                StateType.Falling => this.HandleFalling(frameTime),
                 _ => this.CurrentState
             };
         }
@@ -234,9 +216,9 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return this.CurrentState;
     }
 
-    private float GetSecondsInState(FrameTime frameTime) {
+    private float GetSecondsInState(FrameTime frameTime, StateType newState) {
         var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this.CurrentPlayerMovement == this._previousPlayerMovement) {
+        if (this.CurrentState.StateType == newState) {
             secondsPassed += this.CurrentState.SecondsInState;
         }
 
@@ -246,18 +228,20 @@ public sealed class PlatformerPlayer : PlatformerActor {
     private void HandleBounce(FrameTime frameTime) {
         var velocity = this.BounceVelocity;
         if (velocity != Vector2.Zero) {
+            var stateType = this.CurrentState.StateType;
+
             this.ApplyVelocity(frameTime, this.BounceVelocity);
             if (velocity.X == 0f) {
                 velocity = new Vector2(this.CurrentState.Velocity.X, velocity.Y);
                 this.UnsetPlatform();
-                this.CurrentPlayerMovement = velocity.Y > 0f ? PlayerMovement.Jumping : PlayerMovement.Falling;
+                stateType = velocity.Y > 0f ? StateType.Jumping : StateType.Falling;
             }
             else if (velocity.Y == 0f) {
                 velocity = new Vector2(velocity.X, this.CurrentState.Velocity.Y);
             }
 
             this.PreviousState = this.CurrentState;
-            this.CurrentState = new ActorState(this.CurrentState.FacingDirection, this.Transform.Position, velocity, (float)frameTime.SecondsPassed);
+            this.CurrentState = new ActorState(stateType, this.CurrentState.FacingDirection, this.Transform.Position, velocity, (float)frameTime.SecondsPassed);
         }
 
         this.BounceVelocity = Vector2.Zero;
@@ -265,10 +249,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private ActorState HandleFalling(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
+        StateType stateType;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
         if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity)) {
-            this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
+            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
             verticalVelocity = 0f;
         }
         else {
@@ -278,87 +263,89 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
             verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
-            this.CurrentPlayerMovement = PlayerMovement.Falling;
+            stateType = StateType.Falling;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
     private ActorState HandleIdle(FrameTime frameTime) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
+        StateType stateType;
 
         if (this._input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
-            this.CurrentPlayerMovement = PlayerMovement.Jumping;
+            stateType = StateType.Jumping;
             verticalVelocity = this.JumpVelocity;
         }
         else if (this.CheckIfStillGrounded()) {
-            this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
+            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
         }
         else {
-            this.CurrentPlayerMovement = PlayerMovement.Falling;
+            stateType = StateType.Falling;
             verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
     private ActorState HandleJumping(FrameTime frameTime) {
         var verticalVelocity = this.JumpVelocity;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
+        StateType stateType;
 
         if (this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
             verticalVelocity = 0f;
-            this.CurrentPlayerMovement = PlayerMovement.Falling;
+            stateType = StateType.Falling;
         }
         else if (this._input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
-            this.CurrentPlayerMovement = PlayerMovement.Falling;
+            stateType = StateType.Falling;
         }
         else {
-            this.CurrentPlayerMovement = PlayerMovement.Jumping;
+            stateType = StateType.Jumping;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
     private ActorState HandleMoving(FrameTime frameTime) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
+        StateType stateType;
 
         if (this._input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
-            this.CurrentPlayerMovement = PlayerMovement.Jumping;
+            stateType = StateType.Jumping;
             verticalVelocity = this.JumpVelocity;
         }
         else if (this.CheckIfStillGrounded()) {
-            this.CurrentPlayerMovement = horizontalVelocity != 0f ? PlayerMovement.Moving : PlayerMovement.Idle;
+            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
         }
         else {
             verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            this.CurrentPlayerMovement = PlayerMovement.Falling;
+            stateType = StateType.Falling;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
         this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime));
+        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
-
-
+    
     private void ResetAnimation() {
         if (this._spriteAnimator != null) {
-            if (this.CurrentPlayerMovement != this._previousPlayerMovement) {
-                var spriteAnimation = this.CurrentPlayerMovement switch {
-                    PlayerMovement.Idle => this.IdleAnimationReference.PackagedAsset,
-                    PlayerMovement.Moving => this.MovingAnimationReference.PackagedAsset,
-                    PlayerMovement.Falling => this.FallingAnimationReference.PackagedAsset,
-                    PlayerMovement.Jumping => this.JumpingAnimationReference.PackagedAsset,
+            if (this.CurrentState.StateType != this.PreviousState.StateType) {
+                var spriteAnimation = this.CurrentState.StateType switch {
+                    StateType.Idle => this.IdleAnimationReference.PackagedAsset,
+                    StateType.Moving => this.MovingAnimationReference.PackagedAsset,
+                    StateType.Falling => this.FallingAnimationReference.PackagedAsset,
+                    StateType.Jumping => this.JumpingAnimationReference.PackagedAsset,
                     _ => null
                 };
 
