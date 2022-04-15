@@ -115,9 +115,15 @@ public class WalkerAutomaton : PlatformerActor {
             horizontalVelocity = 0f;
         }
 
-        if (this.CheckIfHitGround(frameTime, verticalVelocity)) {
-            verticalVelocity = 0f;
-            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
+        if (this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
+            if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
+                verticalVelocity = bouncePlatform.BounceVelocity;
+                stateType = StateType.Falling;
+            }
+            else {
+                verticalVelocity = 0f;
+                stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
+            }
         }
         else {
             verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;

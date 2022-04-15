@@ -33,12 +33,6 @@ public interface IPlatformerActor : IBoundable, ITransformable {
     /// Gets the actor's size in world units.
     /// </summary>
     Vector2 Size { get; }
-
-    /// <summary>
-    /// Bounces this actor with the specified velocity.
-    /// </summary>
-    /// <param name="velocity">The velocity.</param>
-    void Bounce(Vector2 velocity);
 }
 
 /// <summary>
@@ -48,7 +42,7 @@ public interface IPlatformerActor : IBoundable, ITransformable {
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
-    private IPlatform? _platform;
+    private IAttachablePlatform? _platform;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
 
@@ -88,16 +82,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Gets the physics system.
     /// </summary>
     protected IPlatformerPhysicsLoop PhysicsLoop => this._physicsLoop;
-
-    /// <summary>
-    /// Gets the bounce velocity to set on the next frame.
-    /// </summary>
-    protected Vector2 BounceVelocity { get; set; }
-
-    /// <inheritdoc />
-    public void Bounce(Vector2 velocity) {
-        this.BounceVelocity = velocity;
-    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -147,8 +131,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
+    /// <param name="groundEntity">The ground entity.</param>
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity) {
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
         var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
@@ -163,7 +148,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.TrySetPlatform(hit);
+            groundEntity = hit.Collider?.Body;
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
+        }
+        else {
+            groundEntity = null;
         }
 
         return result;
@@ -344,7 +333,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     private void TrySetPlatform(RaycastHit hit) {
-        if (hit.Collider?.Body is IPlatform platform) {
+        if (hit.Collider?.Body is IAttachablePlatform platform) {
             if (platform != this._platform) {
                 this._platform?.Detach(this);
                 this._platform = platform;

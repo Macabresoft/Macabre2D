@@ -5,9 +5,9 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A base class for a <see cref="IPlatform" /> that moves actors each frame.
+/// An <see cref="AttachablePlatform"/> that moves its attached entities every frame.
 /// </summary>
-public class MoverPlatform : Platform {
+public class MoverPlatform : AttachablePlatform {
     private Vector2 _previousPosition;
 
     /// <inheritdoc />

@@ -7,27 +7,9 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A base interface for all platforms.
-/// </summary>
-public interface IPlatform : ISimplePhysicsBody {
-    /// <summary>
-    /// Attaches the actor to this platform.
-    /// </summary>
-    /// <param name="actor">The actor to attach.</param>
-    void Attach(IPlatformerActor actor);
-
-    /// <summary>
-    /// Detaches the actor from this platform.
-    /// </summary>
-    /// <param name="actor">The actor to detach.</param>
-    void Detach(IPlatformerActor actor);
-}
-
-/// <summary>
 /// A base class for all platforms.
 /// </summary>
-public class Platform : Entity, IPlatform {
-    private readonly HashSet<IPlatformerActor> _attached = new();
+public class Platform : Entity, ISimplePhysicsBody {
     private readonly LineCollider _collider = new();
     private Layers _colliderLayers;
     private float _platformLength;
@@ -97,21 +79,6 @@ public class Platform : Entity, IPlatform {
     public int UpdateOrder {
         get => this._updateOrder;
         set => this.Set(ref this._updateOrder, value);
-    }
-
-    /// <summary>
-    /// Gets the attached actors.
-    /// </summary>
-    protected IReadOnlyCollection<IPlatformerActor> Attached => this._attached;
-
-    /// <inheritdoc />
-    public void Attach(IPlatformerActor actor) {
-        this._attached.Add(actor);
-    }
-
-    /// <inheritdoc />
-    public void Detach(IPlatformerActor actor) {
-        this._attached.Remove(actor);
     }
 
     /// <inheritdoc />

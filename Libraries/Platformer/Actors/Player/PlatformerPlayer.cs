@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -144,11 +143,11 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this.CurrentState = this.GetNewActorState(frameTime);
         this.PreviousState = previousState;
         this.ResetFacingDirection();
-        
+
         if (this.CurrentState.StateType != this.PreviousState.StateType) {
             this.ResetAnimation();
         }
-        
+
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
@@ -202,8 +201,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
-            this.HandleBounce(frameTime);
-
             return this.CurrentState.StateType switch {
                 StateType.Idle => this.HandleIdle(frameTime),
                 StateType.Moving => this.HandleMoving(frameTime),
@@ -225,36 +222,24 @@ public sealed class PlatformerPlayer : PlatformerActor {
         return secondsPassed;
     }
 
-    private void HandleBounce(FrameTime frameTime) {
-        var velocity = this.BounceVelocity;
-        if (velocity != Vector2.Zero) {
-            var stateType = this.CurrentState.StateType;
-
-            this.ApplyVelocity(frameTime, this.BounceVelocity);
-            if (velocity.X == 0f) {
-                velocity = new Vector2(this.CurrentState.Velocity.X, velocity.Y);
-                this.UnsetPlatform();
-                stateType = velocity.Y > 0f ? StateType.Jumping : StateType.Falling;
-            }
-            else if (velocity.Y == 0f) {
-                velocity = new Vector2(velocity.X, this.CurrentState.Velocity.Y);
-            }
-
-            this.PreviousState = this.CurrentState;
-            this.CurrentState = new ActorState(stateType, this.CurrentState.FacingDirection, this.Transform.Position, velocity, (float)frameTime.SecondsPassed);
-        }
-
-        this.BounceVelocity = Vector2.Zero;
-    }
-
     private ActorState HandleFalling(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         StateType stateType;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
-        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity)) {
-            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
-            verticalVelocity = 0f;
+        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
+            if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
+                verticalVelocity = bouncePlatform.BounceVelocity;
+                stateType = StateType.Jumping;
+
+                if (this._input.JumpState is ButtonState.Held or ButtonState.Pressed) {
+                    verticalVelocity = Math.Max(this.JumpVelocity * 0.5f + verticalVelocity, this.JumpVelocity);
+                }
+            }
+            else {
+                stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
+                verticalVelocity = 0f;
+            }
         }
         else {
             if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
@@ -295,7 +280,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
     }
 
     private ActorState HandleJumping(FrameTime frameTime) {
-        var verticalVelocity = this.JumpVelocity;
+        var verticalVelocity = this.CurrentState.Velocity.Y;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         StateType stateType;
 
@@ -337,7 +322,7 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this.ApplyVelocity(frameTime, velocity);
         return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
-    
+
     private void ResetAnimation() {
         if (this._spriteAnimator != null) {
             if (this.CurrentState.StateType != this.PreviousState.StateType) {
