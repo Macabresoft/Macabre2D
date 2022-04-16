@@ -5,11 +5,11 @@
                            xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
                            xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                            x:TypeArguments="framework:ShaderReference"
-                           x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderEditor">
+                           x:Class="Macabresoft.Macabre2D.UI.Editor.ShaderReferenceEditor">
     <Grid ColumnDefinitions="Auto, *, Auto, Auto"
-          DataContext="{Binding $parent[local:ShaderEditor]}">
+          DataContext="{Binding $parent[local:ShaderReferenceEditor]}">
         <Design.DataContext>
-            <local:ShaderEditor />
+            <local:ShaderReferenceEditor />
         </Design.DataContext>
 
         <TextBlock Grid.Column="0"

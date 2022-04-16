@@ -10,14 +10,12 @@ using Microsoft.Xna.Framework.Graphics;
 /// A camera which uses a color fill shader to add a drop shadow to foreground elements.
 /// </summary>
 public class DropShadowPlatformerCamera : PlatformerCamera {
-    private Color _shadowColor = Color.Black;
-
     /// <summary>
     /// Gets the shader reference.
     /// </summary>
     [DataMember]
-    [Category(CommonCategories.Shader)]
-    public ShaderReference DropShadowShader { get; } = new();
+    [Category("Drop Shadow")]
+    public SingleColorShaderReference DropShadowShader { get; } = new();
 
     /// <summary>
     /// Gets or sets the background layer.
@@ -30,16 +28,6 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     /// </summary>
     [DataMember]
     public Layers ForegroundLayer { get; set; }
-
-    /// <summary>
-    /// Gets or sets the shadow color for the shader.
-    /// </summary>
-    [DataMember]
-    [Category(CommonCategories.Shader)]
-    public Color ShadowColor {
-        get => this._shadowColor;
-        set => this.Set(ref this._shadowColor, value);
-    }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -75,17 +63,13 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
                 if (foregroundEntities.Any()) {
                     var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.InversePixelsPerUnit, -this.Settings.InversePixelsPerUnit), this.Transform.Scale);
 
-                    if (this.DropShadowShader.Asset?.Content is { } dropShadow) {
-                        dropShadow.Parameters["Fill"].SetValue(this.ShadowColor.ToVector4());
-                    }
-
                     spriteBatch?.Begin(
                         SpriteSortMode.Deferred,
                         BlendState.AlphaBlend,
                         this.SamplerState,
                         null,
                         RasterizerState.CullNone,
-                        this.DropShadowShader.Asset?.Content,
+                        this.DropShadowShader.GetEffect(),
                         this.GetViewMatrix(offsetTransform));
 
                     foreach (var entity in foregroundEntities) {

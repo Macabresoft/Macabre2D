@@ -12,19 +12,19 @@ using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 using Unity;
 
-public class ShaderEditor : ValueEditorControl<ShaderReference> {
-    public static readonly DirectProperty<ShaderEditor, ICommand> ClearCommandProperty =
-        AvaloniaProperty.RegisterDirect<ShaderEditor, ICommand>(
+public class ShaderReferenceEditor : ValueEditorControl<ShaderReference> {
+    public static readonly DirectProperty<ShaderReferenceEditor, ICommand> ClearCommandProperty =
+        AvaloniaProperty.RegisterDirect<ShaderReferenceEditor, ICommand>(
             nameof(ClearCommand),
             editor => editor.ClearCommand);
 
-    public static readonly DirectProperty<ShaderEditor, string> PathTextProperty =
-        AvaloniaProperty.RegisterDirect<ShaderEditor, string>(
+    public static readonly DirectProperty<ShaderReferenceEditor, string> PathTextProperty =
+        AvaloniaProperty.RegisterDirect<ShaderReferenceEditor, string>(
             nameof(PathText),
             editor => editor.PathText);
 
-    public static readonly DirectProperty<ShaderEditor, ICommand> SelectCommandProperty =
-        AvaloniaProperty.RegisterDirect<ShaderEditor, ICommand>(
+    public static readonly DirectProperty<ShaderReferenceEditor, ICommand> SelectCommandProperty =
+        AvaloniaProperty.RegisterDirect<ShaderReferenceEditor, ICommand>(
             nameof(SelectCommand),
             editor => editor.SelectCommand);
 
@@ -35,7 +35,7 @@ public class ShaderEditor : ValueEditorControl<ShaderReference> {
     private ICommand _clearCommand;
     private string _pathText;
 
-    public ShaderEditor() : this(
+    public ShaderReferenceEditor() : this(
         null,
         Resolver.Resolve<IAssetManager>(),
         Resolver.Resolve<ILocalDialogService>(),
@@ -43,7 +43,7 @@ public class ShaderEditor : ValueEditorControl<ShaderReference> {
     }
 
     [InjectionConstructor]
-    public ShaderEditor(
+    public ShaderReferenceEditor(
         ValueControlDependencies dependencies,
         IAssetManager assetManager,
         ILocalDialogService dialogService,
