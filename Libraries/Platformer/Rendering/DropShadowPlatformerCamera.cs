@@ -13,6 +13,13 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     private Color _shadowColor = Color.Black;
 
     /// <summary>
+    /// Gets the shader reference.
+    /// </summary>
+    [DataMember]
+    [Category(CommonCategories.Shader)]
+    public ShaderReference DropShadowShader { get; } = new();
+
+    /// <summary>
     /// Gets or sets the background layer.
     /// </summary>
     [DataMember]
@@ -35,8 +42,14 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     }
 
     /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+        this.DropShadowShader.Initialize(this.Scene.Assets);
+    }
+
+    /// <inheritdoc />
     public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
-        if ((this.ForegroundLayer != Layers.None || this.BackgroundLayer != Layers.None) && this.ShaderReference.Asset?.Content is { } effect) {
+        if (this.ForegroundLayer != Layers.None || this.BackgroundLayer != Layers.None) {
             if (this.BackgroundLayer != Layers.None) {
                 var backgroundEntities = entities.Where(x => x.Layers.HasFlag(this.BackgroundLayer)).ToList();
                 if (backgroundEntities.Any()) {
@@ -62,14 +75,17 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
                 if (foregroundEntities.Any()) {
                     var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.InversePixelsPerUnit, -this.Settings.InversePixelsPerUnit), this.Transform.Scale);
 
-                    effect.Parameters["Fill"].SetValue(this.ShadowColor.ToVector4());
+                    if (this.DropShadowShader.Asset?.Content is { } dropShadow) {
+                        dropShadow.Parameters["Fill"].SetValue(this.ShadowColor.ToVector4());
+                    }
+
                     spriteBatch?.Begin(
                         SpriteSortMode.Deferred,
                         BlendState.AlphaBlend,
                         this.SamplerState,
                         null,
                         RasterizerState.CullNone,
-                        effect,
+                        this.DropShadowShader.Asset?.Content,
                         this.GetViewMatrix(offsetTransform));
 
                     foreach (var entity in foregroundEntities) {
@@ -84,7 +100,7 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
                         this.SamplerState,
                         null,
                         RasterizerState.CullNone,
-                        null,
+                        this.ShaderReference.Asset?.Content,
                         this.GetViewMatrix());
 
                     foreach (var entity in foregroundEntities) {
