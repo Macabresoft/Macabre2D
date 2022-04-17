@@ -12,11 +12,11 @@ using Microsoft.Xna.Framework;
 [DataContract]
 [Category(CommonCategories.Offset)]
 public class OffsetSettings : NotifyPropertyChanged {
-    [DataMember(Order = 1, Name = "Offset")]
+    private static readonly ResettableLazy<Vector2> EmptySizeFactory = new(() => Vector2.Zero);
     private Vector2 _offset;
-
-    private ResettableLazy<Vector2> _size = new(() => Vector2.Zero);
+    private ResettableLazy<Vector2> _size = EmptySizeFactory;
     private PixelOffsetType _type;
+    private bool _isInitialized;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
@@ -51,11 +51,12 @@ public class OffsetSettings : NotifyPropertyChanged {
     /// accuracy when converting it to engine units.
     /// </remarks>
     /// <value>The amount.</value>
+    [DataMember(Order = 1, Name = "Offset")]
     public Vector2 Offset {
         get => this._offset;
 
         set {
-            if (this.Set(ref this._offset, value)) {
+            if (this.Set(ref this._offset, value) && this._isInitialized) {
                 this._type = PixelOffsetType.Custom;
                 this.RaisePropertyChanged(true, nameof(this.OffsetType));
             }
@@ -82,7 +83,7 @@ public class OffsetSettings : NotifyPropertyChanged {
     /// </summary>
     /// <param name="sizeFactory">The size factory.</param>
     public void Initialize(Func<Vector2> sizeFactory) {
-        this._size = new ResettableLazy<Vector2>(sizeFactory ?? (() => Vector2.Zero));
+        this._size = new ResettableLazy<Vector2>(sizeFactory);
         this.ResetOffset();
     }
 
@@ -92,6 +93,7 @@ public class OffsetSettings : NotifyPropertyChanged {
     public void InvalidateSize() {
         this._size.Reset();
         this.ResetOffset();
+        this._isInitialized = true;
     }
 
     /// <summary>
