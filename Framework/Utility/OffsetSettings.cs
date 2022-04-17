@@ -13,10 +13,10 @@ using Microsoft.Xna.Framework;
 [Category(CommonCategories.Offset)]
 public class OffsetSettings : NotifyPropertyChanged {
     private static readonly ResettableLazy<Vector2> EmptySizeFactory = new(() => Vector2.Zero);
+    private bool _isInitialized;
     private Vector2 _offset;
     private ResettableLazy<Vector2> _size = EmptySizeFactory;
     private PixelOffsetType _type;
-    private bool _isInitialized;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetSettings" /> class.
