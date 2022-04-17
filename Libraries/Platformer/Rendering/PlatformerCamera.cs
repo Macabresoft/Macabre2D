@@ -3,24 +3,36 @@
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A <see cref="ICamera" /> for platformers.
 /// </summary>
 public class PlatformerCamera : Camera {
-    private float _horizontalDistanceAllowed = 2f;
     private float _lerpSpeed = 5f;
-    private float _verticalDistanceAllowed = 4f;
+
+    /// <summary>
+    /// Gets or sets the distance the followed object is allowed to go above before following.
+    /// </summary>
+    [DataMember(Name = "Above (Distance Allowed)")]
+    public float DistanceAllowedAbove { get; set; } = 6f;
+
+    /// <summary>
+    /// Gets or sets the distance the followed object is allowed to go below before following.
+    /// </summary>
+    [DataMember(Name = "Below (Distance Allowed)")]
+    public float DistanceAllowedBelow { get; set; } = 2f;
+
+    /// <summary>
+    /// Gets or sets the offset of how this camera follows the actor.
+    /// </summary>
+    [DataMember]
+    public Vector2 FollowOffset { get; set; }
 
     /// <summary>
     /// Gets or sets the horizontal distance allowed from the player.
     /// </summary>
     [DataMember]
-    public float HorizontalDistanceAllowed {
-        get => this._horizontalDistanceAllowed;
-        set => this.Set(ref this._horizontalDistanceAllowed, value);
-    }
+    public float HorizontalDistanceAllowed { get; set; } = 2f;
 
     /// <summary>
     /// Gets or sets the lerp speed.
@@ -32,15 +44,6 @@ public class PlatformerCamera : Camera {
     }
 
     /// <summary>
-    /// Gets or sets the vertical distance allowed from the player.
-    /// </summary>
-    [DataMember]
-    public float VerticalDistanceAllowed {
-        get => this._verticalDistanceAllowed;
-        set => this.Set(ref this._verticalDistanceAllowed, value);
-    }
-
-    /// <summary>
     /// Updates the position according to the specified actor state.
     /// </summary>
     /// <param name="previousState">The previous state.</param>
@@ -49,36 +52,40 @@ public class PlatformerCamera : Camera {
     /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
     public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime, bool isOnPlatform) {
         var x = this.LocalPosition.X;
+        var offsetX = this.FollowOffset.X;
         if (this.HorizontalDistanceAllowed != 0f && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.X) {
             if (isOnPlatform) {
                 if (x != 0f) {
-                    x = this.Lerp(this.LocalPosition.X, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                    x = this.Lerp(this.LocalPosition.X, offsetX, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
             else {
-                x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed, this.HorizontalDistanceAllowed);
+                x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed + offsetX, this.HorizontalDistanceAllowed + offsetX);
             }
         }
 
         var y = this.LocalPosition.Y;
-        if (this.VerticalDistanceAllowed != 0f  && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.Y) {
+        var offsetY = this.FollowOffset.Y;
+        var aboveDistance = -this.DistanceAllowedBelow + offsetY;
+        var belowDistance = this.DistanceAllowedAbove + offsetY;
+        if ((aboveDistance > 0f || belowDistance > 0f) && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.Y) {
             if (isOnPlatform) {
                 if (y != 0f) {
-                    y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                    y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
             else {
                 var yMovement = currentState.Position.Y - previousState.Position.Y;
                 if (Math.Abs(yMovement) > 0.001f) {
                     if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
-                        y = this.Lerp(this.LocalPosition.Y, -this.VerticalDistanceAllowed, (float)frameTime.SecondsPassed);
+                        y = this.Lerp(this.LocalPosition.Y, aboveDistance, (float)frameTime.SecondsPassed);
                     }
                     else {
-                        y = Math.Clamp(this.LocalPosition.Y + yMovement, -this.VerticalDistanceAllowed, this.VerticalDistanceAllowed);
+                        y = Math.Clamp(this.LocalPosition.Y + yMovement, aboveDistance, belowDistance);
                     }
                 }
                 else if (y != 0f) {
-                    y = this.Lerp(this.LocalPosition.Y, 0f, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                    y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
         }
