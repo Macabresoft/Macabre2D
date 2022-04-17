@@ -49,7 +49,7 @@ public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric>
 
     protected void InputElement_OnKeyDown(object sender, KeyEventArgs e) {
         if (e.Key == Key.Enter) {
-            this.Value = this.GetCalculatedValue(this.ValueDisplay, this.Value);
+            this.TryCalculateAndSetValue();
         }
     }
 
@@ -67,17 +67,15 @@ public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric>
     }
 
     protected void ValueDisplay_OnLostFocus(object sender, RoutedEventArgs e) {
-        var newValue = this.GetCalculatedValue(this.ValueDisplay, this.Value);
-        var changeEventArgs = new ValueChangedEventArgs<TNumeric>(this.Value, newValue);
-        if (changeEventArgs.HasChanged) {
-            this.Value = newValue;
+        if (!this.TryCalculateAndSetValue()) {
+            this.ValueDisplay = this.Value.ToString();
         }
     }
 
     private TNumeric GetCalculatedValue(string expression, TNumeric fallBack) {
         var result = fallBack;
-        var newValue = this._calculator.Compute(expression, null);
         try {
+            var newValue = this._calculator.Compute(expression, null);
             var convertedValue = this.ConvertValue(newValue);
             result = convertedValue;
         }
@@ -125,6 +123,16 @@ public abstract class BaseNumericEditor<TNumeric> : ValueEditorControl<TNumeric>
         };
 
         return (TNumeric)result;
+    }
+
+    private bool TryCalculateAndSetValue() {
+        var newValue = this.GetCalculatedValue(this.ValueDisplay, this.Value);
+        var changeEventArgs = new ValueChangedEventArgs<TNumeric>(this.Value, newValue);
+        if (changeEventArgs.HasChanged) {
+            this.Value = newValue;
+        }
+
+        return changeEventArgs.HasChanged;
     }
 
     private void UpdateDisplayValue() {
