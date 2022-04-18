@@ -1,0 +1,67 @@
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          x:TypeArguments="framework:BoundingArea"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.BoundingAreaEditor"
+                          UpdateOnLostFocus="False">
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *"
+          RowDefinitions="Auto, Auto"
+          DataContext="{Binding $parent[local:BoundingAreaEditor]}">
+        <Design.DataContext>
+            <local:BoundingAreaEditor />
+        </Design.DataContext>
+        <TextBlock Grid.Column="0"
+                   Grid.Row="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+
+        <TextBlock Grid.Column="1"
+                   Grid.Row="0"
+                   Text="L: "
+                   VerticalAlignment="Center"
+                   ToolTip.Tip="The left border's distance from the origin" />
+
+        <local:FloatEditor Grid.Column="2"
+                           Grid.Row="0"
+                           Value="{Binding LeftValue}"
+                           ValueMinimum="{Binding XMinimum}"
+                           ValueMaximum="{Binding XMaximum}" />
+
+        <TextBlock Grid.Column="3"
+                   Grid.Row="0"
+                   Text="R: "
+                   VerticalAlignment="Center"
+                   ToolTip.Tip="The right border's distance from the origin" />
+
+        <local:FloatEditor Grid.Column="4"
+                           Grid.Row="0"
+                           Value="{Binding RightValue}"
+                           ValueMinimum="{Binding XMinimum}"
+                           ValueMaximum="{Binding XMaximum}" />
+
+        <TextBlock Grid.Column="1"
+                   Grid.Row="1"
+                   Text="B: "
+                   VerticalAlignment="Center"
+                   ToolTip.Tip="The bottom border's distance from the origin" />
+
+        <local:FloatEditor Grid.Column="2"
+                           Grid.Row="1"
+                           Value="{Binding BottomValue}"
+                           ValueMinimum="{Binding YMinimum}"
+                           ValueMaximum="{Binding YMaximum}" />
+
+        <TextBlock Grid.Column="3"
+                   Grid.Row="1"
+                   Text="T: "
+                   VerticalAlignment="Center"
+                   ToolTip.Tip="The top border's distance from the origin" />
+
+        <local:FloatEditor Grid.Column="4"
+                           Grid.Row="1"
+                           Value="{Binding TopValue}"
+                           ValueMinimum="{Binding YMinimum}"
+                           ValueMaximum="{Binding YMaximum}" />
+    </Grid>
+</local:ValueEditorControl>

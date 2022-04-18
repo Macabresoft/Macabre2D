@@ -11,28 +11,16 @@ public class PlatformerCamera : Camera {
     private float _lerpSpeed = 5f;
 
     /// <summary>
-    /// Gets or sets the distance the followed object is allowed to go above before following.
+    /// Gets or sets the area in which the player can move without the camera adjusting its position.
     /// </summary>
-    [DataMember(Name = "Above (Distance Allowed)")]
-    public float DistanceAllowedAbove { get; set; } = 6f;
-
-    /// <summary>
-    /// Gets or sets the distance the followed object is allowed to go below before following.
-    /// </summary>
-    [DataMember(Name = "Below (Distance Allowed)")]
-    public float DistanceAllowedBelow { get; set; } = 2f;
+    [DataMember]
+    public BoundingArea FollowArea { get; set; }
 
     /// <summary>
     /// Gets or sets the offset of how this camera follows the actor.
     /// </summary>
     [DataMember]
     public Vector2 FollowOffset { get; set; }
-
-    /// <summary>
-    /// Gets or sets the horizontal distance allowed from the player.
-    /// </summary>
-    [DataMember]
-    public float HorizontalDistanceAllowed { get; set; } = 2f;
 
     /// <summary>
     /// Gets or sets the lerp speed.
@@ -53,22 +41,22 @@ public class PlatformerCamera : Camera {
     public void UpdateDesiredPosition(ActorState previousState, ActorState currentState, FrameTime frameTime, bool isOnPlatform) {
         var x = this.LocalPosition.X;
         var offsetX = this.FollowOffset.X;
-        if (this.HorizontalDistanceAllowed != 0f && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.X) {
+        if (this.FollowArea.Width > 0f && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.X) {
             if (isOnPlatform) {
                 if (x != 0f) {
                     x = this.Lerp(this.LocalPosition.X, offsetX, (float)frameTime.SecondsPassed * this._lerpSpeed);
                 }
             }
             else {
-                x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, -this.HorizontalDistanceAllowed + offsetX, this.HorizontalDistanceAllowed + offsetX);
+                x = Math.Clamp(this.LocalPosition.X + currentState.Position.X - previousState.Position.X, this.FollowArea.Minimum.X + offsetX, this.FollowArea.Maximum.X + offsetX);
             }
         }
 
         var y = this.LocalPosition.Y;
         var offsetY = this.FollowOffset.Y;
-        var aboveDistance = -this.DistanceAllowedBelow + offsetY;
-        var belowDistance = this.DistanceAllowedAbove + offsetY;
-        if ((aboveDistance > 0f || belowDistance > 0f) && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.Y) {
+        var minimumY = -this.FollowArea.Maximum.Y + offsetY;
+        var maximumY = -this.FollowArea.Minimum.Y + offsetY;
+        if ((minimumY > 0f || maximumY > 0f) && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.Y) {
             if (isOnPlatform) {
                 if (y != 0f) {
                     y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
@@ -78,10 +66,10 @@ public class PlatformerCamera : Camera {
                 var yMovement = currentState.Position.Y - previousState.Position.Y;
                 if (Math.Abs(yMovement) > 0.001f) {
                     if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
-                        y = this.Lerp(this.LocalPosition.Y, aboveDistance, (float)frameTime.SecondsPassed);
+                        y = this.Lerp(this.LocalPosition.Y, minimumY, (float)frameTime.SecondsPassed);
                     }
                     else {
-                        y = Math.Clamp(this.LocalPosition.Y + yMovement, aboveDistance, belowDistance);
+                        y = Math.Clamp(this.LocalPosition.Y + yMovement, minimumY, maximumY);
                     }
                 }
                 else if (y != 0f) {

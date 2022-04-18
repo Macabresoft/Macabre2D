@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Linq;
+using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 
@@ -8,6 +9,7 @@ using Microsoft.Xna.Framework;
 /// Represents the area around a collider in which a potential collision could be happening.
 /// This is an axis aligned bounding box.
 /// </summary>
+[DataContract]
 public readonly struct BoundingArea {
     /// <summary>
     /// The empty bounding area.
@@ -22,22 +24,24 @@ public readonly struct BoundingArea {
     /// <summary>
     /// The height of this instance.
     /// </summary>
-    public readonly float Height;
+    public float Height => this.Maximum.Y - this.Minimum.Y;
 
     /// <summary>
     /// The maximum positions of this instance.
     /// </summary>
+    [DataMember]
     public readonly Vector2 Maximum;
 
     /// <summary>
     /// The minimum positions of this instance.
     /// </summary>
+    [DataMember]
     public readonly Vector2 Minimum;
 
     /// <summary>
     /// The width of this instance.
     /// </summary>
-    public readonly float Width;
+    public readonly float Width => this.Maximum.X - this.Minimum.X;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoundingArea" /> class.
@@ -47,8 +51,6 @@ public readonly struct BoundingArea {
     public BoundingArea(Vector2 minimum, Vector2 maximum) {
         this.Minimum = minimum;
         this.Maximum = maximum;
-        this.Height = this.Maximum.Y - this.Minimum.Y;
-        this.Width = this.Maximum.X - this.Minimum.X;
     }
 
     /// <summary>

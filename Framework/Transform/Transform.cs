@@ -90,7 +90,7 @@ public readonly struct Transform {
 
     /// <inheritdoc cref="object" />
     public override bool Equals(object? obj) {
-        return obj is Transform transform && this.Position == transform.Position && this.Rotation == transform.Rotation && this.Scale == transform.Scale;
+        return obj is Transform transform && this.Position == transform.Position && this.Rotation.Equals(transform.Rotation) && this.Scale == transform.Scale;
     }
 
     /// <inheritdoc cref="object" />
