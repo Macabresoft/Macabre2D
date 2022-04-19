@@ -1,0 +1,63 @@
+﻿namespace Macabresoft.Macabre2D.Framework;
+
+using System.Runtime.Serialization;
+using Macabresoft.Core;
+using Microsoft.Xna.Framework;
+
+/// <summary>
+/// Represents a rotation in degrees and radians.
+/// </summary>
+[DataContract]
+public readonly struct Rotation {
+    /// <summary>
+    /// A rotation of zero degrees/radians.
+    /// </summary>
+    public static readonly Rotation Zero = new();
+
+    /// <summary>
+    /// The rotation represented in radians.
+    /// </summary>
+    [DataMember]
+    public readonly float Radians;
+
+    /// <summary>
+    /// The rotation represented in degrees.
+    /// </summary>
+    [DataMember]
+    public readonly float Degrees;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Rotation" /> struct.
+    /// </summary>
+    public Rotation() {
+        this.Radians = 0f;
+        this.Degrees = 0f;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Transform" /> struct.
+    /// </summary>
+    /// <param name="radians">The matrix.</param>
+    public Rotation(float radians) {
+        this.Radians = radians.NormalizeAngle();
+        this.Degrees = MathHelper.ToDegrees(this.Radians);
+    }
+
+    /// <summary>
+    /// Creates a rotation from degrees.
+    /// </summary>
+    /// <param name="degrees">The degrees.</param>
+    /// <returns>The rotation.</returns>
+    public static Rotation CreateFromDegrees(float degrees) {
+        return new Rotation(MathHelper.ToRadians(degrees));
+    }
+
+    /// <summary>
+    /// Creates a rotation from radians.
+    /// </summary>
+    /// <param name="radians">The radians.</param>
+    /// <returns>The rotation.</returns>
+    public static Rotation CreateFromRadians(float radians) {
+        return new Rotation(radians);
+    }
+}

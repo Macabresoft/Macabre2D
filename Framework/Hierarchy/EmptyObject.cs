@@ -149,22 +149,18 @@ internal class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
+    public Transform GetWorldTransform(Vector2 originOffset, Rotation rotation) {
         return this.Transform;
     }
 
     /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
+    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation) {
         return this.Transform;
     }
 
     /// <inheritdoc />
     public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale) {
         return this.Transform;
-    }
-
-    /// <inheritdoc />
-    public void Move(Vector2 amount) {
     }
 
     /// <inheritdoc />
@@ -192,6 +188,10 @@ internal class EmptyObject : IScene {
     /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) {
         return false;
+    }
+
+    /// <inheritdoc />
+    public void Move(Vector2 amount) {
     }
 
     /// <inheritdoc />

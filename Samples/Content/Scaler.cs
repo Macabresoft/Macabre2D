@@ -15,12 +15,13 @@ public class Scaler : UpdateableEntity {
 
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this._spriteRenderer != null) {
-            if (this._spriteRenderer.LocalScale.X > 2f && this._currentSign > 0 || this._spriteRenderer.LocalScale.X < -2f && this._currentSign < 0) {
+            if ((this._spriteRenderer.LocalScale.X > 2f && this._currentSign > 0) || (this._spriteRenderer.LocalScale.X < -2f && this._currentSign < 0)) {
                 this._currentSign *= -1f;
             }
 
             this._spriteRenderer.LocalScale += Vector2.One * (float)frameTime.MillisecondsPassed * 0.001f * this._currentSign;
-            this._spriteRenderer.Rotation += (float)frameTime.MillisecondsPassed * 0.003f;
+            var newRotation = new Rotation(this._spriteRenderer.Rotation.Radians + (float)frameTime.MillisecondsPassed * 0.003f);
+            this._spriteRenderer.Rotation = newRotation;
         }
     }
 }

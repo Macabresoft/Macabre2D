@@ -51,18 +51,18 @@ public interface ITransformable {
     /// Gets the world transform.
     /// </summary>
     /// <param name="originOffset">The origin offset.</param>
-    /// <param name="rotationAngle">The rotation angle.</param>
+    /// <param name="rotation">The rotation.</param>
     /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset, float rotationAngle);
+    Transform GetWorldTransform(Vector2 originOffset, Rotation rotation);
 
     /// <summary>
     /// Gets the world transform.
     /// </summary>
     /// <param name="originOffset">The origin offset.</param>
     /// <param name="overrideScale">An override value for scale.</param>
-    /// <param name="rotationAngle">The rotation angle.</param>
+    /// <param name="rotation">The rotation.</param>
     /// <returns>The world transform.</returns>
-    Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle);
+    Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation);
 
     /// <summary>
     /// Gets the world transform.
@@ -195,26 +195,26 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
     }
 
     /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, float rotationAngle) {
+    public Transform GetWorldTransform(Vector2 originOffset, Rotation rotation) {
         var transform = this.Transform;
 
         var matrix =
             Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
             Matrix.CreateScale(transform.Scale.X, transform.Scale.Y, 1f) *
-            Matrix.CreateRotationZ(rotationAngle) *
+            Matrix.CreateRotationZ(rotation.Radians) *
             Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
 
         return matrix.ToTransform();
     }
 
     /// <inheritdoc />
-    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, float rotationAngle) {
+    public Transform GetWorldTransform(Vector2 originOffset, Vector2 overrideScale, Rotation rotation) {
         var transform = this.Transform;
 
         var matrix =
             Matrix.CreateScale(overrideScale.X, overrideScale.Y, 1f) *
             Matrix.CreateTranslation(originOffset.X, originOffset.Y, 0f) *
-            Matrix.CreateRotationZ(rotationAngle) *
+            Matrix.CreateRotationZ(rotation.Radians) *
             Matrix.CreateTranslation(transform.Position.X, transform.Position.Y, 0f);
 
         return matrix.ToTransform();

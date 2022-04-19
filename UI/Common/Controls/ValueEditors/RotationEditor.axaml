@@ -1,0 +1,19 @@
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          x:TypeArguments="framework:Rotation"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.RotationEditor"
+                          UpdateOnLostFocus="False">
+    <Panel
+          DataContext="{Binding $parent[local:RotationEditor]}">
+        <Design.DataContext>
+            <local:RotationEditor />
+        </Design.DataContext>
+        <TextBlock Classes="Label"
+                   Text="{Binding Title}" />
+
+        <local:FloatEditor Title="{Binding Title}"
+                           Value="{Binding DisplayValue}" />
+    </Panel>
+</local:ValueEditorControl>

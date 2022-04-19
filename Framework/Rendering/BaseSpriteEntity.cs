@@ -16,7 +16,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     private readonly ResettableLazy<Transform> _pixelTransform;
     private readonly ResettableLazy<Transform> _rotatableTransform;
     private Color _color = Color.White;
-    private float _rotation;
+    private Rotation _rotation;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseSpriteEntity" /> class.
@@ -55,14 +55,12 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     /// <inheritdoc />
     [DataMember(Order = 3)]
     [Category(CommonCategories.Transform)]
-    public float Rotation {
-        get => this.ShouldSnapToPixels(this.Settings) ? 0f : this._rotation;
+    public Rotation Rotation {
+        get => this.ShouldSnapToPixels(this.Settings) ? Rotation.Zero : this._rotation;
         set {
-            if (this.Set(ref this._rotation, value.NormalizeAngle())) {
-                if (!this.ShouldSnapToPixels(this.Settings)) {
-                    this._boundingArea.Reset();
-                    this._rotatableTransform.Reset();
-                }
+            if (this.Set(ref this._rotation, value) && !this.ShouldSnapToPixels(this.Settings)) {
+                this._boundingArea.Reset();
+                this._rotatableTransform.Reset();
             }
         }
     }

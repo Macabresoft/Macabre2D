@@ -8,5 +8,5 @@ public interface IRotatable : IEntity {
     /// Gets the rotation.
     /// </summary>
     /// <value>The rotation.</value>
-    float Rotation { get; set; }
+    Rotation Rotation { get; set; }
 }

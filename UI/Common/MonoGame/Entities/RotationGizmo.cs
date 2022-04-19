@@ -15,7 +15,7 @@ public class RotationGizmo : BaseAxisGizmo {
     private readonly IUndoService _undoService;
     private ICamera _camera;
     private Vector2 _knobLocation;
-    private float _originalRotation;
+    private Rotation _originalRotation;
     private Texture2D _sprite;
 
     /// <summary>
@@ -44,14 +44,14 @@ public class RotationGizmo : BaseAxisGizmo {
             throw new NotSupportedException("Could not find a camera ancestor.");
         }
 
-        if (this.Game.GraphicsDevice is GraphicsDevice graphicsDevice) {
+        if (this.Game.GraphicsDevice is { } graphicsDevice) {
             this._sprite = PrimitiveDrawer.CreateCircleSprite(graphicsDevice, GizmoPointSize);
         }
     }
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
+        if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
@@ -139,7 +139,7 @@ public class RotationGizmo : BaseAxisGizmo {
     }
 
     private void TryEndDrag(IRotatable rotatable) {
-        if (this.CurrentAxis != GizmoAxis.None && Math.Abs(rotatable.Rotation - this._originalRotation) > float.Epsilon) {
+        if (this.CurrentAxis != GizmoAxis.None && Math.Abs(rotatable.Rotation.Radians - this._originalRotation.Radians) > float.Epsilon) {
             var originalRotation = this._originalRotation;
             var newRotation = rotatable.Rotation;
 
@@ -164,7 +164,7 @@ public class RotationGizmo : BaseAxisGizmo {
     }
 
     private void UpdateDrag(IRotatable rotatable, Vector2 mousePosition) {
-        rotatable.Rotation = GetNewAngle(rotatable, mousePosition);
+        rotatable.Rotation = new Rotation(GetNewAngle(rotatable, mousePosition));
         this._knobLocation = this.GetKnobLocation(rotatable.Transform.Position, mousePosition);
     }
 }

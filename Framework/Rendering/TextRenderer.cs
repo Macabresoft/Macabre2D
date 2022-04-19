@@ -18,7 +18,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     private readonly ResettableLazy<Transform> _pixelTransform;
     private readonly ResettableLazy<Transform> _rotatableTransform;
     private Color _color = Color.Black;
-    private float _rotation;
+    private Rotation _rotation;
     private bool _snapToPixels;
     private string _text = string.Empty;
 
@@ -47,7 +47,6 @@ public class TextRenderer : RenderableEntity, IRotatable {
     [DataMember(Order = 1)]
     public Color Color {
         get => this._color;
-
         set => this.Set(ref this._color, value);
     }
 
@@ -60,11 +59,11 @@ public class TextRenderer : RenderableEntity, IRotatable {
 
     /// <inheritdoc />
     [DataMember(Order = 5)]
-    public float Rotation {
-        get => this._snapToPixels ? 0f : this._rotation;
-
+    [Category(CommonCategories.Transform)]
+    public Rotation Rotation {
+        get => this.ShouldSnapToPixels(this.Settings) ? Rotation.Zero : this._rotation;
         set {
-            if (this.Set(ref this._rotation, value.NormalizeAngle()) && !this._snapToPixels) {
+            if (this.Set(ref this._rotation, value) && !this.ShouldSnapToPixels(this.Settings)) {
                 this._boundingArea.Reset();
                 this._rotatableTransform.Reset();
             }
@@ -114,7 +113,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity entity) {
         base.Initialize(scene, entity);
-        
+
         this.FontReference.Initialize(this.Scene.Assets);
         this.RenderSettings.PropertyChanged += this.RenderSettings_PropertyChanged;
         this.RenderSettings.Initialize(this.CreateSize);
