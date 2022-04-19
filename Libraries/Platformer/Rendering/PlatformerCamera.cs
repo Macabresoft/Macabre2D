@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework;
 /// A <see cref="ICamera" /> for platformers.
 /// </summary>
 public class PlatformerCamera : Camera {
+    private const float FloatingPointTolerance = 0.001f;
     private float _lerpSpeed = 5f;
+    private bool _isFreeFalling;
 
     /// <summary>
     /// Gets or sets the area in which the player can move without the camera adjusting its position.
@@ -64,16 +66,19 @@ public class PlatformerCamera : Camera {
             }
             else {
                 var yMovement = currentState.Position.Y - previousState.Position.Y;
-                if (Math.Abs(yMovement) > 0.001f) {
-                    if (currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < 0.001f) {
+                if (currentState.StateType is StateType.Falling or StateType.Jumping) {
+                    var isFalling = currentState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < FloatingPointTolerance;
+                    if (this._isFreeFalling && isFalling) {
                         y = this.Lerp(this.LocalPosition.Y, minimumY, (float)frameTime.SecondsPassed);
                     }
                     else {
                         y = Math.Clamp(this.LocalPosition.Y + yMovement, minimumY, maximumY);
+                        this._isFreeFalling = Math.Abs(y - maximumY) < FloatingPointTolerance && isFalling;
                     }
                 }
-                else if (y != 0f) {
+                else if (Math.Abs(y - offsetY) > FloatingPointTolerance) {
                     y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
+                    this._isFreeFalling = false;
                 }
             }
         }
