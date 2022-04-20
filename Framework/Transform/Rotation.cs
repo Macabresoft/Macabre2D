@@ -60,4 +60,64 @@ public readonly struct Rotation {
     public static Rotation CreateFromRadians(float radians) {
         return new Rotation(radians);
     }
+
+    /// <inheritdoc cref="object" />
+    public override bool Equals(object? obj) {
+        return obj is Rotation other && this.Equals(other);
+    }
+
+    /// <inheritdoc cref="object" />
+    public bool Equals(Rotation other) {
+        return this.Radians.Equals(other.Radians);
+    }
+
+    /// <inheritdoc cref="object" />
+    public override int GetHashCode() {
+        return this.Radians.GetHashCode();
+    }
+
+    /// <summary>
+    /// Inverts values in the specified <see cref="Rotation" />.
+    /// </summary>
+    /// <param name="value">Source <see cref="Rotation" /> on the right of the sub sign.</param>
+    /// <returns>Result of the inversion.</returns>
+    public static Rotation operator -(Rotation value) {
+        return new Rotation(-value.Radians);
+    }
+
+    /// <summary>Adds two <see cref="Rotation" /> values.</summary>
+    /// <param name="value1">Source <see cref="Rotation" /> on the left of the add sign.</param>
+    /// <param name="value2">Source <see cref="Rotation" /> on the right of the add sign.</param>
+    /// <returns>Sum of the values.</returns>
+    public static Rotation operator +(Rotation value1, Rotation value2) {
+        return new Rotation(value1.Radians + value2.Radians);
+    }
+
+    /// <summary>
+    /// Subtracts a <see cref="Rotation" /> from a <see cref="Rotation" />.
+    /// </summary>
+    /// <param name="value1">Source <see cref="Rotation" /> on the left of the subtract sign.</param>
+    /// <param name="value2">Source <see cref="Rotation" /> on the right of the subtract sign.</param>
+    /// <returns>Result of the subtraction.</returns>
+    public static Rotation operator -(Rotation value1, Rotation value2) {
+        return new Rotation(value1.Radians - value2.Radians);
+    }
+
+    /// <summary>Adds two <see cref="Rotation" /> values.</summary>
+    /// <param name="value1">Source <see cref="Rotation" /> on the left of the add sign.</param>
+    /// <param name="value2">Source <see cref="float" /> on the right of the add sign.</param>
+    /// <returns>Sum of the values..</returns>
+    public static Rotation operator +(Rotation value1, float value2) {
+        return new Rotation(value1.Radians + value2);
+    }
+
+    /// <summary>
+    /// Subtracts a <see cref="Rotation" /> from a <see cref="Rotation" />.
+    /// </summary>
+    /// <param name="value1">Source <see cref="Rotation" /> on the left of the subtract sign.</param>
+    /// <param name="value2">Source <see cref="float" /> on the right of the subtract sign.</param>
+    /// <returns>Result of the subtraction.</returns>
+    public static Rotation operator -(Rotation value1, float value2) {
+        return new Rotation(value1.Radians - value2);
+    }
 }
