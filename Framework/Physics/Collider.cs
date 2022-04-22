@@ -36,6 +36,11 @@ public enum ColliderType {
 /// </summary>
 [DataContract]
 public abstract class Collider : NotifyPropertyChanged, IBoundable {
+    /// <summary>
+    /// The empty collider.
+    /// </summary>
+    public static readonly Collider Empty = new EmptyCollider();
+
     private readonly ResettableLazy<BoundingArea> _boundingArea;
     private readonly ResettableLazy<Transform> _transform;
     private Vector2 _offset;
