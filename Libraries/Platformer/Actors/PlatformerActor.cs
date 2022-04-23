@@ -121,6 +121,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.SetWorldPosition(new Vector2(worldTransform.Position.X, hit.ContactPoint.Y - this.HalfSize.X));
+
+            if (hit.Collider?.Body is IBlock block) {
+                block.Hit();
+            }
         }
 
         return result;
@@ -208,7 +212,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 out hit,
                 new Vector2(-this.HalfSize.X, 0f),
                 new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
-            
+
             if (result) {
                 this.UnsetPlatform();
             }
@@ -216,7 +220,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (!result) {
             result = this.CheckIfStillOnPlatform(out hit);
-            
+
             if (!result) {
                 result = this.TryRaycast(
                     direction,

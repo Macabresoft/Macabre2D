@@ -50,7 +50,7 @@ public abstract class Block : PhysicsBody, IBlock {
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity" /> class.
     /// </summary>
-    public Block() : base() {
+    protected Block() : base() {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
@@ -145,11 +145,11 @@ public abstract class Block : PhysicsBody, IBlock {
         this._colliders.LeftCollider.Layers = this.SideLayers;
 
         this._colliders.RightCollider.Start = new Vector2(this.Size.X, 0f);
-        this._colliders.RightCollider.End = new Vector2(0f, this.Size.Y);
+        this._colliders.RightCollider.End = new Vector2(this.Size.X, this.Size.Y);
         this._colliders.RightCollider.Layers = this.SideLayers;
 
         this._colliders.TopCollider.Start = new Vector2(0f, this.Size.Y);
-        this._colliders.TopCollider.End = new Vector2(this.Size.X, 0f);
+        this._colliders.TopCollider.End = new Vector2(this.Size.X, this.Size.Y);
         this._colliders.TopCollider.Layers = this.TopLayers;
 
         this._colliders.BottomCollider.Start = Vector2.Zero;

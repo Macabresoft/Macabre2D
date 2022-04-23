@@ -14,7 +14,6 @@ public class AssetReference<TAsset, TContent> : NotifyPropertyChanged where TAss
     private TAsset? _asset;
     private IAssetManager _assetManager = AssetManager.Empty;
     private Guid _contentId;
-    private bool _isLoadingAsset;
 
     /// <summary>
     /// Gets the asset.
