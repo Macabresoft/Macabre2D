@@ -5,20 +5,29 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// The possible states of a falling platform.
+/// </summary>
+public enum FallingPlatformState {
+    None,
+    Waiting,
+    Falling,
+    Respawning
+}
+
+/// <summary>
 /// A platform which falls upon an actor walking on it. It will respawn after a set amount of time.
 /// </summary>
 public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     private Vector2 _initialPosition;
-    private bool _isFalling;
-    private bool _isRespawning;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
+    private FallingPlatformState _state = FallingPlatformState.None;
     private float _timeInState;
     private float _timeToFall = 3f;
     private float _timeToRespawn = 3f;
     private float _velocity;
 
     /// <summary>
-    /// The time to fall until this disappears.
+    /// Gets or sets the time to fall until this disappears.
     /// </summary>
     [DataMember]
     public float TimeToFall {
@@ -27,13 +36,19 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     }
 
     /// <summary>
-    /// The time until this will respawn after its fall has finished.
+    /// Gets or sets the time until this will respawn after its fall has finished.
     /// </summary>
     [DataMember]
     public float TimeToRespawn {
         get => this._timeToRespawn;
         set => this.Set(ref this._timeToRespawn, Math.Max(value, 1f));
     }
+
+    /// <summary>
+    /// Gets or sets the time until falling after an actor walks on it.
+    /// </summary>
+    [DataMember]
+    public float TimeUntilFall { get; set; }
 
     private float Velocity {
         get => this._velocity;
@@ -49,33 +64,53 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
 
     /// <inheritdoc />
     public void Update(FrameTime frameTime, InputState inputState) {
-        if (this._isRespawning) {
-            this._timeInState += (float)frameTime.SecondsPassed;
+        switch (this._state) {
+            case FallingPlatformState.Waiting: {
+                this._timeInState += (float)frameTime.SecondsPassed;
 
-            if (this._timeInState >= this.TimeToRespawn) {
-                this._timeInState = 0f;
-                this._isRespawning = false;
-                this.SetWorldPosition(this._initialPosition);
-                this.Collider.Layers = this.ColliderLayers;
-            }
-        }
-        else if (this._isFalling) {
-            this._timeInState += (float)frameTime.SecondsPassed;
-            this.Velocity += this._physicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            this.Move(new Vector2(0f, this.Velocity * (float)frameTime.SecondsPassed));
+                if (this._timeInState >= this.TimeUntilFall) {
+                    this._timeInState = 0f;
+                    this._state = FallingPlatformState.Falling;
+                }
 
-            if (this._timeInState >= this._timeToFall) {
-                this._timeInState = 0f;
-                this._isFalling = false;
-                this._isRespawning = true;
-                this._velocity = 0f;
-                this.Collider.Layers = Layers.None;
+                break;
             }
-        }
-        else if (this.Attached.Any()) {
-            this._isFalling = true;
-            this._velocity = 0f;
-            this._timeInState = 0f;
+            case FallingPlatformState.Respawning: {
+                this._timeInState += (float)frameTime.SecondsPassed;
+
+                if (this._timeInState >= this.TimeToRespawn) {
+                    this._timeInState = 0f;
+                    this._state = FallingPlatformState.None;
+                    this.SetWorldPosition(this._initialPosition);
+                    this.Collider.Layers = this.ColliderLayers;
+                }
+
+                break;
+            }
+            case FallingPlatformState.Falling: {
+                this._timeInState += (float)frameTime.SecondsPassed;
+                this.Velocity += this._physicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+                this.Move(new Vector2(0f, this.Velocity * (float)frameTime.SecondsPassed));
+
+                if (this._timeInState >= this._timeToFall) {
+                    this._timeInState = 0f;
+                    this._state = FallingPlatformState.Respawning;
+                    this._velocity = 0f;
+                    this.Collider.Layers = Layers.None;
+                }
+
+                break;
+            }
+            case FallingPlatformState.None:
+            default: {
+                if (this.Attached.Any()) {
+                    this._state = this.TimeUntilFall > 0f ? FallingPlatformState.Waiting : FallingPlatformState.Falling;
+                    this._velocity = 0f;
+                    this._timeInState = 0f;
+                }
+
+                break;
+            }
         }
     }
 }
