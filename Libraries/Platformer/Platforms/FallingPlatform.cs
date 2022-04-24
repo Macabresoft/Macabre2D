@@ -25,6 +25,7 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     private float _timeToFall = 3f;
     private float _timeToRespawn = 3f;
     private float _velocity;
+    private float _gravityMultiplier = 1f;
 
     /// <summary>
     /// Gets or sets the time to fall until this disappears.
@@ -50,9 +51,24 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     [DataMember]
     public float TimeUntilFall { get; set; }
 
+    /// <summary>
+    /// Gets or sets the gravity multiplier.
+    /// </summary>
+    [DataMember]
+    public float GravityMultiplier {
+        get => this._gravityMultiplier;
+        set {
+            if (value > 0f) {
+                this._gravityMultiplier = value;
+            }
+            
+            this.RaisePropertyChanged();
+        }
+    }
+
     private float Velocity {
         get => this._velocity;
-        set => this._velocity = Math.Max(-this._physicsLoop.TerminalVelocity, value);
+        set => this._velocity = Math.Max(-this._physicsLoop.TerminalVelocity * this.GravityMultiplier, value);
     }
 
     /// <inheritdoc />
@@ -89,7 +105,7 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
             }
             case FallingPlatformState.Falling: {
                 this._timeInState += (float)frameTime.SecondsPassed;
-                this.Velocity += this._physicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+                this.Velocity += this._physicsLoop.Gravity.Value.Y * this.GravityMultiplier * (float)frameTime.SecondsPassed;
                 this.Move(new Vector2(0f, this.Velocity * (float)frameTime.SecondsPassed));
 
                 if (this._timeInState >= this._timeToFall) {
