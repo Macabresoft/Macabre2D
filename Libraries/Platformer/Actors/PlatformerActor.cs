@@ -87,7 +87,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
         this.ResetBoundingArea();
-        this._physicsLoop = this.Scene.GetLoop<IPlatformerPhysicsLoop>() ?? throw new ArgumentNullException(nameof(this._physicsLoop));
+        this._physicsLoop = this.Scene.GetLoop<IPlatformerPhysicsLoop>() ?? throw new NotSupportedException(nameof(this._physicsLoop));
     }
 
     /// <summary>
