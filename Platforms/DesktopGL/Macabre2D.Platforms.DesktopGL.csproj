@@ -33,5 +33,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
         <ProjectReference Include="..\..\Libraries\Platformer\Macabre2D.Libraries.Platformer.csproj" />
+        <ProjectReference Include="..\..\Libraries\Scripts\Macabre2D.Libraries.Scripts.csproj" />
     </ItemGroup>
 </Project>
