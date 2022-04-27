@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -12,13 +11,10 @@ using Microsoft.Xna.Framework;
 public sealed class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
-    private float _elapsedRunSeconds;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
-    private float _originalMaximumHorizontalVelocity;
     private QueueableSpriteAnimator? _spriteAnimator;
-    private float _timeUntilRun = 1f;
 
     /// <summary>
     /// Gets the falling animation reference.
@@ -91,32 +87,9 @@ public sealed class PlatformerPlayer : PlatformerActor {
         set => this.Set(ref this._maximumHorizontalVelocity, value);
     }
 
-    /// <summary>
-    /// Gets the velocity when running.
-    /// </summary>
-    [DataMember]
-    [Category("Movement")]
-    public float RunVelocity { get; private set; }
-
-    /// <summary>
-    /// Gets the time until a walk becomes a run in seconds.
-    /// </summary>
-    [DataMember]
-    [Category("Movement")]
-    public float TimeUntilRun {
-        get => this._timeUntilRun;
-        private set => this._timeUntilRun = Math.Max(0f, value);
-    }
-
-    private float ElapsedRunSeconds {
-        get => this._elapsedRunSeconds;
-        set => this._elapsedRunSeconds = Math.Clamp(value, 0f, this.TimeUntilRun);
-    }
-
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
-        this._originalMaximumHorizontalVelocity = this.MaximumHorizontalVelocity;
 
         this.IdleAnimationReference.Initialize(this.Scene.Assets);
         this.MovingAnimationReference.Initialize(this.Scene.Assets);
@@ -137,8 +110,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
         this._input.Update(inputState);
-        var isMovingFast = this.GetIsMovingFast();
-        this.MaximumHorizontalVelocity = isMovingFast ? this.RunVelocity : this._originalMaximumHorizontalVelocity;
 
         var previousState = this.CurrentState;
         this.CurrentState = this.GetNewActorState(frameTime);
@@ -154,8 +125,8 @@ public sealed class PlatformerPlayer : PlatformerActor {
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
         var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
-
-        if (this.ElapsedRunSeconds > 0f) {
+        var requireAcceleration = this.ShouldRequireAcceleration();
+        if (requireAcceleration) {
             horizontalVelocity = this._input.HorizontalAxis switch {
                 < 0f when this.PreviousState.Velocity.X > 0f => Math.Max(this.PreviousState.Velocity.X - (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, -this.MaximumHorizontalVelocity),
                 > 0f when this.PreviousState.Velocity.X < 0f => Math.Min(this.PreviousState.Velocity.X + (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, this.MaximumHorizontalVelocity),
@@ -180,24 +151,15 @@ public sealed class PlatformerPlayer : PlatformerActor {
             this.CheckIfHitWall(frameTime, 0f, false);
         }
 
-        if (horizontalVelocity != 0f) {
-            this.ElapsedRunSeconds += (float)frameTime.SecondsPassed;
-        }
-        else if (this.ElapsedRunSeconds > 0f) {
+        if (horizontalVelocity == 0f && requireAcceleration) {
             horizontalVelocity = this.PreviousState.Velocity.X switch {
                 > 0f => (float)Math.Max(0f, this.PreviousState.Velocity.X - frameTime.SecondsPassed * this.Deceleration),
                 < 0f => (float)Math.Min(0f, this.PreviousState.Velocity.X + frameTime.SecondsPassed * this.Deceleration),
                 _ => horizontalVelocity
             };
-
-            this.ElapsedRunSeconds -= (float)frameTime.SecondsPassed * 2f;
         }
 
         return (horizontalVelocity, movingDirection);
-    }
-
-    private bool GetIsMovingFast() {
-        return this.ElapsedRunSeconds >= this.TimeUntilRun;
     }
 
     private ActorState GetNewActorState(FrameTime frameTime) {
@@ -346,5 +308,9 @@ public sealed class PlatformerPlayer : PlatformerActor {
         if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this._spriteAnimator != null) {
             this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
+    }
+
+    private bool ShouldRequireAcceleration() {
+        return this.CurrentState.StateType is StateType.Falling or StateType.Moving;
     }
 }
