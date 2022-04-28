@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
-public sealed class PlatformerPlayer : PlatformerActor {
+public class PlatformerPlayer : PlatformerActor {
     private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
     private float _jumpHoldTime = 0.1f;
@@ -39,23 +39,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
     /// </summary>
     [DataMember(Order = 11, Name = "Moving Animation")]
     public SpriteAnimationReference MovingAnimationReference { get; } = new();
-
-    /// <summary>
-    /// Gets the acceleration in velocity per second when the player is changing directions.
-    /// </summary>
-    [DataMember]
-    [Category("Movement")]
-    public float AccelerationWhenChangingDirection { get; private set; } = 32f;
-
-    /// <summary>
-    /// Gets the deceleration when the player has no horizontal input.
-    /// </summary>
-    /// <remarks>
-    /// This is how much the velocity will decrease per second. A higher value will feel snappier, while a lower value will feel slippery.
-    /// </remarks>
-    [DataMember]
-    [Category("Movement")]
-    public float Deceleration { get; private set; } = 24f;
 
     /// <summary>
     /// Gets the maximum time a jump can be held in seconds.
@@ -123,16 +106,13 @@ public sealed class PlatformerPlayer : PlatformerActor {
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
-    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
+    /// <summary>
+    /// Gets the horizontal velocity and movement direction.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The horizontal velocity and movement direction.</returns>
+    protected virtual (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
         var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
-        var requireAcceleration = this.ShouldRequireAcceleration();
-        if (requireAcceleration) {
-            horizontalVelocity = this._input.HorizontalAxis switch {
-                < 0f when this.PreviousState.Velocity.X > 0f => Math.Max(this.PreviousState.Velocity.X - (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, -this.MaximumHorizontalVelocity),
-                > 0f when this.PreviousState.Velocity.X < 0f => Math.Min(this.PreviousState.Velocity.X + (float)frameTime.SecondsPassed * this.AccelerationWhenChangingDirection, this.MaximumHorizontalVelocity),
-                _ => horizontalVelocity
-            };
-        }
 
         var movingDirection = this._input.HorizontalAxis switch {
             > 0f => HorizontalDirection.Right,
@@ -149,14 +129,6 @@ public sealed class PlatformerPlayer : PlatformerActor {
         }
         else {
             this.CheckIfHitWall(frameTime, 0f, false);
-        }
-
-        if (horizontalVelocity == 0f && requireAcceleration) {
-            horizontalVelocity = this.PreviousState.Velocity.X switch {
-                > 0f => (float)Math.Max(0f, this.PreviousState.Velocity.X - frameTime.SecondsPassed * this.Deceleration),
-                < 0f => (float)Math.Min(0f, this.PreviousState.Velocity.X + frameTime.SecondsPassed * this.Deceleration),
-                _ => horizontalVelocity
-            };
         }
 
         return (horizontalVelocity, movingDirection);
@@ -308,9 +280,5 @@ public sealed class PlatformerPlayer : PlatformerActor {
         if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this._spriteAnimator != null) {
             this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
-    }
-
-    private bool ShouldRequireAcceleration() {
-        return this.CurrentState.StateType is StateType.Falling or StateType.Moving;
     }
 }
