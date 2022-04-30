@@ -99,7 +99,7 @@ public class PlatformerPlayer : PlatformerActor {
         this.PreviousState = previousState;
         this.ResetFacingDirection();
 
-        if (this.CurrentState.StateType != this.PreviousState.StateType) {
+        if (this.ShouldResetAnimation()) {
             this.ResetAnimation();
         }
 
@@ -134,30 +134,12 @@ public class PlatformerPlayer : PlatformerActor {
         return (horizontalVelocity, movingDirection);
     }
 
-    private ActorState GetNewActorState(FrameTime frameTime) {
-        if (this.Size.X > 0f && this.Size.Y > 0f) {
-            return this.CurrentState.StateType switch {
-                StateType.Idle => this.HandleIdle(frameTime),
-                StateType.Moving => this.HandleMoving(frameTime),
-                StateType.Jumping => this.HandleJumping(frameTime),
-                StateType.Falling => this.HandleFalling(frameTime),
-                _ => this.CurrentState
-            };
-        }
-
-        return this.CurrentState;
-    }
-
-    private float GetSecondsInState(FrameTime frameTime, StateType newState) {
-        var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this.CurrentState.StateType == newState) {
-            secondsPassed += this.CurrentState.SecondsInState;
-        }
-
-        return secondsPassed;
-    }
-
-    private ActorState HandleFalling(FrameTime frameTime) {
+    /// <summary>
+    /// Handles falling and determines the actor's state after the current frame.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The new actor state.</returns>
+    protected virtual ActorState HandleFalling(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         StateType stateType;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
@@ -191,7 +173,12 @@ public class PlatformerPlayer : PlatformerActor {
         return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
-    private ActorState HandleIdle(FrameTime frameTime) {
+    /// <summary>
+    /// Handles the idle stance and determines the actor's state after the current frame.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The new actor state.</returns>
+    protected virtual ActorState HandleIdle(FrameTime frameTime) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
         StateType stateType;
@@ -214,7 +201,12 @@ public class PlatformerPlayer : PlatformerActor {
         return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
-    private ActorState HandleJumping(FrameTime frameTime) {
+    /// <summary>
+    /// Handles jumping and determines the actor's state after the current frame.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The new actor state.</returns>
+    protected virtual ActorState HandleJumping(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         StateType stateType;
@@ -235,7 +227,12 @@ public class PlatformerPlayer : PlatformerActor {
         return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
-    private ActorState HandleMoving(FrameTime frameTime) {
+    /// <summary>
+    /// Handles moving and determines the actor's state after the current frame.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The new actor state.</returns>
+    protected virtual ActorState HandleMoving(FrameTime frameTime) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
         StateType stateType;
@@ -258,22 +255,52 @@ public class PlatformerPlayer : PlatformerActor {
         return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
     }
 
-    private void ResetAnimation() {
-        if (this._spriteAnimator != null) {
-            if (this.CurrentState.StateType != this.PreviousState.StateType) {
-                var spriteAnimation = this.CurrentState.StateType switch {
-                    StateType.Idle => this.IdleAnimationReference.PackagedAsset,
-                    StateType.Moving => this.MovingAnimationReference.PackagedAsset,
-                    StateType.Falling => this.FallingAnimationReference.PackagedAsset,
-                    StateType.Jumping => this.JumpingAnimationReference.PackagedAsset,
-                    _ => null
-                };
+    /// <summary>
+    /// Resets the animation according to the current state.
+    /// </summary>
+    protected virtual void ResetAnimation() {
+        var spriteAnimation = this.CurrentState.StateType switch {
+            StateType.Idle => this.IdleAnimationReference.PackagedAsset,
+            StateType.Moving => this.MovingAnimationReference.PackagedAsset,
+            StateType.Falling => this.FallingAnimationReference.PackagedAsset,
+            StateType.Jumping => this.JumpingAnimationReference.PackagedAsset,
+            _ => null
+        };
 
-                if (spriteAnimation != null) {
-                    this._spriteAnimator.Play(spriteAnimation, true);
-                }
-            }
+        if (spriteAnimation != null) {
+            this._spriteAnimator?.Play(spriteAnimation, true);
         }
+    }
+
+    /// <summary>
+    /// Checks whether the animation should be reset.
+    /// </summary>
+    /// <returns>A value indicating whether or not the animation should be reset.</returns>
+    protected virtual bool ShouldResetAnimation() {
+        return this.CurrentState.StateType != this.PreviousState.StateType && this._spriteAnimator != null;
+    }
+
+    private ActorState GetNewActorState(FrameTime frameTime) {
+        if (this.Size.X > 0f && this.Size.Y > 0f) {
+            return this.CurrentState.StateType switch {
+                StateType.Idle => this.HandleIdle(frameTime),
+                StateType.Moving => this.HandleMoving(frameTime),
+                StateType.Jumping => this.HandleJumping(frameTime),
+                StateType.Falling => this.HandleFalling(frameTime),
+                _ => this.CurrentState
+            };
+        }
+
+        return this.CurrentState;
+    }
+
+    private float GetSecondsInState(FrameTime frameTime, StateType newState) {
+        var secondsPassed = (float)frameTime.SecondsPassed;
+        if (this.CurrentState.StateType == newState) {
+            secondsPassed += this.CurrentState.SecondsInState;
+        }
+
+        return secondsPassed;
     }
 
     private void ResetFacingDirection() {
