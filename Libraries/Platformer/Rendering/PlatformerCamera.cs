@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -48,6 +47,20 @@ public class PlatformerCamera : Camera {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
     public void UpdateDesiredPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform) {
+        var x = this.GetXPosition(currentState, previousState, frameTime, isOnPlatform);
+        var y = this.GetYPosition(currentState, previousState, frameTime, isOnPlatform);
+        this.LocalPosition = new Vector2(x, y);
+    }
+
+    /// <summary>
+    /// Gets the X position for this camera given the actor's state.
+    /// </summary>
+    /// <param name="currentState">The current state.</param>
+    /// <param name="previousState">The previous state.</param>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
+    /// <returns>The x position.</returns>
+    protected virtual float GetXPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform) {
         var x = this.LocalPosition.X;
         var offsetX = this.FollowOffset.X;
         if (this.FollowArea.Width > 0f && this.TransformInheritance is TransformInheritance.Both or TransformInheritance.X) {
@@ -61,6 +74,18 @@ public class PlatformerCamera : Camera {
             }
         }
 
+        return x;
+    }
+
+    /// <summary>
+    /// Gets the Y position for this camera given the actor's state.
+    /// </summary>
+    /// <param name="currentState">The current state.</param>
+    /// <param name="previousState">The previous state.</param>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
+    /// <returns>The Y position.</returns>
+    protected virtual float GetYPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform) {
         var y = this.LocalPosition.Y;
         var offsetY = this.FollowOffset.Y;
         var minimumY = -this.FollowArea.Maximum.Y + offsetY;
@@ -92,10 +117,17 @@ public class PlatformerCamera : Camera {
             }
         }
 
-        this.LocalPosition = new Vector2(x, y);
+        return y;
     }
 
-    private float Lerp(float current, float desired, float amount) {
+    /// <summary>
+    /// Lerps a float value.
+    /// </summary>
+    /// <param name="current">The current value.</param>
+    /// <param name="desired">The desired value.</param>
+    /// <param name="amount">The amount to lerp (a value between 0 and 1)</param>
+    /// <returns>The lerped value.</returns>
+    protected float Lerp(float current, float desired, float amount) {
         var result = current + (desired - current) * amount;
 
         if (Math.Abs(result - desired) < this.Settings.InversePixelsPerUnit * 0.5f) {
