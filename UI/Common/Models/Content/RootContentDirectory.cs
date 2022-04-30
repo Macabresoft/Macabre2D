@@ -14,7 +14,8 @@ public sealed class RootContentDirectory : ContentDirectory {
         PathService.BinDirectoryName,
         PathService.ObjDirectoryName,
         ".git",
-        ".ignore"
+        ".ignore",
+        "UserScripts"
     };
 
     private readonly IPathService _pathService;
