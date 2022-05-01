@@ -15,7 +15,7 @@ public enum ButtonState {
 /// <summary>
 /// A manager to simplify input related actions.
 /// </summary>
-public sealed class InputManager {
+public class InputManager {
 
     /// <summary>
     /// Gets the jump state.
@@ -31,7 +31,7 @@ public sealed class InputManager {
     /// Updates values for the current frame.
     /// </summary>
     /// <param name="inputState">The current input state.</param>
-    public void Update(InputState inputState) {
+    public virtual void Update(InputState inputState) {
         if (inputState.IsKeyNewlyPressed(Keys.Space)) {
             this.JumpState = ButtonState.Pressed;
         }

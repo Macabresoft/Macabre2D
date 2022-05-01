@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
 public class PlatformerPlayer : PlatformerActor {
-    private readonly InputManager _input = new();
     private PlatformerCamera? _camera;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
@@ -70,6 +69,11 @@ public class PlatformerPlayer : PlatformerActor {
         set => this.Set(ref this._maximumHorizontalVelocity, value);
     }
 
+    /// <summary>
+    /// Gets the input manager.
+    /// </summary>
+    protected virtual InputManager Input { get; } = new();
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -92,7 +96,7 @@ public class PlatformerPlayer : PlatformerActor {
 
     /// <inheritdoc />
     public override void Update(FrameTime frameTime, InputState inputState) {
-        this._input.Update(inputState);
+        this.Input.Update(inputState);
 
         var previousState = this.CurrentState;
         this.CurrentState = this.GetNewActorState(frameTime);
@@ -112,9 +116,9 @@ public class PlatformerPlayer : PlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <returns>The horizontal velocity and movement direction.</returns>
     protected virtual (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
-        var horizontalVelocity = this._input.HorizontalAxis * this.MaximumHorizontalVelocity;
+        var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
 
-        var movingDirection = this._input.HorizontalAxis switch {
+        var movingDirection = this.Input.HorizontalAxis switch {
             > 0f => HorizontalDirection.Right,
             < 0f => HorizontalDirection.Left,
             _ => this.CurrentState.FacingDirection
@@ -149,7 +153,7 @@ public class PlatformerPlayer : PlatformerActor {
                 verticalVelocity = bouncePlatform.BounceVelocity;
                 stateType = StateType.Jumping;
 
-                if (this._input.JumpState is ButtonState.Held or ButtonState.Pressed) {
+                if (this.Input.JumpState is ButtonState.Held or ButtonState.Pressed) {
                     verticalVelocity = Math.Max(this.JumpVelocity * 0.5f + verticalVelocity, this.JumpVelocity);
                 }
             }
@@ -183,7 +187,7 @@ public class PlatformerPlayer : PlatformerActor {
         var verticalVelocity = 0f;
         StateType stateType;
 
-        if (this._input.JumpState == ButtonState.Pressed) {
+        if (this.Input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
             verticalVelocity = this.JumpVelocity;
@@ -215,7 +219,7 @@ public class PlatformerPlayer : PlatformerActor {
             verticalVelocity = 0f;
             stateType = StateType.Falling;
         }
-        else if (this._input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
+        else if (this.Input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
             stateType = StateType.Falling;
         }
         else {
@@ -237,7 +241,7 @@ public class PlatformerPlayer : PlatformerActor {
         var verticalVelocity = 0f;
         StateType stateType;
 
-        if (this._input.JumpState == ButtonState.Pressed) {
+        if (this.Input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
             verticalVelocity = this.JumpVelocity;
