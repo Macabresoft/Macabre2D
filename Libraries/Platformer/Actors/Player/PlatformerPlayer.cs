@@ -13,7 +13,6 @@ public class PlatformerPlayer : PlatformerActor {
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
-    private QueueableSpriteAnimator? _spriteAnimator;
 
     /// <summary>
     /// Gets the falling animation reference.
@@ -74,6 +73,11 @@ public class PlatformerPlayer : PlatformerActor {
     /// </summary>
     protected virtual InputManager Input { get; } = new();
 
+    /// <summary>
+    /// Gets the sprite animator.
+    /// </summary>
+    protected QueueableSpriteAnimator? SpriteAnimator { get; private set; }
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
@@ -84,14 +88,14 @@ public class PlatformerPlayer : PlatformerActor {
         this.FallingAnimationReference.Initialize(this.Scene.Assets);
 
         this._camera = this.GetOrAddChild<PlatformerCamera>();
-        this._spriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
-        this._spriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
+        this.SpriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
+        this.SpriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
 
         if (this.IdleAnimationReference.PackagedAsset is { } animation) {
-            this._spriteAnimator.Play(animation, true);
+            this.SpriteAnimator.Play(animation, true);
         }
 
-        this.CurrentState = new ActorState(StateType.Idle, this._spriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
+        this.CurrentState = new ActorState(StateType.Idle, this.SpriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
     }
 
     /// <inheritdoc />
@@ -136,6 +140,21 @@ public class PlatformerPlayer : PlatformerActor {
         }
 
         return (horizontalVelocity, movingDirection);
+    }
+
+    /// <summary>
+    /// Gets the seconds in the state.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="newState">The new state.</param>
+    /// <returns>The seconds in the specified state.</returns>
+    protected float GetSecondsInState(FrameTime frameTime, StateType newState) {
+        var secondsPassed = (float)frameTime.SecondsPassed;
+        if (this.CurrentState.StateType == newState) {
+            secondsPassed += this.CurrentState.SecondsInState;
+        }
+
+        return secondsPassed;
     }
 
     /// <summary>
@@ -272,7 +291,7 @@ public class PlatformerPlayer : PlatformerActor {
         };
 
         if (spriteAnimation != null) {
-            this._spriteAnimator?.Play(spriteAnimation, true);
+            this.SpriteAnimator?.Play(spriteAnimation, true);
         }
     }
 
@@ -281,7 +300,7 @@ public class PlatformerPlayer : PlatformerActor {
     /// </summary>
     /// <returns>A value indicating whether or not the animation should be reset.</returns>
     protected virtual bool ShouldResetAnimation() {
-        return this.CurrentState.StateType != this.PreviousState.StateType && this._spriteAnimator != null;
+        return this.CurrentState.StateType != this.PreviousState.StateType && this.SpriteAnimator != null;
     }
 
     private ActorState GetNewActorState(FrameTime frameTime) {
@@ -298,18 +317,9 @@ public class PlatformerPlayer : PlatformerActor {
         return this.CurrentState;
     }
 
-    private float GetSecondsInState(FrameTime frameTime, StateType newState) {
-        var secondsPassed = (float)frameTime.SecondsPassed;
-        if (this.CurrentState.StateType == newState) {
-            secondsPassed += this.CurrentState.SecondsInState;
-        }
-
-        return secondsPassed;
-    }
-
     private void ResetFacingDirection() {
-        if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this._spriteAnimator != null) {
-            this._spriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
+        if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this.SpriteAnimator != null) {
+            this.SpriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
     }
 }
