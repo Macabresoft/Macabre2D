@@ -143,6 +143,14 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
+    /// Gets the jump velocity;
+    /// </summary>
+    /// <returns>The jump velocity.</returns>
+    protected virtual float GetJumpVelocity() {
+        return this.JumpVelocity;
+    }
+
+    /// <summary>
     /// Gets the seconds in the state.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
@@ -173,7 +181,8 @@ public class PlatformerPlayer : PlatformerActor {
                 stateType = StateType.Jumping;
 
                 if (this.Input.JumpState is ButtonState.Held or ButtonState.Pressed) {
-                    verticalVelocity = Math.Max(this.JumpVelocity * 0.5f + verticalVelocity, this.JumpVelocity);
+                    var jumpVelocity = this.GetJumpVelocity();
+                    verticalVelocity = Math.Max(jumpVelocity * 0.5f + verticalVelocity, jumpVelocity);
                 }
             }
             else {
@@ -209,7 +218,7 @@ public class PlatformerPlayer : PlatformerActor {
         if (this.Input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
-            verticalVelocity = this.JumpVelocity;
+            verticalVelocity = this.GetJumpVelocity();
         }
         else if (this.CheckIfStillGrounded()) {
             stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
@@ -263,7 +272,7 @@ public class PlatformerPlayer : PlatformerActor {
         if (this.Input.JumpState == ButtonState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
-            verticalVelocity = this.JumpVelocity;
+            verticalVelocity = this.GetJumpVelocity();
         }
         else if (this.CheckIfStillGrounded()) {
             stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
