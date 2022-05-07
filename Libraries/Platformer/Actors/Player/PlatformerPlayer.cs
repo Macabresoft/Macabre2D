@@ -115,34 +115,6 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
-    /// Gets the horizontal velocity and movement direction.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <returns>The horizontal velocity and movement direction.</returns>
-    protected virtual (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
-        var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
-
-        var movingDirection = this.Input.HorizontalAxis switch {
-            > 0f => HorizontalDirection.Right,
-            < 0f => HorizontalDirection.Left,
-            _ => this.CurrentState.FacingDirection
-        };
-
-        if (horizontalVelocity != 0f) {
-            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
-                horizontalVelocity = 0f;
-            }
-
-            this.CheckIfHitWall(frameTime, -horizontalVelocity, false);
-        }
-        else {
-            this.CheckIfHitWall(frameTime, 0f, false);
-        }
-
-        return (horizontalVelocity, movingDirection);
-    }
-
-    /// <summary>
     /// Gets the jump velocity;
     /// </summary>
     /// <returns>The jump velocity.</returns>
@@ -310,6 +282,29 @@ public class PlatformerPlayer : PlatformerActor {
     /// <returns>A value indicating whether or not the animation should be reset.</returns>
     protected virtual bool ShouldResetAnimation() {
         return this.CurrentState.StateType != this.PreviousState.StateType && this.SpriteAnimator != null;
+    }
+
+    private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
+        var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
+
+        var movingDirection = this.Input.HorizontalAxis switch {
+            > 0f => HorizontalDirection.Right,
+            < 0f => HorizontalDirection.Left,
+            _ => this.CurrentState.FacingDirection
+        };
+
+        if (horizontalVelocity != 0f) {
+            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
+                horizontalVelocity = 0f;
+            }
+
+            this.CheckIfHitWall(frameTime, -horizontalVelocity, false);
+        }
+        else {
+            this.CheckIfHitWall(frameTime, 0f, false);
+        }
+
+        return (horizontalVelocity, movingDirection);
     }
 
     private ActorState GetNewActorState(FrameTime frameTime) {
