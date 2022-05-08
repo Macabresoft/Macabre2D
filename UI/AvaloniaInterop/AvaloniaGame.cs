@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// A <see cref="IGame" /> that can run within Avalonia.
@@ -85,7 +86,7 @@ public class AvaloniaGame : BaseGame, IAvaloniaGame {
     /// <inheritdoc />
     protected override void UpdateInputState() {
         if (this._mouse != null && this._keyboard != null) {
-            this.InputState = new InputState(this._mouse.State, this._keyboard.GetState(), this.InputState);
+            this.InputState = new InputState(this._mouse.State, this._keyboard.GetState(), GamePadState.Default, this.InputState);
         }
     }
 }

@@ -250,7 +250,7 @@ public class BaseGame : Game, IGame {
     /// Updates the <see cref="InputState" />.
     /// </summary>
     protected virtual void UpdateInputState() {
-        this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), this.InputState);
+        this.InputState = new InputState(Mouse.GetState(), Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), this.InputState);
     }
 
     private void ApplyGraphicsSettings() {
