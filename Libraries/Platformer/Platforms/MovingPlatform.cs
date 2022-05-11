@@ -58,7 +58,7 @@ public class MovingPlatform : MoverPlatform, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public void Update(FrameTime frameTime, Framework.InputState inputState) {
         if (this._endPoint != this._startPoint) {
             if (this._timePaused < this.PauseTimeInSeconds) {
                 this._timePaused += (float)frameTime.SecondsPassed;

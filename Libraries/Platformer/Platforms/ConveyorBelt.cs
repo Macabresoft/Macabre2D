@@ -20,7 +20,7 @@ public class ConveyorBelt : MoverPlatform, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public void Update(FrameTime frameTime, Framework.InputState inputState) {
         var amount = this.Velocity * (float)frameTime.SecondsPassed;
         this.MoveAttached(new Vector2(amount, 0f));
     }

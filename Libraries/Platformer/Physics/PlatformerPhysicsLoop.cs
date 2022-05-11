@@ -140,7 +140,7 @@ public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
         }
 
         /// <inheritdoc />
-        public void Update(FrameTime frameTime, InputState inputState) {
+        public void Update(FrameTime frameTime, Framework.InputState inputState) {
         }
     }
 }

@@ -99,7 +99,7 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
+    public override void Update(FrameTime frameTime, Framework.InputState inputState) {
         this.Input.Update(inputState);
 
         var previousState = this.CurrentState;
@@ -152,7 +152,7 @@ public class PlatformerPlayer : PlatformerActor {
                 verticalVelocity = bouncePlatform.BounceVelocity;
                 stateType = StateType.Jumping;
 
-                if (this.Input.JumpState is ButtonState.Held or ButtonState.Pressed) {
+                if (this.Input.JumpState is InputState.Held or InputState.Pressed) {
                     var jumpVelocity = this.GetJumpVelocity();
                     verticalVelocity = Math.Max(jumpVelocity * 0.5f + verticalVelocity, jumpVelocity);
                 }
@@ -187,7 +187,7 @@ public class PlatformerPlayer : PlatformerActor {
         var verticalVelocity = 0f;
         StateType stateType;
 
-        if (this.Input.JumpState == ButtonState.Pressed) {
+        if (this.Input.JumpState == InputState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
             verticalVelocity = this.GetJumpVelocity();
@@ -219,7 +219,7 @@ public class PlatformerPlayer : PlatformerActor {
             verticalVelocity = 0f;
             stateType = StateType.Falling;
         }
-        else if (this.Input.JumpState != ButtonState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
+        else if (this.Input.JumpState != InputState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
             stateType = StateType.Falling;
         }
         else {
@@ -241,7 +241,7 @@ public class PlatformerPlayer : PlatformerActor {
         var verticalVelocity = 0f;
         StateType stateType;
 
-        if (this.Input.JumpState == ButtonState.Pressed) {
+        if (this.Input.JumpState == InputState.Pressed) {
             this.UnsetPlatform();
             stateType = StateType.Jumping;
             verticalVelocity = this.GetJumpVelocity();

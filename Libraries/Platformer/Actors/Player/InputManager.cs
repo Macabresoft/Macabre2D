@@ -6,9 +6,10 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// The state of a button.
 /// </summary>
-public enum ButtonState {
+public enum InputState {
     Pressed,
     Held,
+    Released,
     None
 }
 
@@ -32,21 +33,24 @@ public class InputManager {
     /// <summary>
     /// Gets the jump state.
     /// </summary>
-    public ButtonState JumpState { get; private set; } = ButtonState.None;
+    public InputState JumpState { get; private set; } = InputState.None;
 
     /// <summary>
     /// Updates values for the current frame.
     /// </summary>
     /// <param name="inputState">The current input state.</param>
-    public virtual void Update(InputState inputState) {
+    public virtual void Update(Framework.InputState inputState) {
         if (inputState.IsKeyNewlyPressed(Keys.Space) || inputState.IsGamePadButtonNewlyPressed(Buttons.A)) {
-            this.JumpState = ButtonState.Pressed;
+            this.JumpState = InputState.Pressed;
         }
         else if (inputState.IsKeyHeld(Keys.Space) || inputState.IsGamePadButtonHeld(Buttons.A)) {
-            this.JumpState = ButtonState.Held;
+            this.JumpState = InputState.Held;
+        }
+        else if (inputState.IsKeyNewlyReleased(Keys.Space) || inputState.IsGamePadButtonNewlyReleased(Buttons.A)) {
+            this.JumpState = InputState.Released;
         }
         else {
-            this.JumpState = ButtonState.None;
+            this.JumpState = InputState.None;
         }
 
         this.HorizontalAxis = 0f;

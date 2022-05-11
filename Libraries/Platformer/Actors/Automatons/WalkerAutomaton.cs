@@ -77,7 +77,7 @@ public class WalkerAutomaton : PlatformerActor {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, InputState inputState) {
+    public override void Update(FrameTime frameTime, Framework.InputState inputState) {
         var previousState = this.CurrentState;
         this.CurrentState = this.CurrentState.StateType switch {
             StateType.Idle => this.HandleIdle(frameTime),

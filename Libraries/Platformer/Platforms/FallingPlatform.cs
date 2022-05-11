@@ -79,7 +79,7 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, InputState inputState) {
+    public void Update(FrameTime frameTime, Framework.InputState inputState) {
         switch (this._state) {
             case FallingPlatformState.Waiting: {
                 this._timeInState += (float)frameTime.SecondsPassed;
