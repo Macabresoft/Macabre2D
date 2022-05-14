@@ -286,12 +286,16 @@ public class PlatformerPlayer : PlatformerActor {
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
         var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
-
-        var movingDirection = this.Input.HorizontalAxis switch {
-            > 0f => HorizontalDirection.Right,
-            < 0f => HorizontalDirection.Left,
-            _ => this.CurrentState.FacingDirection
-        };
+        var movingDirection = this.CurrentState.FacingDirection;
+        
+        if (horizontalVelocity < 0f) {
+            horizontalVelocity = Math.Min(horizontalVelocity, this.CurrentState.Velocity.X);
+            movingDirection = HorizontalDirection.Left;
+        }
+        else if (horizontalVelocity > 0f) {
+            horizontalVelocity = Math.Max(horizontalVelocity, this.CurrentState.Velocity.X);
+            movingDirection = HorizontalDirection.Right;
+        }
 
         if (horizontalVelocity != 0f) {
             if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
