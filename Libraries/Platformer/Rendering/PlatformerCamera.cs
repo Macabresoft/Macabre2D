@@ -95,7 +95,7 @@ public class PlatformerCamera : Camera {
                 y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
             }
             else {
-                if (currentState.StateType is StateType.Falling or StateType.Jumping) {
+                if (currentState.StateType is StateType.Aerial) {
                     var isFalling = previousState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < FloatingPointTolerance;
                     if (this._isFreeFalling && isFalling) {
                         y = this.Lerp(this.LocalPosition.Y, minimumY, (float)frameTime.SecondsPassed);
@@ -106,7 +106,7 @@ public class PlatformerCamera : Camera {
                         this._isFreeFalling = Math.Abs(y - maximumY) < FloatingPointTolerance && isFalling;
                     }
                 }
-                else if (!this._isFreeFalling && previousState.StateType == StateType.Falling) {
+                else if (!this._isFreeFalling && previousState.StateType == StateType.Aerial) {
                     var yMovement = currentState.Position.Y - previousState.Position.Y;
                     y = Math.Clamp(this.LocalPosition.Y - yMovement, minimumY, maximumY);
                 }

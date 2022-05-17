@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class PlatformerPlayer : PlatformerActor {
     private PlatformerCamera? _camera;
+    private bool _isJumping;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
     private float _maximumHorizontalVelocity = 7f;
@@ -95,7 +96,7 @@ public class PlatformerPlayer : PlatformerActor {
             this.SpriteAnimator.Play(animation, true);
         }
 
-        this.CurrentState = new ActorState(StateType.Idle, this.SpriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
+        this.CurrentState = new ActorState(StateType.Grounded, this.SpriteAnimator.RenderSettings.FlipHorizontal ? HorizontalDirection.Left : HorizontalDirection.Right, this.Transform.Position, Vector2.Zero, 0f);
     }
 
     /// <inheritdoc />
@@ -106,11 +107,6 @@ public class PlatformerPlayer : PlatformerActor {
         this.CurrentState = this.GetNewActorState(frameTime);
         this.PreviousState = previousState;
         this.ResetFacingDirection();
-
-        if (this.ShouldResetAnimation()) {
-            this.ResetAnimation();
-        }
-
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
@@ -142,15 +138,16 @@ public class PlatformerPlayer : PlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <returns>The new actor state.</returns>
-    protected virtual ActorState HandleFalling(FrameTime frameTime) {
+    protected virtual ActorState HandleAerial(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         StateType stateType;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
         if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
             if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
+                this._isJumping = true;
                 verticalVelocity = bouncePlatform.BounceVelocity;
-                stateType = StateType.Jumping;
+                stateType = StateType.Aerial;
 
                 if (this.Input.JumpState is InputState.Held or InputState.Pressed) {
                     var jumpVelocity = this.GetJumpVelocity();
@@ -158,72 +155,28 @@ public class PlatformerPlayer : PlatformerActor {
                 }
             }
             else {
-                stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
+                stateType = StateType.Grounded;
+                this.PlayGroundedAnimation(horizontalVelocity);
                 verticalVelocity = 0f;
             }
         }
         else {
             if (verticalVelocity > 0f && this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
                 verticalVelocity = 0f;
+                this._isJumping = false;
+            }
+            else if (this._isJumping && this.Input.JumpState == InputState.Held) {
+                if (this.CurrentState.SecondsInState > this.JumpHoldTime) {
+                    this._isJumping = false;
+                }
+            }
+            else {
+                verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+                verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
             }
 
-            verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
-            stateType = StateType.Falling;
-        }
 
-        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
-        this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
-    }
-
-    /// <summary>
-    /// Handles the idle stance and determines the actor's state after the current frame.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <returns>The new actor state.</returns>
-    protected virtual ActorState HandleIdle(FrameTime frameTime) {
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
-        var verticalVelocity = 0f;
-        StateType stateType;
-
-        if (this.Input.JumpState == InputState.Pressed) {
-            this.UnsetPlatform();
-            stateType = StateType.Jumping;
-            verticalVelocity = this.GetJumpVelocity();
-        }
-        else if (this.CheckIfStillGrounded()) {
-            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
-        }
-        else {
-            stateType = StateType.Falling;
-            verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-        }
-
-        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
-        this.ApplyVelocity(frameTime, velocity);
-        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
-    }
-
-    /// <summary>
-    /// Handles jumping and determines the actor's state after the current frame.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <returns>The new actor state.</returns>
-    protected virtual ActorState HandleJumping(FrameTime frameTime) {
-        var verticalVelocity = this.CurrentState.Velocity.Y;
-        var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
-        StateType stateType;
-
-        if (this.CheckIfHitCeiling(frameTime, verticalVelocity)) {
-            verticalVelocity = 0f;
-            stateType = StateType.Falling;
-        }
-        else if (this.Input.JumpState != InputState.Held || this.CurrentState.SecondsInState > this.JumpHoldTime) {
-            stateType = StateType.Falling;
-        }
-        else {
-            stateType = StateType.Jumping;
+            stateType = StateType.Aerial;
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
@@ -236,22 +189,20 @@ public class PlatformerPlayer : PlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <returns>The new actor state.</returns>
-    protected virtual ActorState HandleMoving(FrameTime frameTime) {
+    protected virtual ActorState HandleGrounded(FrameTime frameTime) {
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
         var verticalVelocity = 0f;
         StateType stateType;
 
         if (this.Input.JumpState == InputState.Pressed) {
-            this.UnsetPlatform();
-            stateType = StateType.Jumping;
-            verticalVelocity = this.GetJumpVelocity();
+            verticalVelocity = this.Jump(out stateType);
         }
         else if (this.CheckIfStillGrounded()) {
-            stateType = horizontalVelocity != 0f ? StateType.Moving : StateType.Idle;
+            stateType = StateType.Grounded;
+            this.PlayGroundedAnimation(horizontalVelocity);
         }
         else {
-            verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-            stateType = StateType.Falling;
+            verticalVelocity = this.Fall(frameTime, out stateType);
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
@@ -260,34 +211,35 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
-    /// Resets the animation according to the current state.
+    /// Gets a value indicating whether or not the grounded state has changed from an aerial state or if the horizontal velocity has changed between zero/non-zero.
     /// </summary>
-    protected virtual void ResetAnimation() {
-        var spriteAnimation = this.CurrentState.StateType switch {
-            StateType.Idle => this.IdleAnimationReference.PackagedAsset,
-            StateType.Moving => this.MovingAnimationReference.PackagedAsset,
-            StateType.Falling => this.FallingAnimationReference.PackagedAsset,
-            StateType.Jumping => this.JumpingAnimationReference.PackagedAsset,
-            _ => null
-        };
-
-        if (spriteAnimation != null) {
-            this.SpriteAnimator?.Play(spriteAnimation, true);
-        }
+    /// <param name="newHorizontalVelocity">The new horizontal velocity.</param>
+    /// <returns>A value indicating whether or not the grounded state has changed.</returns>
+    protected bool HasGroundedStateChanged(float newHorizontalVelocity) {
+        return this.CurrentState.StateType == StateType.Aerial ||
+               (newHorizontalVelocity == 0f && this.CurrentState.Velocity.X != 0f) ||
+               (newHorizontalVelocity != 0f && this.CurrentState.Velocity.X == 0f);
     }
 
     /// <summary>
-    /// Checks whether the animation should be reset.
+    /// Completely resets the current animation.
     /// </summary>
-    /// <returns>A value indicating whether or not the animation should be reset.</returns>
-    protected virtual bool ShouldResetAnimation() {
-        return this.CurrentState.StateType != this.PreviousState.StateType && this.SpriteAnimator != null;
+    protected virtual void ResetAnimation() {
+        if (this.CurrentState.StateType == StateType.Aerial) {
+            this.PlayFallAnimation();
+        }
+        else if (this.CurrentState.Velocity.X == 0f) {
+            this.PlayIdleAnimation();
+        }
+        else {
+            this.PlayMovingAnimation();
+        }
     }
 
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
         var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
         var movingDirection = this.CurrentState.FacingDirection;
-        
+
         if (horizontalVelocity < 0f) {
             horizontalVelocity = Math.Min(horizontalVelocity, this.CurrentState.Velocity.X);
             movingDirection = HorizontalDirection.Left;
@@ -311,18 +263,67 @@ public class PlatformerPlayer : PlatformerActor {
         return (horizontalVelocity, movingDirection);
     }
 
+    private float Fall(FrameTime frameTime, out StateType stateType) {
+        stateType = StateType.Aerial;
+        this.UnsetPlatform();
+        this.PlayFallAnimation();
+        return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+    }
+
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             return this.CurrentState.StateType switch {
-                StateType.Idle => this.HandleIdle(frameTime),
-                StateType.Moving => this.HandleMoving(frameTime),
-                StateType.Jumping => this.HandleJumping(frameTime),
-                StateType.Falling => this.HandleFalling(frameTime),
+                StateType.Grounded => this.HandleGrounded(frameTime),
+                StateType.Aerial => this.HandleAerial(frameTime),
                 _ => this.CurrentState
             };
         }
 
         return this.CurrentState;
+    }
+
+    private float Jump(out StateType stateType) {
+        this._isJumping = true;
+        stateType = StateType.Aerial;
+        this.UnsetPlatform();
+        this.PlayJumpAnimation();
+        return this.GetJumpVelocity();
+    }
+
+    private void PlayFallAnimation() {
+        if (this.SpriteAnimator != null && this.FallingAnimationReference.PackagedAsset != null) {
+            this.SpriteAnimator.Play(this.FallingAnimationReference.PackagedAsset, true);
+        }
+    }
+
+    private void PlayGroundedAnimation(float horizontalVelocity) {
+        if (this.HasGroundedStateChanged(horizontalVelocity)) {
+            if (horizontalVelocity == 0f) {
+                this.PlayIdleAnimation();
+            }
+            else {
+                this.PlayMovingAnimation();
+            }
+        }
+    }
+
+    private void PlayIdleAnimation() {
+        if (this.SpriteAnimator != null && this.IdleAnimationReference.PackagedAsset != null) {
+            this.SpriteAnimator.Play(this.IdleAnimationReference.PackagedAsset, true);
+        }
+    }
+
+    private void PlayJumpAnimation() {
+        if (this.SpriteAnimator != null && this.JumpingAnimationReference.PackagedAsset != null && this.FallingAnimationReference.PackagedAsset != null) {
+            this.SpriteAnimator.Play(this.JumpingAnimationReference.PackagedAsset, false);
+            this.SpriteAnimator.Enqueue(this.FallingAnimationReference.PackagedAsset, true);
+        }
+    }
+
+    private void PlayMovingAnimation() {
+        if (this.SpriteAnimator != null && this.MovingAnimationReference.PackagedAsset != null) {
+            this.SpriteAnimator.Play(this.MovingAnimationReference.PackagedAsset, true);
+        }
     }
 
     private void ResetFacingDirection() {
