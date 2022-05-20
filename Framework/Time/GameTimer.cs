@@ -1,0 +1,86 @@
+﻿namespace Macabresoft.Macabre2D.Framework;
+
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Gets the state of the timer.
+/// </summary>
+public enum TimerState {
+    Disabled,
+    Running,
+    Finished
+}
+
+/// <summary>
+/// A timer that can be disabled and has a limit
+/// </summary>
+[DataContract]
+public class GameTimer {
+    /// <summary>
+    /// Gets the state of this timer.
+    /// </summary>
+    public TimerState State { get; private set; } = TimerState.Disabled;
+
+    /// <summary>
+    /// Gets or sets the time limit of this timer in seconds.
+    /// </summary>
+    [DataMember]
+    public float TimeLimit { get; set; }
+
+    /// <summary>
+    /// Gets the number of seconds this has been running.
+    /// </summary>
+    public float TimeRunning { get; private set; }
+
+    /// <summary>
+    /// Pauses this timer.
+    /// </summary>
+    public void Pause() {
+        this.State = TimerState.Disabled;
+    }
+
+    /// <summary>
+    /// Restarts this timer.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void Restart(FrameTime frameTime) {
+        this.State = TimerState.Running;
+        this.TimeRunning = 0f;
+        this.Update(frameTime);
+    }
+
+    /// <summary>
+    /// Starts the timer form wherever it left off.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void Start(FrameTime frameTime) {
+        if (this.State == TimerState.Disabled) {
+            this.State = TimerState.Running;
+        }
+
+        this.Update(frameTime);
+    }
+
+    /// <summary>
+    /// Stops this timer.
+    /// </summary>
+    public void Stop() {
+        this.Pause();
+        this.TimeRunning = 0f;
+    }
+
+    /// <summary>
+    /// Updates the timer.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void Update(FrameTime frameTime) {
+        if (this.State == TimerState.Running) {
+            this.TimeRunning += (float)frameTime.SecondsPassed;
+
+            if (this.TimeRunning >= this.TimeLimit) {
+                this.TimeRunning = this.TimeLimit;
+                this.State = TimerState.Finished;
+            }
+        }
+    }
+}
