@@ -15,7 +15,9 @@ public enum TimerState {
 /// A timer that can be disabled and has a limit
 /// </summary>
 [DataContract]
-public class GameTimer {
+public class GameTimer : NotifyPropertyChanged {
+    private float _timeLimit;
+
     /// <summary>
     /// Gets the state of this timer.
     /// </summary>
@@ -25,7 +27,10 @@ public class GameTimer {
     /// Gets or sets the time limit of this timer in seconds.
     /// </summary>
     [DataMember]
-    public float TimeLimit { get; set; }
+    public float TimeLimit {
+        get => this._timeLimit;
+        set => this.Set(ref this._timeLimit, value);
+    }
 
     /// <summary>
     /// Gets the number of seconds this has been running.
