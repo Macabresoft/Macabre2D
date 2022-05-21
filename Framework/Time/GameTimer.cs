@@ -93,9 +93,16 @@ public class GameTimer : NotifyPropertyChanged {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     public void Restart(FrameTime frameTime) {
+        this.Restart();
+        this.Increment(frameTime);
+    }
+
+    /// <summary>
+    /// Restarts the timer with zero time running.
+    /// </summary>
+    public void Restart() {
         this.State = TimerState.Running;
         this.TimeRunning = 0f;
-        this.Increment(frameTime);
     }
 
     /// <summary>
