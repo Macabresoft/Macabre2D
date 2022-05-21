@@ -15,10 +15,10 @@ public class GameTimerTests {
     [TestCase(1f, 1f, TimerState.Finished)]
     [TestCase(10f, 5f, TimerState.Running)]
     [TestCase(100f, 1000f, TimerState.Finished)]
-    public static void Update_ShouldHandleStatusChange(float timeLimit, float timeToPass, TimerState endState) {
+    public static void Increment_ShouldHandleStatusChange(float timeLimit, float timeToPass, TimerState endState) {
         var gameTimer = new GameTimer { TimeLimit = timeLimit };
         gameTimer.Start(new FrameTime());
-        gameTimer.Update(new FrameTime(new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(timeToPass)), 1));
+        gameTimer.Increment(new FrameTime(new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(timeToPass)), 1));
 
         using (new AssertionScope()) {
             gameTimer.State.Should().Be(endState);

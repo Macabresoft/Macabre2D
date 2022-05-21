@@ -8,6 +8,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public struct FrameTime {
     /// <summary>
+    /// A <see cref="FrameTime" /> without any time passed.
+    /// </summary>
+    public static readonly FrameTime Zero = new();
+
+    /// <summary>
     /// The frame time span. This represents the time that has passed since the last frame.
     /// </summary>
     public readonly TimeSpan FrameTimeSpan;
@@ -43,5 +48,16 @@ public struct FrameTime {
         this.TotalTimeSpan = gameTime.TotalGameTime;
         this.SecondsPassed = this.FrameTimeSpan.TotalSeconds * gameSpeed;
         this.MillisecondsPassed = this.FrameTimeSpan.TotalMilliseconds * gameSpeed;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FrameTime" /> struct.
+    /// </summary>
+    public FrameTime() {
+        this.IsRunningSlowly = false;
+        this.FrameTimeSpan = TimeSpan.Zero;
+        this.TotalTimeSpan = TimeSpan.Zero;
+        this.SecondsPassed = 0;
+        this.MillisecondsPassed = 0;
     }
 }

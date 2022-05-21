@@ -33,10 +33,54 @@ public class GameTimer {
     public float TimeRunning { get; private set; }
 
     /// <summary>
+    /// Decrements the timer.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void Decrement(FrameTime frameTime) {
+        if (this.State != TimerState.Disabled) {
+            this.TimeRunning -= (float)frameTime.SecondsPassed;
+
+            if (this.State == TimerState.Finished && this.TimeRunning < this.TimeLimit) {
+                this.State = TimerState.Running;
+            }
+
+            if (this.TimeRunning <= 0f) {
+                this.TimeRunning = 0f;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Increments the timer.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    public void Increment(FrameTime frameTime) {
+        if (this.State == TimerState.Running) {
+            this.TimeRunning += (float)frameTime.SecondsPassed;
+
+            if (this.TimeRunning >= this.TimeLimit) {
+                this.TimeRunning = this.TimeLimit;
+                this.State = TimerState.Finished;
+            }
+        }
+    }
+
+    /// <summary>
     /// Pauses this timer.
     /// </summary>
     public void Pause() {
         this.State = TimerState.Disabled;
+    }
+
+    /// <summary>
+    /// Resets this timer.
+    /// </summary>
+    public void Reset() {
+        this.TimeRunning = 0f;
+
+        if (this.State == TimerState.Finished) {
+            this.State = TimerState.Running;
+        }
     }
 
     /// <summary>
@@ -46,7 +90,7 @@ public class GameTimer {
     public void Restart(FrameTime frameTime) {
         this.State = TimerState.Running;
         this.TimeRunning = 0f;
-        this.Update(frameTime);
+        this.Increment(frameTime);
     }
 
     /// <summary>
@@ -58,7 +102,7 @@ public class GameTimer {
             this.State = TimerState.Running;
         }
 
-        this.Update(frameTime);
+        this.Increment(frameTime);
     }
 
     /// <summary>
@@ -67,20 +111,5 @@ public class GameTimer {
     public void Stop() {
         this.Pause();
         this.TimeRunning = 0f;
-    }
-
-    /// <summary>
-    /// Updates the timer.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    public void Update(FrameTime frameTime) {
-        if (this.State == TimerState.Running) {
-            this.TimeRunning += (float)frameTime.SecondsPassed;
-
-            if (this.TimeRunning >= this.TimeLimit) {
-                this.TimeRunning = this.TimeLimit;
-                this.State = TimerState.Finished;
-            }
-        }
     }
 }
