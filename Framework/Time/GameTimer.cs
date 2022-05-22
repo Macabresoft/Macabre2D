@@ -38,6 +38,14 @@ public class GameTimer : NotifyPropertyChanged {
     public float TimeRunning { get; private set; }
 
     /// <summary>
+    /// Completes this timer prematurely.
+    /// </summary>
+    public void Complete() {
+        this.State = TimerState.Finished;
+        this.TimeRunning = this.TimeLimit;
+    }
+
+    /// <summary>
     /// Decrements the timer.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
