@@ -42,7 +42,7 @@ public interface IPlatformerActor : IBoundable, ITransformable {
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
-    private IAttachablePlatform? _platform;
+    private IAttachable? _platform;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
 
@@ -337,7 +337,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     private void TrySetPlatform(RaycastHit hit) {
-        if (hit.Collider?.Body is IAttachablePlatform platform) {
+        if (hit.Collider?.Body is IAttachable platform) {
             if (platform != this._platform) {
                 this._platform?.Detach(this);
                 this._platform = platform;
