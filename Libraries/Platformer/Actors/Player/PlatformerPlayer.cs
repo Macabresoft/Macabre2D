@@ -250,14 +250,12 @@ public class PlatformerPlayer : PlatformerActor {
         }
 
         if (horizontalVelocity != 0f) {
-            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
+            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _)) {
                 horizontalVelocity = 0f;
             }
-
-            this.CheckIfHitWall(frameTime, -horizontalVelocity, false);
         }
         else {
-            this.CheckIfHitWall(frameTime, 0f, false);
+            this.CheckIfHitWall(frameTime, 0f, false, out _);
         }
 
         return (horizontalVelocity, movingDirection);

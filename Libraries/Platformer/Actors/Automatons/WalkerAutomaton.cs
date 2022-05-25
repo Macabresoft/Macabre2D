@@ -118,7 +118,7 @@ public class WalkerAutomaton : PlatformerActor {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         StateType stateType;
 
-        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true)) {
+        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _)) {
             horizontalVelocity = 0f;
         }
 
@@ -157,7 +157,7 @@ public class WalkerAutomaton : PlatformerActor {
                 this.Walk(true, out stateType, out horizontalVelocity, out facingDirection);
             }
         }
-        else if (this.CheckIfHitWall(frameTime, horizontalVelocity, true) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection))) {
+        else if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection))) {
             this.Idle(out stateType, out horizontalVelocity);
         }
         else if (!this.CheckIfStillGrounded()) {

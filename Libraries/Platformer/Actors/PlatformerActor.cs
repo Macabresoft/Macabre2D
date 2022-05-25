@@ -168,14 +168,15 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
     /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
+    /// <param name="wallEntity">The entity which is a parent of the wall collider hit.</param>
     /// <returns>A value indicating whether or not this has hit a wall.</returns>
-    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast) {
+    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, out IEntity? wallEntity) {
         var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
         if (horizontalVelocity != 0f) {
-            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast, anchorOffset);
+            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast, anchorOffset, out wallEntity);
         }
 
-        return this.RaycastWall(frameTime, -1f, false, anchorOffset) || this.RaycastWall(frameTime, 1f, false, anchorOffset);
+        return this.RaycastWall(frameTime, -1f, false, anchorOffset, out wallEntity) || this.RaycastWall(frameTime, 1f, false, anchorOffset, out wallEntity);
     }
 
     /// <summary>
@@ -274,7 +275,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return result;
     }
 
-    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset) {
+    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset, out IEntity? wallEntity) {
         var transform = this.Transform;
         var isDirectionPositive = horizontalVelocity >= 0f;
         var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
@@ -290,6 +291,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
+            wallEntity = hit.Collider?.Body;
+        }
+        else {
+            wallEntity = null;
         }
 
         return result;
