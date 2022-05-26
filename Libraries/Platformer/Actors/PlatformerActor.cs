@@ -281,12 +281,30 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    private bool CheckIfStillOnPlatform(out RaycastHit hit) {
-        var direction = new Vector2(0f, -1f);
-        var result = false;
+    private bool CheckIfStillOnWall(out RaycastHit hit) {
         hit = RaycastHit.Empty;
 
-        if (this.IsOnPlatform) {
+        if (this._wall != null) {
+            var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(1f, 0f) : new Vector2(-1f, 0f);
+            if (this.TryRaycastAll(
+                    direction,
+                    this.HalfSize.X + this.Settings.InversePixelsPerUnit,
+                    this._physicsLoop.WallLayer,
+                    out var hits,
+                    new Vector2(0f, -this.HalfSize.Y),
+                    new Vector2(0f, this.HalfSize.Y))) {
+                hit = hits.FirstOrDefault(x => x.Collider?.Body is IIdentifiable body && body.Id == this._wall.Id) ?? RaycastHit.Empty;
+            }
+        }
+        
+        return hit != RaycastHit.Empty;
+    }
+
+    private bool CheckIfStillOnPlatform(out RaycastHit hit) {
+        hit = RaycastHit.Empty;
+
+        if (this._platform != null) {
+            var direction = new Vector2(0f, -1f);
             if (this.TryRaycastAll(
                     direction,
                     this.HalfSize.Y + this.Settings.InversePixelsPerUnit,
@@ -295,11 +313,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                     new Vector2(-this.HalfSize.X, 0f),
                     new Vector2(this.HalfSize.X, 0f))) {
                 hit = hits.FirstOrDefault(x => x.Collider?.Body == this._platform) ?? RaycastHit.Empty;
-                result = hit != RaycastHit.Empty;
             }
         }
 
-        return result;
+        return hit != RaycastHit.Empty;
     }
 
     private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset, out IEntity? wallEntity) {
