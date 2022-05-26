@@ -14,6 +14,9 @@ public class WalkerAutomaton : PlatformerActor {
     private float _secondsSpentPaused;
     private QueueableSpriteAnimator? _spriteAnimator;
 
+    /// <inheritdoc />
+    public override bool CanAttachToWalls => false;
+
     /// <summary>
     /// Gets the falling animation reference.
     /// </summary>

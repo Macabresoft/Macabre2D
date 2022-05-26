@@ -10,6 +10,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IPlatformerActor : IBoundable, ITransformable {
     /// <summary>
+    /// Gets a value indicating whether or not this actor can attach to walls.
+    /// </summary>
+    bool CanAttachToWalls { get; }
+
+    /// <summary>
     /// Gets the current state of this actor.
     /// </summary>
     ActorState CurrentState { get; }
@@ -23,6 +28,11 @@ public interface IPlatformerActor : IBoundable, ITransformable {
     /// Gets a value indicating whether or not this actor is on a platform.
     /// </summary>
     bool IsOnPlatform { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this actor is on a wall.
+    /// </summary>
+    bool IsOnWall { get; }
 
     /// <summary>
     /// Gets the previous state of this actor.
@@ -45,9 +55,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private IAttachable? _platform;
     private ActorState _previousState;
     private Vector2 _size = Vector2.One;
+    private IAttachable? _wall;
+
+    /// <inheritdoc />
+    public abstract bool CanAttachToWalls { get; }
 
     /// <inheritdoc />
     public bool IsOnPlatform => this._platform != null;
+
+    /// <inheritdoc />
+    public bool IsOnWall => this._wall != null;
 
     /// <inheritdoc />
     public BoundingArea BoundingArea { get; private set; }
@@ -254,6 +271,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
+    /// <summary>
+    /// Unsets the wall.
+    /// </summary>
+    protected void UnsetWall() {
+        if (this._wall != null) {
+            this._wall.Detach(this);
+            this._wall = null;
+        }
+    }
+
     private bool CheckIfStillOnPlatform(out RaycastHit hit) {
         var direction = new Vector2(0f, -1f);
         var result = false;
@@ -290,8 +317,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             new Vector2(0f, this.HalfSize.Y - anchorOffset)) && hit != RaycastHit.Empty;
 
         if (result) {
-            this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
+            this.TrySetWall(hit);
             wallEntity = hit.Collider?.Body;
+            this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
         }
         else {
             wallEntity = null;
@@ -347,6 +375,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 this._platform?.Detach(this);
                 this._platform = platform;
                 this._platform.Attach(this);
+            }
+        }
+    }
+
+    private void TrySetWall(RaycastHit hit) {
+        if (this.CanAttachToWalls && hit.Collider?.Body is IAttachable wall) {
+            if (wall != this._wall) {
+                this._wall?.Detach(this);
+                this._wall = wall;
+                this._wall.Attach(this);
             }
         }
     }
