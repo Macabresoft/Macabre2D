@@ -5,5 +5,6 @@
 /// </summary>
 public enum StateType : byte {
     Grounded,
-    Aerial
+    Aerial,
+    Clinging
 }

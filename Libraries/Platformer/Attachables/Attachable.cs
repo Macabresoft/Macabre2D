@@ -5,7 +5,7 @@ using Macabresoft.Macabre2D.Framework;
 /// <summary>
 /// A base interface for all platforms.
 /// </summary>
-public interface IAttachable : ISimplePhysicsBody {
+public interface IAttachable : IEntity {
     /// <summary>
     /// Attaches the actor to this platform.
     /// </summary>
@@ -19,7 +19,7 @@ public interface IAttachable : ISimplePhysicsBody {
     void Detach(IPlatformerActor actor);
 }
 
-public class Attachable : Platform, IAttachable {
+public class Attachable : Entity, IAttachable {
     private readonly HashSet<IPlatformerActor> _attached = new();
 
     /// <summary>

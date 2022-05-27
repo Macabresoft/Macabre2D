@@ -43,6 +43,18 @@ public class PlatformerPlayer : PlatformerActor {
     public SpriteAnimationReference MovingAnimationReference { get; } = new();
 
     /// <summary>
+    /// Gets a timer for clinging to a wall.
+    /// </summary>
+    [DataMember]
+    public GameTimer PostWallJumpTimer { get; } = new() { TimeLimit = 0.5f };
+
+    /// <summary>
+    /// Gets a timer for clinging to a wall.
+    /// </summary>
+    [DataMember]
+    public GameTimer WallClingTimer { get; } = new() { TimeLimit = 0.25f };
+
+    /// <summary>
     /// Gets the maximum time a jump can be held in seconds.
     /// </summary>
     [DataMember]
@@ -86,6 +98,9 @@ public class PlatformerPlayer : PlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
+        this.PostWallJumpTimer.Restart();
+        this.WallClingTimer.Stop();
+
         this.IdleAnimationReference.Initialize(this.Scene.Assets);
         this.MovingAnimationReference.Initialize(this.Scene.Assets);
         this.JumpingAnimationReference.Initialize(this.Scene.Assets);
@@ -103,7 +118,7 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, Framework.InputState inputState) {
+    public override void Update(FrameTime frameTime, InputState inputState) {
         this.Input.Update(inputState);
 
         var previousState = this.CurrentState;
@@ -146,21 +161,27 @@ public class PlatformerPlayer : PlatformerActor {
         StateType stateType;
         var (horizontalVelocity, movementDirection) = this.CalculateHorizontalVelocity(frameTime);
 
-        if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
+        if (this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _) && this.ShouldCling()) {
+            if (this.Input.JumpState == ButtonInputState.Pressed) {
+                this.WallJump(out stateType, out movementDirection, out horizontalVelocity, out verticalVelocity);
+            }
+            else {
+                this.Cling(frameTime, out verticalVelocity, out stateType);
+            }
+        }
+        else if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
             if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
                 this._isJumping = true;
                 verticalVelocity = bouncePlatform.BounceVelocity;
                 stateType = StateType.Aerial;
 
-                if (this.Input.JumpState is InputState.Held or InputState.Pressed) {
+                if (this.Input.JumpState is ButtonInputState.Held or ButtonInputState.Pressed) {
                     var jumpVelocity = this.GetJumpVelocity();
                     verticalVelocity = Math.Max(jumpVelocity * 0.5f + verticalVelocity, jumpVelocity);
                 }
             }
             else {
-                stateType = StateType.Grounded;
-                this.PlayGroundedAnimation(horizontalVelocity);
-                verticalVelocity = 0f;
+                this.Land(horizontalVelocity, out stateType, out verticalVelocity);
             }
         }
         else {
@@ -168,7 +189,7 @@ public class PlatformerPlayer : PlatformerActor {
                 verticalVelocity = 0f;
                 this._isJumping = false;
             }
-            else if (this._isJumping && this.Input.JumpState == InputState.Held) {
+            else if (this._isJumping && this.Input.JumpState == ButtonInputState.Held) {
                 if (this.CurrentState.SecondsInState > this.JumpHoldTime) {
                     this._isJumping = false;
                 }
@@ -177,7 +198,6 @@ public class PlatformerPlayer : PlatformerActor {
                 verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
                 verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
             }
-
 
             stateType = StateType.Aerial;
         }
@@ -188,7 +208,34 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
-    /// Handles moving and determines the actor's state after the current frame.
+    /// Handles when the actor is clinging to a wall and determines the actor's state after the current frame.
+    /// </summary>
+    /// <param name="frameTime"></param>
+    /// <returns>The new actor state.</returns>
+    protected virtual ActorState HandleClinging(FrameTime frameTime) {
+        var verticalVelocity = this.CurrentState.Velocity.Y;
+        var horizontalVelocity = this.CurrentState.Velocity.X;
+        var movementDirection = this.CurrentState.FacingDirection;
+        StateType stateType;
+
+        if (this.Input.JumpState == ButtonInputState.Pressed) {
+            this.WallJump(out stateType, out movementDirection, out horizontalVelocity, out verticalVelocity);
+        }
+        else if (this.WallClingTimer.State == TimerState.Running && this.CheckIfStillOnWall(out _)) {
+            stateType = StateType.Clinging;
+            this.WallClingTimer.Increment(frameTime);
+        }
+        else {
+            this.Fall(frameTime, out stateType);
+        }
+
+        var velocity = new Vector2(horizontalVelocity, verticalVelocity);
+        this.ApplyVelocity(frameTime, velocity);
+        return new ActorState(stateType, movementDirection, this.Transform.Position, velocity, this.GetSecondsInState(frameTime, stateType));
+    }
+
+    /// <summary>
+    /// Handles when the actor is on the ground and determines the actor's state after the current frame.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <returns>The new actor state.</returns>
@@ -197,7 +244,9 @@ public class PlatformerPlayer : PlatformerActor {
         var verticalVelocity = 0f;
         StateType stateType;
 
-        if (this.Input.JumpState == InputState.Pressed) {
+        this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _);
+
+        if (this.Input.JumpState == ButtonInputState.Pressed) {
             verticalVelocity = this.Jump(out stateType);
         }
         else if (this.CheckIfStillGrounded()) {
@@ -239,33 +288,63 @@ public class PlatformerPlayer : PlatformerActor {
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether or not this actor should cling to a wall.
+    /// </summary>
+    /// <returns>A value indicating whether or not this actor should cling to a wall.</returns>
+    protected bool ShouldCling() {
+        return this.IsOnWall && this.WallClingTimer.State != TimerState.Finished;
+    }
+
     private (float HorizontalVelocity, HorizontalDirection MovementDirection) CalculateHorizontalVelocity(FrameTime frameTime) {
-        var horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
-        var movingDirection = this.CurrentState.FacingDirection;
+        var inputDirection = this.Input.HorizontalAxis;
+        var horizontalVelocity = this.CurrentState.Velocity.X;
 
-        if (horizontalVelocity < 0f) {
-            horizontalVelocity = Math.Min(horizontalVelocity, this.CurrentState.Velocity.X);
-            movingDirection = HorizontalDirection.Left;
-        }
-        else if (horizontalVelocity > 0f) {
-            horizontalVelocity = Math.Max(horizontalVelocity, this.CurrentState.Velocity.X);
-            movingDirection = HorizontalDirection.Right;
-        }
+        var movingDirection = inputDirection switch {
+            > 0f => HorizontalDirection.Right,
+            < 0f => HorizontalDirection.Left,
+            _ => this.CurrentState.FacingDirection
+        };
 
-        if (horizontalVelocity != 0f) {
-            if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _)) {
-                horizontalVelocity = 0f;
-            }
+        if (this.CurrentState.StateType == StateType.Aerial && this.PostWallJumpTimer.State == TimerState.Running) {
+            movingDirection = this.CurrentState.FacingDirection;
+            this.PostWallJumpTimer.Increment(frameTime);
         }
         else {
-            this.CheckIfHitWall(frameTime, 0f, false, out _);
+            horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
+
+            if (horizontalVelocity < 0f) {
+                horizontalVelocity = Math.Min(horizontalVelocity, this.CurrentState.Velocity.X);
+                movingDirection = HorizontalDirection.Left;
+            }
+            else if (horizontalVelocity > 0f) {
+                horizontalVelocity = Math.Max(horizontalVelocity, this.CurrentState.Velocity.X);
+                movingDirection = HorizontalDirection.Right;
+            }
         }
+
 
         return (horizontalVelocity, movingDirection);
     }
 
+    private void Cling(FrameTime frameTime, out float verticalVelocity, out StateType stateType) {
+        stateType = StateType.Clinging;
+        verticalVelocity = 0f;
+
+        this.PostWallJumpTimer.Stop();
+        if (this.WallClingTimer.State == TimerState.Disabled) {
+            this.WallClingTimer.Restart(frameTime);
+        }
+        else {
+            this.WallClingTimer.Increment(frameTime);
+        }
+
+        this.PlayClingAnimation();
+    }
+
     private float Fall(FrameTime frameTime, out StateType stateType) {
         stateType = StateType.Aerial;
+        this.UnsetWall();
         this.UnsetPlatform();
         this.PlayFallAnimation();
         return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
@@ -276,6 +355,7 @@ public class PlatformerPlayer : PlatformerActor {
             return this.CurrentState.StateType switch {
                 StateType.Grounded => this.HandleGrounded(frameTime),
                 StateType.Aerial => this.HandleAerial(frameTime),
+                StateType.Clinging => this.HandleClinging(frameTime),
                 _ => this.CurrentState
             };
         }
@@ -289,6 +369,21 @@ public class PlatformerPlayer : PlatformerActor {
         this.UnsetPlatform();
         this.PlayJumpAnimation();
         return this.GetJumpVelocity();
+    }
+
+    private void Land(float horizontalVelocity, out StateType stateType, out float verticalVelocity) {
+        this.PostWallJumpTimer.Stop();
+        this.WallClingTimer.Stop();
+        stateType = StateType.Grounded;
+        verticalVelocity = 0f;
+        this.PlayGroundedAnimation(horizontalVelocity);
+    }
+
+    private void PlayClingAnimation() {
+        if (this.SpriteAnimator != null && this.JumpingAnimationReference.PackagedAsset != null) {
+            // TODO: cling animation
+            this.SpriteAnimator.Play(this.JumpingAnimationReference.PackagedAsset, true);
+        }
     }
 
     private void PlayFallAnimation() {
@@ -331,5 +426,24 @@ public class PlatformerPlayer : PlatformerActor {
         if (this.CurrentState.FacingDirection != this.PreviousState.FacingDirection && this.SpriteAnimator != null) {
             this.SpriteAnimator.RenderSettings.FlipHorizontal = this.CurrentState.FacingDirection == HorizontalDirection.Left;
         }
+    }
+
+    private void WallJump(out StateType stateType, out HorizontalDirection movementDirection, out float horizontalVelocity, out float verticalVelocity) {
+        stateType = StateType.Aerial;
+
+        if (this.CurrentState.FacingDirection == HorizontalDirection.Left) {
+            movementDirection = HorizontalDirection.Right;
+            horizontalVelocity = this.MaximumHorizontalVelocity;
+        }
+        else {
+            movementDirection = HorizontalDirection.Left;
+            horizontalVelocity = -this.MaximumHorizontalVelocity;
+        }
+
+        verticalVelocity = this.JumpVelocity;
+        this.PostWallJumpTimer.Restart();
+        this.WallClingTimer.Stop();
+        this.UnsetWall();
+        this.PlayJumpAnimation();
     }
 }

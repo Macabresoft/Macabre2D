@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A base class for all platforms.
 /// </summary>
-public class Platform : Entity, ISimplePhysicsBody {
+public class Platform : Attachable, ISimplePhysicsBody {
     private readonly LineCollider _collider = new();
     private Layers _colliderLayers;
     private float _platformLength;

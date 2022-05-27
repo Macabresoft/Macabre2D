@@ -5,9 +5,9 @@ using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// An <see cref="Attachable"/> that moves its attached entities every frame.
+/// An <see cref="Attachable" /> that moves its attached entities every frame.
 /// </summary>
-public class MoverPlatform : Attachable {
+public class MoverPlatform : Platform {
     private Vector2 _previousPosition;
 
     /// <inheritdoc />

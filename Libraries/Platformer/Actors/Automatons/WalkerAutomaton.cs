@@ -83,7 +83,7 @@ public class WalkerAutomaton : PlatformerActor {
     }
 
     /// <inheritdoc />
-    public override void Update(FrameTime frameTime, Framework.InputState inputState) {
+    public override void Update(FrameTime frameTime, InputState inputState) {
         var previousState = this.CurrentState;
         this.CurrentState = this.CurrentState.StateType switch {
             StateType.Aerial => this.HandleAerial(frameTime),
@@ -121,9 +121,7 @@ public class WalkerAutomaton : PlatformerActor {
         var verticalVelocity = this.CurrentState.Velocity.Y;
         StateType stateType;
 
-        if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _)) {
-            horizontalVelocity = 0f;
-        }
+        this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _);
 
         if (this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
             if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
@@ -131,6 +129,7 @@ public class WalkerAutomaton : PlatformerActor {
                 stateType = StateType.Aerial;
             }
             else {
+                verticalVelocity = 0f;
                 this.Walk(false, out stateType, out horizontalVelocity, out _);
             }
         }
@@ -160,7 +159,7 @@ public class WalkerAutomaton : PlatformerActor {
                 this.Walk(true, out stateType, out horizontalVelocity, out facingDirection);
             }
         }
-        else if (this.CheckIfHitWall(frameTime, horizontalVelocity, true, out _) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection))) {
+        else if (this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection))) {
             this.Idle(out stateType, out horizontalVelocity);
         }
         else if (!this.CheckIfStillGrounded()) {

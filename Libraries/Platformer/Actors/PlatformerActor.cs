@@ -180,20 +180,40 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
-    /// Checks if this has hit a wall.
+    /// Checks if this has hit the ground.
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="horizontalVelocity">The horizontal velocity.</param>
-    /// <param name="applyVelocityToRaycast">A value indicating whether or not to apply velocity to the raycast.</param>
-    /// <param name="wallEntity">The entity which is a parent of the wall collider hit.</param>
-    /// <returns>A value indicating whether or not this has hit a wall.</returns>
-    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, out IEntity? wallEntity) {
+    /// <param name="newHorizontalVelocity">The new horizontal velocity to apply.</param>
+    /// <param name="wallEntity">The wall entity.</param>
+    /// <returns>A value indicating whether or not this actor has hit a wall.</returns>
+    protected bool CheckIfHitWall(FrameTime frameTime, float horizontalVelocity, out float newHorizontalVelocity, out IEntity? wallEntity) {
+        var transform = this.Transform;
+        var isDirectionPositive = horizontalVelocity >= 0f;
+        var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
+        var distance = this.HalfSize.X + (float)Math.Abs(horizontalVelocity * frameTime.SecondsPassed);
         var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
-        if (horizontalVelocity != 0f) {
-            return this.RaycastWall(frameTime, horizontalVelocity, applyVelocityToRaycast, anchorOffset, out wallEntity);
+
+        var result = this.TryRaycast(
+            direction,
+            distance,
+            this._physicsLoop.WallLayer,
+            out var hit,
+            new Vector2(0f, -this.HalfSize.Y + anchorOffset),
+            new Vector2(0f, this.HalfSize.Y - anchorOffset)) && hit != RaycastHit.Empty;
+
+        if (result) {
+            this.TrySetWall(hit);
+            wallEntity = hit.Collider?.Body;
+            this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
+            newHorizontalVelocity = 0f;
+        }
+        else {
+            wallEntity = null;
+            newHorizontalVelocity = horizontalVelocity;
         }
 
-        return this.RaycastWall(frameTime, -1f, false, anchorOffset, out wallEntity) || this.RaycastWall(frameTime, 1f, false, anchorOffset, out wallEntity);
+        return result;
     }
 
     /// <summary>
@@ -262,6 +282,30 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     /// <summary>
+    /// Checks if the actor is still on a wall.
+    /// </summary>
+    /// <param name="hit">The hit.</param>
+    /// <returns>A value indicating if the actor is still on the wall.</returns>
+    protected bool CheckIfStillOnWall(out RaycastHit hit) {
+        hit = RaycastHit.Empty;
+
+        if (this._wall != null) {
+            var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(1f, 0f) : new Vector2(-1f, 0f);
+            if (this.TryRaycastAll(
+                    direction,
+                    this.HalfSize.X + this.Settings.InversePixelsPerUnit,
+                    this._physicsLoop.WallLayer,
+                    out var hits,
+                    new Vector2(0f, -this.HalfSize.Y),
+                    new Vector2(0f, this.HalfSize.Y))) {
+                hit = hits.FirstOrDefault(x => x.Collider?.Body is IIdentifiable body && body.Id == this._wall.Id) ?? RaycastHit.Empty;
+            }
+        }
+
+        return hit != RaycastHit.Empty;
+    }
+
+    /// <summary>
     /// Unsets the platform.
     /// </summary>
     protected void UnsetPlatform() {
@@ -281,25 +325,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    private bool CheckIfStillOnWall(out RaycastHit hit) {
-        hit = RaycastHit.Empty;
-
-        if (this._wall != null) {
-            var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(1f, 0f) : new Vector2(-1f, 0f);
-            if (this.TryRaycastAll(
-                    direction,
-                    this.HalfSize.X + this.Settings.InversePixelsPerUnit,
-                    this._physicsLoop.WallLayer,
-                    out var hits,
-                    new Vector2(0f, -this.HalfSize.Y),
-                    new Vector2(0f, this.HalfSize.Y))) {
-                hit = hits.FirstOrDefault(x => x.Collider?.Body is IIdentifiable body && body.Id == this._wall.Id) ?? RaycastHit.Empty;
-            }
-        }
-        
-        return hit != RaycastHit.Empty;
-    }
-
     private bool CheckIfStillOnPlatform(out RaycastHit hit) {
         hit = RaycastHit.Empty;
 
@@ -317,32 +342,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         return hit != RaycastHit.Empty;
-    }
-
-    private bool RaycastWall(FrameTime frameTime, float horizontalVelocity, bool applyVelocityToRaycast, float anchorOffset, out IEntity? wallEntity) {
-        var transform = this.Transform;
-        var isDirectionPositive = horizontalVelocity >= 0f;
-        var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
-        var distance = applyVelocityToRaycast ? this.HalfSize.X + (float)Math.Abs(horizontalVelocity * frameTime.SecondsPassed) : this.HalfSize.X;
-
-        var result = this.TryRaycast(
-            direction,
-            distance,
-            this._physicsLoop.WallLayer,
-            out var hit,
-            new Vector2(0f, -this.HalfSize.Y + anchorOffset),
-            new Vector2(0f, this.HalfSize.Y - anchorOffset)) && hit != RaycastHit.Empty;
-
-        if (result) {
-            this.TrySetWall(hit);
-            wallEntity = hit.Collider?.Body;
-            this.SetWorldPosition(new Vector2(hit.ContactPoint.X + (isDirectionPositive ? -this.HalfSize.X : this.HalfSize.X), transform.Position.Y));
-        }
-        else {
-            wallEntity = null;
-        }
-
-        return result;
     }
 
     private void ResetBoundingArea() {
