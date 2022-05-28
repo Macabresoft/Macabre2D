@@ -9,6 +9,9 @@
         <KeyBinding Command="{Binding $self.RenameCommand}"
                     CommandParameter="{Binding #_treeView}"
                     Gesture="Ctrl + R" />
+        <KeyBinding Command="{Binding $self.ViewModel.RemoveContentCommand}"
+                    CommandParameter="{Binding $self.ViewModel.ContentService.Selected}"
+                    Gesture="Delete" />
     </UserControl.KeyBindings>
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
