@@ -4,6 +4,13 @@
              xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.SceneTreeView">
+    <UserControl.KeyBindings>
+        <KeyBinding Command="{Binding $self.ViewModel.EditorService.RequestFocusCommand}"
+                    Gesture="Ctrl + F" />
+        <KeyBinding Command="{Binding $self.ViewModel.CloneEntityCommand}"
+                    CommandParameter="{Binding $self.ViewModel.EntityService.Selected}"
+                    Gesture="Ctrl + Shift + C" />
+    </UserControl.KeyBindings>
     <Border DataContext="{Binding $parent[local:SceneTreeView].ViewModel}"
             Classes="Card"
             Margin="{StaticResource StandardMarginLeftTopBottom}">
@@ -206,14 +213,12 @@
 
                                     <MenuItem Header="Focus"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.EditorService.RequestFocusCommand}"
-                                              HotKey="Ctrl + F"
                                               InputGesture="Ctrl + F"
                                               ToolTip.Tip="Focus on this entity in the scene editor" />
 
                                     <MenuItem Header="Clone"
                                               Command="{Binding $parent[local:SceneTreeView].ViewModel.CloneEntityCommand}"
                                               CommandParameter="{Binding}"
-                                              HotKey="Ctrl + Shift + C"
                                               InputGesture="Ctrl + Shift + C"
                                               ToolTip.Tip="Clone this entity" />
 
