@@ -56,6 +56,8 @@ public class GameTimerEditor : ValueEditorControl<GameTimer> {
     }
 
     private void UpdateDisplayValues() {
-        this.TimeLimit = this.Value.TimeLimit;
+        if (this.Value != null) {
+            this.TimeLimit = this.Value.TimeLimit;
+        }
     }
 }
