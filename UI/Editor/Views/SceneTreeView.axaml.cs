@@ -3,17 +3,21 @@ namespace Macabresoft.Macabre2D.UI.Editor;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 using DynamicData;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
+using ReactiveUI;
 
 public class SceneTreeView : UserControl {
     public static readonly Thickness DefaultPadding = new(2D);
@@ -34,12 +38,15 @@ public class SceneTreeView : UserControl {
 
     public SceneTreeView() {
         this.ViewModel = Resolver.Resolve<SceneTreeViewModel>();
+        this.RenameCommand = ReactiveCommand.Create<TreeView>(this.Rename);
         this.InitializeComponent();
         this.AddHandler(DragDrop.DropEvent, this.Drop);
         this.AddHandler(DragDrop.DragOverEvent, this.Drag);
     }
 
     public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
+
+    public ICommand RenameCommand { get; }
 
     public SceneTreeViewModel ViewModel { get; }
 
@@ -89,11 +96,11 @@ public class SceneTreeView : UserControl {
                         break;
                     case ILoop targetSystem when this.DraggedObject is ILoop draggedSystem:
                         index = this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(targetSystem);
-                        
+
                         if (index < this.ViewModel.SceneService.CurrentScene.Loops.IndexOf(draggedSystem)) {
                             index++;
                         }
-                        
+
                         this.ViewModel.MoveLoop(draggedSystem, index);
                         break;
                     case LoopCollection when this.DraggedObject is ILoop draggedSystem:
@@ -131,6 +138,16 @@ public class SceneTreeView : UserControl {
         }
 
         return result;
+    }
+
+    private void Rename(TreeView treeView) {
+        if (treeView.SelectedItem != null && this.ViewModel.EntityService.Selected != null) {
+            var editableItem = treeView.GetLogicalDescendants().OfType<EditableSelectableItem>().FirstOrDefault(x => x.DataContext == this.ViewModel.EntityService.Selected);
+
+            if (editableItem != null && editableItem.EditCommand.CanExecute(null)) {
+                editableItem.EditCommand.Execute(null);
+            }
+        }
     }
 
     private void ResetDropTarget(IControl newTarget, DragEventArgs e) {
@@ -194,8 +211,8 @@ public class SceneTreeView : UserControl {
                 var draggedObject = values[0];
                 var dropTarget = values[1];
                 return dropTarget != draggedObject &&
-                       (draggedObject is IEntity && dropTarget is IEntity or EntityCollection ||
-                        draggedObject is ILoop && dropTarget is ILoop or LoopCollection);
+                       ((draggedObject is IEntity && dropTarget is IEntity or EntityCollection) ||
+                        (draggedObject is ILoop && dropTarget is ILoop or LoopCollection));
             }
 
             return false;

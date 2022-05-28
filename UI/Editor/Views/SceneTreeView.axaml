@@ -7,6 +7,9 @@
     <UserControl.KeyBindings>
         <KeyBinding Command="{Binding $self.ViewModel.EditorService.RequestFocusCommand}"
                     Gesture="Ctrl + F" />
+        <KeyBinding Command="{Binding $self.RenameCommand}"
+                    CommandParameter="{Binding #_treeView}"
+                    Gesture="Ctrl + R" />
         <KeyBinding Command="{Binding $self.ViewModel.CloneEntityCommand}"
                     CommandParameter="{Binding $self.ViewModel.EntityService.Selected}"
                     Gesture="Ctrl + Shift + C" />
@@ -204,10 +207,8 @@
                                                            PointerMoved="TreeNode_OnPointerMoved">
                             <avaloniaEx:EditableSelectableItem.ContextMenu>
                                 <ContextMenu>
-
                                     <MenuItem Header="Rename"
                                               Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
-                                              HotKey="Ctrl + R"
                                               InputGesture="Ctrl + R"
                                               ToolTip.Tip="Rename this entity" />
 
@@ -233,7 +234,6 @@
                                               CommandParameter="{Binding}"
                                               IsVisible="{Binding Converter={x:Static avaloniaEx:IsTypeConverter.IsType}, ConverterParameter={x:Type framework:PrefabContainer}}"
                                               ToolTip.Tip="Convert this prefab into an instance disconnected from the prefab" />
-
                                     <Separator />
 
                                     <MenuItem Header="Add">
