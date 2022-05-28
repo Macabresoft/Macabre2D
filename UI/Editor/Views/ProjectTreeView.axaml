@@ -5,6 +5,11 @@
              xmlns:common="clr-namespace:Macabresoft.Macabre2D.UI.Common;assembly=Macabre2D.UI.Common"
              xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
              x:Class="Macabresoft.Macabre2D.UI.Editor.ProjectTreeView">
+    <UserControl.KeyBindings>
+        <KeyBinding Command="{Binding $self.RenameCommand}"
+                    CommandParameter="{Binding #_treeView}"
+                    Gesture="Ctrl + R" />
+    </UserControl.KeyBindings>
     <UserControl.Resources>
         <common:AssetToIconConverter x:Key="AssetToIconConverter" />
         <ContextMenu x:Key="ContentNodeContextMenu">
@@ -14,6 +19,7 @@
 
             <MenuItem Header="Rename"
                       Command="{Binding $parent[avaloniaEx:EditableSelectableItem].EditCommand}"
+                      InputGesture="Ctrl + R"
                       ToolTip.Tip="Rename the content" />
 
             <MenuItem Header="Open"
@@ -118,6 +124,7 @@
                     </Button>
                 </StackPanel>
                 <TreeView Grid.Row="1"
+                          Name="_treeView"
                           Items="{Binding ContentService.RootContentDirectory, Mode=OneWay, Converter={x:Static avaloniaEx:ObjectToEnumerableConverter.Instance}}"
                           SelectedItem="{Binding AssetSelectionService.Selected, Mode=TwoWay}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"

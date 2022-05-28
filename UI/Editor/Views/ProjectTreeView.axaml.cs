@@ -1,12 +1,16 @@
 namespace Macabresoft.Macabre2D.UI.Editor;
 
 using System;
+using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.Common;
+using ReactiveUI;
 
 public class ProjectTreeView : UserControl {
     public static readonly DirectProperty<ProjectTreeView, ProjectTreeViewModel> ViewModelProperty =
@@ -18,9 +22,12 @@ public class ProjectTreeView : UserControl {
 
     public ProjectTreeView() {
         this.ViewModel = Resolver.Resolve<ProjectTreeViewModel>();
+        this.RenameCommand = ReactiveCommand.Create<TreeView>(this.Rename);
         this.InitializeComponent();
         this.AddHandler(DragDrop.DropEvent, this.Drop);
     }
+
+    public ICommand RenameCommand { get; }
 
     public ProjectTreeViewModel ViewModel { get; }
 
@@ -54,6 +61,16 @@ public class ProjectTreeView : UserControl {
     private void Node_OnPointerReleased(object sender, PointerReleasedEventArgs e) {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) {
             this._dragTarget = Guid.Empty;
+        }
+    }
+
+    private void Rename(TreeView treeView) {
+        if (treeView.SelectedItem != null && this.ViewModel.ContentService.Selected != null) {
+            var editableItem = treeView.GetLogicalDescendants().OfType<EditableSelectableItem>().FirstOrDefault(x => x.DataContext == this.ViewModel.ContentService.Selected);
+
+            if (editableItem != null && editableItem.EditCommand.CanExecute(null)) {
+                editableItem.EditCommand.Execute(null);
+            }
         }
     }
 }
