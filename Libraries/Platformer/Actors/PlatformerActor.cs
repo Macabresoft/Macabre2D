@@ -290,7 +290,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         hit = RaycastHit.Empty;
 
         if (this._wall != null) {
-            var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(1f, 0f) : new Vector2(-1f, 0f);
+            var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(-1f, 0f) : new Vector2(1f, 0f);
             if (this.TryRaycastAll(
                     direction,
                     this.HalfSize.X + this.Settings.InversePixelsPerUnit,

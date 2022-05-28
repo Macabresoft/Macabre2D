@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -98,8 +99,7 @@ public class PlatformerPlayer : PlatformerActor {
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
 
-        this.PostWallJumpTimer.Restart();
-        this.WallClingTimer.Stop();
+        this.ResetTimers();
 
         this.IdleAnimationReference.Initialize(this.Scene.Assets);
         this.MovingAnimationReference.Initialize(this.Scene.Assets);
@@ -226,7 +226,7 @@ public class PlatformerPlayer : PlatformerActor {
             this.WallClingTimer.Increment(frameTime);
         }
         else {
-            this.Fall(frameTime, out stateType);
+            this.FallFromCling(frameTime, out stateType);
         }
 
         var velocity = new Vector2(horizontalVelocity, verticalVelocity);
@@ -289,6 +289,14 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     /// <summary>
+    /// Resets timers on this actor to their initial state.
+    /// </summary>
+    protected virtual void ResetTimers() {
+        this.PostWallJumpTimer.Stop();
+        this.WallClingTimer.Stop();
+    }
+
+    /// <summary>
     /// Gets a value indicating whether or not this actor should cling to a wall.
     /// </summary>
     /// <returns>A value indicating whether or not this actor should cling to a wall.</returns>
@@ -330,15 +338,8 @@ public class PlatformerPlayer : PlatformerActor {
     private void Cling(FrameTime frameTime, out float verticalVelocity, out StateType stateType) {
         stateType = StateType.Clinging;
         verticalVelocity = 0f;
-
         this.PostWallJumpTimer.Stop();
-        if (this.WallClingTimer.State == TimerState.Disabled) {
-            this.WallClingTimer.Restart(frameTime);
-        }
-        else {
-            this.WallClingTimer.Increment(frameTime);
-        }
-
+        this.WallClingTimer.Restart(frameTime);
         this.PlayClingAnimation();
     }
 
@@ -445,5 +446,11 @@ public class PlatformerPlayer : PlatformerActor {
         this.WallClingTimer.Stop();
         this.UnsetWall();
         this.PlayJumpAnimation();
+    }
+
+    private void FallFromCling(FrameTime frameTime, out StateType stateType) {
+        this.Fall(frameTime, out stateType);
+        this.UnsetWall();
+        this.WallClingTimer.Complete();
     }
 }
