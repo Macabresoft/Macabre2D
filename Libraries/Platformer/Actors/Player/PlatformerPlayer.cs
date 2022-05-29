@@ -1,7 +1,6 @@
 namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -210,7 +209,7 @@ public class PlatformerPlayer : PlatformerActor {
     /// <summary>
     /// Handles when the actor is clinging to a wall and determines the actor's state after the current frame.
     /// </summary>
-    /// <param name="frameTime"></param>
+    /// <param name="frameTime">The frame time.</param>
     /// <returns>The new actor state.</returns>
     protected virtual ActorState HandleClinging(FrameTime frameTime) {
         var verticalVelocity = this.CurrentState.Velocity.Y;
@@ -351,6 +350,12 @@ public class PlatformerPlayer : PlatformerActor {
         return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
     }
 
+    private void FallFromCling(FrameTime frameTime, out StateType stateType) {
+        this.Fall(frameTime, out stateType);
+        this.UnsetWall();
+        this.WallClingTimer.Complete();
+    }
+
     private ActorState GetNewActorState(FrameTime frameTime) {
         if (this.Size.X > 0f && this.Size.Y > 0f) {
             return this.CurrentState.StateType switch {
@@ -446,11 +451,5 @@ public class PlatformerPlayer : PlatformerActor {
         this.WallClingTimer.Stop();
         this.UnsetWall();
         this.PlayJumpAnimation();
-    }
-
-    private void FallFromCling(FrameTime frameTime, out StateType stateType) {
-        this.Fall(frameTime, out stateType);
-        this.UnsetWall();
-        this.WallClingTimer.Complete();
     }
 }
