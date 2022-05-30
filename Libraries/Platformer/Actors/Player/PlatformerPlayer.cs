@@ -61,7 +61,7 @@ public class PlatformerPlayer : PlatformerActor {
     [Category("Movement")]
     public float JumpHoldTime {
         get => this._jumpHoldTime;
-        private set => this._jumpHoldTime = Math.Max(0f, value);
+        set => this._jumpHoldTime = Math.Max(0f, value);
     }
 
     /// <summary>
