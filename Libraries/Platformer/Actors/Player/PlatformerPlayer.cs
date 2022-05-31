@@ -19,6 +19,12 @@ public class PlatformerPlayer : PlatformerActor {
     public override bool CanAttachToWalls => false;
 
     /// <summary>
+    /// Gets the clinging animation reference.
+    /// </summary>
+    [DataMember(Order = 14, Name = "Clinging Animation")]
+    public SpriteAnimationReference ClingingAnimationReference { get; } = new();
+
+    /// <summary>
     /// Gets the falling animation reference.
     /// </summary>
     [DataMember(Order = 13, Name = "Falling Animation")]
@@ -100,10 +106,11 @@ public class PlatformerPlayer : PlatformerActor {
 
         this.ResetTimers();
 
-        this.IdleAnimationReference.Initialize(this.Scene.Assets);
-        this.MovingAnimationReference.Initialize(this.Scene.Assets);
-        this.JumpingAnimationReference.Initialize(this.Scene.Assets);
+        this.ClingingAnimationReference.Initialize(this.Scene.Assets);
         this.FallingAnimationReference.Initialize(this.Scene.Assets);
+        this.IdleAnimationReference.Initialize(this.Scene.Assets);
+        this.JumpingAnimationReference.Initialize(this.Scene.Assets);
+        this.MovingAnimationReference.Initialize(this.Scene.Assets);
 
         this._camera = this.GetOrAddChild<PlatformerCamera>();
         this.SpriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
@@ -386,9 +393,8 @@ public class PlatformerPlayer : PlatformerActor {
     }
 
     private void PlayClingAnimation() {
-        if (this.SpriteAnimator != null && this.JumpingAnimationReference.PackagedAsset != null) {
-            // TODO: cling animation
-            this.SpriteAnimator.Play(this.JumpingAnimationReference.PackagedAsset, true);
+        if (this.SpriteAnimator != null && this.ClingingAnimationReference.PackagedAsset != null) {
+            this.SpriteAnimator.Play(this.ClingingAnimationReference.PackagedAsset, true);
         }
     }
 
