@@ -16,7 +16,7 @@ public class PlatformerPlayer : PlatformerActor {
     private float _maximumHorizontalVelocity = 7f;
 
     /// <inheritdoc />
-    public override bool CanAttachToWalls => true;
+    public override bool CanAttachToWalls => false;
 
     /// <summary>
     /// Gets the falling animation reference.
