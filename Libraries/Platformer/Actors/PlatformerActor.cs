@@ -242,14 +242,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = false;
         var hit = RaycastHit.Empty;
 
-        if (this.IsOnPlatform && this.PreviousState.Position.Y > this.CurrentState.Position.Y) {
-            result = this.TryRaycast(
+        if (this.IsOnPlatform &&
+            this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
+            this.TryRaycastAll(
                 direction,
                 this.HalfSize.Y,
                 this._physicsLoop.GroundLayer,
-                out hit,
+                out var hits,
                 new Vector2(-this.HalfSize.X, 0f),
-                new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+                new Vector2(this.HalfSize.X, 0f))) {
+            hit = this.GetHighestHit(hits);
+            result = hit != RaycastHit.Empty;
 
             if (result) {
                 this.UnsetPlatform();
@@ -260,13 +263,18 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             result = this.CheckIfStillOnPlatform(out hit);
 
             if (!result) {
-                result = this.TryRaycast(
-                    direction,
-                    this.HalfSize.Y,
-                    this._physicsLoop.GroundLayer,
-                    out hit,
-                    new Vector2(-this.HalfSize.X, 0f),
-                    new Vector2(this.HalfSize.X, 0f)) && hit != RaycastHit.Empty;
+                this.UnsetPlatform();
+
+                if (this.TryRaycastAll(
+                        direction,
+                        this.HalfSize.Y,
+                        this._physicsLoop.GroundLayer,
+                        out hits,
+                        new Vector2(-this.HalfSize.X, 0f),
+                        new Vector2(this.HalfSize.X, 0f))) {
+                    hit = this.GetHighestHit(hits);
+                    result = hit != RaycastHit.Empty;
+                }
             }
         }
 
@@ -344,6 +352,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return hit != RaycastHit.Empty;
     }
 
+    private RaycastHit GetHighestHit(IEnumerable<RaycastHit> hits) {
+        var result = RaycastHit.Empty;
+        foreach (var hit in hits) {
+            if (result == RaycastHit.Empty || hit.ContactPoint.Y > result.ContactPoint.Y) {
+                result = hit;
+            }
+        }
+
+        return result;
+    }
+
     private void ResetBoundingArea() {
         var worldPosition = this.Transform.Position;
         this.HalfSize = this._size * 0.5f;
@@ -366,7 +385,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return result;
     }
 
-    private bool TryRaycastAll(Vector2 direction, float distance, Layers layers, out IEnumerable<RaycastHit> hits, params Vector2[] anchors) {
+    private bool TryRaycastAll(Vector2 direction, float distance, Layers layers, out IReadOnlyCollection<RaycastHit> hits, params Vector2[] anchors) {
         var result = false;
         var actualHits = new List<RaycastHit>();
 
