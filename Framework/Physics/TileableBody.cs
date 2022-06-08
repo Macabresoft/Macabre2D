@@ -21,6 +21,7 @@ public sealed class TileableBody : PhysicsBody {
     private Layers _overrideLayersRightEdge = Layers.None;
     private Layers _overrideLayersTopEdge = Layers.None;
     private ITileableEntity? _tileable;
+    private bool _useSlopedCorners;
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
@@ -31,7 +32,6 @@ public sealed class TileableBody : PhysicsBody {
     /// <summary>
     /// Gets the bottom edge's overriden layer;
     /// </summary>
-    /// <value>The bottom edge's overriden layer;</value>
     [DataMember(Name = "Bottom Layers", Order = 103)]
     public Layers OverrideLayersBottomEdge {
         get => this._overrideLayersBottomEdge;
@@ -41,7 +41,6 @@ public sealed class TileableBody : PhysicsBody {
     /// <summary>
     /// Gets the left edge's overriden layer;
     /// </summary>
-    /// <value>The left edge's overriden layer;</value>
     [DataMember(Name = "Left Layers", Order = 100)]
     public Layers OverrideLayersLeftEdge {
         get => this._overrideLayersLeftEdge;
@@ -51,7 +50,6 @@ public sealed class TileableBody : PhysicsBody {
     /// <summary>
     /// Gets the right edge's overriden layer;
     /// </summary>
-    /// <value>The right edge's overriden layer;</value>
     [DataMember(Name = "Right Layers", Order = 102)]
     public Layers OverrideLayersRightEdge {
         get => this._overrideLayersRightEdge;
@@ -61,11 +59,24 @@ public sealed class TileableBody : PhysicsBody {
     /// <summary>
     /// Gets the top edge's overriden layer;
     /// </summary>
-    /// <value>The top edge's overriden layer;</value>
     [DataMember(Name = "Top Layers", Order = 101)]
     public Layers OverrideLayersTopEdge {
         get => this._overrideLayersTopEdge;
         set => this.Set(ref this._overrideLayersTopEdge, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not this should use sloped corners.
+    /// </summary>
+    [DataMember(Name = "Sloped Corners")]
+    public bool UseSlopedCorners {
+        get => this._useSlopedCorners;
+        set {
+            if (value != this._useSlopedCorners) {
+                this._useSlopedCorners = value;
+                this.ResetColliders();
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -139,19 +150,41 @@ public sealed class TileableBody : PhysicsBody {
                     var currentTile = new Point(x, y);
                     if (this._tileable.HasActiveTileAt(currentTile)) {
                         var directions = this.GetEdgeDirections(currentTile);
-                        if (directions.HasFlag(CardinalDirections.West)) {
+                        var handledDirections = CardinalDirections.None;
+                        if (this.UseSlopedCorners) {
+                            switch (directions) {
+                                case CardinalDirections.NorthWest or CardinalDirections.NorthWest | CardinalDirections.South:
+                                    handledDirections = CardinalDirections.NorthWest;
+                                    allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersTopEdge));
+                                    break;
+                                case CardinalDirections.NorthEast or CardinalDirections.NorthEast | CardinalDirections.South:
+                                    handledDirections = CardinalDirections.NorthEast;
+                                    allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersTopEdge));
+                                    break;
+                                case CardinalDirections.SouthWest:
+                                    handledDirections = CardinalDirections.SouthWest;
+                                    allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
+                                    break;
+                                case CardinalDirections.SouthEast:
+                                    handledDirections = CardinalDirections.SouthEast;
+                                    allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersBottomEdge));
+                                    break;
+                            }
+                        }
+
+                        if (directions.HasFlag(CardinalDirections.West) && !handledDirections.HasFlag(CardinalDirections.West)) {
                             allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(0, 1), this._overrideLayersLeftEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.North)) {
+                        if (directions.HasFlag(CardinalDirections.North) && !handledDirections.HasFlag(CardinalDirections.North)) {
                             allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 1), this._overrideLayersTopEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.East)) {
+                        if (directions.HasFlag(CardinalDirections.East) && !handledDirections.HasFlag(CardinalDirections.East)) {
                             allSegments.Add(new TileLineSegment(currentTile + new Point(1, 0), currentTile + new Point(1, 1), this._overrideLayersRightEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.South)) {
+                        if (directions.HasFlag(CardinalDirections.South) && !handledDirections.HasFlag(CardinalDirections.South)) {
                             allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
                         }
                     }
@@ -163,12 +196,7 @@ public sealed class TileableBody : PhysicsBody {
             foreach (var segment in horizontalSegments) {
                 if (!removedSegments.Contains(segment)) {
                     var compatibleSegments = horizontalSegments.Except(removedSegments).Where(x => x.StartPoint.Y == segment.StartPoint.Y).OrderBy(x => x.StartPoint.X).ToList();
-
-                    foreach (var compatibleSegment in compatibleSegments) {
-                        if (segment.TryCombineWith(compatibleSegment)) {
-                            removedSegments.Add(compatibleSegment);
-                        }
-                    }
+                    removedSegments.AddRange(compatibleSegments.Where(compatibleSegment => segment.TryCombineWith(compatibleSegment)));
                 }
             }
 
@@ -177,11 +205,7 @@ public sealed class TileableBody : PhysicsBody {
                 if (!removedSegments.Contains(segment)) {
                     var compatibleSegments = verticalSegments.Except(removedSegments).Where(x => x.StartPoint.X == segment.StartPoint.X).OrderBy(x => x.StartPoint.Y).ToList();
 
-                    foreach (var compatibleSegment in compatibleSegments) {
-                        if (segment.TryCombineWith(compatibleSegment)) {
-                            removedSegments.Add(compatibleSegment);
-                        }
-                    }
+                    removedSegments.AddRange(compatibleSegments.Where(compatibleSegment => segment.TryCombineWith(compatibleSegment)));
                 }
             }
 
@@ -205,7 +229,7 @@ public sealed class TileableBody : PhysicsBody {
     private class TileLineSegment {
         public TileLineSegment(Point firstPoint, Point secondPoint, Layers layers) {
             this.Layers = layers;
-
+            
             if (firstPoint.X == secondPoint.X) {
                 this.StartPoint = new Point(firstPoint.X, Math.Min(firstPoint.Y, secondPoint.Y));
                 this.EndPoint = new Point(firstPoint.X, Math.Max(firstPoint.Y, secondPoint.Y));
@@ -215,11 +239,14 @@ public sealed class TileableBody : PhysicsBody {
                 this.EndPoint = new Point(Math.Max(firstPoint.X, secondPoint.X), firstPoint.Y);
             }
             else {
-                throw new ArgumentOutOfRangeException(nameof(secondPoint));
+                this.StartPoint = firstPoint;
+                this.EndPoint = secondPoint;
             }
         }
 
         public bool IsHorizontal => this.StartPoint.Y == this.EndPoint.Y;
+
+        public bool IsVertical => this.StartPoint.X == this.EndPoint.Y;
 
         public Layers Layers { get; }
 
@@ -229,14 +256,14 @@ public sealed class TileableBody : PhysicsBody {
 
         public bool TryCombineWith(TileLineSegment otherLine) {
             var result = false;
-            if (!this.IsHorizontal) {
+            if (this.IsVertical && otherLine.IsVertical) {
                 if (this.StartPoint.Y == otherLine.EndPoint.Y || this.EndPoint.Y == otherLine.StartPoint.Y) {
                     this.StartPoint = new Point(this.StartPoint.X, Math.Min(this.StartPoint.Y, otherLine.StartPoint.Y));
                     this.EndPoint = new Point(this.StartPoint.X, Math.Max(this.EndPoint.Y, otherLine.EndPoint.Y));
                     result = true;
                 }
             }
-            else {
+            else if (this.IsHorizontal && otherLine.IsHorizontal) {
                 if (this.StartPoint.X == otherLine.EndPoint.X || this.EndPoint.X == otherLine.StartPoint.X) {
                     this.StartPoint = new Point(Math.Min(this.StartPoint.X, otherLine.StartPoint.X), this.StartPoint.Y);
                     this.EndPoint = new Point(Math.Max(this.EndPoint.X, otherLine.EndPoint.X), this.StartPoint.Y);

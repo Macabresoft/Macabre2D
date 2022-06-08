@@ -17,6 +17,10 @@ public enum CardinalDirections : byte {
     West = 1 << 1,
     East = 1 << 2,
     South = 1 << 3,
+    NorthEast = North | East,
+    NorthWest = North | West,
+    SouthEast = South | East,
+    SouthWest = South | West,
     All = North | West | East | South
 }
 
