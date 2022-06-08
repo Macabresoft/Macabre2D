@@ -196,6 +196,11 @@ public class PlatformerPlayer : PlatformerActor {
                 this._isJumping = false;
             }
             else if (this._isJumping && this.Input.JumpState == ButtonInputState.Held) {
+                if (this.JumpHoldTime > 0f) {
+                    var multiplier = 1f - Math.Max(1f, this.CurrentState.SecondsInState / this.JumpHoldTime);
+                    verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed * multiplier;
+                }
+
                 if (this.CurrentState.SecondsInState > this.JumpHoldTime) {
                     this._isJumping = false;
                 }
