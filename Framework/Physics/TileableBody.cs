@@ -200,11 +200,18 @@ public sealed class TileableBody : PhysicsBody {
                 }
             }
 
-            var verticalSegments = allSegments.Where(x => !x.IsHorizontal).OrderBy(x => x.StartPoint.Y).ToList();
+            var verticalSegments = allSegments.Where(x => !x.IsVertical).OrderBy(x => x.StartPoint.Y).ToList();
             foreach (var segment in verticalSegments) {
                 if (!removedSegments.Contains(segment)) {
                     var compatibleSegments = verticalSegments.Except(removedSegments).Where(x => x.StartPoint.X == segment.StartPoint.X).OrderBy(x => x.StartPoint.Y).ToList();
+                    removedSegments.AddRange(compatibleSegments.Where(compatibleSegment => segment.TryCombineWith(compatibleSegment)));
+                }
+            }
 
+            var diagonalSegments = allSegments.Where(x => !x.IsVertical && !x.IsHorizontal).OrderBy(x => x.StartPoint.X).ToList();
+            foreach (var segment in diagonalSegments) {
+                if (!removedSegments.Contains(segment)) {
+                    var compatibleSegments = diagonalSegments.Except(removedSegments).Where(x => x.StartPoint == segment.EndPoint).OrderBy(x => x.StartPoint.X).ToList();
                     removedSegments.AddRange(compatibleSegments.Where(compatibleSegment => segment.TryCombineWith(compatibleSegment)));
                 }
             }
@@ -229,7 +236,7 @@ public sealed class TileableBody : PhysicsBody {
     private class TileLineSegment {
         public TileLineSegment(Point firstPoint, Point secondPoint, Layers layers) {
             this.Layers = layers;
-            
+
             if (firstPoint.X == secondPoint.X) {
                 this.StartPoint = new Point(firstPoint.X, Math.Min(firstPoint.Y, secondPoint.Y));
                 this.EndPoint = new Point(firstPoint.X, Math.Max(firstPoint.Y, secondPoint.Y));
@@ -246,7 +253,7 @@ public sealed class TileableBody : PhysicsBody {
 
         public bool IsHorizontal => this.StartPoint.Y == this.EndPoint.Y;
 
-        public bool IsVertical => this.StartPoint.X == this.EndPoint.Y;
+        public bool IsVertical => this.StartPoint.X == this.EndPoint.X;
 
         public Layers Layers { get; }
 
@@ -268,6 +275,14 @@ public sealed class TileableBody : PhysicsBody {
                     this.StartPoint = new Point(Math.Min(this.StartPoint.X, otherLine.StartPoint.X), this.StartPoint.Y);
                     this.EndPoint = new Point(Math.Max(this.EndPoint.X, otherLine.EndPoint.X), this.StartPoint.Y);
                     result = true;
+                }
+            }
+            else if (!this.IsHorizontal && !this.IsVertical && !otherLine.IsHorizontal && !otherLine.IsVertical && this.EndPoint == otherLine.StartPoint) {
+                var thisDirection = this.EndPoint - this.StartPoint;
+                var otherDirection = otherLine.EndPoint - otherLine.StartPoint;
+
+                if (thisDirection == otherDirection) {
+                    this.EndPoint = otherLine.EndPoint;
                 }
             }
 
