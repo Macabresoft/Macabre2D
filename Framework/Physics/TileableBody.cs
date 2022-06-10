@@ -9,6 +9,27 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// Represents diagonal directions for slops.
+/// </summary>
+[Flags]
+public enum DiagonalDirections : byte {
+    [Display(Name = null)]
+    None = 0,
+    
+    [Display(Name = "North East")]
+    NorthEast = 1 << 0,
+    
+    [Display(Name = "North West")]
+    NorthWest = 1 << 1,
+    
+    [Display(Name = "South East")]
+    SouthEast = 1 << 2,
+    
+    [Display(Name = "South West")]
+    SouthWest = 1 << 3
+}
+
+/// <summary>
 /// A <see cref="PhysicsBody" /> which reacts to a <see cref="ITileableEntity" /> parent
 /// and creates colliders based on the available grid.
 /// </summary>
@@ -20,8 +41,9 @@ public sealed class TileableBody : PhysicsBody {
     private Layers _overrideLayersLeftEdge = Layers.None;
     private Layers _overrideLayersRightEdge = Layers.None;
     private Layers _overrideLayersTopEdge = Layers.None;
+    private DiagonalDirections _slopedCorners = DiagonalDirections.None;
     private ITileableEntity? _tileable;
-    private bool _useSlopedCorners;
+
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
@@ -66,14 +88,14 @@ public sealed class TileableBody : PhysicsBody {
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not this should use sloped corners.
+    /// Gets or sets a value indicating which corners are sloped.
     /// </summary>
     [DataMember(Name = "Sloped Corners")]
-    public bool UseSlopedCorners {
-        get => this._useSlopedCorners;
+    public DiagonalDirections SlopedCorners {
+        get => this._slopedCorners;
         set {
-            if (value != this._useSlopedCorners) {
-                this._useSlopedCorners = value;
+            if (value != this._slopedCorners) {
+                this._slopedCorners = value;
                 this.ResetColliders();
             }
         }
@@ -151,23 +173,35 @@ public sealed class TileableBody : PhysicsBody {
                     if (this._tileable.HasActiveTileAt(currentTile)) {
                         var directions = this.GetEdgeDirections(currentTile);
                         var handledDirections = CardinalDirections.None;
-                        if (this.UseSlopedCorners) {
+                        if (this.SlopedCorners != DiagonalDirections.None) {
                             switch (directions) {
                                 case CardinalDirections.NorthWest or CardinalDirections.NorthWest | CardinalDirections.South:
-                                    handledDirections = CardinalDirections.NorthWest;
-                                    allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersTopEdge));
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthWest)) {
+                                        handledDirections = CardinalDirections.NorthWest;
+                                        allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersTopEdge));
+                                    }
+
                                     break;
                                 case CardinalDirections.NorthEast or CardinalDirections.NorthEast | CardinalDirections.South:
-                                    handledDirections = CardinalDirections.NorthEast;
-                                    allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersTopEdge));
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthEast)) {
+                                        handledDirections = CardinalDirections.NorthEast;
+                                        allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersTopEdge));
+                                    }
+
                                     break;
                                 case CardinalDirections.SouthWest:
-                                    handledDirections = CardinalDirections.SouthWest;
-                                    allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthWest)) {
+                                        handledDirections = CardinalDirections.SouthWest;
+                                        allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
+                                    }
+
                                     break;
                                 case CardinalDirections.SouthEast:
-                                    handledDirections = CardinalDirections.SouthEast;
-                                    allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersBottomEdge));
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthEast)) {
+                                        handledDirections = CardinalDirections.SouthEast;
+                                        allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersBottomEdge));
+                                    }
+
                                     break;
                             }
                         }
