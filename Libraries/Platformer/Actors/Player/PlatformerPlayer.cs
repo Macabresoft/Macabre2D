@@ -261,7 +261,7 @@ public class PlatformerPlayer : PlatformerActor {
         if (this.Input.JumpState == ButtonInputState.Pressed) {
             verticalVelocity = this.Jump(out stateType);
         }
-        else if (this.CheckIfStillGrounded(frameTime)) {
+        else if (this.CheckIfStillGrounded(frameTime, out _)) {
             stateType = StateType.Grounded;
             this.PlayGroundedAnimation(horizontalVelocity);
         }
