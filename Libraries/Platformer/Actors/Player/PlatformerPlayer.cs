@@ -134,6 +134,7 @@ public class PlatformerPlayer : PlatformerActor {
         this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
     }
 
+
     /// <summary>
     /// Gets the jump velocity;
     /// </summary>
@@ -198,7 +199,7 @@ public class PlatformerPlayer : PlatformerActor {
             else if (this._isJumping && this.Input.JumpState == ButtonInputState.Held) {
                 if (this.JumpHoldTime > 0f) {
                     var multiplier = 1f - Math.Max(1f, this.CurrentState.SecondsInState / this.JumpHoldTime);
-                    verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed * multiplier;
+                    verticalVelocity += this.GetFrameGravity(frameTime) * multiplier;
                 }
 
                 if (this.CurrentState.SecondsInState > this.JumpHoldTime) {
@@ -206,7 +207,7 @@ public class PlatformerPlayer : PlatformerActor {
                 }
             }
             else {
-                verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+                verticalVelocity += this.GetFrameGravity(frameTime);
                 verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
             }
 
@@ -260,7 +261,7 @@ public class PlatformerPlayer : PlatformerActor {
         if (this.Input.JumpState == ButtonInputState.Pressed) {
             verticalVelocity = this.Jump(out stateType);
         }
-        else if (this.CheckIfStillGrounded()) {
+        else if (this.CheckIfStillGrounded(frameTime)) {
             stateType = StateType.Grounded;
             this.PlayGroundedAnimation(horizontalVelocity);
         }
@@ -359,7 +360,7 @@ public class PlatformerPlayer : PlatformerActor {
         this.UnsetWall();
         this.UnsetPlatform();
         this.PlayFallAnimation();
-        return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        return this.GetFrameGravity(frameTime);
     }
 
     private void FallFromCling(FrameTime frameTime, out StateType stateType) {

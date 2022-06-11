@@ -97,7 +97,7 @@ public class WalkerAutomaton : PlatformerActor {
 
     private void Fall(FrameTime frameTime, out StateType stateType, out float horizontalVelocity, out float verticalVelocity) {
         stateType = StateType.Aerial;
-        verticalVelocity = this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+        verticalVelocity = this.GetFrameGravity(frameTime);
         horizontalVelocity = 0f;
         this.SecondsSpentPaused = this.PauseTime;
         this.PlayIdleAnimation();
@@ -134,7 +134,7 @@ public class WalkerAutomaton : PlatformerActor {
             }
         }
         else {
-            verticalVelocity += this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
+            verticalVelocity += this.GetFrameGravity(frameTime);
             verticalVelocity = Math.Max(-this.PhysicsLoop.TerminalVelocity, verticalVelocity);
             stateType = StateType.Aerial;
         }
@@ -162,7 +162,7 @@ public class WalkerAutomaton : PlatformerActor {
         else if (this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _) || (this.AvoidsLedges && this.CheckIfLedgeAhead(facingDirection))) {
             this.Idle(out stateType, out horizontalVelocity);
         }
-        else if (!this.CheckIfStillGrounded()) {
+        else if (!this.CheckIfStillGrounded(frameTime)) {
             this.Fall(frameTime, out stateType, out horizontalVelocity, out verticalVelocity);
         }
         else {

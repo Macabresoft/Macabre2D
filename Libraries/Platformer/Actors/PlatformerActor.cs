@@ -237,16 +237,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Checks if this is still grounded.
     /// </summary>
     /// <returns>A value indicating whether or not this is still grounded.</returns>
-    protected bool CheckIfStillGrounded() {
+    protected bool CheckIfStillGrounded(FrameTime frameTime) {
         var direction = new Vector2(0f, -1f);
         var result = false;
         var hit = RaycastHit.Empty;
+        var distance = this.HalfSize.Y - this.GetFrameGravity(frameTime);
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
             this.TryRaycastAll(
                 direction,
-                this.HalfSize.Y,
+                distance,
                 this._physicsLoop.GroundLayer,
                 out var hits,
                 new Vector2(-this.HalfSize.X, 0f),
@@ -267,7 +268,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
                 if (this.TryRaycastAll(
                         direction,
-                        this.HalfSize.Y,
+                        distance,
                         this._physicsLoop.GroundLayer,
                         out hits,
                         new Vector2(-this.HalfSize.X, 0f),
@@ -311,6 +312,15 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         return hit != RaycastHit.Empty;
+    }
+
+    /// <summary>
+    /// Gets gravity for a frame.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <returns>The gravity.</returns>
+    protected float GetFrameGravity(FrameTime frameTime) {
+        return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
     }
 
     /// <summary>
