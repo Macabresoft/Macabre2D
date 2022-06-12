@@ -241,7 +241,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var direction = new Vector2(0f, -1f);
         var result = false;
         hit = RaycastHit.Empty;
-        var distance = this.HalfSize.Y - this.GetStillGroundedRaycastLeeway(frameTime);
+        var distance = this.HalfSize.Y - this.GetFrameGravity(frameTime);
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
@@ -321,15 +321,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <returns>The gravity.</returns>
     protected float GetFrameGravity(FrameTime frameTime) {
         return this.PhysicsLoop.Gravity.Value.Y * (float)frameTime.SecondsPassed;
-    }
-
-    /// <summary>
-    /// Gets the leeway for checking groundedness.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <returns>The leeway.</returns>
-    protected virtual float GetStillGroundedRaycastLeeway(FrameTime frameTime) {
-        return this.GetFrameGravity(frameTime);
     }
 
     /// <summary>
