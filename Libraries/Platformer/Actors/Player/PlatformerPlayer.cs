@@ -176,7 +176,7 @@ public class PlatformerPlayer : PlatformerActor {
                 this.Cling(frameTime, out verticalVelocity, out stateType);
             }
         }
-        else if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
+        else if (verticalVelocity < 0f && this.CheckIfHitGround(frameTime, verticalVelocity, out _, out var groundEntity)) {
             if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
                 this._isJumping = true;
                 verticalVelocity = bouncePlatform.BounceVelocity;

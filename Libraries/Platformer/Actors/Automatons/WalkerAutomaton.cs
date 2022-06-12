@@ -123,7 +123,7 @@ public class WalkerAutomaton : PlatformerActor {
 
         this.CheckIfHitWall(frameTime, horizontalVelocity, out horizontalVelocity, out _);
 
-        if (this.CheckIfHitGround(frameTime, verticalVelocity, out var groundEntity)) {
+        if (this.CheckIfHitGround(frameTime, verticalVelocity, out _, out var groundEntity)) {
             if (groundEntity is IBouncePlatform { BounceVelocity: > 0f } bouncePlatform) {
                 verticalVelocity = bouncePlatform.BounceVelocity;
                 stateType = StateType.Aerial;

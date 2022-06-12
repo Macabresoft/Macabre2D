@@ -152,9 +152,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="verticalVelocity">The vertical velocity.</param>
+    /// <param name="hit">The hit.</param>
     /// <param name="groundEntity">The ground entity.</param>
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
-    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out IEntity? groundEntity) {
+    protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
         var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
@@ -163,7 +164,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             direction,
             distance,
             this._physicsLoop.GroundLayer,
-            out var hit,
+            out hit,
             new Vector2(-this.HalfSize.X + anchorOffset, 0f),
             new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
 
