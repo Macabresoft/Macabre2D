@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
