@@ -1,7 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
@@ -31,6 +30,11 @@ public interface IPlatformerActor : IBoundable, ITransformable {
     bool IsOnPlatform { get; }
 
     /// <summary>
+    /// Gets a value indicating whether or not this is on a slope.
+    /// </summary>
+    public bool IsOnSlope { get; }
+
+    /// <summary>
     /// Gets a value indicating whether or not this actor is on a wall.
     /// </summary>
     bool IsOnWall { get; }
@@ -52,6 +56,7 @@ public interface IPlatformerActor : IBoundable, ITransformable {
 [Category("Actor")]
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
+    private bool _isOnSlope;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private IAttachable? _platform;
     private ActorState _previousState;
@@ -78,6 +83,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     public Vector2 HalfSize { get; private set; } = new(0.5f);
+
+    /// <inheritdoc />
+    public bool IsOnSlope {
+        get => this._isOnSlope && this.CurrentState.StateType == StateType.Grounded;
+        private set => this._isOnSlope = value;
+    }
 
     /// <inheritdoc />
     public ActorState PreviousState {
@@ -171,10 +182,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.TrySetPlatform(hit);
+            this.SetIsOnSlope(hit);
             groundEntity = hit.Collider?.Body;
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
         else {
+            this.IsOnSlope = false;
             groundEntity = null;
         }
 
@@ -283,9 +296,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.TrySetPlatform(hit);
+            this.SetIsOnSlope(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
         else {
+            this.IsOnSlope = false;
             this.UnsetPlatform();
         }
 
@@ -379,6 +394,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var worldPosition = this.Transform.Position;
         this.HalfSize = this._size * 0.5f;
         this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
+    }
+
+    private void SetIsOnSlope(RaycastHit hit) {
+        this.IsOnSlope = hit.Normal.X != 0f;
     }
 
     private bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {
