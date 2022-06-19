@@ -144,7 +144,7 @@ public class TextRenderer : RenderableEntity, IRotatable {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.LocalScale.X != 0f && this.LocalScale.Y != 0f) {
-            var inversePixelsPerUnit = this.Settings.InversePixelsPerUnit;
+            var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
             var (x, y) = this.RenderSettings.Size;
             var width = x * inversePixelsPerUnit;
             var height = y * inversePixelsPerUnit;
@@ -178,12 +178,12 @@ public class TextRenderer : RenderableEntity, IRotatable {
     }
 
     private Transform CreatePixelTransform() {
-        var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.InversePixelsPerUnit);
+        var worldTransform = this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel);
         return worldTransform.ToPixelSnappedValue(this.Settings);
     }
 
     private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.InversePixelsPerUnit, this.Rotation);
+        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel, this.Rotation);
     }
 
     private Vector2 CreateSize() {

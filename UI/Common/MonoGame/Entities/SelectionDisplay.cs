@@ -45,7 +45,7 @@ public class SelectionDisplay : BaseDrawer {
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer && this._entityService.Selected is { } selected) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
+            var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             foreach (var boundingArea in this._boundables.Select(x => x.BoundingArea)) {

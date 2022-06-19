@@ -138,7 +138,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var worldTransform = this.Transform;
         var direction = new Vector2(0f, 1f);
         var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
-        var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
+        var anchorOffset = this.Size.X * this.Settings.UnitsPerPixel;
 
         var result = this.TryRaycast(
             direction,
@@ -169,9 +169,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
     protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
-        var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
+        var anchorOffset = this.Size.X * this.Settings.UnitsPerPixel;
         var anchors = this.GetGroundedAnchorsAndDistance(anchorOffset);
-        var distance = 2f * this.Settings.InversePixelsPerUnit + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
+        var distance = 2f * this.Settings.UnitsPerPixel + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
         var result = this.TryRaycast(
             direction,
@@ -207,7 +207,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var isDirectionPositive = horizontalVelocity >= 0f;
         var direction = new Vector2(isDirectionPositive ? 1f : -1f, 0f);
         var distance = this.HalfSize.X + (float)Math.Abs(horizontalVelocity * frameTime.SecondsPassed);
-        var anchorOffset = this.Size.Y * this.Settings.InversePixelsPerUnit;
+        var anchorOffset = this.Size.Y * this.Settings.UnitsPerPixel;
 
         var result = this.TryRaycast(
             direction,
@@ -257,7 +257,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var result = false;
         hit = RaycastHit.Empty;
         var anchors = this.GetGroundedAnchorsAndDistance(0f);
-        var distance = 2f * this.Settings.InversePixelsPerUnit - this.GetFrameGravity(frameTime);
+        var distance = 2f * this.Settings.UnitsPerPixel - this.GetFrameGravity(frameTime);
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
@@ -318,7 +318,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             var direction = this.CurrentState.FacingDirection == HorizontalDirection.Left ? new Vector2(-1f, 0f) : new Vector2(1f, 0f);
             if (this.TryRaycastAll(
                     direction,
-                    this.HalfSize.X + this.Settings.InversePixelsPerUnit,
+                    this.HalfSize.X + this.Settings.UnitsPerPixel,
                     this._physicsLoop.WallLayer,
                     out var hits,
                     new Vector2(0f, -this.HalfSize.Y),
@@ -366,7 +366,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             var direction = new Vector2(0f, -1f);
             if (this.TryRaycastAll(
                     direction,
-                    this.Settings.InversePixelsPerUnit,
+                    this.Settings.UnitsPerPixel,
                     this._physicsLoop.GroundLayer,
                     out var hits,
                     anchors)) {
@@ -378,7 +378,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     private Vector2[] GetGroundedAnchorsAndDistance(float anchorOffset) {
-        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.InversePixelsPerUnit;
+        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel;
         return new[] {
             new Vector2(-this.HalfSize.X + anchorOffset, yStart),
             new Vector2(this.HalfSize.X - anchorOffset, yStart)

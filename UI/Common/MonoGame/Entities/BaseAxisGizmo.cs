@@ -102,7 +102,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is SpriteBatch spriteBatch && this.PrimitiveDrawer is PrimitiveDrawer drawer) {
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var lineOffset = lineThickness * this.Settings.InversePixelsPerUnit * -0.5f;
+            var lineOffset = lineThickness * this.Settings.UnitsPerPixel * -0.5f;
             var lineOffsetVector = new Vector2(-lineOffset, lineOffset);
             var pixelsPerUnit = this.Settings.PixelsPerUnit;
 
@@ -139,7 +139,7 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
         var result = GizmoAxis.None;
 
         var viewRatio = this.Settings.GetPixelAgnosticRatio(this.Camera.ViewHeight, this.Game.ViewportSize.Y);
-        var radius = viewRatio * GizmoPointSize * this.Settings.InversePixelsPerUnit * 0.5f;
+        var radius = viewRatio * GizmoPointSize * this.Settings.UnitsPerPixel * 0.5f;
         if (Vector2.Distance(this.XAxisPosition, mousePosition) < radius) {
             result = GizmoAxis.X;
         }

@@ -71,7 +71,7 @@ public sealed class EditorGrid : BaseDrawer {
         float lineThickness,
         float alpha) {
         if (this.PrimitiveDrawer != null) {
-            var shadowOffset = lineThickness * this.Settings.InversePixelsPerUnit;
+            var shadowOffset = lineThickness * this.Settings.UnitsPerPixel;
             var horizontalShadowOffset = new Vector2(-shadowOffset, 0f);
             var verticalShadowOffset = new Vector2(0f, shadowOffset);
             var color = this.Color * alpha;

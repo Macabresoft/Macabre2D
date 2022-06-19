@@ -51,12 +51,12 @@ public sealed class TranslationGizmo : BaseAxisGizmo {
         if (this.SpriteBatch is { } spriteBatch) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.InversePixelsPerUnit * 0.5f;
+            var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
-            var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
+            var offset = viewRatio * GizmoPointSize * settings.UnitsPerPixel * 0.5f; // The extra 0.5f is to center it
 
             spriteBatch.Draw(
                 settings.PixelsPerUnit,

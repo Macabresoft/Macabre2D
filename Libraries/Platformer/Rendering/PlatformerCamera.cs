@@ -130,7 +130,7 @@ public class PlatformerCamera : Camera {
     protected float Lerp(float current, float desired, float amount) {
         var result = current + (desired - current) * amount;
 
-        if (Math.Abs(result - desired) < this.Settings.InversePixelsPerUnit * 0.5f) {
+        if (Math.Abs(result - desired) < this.Settings.UnitsPerPixel * 0.5f) {
             result = desired;
         }
 

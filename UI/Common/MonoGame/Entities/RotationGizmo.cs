@@ -54,12 +54,12 @@ public class RotationGizmo : BaseAxisGizmo {
         if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
-            var shadowOffset = lineThickness * settings.InversePixelsPerUnit;
+            var shadowOffset = lineThickness * settings.UnitsPerPixel;
             var shadowOffsetVector = new Vector2(-shadowOffset, shadowOffset);
 
             var viewRatio = settings.GetPixelAgnosticRatio(viewBoundingArea.Height, this.Game.ViewportSize.Y);
             var scale = new Vector2(viewRatio);
-            var offset = viewRatio * GizmoPointSize * settings.InversePixelsPerUnit * 0.5f; // The extra 0.5f is to center it
+            var offset = viewRatio * GizmoPointSize * settings.UnitsPerPixel * 0.5f; // The extra 0.5f is to center it
             var axisLength = this.GetAxisLength();
 
             drawer.DrawCircle(

@@ -116,7 +116,7 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.SpriteSheet is { } spriteSheet) {
-            var inversePixelsPerUnit = this.Settings.InversePixelsPerUnit;
+            var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
             var width = spriteSheet.SpriteSize.X * inversePixelsPerUnit;
             var height = spriteSheet.SpriteSize.Y * inversePixelsPerUnit;
             var offset = this.RenderSettings.Offset * inversePixelsPerUnit;
@@ -151,13 +151,13 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
 
     private Transform CreatePixelTransform() {
         var worldTransform =
-            this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.InversePixelsPerUnit)
+            this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel)
                 .ToPixelSnappedValue(this.Settings);
         return worldTransform;
     }
 
     private Transform CreateRotatableTransform() {
-        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.InversePixelsPerUnit, this.Rotation);
+        return this.GetWorldTransform(this.RenderSettings.Offset * this.Settings.UnitsPerPixel, this.Rotation);
     }
 
     private Vector2 CreateSize() {

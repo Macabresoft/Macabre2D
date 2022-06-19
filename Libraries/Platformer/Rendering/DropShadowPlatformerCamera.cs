@@ -61,7 +61,7 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
             if (this.ForegroundLayer != Layers.None) {
                 var foregroundEntities = entities.Where(x => x.Layers.HasFlag(this.ForegroundLayer)).ToList();
                 if (foregroundEntities.Any()) {
-                    var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.InversePixelsPerUnit, -this.Settings.InversePixelsPerUnit), this.Transform.Scale);
+                    var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.UnitsPerPixel, -this.Settings.UnitsPerPixel), this.Transform.Scale);
 
                     spriteBatch?.Begin(
                         SpriteSortMode.Deferred,

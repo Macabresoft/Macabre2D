@@ -200,7 +200,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     /// <param name="spriteSize">The sprite size.</param>
     /// <returns>The scale for the sprite to fit within the tile grid.</returns>
     protected Vector2 GetTileScale(Point spriteSize) {
-        var inversePixelsPerUnit = this.Settings.InversePixelsPerUnit;
+        var inversePixelsPerUnit = this.Settings.UnitsPerPixel;
         var result = this.CurrentGrid.WorldTileSize;
 
         if (spriteSize.X != 0 && spriteSize.Y != 0) {

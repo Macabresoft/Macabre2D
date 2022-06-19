@@ -20,17 +20,6 @@ public interface IGameSettings : INotifyPropertyChanged {
     Point DefaultResolution { get; }
 
     /// <summary>
-    /// Gets the inverse of <see cref="PixelsPerUnit" />.
-    /// </summary>
-    /// <remarks>
-    /// This will be calculated when <see cref="PixelsPerUnit" /> is set.
-    /// Multiplication is a quicker operation than division, so if you find yourself dividing by
-    /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
-    /// produce the same value, but quicker.
-    /// </remarks>
-    float InversePixelsPerUnit { get; }
-
-    /// <summary>
     /// Gets the layer settings.
     /// </summary>
     LayerSettings LayerSettings { get; }
@@ -39,6 +28,17 @@ public interface IGameSettings : INotifyPropertyChanged {
     /// Gets a value indicating whether or not this should pixel snap.
     /// </summary>
     bool SnapToPixels { get; }
+
+    /// <summary>
+    /// Gets the inverse of <see cref="PixelsPerUnit" />.
+    /// </summary>
+    /// <remarks>
+    /// This will be calculated when <see cref="PixelsPerUnit" /> is set.
+    /// Multiplication is a quicker operation than division, so if you find yourself dividing by
+    /// <see cref="PixelsPerUnit" /> regularly, consider multiplying by this instead as it will
+    /// produce the same value, but quicker.
+    /// </remarks>
+    float UnitsPerPixel { get; }
 
     /// <summary>
     /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
@@ -111,9 +111,6 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
     }
 
     /// <inheritdoc />
-    public float InversePixelsPerUnit { get; private set; } = 1f / 32f;
-
-    /// <inheritdoc />
     [DataMember]
     public ushort PixelsPerUnit {
         get => this._pixelsPerUnit;
@@ -124,7 +121,7 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
             }
 
             if (this.Set(ref this._pixelsPerUnit, value)) {
-                this.InversePixelsPerUnit = 1f / this._pixelsPerUnit;
+                this.UnitsPerPixel = 1f / this._pixelsPerUnit;
             }
         }
     }
@@ -135,6 +132,9 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
         get => this._snapToPixels;
         set => this.Set(ref this._snapToPixels, value);
     }
+
+    /// <inheritdoc />
+    public float UnitsPerPixel { get; private set; } = 1f / 32f;
 
     /// <inheritdoc />
     public float GetPixelAgnosticRatio(float unitViewHeight, int pixelViewHeight) {

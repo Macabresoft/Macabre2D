@@ -14,7 +14,7 @@ public static class PixelSnapExtensions {
     /// <param name="settings">The settings.</param>
     /// <returns>A pixel snapped value</returns>
     public static float ToPixelSnappedValue(this float value, IGameSettings settings) {
-        return (int)Math.Round(value * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.InversePixelsPerUnit;
+        return (int)Math.Round(value * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.UnitsPerPixel;
     }
 
     /// <summary>
@@ -25,8 +25,8 @@ public static class PixelSnapExtensions {
     /// <returns>A pixel snapped value</returns>
     public static Vector2 ToPixelSnappedValue(this Vector2 value, IGameSettings settings) {
         return new Vector2(
-            (int)Math.Round(value.X * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.InversePixelsPerUnit,
-            (int)Math.Round(value.Y * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.InversePixelsPerUnit);
+            (int)Math.Round(value.X * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.UnitsPerPixel,
+            (int)Math.Round(value.Y * settings.PixelsPerUnit, 0, MidpointRounding.AwayFromZero) * settings.UnitsPerPixel);
     }
 
     /// <summary>
