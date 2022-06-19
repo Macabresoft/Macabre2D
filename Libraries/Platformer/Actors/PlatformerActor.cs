@@ -169,16 +169,16 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
     protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
-        var distance = this.HalfSize.Y + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
         var anchorOffset = this.Size.X * this.Settings.InversePixelsPerUnit;
+        var anchors = this.GetGroundedAnchorsAndDistance(anchorOffset);
+        var distance = 2f * this.Settings.InversePixelsPerUnit + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
         var result = this.TryRaycast(
             direction,
             distance,
             this._physicsLoop.GroundLayer,
             out hit,
-            new Vector2(-this.HalfSize.X + anchorOffset, 0f),
-            new Vector2(this.HalfSize.X - anchorOffset, 0f)) && hit != RaycastHit.Empty;
+            anchors) && hit != RaycastHit.Empty;
 
         if (result) {
             this.TrySetPlatform(hit);
@@ -256,7 +256,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var direction = new Vector2(0f, -1f);
         var result = false;
         hit = RaycastHit.Empty;
-        var distance = this.HalfSize.Y - this.GetFrameGravity(frameTime);
+        var anchors = this.GetGroundedAnchorsAndDistance(0f);
+        var distance = 2f * this.Settings.InversePixelsPerUnit - this.GetFrameGravity(frameTime);
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
@@ -265,8 +266,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                 distance,
                 this._physicsLoop.GroundLayer,
                 out var hits,
-                new Vector2(-this.HalfSize.X, 0f),
-                new Vector2(this.HalfSize.X, 0f))) {
+                anchors)) {
             hit = this.GetHighestHit(hits);
             result = hit != RaycastHit.Empty;
 
@@ -276,7 +276,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         if (!result) {
-            result = this.CheckIfStillOnPlatform(out hit);
+            result = this.CheckIfStillOnPlatform(anchors, out hit);
 
             if (!result) {
                 this.UnsetPlatform();
@@ -286,8 +286,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                         distance,
                         this._physicsLoop.GroundLayer,
                         out hits,
-                        new Vector2(-this.HalfSize.X, 0f),
-                        new Vector2(this.HalfSize.X, 0f))) {
+                        anchors)) {
                     hit = this.GetHighestHit(hits);
                     result = hit != RaycastHit.Empty;
                 }
@@ -360,23 +359,30 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
-    private bool CheckIfStillOnPlatform(out RaycastHit hit) {
+    private bool CheckIfStillOnPlatform(Vector2[] anchors, out RaycastHit hit) {
         hit = RaycastHit.Empty;
 
         if (this._platform != null) {
             var direction = new Vector2(0f, -1f);
             if (this.TryRaycastAll(
                     direction,
-                    this.HalfSize.Y + this.Settings.InversePixelsPerUnit,
+                    this.Settings.InversePixelsPerUnit,
                     this._physicsLoop.GroundLayer,
                     out var hits,
-                    new Vector2(-this.HalfSize.X, 0f),
-                    new Vector2(this.HalfSize.X, 0f))) {
+                    anchors)) {
                 hit = hits.FirstOrDefault(x => x.Collider?.Body == this._platform) ?? RaycastHit.Empty;
             }
         }
 
         return hit != RaycastHit.Empty;
+    }
+
+    private Vector2[] GetGroundedAnchorsAndDistance(float anchorOffset) {
+        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.InversePixelsPerUnit;
+        return new[] {
+            new Vector2(-this.HalfSize.X + anchorOffset, yStart),
+            new Vector2(this.HalfSize.X - anchorOffset, yStart)
+        };
     }
 
     private RaycastHit GetHighestHit(IEnumerable<RaycastHit> hits) {
