@@ -56,7 +56,6 @@ public interface IPlatformerActor : IBoundable, ITransformable {
 [Category("Actor")]
 public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     private ActorState _currentState;
-    private bool _isOnSlope;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private IAttachable? _platform;
     private ActorState _previousState;
@@ -68,6 +67,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     public bool IsOnPlatform => this._platform != null;
+
+    /// <inheritdoc />
+    public bool IsOnSlope => this.GroundNormal.X != 0f;
 
     /// <inheritdoc />
     public bool IsOnWall => this._wall != null;
@@ -83,12 +85,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     /// <inheritdoc />
     public Vector2 HalfSize { get; private set; } = new(0.5f);
-
-    /// <inheritdoc />
-    public bool IsOnSlope {
-        get => this._isOnSlope && this.CurrentState.StateType == StateType.Grounded;
-        private set => this._isOnSlope = value;
-    }
 
     /// <inheritdoc />
     public ActorState PreviousState {
@@ -111,6 +107,11 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// Gets the physics system.
     /// </summary>
     protected IPlatformerPhysicsLoop PhysicsLoop => this._physicsLoop;
+
+    /// <summary>
+    /// Gets the normal of the current ground. Will be <see cref="Vector2.Zero" /> when in the air.
+    /// </summary>
+    protected Vector2 GroundNormal { get; private set; }
 
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
@@ -182,15 +183,14 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.TrySetPlatform(hit);
-            this.SetIsOnSlope(hit);
             groundEntity = hit.Collider?.Body;
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
         else {
-            this.IsOnSlope = false;
             groundEntity = null;
         }
 
+        this.GroundNormal = hit.Normal;
         return result;
     }
 
@@ -295,14 +295,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (result) {
             this.TrySetPlatform(hit);
-            this.SetIsOnSlope(hit);
             this.SetWorldPosition(new Vector2(this.Transform.Position.X, hit.ContactPoint.Y + this.HalfSize.Y));
         }
         else {
-            this.IsOnSlope = false;
             this.UnsetPlatform();
         }
 
+        this.GroundNormal = hit.Normal;
         return result;
     }
 
@@ -400,10 +399,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var worldPosition = this.Transform.Position;
         this.HalfSize = this._size * 0.5f;
         this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
-    }
-
-    private void SetIsOnSlope(RaycastHit hit) {
-        this.IsOnSlope = hit.Normal.X != 0f;
     }
 
     private bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {

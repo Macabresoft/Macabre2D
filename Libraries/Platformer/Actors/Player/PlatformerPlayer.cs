@@ -279,11 +279,12 @@ public class PlatformerPlayer : PlatformerActor {
     /// </summary>
     /// <param name="newHorizontalVelocity">The new horizontal velocity.</param>
     /// <returns>A value indicating whether or not the grounded state has changed.</returns>
-    protected bool HasGroundedStateChanged(float newHorizontalVelocity) {
+    protected virtual bool HasGroundedStateChanged(float newHorizontalVelocity) {
         return this.CurrentState.StateType == StateType.Aerial ||
                (newHorizontalVelocity == 0f && this.CurrentState.Velocity.X != 0f) ||
                (newHorizontalVelocity != 0f && this.CurrentState.Velocity.X == 0f);
     }
+
 
     /// <summary>
     /// Completely resets the current animation.
