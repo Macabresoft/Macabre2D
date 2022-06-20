@@ -380,8 +380,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel;
         return new[] {
             new Vector2(-this.HalfSize.X + anchorOffset, yStart),
-            new Vector2(anchorOffset, yStart),
-            new Vector2(-anchorOffset, yStart),
+            new Vector2(0f, yStart),
             new Vector2(this.HalfSize.X - anchorOffset, yStart)
         };
     }
