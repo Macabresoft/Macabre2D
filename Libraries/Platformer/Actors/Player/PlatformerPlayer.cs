@@ -131,7 +131,7 @@ public class PlatformerPlayer : PlatformerActor {
         this.CurrentState = this.GetNewActorState(frameTime);
         this.PreviousState = previousState;
         this.ResetFacingDirection();
-        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform);
+        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform, this.IsOnSlope);
     }
 
 

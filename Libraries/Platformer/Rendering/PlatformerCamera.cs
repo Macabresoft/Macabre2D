@@ -46,9 +46,10 @@ public class PlatformerCamera : Camera {
     /// <param name="previousState">The previous state.</param>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
-    public void UpdateDesiredPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform) {
+    /// <param name="isOnSlope">A value indicating whether or not the actor is on a slope.</param>
+    public void UpdateDesiredPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform, bool isOnSlope) {
         var x = this.GetXPosition(currentState, previousState, frameTime, isOnPlatform);
-        var y = this.GetYPosition(currentState, previousState, frameTime, isOnPlatform);
+        var y = this.GetYPosition(currentState, previousState, frameTime, isOnPlatform, isOnSlope);
         this.LocalPosition = new Vector2(x, y);
     }
 
@@ -85,7 +86,7 @@ public class PlatformerCamera : Camera {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
     /// <returns>The Y position.</returns>
-    protected virtual float GetYPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform) {
+    protected virtual float GetYPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform, bool isOnSlope) {
         var y = this.LocalPosition.Y;
         var offsetY = this.FollowOffset.Y;
         var minimumY = -this.FollowArea.Maximum.Y + offsetY;
@@ -95,7 +96,7 @@ public class PlatformerCamera : Camera {
                 y = this.Lerp(this.LocalPosition.Y, offsetY, (float)frameTime.SecondsPassed * this._lerpSpeed);
             }
             else {
-                if (currentState.StateType is StateType.Aerial) {
+                if (currentState.StateType is StateType.Aerial || isOnSlope) {
                     var isFalling = previousState.Velocity.Y < 0f && Math.Abs(currentState.Velocity.Y - previousState.Velocity.Y) < FloatingPointTolerance;
                     if (this._isFreeFalling && isFalling) {
                         y = this.Lerp(this.LocalPosition.Y, minimumY, (float)frameTime.SecondsPassed);
