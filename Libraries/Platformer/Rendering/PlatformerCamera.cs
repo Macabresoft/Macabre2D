@@ -3,6 +3,7 @@
 using System.Runtime.Serialization;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A <see cref="ICamera" /> for platformers.
@@ -39,18 +40,10 @@ public class PlatformerCamera : Camera {
         this.LocalPosition = this.FollowOffset;
     }
 
-    /// <summary>
-    /// Updates the position according to the specified actor state.
-    /// </summary>
-    /// <param name="currentState">The current state.</param>
-    /// <param name="previousState">The previous state.</param>
-    /// <param name="frameTime">The frame time.</param>
-    /// <param name="isOnPlatform">A value indicating whether or not the actor is on a platform.</param>
-    /// <param name="isOnSlope">A value indicating whether or not the actor is on a slope.</param>
-    public void UpdateDesiredPosition(ActorState currentState, ActorState previousState, FrameTime frameTime, bool isOnPlatform, bool isOnSlope) {
-        var x = this.GetXPosition(currentState, previousState, frameTime, isOnPlatform);
-        var y = this.GetYPosition(currentState, previousState, frameTime, isOnPlatform, isOnSlope);
-        this.LocalPosition = new Vector2(x, y);
+    /// <inheritdoc />
+    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+        this.UpdatePosition(frameTime);
+        base.Render(frameTime, spriteBatch, entities);
     }
 
     /// <summary>
@@ -136,5 +129,13 @@ public class PlatformerCamera : Camera {
         }
 
         return result;
+    }
+
+    protected void UpdatePosition(FrameTime frameTime) {
+        if (this.Parent is PlatformerPlayer player) {
+            var x = this.GetXPosition(player.CurrentState, player.PreviousState, frameTime, player.IsOnPlatform);
+            var y = this.GetYPosition(player.CurrentState, player.PreviousState, frameTime, player.IsOnPlatform, player.IsOnSlope);
+            this.LocalPosition = new Vector2(x, y);
+        }
     }
 }

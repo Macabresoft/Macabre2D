@@ -38,6 +38,8 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
         if (this.ForegroundLayer != Layers.None || this.BackgroundLayer != Layers.None) {
+            this.UpdatePosition(frameTime);
+
             if (this.BackgroundLayer != Layers.None) {
                 var backgroundEntities = entities.Where(x => x.Layers.HasFlag(this.BackgroundLayer)).ToList();
                 if (backgroundEntities.Any()) {

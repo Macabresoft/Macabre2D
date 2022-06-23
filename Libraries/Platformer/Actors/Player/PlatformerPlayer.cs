@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
 public class PlatformerPlayer : PlatformerActor {
-    private PlatformerCamera? _camera;
     private bool _isJumping;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
@@ -112,7 +111,6 @@ public class PlatformerPlayer : PlatformerActor {
         this.JumpingAnimationReference.Initialize(this.Scene.Assets);
         this.MovingAnimationReference.Initialize(this.Scene.Assets);
 
-        this._camera = this.GetOrAddChild<PlatformerCamera>();
         this.SpriteAnimator = this.GetOrAddChild<QueueableSpriteAnimator>();
         this.SpriteAnimator.RenderSettings.OffsetType = PixelOffsetType.Center;
 
@@ -131,9 +129,7 @@ public class PlatformerPlayer : PlatformerActor {
         this.CurrentState = this.GetNewActorState(frameTime);
         this.PreviousState = previousState;
         this.ResetFacingDirection();
-        this._camera?.UpdateDesiredPosition(this.CurrentState, this.PreviousState, frameTime, this.IsOnPlatform, this.IsOnSlope);
     }
-
 
     /// <summary>
     /// Gets the jump velocity;
