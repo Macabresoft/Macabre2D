@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// Interface for an actor, which is
 /// </summary>
-public interface IPlatformerActor : IBoundable, ITransformable {
+public interface IPlatformerActor : IBoundable, IEntity {
     /// <summary>
     /// Gets a value indicating whether or not this actor can attach to walls.
     /// </summary>
@@ -171,7 +171,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
         var anchorOffset = this.Size.X * this.Settings.UnitsPerPixel;
-        var anchors = this.GetGroundedAnchorsAndDistance(anchorOffset);
+        var anchors = this.GetGroundedAnchors(anchorOffset, 0f);
         var distance = 2f * this.Settings.UnitsPerPixel + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
         var result = this.TryRaycast(
@@ -256,8 +256,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var direction = new Vector2(0f, -1f);
         var result = false;
         hit = RaycastHit.Empty;
-        var anchors = this.GetGroundedAnchorsAndDistance(0f);
-        var distance = 2f * this.Settings.UnitsPerPixel - this.GetFrameGravity(frameTime);
+        var yAdjustment = this.GetYDistance();
+        var anchors = this.GetGroundedAnchors(0f, yAdjustment);
+        var distance = 2f * this.Settings.UnitsPerPixel + yAdjustment;
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
@@ -358,6 +359,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
     }
 
+    private bool CheckIfHitIsValid(RaycastHit hit) {
+        return hit.Collider?.Body is { } body && !body.IsDescendentOf(this) && !this.IsDescendentOf(body);
+    }
+
     private bool CheckIfStillOnPlatform(Vector2[] anchors, out RaycastHit hit) {
         hit = RaycastHit.Empty;
 
@@ -369,15 +374,15 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
                     this._physicsLoop.GroundLayer,
                     out var hits,
                     anchors)) {
-                hit = hits.FirstOrDefault(x => x.Collider?.Body == this._platform) ?? RaycastHit.Empty;
+                hit = hits.FirstOrDefault(x => x.Collider?.Body is { } body && body.Id == this._platform.Id) ?? RaycastHit.Empty;
             }
         }
 
         return hit != RaycastHit.Empty;
     }
 
-    private Vector2[] GetGroundedAnchorsAndDistance(float anchorOffset) {
-        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel;
+    private Vector2[] GetGroundedAnchors(float anchorOffset, float yAdjustment) {
+        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel + yAdjustment;
         return new[] {
             new Vector2(-this.HalfSize.X + anchorOffset, yStart),
             new Vector2(0f, yStart),
@@ -387,13 +392,17 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
     private RaycastHit GetHighestHit(IEnumerable<RaycastHit> hits) {
         var result = RaycastHit.Empty;
-        foreach (var hit in hits) {
+        foreach (var hit in hits.Where(x => x.Collider?.Body is { } body && body.Id != this.Id)) {
             if (result == RaycastHit.Empty || hit.ContactPoint.Y > result.ContactPoint.Y) {
                 result = hit;
             }
         }
 
         return result;
+    }
+
+    private float GetYDistance() {
+        return this.CurrentState.Position.Y - this.PreviousState.Position.Y;
     }
 
     private void ResetBoundingArea() {
@@ -411,7 +420,10 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         while (!result && counter < anchors.Length) {
             var (x, y) = anchors[counter];
-            result = this._physicsLoop.TryRaycast(new Vector2(position.X + x, position.Y + y), direction, distance, layers, out hit);
+            if (this._physicsLoop.TryRaycast(new Vector2(position.X + x, position.Y + y), direction, distance, layers, out hit) && this.CheckIfHitIsValid(hit)) {
+                result = true;
+            }
+
             counter++;
         }
 
@@ -419,41 +431,34 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     }
 
     private bool TryRaycastAll(Vector2 direction, float distance, Layers layers, out IReadOnlyCollection<RaycastHit> hits, params Vector2[] anchors) {
-        var result = false;
         var actualHits = new List<RaycastHit>();
 
         var position = this.Transform.Position;
 
         foreach (var anchor in anchors) {
             var (x, y) = anchor;
-            var potentialHits = this._physicsLoop.RaycastAll(new Vector2(position.X + x, position.Y + y), direction, distance, layers);
-            if (potentialHits.Any()) {
-                actualHits.AddRange(potentialHits);
-                result = true;
-            }
+            var potentialHits = this._physicsLoop.RaycastAll(new Vector2(position.X + x, position.Y + y), direction, distance, layers)
+                .Where(this.CheckIfHitIsValid);
+            actualHits.AddRange(potentialHits);
         }
 
         hits = actualHits;
-        return result;
+        return actualHits.Any();
     }
 
     private void TrySetPlatform(RaycastHit hit) {
-        if (hit.Collider?.Body is IAttachable platform) {
-            if (platform != this._platform) {
-                this._platform?.Detach(this);
-                this._platform = platform;
-                this._platform.Attach(this);
-            }
+        if (hit.Collider?.Body is IAttachable platform && platform.Id != this._platform?.Id && !platform.IsDescendentOf(this) && !this.IsDescendentOf(platform)) {
+            this._platform?.Detach(this);
+            this._platform = platform;
+            this._platform.Attach(this);
         }
     }
 
     private void TrySetWall(RaycastHit hit) {
-        if (this.CanAttachToWalls && hit.Collider?.Body is IAttachable wall) {
-            if (wall != this._wall) {
-                this._wall?.Detach(this);
-                this._wall = wall;
-                this._wall.Attach(this);
-            }
+        if (this.CanAttachToWalls && hit.Collider?.Body is IAttachable wall && wall.Id != this._wall?.Id && !wall.IsDescendentOf(this) && !this.IsDescendentOf(wall)) {
+            this._wall?.Detach(this);
+            this._wall = wall;
+            this._wall.Attach(this);
         }
     }
 }

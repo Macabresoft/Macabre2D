@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework;
 /// An implementation of <see cref="IPlatformerActor" /> for the player.
 /// </summary>
 public class PlatformerPlayer : PlatformerActor {
+    private float _horizontalVelocity = 4f;
     private bool _isJumping;
     private float _jumpHoldTime = 0.1f;
     private float _jumpVelocity = 8f;
-    private float _maximumHorizontalVelocity = 7f;
 
     /// <inheritdoc />
     public override bool CanAttachToWalls => false;
@@ -60,6 +60,16 @@ public class PlatformerPlayer : PlatformerActor {
     public GameTimer WallClingTimer { get; } = new() { TimeLimit = 0.25f };
 
     /// <summary>
+    /// Gets or sets the horizontal velocity.
+    /// </summary>
+    [DataMember]
+    [Category("Movement")]
+    public float HorizontalVelocity {
+        get => this._horizontalVelocity;
+        set => this.Set(ref this._horizontalVelocity, value);
+    }
+
+    /// <summary>
     /// Gets the maximum time a jump can be held in seconds.
     /// </summary>
     [DataMember]
@@ -77,16 +87,6 @@ public class PlatformerPlayer : PlatformerActor {
     public float JumpVelocity {
         get => this._jumpVelocity;
         set => this.Set(ref this._jumpVelocity, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the maximum horizontal velocity allowed.
-    /// </summary>
-    [DataMember]
-    [Category("Movement")]
-    public float MaximumHorizontalVelocity {
-        get => this._maximumHorizontalVelocity;
-        set => this.Set(ref this._maximumHorizontalVelocity, value);
     }
 
     /// <summary>
@@ -328,7 +328,7 @@ public class PlatformerPlayer : PlatformerActor {
             this.PostWallJumpTimer.Increment(frameTime);
         }
         else {
-            horizontalVelocity = this.Input.HorizontalAxis * this.MaximumHorizontalVelocity;
+            horizontalVelocity = this.Input.HorizontalAxis * this.HorizontalVelocity;
 
             if (horizontalVelocity < 0f) {
                 horizontalVelocity = Math.Min(horizontalVelocity, this.CurrentState.Velocity.X);
@@ -448,11 +448,11 @@ public class PlatformerPlayer : PlatformerActor {
 
         if (this.CurrentState.FacingDirection == HorizontalDirection.Left) {
             movementDirection = HorizontalDirection.Right;
-            horizontalVelocity = this.MaximumHorizontalVelocity;
+            horizontalVelocity = this.HorizontalVelocity;
         }
         else {
             movementDirection = HorizontalDirection.Left;
-            horizontalVelocity = -this.MaximumHorizontalVelocity;
+            horizontalVelocity = -this.HorizontalVelocity;
         }
 
         verticalVelocity = this.JumpVelocity;
