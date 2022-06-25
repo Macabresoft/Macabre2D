@@ -41,7 +41,7 @@ public class PlatformerCamera : Camera {
     }
 
     /// <inheritdoc />
-    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities) {
         this.UpdatePosition(frameTime);
         base.Render(frameTime, spriteBatch, entities);
     }

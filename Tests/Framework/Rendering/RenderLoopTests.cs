@@ -130,7 +130,7 @@ public class RenderLoopTests {
             return Vector2.Zero;
         }
 
-        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities) {
             foreach (var entity in entities) {
                 entity.Render(frameTime, this.BoundingArea);
             }

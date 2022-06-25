@@ -63,7 +63,7 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
     /// <param name="entities">The entities to render.</param>
-    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities);
+    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities);
 }
 
 /// <summary>
@@ -201,7 +201,7 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+    public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities) {
         spriteBatch?.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend,

@@ -1,6 +1,7 @@
 namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -111,7 +112,7 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// </summary>
     /// <param name="boundable">The boundable.</param>
     /// <returns>All potential collision colliders.</returns>
-    public IReadOnlyCollection<T> RetrievePotentialCollisions(T boundable) {
+    public IEnumerable<T> RetrievePotentialCollisions(T boundable) {
         return this.RetrievePotentialCollisions(boundable.BoundingArea);
     }
 
@@ -120,16 +121,17 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
     /// <returns>All potential collision colliders.</returns>
-    public IReadOnlyCollection<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
+    public IEnumerable<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
         var quadrant = this.GetQuadrant(boundingArea);
+        IEnumerable<T> result = this._boundables;
         if (quadrant != Quadrant.None) {
             // We can directly add to boundables here, because boundables is cleared every frame
             // This is much better than allocating a new collection every frame that contains every
             // boundable in the game.
-            this._boundables.AddRange(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
+            result = result.Concat(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
         }
 
-        return this._boundables;
+        return result;
     }
 
     private Quadrant GetQuadrant(BoundingArea boundingArea) {

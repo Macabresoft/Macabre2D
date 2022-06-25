@@ -36,12 +36,13 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
     }
 
     /// <inheritdoc />
-    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadOnlyCollection<IRenderableEntity> entities) {
+    public override void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities) {
         if (this.ForegroundLayer != Layers.None || this.BackgroundLayer != Layers.None) {
             this.UpdatePosition(frameTime);
+            var renderables = entities.ToList();
 
             if (this.BackgroundLayer != Layers.None) {
-                var backgroundEntities = entities.Where(x => x.Layers.HasFlag(this.BackgroundLayer)).ToList();
+                var backgroundEntities = renderables.Where(x => x.Layers.HasFlag(this.BackgroundLayer)).ToList();
                 if (backgroundEntities.Any()) {
                     spriteBatch?.Begin(
                         SpriteSortMode.Deferred,
@@ -61,7 +62,7 @@ public class DropShadowPlatformerCamera : PlatformerCamera {
             }
 
             if (this.ForegroundLayer != Layers.None) {
-                var foregroundEntities = entities.Where(x => x.Layers.HasFlag(this.ForegroundLayer)).ToList();
+                var foregroundEntities = renderables.Where(x => x.Layers.HasFlag(this.ForegroundLayer)).ToList();
                 if (foregroundEntities.Any()) {
                     var offsetTransform = new Transform(this.Transform.Position + new Vector2(this.Settings.UnitsPerPixel, -this.Settings.UnitsPerPixel), this.Transform.Scale);
 
