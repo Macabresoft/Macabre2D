@@ -47,6 +47,8 @@ public sealed class QuadTree<T> where T : IBoundable {
     public void Clear() {
         this._boundables.Clear();
 
+        // NOTE: I'm breaking this contract and I don't care!!!
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (this._nodes[0] != null) {
             foreach (var node in this._nodes) {
                 node.Clear();
@@ -60,7 +62,9 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// <param name="item">The item to insert.</param>
     public void Insert(T item) {
         // We only have to null check the first node, because we always add every node at once.
-        var hasNodes = true;
+        // NOTE: I'm breaking this contract and I don't care!!!
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        var hasNodes = this._nodes[0] != null;
 
         if (hasNodes) {
             var boundingArea = item.BoundingArea;
@@ -107,7 +111,7 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// </summary>
     /// <param name="boundable">The boundable.</param>
     /// <returns>All potential collision colliders.</returns>
-    public List<T> RetrievePotentialCollisions(T boundable) {
+    public IReadOnlyCollection<T> RetrievePotentialCollisions(T boundable) {
         return this.RetrievePotentialCollisions(boundable.BoundingArea);
     }
 
@@ -116,14 +120,16 @@ public sealed class QuadTree<T> where T : IBoundable {
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
     /// <returns>All potential collision colliders.</returns>
-    public List<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
-        var potentialCollisions = new List<T>(this._boundables);
+    public IReadOnlyCollection<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
         var quadrant = this.GetQuadrant(boundingArea);
         if (quadrant != Quadrant.None) {
-            potentialCollisions.AddRange(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
+            // We can directly add to boundables here, because boundables is cleared every frame
+            // This is much better than allocating a new collection every frame that contains every
+            // boundable in the game.
+            this._boundables.AddRange(this._nodes[(int)quadrant].RetrievePotentialCollisions(boundingArea));
         }
 
-        return potentialCollisions;
+        return this._boundables;
     }
 
     private Quadrant GetQuadrant(BoundingArea boundingArea) {
