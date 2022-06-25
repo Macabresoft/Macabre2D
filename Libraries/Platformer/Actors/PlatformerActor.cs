@@ -171,7 +171,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
         var direction = new Vector2(0f, -1f);
         var anchorOffset = this.Size.X * this.Settings.UnitsPerPixel;
-        var anchors = this.GetGroundedAnchors(anchorOffset, 0f);
+        var anchors = this.GetGroundedAnchors(anchorOffset);
         var distance = 2f * this.Settings.UnitsPerPixel + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
 
         var result = this.TryRaycast(
@@ -256,9 +256,8 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var direction = new Vector2(0f, -1f);
         var result = false;
         hit = RaycastHit.Empty;
-        var yAdjustment = this.GetYDistance();
-        var anchors = this.GetGroundedAnchors(0f, yAdjustment);
-        var distance = 2f * this.Settings.UnitsPerPixel + yAdjustment;
+        var anchors = this.GetGroundedAnchors(0f);
+        var distance = 2f * this.Settings.UnitsPerPixel - this.GetFrameGravity(frameTime);
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
@@ -381,12 +380,12 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         return hit != RaycastHit.Empty;
     }
 
-    private Vector2[] GetGroundedAnchors(float anchorOffset, float yAdjustment) {
-        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel + yAdjustment;
+    private Vector2[] GetGroundedAnchors(float anchorHorizontalOffset) {
+        var yStart = -this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel;
         return new[] {
-            new Vector2(-this.HalfSize.X + anchorOffset, yStart),
+            new Vector2(-this.HalfSize.X + anchorHorizontalOffset, yStart),
             new Vector2(0f, yStart),
-            new Vector2(this.HalfSize.X - anchorOffset, yStart)
+            new Vector2(this.HalfSize.X - anchorHorizontalOffset, yStart)
         };
     }
 
@@ -399,10 +398,6 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         }
 
         return result;
-    }
-
-    private float GetYDistance() {
-        return this.CurrentState.Position.Y - this.PreviousState.Position.Y;
     }
 
     private void ResetBoundingArea() {
