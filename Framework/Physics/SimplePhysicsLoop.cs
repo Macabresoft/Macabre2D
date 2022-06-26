@@ -20,8 +20,16 @@ public interface ISimplePhysicsLoop : ILoop {
     IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers);
 
     /// <summary>
+    /// Performs a box cast. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
+    /// </summary>
+    /// <param name="box">The box as a <see cref="BoundingArea" />.</param>
+    /// <param name="layers">The layers for which to cast.</param>
+    /// <param name="intersections">The intersections found.</param>
+    /// <returns>A value indicating whether or not any intersections were found.</returns>
+    bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections);
+
+    /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
-    /// Performs a raycast across colliders in the scene.
     /// </summary>
     /// <param name="start">The start.</param>
     /// <param name="direction">The direction.</param>
@@ -52,17 +60,28 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     /// <inheritdoc />
     public IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
         var ray = new LineSegment(start, direction, distance);
-        var potentialColliders = this.ColliderTree.RetrievePotentialCollisions(ray.BoundingArea);
         var hits = new List<RaycastHit>();
-        var enabledLayers = this.Game.Project.Settings.LayerSettings.EnabledLayers;
 
-        foreach (var collider in potentialColliders.Where(x => (x.Layers & layers & enabledLayers) != Layers.None)) {
+        foreach (var collider in this.GetFilteredColliders(ray.BoundingArea, layers)) {
             if (collider.IsHitBy(ray, out var hit)) {
                 hits.Add(hit);
             }
         }
 
         return hits;
+    }
+
+    /// <inheritdoc />
+    public bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections) {
+        var actualIntersections = new List<Vector2>();
+        foreach (var collider in this.GetFilteredColliders(box, layers)) {
+            if (collider.Intersects(box, out var colliderIntersections)) {
+                actualIntersections.AddRange(colliderIntersections);
+            }
+        }
+
+        intersections = actualIntersections;
+        return actualIntersections.Any();
     }
 
     /// <inheritdoc />
@@ -92,6 +111,11 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     /// <inheritdoc />
     protected override void FixedUpdate(FrameTime frameTime, InputState inputState) {
         this.InsertColliders();
+    }
+
+    private IEnumerable<Collider> GetFilteredColliders(BoundingArea boundingArea, Layers layers) {
+        var enabledLayers = this.Game.Project.Settings.LayerSettings.EnabledLayers;
+        return this.ColliderTree.RetrievePotentialCollisions(boundingArea).Where(x => (x.Layers & layers & enabledLayers) != Layers.None);
     }
 
     private void InsertColliders() {

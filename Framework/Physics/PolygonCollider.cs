@@ -181,6 +181,22 @@ public class PolygonCollider : Collider {
         return this._center.Value;
     }
 
+    /// <inheritdoc />
+    public override bool Intersects(BoundingArea boundingArea, out IEnumerable<Vector2> intersections) {
+        if (base.Intersects(boundingArea, out var baseIntersections) || this.BoundingArea.Overlaps(boundingArea)) {
+            var realIntersections = new List<Vector2>(baseIntersections);
+            realIntersections.AddRange(this.WorldPoints.Where(boundingArea.Contains));
+
+            if (realIntersections.Any()) {
+                intersections = realIntersections;
+                return true;
+            }
+        }
+
+        intersections = Enumerable.Empty<Vector2>();
+        return false;
+    }
+
     /// <summary>
     /// Resets this instance.
     /// </summary>

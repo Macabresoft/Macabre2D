@@ -2,6 +2,7 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -199,6 +200,42 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     public void Initialize(IPhysicsBody body) {
         this.Body = body;
         this.Reset();
+    }
+
+    /// <summary>
+    /// Determines whether or not a bounding area intersects with this collider.
+    /// </summary>
+    /// <param name="boundingArea">The bounding area.</param>
+    /// <param name="intersections">The intersections.</param>
+    /// <returns>A value indicating whether or not an intersection occured.</returns>
+    public virtual bool Intersects(BoundingArea boundingArea, out IEnumerable<Vector2> intersections) {
+        if (this.BoundingArea.Overlaps(boundingArea)) {
+            var realIntersections = new List<Vector2>();
+            var bottomLeft = boundingArea.Minimum;
+            var bottomRight = new Vector2(boundingArea.Maximum.X, boundingArea.Minimum.Y);
+            var topLeft = new Vector2(boundingArea.Minimum.X, boundingArea.Maximum.Y);
+            var topRight = boundingArea.Maximum;
+            var lineSegments = new[] {
+                new LineSegment(bottomLeft, topLeft),
+                new LineSegment(topLeft, topRight),
+                new LineSegment(topRight, bottomRight),
+                new LineSegment(bottomLeft, bottomRight)
+            };
+
+            foreach (var lineSegment in lineSegments) {
+                if (this.IsHitBy(lineSegment, out var hit) && hit != RaycastHit.Empty) {
+                    realIntersections.Add(hit.ContactPoint);
+                }
+            }
+
+            if (realIntersections.Any()) {
+                intersections = realIntersections;
+                return true;
+            }
+        }
+
+        intersections = Enumerable.Empty<Vector2>();
+        return false;
     }
 
     /// <summary>
