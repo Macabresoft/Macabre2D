@@ -133,6 +133,11 @@ public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
             return Array.Empty<RaycastHit>();
         }
 
+        public bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections) {
+            intersections = Array.Empty<Vector2>();
+            return false;
+        }
+
         /// <inheritdoc />
         public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
             hit = RaycastHit.Empty;
