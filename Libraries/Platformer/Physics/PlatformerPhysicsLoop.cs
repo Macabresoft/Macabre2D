@@ -133,9 +133,9 @@ public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
             return Array.Empty<RaycastHit>();
         }
 
-        public bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections) {
-            intersections = Array.Empty<Vector2>();
-            return false;
+        /// <inheritdoc />
+        public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
+            return Array.Empty<RaycastHit>();
         }
 
         /// <inheritdoc />
@@ -145,7 +145,7 @@ public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
         }
 
         /// <inheritdoc />
-        public void Update(FrameTime frameTime, Framework.InputState inputState) {
+        public void Update(FrameTime frameTime, InputState inputState) {
         }
     }
 }

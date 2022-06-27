@@ -169,17 +169,9 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
     /// <param name="groundEntity">The ground entity.</param>
     /// <returns>A value indicating whether or not this actor has hit the ground.</returns>
     protected bool CheckIfHitGround(FrameTime frameTime, float verticalVelocity, out RaycastHit hit, out IEntity? groundEntity) {
-        var direction = new Vector2(0f, -1f);
         var anchorOffset = this.Size.X * this.Settings.UnitsPerPixel;
-        var anchors = this.GetGroundedAnchors(anchorOffset);
         var distance = 2f * this.Settings.UnitsPerPixel + (float)Math.Abs(verticalVelocity * frameTime.SecondsPassed);
-
-        var result = this.TryRaycast(
-            direction,
-            distance,
-            this._physicsLoop.GroundLayer,
-            out hit,
-            anchors) && hit != RaycastHit.Empty;
+        var result = this.TryGroundedCast(anchorOffset, distance, out hit) && hit != RaycastHit.Empty;
 
         if (result) {
             this.TrySetPlatform(hit);
@@ -261,13 +253,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
 
         if (this.IsOnPlatform &&
             this.PreviousState.Position.Y > this.CurrentState.Position.Y &&
-            this.TryRaycastAll(
-                direction,
-                distance,
-                this._physicsLoop.GroundLayer,
-                out var hits,
-                anchors)) {
-            hit = this.GetHighestHit(hits);
+            this.TryGroundedCast(0f, distance, out hit)) {
             result = hit != RaycastHit.Empty;
 
             if (result) {
@@ -281,13 +267,7 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
             if (!result) {
                 this.UnsetPlatform();
 
-                if (this.TryRaycastAll(
-                        direction,
-                        distance,
-                        this._physicsLoop.GroundLayer,
-                        out hits,
-                        anchors)) {
-                    hit = this.GetHighestHit(hits);
+                if (this.TryGroundedCast(0f, distance, out hit)) {
                     result = hit != RaycastHit.Empty;
                 }
             }
@@ -389,6 +369,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         };
     }
 
+    private BoundingArea GetGroundedCheckBoundingArea(float horizontalOffset, float verticalDistance) {
+        var yStart = this.Transform.Position.Y - this.HalfSize.Y + 1.5f * this.Settings.UnitsPerPixel;
+        return new BoundingArea(
+            new Vector2(this.Transform.Position.X - this.HalfSize.X + horizontalOffset, yStart - verticalDistance),
+            new Vector2(this.Transform.Position.X + this.HalfSize.X - horizontalOffset, yStart));
+    }
+
     private RaycastHit GetHighestHit(IEnumerable<RaycastHit> hits) {
         var result = RaycastHit.Empty;
         foreach (var hit in hits.Where(x => x.Collider?.Body is { } body && body.Id != this.Id)) {
@@ -404,6 +391,13 @@ public abstract class PlatformerActor : UpdateableEntity, IPlatformerActor {
         var worldPosition = this.Transform.Position;
         this.HalfSize = this._size * 0.5f;
         this.BoundingArea = new BoundingArea(worldPosition - this.HalfSize, worldPosition + this.HalfSize);
+    }
+
+    private bool TryGroundedCast(float horizontalOffset, float verticalDistance, out RaycastHit hit) {
+        var boundingArea = this.GetGroundedCheckBoundingArea(horizontalOffset, verticalDistance);
+        var hits = this._physicsLoop.BoundingAreaCastAll(boundingArea, this._physicsLoop.GroundLayer).Where(this.CheckIfHitIsValid).ToList();
+        hit = this.GetHighestHit(hits);
+        return hit != RaycastHit.Empty;
     }
 
     private bool TryRaycast(Vector2 direction, float distance, Layers layers, out RaycastHit hit, params Vector2[] anchors) {

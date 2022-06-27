@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 /// <seealso cref="Collider" />
 public class PolygonCollider : Collider {
+    private static readonly Vector2 HorizontalNormal = new(0f, 1f);
     private readonly ResettableLazy<Vector2> _center;
     private readonly ResettableLazy<List<Vector2>> _normals;
 
@@ -182,18 +183,32 @@ public class PolygonCollider : Collider {
     }
 
     /// <inheritdoc />
-    public override bool Intersects(BoundingArea boundingArea, out IEnumerable<Vector2> intersections) {
-        if (base.Intersects(boundingArea, out var baseIntersections) || this.BoundingArea.Overlaps(boundingArea)) {
-            var realIntersections = new List<Vector2>(baseIntersections);
-            realIntersections.AddRange(this.WorldPoints.Where(boundingArea.Contains));
+    public override bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
+        if (this.BoundingArea.Overlaps(boundingArea)) {
+            var actualHits = new List<RaycastHit>();
+            var lineSegments = this.GetLineSegments(boundingArea);
 
-            if (realIntersections.Any()) {
-                intersections = realIntersections;
+            foreach (var lineSegment in lineSegments) {
+                for (var i = 0; i < this.WorldPoints.Count; i++) {
+                    var edge = new LineSegment(this.WorldPoints.ElementAt(i), this.GetNextWorldPoint(i));
+
+                    if (lineSegment.Intersects(edge, out var contactPoint)) {
+                        actualHits.Add(new RaycastHit(this, contactPoint, edge.GetNormal()));
+                    }
+                }
+            }
+
+            foreach (var point in this.WorldPoints.Where(boundingArea.Contains)) {
+                actualHits.Add(new RaycastHit(this, point, HorizontalNormal));
+            }
+
+            if (actualHits.Any()) {
+                hits = actualHits;
                 return true;
             }
         }
 
-        intersections = Enumerable.Empty<Vector2>();
+        hits = Enumerable.Empty<RaycastHit>();
         return false;
     }
 

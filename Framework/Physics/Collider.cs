@@ -206,35 +206,26 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// Determines whether or not a bounding area intersects with this collider.
     /// </summary>
     /// <param name="boundingArea">The bounding area.</param>
-    /// <param name="intersections">The intersections.</param>
+    /// <param name="hits">The hits.</param>
     /// <returns>A value indicating whether or not an intersection occured.</returns>
-    public virtual bool Intersects(BoundingArea boundingArea, out IEnumerable<Vector2> intersections) {
+    public virtual bool Intersects(BoundingArea boundingArea, out IEnumerable<RaycastHit> hits) {
         if (this.BoundingArea.Overlaps(boundingArea)) {
-            var realIntersections = new List<Vector2>();
-            var bottomLeft = boundingArea.Minimum;
-            var bottomRight = new Vector2(boundingArea.Maximum.X, boundingArea.Minimum.Y);
-            var topLeft = new Vector2(boundingArea.Minimum.X, boundingArea.Maximum.Y);
-            var topRight = boundingArea.Maximum;
-            var lineSegments = new[] {
-                new LineSegment(bottomLeft, topLeft),
-                new LineSegment(topLeft, topRight),
-                new LineSegment(topRight, bottomRight),
-                new LineSegment(bottomLeft, bottomRight)
-            };
+            var actualHits = new List<RaycastHit>();
+            var lineSegments = this.GetLineSegments(boundingArea);
 
             foreach (var lineSegment in lineSegments) {
                 if (this.IsHitBy(lineSegment, out var hit) && hit != RaycastHit.Empty) {
-                    realIntersections.Add(hit.ContactPoint);
+                    actualHits.Add(hit);
                 }
             }
 
-            if (realIntersections.Any()) {
-                intersections = realIntersections;
+            if (actualHits.Any()) {
+                hits = actualHits;
                 return true;
             }
         }
 
-        intersections = Enumerable.Empty<Vector2>();
+        hits = Enumerable.Empty<RaycastHit>();
         return false;
     }
 
@@ -281,6 +272,24 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// <param name="other">The other collider.</param>
     /// <returns>The axes to test for the Separating Axis Theorem</returns>
     protected abstract IReadOnlyCollection<Vector2> GetAxesForSat(Collider other);
+
+    /// <summary>
+    /// Gets line segments from the edges of a bounding area.
+    /// </summary>
+    /// <param name="boundingArea">The bounding area.</param>
+    /// <returns>The line segments from the edges of a bounding area.</returns>
+    protected IEnumerable<LineSegment> GetLineSegments(BoundingArea boundingArea) {
+        var bottomLeft = boundingArea.Minimum;
+        var bottomRight = new Vector2(boundingArea.Maximum.X, boundingArea.Minimum.Y);
+        var topLeft = new Vector2(boundingArea.Minimum.X, boundingArea.Maximum.Y);
+        var topRight = boundingArea.Maximum;
+        return new[] {
+            new LineSegment(bottomLeft, topLeft),
+            new LineSegment(topLeft, topRight),
+            new LineSegment(topRight, bottomRight),
+            new LineSegment(bottomRight, bottomLeft)
+        };
+    }
 
     /// <summary>
     /// Gets the normal from the line defined by two points.

@@ -20,13 +20,12 @@ public interface ISimplePhysicsLoop : ILoop {
     IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers);
 
     /// <summary>
-    /// Performs a box cast. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
+    /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
     /// </summary>
-    /// <param name="box">The box as a <see cref="BoundingArea" />.</param>
+    /// <param name="boundingArea">The <see cref="BoundingArea" /> to cast.</param>
     /// <param name="layers">The layers for which to cast.</param>
-    /// <param name="intersections">The intersections found.</param>
-    /// <returns>A value indicating whether or not any intersections were found.</returns>
-    bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections);
+    /// <returns>Any hits that occurred.</returns>
+    IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers);
 
     /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
@@ -72,16 +71,15 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     /// <inheritdoc />
-    public bool TryBoxCast(BoundingArea box, Layers layers, out IReadOnlyCollection<Vector2> intersections) {
-        var actualIntersections = new List<Vector2>();
-        foreach (var collider in this.GetFilteredColliders(box, layers)) {
-            if (collider.Intersects(box, out var colliderIntersections)) {
-                actualIntersections.AddRange(colliderIntersections);
+    public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
+        var hits = new List<RaycastHit>();
+        foreach (var collider in this.GetFilteredColliders(boundingArea, layers)) {
+            if (collider.Intersects(boundingArea, out var colliderHits)) {
+                hits.AddRange(colliderHits);
             }
         }
 
-        intersections = actualIntersections;
-        return actualIntersections.Any();
+        return hits;
     }
 
     /// <inheritdoc />
