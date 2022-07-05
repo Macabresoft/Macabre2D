@@ -15,16 +15,16 @@ using Microsoft.Xna.Framework;
 public enum DiagonalDirections : byte {
     [Display(Name = null)]
     None = 0,
-    
+
     [Display(Name = "North East")]
     NorthEast = 1 << 0,
-    
+
     [Display(Name = "North West")]
     NorthWest = 1 << 1,
-    
+
     [Display(Name = "South East")]
     SouthEast = 1 << 2,
-    
+
     [Display(Name = "South West")]
     SouthWest = 1 << 3
 }
@@ -42,8 +42,8 @@ public sealed class TileableBody : PhysicsBody {
     private Layers _overrideLayersRightEdge = Layers.None;
     private Layers _overrideLayersTopEdge = Layers.None;
     private DiagonalDirections _slopedCorners = DiagonalDirections.None;
+    private bool _slopeWhenSingleUnitTall = true;
     private ITileableEntity? _tileable;
-
 
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
@@ -96,6 +96,20 @@ public sealed class TileableBody : PhysicsBody {
         set {
             if (value != this._slopedCorners) {
                 this._slopedCorners = value;
+                this.ResetColliders();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value that determines whether or not this should allow single unit slopes.
+    /// </summary>
+    [DataMember]
+    public bool SlopeWhenSingleUnitTall {
+        get => this._slopeWhenSingleUnitTall;
+        set {
+            if (value != this._slopeWhenSingleUnitTall) {
+                this._slopeWhenSingleUnitTall = value;
                 this.ResetColliders();
             }
         }
@@ -176,14 +190,14 @@ public sealed class TileableBody : PhysicsBody {
                         if (this.SlopedCorners != DiagonalDirections.None) {
                             switch (directions) {
                                 case CardinalDirections.NorthWest or CardinalDirections.NorthWest | CardinalDirections.South:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthWest)) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthWest) && (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South))) {
                                         handledDirections = CardinalDirections.NorthWest;
                                         allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersTopEdge));
                                     }
 
                                     break;
                                 case CardinalDirections.NorthEast or CardinalDirections.NorthEast | CardinalDirections.South:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthEast)) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthEast) && (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South))) {
                                         handledDirections = CardinalDirections.NorthEast;
                                         allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersTopEdge));
                                     }
