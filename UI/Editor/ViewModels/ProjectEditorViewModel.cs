@@ -8,7 +8,6 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using ReactiveUI;
 using Point = Microsoft.Xna.Framework.Point;
 

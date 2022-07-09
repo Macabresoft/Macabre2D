@@ -112,7 +112,7 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
             foreach (var valueControl in this._editors.SelectMany(x => x.ValueControls).ToList()) {
                 valueControl.Teardown();
             }
-            
+
             this._editors.Clear();
         }
 

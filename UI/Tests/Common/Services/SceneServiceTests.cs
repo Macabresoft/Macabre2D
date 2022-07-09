@@ -12,9 +12,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class SceneServiceTests {
-    private static readonly string ProjectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-    private static readonly string SceneName = Guid.NewGuid().ToString();
-
     [Test]
     [Category("Unit Tests")]
     public void TryLoadScene_LoadsScene_WhenSceneExists() {
@@ -48,4 +45,7 @@ public class SceneServiceTests {
             sceneService.CurrentScene.Should().Be(loadedSceneAsset.Content);
         }
     }
+
+    private static readonly string ProjectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+    private static readonly string SceneName = Guid.NewGuid().ToString();
 }

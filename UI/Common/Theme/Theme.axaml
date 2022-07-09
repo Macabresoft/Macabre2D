@@ -3,7 +3,7 @@
         xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx">
     <avaloniaEx:MacabreTheme Accent="Purple" />
     <StyleInclude Source="avares://Macabre2D.UI.Common/Theme/IconPaths.axaml" />
-    
+
     <Style Selector="Window">
         <Setter Property="Icon" Value="avares://Macabre2D.UI.Common/icon.ico" />
     </Style>

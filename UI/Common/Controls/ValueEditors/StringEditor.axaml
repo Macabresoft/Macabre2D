@@ -17,6 +17,6 @@
         <TextBox Grid.Column="1"
                  LostFocus="ValueEditor_OnLostFocus"
                  Text="{Binding IntermediaryValue}"
-                 Watermark="{Binding Watermark}"/>
+                 Watermark="{Binding Watermark}" />
     </Grid>
 </local:ValueEditorControl>

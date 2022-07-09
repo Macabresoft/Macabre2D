@@ -4,7 +4,6 @@ using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
 using Macabresoft.Macabre2D.Samples.AvaloniaWindow.Entities;
 using Macabresoft.Macabre2D.UI.AvaloniaInterop;
-using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;
 using ReactiveUI;
 

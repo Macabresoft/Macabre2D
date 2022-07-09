@@ -24,7 +24,7 @@ public interface IPathService {
     /// Gets the path to the editor's compiled content directory.
     /// </summary>
     string EditorContentDirectoryPath { get; }
-    
+
     /// <summary>
     /// Gets the path to the editor's compiled content metadata directory.
     /// </summary>

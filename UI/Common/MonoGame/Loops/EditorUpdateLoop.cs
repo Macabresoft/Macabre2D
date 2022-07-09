@@ -31,7 +31,7 @@ public class EditorUpdateLoop : UpdateLoop {
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Game is IEditorGame sceneEditor) {
             var performedActions = false;
-            
+
             if (inputState.IsKeyNewlyReleased(Keys.Escape)) {
                 if (this._sceneService.Selected is IEntity and not IScene) {
                     Dispatcher.UIThread.Post(() => this._sceneService.Selected = null);

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A <see cref="IPhysicsBody"/> with a <see cref="Collider"/>.
+/// A <see cref="IPhysicsBody" /> with a <see cref="Collider" />.
 /// </summary>
 public interface ISimplePhysicsBody : IPhysicsBody {
     /// <summary>
@@ -51,7 +51,7 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
         base.Initialize(scene, parent);
         this._collider.Initialize(this);
     }
-    
+
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);

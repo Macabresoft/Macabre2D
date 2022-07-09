@@ -63,10 +63,10 @@ public interface ISceneService : ISelectionService<object> {
 public sealed class SceneService : ReactiveObject, ISceneService {
     private readonly IEntityService _entityService;
     private readonly IFileSystemService _fileSystem;
+    private readonly ILoopService _loopService;
     private readonly IPathService _pathService;
     private readonly ISerializer _serializer;
     private readonly IEditorSettingsService _settingsService;
-    private readonly ILoopService _loopService;
     private ContentMetadata _currentSceneMetadata;
     private object _impliedSelected;
     private bool _isEntityContext;

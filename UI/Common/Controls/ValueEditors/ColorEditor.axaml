@@ -80,7 +80,7 @@
         <avaloniaEx:ColorSlider Grid.Column="3"
                                 Grid.Row="3"
                                 Value="{Binding AlphaValue}" />
-        
+
         <TextBox Grid.Column="0"
                  Grid.Row="3"
                  LostFocus="HexValueTextBox_OnLostFocus"

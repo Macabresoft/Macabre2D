@@ -26,7 +26,7 @@ public class BouncePlatform : Platform, IBouncePlatform {
             if (value > 0f) {
                 this._bounceVelocity = value;
             }
-            
+
             this.RaisePropertyChanged();
         }
     }

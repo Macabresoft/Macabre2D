@@ -42,7 +42,7 @@ public sealed class RectangleCollider : PolygonCollider {
         set {
             if (value != this.Height && value > 0) {
                 var width = this.Width;
-                this.ResetVertices(CreateVertices(width, value));
+                this.ResetVertices(CreateVertices(width, value), true);
                 this.RaisePropertyChanged();
             }
         }
@@ -65,7 +65,7 @@ public sealed class RectangleCollider : PolygonCollider {
         set {
             if (value != this.Width && value > 0) {
                 var height = this.Height;
-                this.ResetVertices(CreateVertices(value, height));
+                this.ResetVertices(CreateVertices(value, height), true);
                 this.RaisePropertyChanged();
             }
         }

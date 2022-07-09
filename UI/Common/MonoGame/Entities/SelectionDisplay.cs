@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using JetBrains.Annotations;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +51,7 @@ public class SelectionDisplay : BaseDrawer {
                 this.DrawBoundingArea(spriteBatch, drawer, settings.PixelsPerUnit, boundingArea, Color.Transparent, shadowOffsetVector, lineThickness);
             }
 
-            if (this._selectedBoundable is { BoundingArea: { IsEmpty: false } selectedBoundingArea } ) {
+            if (this._selectedBoundable is { BoundingArea: { IsEmpty: false } selectedBoundingArea }) {
                 this.DrawBoundingArea(spriteBatch, drawer, settings.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
             }
 
@@ -109,12 +108,12 @@ public class SelectionDisplay : BaseDrawer {
     }
 
     private void DrawBoundingArea(
-        SpriteBatch spriteBatch, 
-        PrimitiveDrawer drawer, 
+        SpriteBatch spriteBatch,
+        PrimitiveDrawer drawer,
         ushort pixelsPerUnit,
         BoundingArea boundingArea,
         Color color,
-        Vector2 shadowOffsetVector, 
+        Vector2 shadowOffsetVector,
         float lineThickness) {
         var minimum = boundingArea.Minimum;
         var maximum = boundingArea.Maximum;

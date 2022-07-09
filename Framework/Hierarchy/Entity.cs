@@ -20,6 +20,11 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     IReadOnlyCollection<IEntity> Children => Array.Empty<IEntity>();
 
     /// <summary>
+    /// Gets a value indicating whether or not this is initialized;
+    /// </summary>
+    bool IsInitialized => false;
+
+    /// <summary>
     /// Gets the parent.
     /// </summary>
     /// <value>The parent.</value>
@@ -114,11 +119,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// Called when this instance is removed from the <see cref="IScene" /> tree.
     /// </summary>
     void OnRemovedFromSceneTree();
-
-    /// <summary>
-    /// Gets a value indicating whether or not this is initialized;
-    /// </summary>
-    bool IsInitialized => false;
 
     /// <summary>
     /// Removes the child.
@@ -327,7 +327,6 @@ public class Entity : Transformable, IEntity {
         finally {
             this.IsInitialized = true;
         }
-
     }
 
     /// <inheritdoc />
@@ -341,7 +340,7 @@ public class Entity : Transformable, IEntity {
 
     /// <inheritdoc />
     public bool IsDescendentOf(IEntity entity) {
-        return entity == this.Parent || this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity);
+        return entity == this.Parent || (this.Parent != this.Parent.Parent && this.Parent.IsDescendentOf(entity));
     }
 
     /// <summary>

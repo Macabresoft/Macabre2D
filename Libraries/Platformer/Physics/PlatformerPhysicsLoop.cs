@@ -125,16 +125,16 @@ public class PlatformerPhysicsLoop : PhysicsLoop, IPlatformerPhysicsLoop {
         }
 
         /// <inheritdoc />
+        public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
+            return Array.Empty<RaycastHit>();
+        }
+
+        /// <inheritdoc />
         public void Initialize(IScene scene) {
         }
 
         /// <inheritdoc />
         public IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
-            return Array.Empty<RaycastHit>();
-        }
-
-        /// <inheritdoc />
-        public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
             return Array.Empty<RaycastHit>();
         }
 

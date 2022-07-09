@@ -101,10 +101,10 @@
                                       Tag="{Binding Tiles[12]}" />
 
                         <avaloniaEx:Icon Grid.Row="0"
-                                    Grid.Column="1"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="1"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="0"
                                       Grid.Column="2"
@@ -112,10 +112,10 @@
                                       Tag="{Binding Tiles[14]}" />
 
                         <avaloniaEx:Icon Grid.Row="0"
-                                    Grid.Column="3"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="3"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="0"
                                       Grid.Column="4"
@@ -124,22 +124,22 @@
 
                         <!-- Row 1 -->
                         <avaloniaEx:Icon Grid.Row="1"
-                                    Grid.Column="0"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="0"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <avaloniaEx:Icon Grid.Row="1"
-                                    Grid.Column="2"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="2"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <avaloniaEx:Icon Grid.Row="1"
-                                    Grid.Column="4"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="4"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <!-- Row 2 -->
                         <ToggleButton Grid.Row="2"
@@ -148,10 +148,10 @@
                                       Tag="{Binding Tiles[13]}" />
 
                         <avaloniaEx:Icon Grid.Row="2"
-                                    Grid.Column="1"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="1"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Grid.Column="2"
@@ -159,10 +159,10 @@
                                       Tag="{Binding Tiles[15]}" />
 
                         <avaloniaEx:Icon Grid.Row="2"
-                                    Grid.Column="3"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="3"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Grid.Column="4"
@@ -171,22 +171,22 @@
 
                         <!-- Row 3 -->
                         <avaloniaEx:Icon Grid.Row="3"
-                                    Grid.Column="0"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="0"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <avaloniaEx:Icon Grid.Row="3"
-                                    Grid.Column="2"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="2"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <avaloniaEx:Icon Grid.Row="3"
-                                    Grid.Column="4"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="4"
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <!-- Row 4 -->
                         <ToggleButton Grid.Row="4"
@@ -195,10 +195,10 @@
                                       Tag="{Binding Tiles[5]}" />
 
                         <avaloniaEx:Icon Grid.Row="4"
-                                    Grid.Column="1"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="1"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Grid.Column="2"
@@ -206,10 +206,10 @@
                                       Tag="{Binding Tiles[7]}" />
 
                         <avaloniaEx:Icon Grid.Row="4"
-                                    Grid.Column="3"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Grid.Column="3"
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Grid.Column="4"
@@ -229,18 +229,18 @@
                                       Tag="{Binding Tiles[8]}" />
 
                         <avaloniaEx:Icon Grid.Row="1"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[9]}" />
 
                         <avaloniaEx:Icon Grid.Row="3"
-                                    Content="{StaticResource ConnectionVerticalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Content="{StaticResource ConnectionVerticalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Row="4"
                                       Classes="Tile"
@@ -259,18 +259,18 @@
                                       Tag="{Binding Tiles[4]}" />
 
                         <avaloniaEx:Icon Grid.Column="1"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Column="2"
                                       Classes="Tile"
                                       Tag="{Binding Tiles[6]}" />
 
                         <avaloniaEx:Icon Grid.Column="3"
-                                    Content="{StaticResource ConnectionHorizontalIcon}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                                         Content="{StaticResource ConnectionHorizontalIcon}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
 
                         <ToggleButton Grid.Column="4"
                                       Classes="Tile"

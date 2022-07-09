@@ -140,7 +140,7 @@ public class ContentServiceTests {
             container.BuildService.Received().BuildContent(Arg.Any<BuildContentArguments>(), Arg.Any<string>());
         }
     }
-    
+
     [Test]
     [Category("Unit Tests")]
     public void RefreshContent_Should_Rebuild_WhenMetadataFilesDoNotMatch() {

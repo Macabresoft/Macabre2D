@@ -27,7 +27,7 @@ public class FilteredContentWrapper {
         if (node is IContentDirectory directory) {
             var children = new List<FilteredContentWrapper>();
             foreach (var childDirectory in directory.Children.OfType<IContentDirectory>()) {
-                if (allowDirectorySelection || (childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset)))) {
+                if (allowDirectorySelection || childDirectory.GetAllContentFiles().Any(x => x.Asset != null && assetType.IsInstanceOfType(x.Asset))) {
                     children.Add(new FilteredContentWrapper(childDirectory, assetType, allowDirectorySelection));
                 }
             }

@@ -79,7 +79,7 @@ public sealed class CameraController : UpdateableEntity {
                     var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
                     this._camera.ViewHeight -= scrollViewChange;
                 }
-                
+
                 if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.OemMinus)) {
                     var scrollViewChange = (float)(frameTime.SecondsPassed * this._camera.ViewHeight);
                     this._camera.ViewHeight += scrollViewChange;

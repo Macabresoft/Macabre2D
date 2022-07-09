@@ -189,7 +189,7 @@ public class ValueControlService : ReactiveObject, IValueControlService {
     private bool TryCreateValueInfo(object originalObject, object value, out IValueControl info) {
         info = null;
 
-        if (value?.GetType() is { } ownerType && this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType) is Type controlType && !controlType.IsAssignableTo(typeof(IValueEditor))) {
+        if (value?.GetType() is { } ownerType && this._assemblyService.LoadFirstGenericType(typeof(IValueInfo<>), ownerType) is { } controlType && !controlType.IsAssignableTo(typeof(IValueEditor))) {
             var dependencies = new ValueControlDependencies(value, ownerType, null, DefaultCategoryNameForInfo, originalObject);
 
             if (this._container.Resolve(controlType, new DependencyOverride(typeof(ValueControlDependencies), dependencies)) is IValueControl control) {

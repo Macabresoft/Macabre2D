@@ -1,6 +1,5 @@
 namespace Macabresoft.Macabre2D.UI.Common;
 
-using System;
 using Unity;
 using Unity.Resolution;
 
@@ -8,7 +7,6 @@ using Unity.Resolution;
 /// A resolver to be used by views and controls to get registered objects.
 /// </summary>
 public static class Resolver {
-
     /// <summary>
     /// Gets or sets the container.
     /// </summary>

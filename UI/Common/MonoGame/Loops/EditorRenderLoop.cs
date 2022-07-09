@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.UI.Common;
 
 using System.Linq;
 using Macabresoft.Macabre2D.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A render system built explicitly for the <see cref="IEditorGame" />.

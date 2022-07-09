@@ -9,8 +9,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class LayerSettingsTests {
-    private const Layers AllButDefault = LayerSettings.AllLayers & ~Layers.Default;
-
     [Category("Unit Tests")]
     [Test]
     public static void DisableAll_ShouldNotDisableDefault() {
@@ -157,4 +155,6 @@ public class LayerSettingsTests {
             newName.Should().Be(expectedValue ? name : originalName);
         }
     }
+
+    private const Layers AllButDefault = LayerSettings.AllLayers & ~Layers.Default;
 }

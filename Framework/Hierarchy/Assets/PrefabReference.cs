@@ -1,7 +1,7 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
-/// Reference to a <see cref="PrefabAsset"/>.
+/// Reference to a <see cref="PrefabAsset" />.
 /// </summary>
 public class PrefabReference : AssetReference<PrefabAsset, Entity> {
 }

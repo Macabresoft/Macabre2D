@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Samples.AvaloniaWindow;
 
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.Framework;
-using Macabresoft.Macabre2D.UI.Common;
 using Microsoft.Xna.Framework;
 
 public sealed class SolidViewModel : BaseViewModel {

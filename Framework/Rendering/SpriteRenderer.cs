@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// An entity which will render a single sprite.

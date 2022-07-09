@@ -62,7 +62,7 @@ public class ContentContainer {
             Substitute.For<IUndoService>(),
             Substitute.For<IValueControlService>());
     }
-    
+
     public IAssetManager AssetManager { get; } = Substitute.For<IAssetManager>();
 
     public IBuildService BuildService { get; } = Substitute.For<IBuildService>();

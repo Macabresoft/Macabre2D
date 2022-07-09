@@ -8,14 +8,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class PixelSnappableTests {
-    private class TestPixelSnappable : IPixelSnappable {
-        public TestPixelSnappable(PixelSnap pixelSnap) {
-            this.PixelSnap = pixelSnap;
-        }
-
-        public PixelSnap PixelSnap { get; }
-    }
-
     [Category("Unit Tests")]
     [Test]
     public static void ShouldNotSnapToPixels_WithInherits_AndSettingsSetToFalse() {
@@ -66,5 +58,13 @@ public class PixelSnappableTests {
             settings.SnapToPixels.Returns(false);
             entity.ShouldSnapToPixels(settings).Should().BeTrue();
         }
+    }
+
+    private class TestPixelSnappable : IPixelSnappable {
+        public TestPixelSnappable(PixelSnap pixelSnap) {
+            this.PixelSnap = pixelSnap;
+        }
+
+        public PixelSnap PixelSnap { get; }
     }
 }

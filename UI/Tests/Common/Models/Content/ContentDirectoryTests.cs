@@ -13,12 +13,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class ContentDirectoryTests {
-    private int AssertDirectoryMatches(TestFileSystemService fileSystemService, IContentDirectory parent, string name) {
-        var currentDirectory = parent.Children.OfType<IContentDirectory>().First(x => x.Name == name);
-        currentDirectory.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[name].Count());
-        return 1 + currentDirectory.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, currentDirectory, child.Name));
-    }
-
     [Test]
     [Category("Unit Tests")]
     public void GetContentPath_ShouldReturnPath() {
@@ -68,5 +62,11 @@ public class ContentDirectoryTests {
             var count = root.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, root, child.Name));
             count.Should().Be(fileSystemService.DirectoryToChildrenMap.Count - 2); // The content and project directory are not in the count, so - 2.
         }
+    }
+
+    private int AssertDirectoryMatches(TestFileSystemService fileSystemService, IContentDirectory parent, string name) {
+        var currentDirectory = parent.Children.OfType<IContentDirectory>().First(x => x.Name == name);
+        currentDirectory.Children.Count.Should().Be(fileSystemService.DirectoryToChildrenMap[name].Count());
+        return 1 + currentDirectory.Children.Sum(child => this.AssertDirectoryMatches(fileSystemService, currentDirectory, child.Name));
     }
 }

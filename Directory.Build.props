@@ -1,17 +1,17 @@
 <Project>
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>default</LangVersion>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>default</LangVersion>
 
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <Version>0.1.0.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
-    <Authors>Brett Story</Authors>
-    <Company>Macabresoft</Company>
-    <Copyright>Copyright © 2016 - 2022</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>MonoGame, Game, XNA</PackageTags>
-  </PropertyGroup>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <Version>0.1.0.0</Version>
+        <FileVersion>0.1.0.0</FileVersion>
+        <Authors>Brett Story</Authors>
+        <Company>Macabresoft</Company>
+        <Copyright>Copyright © 2016 - 2022</Copyright>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/BrettStory/Macabresoft.Macabre2D</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>MonoGame, Game, XNA</PackageTags>
+    </PropertyGroup>
 </Project>

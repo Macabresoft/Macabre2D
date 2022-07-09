@@ -9,7 +9,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class GameTimerTests {
-    
     [Category("Unit Tests")]
     [Test]
     [TestCase(1f, 1f, TimerState.Finished)]
@@ -24,7 +23,7 @@ public class GameTimerTests {
             gameTimer.State.Should().Be(endState);
         }
     }
-    
+
     [Category("Unit Tests")]
     [Test]
     [TestCase(1f, 1f, TimerState.Finished)]

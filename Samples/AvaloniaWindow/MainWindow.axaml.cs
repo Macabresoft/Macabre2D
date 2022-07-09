@@ -6,7 +6,6 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Macabre2D.UI.AvaloniaInterop;
-using Macabresoft.Macabre2D.UI.Common;
 using ReactiveUI;
 
 public class MainWindow : BaseDialog {

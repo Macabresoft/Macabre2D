@@ -10,15 +10,15 @@
         <Design.DataContext>
             <local:SingleColorShaderReferenceEditor />
         </Design.DataContext>
-        
+
         <local:ShaderReferenceEditor Grid.Row="0"
                                      Title="{Binding Title}"
                                      Value="{Binding Value}" />
-        
+
         <common:StringEditor Grid.Row="1"
                              Title="Parameter"
                              Value="{Binding Value.ParameterName}" />
-        
+
         <common:ColorEditor Grid.Row="2"
                             Title="Color"
                             Value="{Binding Value.ParameterValue}" />

@@ -3,7 +3,6 @@ namespace Macabresoft.Macabre2D.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
 

@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -55,7 +54,6 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
         this.ReevaluateIndexes();
         this.ResetSpriteScale();
     }
-
 
 
     /// <inheritdoc />

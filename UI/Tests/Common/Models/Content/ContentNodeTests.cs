@@ -12,12 +12,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public sealed class ContentNodeTests {
-    private const string ProjectPath = "Content";
-
-    private ContentMetadata CreateTestMetadata() {
-        return new ContentMetadata(Substitute.For<IAsset>(), Enumerable.Empty<string>(), string.Empty);
-    }
-
     [Test]
     [Category("Unit Tests")]
     public void ChangeParent_ShouldChangePaths() {
@@ -82,5 +76,11 @@ public sealed class ContentNodeTests {
         var node = new ContentFile(parent, this.CreateTestMetadata());
         var result = node.IsDescendentOf(root);
         result.Should().BeTrue();
+    }
+
+    private const string ProjectPath = "Content";
+
+    private ContentMetadata CreateTestMetadata() {
+        return new ContentMetadata(Substitute.For<IAsset>(), Enumerable.Empty<string>(), string.Empty);
     }
 }

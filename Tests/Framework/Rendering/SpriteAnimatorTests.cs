@@ -10,36 +10,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public static class SpriteAnimatorTests {
-    private static SpriteAnimation CreateAnimation(byte numberOfSteps) {
-        var steps = new List<SpriteAnimationStep>();
-        for (byte i = 0; i < numberOfSteps; i++) {
-            steps.Add(new SpriteAnimationStep {
-                Frames = 1,
-                SpriteIndex = i
-            });
-        }
-
-        var animation = new SpriteAnimation(steps);
-        animation.SpriteSheet = new SpriteSheetAsset {
-            Columns = 2,
-            Rows = 2
-        };
-
-        if (animation.SpriteSheet.SpriteAnimations is SpriteAnimationCollection collection) {
-            collection.Add(animation);
-        }
-
-        return animation;
-    }
-
-    private static QueueableSpriteAnimator CreateAnimator(byte frameRate) {
-        var animator = new QueueableSpriteAnimator {
-            FrameRate = frameRate
-        };
-
-        return animator;
-    }
-
     [Test]
     [Category("Unit Tests")]
     public static void SpriteAnimator_LoopingTest() {
@@ -75,5 +45,35 @@ public static class SpriteAnimatorTests {
         // Should loop here.
         animator.Update(frameTime, default);
         Assert.AreEqual(animation.Steps.ElementAt(0).SpriteIndex, animator.SpriteIndex);
+    }
+
+    private static SpriteAnimation CreateAnimation(byte numberOfSteps) {
+        var steps = new List<SpriteAnimationStep>();
+        for (byte i = 0; i < numberOfSteps; i++) {
+            steps.Add(new SpriteAnimationStep {
+                Frames = 1,
+                SpriteIndex = i
+            });
+        }
+
+        var animation = new SpriteAnimation(steps);
+        animation.SpriteSheet = new SpriteSheetAsset {
+            Columns = 2,
+            Rows = 2
+        };
+
+        if (animation.SpriteSheet.SpriteAnimations is SpriteAnimationCollection collection) {
+            collection.Add(animation);
+        }
+
+        return animation;
+    }
+
+    private static QueueableSpriteAnimator CreateAnimator(byte frameRate) {
+        var animator = new QueueableSpriteAnimator {
+            FrameRate = frameRate
+        };
+
+        return animator;
     }
 }

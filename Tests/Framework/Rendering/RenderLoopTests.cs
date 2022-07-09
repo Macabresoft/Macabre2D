@@ -52,7 +52,7 @@ public class RenderLoopTests {
         var includedRenderable = new TestRenderable { Layers = Layers.Layer01 };
         var excludedRenderable = new TestRenderable { Layers = Layers.Layer06 | Layers.Layer01 };
         scene.RenderableEntities.Returns(new[] { includedRenderable, excludedRenderable });
-        
+
         var camera = new TestCamera();
         scene.Cameras.Returns(new[] { camera });
 

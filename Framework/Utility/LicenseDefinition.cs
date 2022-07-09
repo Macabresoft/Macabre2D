@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Framework; 
+﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// A license definition for displaying a product and its license.

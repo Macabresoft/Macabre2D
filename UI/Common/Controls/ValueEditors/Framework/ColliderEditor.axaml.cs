@@ -93,7 +93,7 @@ public class ColliderEditor : ValueEditorControl<Collider> {
             this.IgnoreUpdates = true;
             this.ClearEditors();
 
-            if (this._valueControlService != null && this.Collection != null && this.Value is Collider value) {
+            if (this._valueControlService != null && this.Collection != null && this.Value is { } value) {
                 this.SetAndRaise(SelectedTypeProperty, ref this._selectedType, value.GetType());
                 this._controlCollection = this._valueControlService.CreateControl(value, string.Empty);
                 if (this._controlCollection != null) {

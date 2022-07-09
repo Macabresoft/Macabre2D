@@ -48,8 +48,8 @@ public class ContentSelectionViewModel : BaseDialogViewModel {
         get => this._selectedContentNode;
         set {
             this.RaiseAndSetIfChanged(ref this._selectedContentNode, value);
-            this.IsOkEnabled = this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset) ||
-                               this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory;
+            this.IsOkEnabled = (this._selectedContentNode?.Node is ContentFile file && this._desiredAssetType.IsInstanceOfType(file.Asset)) ||
+                               (this._allowDirectorySelection && this.SelectedContentNode?.Node is ContentDirectory);
         }
     }
 }

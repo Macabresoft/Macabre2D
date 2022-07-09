@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Xna.Framework;
+
 /// <summary>
 /// An entity which maps an <see cref="AutoTileSet" /> onto a grid, but only connects horizontally.
 /// </summary>

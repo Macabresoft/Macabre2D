@@ -18,6 +18,7 @@ public enum FallingPlatformState {
 /// A platform which falls upon an actor walking on it. It will respawn after a set amount of time.
 /// </summary>
 public class FallingPlatform : MoverPlatform, IUpdateableEntity {
+    private float _gravityMultiplier = 1f;
     private Vector2 _initialPosition;
     private IPlatformerPhysicsLoop _physicsLoop = PlatformerPhysicsLoop.Empty;
     private FallingPlatformState _state = FallingPlatformState.None;
@@ -25,7 +26,21 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     private float _timeToFall = 3f;
     private float _timeToRespawn = 3f;
     private float _velocity;
-    private float _gravityMultiplier = 1f;
+
+    /// <summary>
+    /// Gets or sets the gravity multiplier.
+    /// </summary>
+    [DataMember]
+    public float GravityMultiplier {
+        get => this._gravityMultiplier;
+        set {
+            if (value > 0f) {
+                this._gravityMultiplier = value;
+            }
+
+            this.RaisePropertyChanged();
+        }
+    }
 
     /// <summary>
     /// Gets or sets the time to fall until this disappears.
@@ -51,21 +66,6 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     [DataMember]
     public float TimeUntilFall { get; set; }
 
-    /// <summary>
-    /// Gets or sets the gravity multiplier.
-    /// </summary>
-    [DataMember]
-    public float GravityMultiplier {
-        get => this._gravityMultiplier;
-        set {
-            if (value > 0f) {
-                this._gravityMultiplier = value;
-            }
-            
-            this.RaisePropertyChanged();
-        }
-    }
-
     private float Velocity {
         get => this._velocity;
         set => this._velocity = Math.Max(-this._physicsLoop.TerminalVelocity * this.GravityMultiplier, value);
@@ -79,7 +79,7 @@ public class FallingPlatform : MoverPlatform, IUpdateableEntity {
     }
 
     /// <inheritdoc />
-    public void Update(FrameTime frameTime, Framework.InputState inputState) {
+    public void Update(FrameTime frameTime, InputState inputState) {
         switch (this._state) {
             case FallingPlatformState.Waiting: {
                 this._timeInState += (float)frameTime.SecondsPassed;

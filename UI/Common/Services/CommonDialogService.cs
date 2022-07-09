@@ -66,7 +66,7 @@ public abstract class CommonDialogService : BaseDialogService, ICommonDialogServ
         },
         new FileDialogFilter {
             Name = "Prefabs",
-            Extensions =new List<string> { PrefabAsset.FileExtension.TrimStart('.') }
+            Extensions = new List<string> { PrefabAsset.FileExtension.TrimStart('.') }
         },
         new FileDialogFilter {
             Name = "Scenes",

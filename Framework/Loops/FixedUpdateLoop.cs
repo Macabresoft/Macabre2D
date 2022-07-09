@@ -1,7 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
-/// An update loop for <see cref="IFixedUpdateableEntity"/> updates on a fixed time step.
+/// An update loop for <see cref="IFixedUpdateableEntity" /> updates on a fixed time step.
 /// </summary>
 public class FixedUpdateLoop : FixedTimeStepLoop {
     /// <inheritdoc />

@@ -14,30 +14,22 @@ public class BlockColliderCollection : IEnumerable<Collider> {
     /// <summary>
     /// Gets the bottom collider.
     /// </summary>
-    public LineCollider BottomCollider {
-        get => this._colliders[3];
-    }
+    public LineCollider BottomCollider => this._colliders[3];
 
     /// <summary>
     /// Gets the left collider.
     /// </summary>
-    public LineCollider LeftCollider {
-        get => this._colliders[0];
-    }
+    public LineCollider LeftCollider => this._colliders[0];
 
     /// <summary>
     /// Gets the right collider.
     /// </summary>
-    public LineCollider RightCollider {
-        get => this._colliders[2];
-    }
+    public LineCollider RightCollider => this._colliders[2];
 
     /// <summary>
     /// Gets the top collider.
     /// </summary>
-    public LineCollider TopCollider {
-        get => this._colliders[1];
-    }
+    public LineCollider TopCollider => this._colliders[1];
 
     /// <inheritdoc />
     public IEnumerator<Collider> GetEnumerator() {

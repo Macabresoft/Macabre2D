@@ -34,8 +34,9 @@ The full source code is available here from GitHub:
 MonoGame has a guide for compiling Shaders on linux [here](https://docs.monogame.net/articles/getting_started/1_setting_up_your_development_environment_ubuntu.html#install-mgcb-editor).
 
 ### Using Fonts
- 
-When using custom fonts (non-system fonts) make sure to *install the font for all users* before using it within Macabre2D. This cannot be done from inside an archive folder (.zip, .rar, etc), so be sure to extract the font to your system, right click, and select 'Install for All Users'. This is a limitation of the MonoGame Content Pipeline.
+
+When using custom fonts (non-system fonts) make sure to *install the font for all users* before using it within Macabre2D. This cannot be done from inside an archive folder (.zip, .rar, etc), so be sure to extract the font to your system,
+right click, and select 'Install for All Users'. This is a limitation of the MonoGame Content Pipeline.
 
 ## Creating a Game
 
@@ -44,7 +45,7 @@ Your game's code must be directly integrated with Macabre2D, giving you full con
 * Fork Macabre2D
 * Optionally create a branch for your game
 * Decide how to handle content, doing doing one of the following
-  * Remove the line `/Content/` from your `.gitignore` file to include content in your main project
-  * Have a separate repository for content which operates as a git repository inside of the `/Content/` folder
+    * Remove the line `/Content/` from your `.gitignore` file to include content in your main project
+    * Have a separate repository for content which operates as a git repository inside of the `/Content/` folder
 * Run the `Macabre2D.UI.Editor` project once to generate default content
 

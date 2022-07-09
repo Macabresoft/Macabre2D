@@ -12,21 +12,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class ProjectServiceTests {
-    private IPathService CreatePathService() {
-        var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-        return new PathService(Guid.NewGuid().ToString(), projectDirectoryPath);
-    }
-
-    private IFileSystemService CreateFileSystem(IPathService pathService, bool shouldProjectFileExist) {
-        var fileSystem = Substitute.For<IFileSystemService>();
-        fileSystem.DoesFileExist(pathService.ProjectFilePath).Returns(shouldProjectFileExist);
-        fileSystem.DoesDirectoryExist(pathService.PlatformsDirectoryPath).Returns(true);
-        fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
-        fileSystem.DoesDirectoryExist(pathService.MetadataDirectoryPath).Returns(true);
-        fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);
-        return fileSystem;
-    }
-
     [Test]
     [Category("Unit Tests")]
     public void LoadProject_ShouldCreateProject_WhenFileDoesNotExist() {
@@ -164,5 +149,20 @@ public class ProjectServiceTests {
         using (new AssertionScope()) {
             serializer.Received().Serialize(project, pathService.ProjectFilePath);
         }
+    }
+
+    private IPathService CreatePathService() {
+        var projectDirectoryPath = Path.Combine(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+        return new PathService(Guid.NewGuid().ToString(), projectDirectoryPath);
+    }
+
+    private IFileSystemService CreateFileSystem(IPathService pathService, bool shouldProjectFileExist) {
+        var fileSystem = Substitute.For<IFileSystemService>();
+        fileSystem.DoesFileExist(pathService.ProjectFilePath).Returns(shouldProjectFileExist);
+        fileSystem.DoesDirectoryExist(pathService.PlatformsDirectoryPath).Returns(true);
+        fileSystem.DoesDirectoryExist(pathService.ContentDirectoryPath).Returns(true);
+        fileSystem.DoesDirectoryExist(pathService.MetadataDirectoryPath).Returns(true);
+        fileSystem.DoesDirectoryExist(pathService.MetadataArchiveDirectoryPath).Returns(true);
+        return fileSystem;
     }
 }

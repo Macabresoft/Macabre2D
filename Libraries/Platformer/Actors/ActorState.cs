@@ -69,7 +69,7 @@ public readonly struct ActorState {
 
     private bool Equals(ActorState other) {
         return this.StateType.Equals(other.StateType) &&
-            this.FacingDirection.Equals(other.FacingDirection) &&
+               this.FacingDirection.Equals(other.FacingDirection) &&
                this.SecondsInState.Equals(other.SecondsInState) &&
                this.Position.Equals(other.Position) &&
                this.Velocity.Equals(other.Velocity);

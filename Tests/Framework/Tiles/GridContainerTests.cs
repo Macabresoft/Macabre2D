@@ -8,18 +8,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public sealed class GridContainerTests {
-    private sealed class GridContainerUser : Entity {
-        public IGridContainer Container { get; private set; } = GridContainer.Empty;
-
-        public override void Initialize(IScene scene, IEntity parent) {
-            base.Initialize(scene, parent);
-
-            if (this.TryGetParentEntity(out IGridContainer container)) {
-                this.Container = container;
-            }
-        }
-    }
-
     [Test]
     [Category("Unit Tests")]
     [TestCase(1)]
@@ -92,6 +80,18 @@ public sealed class GridContainerTests {
 
         using (new AssertionScope()) {
             child.Container.Should().Be(scene);
+        }
+    }
+
+    private sealed class GridContainerUser : Entity {
+        public IGridContainer Container { get; private set; } = GridContainer.Empty;
+
+        public override void Initialize(IScene scene, IEntity parent) {
+            base.Initialize(scene, parent);
+
+            if (this.TryGetParentEntity(out IGridContainer container)) {
+                this.Container = container;
+            }
         }
     }
 }

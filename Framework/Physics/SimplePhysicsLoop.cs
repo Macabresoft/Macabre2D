@@ -10,6 +10,14 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface ISimplePhysicsLoop : ILoop {
     /// <summary>
+    /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
+    /// </summary>
+    /// <param name="boundingArea">The <see cref="BoundingArea" /> to cast.</param>
+    /// <param name="layers">The layers for which to cast.</param>
+    /// <returns>Any hits that occurred.</returns>
+    IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers);
+
+    /// <summary>
     /// Performs a raycast across colliders in the scene, returning all collisions in its path.
     /// </summary>
     /// <param name="start">The start.</param>
@@ -18,14 +26,6 @@ public interface ISimplePhysicsLoop : ILoop {
     /// <param name="layers">The layers.</param>
     /// <returns>Any hits that occurred during the raycast.</returns>
     IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers);
-
-    /// <summary>
-    /// Performs an operation similar to a raycast, but with a bounding area instead of a ray. Returns all collision points as well as any vertices of the collider that reside within the <see cref="BoundingArea" /> provided.
-    /// </summary>
-    /// <param name="boundingArea">The <see cref="BoundingArea" /> to cast.</param>
-    /// <param name="layers">The layers for which to cast.</param>
-    /// <returns>Any hits that occurred.</returns>
-    IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers);
 
     /// <summary>
     /// Performs a raycast across colliders in the scene, but stops after the first collision.
@@ -51,6 +51,18 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     /// <inheritdoc />
+    public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
+        var hits = new List<RaycastHit>();
+        foreach (var collider in this.GetFilteredColliders(boundingArea, layers)) {
+            if (collider.Intersects(boundingArea, out var colliderHits)) {
+                hits.AddRange(colliderHits);
+            }
+        }
+
+        return hits;
+    }
+
+    /// <inheritdoc />
     public override void Initialize(IScene scene) {
         base.Initialize(scene);
         this.InsertColliders();
@@ -64,18 +76,6 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
         foreach (var collider in this.GetFilteredColliders(ray.BoundingArea, layers)) {
             if (collider.IsHitBy(ray, out var hit)) {
                 hits.Add(hit);
-            }
-        }
-
-        return hits;
-    }
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
-        var hits = new List<RaycastHit>();
-        foreach (var collider in this.GetFilteredColliders(boundingArea, layers)) {
-            if (collider.Intersects(boundingArea, out var colliderHits)) {
-                hits.AddRange(colliderHits);
             }
         }
 

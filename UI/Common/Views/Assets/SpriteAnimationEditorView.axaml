@@ -169,7 +169,7 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible">
             <local:SpriteDisplayCollectionControl IsEnabled="{Binding SelectedStep, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Collection="{Binding SpriteCollection}"
+                                                  Collection="{Binding SpriteCollection}"
                                                   SelectedSprite="{Binding SelectedSprite}"
                                                   ThumbnailSize="{Binding ThumbnailSize}" />
         </ScrollViewer>

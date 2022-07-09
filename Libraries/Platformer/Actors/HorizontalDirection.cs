@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.Libraries.Platformer; 
+﻿namespace Macabresoft.Macabre2D.Libraries.Platformer;
 
 /// <summary>
 /// Represents a horizontal direction.

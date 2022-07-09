@@ -65,15 +65,15 @@ public class ValueControl<T> : UserControl, IValueInfo<T> {
         set => this.SetValue(ValueProperty, value);
     }
 
+    public void Teardown() {
+        this.Owner = null;
+        this.Value = default;
+    }
+
     protected virtual void OnValueChanged() {
     }
 
     protected virtual void OnValueChanging() {
-    }
-
-    public void Teardown() {
-        this.Owner = null;
-        this.Value = default;
     }
 
     private static void OnValueChanging(IAvaloniaObject control, bool isBeforeChange) {

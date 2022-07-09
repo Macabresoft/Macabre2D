@@ -10,23 +10,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public static class WindowsSaveDataManagerTests {
-    private const string ProjectName = "Macabre2DTestProject";
-    private const string SaveDataFileName = "Test.m2dsave";
-
-    [DataContract]
-    private sealed class TestSaveData : VersionedData {
-        public TestSaveData() : base() {
-            var rand = new Random();
-            this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);
-        }
-
-        [DataMember]
-        public Guid Id { get; private set; } = Guid.NewGuid();
-
-        [DataMember]
-        public int RandomNumber { get; private set; }
-    }
-
     [Test]
     [Category("Integration Tests")]
     public static void WindowsSaveDataManager_DeleteTest() {
@@ -110,5 +93,22 @@ public static class WindowsSaveDataManagerTests {
         }
 
         saveDataManager.Delete(SaveDataFileName, ProjectName);
+    }
+
+    private const string ProjectName = "Macabre2DTestProject";
+    private const string SaveDataFileName = "Test.m2dsave";
+
+    [DataContract]
+    private sealed class TestSaveData : VersionedData {
+        public TestSaveData() : base() {
+            var rand = new Random();
+            this.RandomNumber = rand.Next(int.MinValue, int.MaxValue);
+        }
+
+        [DataMember]
+        public Guid Id { get; private set; } = Guid.NewGuid();
+
+        [DataMember]
+        public int RandomNumber { get; private set; }
     }
 }

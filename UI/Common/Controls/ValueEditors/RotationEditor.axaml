@@ -6,7 +6,7 @@
                           x:Class="Macabresoft.Macabre2D.UI.Common.RotationEditor"
                           UpdateOnLostFocus="False">
     <Panel
-          DataContext="{Binding $parent[local:RotationEditor]}">
+        DataContext="{Binding $parent[local:RotationEditor]}">
         <Design.DataContext>
             <local:RotationEditor />
         </Design.DataContext>

@@ -7,13 +7,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public static class SerializerTests {
-    private static void CompareGameSettings(IGameSettings originalSettings, IGameSettings deserializedSettings) {
-        Assert.NotNull(deserializedSettings);
-        Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
-        Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
-        Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
-    }
-
     [Test]
     [Category("Unit Tests")]
     public static void Serializer_GameSettingsSerializeTest() {
@@ -40,5 +33,12 @@ public static class SerializerTests {
         deserializedGameSettings = serializer.DeserializeFromString<GameSettings>(gameSettingsString);
 
         CompareGameSettings(gameSettings, deserializedGameSettings);
+    }
+
+    private static void CompareGameSettings(IGameSettings originalSettings, IGameSettings deserializedSettings) {
+        Assert.NotNull(deserializedSettings);
+        Assert.AreEqual(originalSettings.ErrorSpritesColor, deserializedSettings.ErrorSpritesColor);
+        Assert.AreEqual(originalSettings.FallbackBackgroundColor, deserializedSettings.FallbackBackgroundColor);
+        Assert.AreEqual(originalSettings.PixelsPerUnit, deserializedSettings.PixelsPerUnit);
     }
 }

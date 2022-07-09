@@ -10,12 +10,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public class BuildServiceTests {
-    private const string BinDirectoryName = "bin";
-    private const string ContentFileName = "Content.mgcb";
-    private const string LeagueMonoXnbName = "League Mono.xnb";
-    private const string PlatformName = "DesktopGL";
-    private const string SkullXnbName = "skull.xnb";
-
     [Test]
     [Category("Integration Tests")]
     public void Build_ShouldRunMGCB() {
@@ -40,4 +34,10 @@ public class BuildServiceTests {
             File.Exists(leagueMonoFilePath).Should().BeTrue();
         }
     }
+
+    private const string BinDirectoryName = "bin";
+    private const string ContentFileName = "Content.mgcb";
+    private const string LeagueMonoXnbName = "League Mono.xnb";
+    private const string PlatformName = "DesktopGL";
+    private const string SkullXnbName = "skull.xnb";
 }

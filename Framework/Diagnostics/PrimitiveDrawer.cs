@@ -362,7 +362,7 @@ public sealed class PrimitiveDrawer {
     public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, IEnumerable<Vector2> points) {
         var pointList = points?.ToList();
         if (pointList == null || pointList.Count < 3) {
-            throw new NotSupportedException("A polygon must contain at least three points.");
+            return;
         }
 
         var previousPoint = pointList.LastOrDefault();

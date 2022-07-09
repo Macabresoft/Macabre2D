@@ -3,7 +3,6 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// A sprite animator that loops a single animation.

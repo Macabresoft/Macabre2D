@@ -1,4 +1,4 @@
-﻿namespace Macabresoft.Macabre2D.UI.Common; 
+﻿namespace Macabresoft.Macabre2D.UI.Common;
 
 /// <summary>
 /// Interface for a control that can generically display information on a value.

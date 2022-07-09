@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 [ExcludeFromCodeCoverage]
 public class ContentGame : BaseGame {

@@ -52,7 +52,7 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
         for (var i = 0; i <= rowValues.Count + 1; i++) {
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
         }
-        
+
         grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
@@ -67,7 +67,7 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
 
             label.Classes.Add("Label");
             grid.Children.Add(label);
-            
+
             var checkBox = new CheckBox {
                 IsChecked = this.Value.IsLayerEnabled(layer),
                 IsEnabled = layer != Layers.Default,

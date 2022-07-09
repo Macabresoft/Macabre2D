@@ -63,8 +63,8 @@ public class GizmoSelectionViewModel : BaseViewModel {
                 if (this.IsTileable) {
                     this.EditorService.SelectedGizmo = GizmoKind.Tile;
                 }
-                else if (this.EditorService.SelectedGizmo == GizmoKind.Rotation && !this.IsRotatable ||
-                         this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable) {
+                else if ((this.EditorService.SelectedGizmo == GizmoKind.Rotation && !this.IsRotatable) ||
+                         (this.EditorService.SelectedGizmo == GizmoKind.Tile && !this.IsTileable)) {
                     this.EditorService.SelectedGizmo = GizmoKind.Translation;
                 }
             }

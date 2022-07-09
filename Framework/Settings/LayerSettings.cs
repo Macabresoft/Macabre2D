@@ -50,7 +50,7 @@ public class LayerSettings {
     public LayerSettings(Layers enabledLayers) : this() {
         this._enabledLayers = enabledLayers | Layers.Default;
     }
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LayerSettings" /> class.
     /// </summary>

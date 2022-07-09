@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// Collider representing a generic polygon to be used by the physics engine.
 /// </summary>
 /// <seealso cref="Collider" />
-public class PolygonCollider : Collider {
+public abstract class PolygonCollider : Collider {
     private static readonly Vector2 HorizontalNormal = new(0f, 1f);
     private readonly ResettableLazy<Vector2> _center;
     private readonly ResettableLazy<List<Vector2>> _normals;
@@ -174,7 +174,7 @@ public class PolygonCollider : Collider {
         points.Add(new Vector2(-halfWidth, halfHeight));
         points.Add(new Vector2(halfWidth, halfHeight));
         points.Add(new Vector2(halfWidth, -halfHeight));
-        return new PolygonCollider(points);
+        return new LineStripCollider(points);
     }
 
     /// <inheritdoc />
@@ -222,11 +222,15 @@ public class PolygonCollider : Collider {
 
     /// <inheritdoc />
     protected override BoundingArea CreateBoundingArea() {
-        return new BoundingArea(
-            this.WorldPoints.Min(p => p.X),
-            this.WorldPoints.Max(p => p.X),
-            this.WorldPoints.Min(p => p.Y),
-            this.WorldPoints.Max(p => p.Y));
+        if (this.WorldPoints.Any()) {
+            return new BoundingArea(
+                this.WorldPoints.Min(p => p.X),
+                this.WorldPoints.Max(p => p.X),
+                this.WorldPoints.Min(p => p.Y),
+                this.WorldPoints.Max(p => p.Y));
+        }
+
+        return BoundingArea.Empty;
     }
 
     /// <inheritdoc />
@@ -274,10 +278,14 @@ public class PolygonCollider : Collider {
     /// Clears the vertex collection and adds the newly provided vertices.
     /// </summary>
     /// <param name="vertices">The new vertices.</param>
-    protected void ResetVertices(IEnumerable<Vector2> vertices) {
+    /// <param name="performFullReset">A value indicating whether or not a full reset should be performed. Mark this false if calling ResetVertices from the Reset method.</param>
+    protected void ResetVertices(IEnumerable<Vector2> vertices, bool performFullReset) {
         this._vertices.Clear();
         this._vertices.AddRange(vertices);
-        this.Reset();
+
+        if (performFullReset) {
+            this.Reset();
+        }
     }
 
     /// <inheritdoc />

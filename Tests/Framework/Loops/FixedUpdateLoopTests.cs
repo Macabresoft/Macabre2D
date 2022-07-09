@@ -10,14 +10,6 @@ using NUnit.Framework;
 
 [TestFixture]
 public static class FixedUpdateLoopTests {
-    private class FixedUpdateTestEntity : Entity, IFixedUpdateableEntity {
-        public int UpdateCount { get; private set; }
-
-        public void FixedUpdate(float timeStep) {
-            this.UpdateCount++;
-        }
-    }
-
     [TestCase(1f, 1, 1)]
     [TestCase(1.5f, 1, 0)]
     [TestCase(2f, 5, 2)]
@@ -33,6 +25,14 @@ public static class FixedUpdateLoopTests {
 
         using (new AssertionScope()) {
             entity.UpdateCount.Should().Be(callsExpected);
+        }
+    }
+
+    private class FixedUpdateTestEntity : Entity, IFixedUpdateableEntity {
+        public int UpdateCount { get; private set; }
+
+        public void FixedUpdate(float timeStep) {
+            this.UpdateCount++;
         }
     }
 }

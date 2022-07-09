@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public static class PixelSnapExtensions {
     /// <summary>
+    /// Gets a value indicating whether or not the entity should snap to pixels.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <param name="settings">The settings.</param>
+    /// <returns>A value indicating whether or not this should snap to pixels.</returns>
+    public static bool ShouldSnapToPixels(this IPixelSnappable entity, IGameSettings settings) {
+        return entity.PixelSnap == PixelSnap.Yes || (entity.PixelSnap == PixelSnap.Inherit && settings.SnapToPixels);
+    }
+
+    /// <summary>
     /// Converts a <see cref="float" /> to a pixel snapped value according to the <see cref="IGameSettings" />.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -39,16 +49,5 @@ public static class PixelSnapExtensions {
         var position = transform.Position.ToPixelSnappedValue(settings);
         var scale = new Vector2((int)Math.Round(transform.Scale.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.Scale.Y, 0, MidpointRounding.AwayFromZero));
         return new Transform(position, scale);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether or not the entity should snap to pixels.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <param name="settings">The settings.</param>
-    /// <returns>A value indicating whether or not this should snap to pixels.</returns>
-    public static bool ShouldSnapToPixels(this IPixelSnappable entity, IGameSettings settings) {
-        return entity.PixelSnap == PixelSnap.Yes || entity.PixelSnap == PixelSnap.Inherit && settings.SnapToPixels;
-
     }
 }

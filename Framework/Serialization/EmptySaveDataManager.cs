@@ -1,4 +1,4 @@
-namespace Macabresoft.Macabre2D.Framework; 
+namespace Macabresoft.Macabre2D.Framework;
 
 /// <summary>
 /// An empty save data manager that does nothing with the file system.

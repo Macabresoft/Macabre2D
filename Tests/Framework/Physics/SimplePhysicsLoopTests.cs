@@ -29,14 +29,14 @@ public static class SimplePhysicsLoopTests {
         project.Settings.Returns(gameSettings);
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
-        
+
         var physicsSystem = scene.AddLoop<SimplePhysicsLoop>();
         var circleBody = scene.AddChild<SimplePhysicsBody>();
         circleBody.SetWorldPosition(Vector2.Zero);
         circleBody.Collider = new CircleCollider(1f);
         circleBody.Layers = Layers.Layer12;
         scene.Initialize(game, Substitute.For<IAssetManager>());
-        
+
         var raycastLayer = layersCompatible ? Layers.Layer12 : Layers.Layer13;
         var result = physicsSystem.TryRaycast(new Vector2(raycastX, raycastY), new Vector2(directionX, directionY), 5f, raycastLayer, out var hit);
         Assert.AreEqual(raycastHit, result);
@@ -60,7 +60,7 @@ public static class SimplePhysicsLoopTests {
         project.Settings.Returns(gameSettings);
         var game = Substitute.For<IGame>();
         game.Project.Returns(project);
-        
+
         var physicsSystem = scene.AddLoop<SimplePhysicsLoop>();
 
         var lineBody = scene.AddChild<SimplePhysicsBody>();

@@ -6,9 +6,9 @@ using System.Runtime.Serialization;
 
 public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private byte _frameRate = 30;
+    private bool _isPlaying;
     private uint _millisecondsPassed;
     private uint _millisecondsPerFrame;
-    private bool _isPlaying;
 
     /// <inheritdoc />
     public override byte? SpriteIndex => this.CurrentSpriteIndex;
@@ -59,10 +59,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         this.ResetFrameRate();
     }
 
-    private void ResetFrameRate() {
-        this._millisecondsPerFrame = 1000u / this._frameRate;
-    }
-
     /// <summary>
     /// Pauses this instance.
     /// </summary>
@@ -81,7 +77,7 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
             var currentStep = animation.Steps.ElementAt((int)this.CurrentStepIndex);
             this.CurrentSpriteIndex = currentStep.SpriteIndex;
         }
-        
+
         this.Reset();
     }
 
@@ -162,5 +158,9 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         }
 
         return spriteAnimation;
+    }
+
+    private void ResetFrameRate() {
+        this._millisecondsPerFrame = 1000u / this._frameRate;
     }
 }

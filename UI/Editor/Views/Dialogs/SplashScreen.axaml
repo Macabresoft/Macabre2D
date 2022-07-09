@@ -13,10 +13,10 @@
            HorizontalAlignment="Center"
            PointerPressed="OnPointerPressed">
         <avaloniaEx:Icon VerticalAlignment="Center"
-                     HorizontalAlignment="Center"
-                     Content="{StaticResource MacabresoftIcon}"
-                     Margin="{StaticResource DoubleMarginAll}"
-                     Width="128"
-                     Height="128" />
+                         HorizontalAlignment="Center"
+                         Content="{StaticResource MacabresoftIcon}"
+                         Margin="{StaticResource DoubleMarginAll}"
+                         Width="128"
+                         Height="128" />
     </Panel>
 </Window>
