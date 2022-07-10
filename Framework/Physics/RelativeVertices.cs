@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// A relative list of vertices, each one being added onto the next to create a line strip.
 /// </summary>
-public class LineStrip : ObservableCollectionExtended<Vector2> {
+public class RelativeVertices : ObservableCollectionExtended<Vector2> {
     /// <summary>
     /// Returns the position of each vertex in the line strip relative to the line strip's origin, but not relative to one another.
     /// </summary>

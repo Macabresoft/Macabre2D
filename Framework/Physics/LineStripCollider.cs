@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public class LineStripCollider : PolygonCollider {
     [DataMember]
-    private readonly LineStrip _lineStrip = new();
+    private readonly RelativeVertices _relativeVertices = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LineStripCollider" /> class.
@@ -23,19 +23,13 @@ public class LineStripCollider : PolygonCollider {
     /// </summary>
     /// <param name="points">The points.</param>
     public LineStripCollider(IEnumerable<Vector2> points) : base() {
-        this._lineStrip.Reset(points);
+        this._relativeVertices.Reset(points);
+        this._relativeVertices.CollectionChanged += this.RelativeVerticesCollectionChanged;
     }
 
-    /// <inheritdoc />
-    public override void Reset() {
-        this.ResetVertices(this._lineStrip.ToAbsolute(), false);
-        this._lineStrip.CollectionChanged += this.LineStrip_CollectionChanged;
-        base.Reset();
-    }
-
-    private void LineStrip_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+    private void RelativeVerticesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
         if (this.Body != null) {
-            this.ResetVertices(this._lineStrip.ToAbsolute(), true);
+            this.ResetVertices(this._relativeVertices.ToAbsolute(), true);
         }
     }
 }

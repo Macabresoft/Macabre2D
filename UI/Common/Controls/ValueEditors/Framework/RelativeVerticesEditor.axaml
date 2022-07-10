@@ -1,0 +1,22 @@
+<valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                 xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                                 xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                                 x:TypeArguments="framework:RelativeVertices"
+                                 x:Class="Macabresoft.Macabre2D.UI.Common.RelativeVerticesEditor">
+    <Grid DataContext="{Binding $parent[local:RelativeVerticesEditor]}"
+          RowDefinitions="Auto, Auto">
+        <Design.DataContext>
+            <local:RelativeVerticesEditor />
+        </Design.DataContext>
+        
+        <ListBox Items="{Binding WrappedValues}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <local:Vector2Editor Value="{Binding Value}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</valueEditors:ValueEditorControl>
