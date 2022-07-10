@@ -361,7 +361,7 @@ public sealed class PrimitiveDrawer {
     /// <param name="points">The points.</param>
     public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, IEnumerable<Vector2> points) {
         var pointList = points?.ToList();
-        if (pointList == null || pointList.Count < 3) {
+        if (pointList == null || pointList.Count < 2) {
             return;
         }
 

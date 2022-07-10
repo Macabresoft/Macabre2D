@@ -53,18 +53,24 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void WrappedValue_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (sender is NotifyingWrapper<Vector2> wrapper && this.Value != null) {
-            try {
-                this._isUpdatingFromWrappedValue = true;
-                var index = this._wrappedValues.IndexOf(wrapper);
-                var originalValue = this.Value[index];
+    private void UpdateValue(NotifyingWrapper<Vector2> wrapper, Vector2 value, int index) {
+        try {
+            this._isUpdatingFromWrappedValue = true;
+            wrapper.Value = value;
+            this.Value.Replace(value, index);
+        }
+        finally {
+            this._isUpdatingFromWrappedValue = false;
+        }
+    }
 
-                this._undoService.Do(() => { this.Value.Replace(wrapper.Value, index); }, () => { this.Value.Replace(originalValue, index); });
-            }
-            finally {
-                this._isUpdatingFromWrappedValue = false;
-            }
+    private void WrappedValue_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (sender is NotifyingWrapper<Vector2> wrapper && this.Value != null && !this._isUpdatingFromWrappedValue) {
+            var index = this._wrappedValues.IndexOf(wrapper);
+            var newValue = wrapper.Value;
+            var originalValue = this.Value[index];
+
+            this._undoService.Do(() => { this.UpdateValue(wrapper, newValue, index); }, () => { this.UpdateValue(wrapper, originalValue, index); });
         }
     }
 }
