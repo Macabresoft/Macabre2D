@@ -58,6 +58,9 @@ public sealed class LineCollider : PolygonCollider {
     }
 
     /// <inheritdoc />
+    public override bool ConnectFirstAndFinalVertex => false;
+
+    /// <inheritdoc />
     public override bool Contains(Collider other) {
         return false;
     }

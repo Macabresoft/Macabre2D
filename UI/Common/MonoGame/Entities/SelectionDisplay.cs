@@ -122,8 +122,8 @@ public class SelectionDisplay : BaseDrawer {
 
         var shadowPoints = points.Select(x => x + shadowOffsetVector).ToArray();
 
-        drawer.DrawPolygon(spriteBatch, pixelsPerUnit, this._editorService.DropShadowColor, lineThickness, shadowPoints);
-        drawer.DrawPolygon(spriteBatch, pixelsPerUnit, color, lineThickness, points);
+        drawer.DrawPolygon(spriteBatch, pixelsPerUnit, this._editorService.DropShadowColor, lineThickness, true, shadowPoints);
+        drawer.DrawPolygon(spriteBatch, pixelsPerUnit, color, lineThickness, true, points);
     }
 
     private void EntityService_PropertyChanged(object sender, PropertyChangedEventArgs e) {

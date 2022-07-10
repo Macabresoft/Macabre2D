@@ -1,5 +1,6 @@
 <valueEditors:ValueEditorControl xmlns="https://github.com/avaloniaui"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:avaloniaEx="clr-namespace:Macabresoft.AvaloniaEx;assembly=Macabresoft.AvaloniaEx"
                                  xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
@@ -11,12 +12,31 @@
             <local:RelativeVerticesEditor />
         </Design.DataContext>
         
-        <ListBox Items="{Binding WrappedValues}">
+        <ListBox Grid.Row="0"
+                 x:Name="_verticesListBox"
+                 Height="256"
+                 Items="{Binding WrappedValues}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <local:Vector2Editor Value="{Binding Value}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+                <Button Command="{Binding AddCommand}"
+                        Classes="Icon"
+                        ToolTip.Tip="Add a new vertex">
+                    <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
+                </Button>
+
+                <Button Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding #_verticesListBox.SelectedItem}"
+                        Classes="Icon"
+                        ToolTip.Tip="Remove the selected vertex">
+                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
+                </Button>
+        </StackPanel>
     </Grid>
 </valueEditors:ValueEditorControl>

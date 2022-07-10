@@ -14,6 +14,8 @@ public class LineStripCollider : PolygonCollider {
     [DataMember]
     private readonly RelativeVertices _relativeVertices = new();
 
+    private bool _isResetting;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LineStripCollider" /> class.
     /// </summary>
@@ -29,14 +31,38 @@ public class LineStripCollider : PolygonCollider {
         this._relativeVertices.Reset(points);
     }
 
+    /// <inheritdoc />
+    public override bool ConnectFirstAndFinalVertex => false;
+    
+    /// <inheritdoc />
+    public override bool Contains(Collider other) {
+        return false;
+    }
+
+    /// <inheritdoc />
+    public override bool Contains(Vector2 point) {
+        return false;
+    }
+
     public override void Reset() {
-        this.ResetVertices(this._relativeVertices.ToAbsolute(), false);
-        base.Reset();
+        if (!this._isResetting) {
+            this.ResetVertices(this._relativeVertices.ToAbsolute(), false);
+            base.Reset();
+        }
+        else {
+            base.Reset();
+        }
     }
 
     private void RelativeVerticesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-        if (this.Body != null) {
-            this.ResetVertices(this._relativeVertices.ToAbsolute(), this.Body != null);
+        if (this.Body != null && !this._isResetting) {
+            try {
+                this._isResetting = true;
+                this.ResetVertices(this._relativeVertices.ToAbsolute(), this.Body != null);
+            }
+            finally {
+                this._isResetting = false;
+            }
         }
     }
 }

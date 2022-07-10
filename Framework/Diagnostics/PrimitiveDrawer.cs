@@ -89,9 +89,6 @@ public sealed class PrimitiveDrawer {
             var buffer = Math.Abs(size - y * 2f);
             var fill = size - buffer;
 
-            //var difference = size - (buffer * 2 + fill);
-            //fill += difference;
-
             for (var x = 0; x < fill; x++) {
                 pixels[index] = color;
                 index++;
@@ -252,7 +249,7 @@ public sealed class PrimitiveDrawer {
             theta += step;
         }
 
-        this.DrawPolygon(spriteBatch, pixelsPerUnit, color, thickness, points);
+        this.DrawPolygon(spriteBatch, pixelsPerUnit, color, thickness, true, points);
     }
 
     /// <summary>
@@ -296,6 +293,7 @@ public sealed class PrimitiveDrawer {
                 pixelsPerUnit,
                 color,
                 thickness,
+                polygon.ConnectFirstAndFinalVertex,
                 offset != Vector2.Zero ? polygon.WorldPoints.Select(x => x + offset) : polygon.WorldPoints);
         }
     }
@@ -359,13 +357,17 @@ public sealed class PrimitiveDrawer {
     /// <param name="color">The color.</param>
     /// <param name="thickness">The thickness.</param>
     /// <param name="points">The points.</param>
-    public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, IEnumerable<Vector2> points) {
+    public void DrawPolygon(SpriteBatch spriteBatch, ushort pixelsPerUnit, Color color, float thickness, bool connectFirstAndLastPoint, IEnumerable<Vector2> points) {
         var pointList = points?.ToList();
         if (pointList == null || pointList.Count < 2) {
             return;
         }
 
         var previousPoint = pointList.LastOrDefault();
+        if (!connectFirstAndLastPoint) {
+            previousPoint = pointList.FirstOrDefault();
+            pointList.RemoveAt(0);
+        }
 
         foreach (var point in pointList) {
             this.DrawLine(spriteBatch, pixelsPerUnit, previousPoint, point, color, thickness);

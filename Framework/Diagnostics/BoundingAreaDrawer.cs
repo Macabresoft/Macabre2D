@@ -34,6 +34,7 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
                 this.Settings.PixelsPerUnit,
                 this.Color,
                 lineThickness,
+                true,
                 points);
         }
     }

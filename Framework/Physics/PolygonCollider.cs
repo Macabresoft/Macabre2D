@@ -48,6 +48,11 @@ public abstract class PolygonCollider : Collider {
     public override ColliderType ColliderType => ColliderType.Polygon;
 
     /// <summary>
+    /// Gets a value indicating whether or not the first and final vertex should be connected.
+    /// </summary>
+    public virtual bool ConnectFirstAndFinalVertex => true;
+
+    /// <summary>
     /// Gets the normals.
     /// </summary>
     /// <value>The normals.</value>
@@ -253,8 +258,9 @@ public abstract class PolygonCollider : Collider {
     /// <returns>This polygon's normals.</returns>
     protected virtual List<Vector2> GetNormals() {
         var normals = new List<Vector2>();
+        var count = this.ConnectFirstAndFinalVertex ? this.WorldPoints.Count : this.WorldPoints.Count - 1;
 
-        for (var i = 0; i < this.WorldPoints.Count; i++) {
+        for (var i = 0; i < count; i++) {
             normals.Add(this.GetNormal(this.WorldPoints.ElementAt(i), this.GetNextWorldPoint(i)));
         }
 

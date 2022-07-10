@@ -3,15 +3,27 @@ namespace Macabresoft.Macabre2D.UI.Common;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Macabresoft.AvaloniaEx;
 using Macabresoft.Core;
 using Macabresoft.Macabre2D.Framework;
 using Microsoft.Xna.Framework;
+using ReactiveUI;
 using Unity;
 
 public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
+    public static readonly DirectProperty<RelativeVerticesEditor, ICommand> AddCommandProperty =
+        AvaloniaProperty.RegisterDirect<RelativeVerticesEditor, ICommand>(
+            nameof(AddCommand),
+            editor => editor.AddCommand);
+
+    public static readonly DirectProperty<RelativeVerticesEditor, ICommand> RemoveCommandProperty =
+        AvaloniaProperty.RegisterDirect<RelativeVerticesEditor, ICommand>(
+            nameof(RemoveCommand),
+            editor => editor.RemoveCommand);
+
     public static readonly DirectProperty<RelativeVerticesEditor, IReadOnlyCollection<NotifyingWrapper<Vector2>>> WrappedValuesProperty =
         AvaloniaProperty.RegisterDirect<RelativeVerticesEditor, IReadOnlyCollection<NotifyingWrapper<Vector2>>>(
             nameof(WrappedValues),
@@ -28,8 +40,16 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
     [InjectionConstructor]
     public RelativeVerticesEditor(ValueControlDependencies dependencies, IUndoService undoService) : base(dependencies) {
         this._undoService = undoService;
+
+        this.AddCommand = ReactiveCommand.Create(this.Add);
+        this.RemoveCommand = ReactiveCommand.Create<NotifyingWrapper<Vector2>>(this.Remove);
+
         this.InitializeComponent();
     }
+
+    public ICommand AddCommand { get; }
+
+    public ICommand RemoveCommand { get; }
 
     public IReadOnlyCollection<NotifyingWrapper<Vector2>> WrappedValues => this._wrappedValues;
 
@@ -49,8 +69,48 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
         }
     }
 
+    private void Add() {
+        try {
+            this._isUpdatingFromWrappedValue = true;
+            var index = this._wrappedValues.Count;
+
+            this._undoService.Do(() => {
+                this._wrappedValues.Add(new NotifyingWrapper<Vector2>(Vector2.Zero));
+                this.Value.Add(Vector2.Zero);
+            }, () => {
+                this._wrappedValues.RemoveAt(index);
+                this.Value.RemoveAt(index);
+            });
+        }
+        finally {
+            this._isUpdatingFromWrappedValue = false;
+        }
+    }
+
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void Remove(NotifyingWrapper<Vector2> wrapper) {
+        if (wrapper == null) {
+            return;
+        }
+
+        try {
+            this._isUpdatingFromWrappedValue = true;
+            var index = this._wrappedValues.IndexOf(wrapper);
+
+            this._undoService.Do(() => {
+                this._wrappedValues.RemoveAt(index);
+                this.Value.RemoveAt(index);
+            }, () => {
+                this._wrappedValues.Insert(index, wrapper);
+                this.Value.Insert(index, wrapper.Value);
+            });
+        }
+        finally {
+            this._isUpdatingFromWrappedValue = false;
+        }
     }
 
     private void UpdateValue(NotifyingWrapper<Vector2> wrapper, Vector2 value, int index) {
