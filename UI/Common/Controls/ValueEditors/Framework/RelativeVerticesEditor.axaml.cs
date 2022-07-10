@@ -36,7 +36,7 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
     protected override void OnValueChanged() {
         base.OnValueChanged();
 
-        if (!this._isUpdatingFromWrappedValue) {
+        if (!this._isUpdatingFromWrappedValue && this.Value != null) {
             foreach (var value in this._wrappedValues) {
                 value.PropertyChanged -= this.WrappedValue_PropertyChanged;
             }
@@ -54,7 +54,7 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
     }
 
     private void WrappedValue_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (sender is NotifyingWrapper<Vector2> wrapper) {
+        if (sender is NotifyingWrapper<Vector2> wrapper && this.Value != null) {
             try {
                 this._isUpdatingFromWrappedValue = true;
                 var index = this._wrappedValues.IndexOf(wrapper);
