@@ -20,7 +20,6 @@ public class LineStripCollider : PolygonCollider {
     /// Initializes a new instance of the <see cref="LineStripCollider" /> class.
     /// </summary>
     public LineStripCollider() : base() {
-        this._relativeVertices.CollectionChanged += this.RelativeVerticesCollectionChanged;
     }
 
     /// <summary>
@@ -45,6 +44,8 @@ public class LineStripCollider : PolygonCollider {
     }
 
     public override void Reset() {
+        this._relativeVertices.CollectionChanged -= this.RelativeVerticesCollectionChanged;
+
         if (!this._isResetting) {
             this.ResetVertices(this._relativeVertices.ToAbsolute(), false);
             base.Reset();
@@ -52,6 +53,8 @@ public class LineStripCollider : PolygonCollider {
         else {
             base.Reset();
         }
+        
+        this._relativeVertices.CollectionChanged += this.RelativeVerticesCollectionChanged;
     }
 
     private void RelativeVerticesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {

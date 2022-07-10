@@ -73,13 +73,16 @@ public class RelativeVerticesEditor : ValueEditorControl<RelativeVertices> {
         try {
             this._isUpdatingFromWrappedValue = true;
             var index = this._wrappedValues.Count;
+            var wrapper = new NotifyingWrapper<Vector2>(Vector2.Zero);
 
             this._undoService.Do(() => {
-                this._wrappedValues.Add(new NotifyingWrapper<Vector2>(Vector2.Zero));
+                this._wrappedValues.Add(wrapper);
                 this.Value.Add(Vector2.Zero);
+                wrapper.PropertyChanged += this.WrappedValue_PropertyChanged;
             }, () => {
                 this._wrappedValues.RemoveAt(index);
                 this.Value.RemoveAt(index);
+                wrapper.PropertyChanged -= this.WrappedValue_PropertyChanged;
             });
         }
         finally {

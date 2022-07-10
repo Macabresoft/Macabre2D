@@ -6,37 +6,53 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:RelativeVertices"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.RelativeVerticesEditor">
-    <Grid DataContext="{Binding $parent[local:RelativeVerticesEditor]}"
-          RowDefinitions="Auto, Auto">
+
+
+    <Grid RowDefinitions="Auto, Auto"
+          ColumnDefinitions="Auto, *"
+          DataContext="{Binding $parent[local:RelativeVerticesEditor]}">
         <Design.DataContext>
             <local:RelativeVerticesEditor />
         </Design.DataContext>
-        
-        <ListBox Grid.Row="0"
-                 x:Name="_verticesListBox"
-                 Height="256"
-                 Items="{Binding WrappedValues}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <local:Vector2Editor Value="{Binding Value}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal">
-                <Button Command="{Binding AddCommand}"
-                        Classes="Icon"
-                        ToolTip.Tip="Add a new vertex">
-                    <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
-                </Button>
 
-                <Button Command="{Binding RemoveCommand}"
-                        CommandParameter="{Binding #_verticesListBox.SelectedItem}"
-                        Classes="Icon"
-                        ToolTip.Tip="Remove the selected vertex">
-                    <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
-                </Button>
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Classes="Label"
+                   Text="Vertices" />
+
+        <StackPanel Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button Command="{Binding AddCommand}"
+                    Classes="Icon"
+                    ToolTip.Tip="Add a new vertex">
+                <avaloniaEx:Icon Content="{StaticResource AddIcon}" />
+            </Button>
+
+            <Button Command="{Binding RemoveCommand}"
+                    CommandParameter="{Binding #_verticesListBox.SelectedItem}"
+                    Classes="Icon"
+                    ToolTip.Tip="Remove the selected vertex">
+                <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
+            </Button>
         </StackPanel>
+
+
+            <ListBox Grid.Row="1"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="2"
+                     x:Name="_verticesListBox"
+                     BorderThickness="1"
+                     BorderBrush="{StaticResource ComboBoxBorderBrush}"
+                     CornerRadius="{StaticResource ControlCornerRadius}"
+                     MaxHeight="256"
+                     Items="{Binding WrappedValues}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:Vector2Editor Value="{Binding Value}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
     </Grid>
 </valueEditors:ValueEditorControl>
