@@ -6,8 +6,6 @@
                                  xmlns:valueEditors="clr-namespace:Macabresoft.Macabre2D.UI.Common"
                                  x:TypeArguments="framework:RelativeVertices"
                                  x:Class="Macabresoft.Macabre2D.UI.Common.RelativeVerticesEditor">
-
-
     <Grid RowDefinitions="Auto, Auto"
           ColumnDefinitions="Auto, *"
           DataContext="{Binding $parent[local:RelativeVerticesEditor]}">
@@ -37,22 +35,21 @@
                 <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
         </StackPanel>
-
-
-            <ListBox Grid.Row="1"
-                     Grid.Column="0"
-                     Grid.ColumnSpan="2"
-                     x:Name="_verticesListBox"
-                     BorderThickness="1"
-                     BorderBrush="{StaticResource ComboBoxBorderBrush}"
-                     CornerRadius="{StaticResource ControlCornerRadius}"
-                     MaxHeight="256"
-                     Items="{Binding WrappedValues}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <local:Vector2Editor Value="{Binding Value}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        
+        <ListBox Grid.Row="1"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 x:Name="_verticesListBox"
+                 BorderThickness="1"
+                 BorderBrush="{StaticResource ComboBoxBorderBrush}"
+                 CornerRadius="{StaticResource ControlCornerRadius}"
+                 MaxHeight="256"
+                 Items="{Binding WrappedValues}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <local:Vector2Editor Value="{Binding Value}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </valueEditors:ValueEditorControl>
