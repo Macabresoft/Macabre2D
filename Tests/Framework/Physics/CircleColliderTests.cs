@@ -84,7 +84,7 @@ public static class CircleColliderTests {
         circleBody.Collider = new CircleCollider(r1);
 
         quadBody.SetWorldPosition(new Vector2(x2, y2));
-        quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
+        quadBody.Collider = new RectangleCollider(w, h);
 
         Assert.AreEqual(collisionOccured, circleBody.Collider.CollidesWith(quadBody.Collider, out var collision1));
         Assert.AreEqual(collisionOccured, quadBody.Collider.CollidesWith(circleBody.Collider, out var collision2));
@@ -191,7 +191,7 @@ public static class CircleColliderTests {
         circleBody.Collider = new CircleCollider(r1);
 
         quadBody.SetWorldPosition(new Vector2(x2, y2));
-        quadBody.Collider = PolygonCollider.CreateRectangle(w, h);
+        quadBody.Collider = new RectangleCollider(w, h);
 
         Assert.AreEqual(shouldContain, circleBody.Collider.Contains(quadBody.Collider));
     }

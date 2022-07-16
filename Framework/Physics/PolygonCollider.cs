@@ -32,9 +32,9 @@ public abstract class PolygonCollider : Collider {
     /// <summary>
     /// Initializes a new instance of the <see cref="PolygonCollider" /> class.
     /// </summary>
-    /// <param name="points">The points.</param>
-    public PolygonCollider(IEnumerable<Vector2> points) : this() {
-        this._vertices.AddRange(points);
+    /// <param name="vertices">The vertices.</param>
+    public PolygonCollider(IEnumerable<Vector2> vertices) : this() {
+        this._vertices.AddRange(vertices);
     }
 
     /// <summary>
@@ -163,23 +163,6 @@ public abstract class PolygonCollider : Collider {
         }
 
         return false;
-    }
-
-    /// <summary>
-    /// Creates a rectangle from the specified height and width.
-    /// </summary>
-    /// <param name="width">The width.</param>
-    /// <param name="height">The height.</param>
-    /// <returns>The rectangle polygon collider.</returns>
-    public static PolygonCollider CreateRectangle(float width, float height) {
-        var points = new List<Vector2>();
-        var halfWidth = 0.5f * width;
-        var halfHeight = 0.5f * height;
-        points.Add(new Vector2(-halfWidth, -halfHeight));
-        points.Add(new Vector2(-halfWidth, halfHeight));
-        points.Add(new Vector2(halfWidth, halfHeight));
-        points.Add(new Vector2(halfWidth, -halfHeight));
-        return new LineStripCollider(points);
     }
 
     /// <inheritdoc />

@@ -20,12 +20,6 @@ public sealed class RectangleCollider : PolygonCollider {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RectangleCollider" /> class.
-    /// </summary>
-    public RectangleCollider() : this(1f, 1f) {
-    }
-
-    /// <summary>
     /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
     /// runtime if possible.
     /// </summary>
