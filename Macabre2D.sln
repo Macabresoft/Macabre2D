@@ -39,11 +39,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Tests", "UI\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.UI.Common", "UI\Common\Macabre2D.UI.Common.csproj", "{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{AD655337-5792-477A-A26B-F9EC878DBCEB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{AD655337-5792-477A-A26B-F9EC878DBCEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Libraries.Scripts", "Libraries\Scripts\Macabre2D.Libraries.Scripts.csproj", "{4DB3FF2A-B643-4632-B244-27A56561F529}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Scripts", "Libraries\Scripts\Macabre2D.Scripts.csproj", "{4DB3FF2A-B643-4632-B244-27A56561F529}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Libraries.Tests", "Libraries\Tests\Macabre2D.Libraries.Tests.csproj", "{BFD972F7-98D8-41F4-AF70-DC6BE8425254}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Scripts.Tests", "Libraries\Tests\Macabre2D.Scripts.Tests.csproj", "{BFD972F7-98D8-41F4-AF70-DC6BE8425254}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
