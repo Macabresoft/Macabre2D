@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 /// Represents a ray in the physics system.
 /// </summary>
 public sealed class LineSegment : IBoundable {
+    public static readonly LineSegment Empty = new();
+
     /// <summary>
     /// The direction of the ray.
     /// </summary>
@@ -57,6 +59,17 @@ public sealed class LineSegment : IBoundable {
         this.Distance = distance;
     }
 
+    private LineSegment() {
+        this.Start = Vector2.Zero;
+        this.End = Vector2.Zero;
+        this.Direction = Vector2.Zero;
+        this.Distance = 0f;
+        this._valueA = new Lazy<float>(0f);
+        this._valueB = new Lazy<float>(0f);
+        this._valueC = new Lazy<float>(0f);
+        this._boundingArea = new Lazy<BoundingArea>(BoundingArea.Empty);
+    }
+
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
@@ -72,11 +85,15 @@ public sealed class LineSegment : IBoundable {
     /// <param name="point">The point.</param>
     /// <returns>A value indicating whether or not this line segment contains a specific point.</returns>
     public bool Contains(Vector2 point) {
-        var result = false;
-        if (point == this.Start || point == this.End) {
-            result = true;
+        if (this.Distance == 0f) {
+            return false;
         }
-        else if (this.BoundingArea.Contains(point)) {
+
+        if (point == this.Start || point == this.End) {
+            return true;
+        }
+
+        if (this.BoundingArea.Contains(point)) {
             var pointCrossX = point.X - this.Start.X;
             var pointCrossY = point.Y - this.Start.Y;
             var lineCrossX = this.End.X - this.Start.X;
@@ -84,16 +101,16 @@ public sealed class LineSegment : IBoundable {
             var cross = pointCrossX * lineCrossY - pointCrossY * lineCrossX;
 
             if (cross == 0f) {
+                // The point is on this line if it were infinitely long, but now make sure it is on this particular segment.
                 if (Math.Abs(lineCrossX) >= Math.Abs(lineCrossY)) {
-                    result = lineCrossX > 0f ? this.Start.X <= point.X && point.X <= this.End.X : this.End.X <= point.X && point.X <= this.Start.X;
+                    return lineCrossX > 0f ? this.Start.X <= point.X && point.X <= this.End.X : this.End.X <= point.X && point.X <= this.Start.X;
                 }
-                else {
-                    result = lineCrossY > 0f ? this.Start.Y <= point.Y && point.Y <= this.End.Y : this.End.Y <= point.Y && point.Y <= this.Start.Y;
-                }
+
+                return lineCrossY > 0f ? this.Start.Y <= point.Y && point.Y <= this.End.Y : this.End.Y <= point.Y && point.Y <= this.Start.Y;
             }
         }
 
-        return result;
+        return false;
     }
 
     /// <summary>

@@ -10,6 +10,17 @@ using NUnit.Framework;
 public static class LineSegmentTests {
     [Test]
     [Category("Unit Tests")]
+    public static void Contains_ShouldReturnFalse_WhenEmptyLineSegment() {
+        var lineSegment = LineSegment.Empty;
+        var point = Vector2.Zero;
+
+        using (new AssertionScope()) {
+            lineSegment.Contains(point).Should().BeFalse();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
     [TestCase(0f, 0f, 1f, 0f, 0.5f, 1f)]
     [TestCase(0f, 0f, 1f, 1f, 2f, 2f)]
     [TestCase(0f, 0f, 1f, 0f, 0f, 1f)]

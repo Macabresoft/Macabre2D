@@ -36,6 +36,25 @@ public class LineStripCollider : PolygonCollider {
     /// </summary>
     public IReadOnlyCollection<LineSegment> LineSegments => this._lineSegments;
 
+    /// <summary>
+    /// Tries to get a line segment containing the provided point.
+    /// </summary>
+    /// <param name="point">The point.</param>
+    /// <param name="foundLineSegment">The found line segment.</param>
+    /// <returns>A value indicating whether or not a matching line segment was found.</returns>
+    public bool TryGetLineSegmentContainingPoint(Vector2 point, out LineSegment foundLineSegment) {
+        foundLineSegment = LineSegment.Empty;
+
+        foreach (var lineSegment in this.LineSegments) {
+            if (lineSegment.Contains(point)) {
+                foundLineSegment = lineSegment;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <inheritdoc />
     public override bool ConnectFirstAndFinalVertex => false;
     
