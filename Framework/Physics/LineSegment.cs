@@ -67,6 +67,36 @@ public sealed class LineSegment : IBoundable {
     internal float ValueC => this._valueC.Value;
 
     /// <summary>
+    /// Gets a value indicating whether or not this line segment contains a specific point.
+    /// </summary>
+    /// <param name="point">The point.</param>
+    /// <returns>A value indicating whether or not this line segment contains a specific point.</returns>
+    public bool Contains(Vector2 point) {
+        var result = false;
+        if (point == this.Start || point == this.End) {
+            result = true;
+        }
+        else if (this.BoundingArea.Contains(point)) {
+            var pointCrossX = point.X - this.Start.X;
+            var pointCrossY = point.Y - this.Start.Y;
+            var lineCrossX = this.End.X - this.Start.X;
+            var lineCrossY = this.End.Y - this.Start.Y;
+            var cross = pointCrossX * lineCrossY - pointCrossY * lineCrossX;
+
+            if (cross == 0f) {
+                if (Math.Abs(lineCrossX) >= Math.Abs(lineCrossY)) {
+                    result = lineCrossX > 0f ? this.Start.X <= point.X && point.X <= this.End.X : this.End.X <= point.X && point.X <= this.Start.X;
+                }
+                else {
+                    result = lineCrossY > 0f ? this.Start.Y <= point.Y && point.Y <= this.End.Y : this.End.Y <= point.Y && point.Y <= this.Start.Y;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Gets the center of this line segment.
     /// </summary>
     /// <returns></returns>

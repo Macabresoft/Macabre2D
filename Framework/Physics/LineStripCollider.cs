@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +14,7 @@ using Microsoft.Xna.Framework;
 public class LineStripCollider : PolygonCollider {
     [DataMember]
     private readonly RelativeVertices _relativeVertices = new();
-
+    private readonly List<LineSegment> _lineSegments = new();
     private bool _isResetting;
 
     /// <summary>
@@ -29,6 +30,11 @@ public class LineStripCollider : PolygonCollider {
     public LineStripCollider(IEnumerable<Vector2> points) : this() {
         this._relativeVertices.Reset(points);
     }
+
+    /// <summary>
+    /// Gets the line segments that make up this collider.
+    /// </summary>
+    public IReadOnlyCollection<LineSegment> LineSegments => this._lineSegments;
 
     /// <inheritdoc />
     public override bool ConnectFirstAndFinalVertex => false;
@@ -54,6 +60,14 @@ public class LineStripCollider : PolygonCollider {
             base.Reset();
         }
         
+        this._lineSegments.Clear();
+
+        if (this.WorldPoints.Count >= 2) {
+            for (var i = 0; i < this.WorldPoints.Count - 1; i++) {
+                this._lineSegments.Add(new LineSegment(this.WorldPoints.ElementAt(i), this.WorldPoints.ElementAt(i + 1)));
+            }
+        }
+
         this._relativeVertices.CollectionChanged += this.RelativeVerticesCollectionChanged;
     }
 
