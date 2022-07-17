@@ -26,9 +26,9 @@ public class LineStripCollider : PolygonCollider {
     /// <summary>
     /// Initializes a new instance of the <see cref="LineStripCollider" /> class.
     /// </summary>
-    /// <param name="points">The points.</param>
-    public LineStripCollider(IEnumerable<Vector2> points) : this() {
-        this._relativeVertices.Reset(points);
+    /// <param name="relativeVertices">The relative vertices.</param>
+    public LineStripCollider(IEnumerable<Vector2> relativeVertices) : this() {
+        this._relativeVertices.Reset(relativeVertices);
     }
 
     /// <summary>

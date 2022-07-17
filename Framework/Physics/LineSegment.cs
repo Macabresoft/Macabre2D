@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 /// Represents a ray in the physics system.
 /// </summary>
 public sealed class LineSegment : IBoundable {
-    public static readonly LineSegment Empty = new();
+    public static readonly LineSegment Empty = new(Vector2.Zero, Vector2.Zero, Vector2.Zero, 0f);
 
     /// <summary>
     /// The direction of the ray.
@@ -39,13 +39,7 @@ public sealed class LineSegment : IBoundable {
     /// </summary>
     /// <param name="start">The start.</param>
     /// <param name="end">The end.</param>
-    public LineSegment(Vector2 start, Vector2 end) {
-        this.Start = start;
-        this.End = end;
-        this._boundingArea = new Lazy<BoundingArea>(() => BoundingArea.CreateFromPoints(this.Start, this.End));
-        this._valueA = new Lazy<float>(() => this.End.Y - this.Start.Y);
-        this._valueB = new Lazy<float>(() => this.Start.X - this.End.X);
-        this._valueC = new Lazy<float>(() => this.ValueA * this.Start.X + this.ValueB * this.Start.Y);
+    public LineSegment(Vector2 start, Vector2 end) : this(start, end, (end - start).GetNormalized(), (end - start).Length()) {
     }
 
     /// <summary>
@@ -54,20 +48,18 @@ public sealed class LineSegment : IBoundable {
     /// <param name="start">The start.</param>
     /// <param name="direction">The direction.</param>
     /// <param name="distance">The distance.</param>
-    public LineSegment(Vector2 start, Vector2 direction, float distance) : this(start, start + direction * distance) {
-        this.Direction = direction;
-        this.Distance = distance;
+    public LineSegment(Vector2 start, Vector2 direction, float distance) : this(start, start + direction * distance, direction, distance) {
     }
 
-    private LineSegment() {
-        this.Start = Vector2.Zero;
-        this.End = Vector2.Zero;
-        this.Direction = Vector2.Zero;
-        this.Distance = 0f;
-        this._valueA = new Lazy<float>(0f);
-        this._valueB = new Lazy<float>(0f);
-        this._valueC = new Lazy<float>(0f);
-        this._boundingArea = new Lazy<BoundingArea>(BoundingArea.Empty);
+    private LineSegment(Vector2 start, Vector2 end, Vector2 direction, float distance) {
+        this.Start = start;
+        this.End = end;
+        this.Direction = direction;
+        this.Distance = distance;
+        this._boundingArea = new Lazy<BoundingArea>(() => BoundingArea.CreateFromPoints(this.Start, this.End));
+        this._valueA = new Lazy<float>(() => this.End.Y - this.Start.Y);
+        this._valueB = new Lazy<float>(() => this.Start.X - this.End.X);
+        this._valueC = new Lazy<float>(() => this.ValueA * this.Start.X + this.ValueB * this.Start.Y);
     }
 
     /// <inheritdoc />
