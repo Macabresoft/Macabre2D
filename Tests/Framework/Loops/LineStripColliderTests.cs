@@ -11,17 +11,24 @@ using NUnit.Framework;
 public static class LineStripColliderTests {
     [Test]
     [Category("Unit Tests")]
-    public static void TryGetLineSegmentContainingPoint_ShouldReturnTrue_ForAllVertices() {
-        var lineStripCollider = new LineStripCollider(new[] {
-            Vector2.Zero,
-            Vector2.One,
-            new(5f, 2f),
-            new(3f, -5f)
-        });
+    [TestCase(-1f, 0f)]
+    [TestCase(0f, -1f)]
+    [TestCase(-1f, -1f)]
+    [TestCase(100f, 0f)]
+    public static void TryGetLineSegmentContainingPoint_ShouldReturnFalse_WhenPointIsNotOnLine(float testX, float testY) {
+        var lineStripCollider = GetLineStripCollider();
+        var testPoint = new Vector2(testX, testY);
 
-        var physicsBody = Substitute.For<IPhysicsBody>();
-        physicsBody.GetWorldTransform(Arg.Any<Vector2>()).Returns(x => new Macabre2D.Framework.Transform((Vector2)x[0], Vector2.One));
-        lineStripCollider.Initialize(physicsBody);
+        using (new AssertionScope()) {
+            lineStripCollider.LineSegments.Should().NotBeEmpty();
+            lineStripCollider.TryGetLineSegmentContainingPoint(testPoint, out _).Should().BeFalse();
+        }
+    }
+
+    [Test]
+    [Category("Unit Tests")]
+    public static void TryGetLineSegmentContainingPoint_ShouldReturnTrue_ForAllVertices() {
+        var lineStripCollider = GetLineStripCollider();
 
         using (new AssertionScope()) {
             lineStripCollider.LineSegments.Should().NotBeEmpty();
@@ -36,16 +43,7 @@ public static class LineStripColliderTests {
     [Test]
     [Category("Unit Tests")]
     public static void TryGetLineSegmentContainingPoint_ShouldReturnTrue_WhenPointIsOnLine() {
-        var lineStripCollider = new LineStripCollider(new[] {
-            Vector2.Zero,
-            Vector2.One,
-            new(5f, 2f),
-            new(3f, -5f)
-        });
-
-        var physicsBody = Substitute.For<IPhysicsBody>();
-        physicsBody.GetWorldTransform(Arg.Any<Vector2>()).Returns(x => new Macabre2D.Framework.Transform((Vector2)x[0], Vector2.One));
-        lineStripCollider.Initialize(physicsBody);
+        var lineStripCollider = GetLineStripCollider();
 
         using (new AssertionScope()) {
             lineStripCollider.LineSegments.Should().NotBeEmpty();
@@ -56,5 +54,19 @@ public static class LineStripColliderTests {
                 foundLineSegment.Should().Be(lineSegment);
             }
         }
+    }
+
+    private static LineStripCollider GetLineStripCollider() {
+        var lineStripCollider = new LineStripCollider(new[] {
+            Vector2.Zero,
+            Vector2.One,
+            new(5f, 2f),
+            new(3f, -5f)
+        });
+
+        var physicsBody = Substitute.For<IPhysicsBody>();
+        physicsBody.GetWorldTransform(Arg.Any<Vector2>()).Returns(x => new Macabre2D.Framework.Transform((Vector2)x[0], Vector2.One));
+        lineStripCollider.Initialize(physicsBody);
+        return lineStripCollider;
     }
 }
