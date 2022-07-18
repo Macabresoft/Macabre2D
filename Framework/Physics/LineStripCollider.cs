@@ -12,9 +12,11 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [Display(Name = "Line Strip Collider")]
 public class LineStripCollider : PolygonCollider {
+    private readonly List<LineSegment> _lineSegments = new();
+
     [DataMember]
     private readonly RelativeVertices _relativeVertices = new();
-    private readonly List<LineSegment> _lineSegments = new();
+
     private bool _isResetting;
 
     /// <summary>
@@ -31,33 +33,14 @@ public class LineStripCollider : PolygonCollider {
         this._relativeVertices.Reset(relativeVertices);
     }
 
+    /// <inheritdoc />
+    public override bool ConnectFirstAndFinalVertex => false;
+
     /// <summary>
     /// Gets the line segments that make up this collider.
     /// </summary>
     public IReadOnlyCollection<LineSegment> LineSegments => this._lineSegments;
 
-    /// <summary>
-    /// Tries to get a line segment containing the provided point.
-    /// </summary>
-    /// <param name="point">The point.</param>
-    /// <param name="foundLineSegment">The found line segment.</param>
-    /// <returns>A value indicating whether or not a matching line segment was found.</returns>
-    public bool TryGetLineSegmentContainingPoint(Vector2 point, out LineSegment foundLineSegment) {
-        foundLineSegment = LineSegment.Empty;
-
-        foreach (var lineSegment in this.LineSegments) {
-            if (lineSegment.Contains(point)) {
-                foundLineSegment = lineSegment;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <inheritdoc />
-    public override bool ConnectFirstAndFinalVertex => false;
-    
     /// <inheritdoc />
     public override bool Contains(Collider other) {
         return false;
@@ -78,7 +61,7 @@ public class LineStripCollider : PolygonCollider {
         else {
             base.Reset();
         }
-        
+
         this._lineSegments.Clear();
 
         if (this.WorldPoints.Count >= 2) {
@@ -88,6 +71,25 @@ public class LineStripCollider : PolygonCollider {
         }
 
         this._relativeVertices.CollectionChanged += this.RelativeVerticesCollectionChanged;
+    }
+
+    /// <summary>
+    /// Tries to get a line segment containing the provided point.
+    /// </summary>
+    /// <param name="point">The point.</param>
+    /// <param name="foundLineSegment">The found line segment.</param>
+    /// <returns>A value indicating whether or not a matching line segment was found.</returns>
+    public bool TryGetLineSegmentContainingPoint(Vector2 point, out LineSegment foundLineSegment) {
+        foundLineSegment = LineSegment.Empty;
+
+        foreach (var lineSegment in this.LineSegments) {
+            if (lineSegment.Contains(point)) {
+                foundLineSegment = lineSegment;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void RelativeVerticesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
