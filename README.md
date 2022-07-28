@@ -27,7 +27,7 @@ The full source code is available here from GitHub:
 
 * Clone the source: `git clone git@github.com:Macabresoft/Macabre2D.git`
 * Pull down LFS objects: `git lfs fetch --all`
-* Restore NuGet packages for Macabre2D.sln.
+* Restore NuGet packages for Macabre2D.sln
 
 ### Compiling Shaders on Linux
 
@@ -42,10 +42,9 @@ right click, and select 'Install for All Users'. This is a limitation of the Mon
 
 Your game's code must be directly integrated with Macabre2D, giving you full control of the engine and editor in the context of your game. As a result, the best way to create a game in Macabre2D is to create a fork of Macabre2D.
 
-* Fork Macabre2D
-* Optionally create a branch for your game
-* Decide how to handle content, doing doing one of the following
-    * Remove the line `/Content/` from your `.gitignore` file to include content in your main project
-    * Have a separate repository for content which operates as a git repository inside of the `/Content/` folder
+* Optionally fork Macabre2D
+* Clone Macabre2D
+* Create a separate repository for content which operates as a git repository inside of the `/Content/` folder
 * Run the `Macabre2D.UI.Editor` project once to generate default content
+* Add custom scripts to the Macabre2D.Scripts project (inside the Scripts folder, which is a link to inside `/Content`)
 
