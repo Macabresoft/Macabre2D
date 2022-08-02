@@ -16,6 +16,5 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\Libraries\Platformer\Macabre2D.Libraries.Platformer.csproj" />
     </ItemGroup>
 </Project>

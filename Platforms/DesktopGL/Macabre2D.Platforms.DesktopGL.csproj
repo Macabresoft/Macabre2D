@@ -32,7 +32,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\..\Libraries\Platformer\Macabre2D.Libraries.Platformer.csproj" />
         <ProjectReference Include="..\..\Libraries\Scripts\Macabre2D.Scripts.csproj" />
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

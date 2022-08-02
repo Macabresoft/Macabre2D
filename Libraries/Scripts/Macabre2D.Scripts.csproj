@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\Platformer\Macabre2D.Libraries.Platformer.csproj" />
     </ItemGroup>
 
     <ItemGroup>
