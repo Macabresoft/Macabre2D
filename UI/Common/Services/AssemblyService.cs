@@ -61,6 +61,7 @@ public sealed class AssemblyService : IAssemblyService {
             Assembly.Load("Macabre2D"),
             Assembly.Load("Macabre2D.Framework"),
             Assembly.Load("Macabre2D.Scripts.Gameplay"),
+            Assembly.Load("Macabre2D.Scripts.UI"),
             Assembly.Load("Macabre2D.UI.Common")
         };
     }

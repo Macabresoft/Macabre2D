@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Scripts.Gameplay"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Scripts.Tests", "Scripts\Tests\Macabre2D.Scripts.Tests.csproj", "{BFD972F7-98D8-41F4-AF70-DC6BE8425254}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macabre2D.Scripts.UI", "Scripts\UI\Macabre2D.Scripts.UI.csproj", "{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,14 @@ Global
 		{BFD972F7-98D8-41F4-AF70-DC6BE8425254}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BFD972F7-98D8-41F4-AF70-DC6BE8425254}.Release|x64.ActiveCfg = Release|Any CPU
 		{BFD972F7-98D8-41F4-AF70-DC6BE8425254}.Release|x64.Build.0 = Release|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +170,7 @@ Global
 		{68DD3E24-A9F7-4425-8DC2-2FDD3E6B1ADE} = {286A8E80-F4CC-4212-B9BD-54FCC61B7F8F}
 		{4DB3FF2A-B643-4632-B244-27A56561F529} = {AD655337-5792-477A-A26B-F9EC878DBCEB}
 		{BFD972F7-98D8-41F4-AF70-DC6BE8425254} = {AD655337-5792-477A-A26B-F9EC878DBCEB}
+		{1FEF7EE9-6D8F-4B8A-9249-57EB13495D28} = {AD655337-5792-477A-A26B-F9EC878DBCEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9775B341-28FF-4C0F-8B12-DBECE1B4FE23}

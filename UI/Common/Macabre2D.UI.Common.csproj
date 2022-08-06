@@ -12,6 +12,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Scripts\Gameplay\Macabre2D.Scripts.Gameplay.csproj" />
+        <ProjectReference Include="..\..\Scripts\UI\Macabre2D.Scripts.UI.csproj" />
         <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
     </ItemGroup>
