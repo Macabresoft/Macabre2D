@@ -3,7 +3,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Macabresoft.Macabre2D.Scripts</RootNamespace>
+        <RootNamespace>Macabresoft.Macabre2D.Scripts.Gameplay</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="..\..\Content\src\Scripts\**\*.cs">
+        <Compile Include="..\..\Content\src\Gameplay\**\*.cs">
             <Link>Scripts\%(RecursiveDir)/%(FileName)%(Extension)</Link>
         </Compile>
     </ItemGroup>

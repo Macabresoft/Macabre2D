@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\Scripts\Macabre2D.Scripts.csproj" />
+        <ProjectReference Include="..\Gameplay\Macabre2D.Scripts.Gameplay.csproj" />
     </ItemGroup>
 
     <ItemGroup>
