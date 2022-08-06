@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 /// <summary>
 /// Draws bounding areas from colliders for debugging purposes.
@@ -19,11 +18,11 @@ public class BoundingAreaDrawer : BaseDrawer, IUpdateableEntity {
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this.Color == Color.Transparent || this.BoundingArea.Maximum == this.BoundingArea.Minimum) {
+        if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this.Color == Color.Transparent) {
             return;
         }
 
-        if (this.SpriteBatch is SpriteBatch spriteBatch && !this._boundingArea.IsEmpty) {
+        if (this.SpriteBatch is { } spriteBatch && !this._boundingArea.IsEmpty) {
             var minimum = this._boundingArea.Minimum;
             var maximum = this._boundingArea.Maximum;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
