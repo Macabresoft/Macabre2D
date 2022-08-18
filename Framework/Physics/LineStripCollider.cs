@@ -1,5 +1,6 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 [Display(Name = "Line Strip Collider")]
 public class LineStripCollider : PolygonCollider {
+    private const float EqualityTolerance = 0.001f;
     private readonly List<LineSegment> _lineSegments = new();
 
     [DataMember]
@@ -51,6 +53,7 @@ public class LineStripCollider : PolygonCollider {
         return false;
     }
 
+    /// <inheritdoc />
     public override void Reset() {
         this._relativeVertices.CollectionChanged -= this.RelativeVerticesCollectionChanged;
 
