@@ -1,6 +1,5 @@
 ﻿namespace Macabresoft.Macabre2D.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
@@ -50,7 +49,7 @@ public class LineStripCollider : PolygonCollider {
 
     /// <inheritdoc />
     public override bool Contains(Vector2 point) {
-        return false;
+        return this.TryGetLineSegmentContainingPoint(point, out _);
     }
 
     /// <inheritdoc />

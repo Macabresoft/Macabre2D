@@ -283,8 +283,9 @@ public abstract class PolygonCollider : Collider {
         var contactPoint = Vector2.Zero;
         var normal = Vector2.Zero;
         var shortestDistance = float.MaxValue;
+        var count = this.ConnectFirstAndFinalVertex ? this.WorldPoints.Count : this.WorldPoints.Count - 1;
 
-        for (var i = 0; i < this.WorldPoints.Count; i++) {
+        for (var i = 0; i < count; i++) {
             var edge = new LineSegment(this.WorldPoints.ElementAt(i), this.GetNextWorldPoint(i));
 
             if (ray.Intersects(edge, out var intersection)) {
