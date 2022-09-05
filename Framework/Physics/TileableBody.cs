@@ -191,28 +191,34 @@ public sealed class TileableBody : PhysicsBody {
                         if (this.SlopedCorners != DiagonalDirections.None) {
                             switch (directions) {
                                 case CardinalDirections.NorthWest or CardinalDirections.NorthWest | CardinalDirections.South:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthWest) && (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South))) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthWest) && 
+                                        (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South)) &&
+                                        (!this.HasColliderOverride() || this.OverrideLayersTopEdge != Layers.None)) {
                                         handledDirections = CardinalDirections.NorthWest;
                                         allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersTopEdge));
                                     }
 
                                     break;
                                 case CardinalDirections.NorthEast or CardinalDirections.NorthEast | CardinalDirections.South:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthEast) && (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South))) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.NorthEast) && 
+                                        (this.SlopeWhenSingleUnitTall || !directions.HasFlag(CardinalDirections.South)) &&
+                                        (!this.HasColliderOverride() || this.OverrideLayersTopEdge != Layers.None)) {
                                         handledDirections = CardinalDirections.NorthEast;
                                         allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersTopEdge));
                                     }
 
                                     break;
                                 case CardinalDirections.SouthWest:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthWest)) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthWest) &&
+                                        (!this.HasColliderOverride() || this.OverrideLayersBottomEdge != Layers.None)) {
                                         handledDirections = CardinalDirections.SouthWest;
                                         allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
                                     }
 
                                     break;
                                 case CardinalDirections.SouthEast:
-                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthEast)) {
+                                    if (this.SlopedCorners.HasFlag(DiagonalDirections.SouthEast) &&
+                                        (!this.HasColliderOverride() || this.OverrideLayersBottomEdge != Layers.None)) {
                                         handledDirections = CardinalDirections.SouthEast;
                                         allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 1), this._overrideLayersBottomEdge));
                                     }
@@ -221,19 +227,27 @@ public sealed class TileableBody : PhysicsBody {
                             }
                         }
 
-                        if (directions.HasFlag(CardinalDirections.West) && !handledDirections.HasFlag(CardinalDirections.West)) {
+                        if (directions.HasFlag(CardinalDirections.West) &&
+                            !handledDirections.HasFlag(CardinalDirections.West) && 
+                            (!this.HasColliderOverride() || this.OverrideLayersLeftEdge != Layers.None)) {
                             allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(0, 1), this._overrideLayersLeftEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.North) && !handledDirections.HasFlag(CardinalDirections.North)) {
+                        if (directions.HasFlag(CardinalDirections.North) && 
+                            !handledDirections.HasFlag(CardinalDirections.North) && 
+                            (!this.HasColliderOverride() || this.OverrideLayersTopEdge != Layers.None)) {
                             allSegments.Add(new TileLineSegment(currentTile + new Point(0, 1), currentTile + new Point(1, 1), this._overrideLayersTopEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.East) && !handledDirections.HasFlag(CardinalDirections.East)) {
+                        if (directions.HasFlag(CardinalDirections.East) && 
+                            !handledDirections.HasFlag(CardinalDirections.East) && 
+                            (!this.HasColliderOverride() || this.OverrideLayersRightEdge != Layers.None)) {
                             allSegments.Add(new TileLineSegment(currentTile + new Point(1, 0), currentTile + new Point(1, 1), this._overrideLayersRightEdge));
                         }
 
-                        if (directions.HasFlag(CardinalDirections.South) && !handledDirections.HasFlag(CardinalDirections.South)) {
+                        if (directions.HasFlag(CardinalDirections.South) &&
+                            !handledDirections.HasFlag(CardinalDirections.South) &&
+                            (!this.HasColliderOverride() || this.OverrideLayersBottomEdge != Layers.None)) {
                             allSegments.Add(new TileLineSegment(currentTile, currentTile + new Point(1, 0), this._overrideLayersBottomEdge));
                         }
                     }
@@ -281,6 +295,10 @@ public sealed class TileableBody : PhysicsBody {
                 this._colliders.Add(collider);
             }
         }
+    }
+
+    private bool HasColliderOverride() {
+        return (this.OverrideLayersBottomEdge | this.OverrideLayersLeftEdge | this.OverrideLayersRightEdge | this.OverrideLayersTopEdge) != Layers.None;
     }
 
     private class TileLineSegment {
