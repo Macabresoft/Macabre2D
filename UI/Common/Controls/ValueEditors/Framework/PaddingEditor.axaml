@@ -5,7 +5,7 @@
                           x:TypeArguments="framework:Padding"
                           x:Class="Macabresoft.Macabre2D.UI.Common.PaddingEditor"
                           UpdateOnLostFocus="False">
-    <Grid ColumnDefinitions="Auto, Auto, *, Auto, *, Auto, *, Auto, *"
+    <Grid ColumnDefinitions="Auto, *, *, *, *"
           DataContext="{Binding $parent[local:PaddingEditor]}">
         <Design.DataContext>
             <local:PaddingEditor />
@@ -14,40 +14,24 @@
                    Classes="Label"
                    Text="{Binding Title}" />
 
-        <TextBlock Grid.Column="1"
-                   Text="L: "
-                   VerticalAlignment="Center"
-                   ToolTip.Tip="Left padding" />
+        <local:FloatEditor Grid.Column="1"
+                           Value="{Binding LeftValue}"
+                           ValueMinimum="0"
+                           ToolTip.Tip="Left padding" />
 
         <local:FloatEditor Grid.Column="2"
-                           Value="{Binding LeftValue}"
-                           ValueMinimum="0" />
+                           Value="{Binding TopValue}"
+                           ValueMinimum="0"
+                           ToolTip.Tip="Top padding" />
 
-        <TextBlock Grid.Column="3"
-                   Text="T: "
-                   VerticalAlignment="Center"
-                   ToolTip.Tip="Top padding" />
+        <local:FloatEditor Grid.Column="3"
+                           Value="{Binding LeftValue}"
+                           ValueMinimum="0"
+                           ToolTip.Tip="Right padding" />
 
         <local:FloatEditor Grid.Column="4"
-                           Value="{Binding TopValue}"
-                           ValueMinimum="0" />
-
-        <TextBlock Grid.Column="5"
-                   Text="R: "
-                   VerticalAlignment="Center"
-                   ToolTip.Tip="Right padding" />
-
-        <local:FloatEditor Grid.Column="6"
-                           Value="{Binding LeftValue}"
-                           ValueMinimum="0" />
-
-        <TextBlock Grid.Column="7"
-                   Text="B: "
-                   VerticalAlignment="Center"
-                   ToolTip.Tip="Bottom padding" />
-
-        <local:FloatEditor Grid.Column="8"
                            Value="{Binding BottomValue}"
-                           ValueMinimum="0" />
+                           ValueMinimum="0"
+                           ToolTip.Tip="Bottom padding" />
     </Grid>
 </local:ValueEditorControl>
