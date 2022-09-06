@@ -185,7 +185,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     protected BoundingArea GetTileBoundingArea(Point tile) {
         if (!this._tilePositionToBoundingArea.TryGetValue(tile, out var boundingArea)) {
             var grid = this.CurrentGrid;
-            var tilePosition = grid.GetTilePosition(tile);
+            var tilePosition = grid.GetTilePosition(tile) + this.LocalPosition;
             boundingArea = new BoundingArea(tilePosition, tilePosition + grid.WorldTileSize);
             this._tilePositionToBoundingArea.Add(tile, boundingArea);
         }
@@ -224,6 +224,9 @@ public abstract class TileableEntity : Entity, ITileableEntity {
         if (e.PropertyName == nameof(IEntity.Parent)) {
             this.ResetGridContainer();
         }
+        else if (e.PropertyName == nameof(ITransformable.Transform)) {
+            this.ResetBoundingArea();
+        }
     }
 
     /// <summary>
@@ -251,7 +254,7 @@ public abstract class TileableEntity : Entity, ITileableEntity {
     private BoundingArea CreateBoundingArea() {
         BoundingArea result;
         if (this.HasActiveTiles() && this.CurrentGrid is { } grid && grid != GridContainer.Empty) {
-            result = new BoundingArea(grid.GetTilePosition(this.MinimumTile), grid.GetTilePosition(this.MaximumTile + new Point(1, 1)));
+            result = new BoundingArea(grid.GetTilePosition(this.MinimumTile) + this.LocalPosition, grid.GetTilePosition(this.MaximumTile + new Point(1, 1)) + this.LocalPosition);
         }
         else {
             result = new BoundingArea();
