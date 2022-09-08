@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 /// </summary>
 [DataContract]
 public class LayersOverride : NotifyPropertyChanged {
-    private bool _isEnabled = true;
+    private bool _isEnabled;
     private Layers _value;
 
     /// <summary>
@@ -24,13 +24,13 @@ public class LayersOverride : NotifyPropertyChanged {
     /// Initializes a new instance of <see cref="LayersOverride" />
     /// </summary>
     /// <param name="value">The value.</param>
-    public LayersOverride(Layers value) : this(value, true) {
+    public LayersOverride(Layers value) : this(value, false) {
     }
 
     /// <summary>
     /// Initializes a new instance of <see cref="LayersOverride" />
     /// </summary>
-    public LayersOverride() {
+    public LayersOverride() : this(Layers.None) {
     }
 
     /// <summary>

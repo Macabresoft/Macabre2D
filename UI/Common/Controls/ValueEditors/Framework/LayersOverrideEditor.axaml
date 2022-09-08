@@ -1,0 +1,25 @@
+<local:ValueEditorControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="clr-namespace:Macabresoft.Macabre2D.UI.Common"
+                          xmlns:framework="clr-namespace:Macabresoft.Macabre2D.Framework;assembly=Macabre2D.Framework"
+                          x:TypeArguments="framework:LayersOverride"
+                          x:Class="Macabresoft.Macabre2D.UI.Common.LayersOverrideEditor">
+    <Grid ColumnDefinitions="Auto, Auto, *"
+          DataContext="{Binding $parent[local:LayersOverrideEditor]}">
+        <Design.DataContext>
+            <local:LayersOverrideEditor />
+        </Design.DataContext>
+
+        <TextBlock Grid.Column="0"
+                   Classes="Label"
+                   Text="{Binding Title}" />
+        
+        <CheckBox Grid.Column="1"
+                  IsChecked="{Binding IsOverrideEnabled}" />
+        
+        <local:LayersEditor Grid.Column="2"
+                            IsEnabled="{Binding Value.IsEnabled}"
+                            Value="{Binding LayersValue}" />
+        
+    </Grid>
+</local:ValueEditorControl>
