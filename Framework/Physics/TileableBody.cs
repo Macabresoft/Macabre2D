@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 /// <summary>
@@ -13,49 +12,12 @@ using Microsoft.Xna.Framework;
 /// and creates colliders based on the available grid.
 /// </summary>
 [Display(Name = "Tileable Body")]
-public sealed class TileableBody : PhysicsBody {
+public sealed class TileableBody : QuadBody {
     private readonly List<Collider> _colliders = new();
     private ITileableEntity? _tileable;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="TileableBody" />.
-    /// </summary>
-    public TileableBody() : base() {
-        this.OverrideLayersBottomEdge.PropertyChanged += this.OnLayerOverrideChanged;
-        this.OverrideLayersLeftEdge.PropertyChanged += this.OnLayerOverrideChanged;
-        this.OverrideLayersRightEdge.PropertyChanged += this.OnLayerOverrideChanged;
-        this.OverrideLayersTopEdge.PropertyChanged += this.OnLayerOverrideChanged;
-    }
-
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._tileable?.BoundingArea ?? new BoundingArea();
-
-    /// <inheritdoc />
-    public override bool HasCollider => this._colliders.Any();
-
-    /// <summary>
-    /// Gets the bottom edge's overriden layer;
-    /// </summary>
-    [DataMember(Name = "Bottom Layers", Order = 103)]
-    public LayersOverride OverrideLayersBottomEdge { get; } = new();
-
-    /// <summary>
-    /// Gets the left edge's overriden layer;
-    /// </summary>
-    [DataMember(Name = "Left Layers", Order = 100)]
-    public LayersOverride OverrideLayersLeftEdge { get; } = new();
-
-    /// <summary>
-    /// Gets the right edge's overriden layer;
-    /// </summary>
-    [DataMember(Name = "Right Layers", Order = 102)]
-    public LayersOverride OverrideLayersRightEdge { get; } = new();
-
-    /// <summary>
-    /// Gets the top edge's overriden layer;
-    /// </summary>
-    [DataMember(Name = "Top Layers", Order = 101)]
-    public LayersOverride OverrideLayersTopEdge { get; } = new();
 
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
@@ -76,8 +38,6 @@ public sealed class TileableBody : PhysicsBody {
         else {
             this._tileable = null;
         }
-
-        this.ResetColliders();
     }
 
     /// <inheritdoc />
@@ -89,39 +49,8 @@ public sealed class TileableBody : PhysicsBody {
         }
     }
 
-    private CardinalDirections GetEdgeDirections(Point tile) {
-        var directions = CardinalDirections.None;
-
-        if (this._tileable != null) {
-            if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
-                directions |= CardinalDirections.West;
-            }
-
-            if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
-                directions |= CardinalDirections.North;
-            }
-
-            if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
-                directions |= CardinalDirections.East;
-            }
-
-            if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
-                directions |= CardinalDirections.South;
-            }
-        }
-
-        return directions;
-    }
-
-    private void OnLayerOverrideChanged(object? sender, PropertyChangedEventArgs e) {
-        this.ResetColliders();
-    }
-
-    private void OnRequestReset(object? sender, EventArgs e) {
-        this.ResetColliders();
-    }
-
-    private void ResetColliders() {
+    /// <inheritdoc />
+    protected override void ResetColliders() {
         this._colliders.Clear();
 
         if (this._tileable != null) {
@@ -197,6 +126,34 @@ public sealed class TileableBody : PhysicsBody {
                 this._colliders.Add(collider);
             }
         }
+    }
+
+    private CardinalDirections GetEdgeDirections(Point tile) {
+        var directions = CardinalDirections.None;
+
+        if (this._tileable != null) {
+            if (!this._tileable.HasActiveTileAt(tile - new Point(1, 0))) {
+                directions |= CardinalDirections.West;
+            }
+
+            if (!this._tileable.HasActiveTileAt(tile + new Point(0, 1))) {
+                directions |= CardinalDirections.North;
+            }
+
+            if (!this._tileable.HasActiveTileAt(tile + new Point(1, 0))) {
+                directions |= CardinalDirections.East;
+            }
+
+            if (!this._tileable.HasActiveTileAt(tile - new Point(0, 1))) {
+                directions |= CardinalDirections.South;
+            }
+        }
+
+        return directions;
+    }
+
+    private void OnRequestReset(object? sender, EventArgs e) {
+        this.ResetColliders();
     }
 
     private class TileLineSegment {

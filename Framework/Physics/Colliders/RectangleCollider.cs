@@ -20,6 +20,12 @@ public sealed class RectangleCollider : PolygonCollider {
     }
 
     /// <summary>
+    /// Initializes a new instance of <see cref="RectangleCollider" />.
+    /// </summary>
+    public RectangleCollider() : base() {
+    }
+
+    /// <summary>
     /// Gets or sets the height. Setting this is fairly expensive and should be avoided during
     /// runtime if possible.
     /// </summary>
@@ -34,7 +40,7 @@ public sealed class RectangleCollider : PolygonCollider {
         }
 
         set {
-            if (value != this.Height && value > 0) {
+            if (value > 0 && Math.Abs(value - this.Height) > Defaults.FloatComparisonTolerance) {
                 var width = this.Width;
                 this.ResetVertices(CreateVertices(width, value), true);
                 this.RaisePropertyChanged();
@@ -57,7 +63,7 @@ public sealed class RectangleCollider : PolygonCollider {
         }
 
         set {
-            if (value != this.Width && value > 0) {
+            if (value > 0 && Math.Abs(value - this.Width) > Defaults.FloatComparisonTolerance) {
                 var height = this.Height;
                 this.ResetVertices(CreateVertices(value, height), true);
                 this.RaisePropertyChanged();

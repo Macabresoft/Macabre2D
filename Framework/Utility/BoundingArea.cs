@@ -85,7 +85,7 @@ public readonly struct BoundingArea {
     /// </summary>
     /// <value><c>true</c> if this instance is empty; otherwise, <c>false</c>.</value>
     public bool IsEmpty => this.Minimum == this.Maximum;
-
+    
     /// <summary>
     /// Combines the specified bounding areas.
     /// </summary>
