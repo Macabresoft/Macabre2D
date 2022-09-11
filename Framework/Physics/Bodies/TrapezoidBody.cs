@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Macabresoft.Core;
 using Microsoft.Xna.Framework;
@@ -91,30 +92,34 @@ public class TrapezoidBody : QuadBody {
 
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {
-        var colliders = new List<Collider>();
+        if (this.CheckIsValid()) {
+            var colliders = new List<Collider>();
 
-        if (!this.OverrideLayersLeftEdge.IsEnabled || this.OverrideLayersLeftEdge.Value != Layers.None) {
-            colliders.Add(this._leftCollider);
+            if (!this.OverrideLayersLeftEdge.IsEnabled || this.OverrideLayersLeftEdge.Value != Layers.None) {
+                colliders.Add(this._leftCollider);
+            }
+
+            if (!this.OverrideLayersTopEdge.IsEnabled || this.OverrideLayersTopEdge.Value != Layers.None) {
+                colliders.Add(this._topCollider);
+            }
+
+            if (!this.OverrideLayersRightEdge.IsEnabled || this.OverrideLayersRightEdge.Value != Layers.None) {
+                colliders.Add(this._rightCollider);
+            }
+
+            if (!this.OverrideLayersBottomEdge.IsEnabled || this.OverrideLayersBottomEdge.Value != Layers.None) {
+                colliders.Add(this._bottomCollider);
+            }
+
+            return colliders;
         }
 
-        if (!this.OverrideLayersTopEdge.IsEnabled || this.OverrideLayersTopEdge.Value != Layers.None) {
-            colliders.Add(this._topCollider);
-        }
-
-        if (!this.OverrideLayersRightEdge.IsEnabled || this.OverrideLayersRightEdge.Value != Layers.None) {
-            colliders.Add(this._rightCollider);
-        }
-
-        if (!this.OverrideLayersBottomEdge.IsEnabled || this.OverrideLayersBottomEdge.Value != Layers.None) {
-            colliders.Add(this._bottomCollider);
-        }
-
-        return colliders;
+        return Enumerable.Empty<Collider>();
     }
 
     /// <inheritdoc />
     protected override void ResetColliders() {
-        if (this._topWidth > 0f && this._bottomWidth > 0f && this._height > 0f) {
+        if (this.CheckIsValid()) {
             if (this._bottomWidth > this._topWidth) {
                 var sideWidth = 0.5f * (this._bottomWidth - this._topWidth);
 
@@ -157,6 +162,10 @@ public class TrapezoidBody : QuadBody {
             this._bottomCollider.Initialize(this);
             this._boundingArea.Reset();
         }
+    }
+
+    private bool CheckIsValid() {
+        return this._topWidth > 0f && this._bottomWidth > 0f && this._height > 0f;
     }
 
     private BoundingArea CreateBoundingArea() {
