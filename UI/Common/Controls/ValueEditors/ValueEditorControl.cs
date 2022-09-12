@@ -76,6 +76,10 @@ public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
     }
 
     private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (this.Owner == null) {
+            return;
+        }
+        
         if (e.PropertyName == this.ValuePropertyName) {
             try {
                 this.IgnoreUpdates = true;
