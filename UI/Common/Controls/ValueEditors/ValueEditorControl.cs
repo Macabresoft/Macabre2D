@@ -71,15 +71,11 @@ public abstract class ValueEditorControl<T> : ValueControl<T>, IValueEditor<T> {
         }
     }
 
-    protected void RaiseValueChanged(object sender, ValueChangedEventArgs<object> e) {
-        this.ValueChanged.SafeInvoke(sender, e);
-    }
-
     private void Owner_PropertyChanged(object sender, PropertyChangedEventArgs e) {
         if (this.Owner == null) {
             return;
         }
-        
+
         if (e.PropertyName == this.ValuePropertyName) {
             try {
                 this.IgnoreUpdates = true;
