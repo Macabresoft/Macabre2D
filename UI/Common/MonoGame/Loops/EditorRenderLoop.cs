@@ -40,11 +40,8 @@ public class EditorRenderLoop : Loop {
             foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                 this._renderTree.Insert(component);
             }
-
-            var potentialRenderables = this._renderTree.RetrievePotentialCollisions(camera.BoundingArea);
-            if (potentialRenderables.Any()) {
-                camera.Render(frameTime, spriteBatch, potentialRenderables);
-            }
+            
+            camera.Render(frameTime, spriteBatch, this._renderTree);
         }
     }
 }

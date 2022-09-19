@@ -5,11 +5,31 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 
 /// <summary>
+/// A readonly interface for a <see cref="QuadTree{T}"/>.
+/// </summary>
+/// <typeparam name="T">The type contained in this quad tree.</typeparam>
+public interface IReadonlyQuadTree<T> where T : IBoundable {
+    /// <summary>
+    /// Retrieves all colliders which could potentially be colliding with the specified collider.
+    /// </summary>
+    /// <param name="boundable">The boundable.</param>
+    /// <returns>All potential collision colliders.</returns>
+    IEnumerable<T> RetrievePotentialCollisions(T boundable);
+
+    /// <summary>
+    /// Retrieves all colliders which could potentially be in the specified bounding area.
+    /// </summary>
+    /// <param name="boundingArea">The bounding area.</param>
+    /// <returns>All potential collision colliders.</returns>
+    IEnumerable<T> RetrievePotentialCollisions(BoundingArea boundingArea);
+}
+
+/// <summary>
 /// A quad tree used in detecting collisions. I read the tutorial found at the following link to
 /// construct this class:
 /// https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374
 /// </summary>
-public sealed class QuadTree<T> where T : IBoundable {
+public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
     private readonly Vector2 _bottomLeftBounds;
     private readonly List<T> _boundables = new();
     private readonly int _depth;
@@ -107,20 +127,12 @@ public sealed class QuadTree<T> where T : IBoundable {
         }
     }
 
-    /// <summary>
-    /// Retrieves all colliders which could potentially be colliding with the specified collider.
-    /// </summary>
-    /// <param name="boundable">The boundable.</param>
-    /// <returns>All potential collision colliders.</returns>
+    /// <inheritdoc />
     public IEnumerable<T> RetrievePotentialCollisions(T boundable) {
         return this.RetrievePotentialCollisions(boundable.BoundingArea);
     }
 
-    /// <summary>
-    /// Retrieves all colliders which could potentially be in the specified bounding area.
-    /// </summary>
-    /// <param name="boundingArea">The bounding area.</param>
-    /// <returns>All potential collision colliders.</returns>
+    /// <inheritdoc />
     public IEnumerable<T> RetrievePotentialCollisions(BoundingArea boundingArea) {
         var quadrant = this.GetQuadrant(boundingArea);
         IEnumerable<T> result = this._boundables;

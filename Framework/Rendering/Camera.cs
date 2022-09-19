@@ -62,8 +62,8 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     /// </summary>
     /// <param name="frameTime">The frame time.</param>
     /// <param name="spriteBatch">The sprite batch to use while rendering.</param>
-    /// <param name="entities">The entities to render.</param>
-    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities);
+    /// <param name="renderTree">The render tree.</param>
+    void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree);
 }
 
 /// <summary>
@@ -201,20 +201,28 @@ public class Camera : Entity, ICamera {
     }
 
     /// <inheritdoc />
-    public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IEnumerable<IRenderableEntity> entities) {
-        spriteBatch?.Begin(
-            SpriteSortMode.Deferred,
-            BlendState.AlphaBlend,
-            this._samplerState,
-            null,
-            RasterizerState.CullNone,
-            this.ShaderReference.Asset?.Content,
-            this.GetViewMatrix());
+    public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
+        var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
+        var entities = renderTree
+                .RetrievePotentialCollisions(this.BoundingArea)
+                .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+                .ToList();
 
-        foreach (var entity in entities) {
-            entity.Render(frameTime, this.BoundingArea);
+        if (entities.Any()) {
+            spriteBatch?.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                this._samplerState,
+                null,
+                RasterizerState.CullNone,
+                this.ShaderReference.Asset?.Content,
+                this.GetViewMatrix());
+
+            foreach (var entity in entities) {
+                entity.Render(frameTime, this.BoundingArea);
+            }
         }
-
+        
         spriteBatch?.End();
     }
 

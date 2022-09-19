@@ -14,7 +14,6 @@ public class RenderLoop : Loop {
 
     public override void Update(FrameTime frameTime, InputState inputState) {
         if (this.Game is { } game) {
-            var enabledLayers = game.Project.Settings.LayerSettings.EnabledLayers;
             this._renderTree.Clear();
 
             foreach (var entity in this.Scene.RenderableEntities) {
@@ -22,15 +21,7 @@ public class RenderLoop : Loop {
             }
 
             foreach (var camera in this.Scene.Cameras) {
-                var potentialRenderables =
-                    this._renderTree
-                        .RetrievePotentialCollisions(camera.BoundingArea)
-                        .Where(x => (x.Layers & camera.LayersToExcludeFromRender) == Layers.None && (x.Layers & camera.LayersToRender & enabledLayers) != Layers.None)
-                        .ToList();
-
-                if (potentialRenderables.Any()) {
-                    camera.Render(frameTime, game.SpriteBatch, potentialRenderables);
-                }
+                camera.Render(frameTime, game.SpriteBatch, this._renderTree);
             }
         }
     }

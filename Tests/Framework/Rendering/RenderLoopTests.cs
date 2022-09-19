@@ -1,6 +1,7 @@
 ﻿namespace Macabresoft.Macabre2D.Tests.Framework;
 
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Macabresoft.Macabre2D.Framework;
@@ -129,8 +130,14 @@ public class RenderLoopTests {
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
             return Vector2.Zero;
         }
+        
+        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
+            var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
+            var entities = renderTree
+                .RetrievePotentialCollisions(this.BoundingArea)
+                .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+                .ToList();
 
-        public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IEnumerable<IRenderableEntity> entities) {
             foreach (var entity in entities) {
                 entity.Render(frameTime, this.BoundingArea);
             }
