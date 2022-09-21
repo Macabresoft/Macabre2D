@@ -14,6 +14,7 @@ public class SelectionDisplay : BaseDrawer {
     private readonly List<IBoundable> _boundables = new();
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
+    private readonly ILoopService _loopService;
     private BoundingArea _boundingArea = BoundingArea.Empty;
     private IBoundable _selectedBoundable;
 
@@ -22,26 +23,30 @@ public class SelectionDisplay : BaseDrawer {
     /// </summary>
     /// <param name="editorService">The editor service.</param>
     /// <param name="entityService">The selection service.</param>
-    public SelectionDisplay(IEditorService editorService, IEntityService entityService) : base() {
+    /// <param name="loopService">The loop service.</param>
+    public SelectionDisplay(IEditorService editorService, IEntityService entityService, ILoopService loopService) : base() {
         this.UseDynamicLineThickness = true;
         this.LineThickness = 2f;
         this._editorService = editorService;
         this._entityService = entityService;
+        this._loopService = loopService;
+        
         this._entityService.PropertyChanged += this.EntityService_PropertyChanged;
+        this._loopService.PropertyChanged += this.LoopService_PropertyChanged;
 
         this.Color = this._editorService.SelectionColor;
     }
-
+    
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea;
 
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
-        if (this.PrimitiveDrawer == null || this.LineThickness <= 0f || this._editorService.SelectionColor.A == 0) {
+        if (this.LineThickness <= 0f || this._editorService.SelectionColor.A == 0) {
             return;
         }
 
-        if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer && this._entityService.Selected is { } selected) {
+        if (this.SpriteBatch is { } spriteBatch && this.PrimitiveDrawer is { } drawer) {
             var settings = this.Settings;
             var lineThickness = this.GetLineThickness(viewBoundingArea.Height);
             var shadowOffset = lineThickness * settings.UnitsPerPixel * 0.5f;
@@ -55,53 +60,55 @@ public class SelectionDisplay : BaseDrawer {
                 this.DrawBoundingArea(spriteBatch, drawer, settings.PixelsPerUnit, selectedBoundingArea, this._editorService.SelectionColor, shadowOffsetVector, lineThickness);
             }
 
-            if (this._editorService.SelectedGizmo == GizmoKind.Selector) {
-                var (x, y) = selected.Transform.Position;
+            if (this._entityService.Selected is { } selected) {
+                if (this._editorService.SelectedGizmo == GizmoKind.Selector) {
+                    var (x, y) = selected.Transform.Position;
 
-                var crosshairLength = viewBoundingArea.Height * 0.01f;
-                var left = new Vector2(x - crosshairLength, y);
-                var right = new Vector2(x + crosshairLength, y);
-                var top = new Vector2(x, y + crosshairLength);
-                var bottom = new Vector2(x, y - crosshairLength);
+                    var crosshairLength = viewBoundingArea.Height * 0.01f;
+                    var left = new Vector2(x - crosshairLength, y);
+                    var right = new Vector2(x + crosshairLength, y);
+                    var top = new Vector2(x, y + crosshairLength);
+                    var bottom = new Vector2(x, y - crosshairLength);
 
-                drawer.DrawLine(
-                    spriteBatch,
-                    settings.PixelsPerUnit,
-                    left + shadowOffsetVector,
-                    right + shadowOffsetVector,
-                    this._editorService.DropShadowColor,
-                    lineThickness);
-
-                drawer.DrawLine(
-                    spriteBatch,
-                    settings.PixelsPerUnit,
-                    top + shadowOffsetVector,
-                    bottom + shadowOffsetVector,
-                    this._editorService.DropShadowColor,
-                    lineThickness);
-
-                drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
-                drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
-            }
-
-            if (selected is IPhysicsBody body) {
-                var colliders = body.GetColliders();
-                foreach (var collider in colliders) {
-                    drawer.DrawCollider(
-                        collider,
+                    drawer.DrawLine(
                         spriteBatch,
                         settings.PixelsPerUnit,
+                        left + shadowOffsetVector,
+                        right + shadowOffsetVector,
                         this._editorService.DropShadowColor,
-                        lineThickness,
-                        shadowOffsetVector);
+                        lineThickness);
 
-                    drawer.DrawCollider(
-                        collider,
+                    drawer.DrawLine(
                         spriteBatch,
                         settings.PixelsPerUnit,
-                        this._editorService.ColliderColor,
-                        lineThickness,
-                        Vector2.Zero);
+                        top + shadowOffsetVector,
+                        bottom + shadowOffsetVector,
+                        this._editorService.DropShadowColor,
+                        lineThickness);
+
+                    drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, left, right, this._editorService.SelectionColor, lineThickness);
+                    drawer.DrawLine(spriteBatch, settings.PixelsPerUnit, top, bottom, this._editorService.SelectionColor, lineThickness);
+                }
+
+                if (selected is IPhysicsBody body) {
+                    var colliders = body.GetColliders();
+                    foreach (var collider in colliders) {
+                        drawer.DrawCollider(
+                            collider,
+                            spriteBatch,
+                            settings.PixelsPerUnit,
+                            this._editorService.DropShadowColor,
+                            lineThickness,
+                            shadowOffsetVector);
+
+                        drawer.DrawCollider(
+                            collider,
+                            spriteBatch,
+                            settings.PixelsPerUnit,
+                            this._editorService.ColliderColor,
+                            lineThickness,
+                            Vector2.Zero);
+                    }
                 }
             }
         }
@@ -146,6 +153,13 @@ public class SelectionDisplay : BaseDrawer {
             else {
                 this._boundingArea = BoundingArea.Empty;
             }
+        }
+    }
+    
+    private void LoopService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(ILoopService.Selected) && this._loopService.Selected is IBoundable boundable) {
+            this._boundables.Clear();
+            this._selectedBoundable = boundable;
         }
     }
 }
