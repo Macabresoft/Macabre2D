@@ -202,11 +202,23 @@ public class Camera : Entity, ICamera {
 
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
+        this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix());
+    }
+
+    /// <summary>
+    /// Renders entities in the specified bounding area.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="renderTree">The render tree.</param>
+    /// <param name="viewBoundingArea">The view's bounding area.</param>
+    /// <param name="viewMatrix">The view matrix.</param>
+    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix) {
         var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
         var entities = renderTree
-                .RetrievePotentialCollisions(this.BoundingArea)
-                .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
-                .ToList();
+            .RetrievePotentialCollisions(viewBoundingArea)
+            .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+            .ToList();
 
         if (entities.Any()) {
             spriteBatch?.Begin(
@@ -216,14 +228,14 @@ public class Camera : Entity, ICamera {
                 null,
                 RasterizerState.CullNone,
                 this.ShaderReference.Asset?.Content,
-                this.GetViewMatrix());
+                viewMatrix);
 
             foreach (var entity in entities) {
-                entity.Render(frameTime, this.BoundingArea);
+                entity.Render(frameTime, viewBoundingArea);
             }
+            
+            spriteBatch?.End();
         }
-        
-        spriteBatch?.End();
     }
 
     /// <summary>

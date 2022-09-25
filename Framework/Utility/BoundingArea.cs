@@ -85,7 +85,7 @@ public readonly struct BoundingArea {
     /// </summary>
     /// <value><c>true</c> if this instance is empty; otherwise, <c>false</c>.</value>
     public bool IsEmpty => this.Minimum == this.Maximum;
-    
+
     /// <summary>
     /// Combines the specified bounding areas.
     /// </summary>
@@ -115,16 +115,36 @@ public readonly struct BoundingArea {
     }
 
     /// <summary>
-    /// Gets a value indicating whether or not this bounding area contains the specified point.
+    /// Gets a value indicating whether or not this bounding area contains the specified position.
     /// </summary>
-    /// <param name="point">The point.</param>
-    /// <returns><c>true</c>, if this bounding area contains the point, <c>false</c> otherwise.</returns>
-    public bool Contains(Vector2 point) {
-        var (x, y) = point;
+    /// <param name="position">The position.</param>
+    /// <returns><c>true</c>, if this bounding area contains the position, <c>false</c> otherwise.</returns>
+    public bool Contains(Vector2 position) {
+        var (x, y) = position;
         return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
                (this.Minimum.Y <= y || this.Minimum.Y.HasMinimalDifference(y)) &&
                (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x)) &&
                (this.Maximum.Y >= y || this.Maximum.Y.HasMinimalDifference(y));
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this bounding area contains the specified x value.
+    /// </summary>
+    /// <param name="x">The x value.</param>
+    /// <returns>A value indicating whether or not this bounding area contains the specified x value.</returns>
+    public bool ContainsHorizontally(float x) {
+        return (this.Minimum.X <= x || this.Minimum.X.HasMinimalDifference(x)) &&
+               (this.Maximum.X >= x || this.Maximum.X.HasMinimalDifference(x));
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this bounding area contains the specified bounding area within its horizontal bounds.
+    /// </summary>
+    /// <param name="other">The other bounding area.</param>
+    /// <returns><c>true</c>, if this bounding area contains the other bounding area within its horizontal bounds, <c>false</c> otherwise.</returns>
+    public bool ContainsHorizontally(BoundingArea other) {
+        return (this.Minimum.X <= other.Minimum.X || this.Minimum.X.HasMinimalDifference(other.Minimum.X)) &&
+               (this.Maximum.X >= other.Maximum.X || this.Maximum.X.HasMinimalDifference(other.Maximum.X));
     }
 
     /// <summary>
