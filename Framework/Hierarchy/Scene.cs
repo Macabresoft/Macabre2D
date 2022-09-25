@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 /// Interface for a combination of <see cref="ILoop" /> and <see cref="IEntity" />
 /// which runs on a <see cref="IGame" />.
 /// </summary>
-public interface IScene : IUpdateableGameObject, IGridContainer {
+public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// <summary>
     /// Gets the asset manager.
     /// </summary>
@@ -204,6 +204,7 @@ public sealed class Scene : GridContainer, IScene {
         nameof(IUpdateableEntity.UpdateOrder));
 
     private Color _backgroundColor = DefinedColors.MacabresoftBlack;
+    private BoundingArea _boundingArea = BoundingArea.Empty;
     private IGame _game = BaseGame.Empty;
     private bool _isBusy;
     private bool _isInitialized;
@@ -256,6 +257,13 @@ public sealed class Scene : GridContainer, IScene {
     public Color BackgroundColor {
         get => this._backgroundColor;
         set => this.Set(ref this._backgroundColor, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public BoundingArea BoundingArea {
+        get => this._boundingArea;
+        set => this.Set(ref this._boundingArea, value);
     }
 
     /// <inheritdoc />

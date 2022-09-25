@@ -20,6 +20,9 @@ internal class EmptyObject : IScene {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc />
+    public BoundingArea BoundingArea => BoundingArea.Empty;
+
+    /// <inheritdoc />
     public Transform Transform => Transform.Origin;
 
     /// <inheritdoc />
