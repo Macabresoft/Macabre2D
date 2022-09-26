@@ -61,7 +61,15 @@ public sealed class BinaryTileMap : RenderableTileMap {
     /// <inheritdoc />
     public override void Render(FrameTime frameTime, BoundingArea viewBoundingArea) {
         if (this.SpriteBatch is { } spriteBatch && this.SpriteReference.Asset is { } spriteSheet && this._activeTiles.Any()) {
-            foreach (var boundingArea in this._activeTiles.Select(this.GetTileBoundingArea).Where(boundingArea => boundingArea.Overlaps(viewBoundingArea))) {
+            var tileBoundingAreas = this._activeTiles
+                .Select(this.GetTileBoundingArea)
+                .Where(boundingArea => boundingArea.Overlaps(viewBoundingArea));
+
+            if (!this.Scene.BoundingArea.IsEmpty) {
+                tileBoundingAreas = tileBoundingAreas.Where(boundingArea => boundingArea.OverlapsExclusive(this.Scene.BoundingArea));
+            }
+            
+            foreach (var boundingArea in tileBoundingAreas) {
                 spriteBatch.Draw(
                     this.Settings.PixelsPerUnit,
                     spriteSheet,

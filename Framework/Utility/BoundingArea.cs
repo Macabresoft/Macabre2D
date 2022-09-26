@@ -176,4 +176,22 @@ public readonly struct BoundingArea {
 
         return true;
     }
+
+    /// <summary>
+    /// Gets a value indicating whether or not this bounding area overlaps another specified
+    /// bounding area. This is exclusive, so if they share a border but no area, it will eturn false.
+    /// </summary>
+    /// <param name="other">The other bounding area.</param>
+    /// <returns><c>true</c>, if the two bounding areas overlap, <c>false</c> otherwise.</returns>
+    public bool OverlapsExclusive(BoundingArea other) {
+        if (this.Maximum.X <= other.Minimum.X || this.Minimum.X >= other.Maximum.X) {
+            return false;
+        }
+
+        if (this.Maximum.Y <= other.Minimum.Y || this.Minimum.Y >= other.Maximum.Y) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -16,9 +16,17 @@ public class RenderLoop : Loop {
         if (this.Game is { } game) {
             this._renderTree.Clear();
 
-            foreach (var entity in this.Scene.RenderableEntities) {
-                this._renderTree.Insert(entity);
+            if (!this.Scene.BoundingArea.IsEmpty) {
+                foreach (var entity in this.Scene.RenderableEntities.Where(x => x.BoundingArea.OverlapsExclusive(this.Scene.BoundingArea))) {
+                    this._renderTree.Insert(entity);
+                }
             }
+            else {
+                foreach (var entity in this.Scene.RenderableEntities) {
+                    this._renderTree.Insert(entity);
+                }
+            }
+
 
             foreach (var camera in this.Scene.Cameras) {
                 camera.Render(frameTime, game.SpriteBatch, this._renderTree);
