@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 
 /// <summary>
-/// A readonly interface for a <see cref="QuadTree{T}"/>.
+/// A readonly interface for a <see cref="QuadTree{T}" />.
 /// </summary>
 /// <typeparam name="T">The type contained in this quad tree.</typeparam>
 public interface IReadonlyQuadTree<T> where T : IBoundable {
@@ -49,6 +49,11 @@ public sealed class QuadTree<T> : IReadonlyQuadTree<T> where T : IBoundable {
         this._bottomLeftBounds = new Vector2(x, y);
         this._topRightBounds = this._bottomLeftBounds + new Vector2(width, height);
     }
+
+    /// <summary>
+    /// Gets the default quad tree.
+    /// </summary>
+    public static QuadTree<T> Default { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
 
     /// <summary>
     /// Gets or sets the maximum levels.

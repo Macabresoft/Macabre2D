@@ -48,7 +48,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     /// Gets the collider tree.
     /// </summary>
     /// <value>The collider tree.</value>
-    protected QuadTree<Collider> ColliderTree { get; } = new(0, float.MinValue * 0.5f, float.MinValue * 0.5f, float.MaxValue, float.MaxValue);
+    protected QuadTree<Collider> ColliderTree { get; private set; } = QuadTree<Collider>.Default;
 
     /// <inheritdoc />
     public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
@@ -64,8 +64,17 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
 
     /// <inheritdoc />
     public override void Initialize(IScene scene) {
+        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
+            this.Scene.PropertyChanged -= this.Scene_PropertyChanged;
+        }
+
         base.Initialize(scene);
-        this.InsertColliders();
+
+        if (!Framework.Scene.IsNullOrEmpty(this.Scene)) {
+            this.Scene.PropertyChanged += this.Scene_PropertyChanged;
+        }
+
+        this.ResetTree();
     }
 
     /// <inheritdoc />
@@ -118,8 +127,40 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
 
     private void InsertColliders() {
         this.ColliderTree.Clear();
-        foreach (var body in this.Scene.PhysicsBodies) {
-            this.ColliderTree.InsertMany(body.GetColliders());
+
+        if (this.Scene.BoundingArea.IsEmpty) {
+            foreach (var body in this.Scene.PhysicsBodies) {
+                this.ColliderTree.InsertMany(body.GetColliders());
+            }
+        }
+        else {
+            foreach (var body in this.Scene.PhysicsBodies) {
+                this.ColliderTree.InsertMany(body.GetColliders().Where(x => x.BoundingArea.Overlaps(this.Scene.BoundingArea)));
+            }
+        }
+    }
+
+    private void ResetTree() {
+        this.ColliderTree.Clear();
+
+        if (this.Scene.BoundingArea.IsEmpty) {
+            this.ColliderTree = QuadTree<Collider>.Default;
+        }
+        else {
+            this.ColliderTree = new QuadTree<Collider>(
+                0,
+                this.Scene.BoundingArea.Minimum.X,
+                this.Scene.BoundingArea.Minimum.Y,
+                this.Scene.BoundingArea.Width,
+                this.Scene.BoundingArea.Height);
+        }
+
+        this.InsertColliders();
+    }
+
+    private void Scene_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (e.PropertyName == nameof(IScene.BoundingArea)) {
+            this.ResetTree();
         }
     }
 }
