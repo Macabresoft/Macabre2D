@@ -51,7 +51,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     protected QuadTree<Collider> ColliderTree { get; private set; } = QuadTree<Collider>.Default;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
+    public virtual IReadOnlyCollection<RaycastHit> BoundingAreaCastAll(BoundingArea boundingArea, Layers layers) {
         var hits = new List<RaycastHit>();
         foreach (var collider in this.GetFilteredColliders(boundingArea, layers)) {
             if (collider.Intersects(boundingArea, out var colliderHits)) {
@@ -78,7 +78,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
+    public virtual IReadOnlyList<RaycastHit> RaycastAll(Vector2 start, Vector2 direction, float distance, Layers layers) {
         var ray = new LineSegment(start, direction, distance);
         var hits = new List<RaycastHit>();
 
@@ -92,7 +92,7 @@ public class SimplePhysicsLoop : FixedTimeStepLoop, ISimplePhysicsLoop {
     }
 
     /// <inheritdoc />
-    public bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
+    public virtual bool TryRaycast(Vector2 start, Vector2 direction, float distance, Layers layers, out RaycastHit hit) {
         var hits = this.RaycastAll(start, direction, distance, layers);
 
         if (hits.Count == 0) {
