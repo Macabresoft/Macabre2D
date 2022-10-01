@@ -30,13 +30,13 @@ public class SelectionDisplay : BaseDrawer {
         this._editorService = editorService;
         this._entityService = entityService;
         this._loopService = loopService;
-        
+
         this._entityService.PropertyChanged += this.EntityService_PropertyChanged;
         this._loopService.PropertyChanged += this.LoopService_PropertyChanged;
 
         this.Color = this._editorService.SelectionColor;
     }
-    
+
     /// <inheritdoc />
     public override BoundingArea BoundingArea => this._boundingArea;
 
@@ -151,15 +151,16 @@ public class SelectionDisplay : BaseDrawer {
                 }
             }
             else {
+                this._selectedBoundable = null;
                 this._boundingArea = BoundingArea.Empty;
             }
         }
     }
-    
+
     private void LoopService_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        if (e.PropertyName == nameof(ILoopService.Selected) && this._loopService.Selected is IBoundable boundable) {
+        if (e.PropertyName == nameof(ILoopService.Selected)) {
             this._boundables.Clear();
-            this._selectedBoundable = boundable;
+            this._selectedBoundable = this._loopService.Selected as IBoundable;
         }
     }
 }
