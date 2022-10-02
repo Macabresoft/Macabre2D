@@ -1,12 +1,10 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// A <see cref="IEntity" /> which implements <see cref="IUpdateableGameObject" />,
-/// <see
-///     cref="IEnableable" />
-/// , and can be sorted.
+/// A <see cref="IEntity" /> which implements <see cref="IUpdateableGameObject" />.
 /// </summary>
 public interface IUpdateableEntity : IEntity, IUpdateableGameObject {
     /// <summary>
@@ -19,6 +17,7 @@ public interface IUpdateableEntity : IEntity, IUpdateableGameObject {
 /// <summary>
 /// A base implementation of <see cref="IUpdateableEntity" />.
 /// </summary>
+[Category("Updateable")]
 public abstract class UpdateableEntity : Entity, IUpdateableEntity {
     private int _updateOrder;
 
