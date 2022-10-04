@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// <summary>
 /// An empty object in the hierarchy.
 /// </summary>
-internal class EmptyObject : IScene {
+public class EmptyObject : IScene {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
@@ -20,22 +20,13 @@ internal class EmptyObject : IScene {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc />
-    public BoundingArea BoundingArea => BoundingArea.Empty;
-
-    /// <inheritdoc />
-    public Transform Transform => Transform.Origin;
-
-    /// <inheritdoc />
-    public Matrix TransformMatrix => Matrix.Identity;
-
-    /// <inheritdoc />
-    public Vector2 WorldTileSize => this.LocalTileSize;
-
-    /// <inheritdoc />
     public Color BackgroundColor {
         get => Color.HotPink;
         set { }
     }
+
+    /// <inheritdoc />
+    public BoundingArea BoundingArea => BoundingArea.Empty;
 
     /// <inheritdoc />
     public Guid Id {
@@ -80,7 +71,16 @@ internal class EmptyObject : IScene {
     }
 
     /// <inheritdoc />
+    public Transform Transform => Transform.Origin;
+
+    /// <inheritdoc />
+    public Matrix TransformMatrix => Matrix.Identity;
+
+    /// <inheritdoc />
     public Version Version { get; set; } = new();
+
+    /// <inheritdoc />
+    public Vector2 WorldTileSize => this.LocalTileSize;
 
     /// <inheritdoc />
     public T AddChild<T>() where T : IEntity, new() {
