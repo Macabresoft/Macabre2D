@@ -24,12 +24,6 @@ public sealed class AudioPlayer : Entity {
     public AudioClipReference AudioClipReference { get; } = new();
 
     /// <summary>
-    /// Gets the state.
-    /// </summary>
-    /// <value>The state.</value>
-    public SoundState State => this._currentSoundEffectInstance?.State ?? SoundState.Stopped;
-
-    /// <summary>
     /// Gets or sets the pan.
     /// </summary>
     /// <value>The pan.</value>
@@ -76,6 +70,12 @@ public sealed class AudioPlayer : Entity {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the state.
+    /// </summary>
+    /// <value>The state.</value>
+    public SoundState State => this._currentSoundEffectInstance?.State ?? SoundState.Stopped;
 
     /// <summary>
     /// Gets or sets the volume.

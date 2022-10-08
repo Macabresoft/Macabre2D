@@ -92,7 +92,8 @@ public class VersionEditor : ValueEditorControl<Version> {
             this._minorValue = this.Value.Minor;
             this._buildValue = this.Value.Build;
             this._revisionValue = this.Value.Revision;
-            Dispatcher.UIThread.Post(() => {
+            Dispatcher.UIThread.Post(() =>
+            {
                 this.RaisePropertyChanged(MajorValueProperty, Optional<int>.Empty, this.MajorValue);
                 this.RaisePropertyChanged(MinorValueProperty, Optional<int>.Empty, this.MinorValue);
                 this.RaisePropertyChanged(BuildValueProperty, Optional<int>.Empty, this.BuildValue);

@@ -174,13 +174,13 @@ public sealed class TileableBody : QuadBody {
             }
         }
 
+        public Point EndPoint { get; private set; }
+
         public bool IsHorizontal => this.StartPoint.Y == this.EndPoint.Y;
 
         public bool IsVertical => this.StartPoint.X == this.EndPoint.X;
 
         public Layers Layers { get; }
-
-        public Point EndPoint { get; private set; }
 
         public Point StartPoint { get; private set; }
 

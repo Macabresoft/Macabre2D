@@ -53,19 +53,6 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
     /// </summary>
     public INameableCollection AutoTileSets => this._autoTileSets;
 
-    /// <inheritdoc />
-    public override bool IncludeFileExtensionInContentPath => false;
-
-    /// <summary>
-    /// Gets the max index.
-    /// </summary>
-    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
-
-    /// <summary>
-    /// Gets the sprite animations.
-    /// </summary>
-    public INameableCollection SpriteAnimations => this._spriteAnimations;
-
     /// <summary>
     /// Gets or sets the number of columns in this sprite sheet.
     /// </summary>
@@ -84,6 +71,14 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
         }
     }
 
+    /// <inheritdoc />
+    public override bool IncludeFileExtensionInContentPath => false;
+
+    /// <summary>
+    /// Gets the max index.
+    /// </summary>
+    public byte MaxIndex => (byte)(this.Rows * this.Columns - 1);
+
     /// <summary>
     /// Gets or sets the number of rows in this sprite sheet.
     /// </summary>
@@ -101,6 +96,11 @@ public class SpriteSheetAsset : AssetPackage<Texture2D> {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the sprite animations.
+    /// </summary>
+    public INameableCollection SpriteAnimations => this._spriteAnimations;
 
     /// <summary>
     /// Gets the size of a single sprite on this sprite sheet.

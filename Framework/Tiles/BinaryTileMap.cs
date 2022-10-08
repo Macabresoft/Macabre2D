@@ -30,13 +30,6 @@ public sealed class BinaryTileMap : RenderableTileMap {
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTiles;
 
     /// <summary>
-    /// Gets the sprite reference.
-    /// </summary>
-    [DataMember(Order = 0)]
-    [Display(Name = "Sprite")]
-    public SpriteReference SpriteReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -45,6 +38,13 @@ public sealed class BinaryTileMap : RenderableTileMap {
         get => this._color;
         set => this.Set(ref this._color, value);
     }
+
+    /// <summary>
+    /// Gets the sprite reference.
+    /// </summary>
+    [DataMember(Order = 0)]
+    [Display(Name = "Sprite")]
+    public SpriteReference SpriteReference { get; } = new();
 
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) {
@@ -68,7 +68,7 @@ public sealed class BinaryTileMap : RenderableTileMap {
             if (!this.Scene.BoundingArea.IsEmpty) {
                 tileBoundingAreas = tileBoundingAreas.Where(boundingArea => boundingArea.OverlapsExclusive(this.Scene.BoundingArea));
             }
-            
+
             foreach (var boundingArea in tileBoundingAreas) {
                 spriteBatch.Draw(
                     this.Settings.PixelsPerUnit,

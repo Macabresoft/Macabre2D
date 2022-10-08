@@ -43,12 +43,6 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
-    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
-
-    /// <inheritdoc />
-    public Point ViewportSize => this._viewportSize;
-
-    /// <inheritdoc />
     public double GameSpeed {
         get => this._gameSpeed;
 
@@ -87,6 +81,9 @@ public class BaseGame : Game, IGame {
     }
 
     /// <inheritdoc />
+    public ISaveDataManager SaveDataManager { get; } = new WindowsSaveDataManager();
+
+    /// <inheritdoc />
     public IScene Scene {
         get => this._scene;
 
@@ -104,16 +101,19 @@ public class BaseGame : Game, IGame {
     /// <inheritdoc />
     public SpriteBatch? SpriteBatch { get; private set; }
 
-    /// <summary>
-    /// Gets the graphics device manager.
-    /// </summary>
-    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
+    /// <inheritdoc />
+    public Point ViewportSize => this._viewportSize;
 
     /// <summary>
     /// Gets the frame time.
     /// </summary>
     /// <value>The frame time.</value>
     protected FrameTime FrameTime { get; private set; }
+
+    /// <summary>
+    /// Gets the graphics device manager.
+    /// </summary>
+    protected GraphicsDeviceManager GraphicsDeviceManager { get; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is initialized.
@@ -296,6 +296,18 @@ public class BaseGame : Game, IGame {
         public ContentManager? Content => null;
 
         /// <inheritdoc />
+        public double GameSpeed {
+            get => 1f;
+            set {
+                if (value <= 0) {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                this.GameSpeedChanged.SafeInvoke(this, 1f);
+            }
+        }
+
+        /// <inheritdoc />
         public GraphicsDevice? GraphicsDevice => null;
 
         /// <inheritdoc />
@@ -315,18 +327,6 @@ public class BaseGame : Game, IGame {
 
         /// <inheritdoc />
         public Point ViewportSize => default;
-
-        /// <inheritdoc />
-        public double GameSpeed {
-            get => 1f;
-            set {
-                if (value <= 0) {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                this.GameSpeedChanged.SafeInvoke(this, 1f);
-            }
-        }
 
         /// <inheritdoc />
         public void Exit() {

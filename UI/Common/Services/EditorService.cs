@@ -34,26 +34,6 @@ public interface IEditorService : INotifyPropertyChanged {
     public event EventHandler ZoomOutRequested;
 
     /// <summary>
-    /// Gets a command to request the camera to be centered on the scene.
-    /// </summary>
-    ICommand RequestCenterCameraCommand { get; }
-
-    /// <summary>
-    /// Gets a command to request focus of the currently selected entity.
-    /// </summary>
-    ICommand RequestFocusCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom in the camera.
-    /// </summary>
-    ICommand RequestZoomInCommand { get; }
-
-    /// <summary>
-    /// Gets a command to zoom out the camera.
-    /// </summary>
-    ICommand RequestZoomOutCommand { get; }
-
-    /// <summary>
     /// Gets or sets the color of selected colliders.
     /// </summary>
     Color ColliderColor { get; set; }
@@ -73,6 +53,26 @@ public interface IEditorService : INotifyPropertyChanged {
     /// </summary>
     /// <value>The number of divisions.</value>
     byte GridDivisions { get; set; }
+
+    /// <summary>
+    /// Gets a command to request the camera to be centered on the scene.
+    /// </summary>
+    ICommand RequestCenterCameraCommand { get; }
+
+    /// <summary>
+    /// Gets a command to request focus of the currently selected entity.
+    /// </summary>
+    ICommand RequestFocusCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom in the camera.
+    /// </summary>
+    ICommand RequestZoomInCommand { get; }
+
+    /// <summary>
+    /// Gets a command to zoom out the camera.
+    /// </summary>
+    ICommand RequestZoomOutCommand { get; }
 
     /// <summary>
     /// Gets or sets the selected gizmo.
@@ -154,18 +154,6 @@ public class EditorService : ReactiveObject, IEditorService {
     }
 
     /// <inheritdoc />
-    public ICommand RequestCenterCameraCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestFocusCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomInCommand { get; }
-
-    /// <inheritdoc />
-    public ICommand RequestZoomOutCommand { get; }
-
-    /// <inheritdoc />
     public Color ColliderColor {
         get => this._colliderColor;
         set => this.RaiseAndSetIfChanged(ref this._colliderColor, value);
@@ -188,6 +176,18 @@ public class EditorService : ReactiveObject, IEditorService {
         get => this._gridDivisions;
         set => this.RaiseAndSetIfChanged(ref this._gridDivisions, value);
     }
+
+    /// <inheritdoc />
+    public ICommand RequestCenterCameraCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestFocusCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomInCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RequestZoomOutCommand { get; }
 
     /// <inheritdoc />
     public GizmoKind SelectedGizmo {

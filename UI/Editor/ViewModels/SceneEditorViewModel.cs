@@ -16,10 +16,10 @@ public sealed class SceneEditorViewModel : BaseViewModel {
     private readonly IEditorService _editorService;
     private readonly IEntityService _entityService;
     private readonly IEditorGame _game;
+    private readonly ILoopService _loopService;
     private readonly IScene _scene;
     private readonly IEditorSettingsService _settingsService;
     private readonly IUndoService _undoService;
-    private readonly ILoopService _loopService;
     private ICamera _camera;
 
     /// <summary>

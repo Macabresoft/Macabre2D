@@ -4,20 +4,20 @@
         <RootNamespace>Macabresoft.Macabre2D.UI.Common</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.18" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
-        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.22" />
-        <PackageReference Include="Unity" Version="5.11.10" />
+        <PackageReference Include="Avalonia" Version="0.10.18"/>
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.18"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18"/>
+        <PackageReference Include="Macabresoft.AvaloniaEx" Version="1.0.22"/>
+        <PackageReference Include="Unity" Version="5.11.10"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\Scripts\Gameplay\Macabre2D.Scripts.Gameplay.csproj" />
-        <ProjectReference Include="..\..\Scripts\UI\Macabre2D.Scripts.UI.csproj" />
-        <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
-        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
+        <ProjectReference Include="..\..\Scripts\Gameplay\Macabre2D.Scripts.Gameplay.csproj"/>
+        <ProjectReference Include="..\..\Scripts\UI\Macabre2D.Scripts.UI.csproj"/>
+        <ProjectReference Include="..\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj"/>
+        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="icon.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </AvaloniaResource>
@@ -80,50 +80,50 @@
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\PaddingEditor.axaml.cs">
-          <DependentUpon>Vector2Editor.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>Vector2Editor.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Controls\ValueEditors\Framework\LayersOverrideEditor.axaml.cs">
-          <DependentUpon>LayersOverrideEditor.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>LayersOverrideEditor.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <UpToDateCheckInput Remove="Theme\BoxShadows.axaml" />
-        <UpToDateCheckInput Remove="Theme\Colors.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\AutoCompleteBox.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Border.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Button.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\ButtonSpinner.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\CheckBox.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\ComboBox.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\GridSplitter.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Image.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\ListBox.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\ListBoxItem.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Menu.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\MenuItem.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\NumericUpDown.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Slider.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\SpriteListBoxItem.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\TabItem.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\TextBlock.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\TextBox.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\ToggleButton.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\TreeView.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\TreeViewItem.axaml" />
-        <UpToDateCheckInput Remove="Theme\Controls\Window.axaml" />
-        <UpToDateCheckInput Remove="Theme\Font.axaml" />
-        <UpToDateCheckInput Remove="Theme\Icons.axaml" />
-        <UpToDateCheckInput Remove="Theme\Margins.axaml" />
-        <UpToDateCheckInput Remove="Theme\Theme.axaml" />
-        <UpToDateCheckInput Remove="Assets\icon.ico" />
-        <UpToDateCheckInput Remove="Assets\PublicSans-Bold.otf" />
-        <UpToDateCheckInput Remove="Assets\PublicSans-BoldItalic.otf" />
-        <UpToDateCheckInput Remove="Assets\PublicSans-Italic.otf" />
-        <UpToDateCheckInput Remove="Assets\PublicSans-Regular.otf" />
+        <UpToDateCheckInput Remove="Theme\BoxShadows.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Colors.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\AutoCompleteBox.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Border.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Button.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\ButtonSpinner.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\CheckBox.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\ComboBox.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\GridSplitter.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Image.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\ListBox.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\ListBoxItem.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Menu.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\MenuItem.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\NumericUpDown.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Slider.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\SpriteListBoxItem.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\TabItem.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\TextBlock.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\TextBox.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\ToggleButton.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\TreeView.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\TreeViewItem.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Controls\Window.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Font.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Icons.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Margins.axaml"/>
+        <UpToDateCheckInput Remove="Theme\Theme.axaml"/>
+        <UpToDateCheckInput Remove="Assets\icon.ico"/>
+        <UpToDateCheckInput Remove="Assets\PublicSans-Bold.otf"/>
+        <UpToDateCheckInput Remove="Assets\PublicSans-BoldItalic.otf"/>
+        <UpToDateCheckInput Remove="Assets\PublicSans-Italic.otf"/>
+        <UpToDateCheckInput Remove="Assets\PublicSans-Regular.otf"/>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Views" />
+        <Folder Include="Views"/>
     </ItemGroup>
 </Project>

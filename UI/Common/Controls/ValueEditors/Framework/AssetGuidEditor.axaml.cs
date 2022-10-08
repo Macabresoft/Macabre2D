@@ -70,12 +70,12 @@ public class AssetGuidEditor : ValueEditorControl<Guid> {
 
     public ICommand ClearCommand { get; }
 
-    public ICommand SelectCommand { get; }
-
     public string PathText {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged() {
         base.OnValueChanged();

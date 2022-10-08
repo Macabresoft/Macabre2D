@@ -10,12 +10,6 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     private uint _millisecondsPassed;
     private uint _millisecondsPerFrame;
 
-    /// <inheritdoc />
-    public override byte? SpriteIndex => this.CurrentSpriteIndex;
-
-    /// <inheritdoc />
-    public int UpdateOrder => 0;
-
     /// <summary>
     /// Gets or sets the frame rate. This is represented in frames per second.
     /// </summary>
@@ -37,6 +31,12 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
         get => this._isPlaying;
         private set => this.Set(ref this._isPlaying, value);
     }
+
+    /// <inheritdoc />
+    public override byte? SpriteIndex => this.CurrentSpriteIndex;
+
+    /// <inheritdoc />
+    public int UpdateOrder => 0;
 
     /// <summary>
     /// Gets or sets the current frame index.

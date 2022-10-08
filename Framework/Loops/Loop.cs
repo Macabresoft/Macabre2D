@@ -38,14 +38,14 @@ public abstract class Loop : PropertyChangedNotifier, ILoop {
     }
 
     /// <inheritdoc />
-    public abstract LoopKind Kind { get; }
-
-    /// <inheritdoc />
     [DataMember]
     public bool IsEnabled {
         get => this._isEnabled;
         set => this.Set(ref this._isEnabled, value);
     }
+
+    /// <inheritdoc />
+    public abstract LoopKind Kind { get; }
 
     /// <inheritdoc />
     [DataMember]

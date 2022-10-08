@@ -25,6 +25,12 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     bool IsInitialized => false;
 
     /// <summary>
+    /// Gets the layers.
+    /// </summary>
+    /// <value>The layers.</value>
+    Layers Layers { get; set; }
+
+    /// <summary>
     /// Gets the parent.
     /// </summary>
     /// <value>The parent.</value>
@@ -35,12 +41,6 @@ public interface IEntity : IEnableable, IIdentifiable, INameable, INotifyPropert
     /// </summary>
     /// <value>The scene.</value>
     IScene Scene => Framework.Scene.Empty;
-
-    /// <summary>
-    /// Gets the layers.
-    /// </summary>
-    /// <value>The layers.</value>
-    Layers Layers { get; set; }
 
     /// <summary>
     /// Adds a child of the specified type.

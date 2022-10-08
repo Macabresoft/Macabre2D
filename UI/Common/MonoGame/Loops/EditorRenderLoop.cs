@@ -40,7 +40,7 @@ public class EditorRenderLoop : Loop {
             foreach (var component in sceneEditor.Scene.RenderableEntities.Where(x => !(x is EditorGrid))) {
                 this._renderTree.Insert(component);
             }
-            
+
             camera.Render(frameTime, spriteBatch, this._renderTree);
         }
     }

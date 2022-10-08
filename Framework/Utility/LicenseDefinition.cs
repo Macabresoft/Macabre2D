@@ -17,6 +17,14 @@ public sealed class LicenseDefinition : NotifyPropertyChanged {
     }
 
     /// <summary>
+    /// Gets a value indicating whether or not this should be expanded in a list of licenses.
+    /// </summary>
+    public bool IsExpanded {
+        get => this._isExpanded;
+        set => this.Set(ref this._isExpanded, value);
+    }
+
+    /// <summary>
     /// Gets the license.
     /// </summary>
     public string License { get; }
@@ -25,12 +33,4 @@ public sealed class LicenseDefinition : NotifyPropertyChanged {
     /// Gets the product.
     /// </summary>
     public string Product { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether or not this should be expanded in a list of licenses.
-    /// </summary>
-    public bool IsExpanded {
-        get => this._isExpanded;
-        set => this.Set(ref this._isExpanded, value);
-    }
 }

@@ -25,6 +25,9 @@ public sealed class LineCollider : PolygonCollider {
     public LineCollider() : this(Vector2.Zero, Vector2.One) {
     }
 
+    /// <inheritdoc />
+    public override bool ConnectFirstAndFinalVertex => false;
+
     /// <summary>
     /// Gets or sets the end. Setting this is fairly expensive and should be avoided during
     /// runtime if possible.
@@ -56,9 +59,6 @@ public sealed class LineCollider : PolygonCollider {
             }
         }
     }
-
-    /// <inheritdoc />
-    public override bool ConnectFirstAndFinalVertex => false;
 
     /// <inheritdoc />
     public override bool Contains(Collider other) {

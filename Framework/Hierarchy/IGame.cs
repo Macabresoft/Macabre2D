@@ -26,6 +26,12 @@ public interface IGame {
     ContentManager? Content { get; }
 
     /// <summary>
+    /// Gets or sets the game speed.
+    /// </summary>
+    /// <value>The game speed.</value>
+    double GameSpeed { get; set; }
+
+    /// <summary>
     /// Gets the graphics device.
     /// </summary>
     /// <value>The graphics device.</value>
@@ -72,12 +78,6 @@ public interface IGame {
     /// </summary>
     /// <value>The size of the viewport.</value>
     Point ViewportSize { get; }
-
-    /// <summary>
-    /// Gets or sets the game speed.
-    /// </summary>
-    /// <value>The game speed.</value>
-    double GameSpeed { get; set; }
 
     /// <summary>
     /// Exits thie game.

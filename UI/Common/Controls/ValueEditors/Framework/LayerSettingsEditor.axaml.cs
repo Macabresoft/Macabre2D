@@ -132,10 +132,12 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
 
         if (checkBox.IsChecked == true) {
             if (!this.Value.IsLayerEnabled(layer)) {
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                {
                     this.Value.EnableLayers(layer);
                     checkBox.IsChecked = this.Value.IsLayerEnabled(layer);
-                }, () => {
+                }, () =>
+                {
                     this.Value.DisableLayers(layer);
                     checkBox.IsChecked = this.Value.IsLayerEnabled(layer);
                 });
@@ -143,10 +145,12 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
         }
         else {
             if (this.Value.IsLayerEnabled(layer)) {
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                {
                     this.Value.DisableLayers(layer);
                     checkBox.IsChecked = this.Value.IsLayerEnabled(layer);
-                }, () => {
+                }, () =>
+                {
                     this.Value.EnableLayers(layer);
                     checkBox.IsChecked = this.Value.IsLayerEnabled(layer);
                 });
@@ -163,10 +167,12 @@ public class LayerSettingsEditor : ValueEditorControl<LayerSettings> {
         var updatedName = textBox.Text;
 
         if (originalName != updatedName && this.Value.SetName(layer, updatedName)) {
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 this.Value.SetName(layer, updatedName);
                 textBox.Text = updatedName;
-            }, () => {
+            }, () =>
+            {
                 this.Value.SetName(layer, originalName);
                 textBox.Text = originalName;
             });

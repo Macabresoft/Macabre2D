@@ -24,11 +24,6 @@ public class AutoTileIndexModel : NotifyPropertyChanged {
     }
 
     /// <summary>
-    /// Gets the tile index.
-    /// </summary>
-    public byte TileIndex { get; }
-
-    /// <summary>
     /// Gets or sets the sprite index.
     /// </summary>
     public byte? SpriteIndex {
@@ -44,4 +39,9 @@ public class AutoTileIndexModel : NotifyPropertyChanged {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the tile index.
+    /// </summary>
+    public byte TileIndex { get; }
 }

@@ -100,7 +100,8 @@ public class PointEditor : ValueEditorControl<Point> {
     private void UpdateDisplayValues() {
         this._xValue = this.Value.X;
         this._yValue = this.Value.Y;
-        Dispatcher.UIThread.Post(() => {
+        Dispatcher.UIThread.Post(() =>
+        {
             this.RaisePropertyChanged(XValueProperty, Optional<int>.Empty, this.XValue);
             this.RaisePropertyChanged(YValueProperty, Optional<int>.Empty, this.YValue);
         });

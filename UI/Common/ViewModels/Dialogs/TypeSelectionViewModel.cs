@@ -40,12 +40,6 @@ public class TypeSelectionViewModel : BaseDialogViewModel {
     /// </summary>
     public IReadOnlyCollection<Type> FilteredTypes => this._filteredTypes;
 
-
-    /// <summary>
-    /// Gets the available types.
-    /// </summary>
-    public IReadOnlyCollection<Type> Types => this._types;
-
     /// <summary>
     /// Gets or sets the filter text.
     /// </summary>
@@ -70,6 +64,12 @@ public class TypeSelectionViewModel : BaseDialogViewModel {
             this.IsOkEnabled = this.SelectedType != null;
         }
     }
+
+
+    /// <summary>
+    /// Gets the available types.
+    /// </summary>
+    public IReadOnlyCollection<Type> Types => this._types;
 
     private void FilterTypes() {
         this._filteredTypes.Reset(!string.IsNullOrEmpty(this._filterText) ? this.Types.Where(x => !string.IsNullOrEmpty(x.FullName) && x.FullName.Contains(this._filterText, StringComparison.OrdinalIgnoreCase)) : this.Types);

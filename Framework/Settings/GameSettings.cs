@@ -20,9 +20,24 @@ public interface IGameSettings : INotifyPropertyChanged {
     Point DefaultResolution { get; }
 
     /// <summary>
+    /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
+    /// </summary>
+    Color ErrorSpritesColor { get; set; }
+
+    /// <summary>
+    /// Gets or sets the color of the game background when there is no scene opened.
+    /// </summary>
+    Color FallbackBackgroundColor { get; set; }
+
+    /// <summary>
     /// Gets the layer settings.
     /// </summary>
     LayerSettings LayerSettings { get; }
+
+    /// <summary>
+    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
+    /// </summary>
+    ushort PixelsPerUnit { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether or not this should pixel snap.
@@ -39,21 +54,6 @@ public interface IGameSettings : INotifyPropertyChanged {
     /// produce the same value, but quicker.
     /// </remarks>
     float UnitsPerPixel { get; }
-
-    /// <summary>
-    /// Gets or sets the color that sprites will be filled in with if their content cannot be loaded.
-    /// </summary>
-    Color ErrorSpritesColor { get; set; }
-
-    /// <summary>
-    /// Gets or sets the color of the game background when there is no scene opened.
-    /// </summary>
-    Color FallbackBackgroundColor { get; set; }
-
-    /// <summary>
-    /// Gets or sets the pixels per unit. This value is the number of pixels per arbitrary game units.
-    /// </summary>
-    ushort PixelsPerUnit { get; set; }
 
     /// <summary>
     /// Gets a pixel agnostic ratio. This can be used to make something appear the same size on
@@ -84,11 +84,6 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
 
     /// <inheritdoc />
     [DataMember]
-    [Category(CommonCategories.Layers)]
-    public LayerSettings LayerSettings { get; } = new();
-
-    /// <inheritdoc />
-    [DataMember]
     public Point DefaultResolution {
         get => this._defaultResolution;
         set => this.Set(ref this._defaultResolution, value);
@@ -109,6 +104,11 @@ public sealed class GameSettings : NotifyPropertyChanged, IGameSettings {
         get => this._fallbackBackgroundColor;
         set => this.Set(ref this._fallbackBackgroundColor, value);
     }
+
+    /// <inheritdoc />
+    [DataMember]
+    [Category(CommonCategories.Layers)]
+    public LayerSettings LayerSettings { get; } = new();
 
     /// <inheritdoc />
     [DataMember]

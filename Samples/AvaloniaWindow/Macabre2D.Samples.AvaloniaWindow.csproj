@@ -5,19 +5,19 @@
         <ApplicationIcon>..\..\UI\Common\icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.18" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
-        <PackageReference Include="Macabresoft.Core" Version="1.0.12" />
-        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+        <PackageReference Include="Avalonia" Version="0.10.18"/>
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.18"/>
+        <PackageReference Include="Macabresoft.Core" Version="1.0.12"/>
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303"/>
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj" />
-        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj" />
-        <ProjectReference Include="..\..\UI\Common\Macabre2D.UI.Common.csproj" />
+        <ProjectReference Include="..\..\UI\AvaloniaInterop\Macabre2D.UI.AvaloniaInterop.csproj"/>
+        <ProjectReference Include="..\..\Framework\Macabre2D.Framework.csproj"/>
+        <ProjectReference Include="..\..\UI\Common\Macabre2D.UI.Common.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <MonoGameContentReference Include="Content\Content.mgcb" />
+        <MonoGameContentReference Include="Content\Content.mgcb"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="..\..\UI\Common\icon.ico">
@@ -25,7 +25,7 @@
         </None>
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
-        <Message Text="Restoring dotnet tools" Importance="High" />
-        <Exec Command="dotnet tool restore" />
+        <Message Text="Restoring dotnet tools" Importance="High"/>
+        <Exec Command="dotnet tool restore"/>
     </Target>
 </Project>

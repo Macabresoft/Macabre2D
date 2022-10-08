@@ -92,10 +92,12 @@ public abstract class SelectionService<T> : ReactiveObject, ISelectionService<T>
             var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
             var newValue = e.UpdatedValue;
 
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
                 valueEditor.SetValue(newValue, true);
-            }, () => {
+            }, () =>
+            {
                 valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                 valueEditor.SetValue(originalValue, true);
             });

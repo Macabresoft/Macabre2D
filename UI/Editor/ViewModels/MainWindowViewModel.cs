@@ -86,6 +86,15 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// </summary>
     public IEditorGame Game { get; }
 
+
+    /// <summary>
+    /// Gets a value indicating whether or not this is busy.
+    /// </summary>
+    public bool IsBusy {
+        get => this._isBusy;
+        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
+    }
+
     /// <summary>
     /// Gets the open scene command.
     /// </summary>
@@ -120,15 +129,6 @@ public class MainWindowViewModel : UndoBaseViewModel {
     /// Gets the command to view the source code.
     /// </summary>
     public ICommand ViewSourceCommand { get; }
-
-
-    /// <summary>
-    /// Gets a value indicating whether or not this is busy.
-    /// </summary>
-    public bool IsBusy {
-        get => this._isBusy;
-        set => this.RaiseAndSetIfChanged(ref this._isBusy, value);
-    }
 
     private async Task Exit(IWindow window) {
         if (window != null && await this.TryClose() != YesNoCancelResult.Cancel) {

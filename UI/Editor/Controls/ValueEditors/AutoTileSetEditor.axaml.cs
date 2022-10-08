@@ -78,10 +78,6 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
         this.InitializeComponent();
     }
 
-    public ICommand SelectTileSetCommand { get; }
-
-    public AutoTileMap TileMap => this.Owner as AutoTileMap;
-
     public Bitmap Bitmap {
         get => this._bitmap;
         private set => this.SetAndRaise(BitmapProperty, ref this._bitmap, value);
@@ -96,6 +92,10 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectTileSetCommand { get; }
+
+    public AutoTileMap TileMap => this.Owner as AutoTileMap;
 
     protected override void OnValueChanged() {
         base.OnValueChanged();
@@ -125,7 +125,8 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
         if (asset != null) {
             this._undoService.Do(
                 () => this.Value.Clear(),
-                () => {
+                () =>
+                {
                     this.Value.LoadAsset(asset);
                     this.Value.PackagedAssetId = tileSetId;
                 });
@@ -163,12 +164,14 @@ public class AutoTileSetEditor : ValueEditorControl<AutoTileSetReference> {
             var originalAsset = this.Value.Asset;
             var originalTileSetId = this.Value.PackagedAssetId;
             this._undoService.Do(
-                () => {
+                () =>
+                {
                     this.Value.LoadAsset(spriteSheet);
                     this.Value.PackagedAssetId = tileSetId;
                     this.ResetBitmap();
                 },
-                () => {
+                () =>
+                {
                     if (originalAsset != null) {
                         this.Value.PackagedAssetId = originalTileSetId;
                         this.Value.LoadAsset(originalAsset);

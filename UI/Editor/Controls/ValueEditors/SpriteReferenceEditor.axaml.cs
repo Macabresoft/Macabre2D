@@ -85,10 +85,6 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
         this.InitializeComponent();
     }
 
-    public BaseSpriteEntity RenderEntity => this.Owner as BaseSpriteEntity;
-
-    public ICommand SelectSpriteCommand { get; }
-
     public ICommand ClearSpriteCommand {
         get => this._clearSpriteCommand;
         private set => this.SetAndRaise(ClearSpriteCommandProperty, ref this._clearSpriteCommand, value);
@@ -103,6 +99,10 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
         get => this._maxIndex;
         private set => this.SetAndRaise(MaxIndexProperty, ref this._maxIndex, value);
     }
+
+    public BaseSpriteEntity RenderEntity => this.Owner as BaseSpriteEntity;
+
+    public ICommand SelectSpriteCommand { get; }
 
     public SpriteDisplayModel Sprite {
         get => this._sprite;
@@ -137,7 +137,8 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
         if (asset != null) {
             this._undoService.Do(
                 () => this.Value.Clear(),
-                () => {
+                () =>
+                {
                     this.Value.SpriteIndex = spriteIndex;
                     this.Value.LoadAsset(asset);
                 });
@@ -185,11 +186,13 @@ public class SpriteReferenceEditor : ValueEditorControl<SpriteReference> {
             var originalAsset = this.Value.Asset;
             var originalIndex = this.Value.SpriteIndex;
             this._undoService.Do(
-                () => {
+                () =>
+                {
                     this.Value.SpriteIndex = spriteIndex;
                     this.Value.LoadAsset(spriteSheet);
                 },
-                () => {
+                () =>
+                {
                     if (originalAsset != null) {
                         this.Value.SpriteIndex = originalIndex;
                         this.Value.LoadAsset(originalAsset);

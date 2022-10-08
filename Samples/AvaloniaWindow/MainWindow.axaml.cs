@@ -43,12 +43,6 @@ public class MainWindow : BaseDialog {
 
     public IAvaloniaGame Game { get; }
 
-    public SkullViewModel SkullViewModel { get; }
-
-    public SolidViewModel SolidViewModel { get; }
-
-    public ICommand ToggleTabCommand { get; }
-
     public bool ShowHint {
         get => this._showHint;
         private set => this.SetAndRaise(ShowHintProperty, ref this._showHint, value);
@@ -58,6 +52,12 @@ public class MainWindow : BaseDialog {
         get => this._showSkull;
         set => this.SetAndRaise(ShowSkullProperty, ref this._showSkull, value);
     }
+
+    public SkullViewModel SkullViewModel { get; }
+
+    public SolidViewModel SolidViewModel { get; }
+
+    public ICommand ToggleTabCommand { get; }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);

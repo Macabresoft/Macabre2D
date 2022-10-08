@@ -70,10 +70,6 @@ public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
     [Category(CommonCategories.CollisionMap)]
     public CollisionMap CollisionMap { get; } = new();
 
-    /// <inheritdoc />
-    [DataMember(Order = 1)]
-    public Gravity Gravity { get; } = new(Vector2.Zero);
-
     /// <summary>
     /// Gets the collision resolver.
     /// </summary>
@@ -82,6 +78,10 @@ public class PhysicsLoop : SimplePhysicsLoop, IPhysicsLoop {
         get => this._collisionResolver;
         private set => this.Set(ref this._collisionResolver, value);
     }
+
+    /// <inheritdoc />
+    [DataMember(Order = 1)]
+    public Gravity Gravity { get; } = new(Vector2.Zero);
 
     /// <inheritdoc />
     [DataMember(Order = 2)]

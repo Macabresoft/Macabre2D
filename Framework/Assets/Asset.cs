@@ -61,9 +61,6 @@ public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> 
     }
 
     /// <inheritdoc />
-    public abstract bool IncludeFileExtensionInContentPath { get; }
-
-    /// <inheritdoc />
     public TContent? Content {
         get => this._content;
         protected set => this.Set(ref this._content, value);
@@ -73,6 +70,9 @@ public abstract class Asset<TContent> : NotifyPropertyChanged, IAsset<TContent> 
     [DataMember]
     [EditorExclude]
     public Guid ContentId { get; private set; }
+
+    /// <inheritdoc />
+    public abstract bool IncludeFileExtensionInContentPath { get; }
 
     /// <inheritdoc />
     public virtual string GetContentBuildCommands(string contentPath, string fileExtension) {

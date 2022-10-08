@@ -17,7 +17,7 @@ public abstract class QuadBody : PhysicsBody {
         this.OverrideLayersRightEdge.PropertyChanged += this.OnLayerOverrideChanged;
         this.OverrideLayersTopEdge.PropertyChanged += this.OnLayerOverrideChanged;
     }
-    
+
     /// <inheritdoc />
     public override bool HasCollider => this.GetColliders().Any();
 
@@ -44,7 +44,13 @@ public abstract class QuadBody : PhysicsBody {
     /// </summary>
     [DataMember(Name = "Top Layers", Order = 101)]
     public LayersOverride OverrideLayersTopEdge { get; } = new();
-    
+
+    /// <inheritdoc />
+    public override void Initialize(IScene scene, IEntity parent) {
+        base.Initialize(scene, parent);
+        this.ResetColliders();
+    }
+
     /// <inheritdoc />
     protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) {
         base.OnPropertyChanged(sender, e);
@@ -59,12 +65,6 @@ public abstract class QuadBody : PhysicsBody {
     /// </summary>
     protected abstract void ResetColliders();
 
-    /// <inheritdoc />
-    public override void Initialize(IScene scene, IEntity parent) {
-        base.Initialize(scene, parent);
-        this.ResetColliders();
-    }
-    
     private void OnLayerOverrideChanged(object? sender, PropertyChangedEventArgs e) {
         this.ResetColliders();
     }

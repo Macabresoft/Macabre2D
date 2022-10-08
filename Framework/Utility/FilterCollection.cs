@@ -148,7 +148,8 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// <param name="action">The action.</param>
     /// <param name="userData">The user data.</param>
     public Task ForeachEachFilteredItemAsync<TUserData>(Func<T, TUserData, Task> action, TUserData userData) {
-        return Task.Run(() => {
+        return Task.Run(() =>
+        {
             this.RebuildCache();
 
             var tasks = new Task[this._cachedFilteredItems.Count];
@@ -174,7 +175,8 @@ public sealed class FilterCollection<T> : ICollection<T>, IReadOnlyCollection<T>
     /// <param name="action">The action.</param>
     /// <param name="userData">The user data.</param>
     public Task ForeachEachFilteredItemAsync<TUserData1, TUserDate2>(Func<T, TUserData1, TUserDate2, Task> action, TUserData1 userData1, TUserDate2 userDate2) {
-        return Task.Run(() => {
+        return Task.Run(() =>
+        {
             this.RebuildCache();
 
             var tasks = new Task[this._cachedFilteredItems.Count];

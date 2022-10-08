@@ -70,6 +70,12 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
     }
 
     /// <inheritdoc />
+    public IControl AssetEditor {
+        get => this._assetEditor;
+        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
+    }
+
+    /// <inheritdoc />
     public IReadOnlyCollection<ValueControlCollection> Editors {
         get {
             return this._selected switch {
@@ -78,12 +84,6 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
                 _ => null
             };
         }
-    }
-
-    /// <inheritdoc />
-    public IControl AssetEditor {
-        get => this._assetEditor;
-        private set => this.RaiseAndSetIfChanged(ref this._assetEditor, value);
     }
 
     /// <inheritdoc />
@@ -123,10 +123,12 @@ public sealed class AssetSelectionService : ReactiveObject, IAssetSelectionServi
             var originalValue = valueEditor.Owner.GetPropertyValue(valueEditor.ValuePropertyName);
             var newValue = e.UpdatedValue;
 
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, newValue);
                 valueEditor.SetValue(newValue, false);
-            }, () => {
+            }, () =>
+            {
                 valueEditor.Owner.SetProperty(valueEditor.ValuePropertyName, originalValue);
                 valueEditor.SetValue(originalValue, false);
             });

@@ -81,12 +81,6 @@ public sealed class CircleCollider : Collider {
     public override ColliderType ColliderType => ColliderType.Circle;
 
     /// <summary>
-    /// Gets the radius of this circle after all scaling operations have occurred.
-    /// </summary>
-    /// <value>The scaled radius.</value>
-    public float ScaledRadius => this._scaledRadius.Value;
-
-    /// <summary>
     /// Gets or sets the radius.
     /// </summary>
     /// <value>The radius.</value>
@@ -115,6 +109,12 @@ public sealed class CircleCollider : Collider {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the radius of this circle after all scaling operations have occurred.
+    /// </summary>
+    /// <value>The scaled radius.</value>
+    public float ScaledRadius => this._scaledRadius.Value;
 
     /// <inheritdoc />
     public override bool Contains(Vector2 point) {

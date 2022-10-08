@@ -56,6 +56,11 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
         this._boundingArea = new ResettableLazy<BoundingArea>(this.CreateBoundingArea);
     }
 
+    /// <summary>
+    /// Gets the body that this collider is attached to.
+    /// </summary>
+    public IPhysicsBody? Body { get; private set; }
+
     /// <inheritdoc />
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
@@ -63,11 +68,6 @@ public abstract class Collider : NotifyPropertyChanged, IBoundable {
     /// Gets the type of the collider.
     /// </summary>
     public abstract ColliderType ColliderType { get; }
-
-    /// <summary>
-    /// Gets the body that this collider is attached to.
-    /// </summary>
-    public IPhysicsBody? Body { get; private set; }
 
     /// <summary>
     /// Gets or sets the layers.

@@ -31,11 +31,6 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
-    /// Gets the sprite index.
-    /// </summary>
-    public abstract byte? SpriteIndex { get; }
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -64,6 +59,11 @@ public abstract class BaseSpriteEntity : RenderableEntity, IRotatable {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the sprite index.
+    /// </summary>
+    public abstract byte? SpriteIndex { get; }
 
     /// <summary>
     /// Gets the sprite sheet.

@@ -40,14 +40,6 @@ public class ContentFile : ContentNode {
     [Category(nameof(Asset))]
     public IAsset Asset => this.Metadata?.Asset;
 
-    /// <inheritdoc />
-    public override Guid Id => this.Metadata?.ContentId ?? Guid.Empty;
-
-    /// <summary>
-    /// The metadata.
-    /// </summary>
-    public ContentMetadata Metadata { get; }
-
     /// <summary>
     /// Gets or sets a value indicating whether or not this content has changes.
     /// </summary>
@@ -55,6 +47,14 @@ public class ContentFile : ContentNode {
         get => this._hasChanges;
         set => this.Set(ref this._hasChanges, value);
     }
+
+    /// <inheritdoc />
+    public override Guid Id => this.Metadata?.ContentId ?? Guid.Empty;
+
+    /// <summary>
+    /// The metadata.
+    /// </summary>
+    public ContentMetadata Metadata { get; }
 
     /// <inheritdoc />
     protected override string GetFileExtension() {

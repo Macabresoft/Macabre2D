@@ -67,15 +67,15 @@ public class GameProject : NotifyPropertyChanged, IGameProject {
     }
 
     /// <inheritdoc />
-    [DataMember(Order = 1)]
-    public IGameSettings Settings { get; }
-
-    /// <inheritdoc />
     [DataMember]
     public string Name {
         get => this._name;
         set => this.Set(ref this._name, value);
     }
+
+    /// <inheritdoc />
+    [DataMember(Order = 1)]
+    public IGameSettings Settings { get; }
 
     /// <inheritdoc />
     [DataMember(Name = "Startup Scene")]

@@ -23,12 +23,12 @@ public class ThumbnailSizeToggle : UserControl {
         this.InitializeComponent();
     }
 
-    public ICommand SelectSizeCommand { get; }
-
     public ThumbnailSize SelectedSize {
         get => this.GetValue(SelectedSizeProperty);
         set => this.SetValue(SelectedSizeProperty, value);
     }
+
+    public ICommand SelectSizeCommand { get; }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);

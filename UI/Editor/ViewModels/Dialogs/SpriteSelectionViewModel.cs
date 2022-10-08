@@ -40,11 +40,6 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
     public FilteredContentWrapper RootContentDirectory { get; }
 
     /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
-
-    /// <summary>
     /// Gets the selected content node as a <see cref="FilteredContentWrapper" />.
     /// </summary>
     public FilteredContentWrapper SelectedContentNode {
@@ -75,6 +70,11 @@ public sealed class SpriteSelectionViewModel : BaseDialogViewModel {
         get => this._selectedThumbnailSize;
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteDisplayCollection" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteDisplayCollection> SpriteSheets => this._spriteSheets;
 
     private void ResetSpriteSheets() {
         this._spriteSheets.Clear();

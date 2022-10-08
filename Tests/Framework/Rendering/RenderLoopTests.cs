@@ -124,13 +124,13 @@ public class RenderLoopTests {
         public Layers LayersToRender => Layers.Layer01;
         public OffsetSettings OffsetSettings { get; } = new();
         public PixelSnap PixelSnap => PixelSnap.Inherit;
-        public float ViewWidth => 4f;
         public float ViewHeight { get; set; } = 4f;
+        public float ViewWidth => 4f;
 
         public Vector2 ConvertPointFromScreenSpaceToWorldSpace(Point point) {
             return Vector2.Zero;
         }
-        
+
         public void Render(FrameTime frameTime, SpriteBatch spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
             var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
             var entities = renderTree

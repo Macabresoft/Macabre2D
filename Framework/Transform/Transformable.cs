@@ -10,18 +10,6 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface ITransformable {
     /// <summary>
-    /// Gets the transform.
-    /// </summary>
-    /// <value>The transform.</value>
-    Transform Transform { get; }
-
-    /// <summary>
-    /// Gets the transform matrix.
-    /// </summary>
-    /// <value>The transform matrix.</value>
-    Matrix TransformMatrix { get; }
-
-    /// <summary>
     /// Gets or sets the local position.
     /// </summary>
     /// <value>The local position.</value>
@@ -32,6 +20,18 @@ public interface ITransformable {
     /// </summary>
     /// <value>The local scale.</value>
     Vector2 LocalScale { get; set; }
+
+    /// <summary>
+    /// Gets the transform.
+    /// </summary>
+    /// <value>The transform.</value>
+    Transform Transform { get; }
+
+    /// <summary>
+    /// Gets the transform matrix.
+    /// </summary>
+    /// <value>The transform matrix.</value>
+    Matrix TransformMatrix { get; }
 
     /// <summary>
     /// Gets the world transform.
@@ -125,21 +125,6 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         this._transformMatrix = new ResettableLazy<Matrix>(this.GetMatrix);
     }
 
-    /// <inheritdoc />
-    public Transform Transform {
-        get {
-            if (!this._isTransformUpToDate) {
-                this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
-                this._isTransformUpToDate = true;
-            }
-
-            return this._transform;
-        }
-    }
-
-    /// <inheritdoc />
-    public Matrix TransformMatrix => this._transformMatrix.Value;
-
     /// <summary>
     /// Gets or sets the local position.
     /// </summary>
@@ -168,6 +153,18 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         }
     }
 
+    /// <inheritdoc />
+    public Transform Transform {
+        get {
+            if (!this._isTransformUpToDate) {
+                this._transform = this.TransformMatrix.DecomposeWithoutRotation2D();
+                this._isTransformUpToDate = true;
+            }
+
+            return this._transform;
+        }
+    }
+
     /// <summary>
     /// Gets or sets the way this inherits its parent's <see cref="Transform" />.
     /// </summary>
@@ -176,6 +173,9 @@ public abstract class Transformable : NotifyPropertyChanged, ITransformable {
         get => this._transformInheritance;
         set => this.Set(ref this._transformInheritance, value);
     }
+
+    /// <inheritdoc />
+    public Matrix TransformMatrix => this._transformMatrix.Value;
 
     /// <inheritdoc />
     public Transform GetWorldTransform(float rotationAngle) {

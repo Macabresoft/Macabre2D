@@ -18,6 +18,11 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     IAssetManager Assets => AssetManager.Empty;
 
     /// <summary>
+    /// Gets or sets the color of the background.
+    /// </summary>
+    Color BackgroundColor { get; set; }
+
+    /// <summary>
     /// Gets the cameras in the scene.
     /// </summary>
     IEnumerable<ICamera> Cameras => Array.Empty<ICamera>();
@@ -56,11 +61,6 @@ public interface IScene : IUpdateableGameObject, IGridContainer, IBoundable {
     /// Gets the updateable entities.
     /// </summary>
     IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => Array.Empty<IUpdateableEntity>();
-
-    /// <summary>
-    /// Gets or sets the color of the background.
-    /// </summary>
-    Color BackgroundColor { get; set; }
 
     /// <summary>
     /// Gets or sets the version of this scene.
@@ -221,6 +221,23 @@ public sealed class Scene : GridContainer, IScene {
     }
 
     /// <inheritdoc />
+    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
+
+    /// <inheritdoc />
+    [DataMember]
+    public Color BackgroundColor {
+        get => this._backgroundColor;
+        set => this.Set(ref this._backgroundColor, value);
+    }
+
+    /// <inheritdoc />
+    [DataMember]
+    public BoundingArea BoundingArea {
+        get => this._boundingArea;
+        set => this.Set(ref this._boundingArea, value);
+    }
+
+    /// <inheritdoc />
     public IEnumerable<ICamera> Cameras => this._cameras;
 
     /// <summary>
@@ -248,23 +265,6 @@ public sealed class Scene : GridContainer, IScene {
 
     /// <inheritdoc />
     public IReadOnlyCollection<IUpdateableEntity> UpdateableEntities => this._updateableEntities;
-
-    /// <inheritdoc />
-    public IAssetManager Assets { get; private set; } = AssetManager.Empty;
-
-    /// <inheritdoc />
-    [DataMember]
-    public Color BackgroundColor {
-        get => this._backgroundColor;
-        set => this.Set(ref this._backgroundColor, value);
-    }
-
-    /// <inheritdoc />
-    [DataMember]
-    public BoundingArea BoundingArea {
-        get => this._boundingArea;
-        set => this.Set(ref this._boundingArea, value);
-    }
 
     /// <inheritdoc />
     [DataMember]

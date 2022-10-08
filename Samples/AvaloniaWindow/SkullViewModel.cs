@@ -18,8 +18,6 @@ public sealed class SkullViewModel : BaseViewModel {
         this.Scene = this.CreateScene(game);
     }
 
-    public IScene Scene { get; }
-
     public string DisplayText {
         get => this._displayText;
 
@@ -30,6 +28,8 @@ public sealed class SkullViewModel : BaseViewModel {
             }
         }
     }
+
+    public IScene Scene { get; }
 
     private IScene CreateScene(IAvaloniaGame game) {
         var scene = new Scene();

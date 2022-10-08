@@ -124,7 +124,8 @@ public class ColorEditor : ValueEditorControl<Color> {
     }
 
     private void UpdateDisplayValues() {
-        Dispatcher.UIThread.Post(() => {
+        Dispatcher.UIThread.Post(() =>
+        {
             try {
                 this._isUpdating = true;
                 this.RedValue = this.Value.R;

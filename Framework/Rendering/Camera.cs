@@ -41,14 +41,14 @@ public interface ICamera : IEntity, IBoundable, IPixelSnappable {
     int RenderOrder => 0;
 
     /// <summary>
-    /// Gets the view width.
-    /// </summary>
-    float ViewWidth { get; }
-
-    /// <summary>
     /// Gets or sets the view height of the camera in world units (not screen pixels).
     /// </summary>
     float ViewHeight { get; set; }
+
+    /// <summary>
+    /// Gets the view width.
+    /// </summary>
+    float ViewWidth { get; }
 
     /// <summary>
     /// Converts the point from screen space to world space.
@@ -93,20 +93,6 @@ public class Camera : Entity, ICamera {
     public BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <inheritdoc />
-    [DataMember(Name = "Offset Settings")]
-    public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
-
-    /// <summary>
-    /// Gets the shader reference.
-    /// </summary>
-    [DataMember(Name = CommonCategories.Shader)]
-    [Category(CommonCategories.Shader)]
-    public ShaderReference ShaderReference { get; } = new();
-
-    /// <inheritdoc />
-    public float ViewWidth => this._viewWidth.Value;
-
-    /// <inheritdoc />
     [DataMember(Name = "Layers to Exclude")]
     public Layers LayersToExcludeFromRender {
         get => this._layersToExcludeFromRender;
@@ -119,6 +105,10 @@ public class Camera : Entity, ICamera {
         get => this._layersToRender;
         set => this.Set(ref this._layersToRender, value);
     }
+
+    /// <inheritdoc />
+    [DataMember(Name = "Offset Settings")]
+    public OffsetSettings OffsetSettings { get; } = new(Vector2.Zero, PixelOffsetType.Center);
 
     /// <inheritdoc />
     [DataMember]
@@ -150,6 +140,13 @@ public class Camera : Entity, ICamera {
     }
 
     /// <summary>
+    /// Gets the shader reference.
+    /// </summary>
+    [DataMember(Name = CommonCategories.Shader)]
+    [Category(CommonCategories.Shader)]
+    public ShaderReference ShaderReference { get; } = new();
+
+    /// <summary>
     /// Gets or sets the height of the view.
     /// </summary>
     [DataMember(Name = "View Height")]
@@ -167,6 +164,9 @@ public class Camera : Entity, ICamera {
             }
         }
     }
+
+    /// <inheritdoc />
+    public float ViewWidth => this._viewWidth.Value;
 
     /// <summary>
     /// Gets the sampler state.
@@ -203,39 +203,6 @@ public class Camera : Entity, ICamera {
     /// <inheritdoc />
     public virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree) {
         this.Render(frameTime, spriteBatch, renderTree, this.BoundingArea, this.GetViewMatrix());
-    }
-
-    /// <summary>
-    /// Renders entities in the specified bounding area.
-    /// </summary>
-    /// <param name="frameTime">The frame time.</param>
-    /// <param name="spriteBatch">The sprite batch.</param>
-    /// <param name="renderTree">The render tree.</param>
-    /// <param name="viewBoundingArea">The view's bounding area.</param>
-    /// <param name="viewMatrix">The view matrix.</param>
-    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix) {
-        var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
-        var entities = renderTree
-            .RetrievePotentialCollisions(viewBoundingArea)
-            .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
-            .ToList();
-
-        if (entities.Any()) {
-            spriteBatch?.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                this._samplerState,
-                null,
-                RasterizerState.CullNone,
-                this.ShaderReference.Asset?.Content,
-                viewMatrix);
-
-            foreach (var entity in entities) {
-                entity.Render(frameTime, viewBoundingArea);
-            }
-            
-            spriteBatch?.End();
-        }
     }
 
     /// <summary>
@@ -322,6 +289,39 @@ public class Camera : Entity, ICamera {
     protected virtual void OnScreenAreaChanged() {
         this._boundingArea.Reset();
         this._viewWidth.Reset();
+    }
+
+    /// <summary>
+    /// Renders entities in the specified bounding area.
+    /// </summary>
+    /// <param name="frameTime">The frame time.</param>
+    /// <param name="spriteBatch">The sprite batch.</param>
+    /// <param name="renderTree">The render tree.</param>
+    /// <param name="viewBoundingArea">The view's bounding area.</param>
+    /// <param name="viewMatrix">The view matrix.</param>
+    protected virtual void Render(FrameTime frameTime, SpriteBatch? spriteBatch, IReadonlyQuadTree<IRenderableEntity> renderTree, BoundingArea viewBoundingArea, Matrix viewMatrix) {
+        var enabledLayers = this.Settings.LayerSettings.EnabledLayers;
+        var entities = renderTree
+            .RetrievePotentialCollisions(viewBoundingArea)
+            .Where(x => (x.Layers & this.LayersToExcludeFromRender) == Layers.None && (x.Layers & this.LayersToRender & enabledLayers) != Layers.None)
+            .ToList();
+
+        if (entities.Any()) {
+            spriteBatch?.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                this._samplerState,
+                null,
+                RasterizerState.CullNone,
+                this.ShaderReference.Asset?.Content,
+                viewMatrix);
+
+            foreach (var entity in entities) {
+                entity.Render(frameTime, viewBoundingArea);
+            }
+
+            spriteBatch?.End();
+        }
     }
 
     private BoundingArea CreateBoundingArea() {

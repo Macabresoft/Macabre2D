@@ -139,7 +139,8 @@ public class BoundingAreaEditor : ValueEditorControl<BoundingArea> {
         this._topValue = this.Value.Maximum.Y;
         this._bottomValue = this.Value.Minimum.Y;
 
-        Dispatcher.UIThread.Post(() => {
+        Dispatcher.UIThread.Post(() =>
+        {
             this.RaisePropertyChanged(LeftValueProperty, Optional<float>.Empty, this.LeftValue);
             this.RaisePropertyChanged(RightValueProperty, Optional<float>.Empty, this.RightValue);
             this.RaisePropertyChanged(BottomValueProperty, Optional<float>.Empty, this.BottomValue);

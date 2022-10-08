@@ -86,11 +86,13 @@ public class TileGizmo : Entity, IGizmo {
 
         if (tileable != null && this._addedTiles.Any()) {
             var tiles = this._addedTiles.ToList();
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 foreach (var tile in tiles) {
                     tileable.AddTile(tile);
                 }
-            }, () => {
+            }, () =>
+            {
                 foreach (var tile in tiles) {
                     tileable.RemoveTile(tile);
                 }
@@ -105,11 +107,13 @@ public class TileGizmo : Entity, IGizmo {
 
         if (tileable != null && this._removedTiles.Any()) {
             var tiles = this._removedTiles.ToList();
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 foreach (var tile in tiles) {
                     tileable.RemoveTile(tile);
                 }
-            }, () => {
+            }, () =>
+            {
                 foreach (var tile in tiles) {
                     tileable.AddTile(tile);
                 }

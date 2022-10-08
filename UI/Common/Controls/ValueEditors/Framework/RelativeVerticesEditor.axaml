@@ -35,7 +35,7 @@
                 <avaloniaEx:Icon Content="{StaticResource RemoveIcon}" />
             </Button>
         </StackPanel>
-        
+
         <ListBox Grid.Row="1"
                  Grid.Column="0"
                  Grid.ColumnSpan="2"

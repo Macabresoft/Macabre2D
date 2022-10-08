@@ -39,6 +39,12 @@ public sealed class QueueableSpriteAnimation {
     public SpriteAnimation Animation { get; }
 
     /// <summary>
+    /// Gets or sets the number of remaining loops.
+    /// </summary>
+    /// <value>The number of remaining loops.</value>
+    public ushort RemainingLoops { get; set; }
+
+    /// <summary>
     /// Gets a value indicating whether this should loop indefinitely when no other animation
     /// has been queued.
     /// </summary>
@@ -47,10 +53,4 @@ public sealed class QueueableSpriteAnimation {
     /// otherwise, <c>false</c>.
     /// </value>
     public bool ShouldLoopIndefinitely { get; }
-
-    /// <summary>
-    /// Gets or sets the number of remaining loops.
-    /// </summary>
-    /// <value>The number of remaining loops.</value>
-    public ushort RemainingLoops { get; set; }
 }

@@ -80,8 +80,6 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
 
     public SpriteAnimation Animation => this.Owner as SpriteAnimation;
 
-    public ICommand SelectAnimationCommand { get; }
-
     public Bitmap Bitmap {
         get => this._bitmap;
         private set => this.SetAndRaise(BitmapProperty, ref this._bitmap, value);
@@ -96,6 +94,8 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectAnimationCommand { get; }
 
     protected override void OnValueChanged() {
         base.OnValueChanged();
@@ -125,7 +125,8 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
         if (asset != null) {
             this._undoService.Do(
                 () => this.Value.Clear(),
-                () => {
+                () =>
+                {
                     this.Value.LoadAsset(asset);
                     this.Value.PackagedAssetId = animationId;
                 });
@@ -163,12 +164,14 @@ public class SpriteAnimationEditor : ValueEditorControl<SpriteAnimationReference
             var originalAsset = this.Value.Asset;
             var originalAnimationId = this.Value.PackagedAssetId;
             this._undoService.Do(
-                () => {
+                () =>
+                {
                     this.Value.LoadAsset(spriteSheet);
                     this.Value.PackagedAssetId = animationId;
                     this.ResetBitmap();
                 },
-                () => {
+                () =>
+                {
                     if (originalAsset != null) {
                         this.Value.PackagedAssetId = originalAnimationId;
                         this.Value.LoadAsset(originalAsset);

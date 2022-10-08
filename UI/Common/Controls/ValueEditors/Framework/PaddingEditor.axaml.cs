@@ -102,7 +102,8 @@ public class PaddingEditor : ValueEditorControl<Padding> {
         this._rightValue = this.Value.Right;
         this._bottomValue = this.Value.Bottom;
 
-        Dispatcher.UIThread.Post(() => {
+        Dispatcher.UIThread.Post(() =>
+        {
             this.RaisePropertyChanged(LeftValueProperty, Optional<float>.Empty, this.LeftValue);
             this.RaisePropertyChanged(TopValueProperty, Optional<float>.Empty, this.TopValue);
             this.RaisePropertyChanged(LeftValueProperty, Optional<float>.Empty, this.RightValue);

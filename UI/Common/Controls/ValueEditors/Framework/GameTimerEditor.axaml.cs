@@ -40,10 +40,12 @@ public class GameTimerEditor : ValueEditorControl<GameTimer> {
             var originalTimeLimit = this.Value.TimeLimit;
             var newTimeLimit = this.TimeLimit;
             if (originalTimeLimit != this.TimeLimit) {
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                {
                     this.Value.TimeLimit = newTimeLimit;
                     this.UpdateDisplayValues();
-                }, () => {
+                }, () =>
+                {
                     this.Value.TimeLimit = originalTimeLimit;
                     this.UpdateDisplayValues();
                 });

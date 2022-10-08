@@ -78,26 +78,6 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
     public ICommand ClearSpriteCommand { get; }
 
     /// <summary>
-    /// Gets the select tile command.
-    /// </summary>
-    public ICommand SelectTileCommand { get; }
-
-    /// <summary>
-    /// Gets the sprite collection.
-    /// </summary>
-    public SpriteDisplayCollection SpriteCollection { get; }
-
-    /// <summary>
-    /// Gets the tiles.
-    /// </summary>
-    public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
-
-    /// <summary>
-    /// Gets the size of a tile in pixels.
-    /// </summary>
-    public Size TileSize { get; }
-
-    /// <summary>
     /// Gets or sets the selected sprite.
     /// </summary>
     public SpriteDisplayModel SelectedSprite {
@@ -105,10 +85,12 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
         set {
             if (this._selectedTile is AutoTileIndexModel selectedTile) {
                 var previousSprite = this._selectedSprite;
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                {
                     this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
                     selectedTile.SpriteIndex = this._selectedSprite?.Index;
-                }, () => {
+                }, () =>
+                {
                     this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
                     selectedTile.SpriteIndex = this._selectedSprite?.Index;
                 });
@@ -137,6 +119,26 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the select tile command.
+    /// </summary>
+    public ICommand SelectTileCommand { get; }
+
+    /// <summary>
+    /// Gets the sprite collection.
+    /// </summary>
+    public SpriteDisplayCollection SpriteCollection { get; }
+
+    /// <summary>
+    /// Gets the tiles.
+    /// </summary>
+    public IReadOnlyCollection<AutoTileIndexModel> Tiles { get; }
+
+    /// <summary>
+    /// Gets the size of a tile in pixels.
+    /// </summary>
+    public Size TileSize { get; }
 
     /// <summary>
     /// Gets a value indicating whether or not auto layout can be performed for this tile set.
@@ -173,11 +175,13 @@ public class AutoTileSetEditorViewModel : BaseViewModel {
             var tiles = this.Tiles.ToList();
             var spriteIndexes = tiles.Select(x => x.SpriteIndex).ToList();
 
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 foreach (var tile in tiles) {
                     tile.SpriteIndex = TileIndexToAutoSpriteIndex[tile.TileIndex];
                 }
-            }, () => {
+            }, () =>
+            {
                 for (var i = 0; i < tiles.Count; i++) {
                     tiles[i].SpriteIndex = spriteIndexes[i];
                 }

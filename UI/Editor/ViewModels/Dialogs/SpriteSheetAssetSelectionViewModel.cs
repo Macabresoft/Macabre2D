@@ -40,11 +40,6 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
     public FilteredContentWrapper RootContentDirectory { get; }
 
     /// <summary>
-    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
-    /// </summary>
-    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
-
-    /// <summary>
     /// Gets or sets the selected asset.
     /// </summary>
     public TAsset SelectedAsset {
@@ -75,6 +70,11 @@ public sealed class SpriteSheetAssetSelectionViewModel<TAsset> : BaseDialogViewM
         get => this._selectedThumbnailSize;
         set => this.RaiseAndSetIfChanged(ref this._selectedThumbnailSize, value);
     }
+
+    /// <summary>
+    /// Gets the sprite sheets via <see cref="SpriteSheetAssetDisplayCollection{TAsset}" />.
+    /// </summary>
+    public IReadOnlyCollection<SpriteSheetAssetDisplayCollection<TAsset>> SpriteSheets => this._spriteSheets;
 
     private void ResetSpriteSheets() {
         this._spriteSheets.Clear();

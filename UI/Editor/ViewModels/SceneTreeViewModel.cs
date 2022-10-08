@@ -156,11 +156,13 @@ public sealed class SceneTreeViewModel : BaseViewModel {
         if (CanMoveEntity(sourceEntity, targetEntity)) {
             var originalParent = sourceEntity.Parent;
             var transform = sourceEntity.Transform;
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 targetEntity.AddChild(sourceEntity);
                 sourceEntity.SetWorldTransform(transform);
                 this.SceneService.RaiseSelectedChanged();
-            }, () => {
+            }, () =>
+            {
                 originalParent.AddChild(sourceEntity);
                 sourceEntity.SetWorldTransform(transform);
                 this.SceneService.RaiseSelectedChanged();
@@ -179,7 +181,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             var originalParent = sourceEntity.Parent;
             var originalIndex = originalParent.Children.IndexOf(sourceEntity);
             var transform = sourceEntity.Transform;
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 if (originalParent != targetEntity) {
                     targetEntity.InsertChild(index, sourceEntity);
                 }
@@ -189,7 +192,8 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
                 sourceEntity.SetWorldTransform(transform);
                 this.SceneService.RaiseSelectedChanged();
-            }, () => {
+            }, () =>
+            {
                 if (originalParent != targetEntity) {
                     originalParent.InsertChild(originalIndex, sourceEntity);
                 }
@@ -211,10 +215,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     public void MoveLoop(ILoop loop, int newIndex) {
         if (this.SceneService.CurrentScene.Loops is LoopCollection collection) {
             var originalIndex = collection.IndexOf(loop);
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 collection.Move(originalIndex, newIndex);
                 this.SceneService.RaiseSelectedChanged();
-            }, () => {
+            }, () =>
+            {
                 collection.Move(newIndex, originalIndex);
                 this.SceneService.RaiseSelectedChanged();
             });
@@ -254,13 +260,17 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             var parent = this.EntityService.Selected ?? this.SceneService.CurrentScene;
 
             if (parent != null) {
-                this._undoService.Do(() => {
-                    Dispatcher.UIThread.Post(() => {
+                this._undoService.Do(() =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
                         parent.AddChild(child);
                         this.SceneService.Selected = child;
                     });
-                }, () => {
-                    Dispatcher.UIThread.Post(() => {
+                }, () =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
                         parent.RemoveChild(child);
                         this.SceneService.Selected = parent;
                     });
@@ -277,13 +287,17 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
             if (type != null && Activator.CreateInstance(type) is ILoop loop) {
                 var originallySelected = this._loopService.Selected;
-                this._undoService.Do(() => {
-                    Dispatcher.UIThread.Post(() => {
+                this._undoService.Do(() =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
                         scene.AddLoop(loop);
                         this.SceneService.Selected = loop;
                     });
-                }, () => {
-                    Dispatcher.UIThread.Post(() => {
+                }, () =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
                         scene.RemoveLoop(loop);
                         this.SceneService.Selected = originallySelected;
                     });
@@ -330,10 +344,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
             clone.LocalPosition = entity.LocalPosition;
             clone.LocalScale = entity.LocalScale;
 
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 parent.AddChild(clone);
                 parent.RemoveChild(entity);
-            }, () => {
+            }, () =>
+            {
                 parent.AddChild(entity);
                 parent.RemoveChild(clone);
             });
@@ -398,10 +414,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
     private void RemoveEntity(object selected) {
         if (selected is IEntity entity) {
             var parent = entity.Parent;
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 parent.RemoveChild(entity);
                 this.SceneService.Selected = null;
-            }, () => {
+            }, () =>
+            {
                 parent.AddChild(entity);
                 this.SceneService.Selected = entity;
             });
@@ -410,10 +428,12 @@ public sealed class SceneTreeViewModel : BaseViewModel {
 
     private void RemoveLoop(object selected) {
         if (selected is ILoop loop && this.SceneService.CurrentScene is { } scene) {
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 scene.RemoveLoop(loop);
                 this.SceneService.Selected = null;
-            }, () => {
+            }, () =>
+            {
                 scene.AddLoop(loop);
                 this.SceneService.Selected = loop;
             });

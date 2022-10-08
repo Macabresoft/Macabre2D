@@ -46,14 +46,14 @@ public class SceneTreeView : UserControl {
 
     public static IMultiValueConverter AllowDropConverter { get; } = new SceneTreeAllowDropConverter();
 
-    public ICommand RenameCommand { get; }
-
-    public SceneTreeViewModel ViewModel { get; }
-
     public INameable DraggedObject {
         get => this._draggedObject;
         set => this.SetAndRaise(DraggedObjectProperty, ref this._draggedObject, value);
     }
+
+    public ICommand RenameCommand { get; }
+
+    public SceneTreeViewModel ViewModel { get; }
 
     private bool CanInsert(IControl target) {
         return target is { DataContext: IEntity or ILoop or EntityCollection or LoopCollection } &&

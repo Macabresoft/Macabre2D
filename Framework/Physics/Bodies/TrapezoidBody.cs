@@ -39,9 +39,6 @@ public class TrapezoidBody : QuadBody {
         this._height = height;
     }
 
-    /// <inheritdoc />
-    public override BoundingArea BoundingArea => this._boundingArea.Value;
-
     /// <summary>
     /// Gets or sets the bottom width. Setting this is fairly expensive and should be avoided during
     /// runtime if possible.
@@ -57,6 +54,9 @@ public class TrapezoidBody : QuadBody {
             }
         }
     }
+
+    /// <inheritdoc />
+    public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
     /// Gets or sets the height. Setting this is fairly expensive and should be avoided during

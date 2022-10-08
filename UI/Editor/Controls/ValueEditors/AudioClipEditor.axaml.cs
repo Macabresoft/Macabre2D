@@ -57,8 +57,6 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
         this.InitializeComponent();
     }
 
-    public ICommand SelectCommand { get; }
-
     public ICommand ClearCommand {
         get => this._clearCommand;
         private set => this.SetAndRaise(ClearCommandProperty, ref this._clearCommand, value);
@@ -68,6 +66,8 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged() {
         base.OnValueChanged();
@@ -122,7 +122,8 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
             var originalAsset = this.Value.Asset;
             var newAsset = file.Asset as AudioClipAsset;
             this._undoService.Do(
-                () => {
+                () =>
+                {
                     if (newAsset != null) {
                         this.Value.LoadAsset(newAsset);
                     }
@@ -130,7 +131,8 @@ public class AudioClipEditor : ValueEditorControl<AudioClipReference> {
                         this.Value.Clear();
                     }
                 },
-                () => {
+                () =>
+                {
                     if (originalAsset != null) {
                         this.Value.LoadAsset(originalAsset);
                     }

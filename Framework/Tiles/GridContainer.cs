@@ -11,14 +11,14 @@ using Microsoft.Xna.Framework;
 /// </summary>
 public interface IGridContainer : IEntity {
     /// <summary>
-    /// Gets the tile size in world units.
-    /// </summary>
-    Vector2 WorldTileSize { get; }
-
-    /// <summary>
     /// Gets or sets the tile size in local space, unaffected by the scale of this <see cref="ITransformable" />.
     /// </summary>
     Vector2 LocalTileSize { get; set; }
+
+    /// <summary>
+    /// Gets the tile size in world units.
+    /// </summary>
+    Vector2 WorldTileSize { get; }
 
     /// <summary>
     /// Gets the nearest tile position to the provided position.
@@ -52,9 +52,6 @@ public class GridContainer : Entity, IGridContainer {
     public new static IGridContainer Empty => EmptyObject.Instance;
 
     /// <inheritdoc />
-    public Vector2 WorldTileSize => this._worldTileSize.Value;
-
-    /// <inheritdoc />
     [DataMember(Name = "Tile Size")]
     [Category(CommonCategories.Grid)]
     public Vector2 LocalTileSize {
@@ -65,6 +62,9 @@ public class GridContainer : Entity, IGridContainer {
             }
         }
     }
+
+    /// <inheritdoc />
+    public Vector2 WorldTileSize => this._worldTileSize.Value;
 
     /// <inheritdoc />
     public Vector2 GetNearestTilePosition(Vector2 position) {

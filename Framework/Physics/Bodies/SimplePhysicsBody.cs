@@ -26,9 +26,6 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
     public override BoundingArea BoundingArea => this.Collider.BoundingArea;
 
     /// <inheritdoc />
-    public override bool HasCollider => true;
-
-    /// <inheritdoc />
     [DataMember(Order = 0)]
     [Category("Collider")]
     public Collider Collider {
@@ -40,6 +37,9 @@ public class SimplePhysicsBody : PhysicsBody, ISimplePhysicsBody {
             }
         }
     }
+
+    /// <inheritdoc />
+    public override bool HasCollider => true;
 
     /// <inheritdoc />
     public override IEnumerable<Collider> GetColliders() {

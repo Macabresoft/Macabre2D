@@ -49,6 +49,11 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected ICamera Camera => this._camera;
 
     /// <summary>
+    /// Gets or sets the current axis being operated on.
+    /// </summary>
+    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
+
+    /// <summary>
     /// Gets the editor service.
     /// </summary>
     protected IEditorService EditorService { get; }
@@ -59,19 +64,14 @@ public abstract class BaseAxisGizmo : BaseDrawer, IGizmo {
     protected IEntityService EntityService { get; }
 
     /// <summary>
-    /// Gets the scene service.
-    /// </summary>
-    protected ISceneService SceneService { get; }
-
-    /// <summary>
-    /// Gets or sets the current axis being operated on.
-    /// </summary>
-    protected GizmoAxis CurrentAxis { get; set; } = GizmoAxis.None;
-
-    /// <summary>
     /// Gets or sets the neutral axis position, which is the intersection of the X and Y axis.
     /// </summary>
     protected Vector2 NeutralAxisPosition { get; private set; }
+
+    /// <summary>
+    /// Gets the scene service.
+    /// </summary>
+    protected ISceneService SceneService { get; }
 
     /// <summary>
     /// Gets or sets the end point of the x axis line.

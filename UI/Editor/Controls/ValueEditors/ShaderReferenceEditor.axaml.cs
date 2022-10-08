@@ -57,8 +57,6 @@ public class ShaderReferenceEditor : ValueEditorControl<ShaderReference> {
         this.InitializeComponent();
     }
 
-    public ICommand SelectCommand { get; }
-
     public ICommand ClearCommand {
         get => this._clearCommand;
         private set => this.SetAndRaise(ClearCommandProperty, ref this._clearCommand, value);
@@ -68,6 +66,8 @@ public class ShaderReferenceEditor : ValueEditorControl<ShaderReference> {
         get => this._pathText;
         private set => this.SetAndRaise(PathTextProperty, ref this._pathText, value);
     }
+
+    public ICommand SelectCommand { get; }
 
     protected override void OnValueChanged() {
         base.OnValueChanged();
@@ -122,7 +122,8 @@ public class ShaderReferenceEditor : ValueEditorControl<ShaderReference> {
             var originalAsset = this.Value.Asset;
             var newAsset = file.Asset as ShaderAsset;
             this._undoService.Do(
-                () => {
+                () =>
+                {
                     if (newAsset != null) {
                         this.Value.LoadAsset(newAsset);
                     }
@@ -130,7 +131,8 @@ public class ShaderReferenceEditor : ValueEditorControl<ShaderReference> {
                         this.Value.Clear();
                     }
                 },
-                () => {
+                () =>
+                {
                     if (originalAsset != null) {
                         this.Value.LoadAsset(originalAsset);
                     }

@@ -26,14 +26,16 @@ public class ProjectServiceTests {
 
         var sceneAsset = new SceneAsset();
         sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
-            .Returns(x => {
+            .Returns(x =>
+            {
                 x[1] = sceneAsset;
                 return true;
             });
 
         var serializer = Substitute.For<ISerializer>();
         serializer.When(x => x.Serialize(Arg.Any<GameProject>(), Arg.Any<string>()))
-            .Do(x => {
+            .Do(x =>
+            {
                 if (x[1] is string path) {
                     fileSystem.DoesFileExist(path).Returns(true);
                     serializer.Deserialize<GameProject>(path).Returns(new GameProject());
@@ -71,7 +73,8 @@ public class ProjectServiceTests {
         var sceneService = Substitute.For<ISceneService>();
         var sceneAsset = new SceneAsset();
         sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
-            .Returns(x => {
+            .Returns(x =>
+            {
                 x[1] = sceneAsset;
                 return true;
             });
@@ -130,7 +133,8 @@ public class ProjectServiceTests {
         var sceneService = Substitute.For<ISceneService>();
         var sceneAsset = new SceneAsset();
         sceneService.TryLoadScene(Arg.Any<Guid>(), out Arg.Any<SceneAsset>())
-            .Returns(x => {
+            .Returns(x =>
+            {
                 x[1] = sceneAsset;
                 return true;
             });

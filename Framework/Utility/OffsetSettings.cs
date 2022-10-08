@@ -35,12 +35,6 @@ public class OffsetSettings : NotifyPropertyChanged {
     }
 
     /// <summary>
-    /// Gets the size.
-    /// </summary>
-    /// <value>The size.</value>
-    public Vector2 Size => this._size?.Value ?? Vector2.Zero;
-
-    /// <summary>
     /// Gets or sets the offset amount. This size is in pixels.
     /// </summary>
     /// <remarks>
@@ -77,6 +71,12 @@ public class OffsetSettings : NotifyPropertyChanged {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the size.
+    /// </summary>
+    /// <value>The size.</value>
+    public Vector2 Size => this._size?.Value ?? Vector2.Zero;
 
     /// <summary>
     /// Initializes the specified size factory.

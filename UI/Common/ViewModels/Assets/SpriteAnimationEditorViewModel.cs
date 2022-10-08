@@ -114,21 +114,6 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     public ICommand RemoveCommand { get; }
 
     /// <summary>
-    /// Gets the sprite collection.
-    /// </summary>
-    public SpriteDisplayCollection SpriteCollection { get; }
-
-    /// <summary>
-    /// Gets the steps.
-    /// </summary>
-    public IReadOnlyCollection<SpriteAnimationStep> Steps => this._animation.Steps;
-
-    /// <summary>
-    /// Gets the size of a step's sprite in pixels.
-    /// </summary>
-    public Size StepSize { get; }
-
-    /// <summary>
     /// Gets or sets the selected sprite.
     /// </summary>
     public SpriteDisplayModel SelectedSprite {
@@ -136,7 +121,8 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         set {
             if (this._selectedStep is { } selectedStep) {
                 var previousSprite = this._selectedSprite;
-                this._undoService.Do(() => {
+                this._undoService.Do(() =>
+                {
                     try {
                         this._isSettingSpriteIndexToNull = value == null;
                         this.RaiseAndSetIfChanged(ref this._selectedSprite, value);
@@ -145,7 +131,8 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
                     finally {
                         this._isSettingSpriteIndexToNull = false;
                     }
-                }, () => {
+                }, () =>
+                {
                     try {
                         this._isSettingSpriteIndexToNull = value == null;
                         this.RaiseAndSetIfChanged(ref this._selectedSprite, previousSprite);
@@ -172,6 +159,21 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
             }
         }
     }
+
+    /// <summary>
+    /// Gets the sprite collection.
+    /// </summary>
+    public SpriteDisplayCollection SpriteCollection { get; }
+
+    /// <summary>
+    /// Gets the steps.
+    /// </summary>
+    public IReadOnlyCollection<SpriteAnimationStep> Steps => this._animation.Steps;
+
+    /// <summary>
+    /// Gets the size of a step's sprite in pixels.
+    /// </summary>
+    public Size StepSize { get; }
 
     /// <summary>
     /// Gets or sets the thumbnail size.
@@ -213,10 +215,12 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         }
 
         SpriteAnimationStep step = null;
-        this._undoService.Do(() => {
+        this._undoService.Do(() =>
+        {
             step = this._animation.AddStep(index);
             this.SelectedStep = step;
-        }, () => {
+        }, () =>
+        {
             if (step != null) {
                 this._animation.RemoveStep(step);
             }
@@ -264,11 +268,13 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         if (!this.IsStepAtEnd(step)) {
             var originalIndex = this._animation.Steps.IndexOf(step);
             var newIndex = originalIndex + 1;
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, newIndex);
                 this.SelectedStep = step;
-            }, () => {
+            }, () =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, originalIndex);
                 this.SelectedStep = step;
@@ -279,11 +285,13 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     private void MoveToEnd(SpriteAnimationStep step) {
         if (!this.IsStepAtEnd(step)) {
             var originalIndex = this._animation.Steps.IndexOf(step);
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step);
                 this.SelectedStep = step;
-            }, () => {
+            }, () =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, originalIndex);
                 this.SelectedStep = step;
@@ -294,11 +302,13 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     private void MoveToStart(SpriteAnimationStep step) {
         if (!this.IsStepAtStart(step)) {
             var originalIndex = this._animation.Steps.IndexOf(step);
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, 0);
                 this.SelectedStep = step;
-            }, () => {
+            }, () =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, originalIndex);
                 this.SelectedStep = step;
@@ -310,11 +320,13 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
         if (!this.IsStepAtStart(step)) {
             var originalIndex = this._animation.Steps.IndexOf(step);
             var newIndex = originalIndex - 1;
-            this._undoService.Do(() => {
+            this._undoService.Do(() =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, newIndex);
                 this.SelectedStep = step;
-            }, () => {
+            }, () =>
+            {
                 this._animation.RemoveStep(step);
                 this._animation.AddStep(step, originalIndex);
                 this.SelectedStep = step;
@@ -325,7 +337,8 @@ public class SpriteAnimationEditorViewModel : BaseViewModel {
     private void RemoveStep(SpriteAnimationStep selectedStep) {
         if (selectedStep != null && this._animation.Steps.Contains(selectedStep)) {
             var index = this._animation.Steps.IndexOf(selectedStep);
-            this._undoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () => {
+            this._undoService.Do(() => { this._animation.RemoveStep(selectedStep); }, () =>
+            {
                 this._animation.AddStep(selectedStep, index);
                 this.SelectedStep = selectedStep;
             });

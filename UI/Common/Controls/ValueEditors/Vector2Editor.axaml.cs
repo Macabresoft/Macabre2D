@@ -100,7 +100,8 @@ public class Vector2Editor : ValueEditorControl<Vector2> {
     private void UpdateDisplayValues() {
         this._xValue = this.Value.X;
         this._yValue = this.Value.Y;
-        Dispatcher.UIThread.Post(() => {
+        Dispatcher.UIThread.Post(() =>
+        {
             this.RaisePropertyChanged(XValueProperty, Optional<float>.Empty, this.XValue);
             this.RaisePropertyChanged(YValueProperty, Optional<float>.Empty, this.YValue);
         });

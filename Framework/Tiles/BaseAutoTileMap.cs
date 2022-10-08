@@ -2,7 +2,6 @@ namespace Macabresoft.Macabre2D.Framework;
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -24,12 +23,6 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
     public override IReadOnlyCollection<Point> ActiveTiles => this._activeTileToIndex.Keys;
 
     /// <summary>
-    /// Gets the animation reference.
-    /// </summary>
-    [DataMember(Order = 0, Name = "Tile Set")]
-    public AutoTileSetReference TileSetReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -38,6 +31,12 @@ public abstract class BaseAutoTileMap : RenderableTileMap {
         get => this._color;
         set => this.Set(ref this._color, value);
     }
+
+    /// <summary>
+    /// Gets the animation reference.
+    /// </summary>
+    [DataMember(Order = 0, Name = "Tile Set")]
+    public AutoTileSetReference TileSetReference { get; } = new();
 
     /// <inheritdoc />
     public override bool HasActiveTileAt(Point tilePosition) {

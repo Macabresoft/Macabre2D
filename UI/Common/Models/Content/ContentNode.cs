@@ -23,14 +23,14 @@ public interface IContentNode : INameable {
     Guid Id { get; }
 
     /// <summary>
-    /// Gets the parent.
-    /// </summary>
-    IContentDirectory Parent { get; }
-
-    /// <summary>
     /// Gets or sets the name without an extension.
     /// </summary>
     string NameWithoutExtension { get; set; }
+
+    /// <summary>
+    /// Gets the parent.
+    /// </summary>
+    IContentDirectory Parent { get; }
 
     /// <summary>
     /// Changes the parent of this node.
@@ -82,7 +82,7 @@ public abstract class ContentNode : NotifyPropertyChanged, IContentNode {
         set {
             var originalPath = this.GetFullPath();
             if (string.IsNullOrEmpty(value)) {
-                this.RaisePropertyChanged(nameof(this.Name));
+                this.RaisePropertyChanged();
             }
             else if (this.Set(ref this._name, value, true)) {
                 if (this.Parent is IContentDirectory directory) {

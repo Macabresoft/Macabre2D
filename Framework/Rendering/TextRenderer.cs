@@ -35,12 +35,6 @@ public class TextRenderer : RenderableEntity, IRotatable {
     public override BoundingArea BoundingArea => this._boundingArea.Value;
 
     /// <summary>
-    /// Gets the font reference.
-    /// </summary>
-    [DataMember(Order = 0)]
-    public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
-
-    /// <summary>
     /// Gets or sets the color.
     /// </summary>
     /// <value>The color.</value>
@@ -49,6 +43,12 @@ public class TextRenderer : RenderableEntity, IRotatable {
         get => this._color;
         set => this.Set(ref this._color, value);
     }
+
+    /// <summary>
+    /// Gets the font reference.
+    /// </summary>
+    [DataMember(Order = 0)]
+    public AssetReference<FontAsset, SpriteFont> FontReference { get; } = new();
 
     /// <summary>
     /// Gets the render settings.
