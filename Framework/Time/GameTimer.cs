@@ -19,6 +19,19 @@ public class GameTimer : NotifyPropertyChanged {
     private float _timeLimit;
 
     /// <summary>
+    /// Gets the percentage complete.
+    /// </summary>
+    public float PercentComplete {
+        get {
+            if (this.TimeLimit > 0f) {
+                return this.TimeRunning / this.TimeLimit;
+            }
+
+            return 0f;
+        }
+    }
+
+    /// <summary>
     /// Gets the state of this timer.
     /// </summary>
     public TimerState State { get; private set; } = TimerState.Disabled;
