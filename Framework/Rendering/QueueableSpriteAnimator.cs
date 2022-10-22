@@ -14,6 +14,11 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
     private QueueableSpriteAnimation? _currentAnimation;
 
+    /// <summary>
+    /// Gets the current animation playing.
+    /// </summary>
+    public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
+
     /// <inheritdoc />
     protected override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation?.SpriteSheet;
 
