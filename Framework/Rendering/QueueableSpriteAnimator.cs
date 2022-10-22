@@ -1,9 +1,11 @@
 namespace Macabresoft.Macabre2D.Framework;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Macabresoft.Core;
 
 /// <summary>
 /// A sprite animator that can have animations queued up.
@@ -13,6 +15,11 @@ using System.Linq;
 public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
     private QueueableSpriteAnimation? _currentAnimation;
+    
+    /// <summary>
+    /// An event for when an animation finishes.
+    /// </summary>
+    public event EventHandler<SpriteAnimation?>? OnAnimationFinished;
 
     /// <summary>
     /// Gets the current animation playing.
@@ -20,7 +27,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     public SpriteAnimation? CurrentAnimation => this._currentAnimation?.Animation;
 
     /// <inheritdoc />
-    protected override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation?.SpriteSheet;
+    protected override SpriteSheetAsset? SpriteSheet => this._currentAnimation?.Animation.SpriteSheet;
 
     /// <summary>
     /// Enqueues the specified animation.
@@ -86,6 +93,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         base.Stop();
 
         if (eraseQueue) {
+            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
             this._currentAnimation = null;
             this._queuedSpriteAnimations.Clear();
         }
@@ -102,7 +110,9 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
 
     /// <inheritdoc />
     protected override SpriteAnimation? HandleAnimationFinished() {
+
         if (this._queuedSpriteAnimations.Any()) {
+            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
             this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
             var step = this._currentAnimation.Animation.Steps.FirstOrDefault();
             if (step != null) {
@@ -115,6 +125,7 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
             this.ResetMillisecondsPassed();
         }
         else if (this._currentAnimation?.ShouldLoopIndefinitely == false) {
+            this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
             this._currentAnimation = null;
         }
 
