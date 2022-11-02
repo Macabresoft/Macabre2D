@@ -53,6 +53,27 @@ public abstract class BaseSpriteAnimator : BaseSpriteEntity, IUpdateableEntity {
     /// </summary>
     protected uint CurrentStepIndex { get; set; }
 
+    /// <summary>
+    /// Gets the percentage complete for the current animation.
+    /// </summary>
+    /// <returns>The percentage complete.</returns>
+    public float GetPercentageComplete() {
+        var result = 0f;
+
+        if (this.GetSpriteAnimation() is { } animation && this.CurrentStepIndex < animation.Steps.Count) {
+            var totalFrames = animation.Steps.Sum(x => x.Frames);
+
+            if (totalFrames > 0) {
+                var currentFrames = animation.Steps.Take((int)this.CurrentStepIndex).Sum(x => x.Frames) + this.CurrentFrameIndex;
+                result = currentFrames / (float)totalFrames;
+            }
+
+            return result;
+        }
+
+        return result;
+    }
+
     /// <inheritdoc />
     public override void Initialize(IScene scene, IEntity parent) {
         base.Initialize(scene, parent);
