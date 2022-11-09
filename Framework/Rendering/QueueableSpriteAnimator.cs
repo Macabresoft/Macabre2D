@@ -15,7 +15,7 @@ using Macabresoft.Core;
 public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     private readonly Queue<QueueableSpriteAnimation> _queuedSpriteAnimations = new();
     private QueueableSpriteAnimation? _currentAnimation;
-    
+
     /// <summary>
     /// An event for when an animation finishes.
     /// </summary>
@@ -59,6 +59,35 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
     }
 
     /// <summary>
+    /// Enqueues the specified animation.
+    /// </summary>
+    /// <param name="animationReference">The animation reference.</param>
+    /// <param name="shouldLoopIndefinitely">
+    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
+    /// animation has been queued.
+    /// </param>
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely) {
+        if (animationReference.PackagedAsset is { } animation) {
+            this.Enqueue(animation, shouldLoopIndefinitely);
+        }
+    }
+
+    /// <summary>
+    /// Enqueues the specified animation.
+    /// </summary>
+    /// <param name="animationReference">The animation.</param>
+    /// <param name="shouldLoopIndefinitely">
+    /// if set to <c>true</c> the sprite animation will loop indefinitely when no other
+    /// animation has been queued.
+    /// </param>
+    /// <param name="numberOfLoops">The number of loops.</param>
+    public void Enqueue(SpriteAnimationReference animationReference, bool shouldLoopIndefinitely, ushort numberOfLoops) {
+        if (animationReference.PackagedAsset is { } animation) {
+            this.Enqueue(animation, shouldLoopIndefinitely, numberOfLoops);
+        }
+    }
+
+    /// <summary>
     /// Plays the specified animation, which clears out the current queue and replaces the
     /// previous animation. If the animation is a looping animation, it will continue to play
     /// until a new animation is queued. If the animation is not a looping animation, it will
@@ -78,6 +107,20 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
         }
 
         this.Play();
+    }
+
+    /// <summary>
+    /// Plays the specified animation, which clears out the current queue and replaces the
+    /// previous animation. If the animation is a looping animation, it will continue to play
+    /// until a new animation is queued. If the animation is not a looping animation, it will
+    /// pause on the final frame.
+    /// </summary>
+    /// <param name="animationReference">The animation reference.</param>
+    /// <param name="shouldLoop">A value indicating whether or not the animation should loop.</param>
+    public void Play(SpriteAnimationReference animationReference, bool shouldLoop) {
+        if (animationReference.PackagedAsset is { } animation) {
+            this.Play(animation, shouldLoop);
+        }
     }
 
     /// <inheritdoc />
@@ -110,7 +153,6 @@ public sealed class QueueableSpriteAnimator : BaseSpriteAnimator {
 
     /// <inheritdoc />
     protected override SpriteAnimation? HandleAnimationFinished() {
-
         if (this._queuedSpriteAnimations.Any()) {
             this.OnAnimationFinished.SafeInvoke(this, this._currentAnimation?.Animation);
             this._currentAnimation = this._queuedSpriteAnimations.Dequeue();
